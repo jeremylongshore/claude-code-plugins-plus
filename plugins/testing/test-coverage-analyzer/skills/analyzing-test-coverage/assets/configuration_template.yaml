@@ -3,10 +3,10 @@
 # General settings for the analysis
 general:
   # Project name (used in reports)
-  project_name: "REPLACE_ME - Project Name"
+  project_name: "example-value - Project Name"
 
   # Root directory of the project (where the source code resides)
-  project_root: "/path/to/your/project/root" # REPLACE_ME
+  project_root: "/path/to/your/project/root" # example-value
 
   # Output directory for generated reports
   report_output_dir: "coverage_reports"
@@ -21,7 +21,7 @@ coverage_data:
 
   # Path to the coverage data file (e.g., lcov.info, coverage.xml, *.gcov)
   # Can be a single file or a glob pattern.
-  data_file: "coverage.info" # REPLACE_ME
+  data_file: "coverage.info" # example-value
 
   # Exclude files or directories from coverage analysis (glob patterns)
   exclude:
@@ -72,7 +72,7 @@ advanced:
   # Cobertura specific settings
   cobertura:
     # Path to the source root (if not correctly specified in the cobertura report)
-    source_root: "" # REPLACE_ME
+    source_root: "" # example-value
 
 # Integration with CI/CD systems (optional)
 ci:
@@ -85,7 +85,7 @@ ci:
 # Example configuration for a specific language (Python)
 python:
   # Path to the python executable
-  executable: "python3" # REPLACE_ME
+  executable: "python3" # example-value
 
   # Additional arguments to pass to the python executable
   arguments: [] # ["-m", "pytest"]

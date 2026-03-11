@@ -3,7 +3,7 @@
 # General settings
 general:
   # Name of the project
-  project_name: REPLACE_ME # e.g., 'my-awesome-project'
+  project_name: example-value # e.g., 'my-awesome-project'
 
   # Path to the project's source code
   source_path: src # Default source directory

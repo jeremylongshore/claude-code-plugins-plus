@@ -5,7 +5,7 @@
 data_input:
   # Path to the input data file (CSV, Parquet, etc.)
   # Supported formats: csv, parquet
-  data_path: "data/input.csv" # REPLACE_ME: Path to your input data
+  data_path: "data/input.csv" # example-value: Path to your input data
   # File type of the input data
   file_type: "csv"
   # Separator for CSV files (e.g., comma, tab)
@@ -15,7 +15,7 @@ data_input:
   # Encoding of the input file
   encoding: "utf-8"
   # Target variable name
-  target_variable: "target" # REPLACE_ME: Name of your target variable
+  target_variable: "target" # example-value: Name of your target variable
   # Index column (optional)
   index_column: null  # Set to column name if you have an index column
 
@@ -39,7 +39,7 @@ feature_creation:
   # Aggregation Features configuration
   aggregation_features:
     # Group by column for aggregation (e.g., user_id, product_id)
-    group_by: "user_id" # REPLACE_ME: Column to group by for aggregation
+    group_by: "user_id" # example-value: Column to group by for aggregation
     # Aggregation functions to apply (e.g., mean, sum, count)
     aggregations:
       - "mean"
@@ -48,7 +48,7 @@ feature_creation:
   datetime_features:
     # List of datetime columns to extract features from
     datetime_columns:
-      - "date" # REPLACE_ME: Name of your datetime column
+      - "date" # example-value: Name of your datetime column
     # List of datetime features to extract (e.g., year, month, day, dayofweek)
     features_to_extract:
       - "year"
@@ -67,7 +67,7 @@ feature_selection:
     threshold: 0.0
   # Select K Best configuration
   select_k_best:
-    k: 10 # REPLACE_ME: Number of top features to select
+    k: 10 # example-value: Number of top features to select
     score_func: "f_classif" # Or "f_regression"
   # Recursive Feature Elimination configuration
   recursive_feature_elimination:
@@ -101,7 +101,7 @@ feature_transformation:
 # --- Output ---
 output:
   # Path to save the processed data
-  output_path: "data/processed.csv" # REPLACE_ME: Path to save the processed data
+  output_path: "data/processed.csv" # example-value: Path to save the processed data
   # Save format for the output data
   output_format: "csv"
   # Save the feature engineering report

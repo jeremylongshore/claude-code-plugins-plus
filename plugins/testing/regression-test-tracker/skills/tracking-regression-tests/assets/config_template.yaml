@@ -3,13 +3,13 @@
 # Database settings (for storing test results and history)
 database:
   type: "sqlite"  # Options: sqlite, postgresql, mysql, etc.
-  connection_string: "regression_tests.db" # REPLACE_ME: Database connection string
+  connection_string: "regression_tests.db" # example-value: Database connection string
   # Example PostgreSQL connection string:
   # connection_string: "postgresql://user:password@host:port/database"
 
 # Test execution settings
 test_execution:
-  runner: "pytest" # REPLACE_ME: Test runner command (e.g., pytest, unittest)
+  runner: "pytest" # example-value: Test runner command (e.g., pytest, unittest)
   test_directory: "tests" # Directory containing test files
   pattern: "test_*.py" # Pattern to identify test files
   concurrency: 4 # Number of parallel test processes
@@ -33,7 +33,7 @@ regression_suite:
 change_impact:
   vcs: "git" # Version control system (e.g., git, mercurial)
   # Command to get list of changed files since last regression test run.
-  # REPLACE_ME:  You might need to customize this based on your workflow.
+  # example-value:  You might need to customize this based on your workflow.
   changed_files_command: "git diff --name-only HEAD^ HEAD"
   mapping: # Mapping between files and affected tests
     "src/feature_a.py": # Example: if feature_a.py is changed, run these tests
@@ -52,7 +52,7 @@ flaky_test_detection:
 notifications:
   enabled: false # Enable notifications
   type: "slack" # Notification type (e.g., slack, email)
-  webhook_url: "YOUR_VALUE_HERE" # REPLACE_ME: Slack webhook URL
+  webhook_url: "YOUR_VALUE_HERE" # example-value: Slack webhook URL
   # OR email settings
   # email:
   #   sender: "test_tracker@example.com"

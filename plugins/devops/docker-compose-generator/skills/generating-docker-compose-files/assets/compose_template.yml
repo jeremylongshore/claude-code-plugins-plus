@@ -29,7 +29,7 @@ services:
           cpus: "0.5" # Limit CPU usage to 0.5 cores
           memory: 512M # Limit memory usage to 512MB
     environment:
-      - REPLACE_ME=YOUR_VALUE_HERE # Example environment variable
+      - example-value=YOUR_VALUE_HERE # Example environment variable
 
   # Example application service
   app:

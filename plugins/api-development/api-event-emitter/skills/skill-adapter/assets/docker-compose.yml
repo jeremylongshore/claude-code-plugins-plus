@@ -9,8 +9,8 @@ services:
       - "5672:5672"   # AMQP protocol port
       - "15672:15672"  # Management UI port (optional)
     environment:
-      RABBITMQ_DEFAULT_USER: "guest" # REPLACE_ME: Change default user in production
-      RABBITMQ_DEFAULT_PASS: "guest" # REPLACE_ME: Change default password in production
+      RABBITMQ_DEFAULT_USER: "guest" # example-value: Change default user in production
+      RABBITMQ_DEFAULT_PASS: "guest" # example-value: Change default password in production
       RABBITMQ_DEFAULT_VHOST: "/"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq # Persist data across restarts (optional)
@@ -29,7 +29,7 @@ services:
   #   environment:
   #     KAFKA_BROKER_ID: 1
   #     KAFKA_LISTENERS: PLAINTEXT://:9092
-  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092  # REPLACE_ME: Adjust for your environment
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092  # example-value: Adjust for your environment
   #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
   #   depends_on:
   #     - zookeeper

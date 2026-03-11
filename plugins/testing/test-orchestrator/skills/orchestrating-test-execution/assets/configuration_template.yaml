@@ -17,7 +17,7 @@ global:
   # Environment variables to apply to all test executions
   environment:
     # Example: API_KEY: "YOUR_API_KEY"
-    # REPLACE_ME : YOUR_VALUE_HERE
+    # example-value : YOUR_VALUE_HERE
 
 # Definition of test suites and their dependencies
 test_suites:
@@ -43,7 +43,7 @@ test_suites:
     # Environment variables specific to this test suite (overrides global environment)
     environment:
       # Example: DATABASE_URL: "YOUR_INTEGRATION_DATABASE_URL"
-      # REPLACE_ME : YOUR_VALUE_HERE
+      # example-value : YOUR_VALUE_HERE
 
   unit_tests:
     description: "Unit tests for individual modules"
@@ -100,7 +100,7 @@ reporting:
   # Additional reporting options (plugin-specific)
   options:
     # Example: include_console_output: true
-    # REPLACE_ME : YOUR_VALUE_HERE
+    # example-value : YOUR_VALUE_HERE
 
 # CI/CD integration configuration (optional)
 ci_cd:
@@ -113,4 +113,4 @@ ci_cd:
   # Additional CI/CD options (system-specific)
   options:
     # Example: upload_results_to_s3: true
-    # REPLACE_ME : YOUR_VALUE_HERE
+    # example-value : YOUR_VALUE_HERE

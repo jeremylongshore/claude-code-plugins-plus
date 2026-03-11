@@ -6,11 +6,11 @@ data_source:
   path: "data/user_item_interactions.csv" # Path to the data file or API endpoint
   # Database connection details (if applicable)
   database:
-    host: "localhost" # REPLACE_ME: Database host
+    host: "localhost" # example-value: Database host
     port: 5432       # Database port
-    name: "recommendations_db" # REPLACE_ME: Database name
-    user: "recommendations_user" # REPLACE_ME: Database user
-    password: "YOUR_DATABASE_PASSWORD" # REPLACE_ME: Database password
+    name: "recommendations_db" # example-value: Database name
+    user: "recommendations_user" # example-value: Database user
+    password: "YOUR_DATABASE_PASSWORD" # example-value: Database password
 
 # Feature engineering configuration
 feature_engineering:

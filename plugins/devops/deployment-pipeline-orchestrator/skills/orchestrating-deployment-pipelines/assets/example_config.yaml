@@ -76,7 +76,7 @@ notifications:
   enabled: true # Whether to enable notifications
   type: "slack" # Notification type (e.g., slack, email)
   slack: # Slack notification settings (required if type is slack)
-    webhook_url: "REPLACE_ME" # Slack webhook URL
+    webhook_url: "example-value" # Slack webhook URL
   email: # Email notification settings (required if type is email)
     sender: "deployments@example.com" # Sender email address
     recipients: # List of recipient email addresses

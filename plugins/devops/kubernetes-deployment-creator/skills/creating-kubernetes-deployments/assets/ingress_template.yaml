@@ -4,8 +4,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: REPLACE_ME-ingress # Replace with your ingress name
-  namespace: REPLACE_ME-namespace # Replace with your namespace
+  name: example-value-ingress # Replace with your ingress name
+  namespace: example-value-namespace # Replace with your namespace
   annotations:
     # Use cert-manager to automatically provision TLS certificates
     cert-manager.io/cluster-issuer: letsencrypt-prod # Replace with your cert-manager issuer
@@ -29,18 +29,18 @@ spec:
   tls:
     # Configure TLS for secure communication
     - hosts:
-        - REPLACE_ME.YOUR_DOMAIN_HERE # Replace with your domain name
-      secretName: REPLACE_ME-tls # Replace with the name of your TLS secret
+        - example-value.YOUR_DOMAIN_HERE # Replace with your domain name
+      secretName: example-value-tls # Replace with the name of your TLS secret
 
   rules:
     # Define routing rules for incoming traffic
-    - host: REPLACE_ME.YOUR_DOMAIN_HERE # Replace with your domain name
+    - host: example-value.YOUR_DOMAIN_HERE # Replace with your domain name
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: REPLACE_ME-service # Replace with your service name
+                name: example-value-service # Replace with your service name
                 port:
                   number: 80 # Replace with your service port

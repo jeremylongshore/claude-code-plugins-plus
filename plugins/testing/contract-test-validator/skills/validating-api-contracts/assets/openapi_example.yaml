@@ -7,8 +7,8 @@ info:
   version: 1.0.0
   description: A simple API to demonstrate contract testing with Pact and OpenAPI validation.
   contact:
-    name: REPLACE_ME - Your Name
-    email: REPLACE_ME - your.email@example.com
+    name: example-value - Your Name
+    email: example-value - your.email@example.com
 
 servers:
   - url: https://api.example.com/v1

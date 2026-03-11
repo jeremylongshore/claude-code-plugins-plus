@@ -3,7 +3,7 @@
 
 openapi: 3.0.3
 info:
-  title: REPLACE_ME - API Documentation
+  title: example-value - API Documentation
   version: 1.0.0
   description: YOUR_VALUE_HERE - Description of the API.
   termsOfService: https://example.com/terms/

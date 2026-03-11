@@ -1,7 +1,7 @@
 # Loki Configuration File
 # This file configures the Loki log aggregation system.
 
-auth_enabled: false # Disable authentication for simplicity (REPLACE_ME: Enable authentication in production)
+auth_enabled: false # Disable authentication for simplicity (example-value: Enable authentication in production)
 
 server:
   http_listen_port: 3100 # Port Loki listens on for HTTP requests
@@ -12,11 +12,11 @@ ingester:
     address: 127.0.0.1 # Address of the ingester
     ring:
       kvstore:
-        store: inmemory # Use in-memory store for simplicity (REPLACE_ME: Use a persistent store like Consul or etcd in production)
+        store: inmemory # Use in-memory store for simplicity (example-value: Use a persistent store like Consul or etcd in production)
       replication_factor: 1 # Number of replicas for log data
   wal:
     enabled: true # Enable Write-Ahead Log for durability
-    dir: /tmp/loki/wal # Directory for the Write-Ahead Log (REPLACE_ME: Use a persistent volume in production)
+    dir: /tmp/loki/wal # Directory for the Write-Ahead Log (example-value: Use a persistent volume in production)
   chunk_idle_period: 1h # Time after which an inactive chunk is flushed to storage
   chunk_block_size: 262144 # Size of each chunk block (256KB)
   chunk_retain_period: 24h # Time after which a chunk is deleted from the ingester
@@ -34,10 +34,10 @@ schema_config:
 
 storage_config:
   boltdb_shipper:
-    active_index_directory: /tmp/loki/index # Directory for the active index (REPLACE_ME: Use a persistent volume in production)
-    shared_dir: /tmp/loki/chunks # Directory for shared chunks (REPLACE_ME: Use a persistent volume in production)
+    active_index_directory: /tmp/loki/index # Directory for the active index (example-value: Use a persistent volume in production)
+    shared_dir: /tmp/loki/chunks # Directory for shared chunks (example-value: Use a persistent volume in production)
   filesystem:
-    path: /tmp/loki/chunks # Directory for chunk storage (REPLACE_ME: Use a persistent volume in production)
+    path: /tmp/loki/chunks # Directory for chunk storage (example-value: Use a persistent volume in production)
 
 limits_config:
   enforce_metric_name: false # Disable enforcement of metric names
@@ -57,7 +57,7 @@ limits_config:
   max_query_length: 720h # Maximum query length (30 days)
 
 compactor:
-  working_directory: /tmp/loki/compactor # Directory for compactor working files (REPLACE_ME: Use a persistent volume in production)
+  working_directory: /tmp/loki/compactor # Directory for compactor working files (example-value: Use a persistent volume in production)
   shared_store: filesystem # Use filesystem for shared storage
   compaction_interval: 1h # Interval between compactor runs
   retention_enabled: true # Enable retention of old chunks
@@ -68,8 +68,8 @@ ruler:
   storage:
     type: local
     local:
-      directory: /tmp/loki/rules # Directory to store the rules (REPLACE_ME: Use a persistent volume in production)
-  rule_path: /tmp/loki/rules # Path where rules are stored (REPLACE_ME: Use a persistent volume in production)
-  alertmanager_url: "" # URL of the Alertmanager instance (REPLACE_ME: YOUR_ALERTMANAGER_URL)
+      directory: /tmp/loki/rules # Directory to store the rules (example-value: Use a persistent volume in production)
+  rule_path: /tmp/loki/rules # Path where rules are stored (example-value: Use a persistent volume in production)
+  alertmanager_url: "" # URL of the Alertmanager instance (example-value: YOUR_ALERTMANAGER_URL)
   poll_interval: 30s # Interval to poll for rule changes
   enable_api: true # Enable the API for managing rules

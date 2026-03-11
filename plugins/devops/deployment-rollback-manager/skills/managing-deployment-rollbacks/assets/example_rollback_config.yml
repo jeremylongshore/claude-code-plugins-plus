@@ -83,7 +83,7 @@ safety_checks:
       # SQL query to execute.
       query: "SELECT COUNT(*) FROM users;"
       # Expected result from the query.
-      expected_result: "REPLACE_ME"
+      expected_result: "example-value"
 
     - type: "metric_check"
       # Metric name to check.

@@ -4,13 +4,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: REPLACE_ME-hpa # Replace with your HPA name
+  name: example-value-hpa # Replace with your HPA name
   namespace: YOUR_VALUE_HERE # Replace with your namespace
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: REPLACE_ME # Replace with your deployment name
+    name: example-value # Replace with your deployment name
   minReplicas: 2 # Minimum number of replicas
   maxReplicas: 10 # Maximum number of replicas
   metrics:

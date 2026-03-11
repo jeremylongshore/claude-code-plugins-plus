@@ -2,7 +2,7 @@
 # This file defines the configuration for a deployment rollback.
 
 # General Rollback Information
-rollback_name: "REPLACE_ME - Descriptive Rollback Name" # e.g., "Rollback to v1.2.3 due to login issues"
+rollback_name: "example-value - Descriptive Rollback Name" # e.g., "Rollback to v1.2.3 due to login issues"
 description: "Detailed description of the rollback purpose and context." # More details on why this rollback is necessary.
 
 # Target Environment

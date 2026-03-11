@@ -2,7 +2,7 @@
 
 openapi: 3.0.0
 info:
-  title: REPLACE_ME API
+  title: example-value API
   version: 1.0.0
   description: A REST API generated from a schema.  YOUR_VALUE_HERE - Describe the API's purpose.
   termsOfService: https://example.com/terms/

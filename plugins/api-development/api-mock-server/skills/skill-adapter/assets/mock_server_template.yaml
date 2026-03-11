@@ -3,7 +3,7 @@
 # --- OpenAPI Specification ---
 # Path to your OpenAPI (Swagger) specification file (YAML or JSON).
 # This file defines the API endpoints, request parameters, and response schemas.
-openapi_spec_path: "REPLACE_ME/path/to/your/openapi.yaml"
+openapi_spec_path: "example-value/path/to/your/openapi.yaml"
 
 # --- Server Settings ---
 # Host and port for the mock server to listen on.
@@ -53,7 +53,7 @@ endpoints:
 # Whether to persist data between requests (stateful mocking).
 stateful: true
 # Path to a file where data will be stored.  If empty, data will be stored in memory.
-data_file: "REPLACE_ME/path/to/data.json" # Example: data.json
+data_file: "example-value/path/to/data.json" # Example: data.json
 
 # --- Security ---
 # API Key authentication (example).

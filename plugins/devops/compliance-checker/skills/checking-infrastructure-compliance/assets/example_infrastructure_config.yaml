@@ -4,7 +4,7 @@
 general:
   environment: production # Environment (development, staging, production)
   region: us-west-2 # AWS Region (e.g., us-east-1, eu-west-1)
-  account_id: REPLACE_ME # AWS Account ID or equivalent for other platforms
+  account_id: example-value # AWS Account ID or equivalent for other platforms
   organization_name: YOUR_VALUE_HERE # Your organization's name
   contact_email: compliance@example.com # Contact email for compliance inquiries
 
@@ -27,7 +27,7 @@ infrastructure:
     ec2: # AWS EC2 Instances
       enabled: true
       instance_ids: # List of EC2 instance IDs to check. Leave empty to check all.
-        - REPLACE_ME #Example instance id
+        - example-value #Example instance id
         - YOUR_VALUE_HERE #Another example instance id
       security_group_rules: # Security Group rules to enforce
         ingress:
@@ -43,7 +43,7 @@ infrastructure:
     lambda: # AWS Lambda Functions
       enabled: false
       function_names: # List of Lambda function names to check.  Leave empty to check all.
-        - REPLACE_ME
+        - example-value
     gcp_compute_engine: # Google Cloud Compute Engine Instances
       enabled: false
       instance_names: # List of Compute Engine instance names to check. Leave empty to check all.
@@ -52,7 +52,7 @@ infrastructure:
     s3: # AWS S3 Buckets
       enabled: true
       bucket_names: # List of S3 bucket names to check. Leave empty to check all.
-        - REPLACE_ME
+        - example-value
       encryption_enabled: true # Require encryption at rest
       public_access_blocked: true # Block public access to buckets
     cloud_storage: # Google Cloud Storage Buckets
@@ -63,7 +63,7 @@ infrastructure:
     rds: # AWS RDS Databases
       enabled: true
       instance_ids: # List of RDS instance IDs to check. Leave empty to check all.
-        - REPLACE_ME
+        - example-value
       encryption_enabled: true # Require encryption at rest
       publicly_accessible: false # Ensure databases are not publicly accessible
     cloud_sql: # Google Cloud SQL Instances
@@ -74,7 +74,7 @@ infrastructure:
     vpc: # AWS VPCs
       enabled: true
       vpc_ids: # List of VPC IDs to check. Leave empty to check all.
-        - REPLACE_ME
+        - example-value
       flow_logs_enabled: true # Require VPC Flow Logs for auditing
     virtual_network: # Google Cloud VPCs
       enabled: false
@@ -110,5 +110,5 @@ iam:
 reporting:
   frequency: weekly # How often to generate compliance reports (daily, weekly, monthly)
   report_recipients: # List of email addresses to receive compliance reports
-    - REPLACE_ME # Example compliance report email
+    - example-value # Example compliance report email
   output_format: pdf # Report output format (pdf, csv, json)

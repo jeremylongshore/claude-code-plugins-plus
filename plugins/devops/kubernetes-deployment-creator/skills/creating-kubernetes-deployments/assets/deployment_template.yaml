@@ -3,14 +3,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: REPLACE_ME-deployment
+  name: example-value-deployment
   labels:
-    app: REPLACE_ME
+    app: example-value
 spec:
   replicas: 3 # Number of desired pods
   selector:
     matchLabels:
-      app: REPLACE_ME
+      app: example-value
   strategy:
     type: RollingUpdate # Use rolling updates for zero-downtime deployments
     rollingUpdate:
@@ -19,10 +19,10 @@ spec:
   template:
     metadata:
       labels:
-        app: REPLACE_ME
+        app: example-value
     spec:
       containers:
-      - name: REPLACE_ME-container
+      - name: example-value-container
         image: YOUR_VALUE_HERE # Replace with your container image
         imagePullPolicy: IfNotPresent # Only pull the image if it's not present
         ports:

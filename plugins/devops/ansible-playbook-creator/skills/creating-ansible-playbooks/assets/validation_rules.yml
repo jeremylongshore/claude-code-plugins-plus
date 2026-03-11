@@ -44,7 +44,7 @@ security_rules:
   no_wildcard_hosts: true
   # Rule: Validate input parameters to prevent injection vulnerabilities.
   validate_input: true
-  input_validation_regex: "REPLACE_ME" # Example regex for validating input.  Should be customized per variable.
+  input_validation_regex: "example-value" # Example regex for validating input.  Should be customized per variable.
 
 # --- Idempotency Rules ---
 idempotency_rules:

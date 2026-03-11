@@ -10,7 +10,7 @@ global:
 
 # --- Application Configuration ---
 application:
-  name: REPLACE_ME # Application Name (e.g., web-app, api-server)
+  name: example-value # Application Name (e.g., web-app, api-server)
   type: web  # Application type (e.g., web, api, worker)
 
   # Resource limits (CPU, Memory)

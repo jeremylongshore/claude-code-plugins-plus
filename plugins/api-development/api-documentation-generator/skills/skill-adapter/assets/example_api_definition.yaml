@@ -198,7 +198,7 @@ components:
           description: User's last name
         password:
           type: string
-          description: User's password (REPLACE_ME - consider security best practices)
+          description: User's password (example-value - consider security best practices)
       required:
         - username
         - email

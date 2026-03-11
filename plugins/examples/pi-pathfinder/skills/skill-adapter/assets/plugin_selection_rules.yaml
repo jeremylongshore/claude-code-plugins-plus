@@ -20,22 +20,22 @@ keyword_rules:
     plugin_preferences:
       "DALL-E": 0.9  # Example: Prefer DALL-E for image generation
       "Stable Diffusion": 0.8
-      "REPLACE_ME_IMAGE_PLUGIN": 0.5
+      "example-value_IMAGE_PLUGIN": 0.5
   - keywords: ["translate", "language", "multilingual"]
     plugin_preferences:
       "Google Translate": 0.95
       "DeepL Translator": 0.9
-      "REPLACE_ME_TRANSLATION_PLUGIN": 0.6
+      "example-value_TRANSLATION_PLUGIN": 0.6
   - keywords: ["code", "programming", "algorithm", "debug"]
     plugin_preferences:
       "Code Interpreter": 0.9
       "GitHub Copilot": 0.85
-      "REPLACE_ME_CODE_PLUGIN": 0.7
+      "example-value_CODE_PLUGIN": 0.7
   - keywords: ["data analysis", "statistics", "spreadsheet"]
     plugin_preferences:
       "Wolfram Alpha": 0.9
       "Excel Online": 0.8
-      "REPLACE_ME_DATA_PLUGIN": 0.6
+      "example-value_DATA_PLUGIN": 0.6
 
 # Rules for selecting plugins based on their stated capabilities.
 capability_rules:
@@ -66,7 +66,7 @@ user_preferences:
   user_id_123:
     priority: "speed"
     preferred_plugins: ["Google Translate"]
-    excluded_plugins: ["REPLACE_ME_EXPENSIVE_PLUGIN"]
+    excluded_plugins: ["example-value_EXPENSIVE_PLUGIN"]
 
 # Fallback plugin to use if no other plugin matches the criteria.
 fallback_plugin: "Web Search"
@@ -84,7 +84,7 @@ advanced:
   # Plugin specific configurations (example).
   plugin_configurations:
     "DALL-E":
-      api_key: "REPLACE_ME_DALL_E_API_KEY"
+      api_key: "example-value_DALL_E_API_KEY"
       image_size: "1024x1024"
     "Google Translate":
       target_language: "en" # Default target language

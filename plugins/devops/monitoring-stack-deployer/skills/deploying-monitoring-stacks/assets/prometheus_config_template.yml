@@ -6,7 +6,7 @@ global:
 
   # External labels to identify the Prometheus instance.
   external_labels:
-    monitor: 'REPLACE_ME_MONITORING_INSTANCE'  # A label identifying this Prometheus instance.
+    monitor: 'example-value_MONITORING_INSTANCE'  # A label identifying this Prometheus instance.
 
 # Rule files that define alerting rules.
 rule_files:
@@ -25,12 +25,12 @@ scrape_configs:
   # Example: Scrape node_exporter metrics.  Provides system-level metrics.
   - job_name: 'node_exporter'
     static_configs:
-      - targets: ['REPLACE_ME_NODE_EXPORTER_ADDRESS:9100'] # Replace with the actual node_exporter address and port.
+      - targets: ['example-value_NODE_EXPORTER_ADDRESS:9100'] # Replace with the actual node_exporter address and port.
 
   # Example: Scrape cadvisor metrics.  Provides container-level metrics.
   - job_name: 'cadvisor'
     static_configs:
-      - targets: ['REPLACE_ME_CADVISOR_ADDRESS:8080'] # Replace with the actual cadvisor address and port.
+      - targets: ['example-value_CADVISOR_ADDRESS:8080'] # Replace with the actual cadvisor address and port.
 
   # Example: Scrape Kubernetes pods with specific labels.
   - job_name: 'kubernetes-pods'
@@ -63,7 +63,7 @@ scrape_configs:
 alerting:
   alertmanagers:
   - static_configs:
-    - targets: ['REPLACE_ME_ALERTMANAGER_ADDRESS:9093']  # Replace with your Alertmanager address.
+    - targets: ['example-value_ALERTMANAGER_ADDRESS:9093']  # Replace with your Alertmanager address.
 
 # Remote write configuration to send metrics to a remote endpoint (e.g., Grafana Cloud, Cortex).
 # remote_write:

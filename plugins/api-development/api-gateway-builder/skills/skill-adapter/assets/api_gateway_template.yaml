@@ -11,7 +11,7 @@ global:
   # Enable/Disable global CORS settings.  Set to 'true' or 'false'.
   enable_cors: true
   # Allowed origins for CORS (e.g., ['https://example.com', 'https://another.com', '*'])
-  cors_allowed_origins: ['*'] # REPLACE_ME: List of allowed origins
+  cors_allowed_origins: ['*'] # example-value: List of allowed origins
   # Allowed methods for CORS (e.g., ['GET', 'POST', 'PUT', 'DELETE'])
   cors_allowed_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   # Allowed headers for CORS (e.g., ['Content-Type', 'Authorization'])
@@ -25,7 +25,7 @@ authentication:
   type: jwt
   jwt:
     # JWT secret key (used for verifying signatures)
-    secret: REPLACE_ME # JWT Secret Key
+    secret: example-value # JWT Secret Key
     # Audience (optional)
     audience: YOUR_VALUE_HERE # JWT Audience
     # Issuer (optional)

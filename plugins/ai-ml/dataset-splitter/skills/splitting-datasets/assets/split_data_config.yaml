@@ -2,7 +2,7 @@
 
 # Input dataset parameters
 input_dataset:
-  path: "REPLACE_ME/path/to/your/dataset.csv"  # Path to the input dataset file
+  path: "example-value/path/to/your/dataset.csv"  # Path to the input dataset file
   format: "csv"  # Dataset format (e.g., csv, parquet, json)
   header: True   # Whether the dataset has a header row (True/False)
   separator: ","  # Separator used in the dataset (e.g., comma, tab, semicolon)
@@ -17,7 +17,7 @@ split_ratios:
 random_seed: 42  # Integer value for the random seed
 
 # Output directory for split datasets
-output_directory: "REPLACE_ME/path/to/output/directory"  # Directory where the split datasets will be saved
+output_directory: "example-value/path/to/output/directory"  # Directory where the split datasets will be saved
 
 # Naming convention for output files
 output_names:

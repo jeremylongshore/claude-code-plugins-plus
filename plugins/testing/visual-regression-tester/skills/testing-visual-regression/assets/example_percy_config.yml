@@ -6,7 +6,7 @@ version: 2
 
 percy:
   # Percy specific settings
-  token: REPLACE_ME # Your Percy project token.  Get this from the Percy dashboard.
+  token: example-value # Your Percy project token.  Get this from the Percy dashboard.
   branch: main # The branch to compare against.  Defaults to 'main' or environment variable.
   parallel: true # Enable parallel test execution for faster results.
   widths: # Viewport widths to capture screenshots at.  Important for responsive testing.

@@ -4,10 +4,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: REPLACE_ME-config  # Replace with your ConfigMap name (e.g., myapp-config)
+  name: example-value-config  # Replace with your ConfigMap name (e.g., myapp-config)
   namespace: default       # Optional: Specify the namespace (e.g., production, staging)
   labels:
-    app: REPLACE_ME        # Replace with your application name (e.g., myapp)
+    app: example-value        # Replace with your application name (e.g., myapp)
     tier: backend         # Optional: Tier or component of the application
 
 data:

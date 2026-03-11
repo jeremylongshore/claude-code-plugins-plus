@@ -10,7 +10,7 @@ api_endpoints:
     timeout: 5 # Timeout in seconds for the API request
     headers: # Optional headers to include in the API request
       Content-Type: "application/json"
-      Authorization: "Bearer REPLACE_ME"
+      Authorization: "Bearer example-value"
   - name: "Product Service API"
     url: "https://api.example.com/products"
     method: "GET"
@@ -90,7 +90,7 @@ alerts:
     notification_channels:
       - "email"
 
-# Notification Channel Configurations (REPLACE_ME)
+# Notification Channel Configurations (example-value)
 notification_channels_config:
   email:
     smtp_server: "smtp.example.com"

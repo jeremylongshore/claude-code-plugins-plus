@@ -23,8 +23,8 @@ coverage_data:
 
 # --- Report Customization ---
 logo_path: "YOUR_LOGO_PATH_HERE"         # Path to a logo to include in the report (optional)
-report_title: "REPLACE_ME - Project Test Report" # Title displayed in the report
-report_description: "Comprehensive test report for REPLACE_ME project, including test results and code coverage." # Description of the report
+report_title: "example-value - Project Test Report" # Title displayed in the report
+report_description: "Comprehensive test report for example-value project, including test results and code coverage." # Description of the report
 
 # --- Thresholds and Alerts ---
 pass_rate_threshold: 0.95          # Minimum pass rate (as a fraction) to be considered successful

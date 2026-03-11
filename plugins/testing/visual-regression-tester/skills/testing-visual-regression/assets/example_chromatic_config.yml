@@ -1,9 +1,9 @@
 # Configuration for Chromatic visual regression testing
 # https://www.chromatic.com/
 
-# Project token - REPLACE_ME with your actual Chromatic project token.
+# Project token - example-value with your actual Chromatic project token.
 # This token is used to authenticate with Chromatic and identify your project.
-projectToken: REPLACE_ME
+projectToken: example-value
 
 # Branch name - Optional, defaults to the current git branch.
 # You can specify a branch name manually if needed.

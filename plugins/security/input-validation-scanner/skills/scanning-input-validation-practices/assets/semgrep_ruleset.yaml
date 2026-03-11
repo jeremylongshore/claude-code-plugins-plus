@@ -49,7 +49,7 @@ rules:
     # Example metavariable regex constraint - require input to be a string
     constraints:
       $input:
-        not: "safe_string"  # Prevent flagging safe uses, REPLACE_ME: Add logic to identify safe strings
+        not: "safe_string"  # Prevent flagging safe uses, example-value: Add logic to identify safe strings
     metadata:
       owasp: "A03:2021 - Injection"
       cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
@@ -156,7 +156,7 @@ rules:
         - "https://owasp.org/www-community/attacks/CSRF"
       confidence: MEDIUM
 
-  # Rule 7: Detect use of hardcoded secrets (Placeholder, REPLACE_ME)
+  # Rule 7: Detect use of hardcoded secrets (Placeholder, example-value)
   - id: input-validation.hardcoded-secret
     message: |
       Hardcoded secret detected.  Avoid storing secrets directly in code.
@@ -171,9 +171,9 @@ rules:
           - pattern: API_KEY = "YOUR_API_KEY_HERE" # Python
           - pattern: const API_KEY = "YOUR_API_KEY_HERE"; # JavaScript
           - pattern: $apiKey = "YOUR_API_KEY_HERE"; # PHP
-          - pattern: API_KEY = "REPLACE_ME"
-          - pattern: const API_KEY = "REPLACE_ME";
-          - pattern: $apiKey = "REPLACE_ME";
+          - pattern: API_KEY = "example-value"
+          - pattern: const API_KEY = "example-value";
+          - pattern: $apiKey = "example-value";
     metadata:
       owasp: "A05:2021 - Security Misconfiguration"
       cwe: "CWE-798: Use of Hard-coded Credentials"
@@ -181,7 +181,7 @@ rules:
         - "https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"
       confidence: HIGH
 
-  # Rule 8: Example for detecting weak password storage (Placeholder, REPLACE_ME)
+  # Rule 8: Example for detecting weak password storage (Placeholder, example-value)
   - id: input-validation.weak-password-storage
     message: |
       Weak password storage detected.  Use a strong hashing algorithm like bcrypt or Argon2.
@@ -223,7 +223,7 @@ rules:
         - "https://cwe.mitre.org/data/definitions/120.html"
       confidence: HIGH
 
-  # Rule 10: Detect path traversal vulnerabilities (Placeholder, REPLACE_ME)
+  # Rule 10: Detect path traversal vulnerabilities (Placeholder, example-value)
   - id: input-validation.path-traversal
     message: |
       Potential path traversal vulnerability detected. Ensure that file paths are properly validated to prevent access to unauthorized files.

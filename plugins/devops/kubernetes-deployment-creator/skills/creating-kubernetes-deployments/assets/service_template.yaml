@@ -4,10 +4,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: REPLACE_ME-service # Replace with your service name
+  name: example-value-service # Replace with your service name
   namespace: default # Change if you're using a different namespace
   labels:
-    app: REPLACE_ME # Replace with your application name
+    app: example-value # Replace with your application name
     tier: frontend # Or backend, database, etc.
 spec:
   type: ClusterIP #  Options: ClusterIP, NodePort, LoadBalancer
@@ -15,7 +15,7 @@ spec:
                   #  NodePort:  Exposes the service on each Node's IP at a static port (the NodePort). Choose this for external access during development.
                   #  LoadBalancer: Exposes the service externally using a cloud provider's load balancer.  Choose this for production external access.
   selector:
-    app: REPLACE_ME #  Must match the labels of your deployment's pods
+    app: example-value #  Must match the labels of your deployment's pods
   ports:
     - port: 80 # The port the service exposes internally
       targetPort: 8080 # The port your application is listening on within the pod

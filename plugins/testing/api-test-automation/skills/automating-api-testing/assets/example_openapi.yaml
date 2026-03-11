@@ -5,10 +5,10 @@ info:
   title: Example API
   version: 1.0.0
   description: A sample API for demonstration purposes.
-  termsOfService: REPLACE_ME # Add your terms of service URL here
+  termsOfService: example-value # Add your terms of service URL here
   contact:
     name: API Support
-    url: REPLACE_ME # Add your support URL here
+    url: example-value # Add your support URL here
     email: support@example.com
   license:
     name: Apache 2.0

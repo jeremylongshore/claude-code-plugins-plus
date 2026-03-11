@@ -3,7 +3,7 @@
 # This template provides a starting point for creating Ansible playbooks.
 # It includes common sections and best practice configurations.
 
-- name: "REPLACE_ME - Playbook Description"
+- name: "example-value - Playbook Description"
   hosts: all  # Target hosts or groups (e.g., webservers, dbservers)
   become: true  # Enable privilege escalation (sudo)
   become_user: root # Specify the user to become (optional, defaults to root)

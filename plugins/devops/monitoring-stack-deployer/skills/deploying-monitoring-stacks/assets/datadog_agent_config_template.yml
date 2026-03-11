@@ -4,7 +4,7 @@
 # Replace placeholders with your specific values.
 
 # Agent Configuration
-agent_hostname: REPLACE_ME_HOSTNAME # The hostname reported to Datadog.  Defaults to system hostname.
+agent_hostname: example-value_HOSTNAME # The hostname reported to Datadog.  Defaults to system hostname.
 # agent_tags:  # Optional: List of tags to apply to all metrics sent by this agent.
 #   - env:production
 #   - role:webserver

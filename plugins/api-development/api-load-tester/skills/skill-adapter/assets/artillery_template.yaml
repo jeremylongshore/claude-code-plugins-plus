@@ -1,7 +1,7 @@
 # Artillery Load Test Configuration
 
 config:
-  target: "REPLACE_ME"  # URL of the API endpoint to test
+  target: "example-value"  # URL of the API endpoint to test
   phases:
     - duration: 60  # Ramp up duration in seconds
       arrivalRate: 10 # Number of virtual users to start per second
