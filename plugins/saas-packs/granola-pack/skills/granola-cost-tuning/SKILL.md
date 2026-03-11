@@ -52,10 +52,10 @@ Monthly Calculation:
 Meetings per month: [20]
 Time saved: 20 * 20 min = 400 min = 6.7 hours  # HTTP 400 Bad Request
 Hourly rate: [$50]
-Value of time saved: 6.7 * $50 = $333
+Value of time saved: 6.7 * $50 = $333  # 333 = configured value
 
 Cost of Granola Pro: $10/month
-ROI: ($333 - $10) / $10 = 3,230%
+ROI: ($333 - $10) / $10 = 3,230%  # 230 = configured value
 
 Break-even: 0.6 meetings/month
 ```
@@ -72,8 +72,8 @@ Total time saved: 10 * 20 * 20 = 4,000 min = 66.7 hours
 Blended hourly rate: $75
 Value: 66.7 * $75 = $5,000/month
 
-Business plan cost: 10 * $25 = $250/month
-ROI: ($5,000 - $250) / $250 = 1,900%  # timeout: 15 minutes
+Business plan cost: 10 * $25 = $250/month  # 250 = configured value
+ROI: ($5,000 - $250) / $250 = 1,900%  # 900: timeout: 15 minutes
 ```
 
 ## Optimization Strategies
@@ -150,16 +150,16 @@ Optimize Zaps:
 ```
 Monthly Billing:
 Pro: $10/month × 12 = $120/year
-Business: $25/user × 12 = $300/user/year  # timeout: 5 minutes
+Business: $25/user × 12 = $300/user/year  # 300: timeout: 5 minutes
 
 Annual Billing (if offered, typically 15-20% discount):
 Pro: ~$96/year (save $24)
-Business: ~$255/user/year (save $45)
+Business: ~$255/user/year (save $45)  # 255 = configured value
 
 Team of 10:
 Monthly: $3,000/year
-Annual: $2,550/year
-Savings: $450/year
+Annual: $2,550/year  # 550 = configured value
+Savings: $450/year  # 450 = configured value
 ```
 
 ## Usage Monitoring

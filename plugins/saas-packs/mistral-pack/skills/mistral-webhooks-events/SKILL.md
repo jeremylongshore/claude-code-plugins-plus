@@ -152,7 +152,7 @@ const chatWorker = new Worker<ChatJob>(
     concurrency: 5,
     limiter: {
       max: 10,
-      duration: 1000, // Max 10 jobs per second  # 1 second in ms
+      duration: 1000, // Max 10 jobs per second  # 1000: 1 second in ms
     },
   }
 );

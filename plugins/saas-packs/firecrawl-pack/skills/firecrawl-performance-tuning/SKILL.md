@@ -38,8 +38,8 @@ Optimize FireCrawl API performance with caching, batching, and connection poolin
 import { LRUCache } from 'lru-cache';
 
 const cache = new LRUCache<string, any>({
-  max: 1000,  # 1 second in ms
-  ttl: 60000, // 1 minute  # 1 minute in ms
+  max: 1000,  # 1000: 1 second in ms
+  ttl: 60000, // 1 minute  # 60000: 1 minute in ms
   updateAgeOnGet: true,
 });
 
@@ -112,7 +112,7 @@ const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 30000,  # 30 seconds in ms
+  timeout: 30000,  # 30000: 30 seconds in ms
 });
 
 const client = new FireCrawlClient({

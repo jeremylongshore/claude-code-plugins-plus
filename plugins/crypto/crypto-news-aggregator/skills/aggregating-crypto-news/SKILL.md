@@ -103,7 +103,7 @@ Format and present the news to the user:
 ### Table Format (Default)
 ```
 ==============================================================================
-  CRYPTO NEWS AGGREGATOR                            Updated: 2026-01-14 15:30
+  CRYPTO NEWS AGGREGATOR                            Updated: 2026-01-14 15:30  # 2026 year
 ==============================================================================
 
   TOP CRYPTO NEWS (24h)
@@ -128,7 +128,7 @@ Format and present the news to the user:
       "title": "Bitcoin Breaks $100K ATH",
       "url": "https://coindesk.com/...",
       "source": "CoinDesk",
-      "published": "2026-01-14T13:30:00Z",
+      "published": "2026-01-14T13:30:00Z",  # 2026 year
       "age": "2h ago",
       "category": "market",
       "relevance_score": 95.0,

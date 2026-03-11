@@ -41,14 +41,14 @@ const response = await gamma.presentations.list();
 const headers = response.headers;
 console.log('Limit:', headers['x-ratelimit-limit']);
 console.log('Remaining:', headers['x-ratelimit-remaining']);
-console.log('Reset:', new Date(headers['x-ratelimit-reset'] * 1000));  # 1 second in ms
+console.log('Reset:', new Date(headers['x-ratelimit-reset'] * 1000));  # 1000: 1 second in ms
 ```
 
 ### Step 2: Implement Exponential Backoff
 ```typescript
 async function withBackoff<T>(
   fn: () => Promise<T>,
-  options = { maxRetries: 5, baseDelay: 1000 }  # 1 second in ms
+  options = { maxRetries: 5, baseDelay: 1000 }  # 1000: 1 second in ms
 ): Promise<T> {
   for (let attempt = 0; attempt < options.maxRetries; attempt++) {
     try {
@@ -85,7 +85,7 @@ class RateLimitedQueue {
 
   constructor(requestsPerMinute = 60) {
     this.requestsPerMinute = requestsPerMinute;
-    this.interval = 60000 / requestsPerMinute;  # 1 minute in ms
+    this.interval = 60000 / requestsPerMinute;  # 60000: 1 minute in ms
   }
 
   async add<T>(fn: () => Promise<T>): Promise<T> {
@@ -134,7 +134,7 @@ async function getRateLimitStatus() {
     limit: status.limit,
     remaining: status.remaining,
     percentUsed: ((status.limit - status.remaining) / status.limit * 100).toFixed(1),
-    resetAt: new Date(status.reset * 1000),  # 1 second in ms
+    resetAt: new Date(status.reset * 1000),  # 1000: 1 second in ms
     resetIn: Math.ceil((status.reset * 1000 - Date.now()) / 1000),  # 1 second in ms
   };
 }

@@ -131,7 +131,7 @@ import Mistral from '@mistralai/mistralai';
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
   // Optional: custom timeout
-  timeout: 30000,  # 30 seconds in ms
+  timeout: 30000,  # 30000: 30 seconds in ms
 });
 
 export default client;

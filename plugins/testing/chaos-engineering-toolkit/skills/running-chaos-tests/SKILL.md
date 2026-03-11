@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute controlled chaos engineering experiments to test system resilience, fault tolerance, and recovery capabilities. Injects failures including network latency, service crashes, resource exhaustion, and dependency outages to verify that systems degrade gracefully and recover automatically. Supports Chaos Monkey principles, Litmus Chaos (Kubernetes), Pumba (Docker), toxiproxy (network failures), and custom fault injection scripts.
+Execute controlled chaos engineering experiments to test system resilience, fault tolerance, and recovery capabilities. Injects failures including network latency, service crashes, resource exhaustion, and dependency outages to verify that systems degrade gracefully and recover automatically.
 
 ## Prerequisites
 
@@ -82,7 +82,7 @@ Execute controlled chaos engineering experiments to test system resilience, faul
 ```bash
 set -euo pipefail
 # Create a proxy for the database connection
-toxiproxy-cli create postgres_proxy -l 0.0.0.0:15432 -u postgres-host:5432  # PostgreSQL port
+toxiproxy-cli create postgres_proxy -l 0.0.0.0:15432 -u postgres-host:5432  # 15432: PostgreSQL port
 
 # Inject 500ms latency
 toxiproxy-cli toxic add postgres_proxy -t latency -a latency=500 -a jitter=100  # HTTP 500 Internal Server Error

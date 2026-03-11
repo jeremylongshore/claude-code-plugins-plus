@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Design data models for NoSQL databases including MongoDB (document), DynamoDB (key-value/wide-column), Redis (key-value), and Cassandra (wide-column). Unlike relational modeling where normalization drives design, NoSQL modeling starts from access patterns and query requirements, then shapes the data to serve those patterns efficiently. This skill covers embedding vs. referencing decisions, partition key design, denormalization strategies, and schema evolution.
+Design data models for NoSQL databases including MongoDB (document), DynamoDB (key-value/wide-column), Redis (key-value), and Cassandra (wide-column). Unlike relational modeling where normalization drives design, NoSQL modeling starts from access patterns and query requirements, then shapes the data to serve those patterns efficiently.
 
 ## Prerequisites
 

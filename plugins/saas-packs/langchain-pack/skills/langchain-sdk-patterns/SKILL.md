@@ -57,7 +57,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.runnables import RunnableWithFallbacks
 
 primary = ChatOpenAI(model="gpt-4o")
-fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")  # 20241022 = date/version stamp
 
 # Automatically falls back on failure
 robust_llm = primary.with_fallbacks([fallback])

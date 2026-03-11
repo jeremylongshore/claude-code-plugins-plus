@@ -76,7 +76,7 @@ brew install k6  # macOS
 k6 run --env RETELLAI_API_KEY=${RETELLAI_API_KEY} retellai-load-test.js
 
 # Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 retellai-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 retellai-load-test.js  # 8086 = configured value
 ```
 
 ## Scaling Patterns
@@ -126,7 +126,7 @@ const retellaiPool = Pool.create({
   },
   max: 20,
   min: 5,
-  idleTimeoutMillis: 30000,  # 30 seconds in ms
+  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
 });
 
 async function withRetell AIClient<T>(

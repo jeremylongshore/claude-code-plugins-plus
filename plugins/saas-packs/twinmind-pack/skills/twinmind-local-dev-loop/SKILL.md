@@ -109,7 +109,7 @@ export class TwinMindClient {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      timeout: 30000,  # 30 seconds in ms
+      timeout: 30000,  # 30000: 30 seconds in ms
     });
   }
 
@@ -232,7 +232,7 @@ export const mockTranscript = {
       ],
     },
   ],
-  created_at: '2025-01-15T10:00:00Z',
+  created_at: '2025-01-15T10:00:00Z',  # 2025 year
 };
 
 export const mockSummary = {

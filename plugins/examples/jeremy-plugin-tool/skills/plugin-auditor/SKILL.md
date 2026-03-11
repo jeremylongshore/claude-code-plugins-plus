@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Audits Claude Code plugins for security vulnerabilities, best practices compliance, CLAUDE.md standards adherence, and marketplace readiness. Produces a scored audit report covering eight categories: security, best practices, CLAUDE.md compliance, marketplace compliance, git hygiene, MCP-specific checks, performance, and UX. Targets plugin authors preparing submissions and maintainers reviewing plugin quality.
+Audits Claude Code plugins for security vulnerabilities, best practices compliance, CLAUDE.md standards adherence, and marketplace readiness. Produces a scored audit report covering eight categories: security, best practices, CLAUDE.md compliance, marketplace compliance, git hygiene, MCP-specific checks, performance, and UX.
 
 ## Prerequisites
 

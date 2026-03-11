@@ -163,8 +163,8 @@ export const langfuseQueue = new Queue("langfuse-events", { connection });
 // Webhook handler adds to queue
 export async function queueWebhookEvent(event: LangfuseWebhookPayload) {
   await langfuseQueue.add(event.event, event, {
-    removeOnComplete: 1000,  # 1 second in ms
-    removeOnFail: 5000,  # 5 seconds in ms
+    removeOnComplete: 1000,  # 1000: 1 second in ms
+    removeOnFail: 5000,  # 5000: 5 seconds in ms
     attempts: 3,
     backoff: {
       type: "exponential",
@@ -212,7 +212,7 @@ class LangfuseEventStream {
   private lastChecked: Date;
   private pollInterval: number;
 
-  constructor(pollIntervalMs: number = 5000) {  # 5 seconds in ms
+  constructor(pollIntervalMs: number = 5000) {  # 5000: 5 seconds in ms
     this.langfuse = new Langfuse();
     this.lastChecked = new Date();
     this.pollInterval = pollIntervalMs;
@@ -248,7 +248,7 @@ class LangfuseEventStream {
 }
 
 // Usage
-const stream = new LangfuseEventStream(10000); // 10 second poll  # 10 seconds in ms
+const stream = new LangfuseEventStream(10000); // 10 second poll  # 10000: 10 seconds in ms
 stream.start({
   onTrace: (trace) => {
     if (trace.level === "ERROR") {
@@ -366,7 +366,7 @@ async function handleWebhook(event: LangfuseWebhookPayload) {
   // Process event...
 
   // Clean up old events periodically
-  if (processedEvents.size > 10000) {  # 10 seconds in ms
+  if (processedEvents.size > 10000) {  # 10000: 10 seconds in ms
     processedEvents.clear();
   }
 }

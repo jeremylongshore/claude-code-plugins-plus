@@ -120,7 +120,7 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient()
 try:
     logs = w.clusters.get_cluster_driver_logs(cluster_id="$CLUSTER_ID")
-    print(logs.log_content[:50000] if logs.log_content else "No logs available")
+    print(logs.log_content[:50000] if logs.log_content else "No logs available")  # 50000ms = 50 seconds
 except Exception as e:
     print(f"Error fetching logs: {e}")
 EOF
@@ -228,10 +228,10 @@ echo "  - config-redacted.txt: CLI configuration (secrets removed)"
 ./databricks-debug-bundle.sh
 
 # With cluster diagnostics
-./databricks-debug-bundle.sh cluster-12345-abcde
+./databricks-debug-bundle.sh cluster-12345-abcde  # port 12345 - example/test
 
 # With job run diagnostics
-./databricks-debug-bundle.sh cluster-12345-abcde 67890
+./databricks-debug-bundle.sh cluster-12345-abcde 67890  # 67890 = configured value
 
 # Full diagnostics with Delta table
 ./databricks-debug-bundle.sh cluster-12345 67890 catalog.schema.table

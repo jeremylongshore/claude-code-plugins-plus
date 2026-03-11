@@ -35,7 +35,7 @@ export function getGammaClient(): GammaClient {
   if (!client) {
     client = new GammaClient({
       apiKey: process.env.GAMMA_API_KEY,
-      timeout: 30000,  # 30 seconds in ms
+      timeout: 30000,  # 30000: 30 seconds in ms
       retries: 3,
     });
   }

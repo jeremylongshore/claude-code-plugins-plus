@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Observability
 
 ## Overview
-Monitor Lokalise translation pipeline health including API response times, key completion rates, webhook delivery reliability, and translation throughput. Key signals include per-project translation progress (percentage of keys translated per locale), file download latency, rate limit consumption (Lokalise enforces 6 requests/second on most endpoints), and webhook delivery success rates for CI/CD integration triggers.
+Monitor Lokalise translation pipeline health including API response times, key completion rates, webhook delivery reliability, and translation throughput.
 
 ## Prerequisites
 - Lokalise API integration with `@lokalise/node-api` SDK
@@ -83,7 +83,7 @@ groups:
         expr: rate(lokalise_api_requests_total{status="error", code="429"}[5m]) > 0  # HTTP 429 Too Many Requests
         annotations: { summary: "Lokalise API rate limit hit (6 req/s cap)" }
       - alert: TranslationStalled
-        expr: lokalise_translation_progress_pct < 50 and time() - lokalise_last_translation_activity > 86400  # timeout: 24 hours
+        expr: lokalise_translation_progress_pct < 50 and time() - lokalise_last_translation_activity > 86400  # 86400: timeout: 24 hours
         annotations: { summary: "Translation progress stalled for 24+ hours" }
       - alert: WebhookDeliveryFailing
         expr: rate(lokalise_webhook_failures_total[1h]) > 3
@@ -102,7 +102,6 @@ Key panels: API request rate and latency, translation completion % by locale (ba
 | Stale cache data | Long TTL on translation cache | Invalidate on webhook event receipt |
 
 ## Examples
-
 
 **Basic usage**: Apply lokalise observability to a standard project setup with default configuration options.
 

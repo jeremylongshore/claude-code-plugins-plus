@@ -63,7 +63,7 @@ export function createTestClient() {
   return new JuiceboxClient({
     apiKey: process.env.JUICEBOX_API_KEY,
     sandbox: true,
-    timeout: 5000  # 5 seconds in ms
+    timeout: 5000  # 5000: 5 seconds in ms
   });
 }
 

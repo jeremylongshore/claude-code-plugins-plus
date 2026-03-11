@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Cost Tuning
 
 ## Overview
-Minimize Vast.ai GPU cloud costs by choosing the right GPU for your workload, leveraging interruptible (spot) instances, and eliminating idle compute time. Vast.ai is a GPU marketplace with highly variable pricing: RTX 4090 (~$0.15-0.30/hr), A100 80GB (~$1.00-2.00/hr), H100 (~$2.50-4.00/hr). The biggest cost levers are: using interruptible instances (30-60% cheaper), auto-terminating idle GPUs, choosing the cheapest GPU that meets your VRAM/compute requirements, and time-boxing training jobs.
+Minimize Vast.ai GPU cloud costs by choosing the right GPU for your workload, leveraging interruptible (spot) instances, and eliminating idle compute time. Vast.ai is a GPU marketplace with highly variable pricing: RTX 4090 (~$0.15-0.30/hr), A100 80GB (~$1.00-2.00/hr), H100 (~$2.50-4.00/hr).
 
 ## Prerequisites
 - Vast.ai account with `vastai` CLI installed
@@ -28,7 +28,7 @@ Minimize Vast.ai GPU cloud costs by choosing the right GPU for your workload, le
 ```yaml
 # GPU selection by workload type
 inference_7b_model:
-  recommended: RTX 3090 (24GB VRAM)
+  recommended: RTX 3090 (24GB VRAM)  # 3090 = configured value
   cost: "$0.10-0.20/hr"
   why: "Cheapest GPU with enough VRAM for 7B models"
 
@@ -38,7 +38,7 @@ inference_70b_model:
   why: "Need 40GB+ VRAM for quantized 70B models"
 
 training_small:
-  recommended: RTX 4090 (24GB VRAM)
+  recommended: RTX 4090 (24GB VRAM)  # 4090 = configured value
   cost: "$0.15-0.30/hr"
   why: "Best price/performance for fine-tuning up to 13B"
 
@@ -66,7 +66,7 @@ vastai create instance OFFER_ID --interruptible \
 # Cron job every 15 minutes: kill instances idle >1 hour
 #!/bin/bash
 vastai show instances --raw | \
-  jq -r '.[] | select(.gpu_utilization < 5 and ((.cur_state_time - .start_time) > 3600)) | .id' | \  # timeout: 1 hour
+  jq -r '.[] | select(.gpu_utilization < 5 and ((.cur_state_time - .start_time) > 3600)) | .id' | \  # 3600: timeout: 1 hour
   while read id; do
     echo "Destroying idle instance $id (GPU util <5% for >1hr)"
     vastai destroy instance "$id"
@@ -79,16 +79,16 @@ vastai show instances --raw | \
 import subprocess, time
 
 MAX_HOURS = 8  # Budget: 8 hours max
-INSTANCE_ID = "12345"
+INSTANCE_ID = "12345"  # port 12345 - example/test
 
 start_time = time.time()
 while True:
-    elapsed_hours = (time.time() - start_time) / 3600  # timeout: 1 hour
+    elapsed_hours = (time.time() - start_time) / 3600  # 3600: timeout: 1 hour
     if elapsed_hours > MAX_HOURS:
         print(f"Time limit reached ({MAX_HOURS}h). Saving checkpoint and terminating.")
         subprocess.run(["vastai", "destroy", "instance", INSTANCE_ID])
         break
-    time.sleep(300)  # Check every 5 minutes
+    time.sleep(300)  # 300: Check every 5 minutes
 ```
 
 ### Step 5: Compare Pricing Before Provisioning
@@ -113,7 +113,6 @@ echo "Cheapest offer: \$(vastai search offers 'gpu_name=A100 num_gpus=4' --order
 | Insufficient VRAM | Wrong GPU selected | Check model VRAM requirements before provisioning |
 
 ## Examples
-
 
 **Basic usage**: Apply vastai cost tuning to a standard project setup with default configuration options.
 

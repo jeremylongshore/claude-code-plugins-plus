@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute automated mobile application testing on iOS simulators and Android emulators covering UI interactions, navigation flows, gesture handling, and platform-specific behaviors. Supports Appium, Detox (React Native), XCUITest (iOS native), Espresso (Android native), and Maestro for cross-platform mobile testing. Handles device provisioning, app installation, and test execution across multiple OS versions and screen sizes.
+Execute automated mobile application testing on iOS simulators and Android emulators covering UI interactions, navigation flows, gesture handling, and platform-specific behaviors. Supports Appium, Detox (React Native), XCUITest (iOS native), Espresso (Android native), and Maestro for cross-platform mobile testing.
 
 ## Prerequisites
 

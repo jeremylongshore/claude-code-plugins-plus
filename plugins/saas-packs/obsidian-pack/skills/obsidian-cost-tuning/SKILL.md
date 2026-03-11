@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Obsidian Cost Tuning
 
 ## Overview
-Optimize costs related to Obsidian usage, including Sync subscription ($4/mo personal, $8/mo for 10GB), Publish hosting ($8/mo per site), and third-party plugin API costs. The main cost drivers are: Obsidian Sync storage (1-10GB depending on tier), Publish bandwidth, and external API calls from community plugins (AI assistants, translation services, image hosting). Vault size management is the single biggest lever.
+Optimize costs related to Obsidian usage, including Sync subscription ($4/mo personal, $8/mo for 10GB), Publish hosting ($8/mo per site), and third-party plugin API costs. The main cost drivers are: Obsidian Sync storage (1-10GB depending on tier), Publish bandwidth, and external API calls from community plugins (AI assistants, translation services, image hosting).
 
 ## Prerequisites
 - Understanding of your Obsidian subscription tier (free, Catalyst, Sync, Publish)
@@ -59,7 +59,7 @@ node_modules/**
 class PluginCostOptimizer {
   // Cache AI responses to avoid re-querying for identical prompts
   private responseCache = new Map<string, { result: string; timestamp: number }>();
-  private cacheTTL = 24 * 60 * 60 * 1000; // 24 hours  # 1 second in ms
+  private cacheTTL = 24 * 60 * 60 * 1000; // 24 hours  # 1000: 1 second in ms
 
   async getCachedOrFetch(prompt: string, apiFn: () => Promise<string>): Promise<string> {
     const cached = this.responseCache.get(prompt);
@@ -76,7 +76,7 @@ class PluginCostOptimizer {
 # Sync tier decision matrix
 personal_4_per_month:
   storage: 1GB
-  best_for: Text-only vaults, <5000 notes  # 5 seconds in ms
+  best_for: Text-only vaults, <5000 notes  # 5000: 5 seconds in ms
   tip: Exclude images from sync, use relative links to local folders
 
 standard_8_per_month:
@@ -105,7 +105,6 @@ If using Obsidian Publish ($8/mo per site), minimize what you publish:
 | Publish site slow | Large uncompressed images | Compress images, lazy-load media |
 
 ## Examples
-
 
 **Basic usage**: Apply obsidian cost tuning to a standard project setup with default configuration options.
 

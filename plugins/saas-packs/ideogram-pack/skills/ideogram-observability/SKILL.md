@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Observability
 
 ## Overview
-Monitor Ideogram AI image generation for latency, credit consumption, and output quality. Key metrics include generation time (typically 5-15 seconds per image depending on model and resolution), credit cost per generation (varies by model version and quality setting), generation success rate, and prompt safety filter rejection rate. Tracking credit velocity is critical since Ideogram uses a credit-based pricing model.
+Monitor Ideogram AI image generation for latency, credit consumption, and output quality. Key metrics include generation time (typically 5-15 seconds per image depending on model and resolution), credit cost per generation (varies by model version and quality setting), generation success rate, and prompt safety filter rejection rate.
 
 ## Prerequisites
 - Ideogram API account with active credits
@@ -66,7 +66,7 @@ groups:
   - name: ideogram
     rules:
       - alert: IdeogramGenerationSlow
-        expr: histogram_quantile(0.95, rate(ideogram_generation_duration_ms_bucket[30m])) > 20000
+        expr: histogram_quantile(0.95, rate(ideogram_generation_duration_ms_bucket[30m])) > 20000  # 20000 = configured value
         annotations: { summary: "Ideogram P95 generation time exceeds 20 seconds" }
       - alert: IdeogramCreditBurnHigh
         expr: rate(ideogram_credits_used[1h]) > 100
@@ -91,7 +91,6 @@ Track: generation volume by model version, latency distribution, credit consumpt
 | `429` rate limited | Too many concurrent generations | Queue requests with concurrency limit |
 
 ## Examples
-
 
 **Basic usage**: Apply ideogram observability to a standard project setup with default configuration options.
 

@@ -75,7 +75,7 @@ BEGIN
     SELECT COUNT(*) INTO user_exists FROM users WHERE id = p_user_id;
 
     IF user_exists = 0 THEN
-        SIGNAL SQLSTATE '45000'
+        SIGNAL SQLSTATE '45000'  # 45000 = configured value
             SET MESSAGE_TEXT = 'User not found';
     END IF;
 
@@ -168,7 +168,7 @@ BEGIN
     WHERE id = p_from_account AND balance >= p_amount;
 
     IF ROW_COUNT() = 0 THEN
-        SIGNAL SQLSTATE '45000'
+        SIGNAL SQLSTATE '45000'  # 45000 = configured value
             SET MESSAGE_TEXT = 'Insufficient funds';
     END IF;
 

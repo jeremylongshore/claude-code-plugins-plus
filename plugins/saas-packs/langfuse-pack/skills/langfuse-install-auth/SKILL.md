@@ -129,7 +129,7 @@ const langfuse = new Langfuse({
   baseUrl: process.env.LANGFUSE_HOST,
   // Optional configuration
   flushAt: 15,        // Flush after 15 events (default: 15)
-  flushInterval: 10000, // Flush every 10 seconds (default: 10000ms)  # 10 seconds in ms
+  flushInterval: 10000, // Flush every 10 seconds (default: 10000ms)  # 10000: 10 seconds in ms
   requestTimeout: 10000, // Request timeout (default: 10000ms)  # 10 seconds in ms
   enabled: process.env.NODE_ENV === "production", // Disable in dev
 });

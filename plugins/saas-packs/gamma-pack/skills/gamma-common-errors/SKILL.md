@@ -64,7 +64,7 @@ async function withRetry(fn: () => Promise<any>, maxRetries = 3) {
       return await fn();
     } catch (err) {
       if (err.code === 'rate_limited' && i < maxRetries - 1) {
-        const delay = (err.retryAfter || Math.pow(2, i)) * 1000;  # 1 second in ms
+        const delay = (err.retryAfter || Math.pow(2, i)) * 1000;  # 1000: 1 second in ms
         await new Promise(r => setTimeout(r, delay));
         continue;
       }
@@ -110,7 +110,7 @@ async function withRetry(fn: () => Promise<any>, maxRetries = 3) {
 ```typescript
 const gamma = new GammaClient({
   apiKey: process.env.GAMMA_API_KEY,
-  timeout: 60000, // 60 seconds  # 1 minute in ms
+  timeout: 60000, // 60 seconds  # 60000: 1 minute in ms
 });
 ```
 

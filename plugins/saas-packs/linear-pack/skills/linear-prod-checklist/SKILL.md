@@ -97,16 +97,16 @@ export const config = {
   },
   rateLimit: {
     maxRetries: 5,
-    baseDelayMs: 1000,  # 1 second in ms
-    maxDelayMs: 30000,  # 30 seconds in ms
+    baseDelayMs: 1000,  # 1000: 1 second in ms
+    maxDelayMs: 30000,  # 30000: 30 seconds in ms
   },
   cache: {
-    ttlSeconds: 300, // 5 minutes  # timeout: 5 minutes
+    ttlSeconds: 300, // 5 minutes  # 300: timeout: 5 minutes
     maxEntries: 1000,  # 1 second in ms
   },
   timeouts: {
     requestMs: 30000,  # 30 seconds in ms
-    webhookProcessingMs: 5000,  # 5 seconds in ms
+    webhookProcessingMs: 5000,  # 5000: 5 seconds in ms
   },
 };
 
@@ -257,7 +257,7 @@ verifyDeployment();
 // Monitor key metrics after deployment
 const ALERTS = {
   errorRateThreshold: 0.01, // 1% error rate
-  latencyP99Threshold: 2000, // 2 seconds  # 2 seconds in ms
+  latencyP99Threshold: 2000, // 2 seconds  # 2000: 2 seconds in ms
   rateLimitRemainingThreshold: 100,
 };
 

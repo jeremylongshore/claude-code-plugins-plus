@@ -73,7 +73,7 @@ set_llm_cache(SQLiteCache(database_path=".langchain_cache.db"))
 
 # Option 3: Redis cache (distributed, production)
 import redis
-redis_client = redis.Redis.from_url("redis://localhost:6379")  # Redis port
+redis_client = redis.Redis.from_url("redis://localhost:6379")  # 6379: Redis port
 set_llm_cache(RedisCache(redis_client))
 
 # Cache hit = ~0ms latency vs ~500-2000ms for API call

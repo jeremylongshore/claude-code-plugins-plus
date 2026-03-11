@@ -48,11 +48,11 @@ config/
 ```typescript
 // config/langfuse/base.ts
 export const baseConfig = {
-  timeout: 30000,  # 30 seconds in ms
+  timeout: 30000,  # 30000: 30 seconds in ms
   maxRetries: 3,
   cache: {
     enabled: true,
-    ttlSeconds: 300,  # timeout: 5 minutes
+    ttlSeconds: 300,  # 300: timeout: 5 minutes
   },
 };
 ```
@@ -85,9 +85,9 @@ export const productionConfig = {
   ...baseConfig,
   apiKey: process.env.LANGFUSE_SECRET_KEY_PROD,
   debug: false,
-  timeout: 60000,  # 1 minute in ms
+  timeout: 60000,  # 60000: 1 minute in ms
   maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },  # timeout: 10 minutes
+  cache: { enabled: true, ttlSeconds: 600 },  # 600: timeout: 10 minutes
 };
 ```
 

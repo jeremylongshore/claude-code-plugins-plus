@@ -127,7 +127,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format csv
 
 ```
 ==============================================================================
-  STAKING REWARDS OPTIMIZER                              2025-01-15 15:30 UTC
+  STAKING REWARDS OPTIMIZER                              2025-01-15 15:30 UTC  # 2025 year
 ==============================================================================
 
   STAKING OPTIONS FOR ETH
@@ -154,8 +154,8 @@ python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format csv
   CURRENT PORTFOLIO
 ------------------------------------------------------------------------------
   Position              APY      Annual Return
-  10 ETH @ Lido         3.60%    $720
-  100 ATOM @ Native     18.00%   $3,600  # timeout: 10 minutes
+  10 ETH @ Lido         3.60%    $720  # 720 = configured value
+  100 ATOM @ Native     18.00%   $3,600  # 600: timeout: 10 minutes
   50 DOT @ Native       14.00%   $1,400  # HTTP 400 Bad Request
 ------------------------------------------------------------------------------
   Total Portfolio: $25,000      Blended APY: 22.88%    Annual: $5,720
@@ -163,7 +163,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format csv
   OPTIMIZED ALLOCATION
 ------------------------------------------------------------------------------
   Recommendation        APY      Annual Return   Change
-  10 ETH → Frax         4.59%    $918           +$198
+  10 ETH → Frax         4.59%    $918           +$198  # 918 = configured value
   100 ATOM → Keep       18.00%   $3,600         $0  # timeout: 10 minutes
   50 DOT → Keep         14.00%   $1,400         $0  # HTTP 400 Bad Request
 ------------------------------------------------------------------------------

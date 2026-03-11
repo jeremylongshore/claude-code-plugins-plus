@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Replit Enterprise RBAC
 
 ## Overview
-Manage team access to Replit workspaces, deployments, and AI coding features using its Teams and Organizations model. Replit uses per-seat licensing with workspace roles: Owner, Admin, and Member. Key controls include who can create and deploy Repls, access to Replit AI (Ghostwriter), and deployment environment permissions. Organizations on the Teams for Business or Enterprise plan get SSO, centralized billing, and deployment policies.
+Manage team access to Replit workspaces, deployments, and AI coding features using its Teams and Organizations model. Replit uses per-seat licensing with workspace roles: Owner, Admin, and Member.
 
 ## Prerequisites
 - Replit Teams for Business or Enterprise plan (per-seat pricing)
@@ -84,7 +84,6 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
 | AI features disabled | Ghostwriter not enabled for team | Enable AI features in Team Settings |
 
 ## Examples
-
 
 **Basic usage**: Apply replit enterprise rbac to a standard project setup with default configuration options.
 

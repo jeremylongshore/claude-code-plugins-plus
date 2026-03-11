@@ -123,7 +123,7 @@ import { LRUCache } from 'lru-cache';
 
 const callCache = new LRUCache<string, any>({
   max: 500,  # HTTP 500 Internal Server Error
-  ttl: 1000 * 60 * 15, // 15 min - completed calls don't change  # 1 second in ms
+  ttl: 1000 * 60 * 15, // 15 min - completed calls don't change  # 1000: 1 second in ms
 });
 
 async function getCallDetails(callId: string) {
@@ -161,7 +161,7 @@ async function getCallMetrics(callIds: string[]) {
 ```typescript
 retell.on('call_analyzed', (event) => {
   const latency = event.call_analysis?.latency_p95;
-  if (latency && latency > 1500) {
+  if (latency && latency > 1500) {  # 1500 = configured value
     console.warn(`High latency call ${event.call_id}: ${latency}ms p95`);
   }
 });

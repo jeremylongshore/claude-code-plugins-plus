@@ -95,7 +95,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
       if (error.status === 429 && i < maxRetries - 1) {  # HTTP 429 Too Many Requests
         const retryAfter = parseInt(error.headers?.['retry-after'] || '60');
         console.log(`Rate limited. Waiting ${retryAfter}s...`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1 second in ms
+        await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1000: 1 second in ms
       } else {
         throw error;
       }
@@ -151,7 +151,7 @@ function validateRequest(model: string, messages: any[]) {
 **Error Message:**
 ```
 Error: Request too large. Maximum context length exceeded.
-Status: 413
+Status: 413  # 413 = configured value
 ```
 
 **Cause:** Too many tokens in the request.
@@ -159,7 +159,7 @@ Status: 413
 **Solution:**
 ```typescript
 // Truncate conversation history
-function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {  # 30 seconds in ms
+function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {  # 30000: 30 seconds in ms
   // Keep system message
   const systemMsg = messages.find(m => m.role === 'system');
   const otherMsgs = messages.filter(m => m.role !== 'system');
@@ -186,7 +186,7 @@ function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {  
 **Error Message:**
 ```
 Error: Internal server error
-Status: 500/503  # HTTP 500 Internal Server Error
+Status: 500/503  # 503: HTTP 500 Internal Server Error
 ```
 
 **Cause:** Mistral AI service experiencing issues.
@@ -205,7 +205,7 @@ class CircuitBreaker {
   private failures = 0;
   private lastFailure?: Date;
   private readonly threshold = 5;
-  private readonly resetTimeout = 60000; // 1 minute  # 1 minute in ms
+  private readonly resetTimeout = 60000; // 1 minute  # 60000: 1 minute in ms
 
   async call<T>(fn: () => Promise<T>): Promise<T> {
     if (this.isOpen()) {
@@ -248,13 +248,13 @@ Error: Request timeout after 30000ms
 // Increase timeout
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
-  timeout: 60000, // 60 seconds  # 1 minute in ms
+  timeout: 60000, // 60 seconds  # 60000: 1 minute in ms
 });
 
 // For streaming, use longer timeout
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
-  timeout: 120000, // 2 minutes for long responses
+  timeout: 120000, // 2 minutes for long responses  # 120000 = configured value
 });
 ```
 

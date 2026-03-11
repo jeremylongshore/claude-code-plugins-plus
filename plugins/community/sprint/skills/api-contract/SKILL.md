@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-API Contract guides the creation of `api-contract.md` files that serve as the shared interface between backend and frontend agents during sprint execution. The contract defines request/response schemas, endpoint routes, TypeScript interfaces, and error formats so that implementation agents build to an agreed specification without direct coordination. Teams building full-stack features across multiple agents rely on this skill to prevent integration mismatches.
+API Contract guides the creation of `api-contract.md` files that serve as the shared interface between backend and frontend agents during sprint execution. The contract defines request/response schemas, endpoint routes, TypeScript interfaces, and error formats so that implementation agents build to an agreed specification without direct coordination.
 
 ## Prerequisites
 
@@ -67,7 +67,7 @@ Create a new user account.
   "id": "uuid",
   "email": "string",
   "name": "string | null",
-  "createdAt": "ISO 8601 datetime"
+  "createdAt": "ISO 8601 datetime"  # 8601 = configured value
 }
 
 **Errors:**

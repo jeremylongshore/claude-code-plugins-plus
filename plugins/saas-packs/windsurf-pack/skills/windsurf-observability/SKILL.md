@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Observability
 
 ## Overview
-Monitor Windsurf AI IDE adoption, feature usage, and productivity impact across your team. Key metrics include AI completion acceptance rate (how often developers accept Supercomplete suggestions), Cascade flow completion rate (agentic tasks that succeed vs fail), per-developer usage patterns, and seat utilization for license optimization. Unlike server-side APIs, Windsurf observability focuses on developer productivity signals from the IDE.
+Monitor Windsurf AI IDE adoption, feature usage, and productivity impact across your team. Key metrics include AI completion acceptance rate (how often developers accept Supercomplete suggestions), Cascade flow completion rate (agentic tasks that succeed vs fail), per-developer usage patterns, and seat utilization for license optimization.
 
 ## Prerequisites
 - Windsurf Pro or Enterprise plan
@@ -97,7 +97,6 @@ Track: daily active users vs total seats, acceptance rate trend (higher is bette
 | Analytics data missing | Enterprise API not enabled | Contact Windsurf support to enable admin API |
 
 ## Examples
-
 
 **Basic usage**: Apply windsurf observability to a standard project setup with default configuration options.
 

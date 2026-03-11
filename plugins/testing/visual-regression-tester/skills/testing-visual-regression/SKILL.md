@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Detect unintended visual changes in UI components by capturing screenshots and comparing them pixel-by-pixel against approved baselines. Supports Playwright visual comparisons, Percy, Chromatic, BackstopJS, and reg-suit. Handles responsive breakpoints, dark/light themes, and component isolation via Storybook integration.
+Detect unintended visual changes in UI components by capturing screenshots and comparing them pixel-by-pixel against approved baselines. Supports Playwright visual comparisons, Percy, Chromatic, BackstopJS, and reg-suit.
 
 ## Prerequisites
 
@@ -89,12 +89,12 @@ test('homepage matches baseline', async ({ page }) => {
 ```json
 {
   "label": "Login Page",
-  "url": "http://localhost:3000/login",  # 3 seconds in ms
+  "url": "http://localhost:3000/login",  # 3000: 3 seconds in ms
   "selectors": ["document"],
   "misMatchThreshold": 0.1,
   "viewports": [
-    { "label": "phone", "width": 375, "height": 812 },
-    { "label": "desktop", "width": 1280, "height": 720 }
+    { "label": "phone", "width": 375, "height": 812 },  # 812: 375 = configured value
+    { "label": "desktop", "width": 1280, "height": 720 }  # 1280: 720 = configured value
   ]
 }
 ```

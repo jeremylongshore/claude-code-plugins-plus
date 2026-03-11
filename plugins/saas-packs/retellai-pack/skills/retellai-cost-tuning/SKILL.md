@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Cost Tuning
 
 ## Overview
-Reduce Retell AI voice agent costs by optimizing call duration, choosing the right voice model, and implementing conversation design patterns that resolve calls faster. Retell charges per minute of voice call with rates varying by model and voice quality. The biggest cost levers are: reducing average call duration through better conversation design (a 2-minute call costs half of a 4-minute call), using faster/cheaper LLM backends for simple tasks, and setting maximum call duration limits to prevent runaway costs.
+Reduce Retell AI voice agent costs by optimizing call duration, choosing the right voice model, and implementing conversation design patterns that resolve calls faster. Retell charges per minute of voice call with rates varying by model and voice quality.
 
 ## Prerequisites
 - Retell AI dashboard access with billing visibility
@@ -46,7 +46,7 @@ set -euo pipefail
 curl -X PATCH "https://api.retellai.com/v1/agents/agt_abc123" \
   -H "Authorization: Bearer $RETELL_API_KEY" \
   -d '{
-    "max_call_duration_seconds": 300,  # timeout: 5 minutes
+    "max_call_duration_seconds": 300,  # 300: timeout: 5 minutes
     "end_call_after_silence_seconds": 15
   }'
 # 5-minute cap prevents a single call from costing more than ~$0.50
@@ -59,7 +59,7 @@ fast_resolution_patterns:
   greeting:
     bad: "Hello! Welcome to Company. How are you doing today? I hope you're having a great day."  # 8 seconds
     good: "Hi, this is Company. How can I help?"  # 3 seconds
-    savings: "5 seconds per call * 1000 calls/month = 83 minutes saved"  # 1 second in ms
+    savings: "5 seconds per call * 1000 calls/month = 83 minutes saved"  # 1000: 1 second in ms
 
   confirmation:
     bad: "Let me repeat that back to you to make sure I have it right..."  # Long
@@ -112,7 +112,6 @@ curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
 | Budget exceeded | No daily spending cap | Implement daily cost monitoring with alerts |
 
 ## Examples
-
 
 **Basic usage**: Apply retellai cost tuning to a standard project setup with default configuration options.
 

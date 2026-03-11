@@ -32,7 +32,7 @@ import { PostHog } from 'posthog-node';
 const posthog = new PostHog(process.env.POSTHOG_API_KEY!, {
   host: 'https://us.i.posthog.com',
   flushAt: 20,         // Batch size before sending (default 20)
-  flushInterval: 5000, // Max wait time in ms (default 10000)  # 5 seconds in ms
+  flushInterval: 5000, // Max wait time in ms (default 10000)  # 5000: 10000: 5 seconds in ms
   requestTimeout: 10000,  # 10 seconds in ms
   maxRetries: 3,
   // Disable for tests
@@ -51,7 +51,7 @@ process.on('SIGTERM', async () => {
 // Fetch flag definitions once, evaluate locally (no network per-call)
 let flagDefinitions: any = null;
 let lastFetch = 0;
-const CACHE_TTL = 30000; // 30 seconds  # 30 seconds in ms
+const CACHE_TTL = 30000; // 30 seconds  # 30000: 30 seconds in ms
 
 async function getFeatureFlag(
   flagKey: string,

@@ -68,7 +68,7 @@ async def diagnose_providers():
 
     # Test Anthropic
     try:
-        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", timeout=10)
+        llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", timeout=10)  # 20241022 = date/version stamp
         await llm.ainvoke("test")
         results["anthropic"] = "OK"
     except Exception as e:
@@ -91,7 +91,7 @@ llm = ChatOpenAI(model="gpt-4o-mini")
 
 # With fallback
 primary = ChatOpenAI(model="gpt-4o-mini", max_retries=1, request_timeout=5)
-fallback = ChatAnthropic(model="claude-3-haiku-20240307")
+fallback = ChatAnthropic(model="claude-3-haiku-20240307")  # 20240307 = configured value
 
 llm = primary.with_fallbacks([fallback])
 ```

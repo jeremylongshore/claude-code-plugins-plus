@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Webhooks & Events
 
 ## Overview
-Handle CodeRabbit events triggered through GitHub and GitLab integrations. CodeRabbit posts AI-powered code review comments on pull requests. It integrates through GitHub webhooks and the Checks API, letting you respond to review events, summary comments, and approval status changes.
+Handle CodeRabbit events triggered through GitHub and GitLab integrations. CodeRabbit posts AI-powered code review comments on pull requests.
 
 ## Prerequisites
 - CodeRabbit installed on your GitHub or GitLab repository
@@ -45,7 +45,7 @@ const app = express();
 app.post("/webhooks/github",
   express.raw({ type: "application/json" }),
   async (req, res) => {
-    const signature = req.headers["x-hub-signature-256"] as string;
+    const signature = req.headers["x-hub-signature-256"] as string;  # 256 bytes
     const secret = process.env.GITHUB_WEBHOOK_SECRET!;
 
     const expected = "sha256=" + crypto

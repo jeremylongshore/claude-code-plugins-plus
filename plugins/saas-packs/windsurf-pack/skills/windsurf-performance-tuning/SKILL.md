@@ -40,7 +40,7 @@ Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade 
     "vendor/**",
     ".next/**"
   ],
-  "codeium.indexing.maxFileSize": 1048576,
+  "codeium.indexing.maxFileSize": 1048576,  # 1048576 = configured value
   "codeium.indexing.enableSemanticIndexing": true
 }
 ```
@@ -51,7 +51,7 @@ Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade 
 {
   "cascade.contextWindow": {
     "maxFiles": 10,
-    "maxTokensPerFile": 2000,  # 2 seconds in ms
+    "maxTokensPerFile": 2000,  # 2000: 2 seconds in ms
     "preferOpenFiles": true,
     "includeImports": true
   },
@@ -63,7 +63,7 @@ Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade 
   },
   "cascade.flows": {
     "preferStreaming": true,
-    "timeoutMs": 30000,  # 30 seconds in ms
+    "timeoutMs": 30000,  # 30000: 30 seconds in ms
     "retryCount": 2
   }
 }
@@ -150,8 +150,8 @@ When generating code:
 
 ## Conventions
 - Use zod for runtime validation
-- Error responses follow RFC 7807
-- All dates are ISO 8601 UTC
+- Error responses follow RFC 7807  # 7807 = configured value
+- All dates are ISO 8601 UTC  # 8601 = configured value
 ```
 
 ## Resources

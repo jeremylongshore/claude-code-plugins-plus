@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Validate load balancer behavior including traffic distribution algorithms, health check mechanisms, failover scenarios, session persistence, and SSL termination. Supports testing for NGINX, HAProxy, AWS ALB/NLB, GCP Load Balancers, and Kubernetes Ingress controllers. Uses HTTP request tools, traffic generators, and infrastructure manipulation to verify correct routing under normal and failure conditions.
+Validate load balancer behavior including traffic distribution algorithms, health check mechanisms, failover scenarios, session persistence, and SSL termination. Supports testing for NGINX, HAProxy, AWS ALB/NLB, GCP Load Balancers, and Kubernetes Ingress controllers.
 
 ## Prerequisites
 

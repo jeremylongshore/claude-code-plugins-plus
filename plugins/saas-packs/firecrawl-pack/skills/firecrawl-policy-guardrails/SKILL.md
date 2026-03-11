@@ -58,7 +58,7 @@ class CrawlBudget {
   private dailyLimit: number;
   private usage: Map<string, number> = new Map();
 
-  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }  # 5 seconds in ms
+  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }  # 5000: 5 seconds in ms
 
   authorize(estimatedPages: number): boolean {
     const today = new Date().toISOString().split('T')[0];
@@ -107,7 +107,7 @@ const DOMAIN_RATE_LIMITS: Record<string, number> = {
 
 function getCrawlDelay(domain: string): number {
   const rate = DOMAIN_RATE_LIMITS[domain] || DOMAIN_RATE_LIMITS['default'];
-  return 1000 / rate;  // milliseconds between requests  # 1 second in ms
+  return 1000 / rate;  // milliseconds between requests  # 1000: 1 second in ms
 }
 ```
 

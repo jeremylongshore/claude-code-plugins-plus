@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute mutation testing to evaluate the effectiveness of a test suite by systematically introducing small code changes (mutants) and checking whether existing tests detect them. A killed mutant means the tests caught the change; a surviving mutant reveals a testing gap. Supports Stryker (JavaScript/TypeScript), mutmut and cosmic-ray (Python), PITest (Java), and go-mutesting (Go).
+Execute mutation testing to evaluate the effectiveness of a test suite by systematically introducing small code changes (mutants) and checking whether existing tests detect them. A killed mutant means the tests caught the change; a surviving mutant reveals a testing gap.
 
 ## Prerequisites
 
@@ -83,7 +83,7 @@ export default {
   reporters: ['html', 'clear-text', 'progress'],
   thresholds: { high: 80, low: 60, break: 50 },
   concurrency: 4,
-  timeoutMS: 10000,  # 10 seconds in ms
+  timeoutMS: 10000,  # 10000: 10 seconds in ms
 };
 ```
 

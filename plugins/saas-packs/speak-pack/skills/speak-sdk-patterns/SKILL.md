@@ -118,7 +118,7 @@ def batch_assess(client: SpeakClient, recordings: list[dict], delay: float = 1.0
 import subprocess
 def convert_to_wav(input_path: str, output_path: str):
     subprocess.run([
-        "ffmpeg", "-i", input_path, "-ar", "16000",
+        "ffmpeg", "-i", input_path, "-ar", "16000",  # 16000 = configured value
         "-ac", "1", "-f", "wav", output_path
     ], check=True)
 ```

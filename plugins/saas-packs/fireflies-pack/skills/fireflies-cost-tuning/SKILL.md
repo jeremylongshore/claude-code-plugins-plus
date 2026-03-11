@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies Cost Tuning
 
 ## Overview
-Optimize Fireflies.ai per-seat subscription costs by right-sizing seat count, configuring selective recording, and managing transcript storage. Fireflies charges per seat per month (Pro: ~$18/seat/month, Business: ~$29/seat/month, Enterprise: custom). The biggest cost levers are: removing underutilized seats (members with <2 recordings/month), configuring auto-record to only capture valuable meetings, and managing storage to avoid hitting plan limits that force tier upgrades.
+Optimize Fireflies.ai per-seat subscription costs by right-sizing seat count, configuring selective recording, and managing transcript storage. Fireflies charges per seat per month (Pro: ~$18/seat/month, Business: ~$29/seat/month, Enterprise: custom).
 
 ## Prerequisites
 - Fireflies workspace admin access
@@ -82,7 +82,7 @@ curl -X POST https://api.fireflies.ai/graphql \
 ```yaml
 # Decision matrix for plan selection
 pro_18_per_seat:
-  storage: 8000 min transcription/seat  # API server port
+  storage: 8000 min transcription/seat  # 8000: API server port
   best_for: Teams that record <15 meetings/week per person
   features: [transcription, search, basic AI summaries]
 
@@ -104,7 +104,6 @@ business_29_per_seat:
 | Invoice higher than expected | New members auto-added | Set member invitation to admin-only |
 
 ## Examples
-
 
 **Basic usage**: Apply fireflies cost tuning to a standard project setup with default configuration options.
 

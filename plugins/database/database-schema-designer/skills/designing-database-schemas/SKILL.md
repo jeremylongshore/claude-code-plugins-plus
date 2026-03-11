@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Design normalized relational database schemas from business requirements, entity-relationship diagrams, or existing application code. This skill produces PostgreSQL or MySQL DDL with proper data types, constraints, indexes, and relationships following normalization principles (3NF by default) with strategic denormalization where performance requires it. Schemas include audit columns, soft delete support, and multi-tenancy patterns as needed.
+Design normalized relational database schemas from business requirements, entity-relationship diagrams, or existing application code. This skill produces PostgreSQL or MySQL DDL with proper data types, constraints, indexes, and relationships following normalization principles (3NF by default) with strategic denormalization where performance requires it.
 
 ## Prerequisites
 

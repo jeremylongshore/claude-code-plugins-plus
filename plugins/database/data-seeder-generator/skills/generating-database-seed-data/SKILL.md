@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate realistic database seed scripts that populate development and testing environments with representative data. This skill creates seed data that respects foreign key relationships, unique constraints, check constraints, and data type validations using Faker libraries (faker.js, Faker for Python, or raw SQL with random functions). Seed scripts are idempotent, configurable in volume, and produce data distributions that match production patterns.
+Generate realistic database seed scripts that populate development and testing environments with representative data. This skill creates seed data that respects foreign key relationships, unique constraints, check constraints, and data type validations using Faker libraries (faker.js, Faker for Python, or raw SQL with random functions).
 
 ## Prerequisites
 

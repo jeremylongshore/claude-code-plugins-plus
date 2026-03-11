@@ -180,7 +180,7 @@ Environment: Production
 Workspaces:
   Sales:
     hubspot:
-      portal_id: prod-12345
+      portal_id: prod-12345  # port 12345 - example/test
       sync: bidirectional
       auto_create: true
     slack:
@@ -201,7 +201,7 @@ Environment: Staging
 Workspaces:
   Test-Sales:
     hubspot:
-      portal_id: sandbox-67890
+      portal_id: sandbox-67890  # 67890 = configured value
       sync: unidirectional
       auto_create: false
 ```

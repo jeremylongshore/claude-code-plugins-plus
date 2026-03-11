@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Clay Enterprise RBAC
 
 ## Overview
-Control access to Clay data enrichment tables, credit pools, and integrations at the team level. Clay uses a workspace model where team members are assigned Admin, Member, or Viewer roles. Credits are shared at the workspace level, so RBAC is critical to prevent one team from burning through the enrichment budget that another team depends on.
+Control access to Clay data enrichment tables, credit pools, and integrations at the team level. Clay uses a workspace model where team members are assigned Admin, Member, or Viewer roles.
 
 ## Prerequisites
 - Clay Team or Enterprise plan (credit-based pricing)
@@ -97,7 +97,6 @@ curl "https://api.clay.com/v1/workspace/usage?group_by=user&period=last_30d" \
 | Member cannot see table | Table in another workspace | Share table or move to shared workspace |
 
 ## Examples
-
 
 **Basic usage**: Apply clay enterprise rbac to a standard project setup with default configuration options.
 

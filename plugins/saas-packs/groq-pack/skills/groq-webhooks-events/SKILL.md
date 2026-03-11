@@ -54,7 +54,7 @@ app.post("/api/chat/stream", async (req, res) => {
     model: model || "llama-3.3-70b-versatile",
     messages,
     stream: true,
-    max_tokens: 2048,  # 2 KB
+    max_tokens: 2048,  # 2048: 2 KB
   });
 
   for await (const chunk of stream) {

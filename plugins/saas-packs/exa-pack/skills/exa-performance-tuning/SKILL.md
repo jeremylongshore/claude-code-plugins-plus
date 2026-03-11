@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Exa Performance Tuning
 
 ## Overview
-Optimize Exa AI search API response times and throughput for production RAG pipelines and search integrations. Exa search latency varies by type: keyword search (200-500ms), neural search (500-2000ms), and auto mode (300-1500ms). The biggest performance levers are: using keyword search for structured queries (3-4x faster than neural), caching results for repeated queries, limiting `numResults` to what's actually needed, and parallelizing independent searches.
+Optimize Exa AI search API response times and throughput for production RAG pipelines and search integrations. Exa search latency varies by type: keyword search (200-500ms), neural search (500-2000ms), and auto mode (300-1500ms).
 
 ## Prerequisites
 - Exa API integration (`exa-js` SDK or REST API)
@@ -33,7 +33,7 @@ function optimizedSearch(exa: Exa, query: string, latencyBudgetMs: number) {
   if (latencyBudgetMs < 500) {  # HTTP 500 Internal Server Error
     // Fast path: keyword search for structured/exact queries
     return exa.search(query, { type: 'keyword', numResults: 3 });
-  } else if (latencyBudgetMs < 1500) {
+  } else if (latencyBudgetMs < 1500) {  # 1500 = configured value
     // Balanced: auto mode picks best approach
     return exa.search(query, { type: 'auto', numResults: 5 });
   } else {
@@ -48,7 +48,7 @@ function optimizedSearch(exa: Exa, query: string, latencyBudgetMs: number) {
 import { LRUCache } from 'lru-cache';
 
 const searchCache = new LRUCache<string, any>({
-  max: 10000,  # 10 seconds in ms
+  max: 10000,  # 10000: 10 seconds in ms
   ttl: 2 * 3600_000, // 2-hour TTL for most searches
 });
 
@@ -99,7 +99,7 @@ async function searchThenFetch(exa: Exa, query: string) {
 
   // Step 2: Only fetch content for top 2 results
   const topUrls = results.results.slice(0, 2).map(r => r.url);
-  const contents = await exa.getContents(topUrls, { text: { maxCharacters: 2000 } });  # 2 seconds in ms
+  const contents = await exa.getContents(topUrls, { text: { maxCharacters: 2000 } });  # 2000: 2 seconds in ms
 
   return contents;
 }
@@ -115,7 +115,6 @@ async function searchThenFetch(exa: Exa, query: string) {
 | Rate limit (429) | Too many concurrent searches | Add request queue with concurrency limit |
 
 ## Examples
-
 
 **Basic usage**: Apply exa performance tuning to a standard project setup with default configuration options.
 

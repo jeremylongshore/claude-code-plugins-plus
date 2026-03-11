@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Clay Performance Tuning
 
 ## Overview
-Optimize Clay data enrichment throughput and reduce table processing times. Clay tables process enrichments row-by-row with each enrichment making external API calls (Clearbit, Apollo, Hunter, etc.). The main performance bottlenecks are: enrichment provider rate limits (each provider has its own rate cap), sequential row processing (Clay processes rows in batches internally), and API response times from third-party enrichment providers (100ms to 5s depending on provider).
+Optimize Clay data enrichment throughput and reduce table processing times. Clay tables process enrichments row-by-row with each enrichment making external API calls (Clearbit, Apollo, Hunter, etc.).
 
 ## Prerequisites
 - Clay account with active tables
@@ -114,7 +114,6 @@ curl "https://api.clay.com/v1/tables/tbl_abc123/status" \
 | Duplicate results | Same domain enriched multiple times | Deduplicate input data before enrichment |
 
 ## Examples
-
 
 **Basic usage**: Apply clay performance tuning to a standard project setup with default configuration options.
 

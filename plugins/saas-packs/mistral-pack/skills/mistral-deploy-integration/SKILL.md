@@ -54,7 +54,7 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 
 ENV NODE_ENV=production
-EXPOSE 3000  # 3 seconds in ms
+EXPOSE 3000  # 3000: 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
@@ -133,7 +133,7 @@ export async function GET() {
 ```typescript
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY!,
-  timeout: 60000,  # 1 minute in ms
+  timeout: 60000,  # 60000: 1 minute in ms
   maxRetries: 3,
 });
 ```

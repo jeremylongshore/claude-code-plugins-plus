@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Enterprise RBAC
 
 ## Overview
-Control access to Retell AI voice agents, phone numbers, and call recordings through organization-level roles and API key management. Retell uses per-minute pricing for voice calls, so RBAC must govern who can create voice agents, assign phone numbers, access call recordings, and modify agent prompts. Unauthorized prompt changes can directly impact customer-facing voice interactions.
+Control access to Retell AI voice agents, phone numbers, and call recordings through organization-level roles and API key management. Retell uses per-minute pricing for voice calls, so RBAC must govern who can create voice agents, assign phone numbers, access call recordings, and modify agent prompts.
 
 ## Prerequisites
 - Retell AI account with team plan (per-minute call pricing)
@@ -103,7 +103,6 @@ curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
 | Agent prompt regression | Unauthorized edit | Store configs in git, require PR reviews |
 
 ## Examples
-
 
 **Basic usage**: Apply retellai enterprise rbac to a standard project setup with default configuration options.
 

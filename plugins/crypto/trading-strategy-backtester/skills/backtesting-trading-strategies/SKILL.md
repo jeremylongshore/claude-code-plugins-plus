@@ -67,7 +67,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy rsi_reversal \
   --symbol ETH-USD \
   --period 1y \
-  --capital 10000 \  # 10 seconds in ms
+  --capital 10000 \  # 10000: 10 seconds in ms
   --params '{"period": 14, "overbought": 70, "oversold": 30}'
 ```
 
@@ -164,7 +164,7 @@ data:
   cache_dir: ./data
 
 backtest:
-  default_capital: 10000  # 10 seconds in ms
+  default_capital: 10000  # 10000: 10 seconds in ms
   commission: 0.001     # 0.1% per trade
   slippage: 0.0005      # 0.05% slippage
 

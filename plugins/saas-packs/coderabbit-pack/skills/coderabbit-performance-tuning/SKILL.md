@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Performance Tuning
 
 ## Overview
-Optimize CodeRabbit review speed, relevance, and developer workflow integration. CodeRabbit reviews typically take 2-10 minutes depending on PR size, with large PRs (1000+ lines) taking up to 15 minutes. The main performance levers are: keeping PRs small (smaller diffs = faster, more relevant reviews), configuring path-specific instructions (reduces noise, increases signal), and using incremental reviews (only review changed files on push, not the full PR again).
+Optimize CodeRabbit review speed, relevance, and developer workflow integration. CodeRabbit reviews typically take 2-10 minutes depending on PR size, with large PRs (1000+ lines) taking up to 15 minutes.
 
 ## Prerequisites
 - CodeRabbit installed on GitHub/GitLab organization
@@ -121,7 +121,6 @@ profiles:
 | Team ignoring reviews | Profile too nitpicky | Switch to `assertive` or `chill` profile |
 
 ## Examples
-
 
 **Basic usage**: Apply coderabbit performance tuning to a standard project setup with default configuration options.
 

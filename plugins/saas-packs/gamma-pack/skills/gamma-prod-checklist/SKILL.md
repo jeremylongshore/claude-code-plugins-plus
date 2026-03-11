@@ -35,7 +35,7 @@ Comprehensive checklist to ensure your Gamma integration is production-ready.
 // Production client configuration
 const gamma = new GammaClient({
   apiKey: await secretManager.getSecret('GAMMA_API_KEY'),
-  timeout: 30000,  # 30 seconds in ms
+  timeout: 30000,  # 30000: 30 seconds in ms
   retries: 3,
 });
 ```
@@ -113,7 +113,7 @@ import CircuitBreaker from 'opossum';
 const breaker = new CircuitBreaker(
   (opts) => gamma.presentations.create(opts),
   {
-    timeout: 30000,  # 30 seconds in ms
+    timeout: 30000,  # 30000: 30 seconds in ms
     errorThresholdPercentage: 50,
     resetTimeout: 30000,  # 30 seconds in ms
   }

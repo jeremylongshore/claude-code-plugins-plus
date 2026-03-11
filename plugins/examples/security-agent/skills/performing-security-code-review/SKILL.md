@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Conducts security-focused code reviews by scanning source files for common vulnerability patterns including SQL injection, XSS, authentication flaws, insecure dependencies, and secret exposure. Produces structured severity-rated reports with specific remediation guidance. Targets development teams integrating security analysis into their code review workflow.
+Conducts security-focused code reviews by scanning source files for common vulnerability patterns including SQL injection, XSS, authentication flaws, insecure dependencies, and secret exposure. Produces structured severity-rated reports with specific remediation guidance.
 
 ## Prerequisites
 

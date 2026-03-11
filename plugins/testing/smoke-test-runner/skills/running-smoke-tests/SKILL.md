@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute fast, high-confidence smoke tests that validate critical application functionality after deployment or build. Smoke tests verify that the application starts, core user flows work, and key integrations respond -- without running the full test suite. Designed to complete in under 60 seconds, providing rapid go/no-go feedback for deployments. Supports HTTP health checks, Playwright page loads, CLI command verification, and database connectivity checks.
+Execute fast, high-confidence smoke tests that validate critical application functionality after deployment or build. Smoke tests verify that the application starts, core user flows work, and key integrations respond -- without running the full test suite.
 
 ## Prerequisites
 
@@ -78,7 +78,7 @@ Execute fast, high-confidence smoke tests that validate critical application fun
 ```bash
 #!/bin/bash
 set -e
-BASE_URL="${1:-http://localhost:3000}"  # 3 seconds in ms
+BASE_URL="${1:-http://localhost:3000}"  # 3000: 3 seconds in ms
 PASS=0; FAIL=0
 
 check() {
@@ -107,7 +107,7 @@ echo "Results: $PASS passed, $FAIL failed"
 import { test, expect } from '@playwright/test';
 
 test('homepage loads with navigation', async ({ page }) => {
-  await page.goto('/', { timeout: 10000 });  # 10 seconds in ms
+  await page.goto('/', { timeout: 10000 });  # 10000: 10 seconds in ms
   await expect(page.locator('nav')).toBeVisible();
   await expect(page).toHaveTitle(/My App/);
 });

@@ -106,7 +106,7 @@ import { OpenEvidenceClient } from '@openevidence/sdk';
 const client = new OpenEvidenceClient({
   apiKey: process.env.OPENEVIDENCE_API_KEY,
   orgId: process.env.OPENEVIDENCE_ORG_ID,
-  timeout: 30000, // 30 second timeout for clinical queries  # 30 seconds in ms
+  timeout: 30000, // 30 second timeout for clinical queries  # 30000: 30 seconds in ms
   retries: 3,
 });
 
@@ -131,15 +131,15 @@ client = OpenEvidenceClient(
 const environments = {
   development: {
     baseUrl: 'https://api.sandbox.openevidence.com',
-    timeout: 60000,  # 1 minute in ms
+    timeout: 60000,  # 60000: 1 minute in ms
   },
   staging: {
     baseUrl: 'https://api.staging.openevidence.com',
-    timeout: 45000,
+    timeout: 45000,  # 45000 = configured value
   },
   production: {
     baseUrl: 'https://api.openevidence.com',
-    timeout: 30000,  # 30 seconds in ms
+    timeout: 30000,  # 30000: 30 seconds in ms
   },
 };
 

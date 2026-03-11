@@ -48,7 +48,7 @@ Shows detailed info including volume, chains, and TVL breakdown.
 
 ### compare - Compare Routes
 ```bash
-python bridge_monitor.py compare --source ethereum --dest arbitrum --amount 1000 --token USDC  # 1 second in ms
+python bridge_monitor.py compare --source ethereum --dest arbitrum --amount 1000 --token USDC  # 1000: 1 second in ms
 ```
 Compares fees and transfer times across bridges for a route.
 

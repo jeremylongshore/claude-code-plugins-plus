@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Firecrawl Observability
 
 ## Overview
-Monitor Firecrawl web scraping and crawling jobs for success rates, credit consumption, and extraction quality. Key signals include crawl job completion rate, pages scraped per credit, scrape latency (single page vs full crawl), credit burn velocity, and extraction success rate (did the markdown/structured data extraction return useful content). Firecrawl charges 1 credit per page for scrape and 5+ for crawl jobs, making credit monitoring critical.
+Monitor Firecrawl web scraping and crawling jobs for success rates, credit consumption, and extraction quality. Key signals include crawl job completion rate, pages scraped per credit, scrape latency (single page vs full crawl), credit burn velocity, and extraction success rate (did the markdown/structured data extraction return useful content).
 
 ## Prerequisites
 - Firecrawl account with API access
@@ -96,7 +96,6 @@ Track: crawl job success/failure rate, pages scraped per hour, credit consumptio
 | Webhook not firing | Endpoint unreachable | Verify endpoint URL and SSL certificate |
 
 ## Examples
-
 
 **Basic usage**: Apply firecrawl observability to a standard project setup with default configuration options.
 

@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables AI-assisted performance profiling within Windsurf. Cascade analyzes profiling data to identify bottlenecks, suggest optimizations, and predict impact of changes. It integrates with language-specific profilers and helps prioritize optimization efforts based on actual performance data rather than assumptions.
+This skill enables AI-assisted performance profiling within Windsurf. Cascade analyzes profiling data to identify bottlenecks, suggest optimizations, and predict impact of changes.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables AI-assisted performance profiling within Windsurf. Cascade an
 3. **Analyze with Cascade**
 4. **Implement Optimizations**
 5. **Document and Monitor**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

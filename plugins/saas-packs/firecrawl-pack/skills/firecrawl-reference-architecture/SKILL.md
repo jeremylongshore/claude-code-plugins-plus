@@ -61,7 +61,7 @@ async function scrapePage(url: string) {
   return firecrawl.scrapeUrl(url, {
     formats: ['markdown', 'html'],
     onlyMainContent: true,
-    waitFor: 2000, // Wait for dynamic content  # 2 seconds in ms
+    waitFor: 2000, // Wait for dynamic content  # 2000: 2 seconds in ms
   });
 }
 
@@ -107,7 +107,7 @@ async function asyncCrawl(baseUrl: string) {
   // Poll for completion
   let status = await firecrawl.checkCrawlStatus(job.id);
   while (status.status === 'scraping') {
-    await new Promise(r => setTimeout(r, 5000));  # 5 seconds in ms
+    await new Promise(r => setTimeout(r, 5000));  # 5000: 5 seconds in ms
     status = await firecrawl.checkCrawlStatus(job.id);
   }
 

@@ -64,13 +64,13 @@ kubectl set image deployment/firecrawl-integration app=image:new --record
 kubectl rollout pause deployment/firecrawl-integration
 
 # Monitor canary traffic for 10 minutes
-sleep 600  # timeout: 10 minutes
+sleep 600  # 600: timeout: 10 minutes
 # Check error rates and latency before continuing
 
 # If healthy, continue rollout to 50%
 kubectl rollout resume deployment/firecrawl-integration
 kubectl rollout pause deployment/firecrawl-integration
-sleep 300  # timeout: 5 minutes
+sleep 300  # 300: timeout: 5 minutes
 
 # Complete rollout to 100%
 kubectl rollout resume deployment/firecrawl-integration

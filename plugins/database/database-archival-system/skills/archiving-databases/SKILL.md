@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement automated data archival pipelines that move historical records from primary database tables to archive storage (archive tables, S3, Azure Blob, or GCS) based on age, status, or access frequency criteria. This skill reduces primary database size, improves query performance on active data, lowers storage costs by moving cold data to cheaper tiers, and ensures compliance with data retention policies. Archival operations preserve referential integrity and provide retrieval paths for archived data when needed.
+Implement automated data archival pipelines that move historical records from primary database tables to archive storage (archive tables, S3, Azure Blob, or GCS) based on age, status, or access frequency criteria.
 
 ## Prerequisites
 

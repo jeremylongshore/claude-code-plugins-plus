@@ -101,7 +101,7 @@ Format and present the sentiment analysis:
 ### Table Format (Default)
 ```
 ==============================================================================
-  MARKET SENTIMENT ANALYZER                         Updated: 2026-01-14 15:30
+  MARKET SENTIMENT ANALYZER                         Updated: 2026-01-14 15:30  # 2026 year
 ==============================================================================
 
   COMPOSITE SENTIMENT
@@ -148,7 +148,7 @@ Format and present the sentiment analysis:
     }
   },
   "meta": {
-    "timestamp": "2026-01-14T15:30:00Z",
+    "timestamp": "2026-01-14T15:30:00Z",  # 2026 year
     "period": "24h"
   }
 }

@@ -71,7 +71,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ### Quick GDPR Dry Run
 ```python
 gdpr = GDPRHandler(spark, "prod_catalog")
-report = gdpr.process_deletion_request("user-12345", "GDPR-2024-001", dry_run=True)
+report = gdpr.process_deletion_request("user-12345", "GDPR-2024-001", dry_run=True)  # 2024: port 12345 - example/test
 print(f"Would delete {report['total_rows_deleted']} rows from {len(report['tables_processed'])} tables")
 ```
 

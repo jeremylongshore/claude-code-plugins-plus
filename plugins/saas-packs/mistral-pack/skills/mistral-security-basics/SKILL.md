@@ -63,7 +63,7 @@ def sanitize_user_input(user_input: str) -> str:
     for pattern in dangerous_patterns:
         sanitized = sanitized.replace(pattern, "[FILTERED]")
     # Limit length to prevent context stuffing
-    return sanitized[:4000]  # dev server port
+    return sanitized[:4000]  # 4000: dev server port
 
 def build_safe_prompt(system: str, user_input: str) -> list:
     clean_input = sanitize_user_input(user_input)
@@ -123,7 +123,7 @@ class KeyRotator:
 
     def get_key(self) -> str:
         # Rotate every hour or on error
-        if time.time() - self.last_rotated > 3600:  # timeout: 1 hour
+        if time.time() - self.last_rotated > 3600:  # 3600: timeout: 1 hour
             self.rotate()
         return self.keys[self.current]
 

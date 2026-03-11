@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Webhooks & Events
 
 ## Overview
-Build event-driven workflows around Vast.ai GPU cloud instance lifecycle. Vast.ai provides a REST API at `cloud.vast.ai/api` for managing GPU instances. This skill covers monitoring instance state changes, handling bid/offer events, and building automated GPU pipeline management with callbacks for training jobs, inference serving, and cost optimization.
+Build event-driven workflows around Vast.ai GPU cloud instance lifecycle. Vast.ai provides a REST API at `cloud.vast.ai/api` for managing GPU instances.
 
 ## Prerequisites
 - Vast.ai account with API key stored in `VASTAI_API_KEY` environment variable

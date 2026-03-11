@@ -65,9 +65,9 @@ services:
   firecrawl:
     image: mendableai/firecrawl:latest
     ports:
-      - "3002:3002"
+      - "3002:3002"  # 3002 = configured value
     environment:
-      - REDIS_URL=redis://redis:6379  # Redis port
+      - REDIS_URL=redis://redis:6379  # 6379: Redis port
       - PLAYWRIGHT_BROWSERS_PATH=/browsers
     depends_on:
       - redis
@@ -80,7 +80,7 @@ services:
   app:
     build: .
     ports:
-      - "3000:3000"  # 3 seconds in ms
+      - "3000:3000"  # 3000: 3 seconds in ms
     environment:
       - FIRECRAWL_API_URL=http://firecrawl:3002
     depends_on:

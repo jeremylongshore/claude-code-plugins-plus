@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Databricks Observability
 
 ## Overview
-Monitor Databricks job runs, cluster utilization, query performance, and costs using system tables and the Databricks SDK. Databricks exposes observability data through system tables in the `system` catalog (audit logs, billing, compute, query history) and real-time Ganglia metrics on clusters. Key signals include job failure rates, cluster auto-scaling efficiency (idle time vs compute time), SQL warehouse queue depth, and DBU consumption by workspace/cluster.
+Monitor Databricks job runs, cluster utilization, query performance, and costs using system tables and the Databricks SDK. Databricks exposes observability data through system tables in the `system` catalog (audit logs, billing, compute, query history) and real-time Ganglia metrics on clusters.
 
 ## Prerequisites
 - Databricks Premium or Enterprise with Unity Catalog enabled
@@ -53,10 +53,10 @@ LIMIT 20;
 ```sql
 -- Slow queries (>30s) on SQL warehouses
 SELECT warehouse_id, statement_id, executed_by,
-       total_duration_ms / 1000 AS duration_sec,  # 1 second in ms
+       total_duration_ms / 1000 AS duration_sec,  # 1000: 1 second in ms
        rows_produced, bytes_scanned_mb
 FROM system.query.history
-WHERE total_duration_ms > 30000  # 30 seconds in ms
+WHERE total_duration_ms > 30000  # 30000: 30 seconds in ms
   AND start_time > current_timestamp() - INTERVAL 24 HOURS
 ORDER BY total_duration_ms DESC
 LIMIT 50;
@@ -98,7 +98,6 @@ for cluster in w.clusters.list():
 | Cluster metrics gaps | Cluster was terminated | Check terminated cluster events in audit log |
 
 ## Examples
-
 
 **Basic usage**: Apply databricks observability to a standard project setup with default configuration options.
 

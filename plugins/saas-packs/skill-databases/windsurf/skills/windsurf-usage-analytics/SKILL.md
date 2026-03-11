@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables comprehensive usage analytics for Windsurf deployments. It tracks AI feature adoption, measures productivity improvements, calculates ROI, and identifies optimization opportunities. Analytics data helps justify AI investment, identify training needs, and optimize license allocation based on actual usage patterns.
+This skill enables comprehensive usage analytics for Windsurf deployments. It tracks AI feature adoption, measures productivity improvements, calculates ROI, and identifies optimization opportunities.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables comprehensive usage analytics for Windsurf deployments. It tr
 3. **Set Up Reporting**
 4. **Define Baselines**
 5. **Monitor and Optimize**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

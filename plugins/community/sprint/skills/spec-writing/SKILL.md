@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Spec Writing provides guidance on authoring effective `specs.md` files that drive the Sprint plugin's autonomous development workflow. A well-written specification determines the quality of agent output by clearly defining goals, scope boundaries, and testing requirements. Developers preparing sprint iterations use this skill to structure requirements so the project architect and implementation agents produce correct, focused results.
+Spec Writing provides guidance on authoring effective `specs.md` files that drive the Sprint plugin's autonomous development workflow. A well-written specification determines the quality of agent output by clearly defining goals, scope boundaries, and testing requirements.
 
 ## Prerequisites
 

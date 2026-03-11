@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Analyzes existing plugins in the repository to extract their capabilities, then synthesizes and applies those learned patterns to the current task. Functions as a universal skill chameleon that discovers relevant plugins, extracts their approaches and methodologies, and adapts them to novel requests. Serves developers who need capabilities not covered by a single existing plugin.
+Analyzes existing plugins in the repository to extract their capabilities, then synthesizes and applies those learned patterns to the current task. Functions as a universal skill chameleon that discovers relevant plugins, extracts their approaches and methodologies, and adapts them to novel requests.
 
 ## Prerequisites
 

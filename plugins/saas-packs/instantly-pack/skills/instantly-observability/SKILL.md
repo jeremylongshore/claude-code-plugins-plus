@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Observability
 
 ## Overview
-Monitor Instantly email outreach campaign health, deliverability metrics, and sending account reputation. Key signals include email deliverability rate, bounce rate, reply rate, open rate, sending volume vs daily limits, account warmup progress, and spam placement rate. For Instantly, deliverability is the critical metric -- a sending account with high bounces or spam complaints will damage domain reputation and reduce the effectiveness of all campaigns.
+Monitor Instantly email outreach campaign health, deliverability metrics, and sending account reputation. Key signals include email deliverability rate, bounce rate, reply rate, open rate, sending volume vs daily limits, account warmup progress, and spam placement rate.
 
 ## Prerequisites
 - Instantly Growth or Hypergrowth plan
@@ -96,7 +96,6 @@ Track: deliverability rate by campaign, bounce rate trend (alert if rising), sen
 | Opens not tracking | Tracking pixel blocked | Expected for privacy-focused recipients; use reply rate instead |
 
 ## Examples
-
 
 **Basic usage**: Apply instantly observability to a standard project setup with default configuration options.
 

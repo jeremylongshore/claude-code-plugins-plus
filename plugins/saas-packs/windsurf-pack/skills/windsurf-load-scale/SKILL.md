@@ -76,7 +76,7 @@ brew install k6  # macOS
 k6 run --env WINDSURF_API_KEY=${WINDSURF_API_KEY} windsurf-load-test.js
 
 # Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 windsurf-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 windsurf-load-test.js  # 8086 = configured value
 ```
 
 ## Scaling Patterns
@@ -126,7 +126,7 @@ const windsurfPool = Pool.create({
   },
   max: 20,
   min: 5,
-  idleTimeoutMillis: 30000,  # 30 seconds in ms
+  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
 });
 
 async function withWindsurfClient<T>(

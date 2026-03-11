@@ -71,7 +71,7 @@ Replit assigns ports dynamically. Hardcoding causes binding failures.
 
 ```python
 # BAD: hardcoded port
-app.run(host='0.0.0.0', port=3000)  # may conflict
+app.run(host='0.0.0.0', port=3000)  # 3000: may conflict
 
 # GOOD: use environment variable
 import os

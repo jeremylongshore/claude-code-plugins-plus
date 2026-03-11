@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables enterprise license management for Windsurf deployments. It covers seat allocation, usage tracking, cost optimization, and compliance reporting. Administrators can provision new users, reclaim inactive seats, analyze utilization patterns, and optimize subscription tiers based on actual usage data.
+This skill enables enterprise license management for Windsurf deployments. It covers seat allocation, usage tracking, cost optimization, and compliance reporting.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables enterprise license management for Windsurf deployments. It co
 3. **Configure Usage Tracking**
 4. **Optimize Subscription**
 5. **Monitor and Report**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

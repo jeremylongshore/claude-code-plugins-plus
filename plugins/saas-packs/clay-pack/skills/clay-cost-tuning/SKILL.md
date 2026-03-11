@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Clay Cost Tuning
 
 ## Overview
-Reduce Clay data enrichment spending by optimizing credit usage per enrichment, limiting waterfall depth, and improving input data quality. Clay uses credit-based pricing where each enrichment provider costs different credits (email finder: ~1 credit, company enrichment: ~5 credits, waterfall enrichment: 3-15 credits depending on fallback depth). The biggest cost lever is improving input data quality so enrichments have higher hit rates, and limiting waterfall fallback chains to prevent credit waste on unenrichable records.
+Reduce Clay data enrichment spending by optimizing credit usage per enrichment, limiting waterfall depth, and improving input data quality. Clay uses credit-based pricing where each enrichment provider costs different credits (email finder: ~1 credit, company enrichment: ~5 credits, waterfall enrichment: 3-15 credits depending on fallback depth).
 
 ## Prerequisites
 - Clay account with visibility into credit consumption
@@ -89,7 +89,7 @@ set -euo pipefail
 # Configure maximum credits per table to prevent runaway costs
 curl -X PATCH "https://api.clay.com/v1/tables/tbl_abc123" \
   -H "Authorization: Bearer $CLAY_API_KEY" \
-  -d '{"max_rows": 1000, "auto_enrich": false}'  # 1 second in ms
+  -d '{"max_rows": 1000, "auto_enrich": false}'  # 1000: 1 second in ms
 # Disable auto_enrich and trigger manually after data review
 ```
 
@@ -102,7 +102,6 @@ curl -X PATCH "https://api.clay.com/v1/tables/tbl_abc123" \
 | Unexpected charge | New enrichment column added without cap | Always set credit limits per table |
 
 ## Examples
-
 
 **Basic usage**: Apply clay cost tuning to a standard project setup with default configuration options.
 

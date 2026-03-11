@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Track and analyze crypto options flow on centralized derivatives exchanges (Deribit, OKX, Bybit) to identify institutional positioning, gauge market sentiment, and detect unusual activity in BTC and ETH options markets. Designed for derivatives traders, fund analysts, and macro researchers who need to interpret large block trades, put/call ratios, open interest shifts, and implied volatility surfaces to anticipate directional moves.
+Track and analyze crypto options flow on centralized derivatives exchanges (Deribit, OKX, Bybit) to identify institutional positioning, gauge market sentiment, and detect unusual activity in BTC and ETH options markets.
 
 ## Prerequisites
 
@@ -74,7 +74,7 @@ Returns the aggregate put/call ratio, top 5 strikes by open interest, max pain f
 ### Detect Institutional Block Trades
 ```bash
 # Filter for block trades above $1M notional in the last 24 hours
-python options_flow.py btc --blocks --min-notional 1000000 --period 24h
+python options_flow.py btc --blocks --min-notional 1000000 --period 24h  # 1000000 = 1M limit
 ```
 Lists all block trades exceeding the threshold with direction inference (aggressor side), strike, expiry, premium paid, and IV at execution. Useful for spotting large directional bets before they move the underlying.
 

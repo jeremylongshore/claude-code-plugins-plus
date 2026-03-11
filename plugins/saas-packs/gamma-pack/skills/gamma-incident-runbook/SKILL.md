@@ -53,7 +53,7 @@ curl -w "\nTime: %{time_total}s\n" \
 ```bash
 set -euo pipefail
 # Check error rate (Prometheus)
-curl -s 'http://prometheus:9090/api/v1/query?query=rate(gamma_requests_total{status=~"5.."}[5m])' | jq '.data.result'  # Prometheus port
+curl -s 'http://prometheus:9090/api/v1/query?query=rate(gamma_requests_total{status=~"5.."}[5m])' | jq '.data.result'  # 9090: Prometheus port
 
 # Check latency P95
 curl -s 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(gamma_request_duration_seconds_bucket[5m]))' | jq '.data.result'  # Prometheus port

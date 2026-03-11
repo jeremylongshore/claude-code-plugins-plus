@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Firecrawl Webhooks & Events
 
 ## Overview
-Handle Firecrawl webhooks for async crawl and scrape job notifications. Firecrawl supports native webhooks on crawl jobs via `api.firecrawl.dev` -- when a crawl completes, partially completes, or fails, Firecrawl POSTs results to your configured webhook URL. This enables building pipelines that react to scraped content automatically.
+Handle Firecrawl webhooks for async crawl and scrape job notifications. Firecrawl supports native webhooks on crawl jobs via `api.firecrawl.dev` -- when a crawl completes, partially completes, or fails, Firecrawl POSTs results to your configured webhook URL.
 
 ## Prerequisites
 - Firecrawl API key stored in `FIRECRAWL_API_KEY` environment variable
@@ -130,7 +130,7 @@ async function pollCrawlStatus(jobId: string) {
     await handleCrawlComplete(jobId, { pages: status.data });
   } else if (status.status === "scraping") {
     console.log(`Progress: ${status.completed}/${status.total} pages`);
-    setTimeout(() => pollCrawlStatus(jobId), 5000);  # 5 seconds in ms
+    setTimeout(() => pollCrawlStatus(jobId), 5000);  # 5000: 5 seconds in ms
   }
 }
 ```

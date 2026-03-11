@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Scan application source code for SQL injection vulnerabilities (CWE-89, OWASP A03:2021) by tracing user input from entry points through data flows into database query construction. Detect string concatenation, format string interpolation, and inadequate parameterization across raw SQL, ORM raw query methods, stored procedure calls, and dynamic query builders. Classify each finding by CVSS severity and attack type (classic, blind, UNION-based, second-order) and provide parameterized remediation code.
+Scan application source code for SQL injection vulnerabilities (CWE-89, OWASP A03:2021) by tracing user input from entry points through data flows into database query construction. Detect string concatenation, format string interpolation, and inadequate parameterization across raw SQL, ORM raw query methods, stored procedure calls, and dynamic query builders.
 
 ## Prerequisites
 

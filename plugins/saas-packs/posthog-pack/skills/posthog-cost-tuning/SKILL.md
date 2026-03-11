@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Cost Tuning
 
 ## Overview
-Reduce PostHog event-based pricing costs by controlling event volume, optimizing autocapture settings, and leveraging the generous free tier. PostHog charges per event with a free tier of 1M events/month, then ~$0.00031 per event beyond that. The biggest cost levers are: disabling autocapture on high-frequency elements (a single button clicked 100K times/month = $31), filtering out bot traffic, and sampling non-critical events. Session recordings and feature flags have separate pricing tiers.
+Reduce PostHog event-based pricing costs by controlling event volume, optimizing autocapture settings, and leveraging the generous free tier. PostHog charges per event with a free tier of 1M events/month, then ~$0.00031 per event beyond that.
 
 ## Prerequisites
 - PostHog Cloud account with billing dashboard access
@@ -91,7 +91,7 @@ curl "https://app.posthog.com/api/organizations/ORG_ID/billing/" \
     events_used: .events_current_usage,
     events_limit: .events_plan_limit,
     usage_pct: (.events_current_usage / .events_plan_limit * 100),
-    estimated_cost: (if .events_current_usage > 1000000 then ((.events_current_usage - 1000000) * 0.00031) else 0 end)
+    estimated_cost: (if .events_current_usage > 1000000 then ((.events_current_usage - 1000000) * 0.00031) else 0 end)  # 1000000 = 1M limit
   }'
 ```
 
@@ -104,7 +104,6 @@ curl "https://app.posthog.com/api/organizations/ORG_ID/billing/" \
 | Free tier exceeded early | New feature launched without volume estimate | Forecast events before launch |
 
 ## Examples
-
 
 **Basic usage**: Apply posthog cost tuning to a standard project setup with default configuration options.
 

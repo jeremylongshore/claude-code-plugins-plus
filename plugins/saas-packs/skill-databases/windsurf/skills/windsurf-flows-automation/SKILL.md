@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables creation and management of Windsurf Flows - automated workflows that handle repetitive development tasks. Flows can scaffold components, generate boilerplate, run test sequences, and execute multi-step operations with a single command. They combine Cascade AI intelligence with deterministic automation for reliable, repeatable results.
+This skill enables creation and management of Windsurf Flows - automated workflows that handle repetitive development tasks. Flows can scaffold components, generate boilerplate, run test sequences, and execute multi-step operations with a single command.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables creation and management of Windsurf Flows - automated workflo
 3. **Create Flow Definitions**
 4. **Test and Validate**
 5. **Deploy and Monitor**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

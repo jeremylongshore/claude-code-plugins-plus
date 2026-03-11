@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Agent Patterns defines the coordination protocol for multi-agent sprint execution within the Sprint plugin. It governs how the project architect spawns implementation and testing agents, how agents communicate results via structured reports, and how parallel agents avoid conflicts. Teams running spec-driven sprints rely on these patterns to ensure deterministic handoffs between phases.
+Agent Patterns defines the coordination protocol for multi-agent sprint execution within the Sprint plugin. It governs how the project architect spawns implementation and testing agents, how agents communicate results via structured reports, and how parallel agents avoid conflicts.
 
 ## Prerequisites
 

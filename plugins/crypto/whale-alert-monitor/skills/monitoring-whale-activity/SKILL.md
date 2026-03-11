@@ -38,7 +38,7 @@ cd ${CLAUDE_SKILL_DIR}/scripts
 ```bash
 python whale_monitor.py recent                    # All chains
 python whale_monitor.py recent --chain ethereum   # Specific chain
-python whale_monitor.py recent --min-value 10000000  # $10M+ only
+python whale_monitor.py recent --min-value 10000000  # 10000000: $10M+ only
 ```
 
 **Exchange Flow Analysis:**
@@ -96,7 +96,7 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 
 **View $10M+ whale transactions on Ethereum:**
 ```bash
-python whale_monitor.py recent --chain ethereum --min-value 10000000
+python whale_monitor.py recent --chain ethereum --min-value 10000000  # 10000000 = 10M limit
 ```
 
 **Analyze if whales are selling (depositing to exchanges):**

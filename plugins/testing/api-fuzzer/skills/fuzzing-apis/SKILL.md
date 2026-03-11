@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Perform API fuzzing to discover crashes, unhandled exceptions, security vulnerabilities, and edge case failures by sending malformed, unexpected, and boundary-value inputs to API endpoints. Supports RESTler (stateful REST API fuzzing), Schemathesis (OpenAPI-driven property-based testing), custom fuzz harnesses with fast-check, and OWASP ZAP active scanning. Generates inputs from API schemas and mutates valid requests to explore failure states.
+Perform API fuzzing to discover crashes, unhandled exceptions, security vulnerabilities, and edge case failures by sending malformed, unexpected, and boundary-value inputs to API endpoints. Supports RESTler (stateful REST API fuzzing), Schemathesis (OpenAPI-driven property-based testing), custom fuzz harnesses with fast-check, and OWASP ZAP active scanning.
 
 ## Prerequisites
 
@@ -77,7 +77,7 @@ Perform API fuzzing to discover crashes, unhandled exceptions, security vulnerab
 **Schemathesis OpenAPI fuzzing:**
 ```bash
 # Basic schema-based fuzzing
-schemathesis run http://localhost:3000/api/openapi.json \  # 3 seconds in ms
+schemathesis run http://localhost:3000/api/openapi.json \  # 3000: 3 seconds in ms
   --stateful=links \
   --hypothesis-max-examples=500 \  # HTTP 500 Internal Server Error
   --base-url=http://localhost:3000 \  # 3 seconds in ms
@@ -122,7 +122,7 @@ test('POST /api/users handles arbitrary input without crashing', async () => {
   "{{7*7}}",
   "../../../etc/passwd",
   "\u0000",
-  "A".repeat(100000)
+  "A".repeat(100000)  # 100000 = configured value
 ]
 ```
 

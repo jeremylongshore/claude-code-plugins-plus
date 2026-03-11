@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies Observability
 
 ## Overview
-Monitor Fireflies.ai meeting transcription quality, bot join reliability, and transcript processing latency. Key metrics include bot join success rate (does the Fireflies bot successfully join scheduled meetings), transcription accuracy signals (silence detection, speaker diarization quality), transcript processing time (minutes from meeting end to transcript availability), and per-seat utilization (meetings recorded per seat to optimize licensing costs).
+Monitor Fireflies.ai meeting transcription quality, bot join reliability, and transcript processing latency.
 
 ## Prerequisites
 - Fireflies Business or Enterprise plan
@@ -41,7 +41,7 @@ async function monitorProcessing() {
   const res = await firefliesGQL(`{ transcripts(limit: 20) { id date duration processing_status processed_at } }`);
   for (const t of res.data.transcripts) {
     if (t.processing_status === 'completed' && t.processed_at) {
-      const meetingEnd = new Date(t.date).getTime() + t.duration * 60000;  # 1 minute in ms
+      const meetingEnd = new Date(t.date).getTime() + t.duration * 60000;  # 60000: 1 minute in ms
       const processedAt = new Date(t.processed_at).getTime();
       const processingMinutes = (processedAt - meetingEnd) / 60000;  # 1 minute in ms
       emitHistogram('fireflies_processing_time_min', processingMinutes);
@@ -93,7 +93,6 @@ Track: bot join success rate (pie chart), transcript processing latency distribu
 | High seat cost per transcript | Too many inactive seats | Remove members with <2 transcripts/month |
 
 ## Examples
-
 
 **Basic usage**: Apply fireflies observability to a standard project setup with default configuration options.
 

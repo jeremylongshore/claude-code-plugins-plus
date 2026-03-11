@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Performance Tuning
 
 ## Overview
-Optimize Lokalise API throughput and response times for translation pipeline integrations. Lokalise enforces a global rate limit of 6 requests per second across most endpoints, making request efficiency critical for projects with thousands of keys. Key bottlenecks include: key listing pagination (default page size is 100, max is 500), file download generation (async, can take seconds for large projects), and bulk key creation (500 keys per batch max).
+Optimize Lokalise API throughput and response times for translation pipeline integrations. Lokalise enforces a global rate limit of 6 requests per second across most endpoints, making request efficiency critical for projects with thousands of keys.
 
 ## Prerequisites
 - Lokalise SDK (`@lokalise/node-api`) or REST API access
@@ -87,7 +87,7 @@ async function createKeysBatched(projectId: string, keys: any[]) {
 import PQueue from 'p-queue';
 
 // Lokalise rate limit: 6 requests/second
-const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });  # 1 second in ms
+const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });  # 1000: 1 second in ms
 
 async function throttledRequest<T>(fn: () => Promise<T>): Promise<T> {
   return queue.add(fn) as Promise<T>;
@@ -119,7 +119,6 @@ curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
 | Bulk create fails partially | Network timeout on large batch | Reduce batch size to 200, add retry logic |
 
 ## Examples
-
 
 **Basic usage**: Apply lokalise performance tuning to a standard project setup with default configuration options.
 

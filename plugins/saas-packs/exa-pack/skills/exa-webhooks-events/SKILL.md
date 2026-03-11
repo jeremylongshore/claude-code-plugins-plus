@@ -53,7 +53,7 @@ const monitorQueue = new Queue("exa-monitors");
 
 async function createMonitor(config: Omit<SearchMonitor, "lastResultIds">) {
   await monitorQueue.add("check-search", config, {
-    repeat: { every: config.intervalMinutes * 60 * 1000 },  # 1 second in ms
+    repeat: { every: config.intervalMinutes * 60 * 1000 },  # 1000: 1 second in ms
     jobId: config.id,
   });
 }
@@ -97,9 +97,9 @@ const worker = new Worker("exa-monitors", async (job) => {
 async function monitorSimilarContent(seedUrl: string, webhookUrl: string) {
   const results = await exa.findSimilarAndContents(seedUrl, {
     numResults: 5,
-    text: { maxCharacters: 300 },  # timeout: 5 minutes
+    text: { maxCharacters: 300 },  # 300: timeout: 5 minutes
     excludeDomains: ["example.com"],
-    startPublishedDate: new Date(Date.now() - 86400000).toISOString(),
+    startPublishedDate: new Date(Date.now() - 86400000).toISOString(),  # 86400000 = configured value
   });
 
   if (results.results.length > 0) {
@@ -125,7 +125,7 @@ async function sendWebhook(url: string, payload: any, retries = 3) {
       if (response.ok) return;
     } catch (error) {
       if (attempt === retries - 1) throw error;
-      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));  # 1 second in ms
+      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));  # 1000: 1 second in ms
     }
   }
 }

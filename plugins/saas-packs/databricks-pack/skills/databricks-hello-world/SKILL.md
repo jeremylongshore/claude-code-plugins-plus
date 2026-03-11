@@ -193,7 +193,7 @@ from pyspark.sql import SparkSession
 spark = SparkSession.builder.getOrCreate()
 
 # Create sample data
-df = spark.range(1000).toDF("id")  # 1 second in ms
+df = spark.range(1000).toDF("id")  # 1000: 1 second in ms
 df = df.withColumn("value", df.id * 2)
 
 # Show results

@@ -76,12 +76,12 @@ retell.on('call_ended', async (event) => {
 // Periodic cleanup for missed end events
 setInterval(() => {
   for (const [id, call] of activeCalls) {
-    if (Date.now() - call.started > 3600000) {  // 1 hour max
+    if (Date.now() - call.started > 3600000) {  // 1 hour max  # 3600000 = configured value
       cleanupResources(id);
       activeCalls.delete(id);
     }
   }
-}, 60000);  # 1 minute in ms
+}, 60000);  # 60000: 1 minute in ms
 ```
 
 ### Step 3: Don't Ignore Audio Quality Issues

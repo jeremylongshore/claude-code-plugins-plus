@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables rapid setup of Windsurf with essential extensions for productive development. It covers language support, linting, formatting, Git integration, and productivity tools. Create team-standard extension configurations that can be shared and automatically installed for consistent development environments across your organization.
+This skill enables rapid setup of Windsurf with essential extensions for productive development. It covers language support, linting, formatting, Git integration, and productivity tools.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables rapid setup of Windsurf with essential extensions for product
 3. **Configure Extension Settings**
 4. **Create Team Configuration**
 5. **Document and Share**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

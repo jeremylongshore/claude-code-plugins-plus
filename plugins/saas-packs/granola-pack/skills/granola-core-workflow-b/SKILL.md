@@ -100,7 +100,7 @@ Organize for future reference:
 
 Folder Structure:
 /meetings
-  /2025
+  /2025  # 2025 year
     /q1
       /project-alpha
         2025-01-06-sprint-planning.md

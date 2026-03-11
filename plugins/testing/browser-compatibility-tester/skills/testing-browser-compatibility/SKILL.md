@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Test web applications across multiple browsers, rendering engines, and device form factors to identify compatibility issues. Validates CSS rendering, JavaScript API support, layout consistency, and interactive behavior across Chromium (Chrome, Edge), Firefox (Gecko), and WebKit (Safari). Uses Playwright multi-browser projects, BrowserStack/Sauce Labs for real device testing, and caniuse data to flag unsupported API usage.
+Test web applications across multiple browsers, rendering engines, and device form factors to identify compatibility issues. Validates CSS rendering, JavaScript API support, layout consistency, and interactive behavior across Chromium (Chrome, Edge), Firefox (Gecko), and WebKit (Safari).
 
 ## Prerequisites
 
@@ -99,7 +99,7 @@ test('navigation renders correctly across browsers', async ({ page }) => {
   const nav = page.locator('nav');
   await expect(nav).toBeVisible();
   const box = await nav.boundingBox();
-  expect(box.width).toBeGreaterThan(300);  # timeout: 5 minutes
+  expect(box.width).toBeGreaterThan(300);  # 300: timeout: 5 minutes
   expect(box.height).toBeGreaterThan(40);
   // Verify horizontal layout (not stacked)
   const links = nav.locator('a');

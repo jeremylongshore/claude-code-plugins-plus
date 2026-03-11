@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lindy Cost Tuning
 
 ## Overview
-Optimize Lindy AI costs by managing active agent count, consolidating automations, and monitoring per-agent execution frequency. Lindy uses per-agent pricing where each active agent incurs a monthly cost regardless of how often it runs. The key cost lever is reducing the number of active agents -- consolidate similar agents, deactivate underused ones, and design multi-purpose agents rather than single-task agents.
+Optimize Lindy AI costs by managing active agent count, consolidating automations, and monitoring per-agent execution frequency. Lindy uses per-agent pricing where each active agent incurs a monthly cost regardless of how often it runs.
 
 ## Prerequisites
 - Lindy Team or Enterprise workspace
@@ -38,7 +38,6 @@ Reduce per-run costs by minimizing the number of tool calls in each agent:
 
 ### Step 5: Monitor Monthly Spend
 
-
 For detailed implementation code and configurations, load the reference guide:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
@@ -51,7 +50,6 @@ For detailed implementation code and configurations, load the reference guide:
 | Cannot reduce below N agents | Business dependency | Document which agents are critical, optimize the rest |
 
 ## Examples
-
 
 **Basic usage**: Apply lindy cost tuning to a standard project setup with default configuration options.
 

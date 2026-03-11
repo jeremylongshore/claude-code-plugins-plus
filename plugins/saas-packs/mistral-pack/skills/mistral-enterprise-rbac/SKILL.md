@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Mistral AI Enterprise RBAC
 
 ## Overview
-Control access to Mistral AI models and API resources at the organization level. Mistral uses API key scoping and La Plateforme workspace management to separate environments. Access is governed through organization membership, API key permissions, and model-level restrictions that determine which team members can call which endpoints.
+Control access to Mistral AI models and API resources at the organization level. Mistral uses API key scoping and La Plateforme workspace management to separate environments.
 
 ## Prerequisites
 - Mistral La Plateforme organization account
@@ -90,7 +90,6 @@ Automate 90-day key rotation. Create the new key, update consuming services, the
 | Spending alert triggered | Monthly budget near cap | Review usage by key; restrict heavy consumers |
 
 ## Examples
-
 
 **Basic usage**: Apply mistral enterprise rbac to a standard project setup with default configuration options.
 

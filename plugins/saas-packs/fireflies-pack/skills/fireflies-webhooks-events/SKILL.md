@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Webhooks & Events
 
 ## Overview
-Handle Fireflies.ai webhooks for real-time meeting transcript notifications. Fireflies sends webhook events when meeting transcripts are ready, when action items are extracted, and when meeting summaries complete. Use these to build automated CRM updates, task creation workflows, and meeting analytics pipelines.
+Handle Fireflies.ai webhooks for real-time meeting transcript notifications. Fireflies sends webhook events when meeting transcripts are ready, when action items are extracted, and when meeting summaries complete.
 
 ## Prerequisites
 - Fireflies.ai account with API access (Business or Enterprise plan)

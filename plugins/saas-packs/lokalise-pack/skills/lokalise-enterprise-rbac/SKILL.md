@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Enterprise RBAC
 
 ## Overview
-Manage fine-grained access to Lokalise translation projects using its built-in role hierarchy. Lokalise distinguishes between organization-level roles (Owner, Admin, Biller) and project-level contributor roles (Manager, Developer, Translator, Reviewer) with optional language-pair restrictions, making it possible to give a French translator write access only to `fr` keys while locking them out of `de` content.
+Manage fine-grained access to Lokalise translation projects using its built-in role hierarchy.
 
 ## Prerequisites
 - Lokalise Team or Enterprise plan
@@ -100,7 +100,6 @@ for (const proj of projects.items) {
 | Cannot remove Owner | Last owner protection | Transfer ownership before removal |
 
 ## Examples
-
 
 **Basic usage**: Apply lokalise enterprise rbac to a standard project setup with default configuration options.
 

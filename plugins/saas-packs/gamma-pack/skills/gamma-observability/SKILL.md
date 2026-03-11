@@ -75,7 +75,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ### Quick Health Check
 ```bash
 set -euo pipefail
-curl http://localhost:3000/health/gamma | jq  # 3 seconds in ms
+curl http://localhost:3000/health/gamma | jq  # 3000: 3 seconds in ms
 # { "status": "healthy", "latency": 150, "rateLimit": { "remaining": 95, "limit": 100 } }
 ```
 

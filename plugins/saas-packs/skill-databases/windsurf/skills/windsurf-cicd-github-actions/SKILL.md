@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables AI-assisted CI/CD workflow creation within Windsurf. Cascade can generate GitHub Actions workflows from project requirements, optimize existing pipelines, debug workflow failures, and implement security best practices. It understands common CI/CD patterns and can create workflows for testing, building, and deploying applications.
+This skill enables AI-assisted CI/CD workflow creation within Windsurf. Cascade can generate GitHub Actions workflows from project requirements, optimize existing pipelines, debug workflow failures, and implement security best practices.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables AI-assisted CI/CD workflow creation within Windsurf. Cascade 
 3. **Configure Secrets**
 4. **Test Workflows**
 5. **Deploy and Monitor**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

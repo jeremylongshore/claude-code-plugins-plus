@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement and manage table partitioning for PostgreSQL and MySQL to improve query performance and simplify data lifecycle management on large tables. This skill covers range partitioning (by date or ID), list partitioning (by category or region), hash partitioning (for even distribution), and composite partitioning. Partitioning enables partition pruning in queries, faster bulk data operations, and efficient archival of old data by dropping entire partitions.
+Implement and manage table partitioning for PostgreSQL and MySQL to improve query performance and simplify data lifecycle management on large tables. This skill covers range partitioning (by date or ID), list partitioning (by category or region), hash partitioning (for even distribution), and composite partitioning.
 
 ## Prerequisites
 

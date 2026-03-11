@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables coordinated multi-file editing operations within Windsurf using Cascade AI. It provides atomic changes across multiple files, ensuring consistency when renaming symbols, moving code, or making cross-file refactoring changes. The skill handles dependency tracking, preview generation, and rollback capabilities for safe multi-file operations.
+This skill enables coordinated multi-file editing operations within Windsurf using Cascade AI. It provides atomic changes across multiple files, ensuring consistency when renaming symbols, moving code, or making cross-file refactoring changes.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables coordinated multi-file editing operations within Windsurf usi
 3. **Generate Preview**
 4. **Execute with Preview**
 5. **Verify Results**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

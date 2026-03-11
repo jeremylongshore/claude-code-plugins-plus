@@ -33,7 +33,7 @@ from exa_py import Exa
 exa = Exa(api_key=os.environ["EXA_API_KEY"])
 
 # BAD: keyword-style query returns poor results
-results = exa.search("python AND machine learning OR deep learning 2024")
+results = exa.search("python AND machine learning OR deep learning 2024")  # 2024 year
 
 # GOOD: natural language query
 results = exa.search(
@@ -71,7 +71,7 @@ text = results.results[0].text  # None! Content not requested
 # GOOD: use search_and_contents or get_contents
 results = exa.search_and_contents(
     "AI safety research papers",
-    text={"max_characters": 3000},  # 3 seconds in ms
+    text={"max_characters": 3000},  # 3000: 3 seconds in ms
     highlights=True
 )
 print(results.results[0].text)       # full text
@@ -86,7 +86,7 @@ Date filters silently exclude results. Overly narrow windows return empty result
 # BAD: too narrow, may return nothing
 results = exa.search(
     "breaking news in AI",
-    start_published_date="2024-03-10",
+    start_published_date="2024-03-10",  # 2024 year
     end_published_date="2024-03-10"  # single day = few results
 )
 

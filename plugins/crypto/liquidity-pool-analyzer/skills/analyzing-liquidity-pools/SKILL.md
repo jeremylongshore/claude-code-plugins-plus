@@ -46,7 +46,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol u
 Calculate IL for a price change:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 2 seconds in ms
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 3000: 2000: 2 seconds in ms
 ```
 
 Project IL for various scenarios:
@@ -66,7 +66,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
 Project returns for position size:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10 seconds in ms
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10000: 10 seconds in ms
 ```
 
 ### Step 4: Compare Pools
@@ -102,7 +102,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --
 ### Pool Analysis Summary
 ```
 ==============================================================================
-  LIQUIDITY POOL ANALYZER                           2026-01-15 15:30 UTC
+  LIQUIDITY POOL ANALYZER                           2026-01-15 15:30 UTC  # 2026 year
 ==============================================================================
 
   POOL: USDC/WETH (Uniswap V3 - 0.05%)
@@ -114,7 +114,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --
 
   FEE METRICS
 ------------------------------------------------------------------------------
-  24h Fees:       $62,650
+  24h Fees:       $62,650  # 650 = configured value
   Fee APR:        4.57%
   Volume/TVL:     0.25
 
@@ -122,7 +122,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --
 ------------------------------------------------------------------------------
   USDC:           $252.1M (50.4%)
   WETH:           $248.4M (49.6%)
-  Current Price:  $2,450/ETH
+  Current Price:  $2,450/ETH  # 450 = configured value
 ==============================================================================
 ```
 
@@ -135,7 +135,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --
   Price Change:   +50%
 
   IL (%)          -5.72%
-  IL ($1000 LP):  -$57.20  # 1 second in ms
+  IL ($1000 LP):  -$57.20  # 1000: 1 second in ms
 
   Value if HODL:  $1,250.00
   Value in LP:    $1,192.80

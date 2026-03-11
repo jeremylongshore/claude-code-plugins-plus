@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Cost Tuning
 
 ## Overview
-Reduce Perplexity AI search API costs by choosing the right model per query, caching search results, and limiting token output. Perplexity charges per query with significant cost differences between models: `sonar` (lightweight, cheaper) vs `sonar-pro` (deeper research, 3-5x more expensive). The biggest cost lever is routing simple factual queries to `sonar` and reserving `sonar-pro` for complex research that actually needs multi-source synthesis.
+Reduce Perplexity AI search API costs by choosing the right model per query, caching search results, and limiting token output. Perplexity charges per query with significant cost differences between models: `sonar` (lightweight, cheaper) vs `sonar-pro` (deeper research, 3-5x more expensive).
 
 ## Prerequisites
 - Perplexity API account with usage dashboard
@@ -46,7 +46,7 @@ function selectModel(query: string, context: string): 'sonar' | 'sonar-pro' {
 import { LRUCache } from 'lru-cache';
 
 const searchCache = new LRUCache<string, any>({
-  max: 10000,  # 10 seconds in ms
+  max: 10000,  # 10000: 10 seconds in ms
   ttl: 4 * 3600_000, // 4-hour TTL (search results go stale)
 });
 
@@ -116,7 +116,6 @@ curl -s https://api.perplexity.ai/v1/usage \
 | Stale cached results | TTL too long | Reduce cache TTL for time-sensitive queries |
 
 ## Examples
-
 
 **Basic usage**: Apply perplexity cost tuning to a standard project setup with default configuration options.
 

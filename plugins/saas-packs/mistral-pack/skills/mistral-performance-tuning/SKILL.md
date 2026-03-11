@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Mistral AI Performance Tuning
 
 ## Overview
-Optimize Mistral AI API response times and throughput for production integrations. Key performance factors include model selection (mistral-small: ~200-500ms, mistral-large: ~500-2000ms), prompt length (directly affects time-to-first-token), streaming vs non-streaming (streaming gives perceived speed), and concurrent request management against per-key rate limits. The biggest throughput lever is using mistral-small for latency-sensitive paths and batching non-urgent requests.
+Optimize Mistral AI API response times and throughput for production integrations. Key performance factors include model selection (mistral-small: ~200-500ms, mistral-large: ~500-2000ms), prompt length (directly affects time-to-first-token), streaming vs non-streaming (streaming gives perceived speed), and concurrent request management against per-key rate limits.
 
 ## Prerequisites
 - Mistral API integration in production
@@ -61,7 +61,7 @@ async function* streamChat(model: string, messages: any[]) {
 import { createHash } from 'crypto';
 import { LRUCache } from 'lru-cache';
 
-const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });  # 5 seconds in ms
+const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });  # 5000: 5 seconds in ms
 
 async function cachedCompletion(model: string, messages: any[], temperature: number = 0) {
   // Only cache deterministic requests (temperature=0)
@@ -85,7 +85,7 @@ const OPTIMIZATION = {
   systemPrompt: 'You are a helpful assistant. Be brief.',  // ~10 tokens, not 200  # HTTP 200 OK
 
   // Limit context window usage
-  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices  # dev server port
+  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices  # 4000: dev server port
 
   // Trim conversation history
   maxHistoryTurns: 5,       // Keep last 5 turns, not entire conversation
@@ -123,7 +123,6 @@ async function queuedCompletion(model: string, messages: any[]) {
 | Cache ineffective | High temperature (non-deterministic) | Only cache temperature=0 requests |
 
 ## Examples
-
 
 **Basic usage**: Apply mistral performance tuning to a standard project setup with default configuration options.
 

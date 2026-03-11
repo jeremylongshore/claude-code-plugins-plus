@@ -32,7 +32,7 @@ Perplexity's web search is expensive per call. Cache results for repeated querie
 import hashlib, json
 
 class PerplexityCache:
-    def __init__(self, redis_client, ttl=600):  # timeout: 10 minutes
+    def __init__(self, redis_client, ttl=600):  # 600: timeout: 10 minutes
         self.r = redis_client
         self.ttl = ttl
 

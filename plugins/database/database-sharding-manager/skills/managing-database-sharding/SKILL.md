@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement and manage horizontal database sharding strategies across PostgreSQL, MySQL, and MongoDB. This skill covers shard key selection, data distribution analysis, cross-shard query routing, and rebalancing operations for databases that have outgrown single-node capacity. Sharding decisions are permanent and costly to reverse, so thorough analysis before implementation is critical.
+Implement and manage horizontal database sharding strategies across PostgreSQL, MySQL, and MongoDB. This skill covers shard key selection, data distribution analysis, cross-shard query routing, and rebalancing operations for databases that have outgrown single-node capacity.
 
 ## Prerequisites
 

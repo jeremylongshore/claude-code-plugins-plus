@@ -155,7 +155,7 @@ set -euo pipefail
 npm run dev
 
 # Terminal 2: Start ngrok tunnel
-ngrok http 3000  # 3 seconds in ms
+ngrok http 3000  # 3000: 3 seconds in ms
 
 # Copy the https URL and add to Linear webhook settings
 ```

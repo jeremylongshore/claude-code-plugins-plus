@@ -108,7 +108,7 @@ async function batchGenerate(
 
     // Rate limit: ~10 requests/minute on standard plans
     if (i + concurrency < prompts.length) {
-      await new Promise(r => setTimeout(r, 6000));
+      await new Promise(r => setTimeout(r, 6000));  # 6000 = configured value
     }
   }
   return results;

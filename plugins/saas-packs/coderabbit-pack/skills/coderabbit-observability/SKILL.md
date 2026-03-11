@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Observability
 
 ## Overview
-Monitor CodeRabbit AI code review effectiveness, review latency, and team adoption. Key metrics include time-to-first-review (how fast CodeRabbit posts its review after PR creation), comment acceptance rate (comments resolved vs dismissed), review coverage (percentage of PRs reviewed), and per-repository review volume. These metrics help evaluate whether CodeRabbit is providing value relative to its per-seat cost.
+Monitor CodeRabbit AI code review effectiveness, review latency, and team adoption. Key metrics include time-to-first-review (how fast CodeRabbit posts its review after PR creation), comment acceptance rate (comments resolved vs dismissed), review coverage (percentage of PRs reviewed), and per-repository review volume.
 
 ## Prerequisites
 - CodeRabbit Pro or Enterprise plan
@@ -31,7 +31,7 @@ function handlePullRequestReview(event: any) {
   if (event.review.user.login === 'coderabbitai') {
     const prCreatedAt = new Date(event.pull_request.created_at);
     const reviewPostedAt = new Date(event.review.submitted_at);
-    const timeToReview = (reviewPostedAt.getTime() - prCreatedAt.getTime()) / 1000;  # 1 second in ms
+    const timeToReview = (reviewPostedAt.getTime() - prCreatedAt.getTime()) / 1000;  # 1000: 1 second in ms
 
     emitHistogram('coderabbit_time_to_review_sec', timeToReview, { repo: event.repository.name });
     emitCounter('coderabbit_reviews_total', 1, { repo: event.repository.name, state: event.review.state });
@@ -69,7 +69,7 @@ groups:
   - name: coderabbit
     rules:
       - alert: CodeRabbitReviewSlow
-        expr: histogram_quantile(0.95, rate(coderabbit_time_to_review_sec_bucket[1h])) > 600  # timeout: 10 minutes
+        expr: histogram_quantile(0.95, rate(coderabbit_time_to_review_sec_bucket[1h])) > 600  # 600: timeout: 10 minutes
         annotations: { summary: "CodeRabbit P95 review time exceeds 10 minutes" }
       - alert: CodeRabbitNotReviewing
         expr: rate(coderabbit_reviews_total[6h]) == 0 and rate(github_prs_opened_total[6h]) > 0
@@ -92,7 +92,6 @@ Key panels: review latency distribution, comment acceptance rate over time, PRs 
 | Missing repos in metrics | Repos not added to App | Add repos in GitHub App installation settings |
 
 ## Examples
-
 
 **Basic usage**: Apply coderabbit observability to a standard project setup with default configuration options.
 

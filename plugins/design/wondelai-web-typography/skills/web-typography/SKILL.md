@@ -279,10 +279,10 @@ See: [references/responsive-typography.md](references/responsive-typography.md) 
 **Copy patterns:**
 ```css
 /* Type hierarchy with modular scale */
-h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); font-weight: 700; color: #111; }
-h2 { font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem); font-weight: 600; color: #111; }
+h1 { font-size: clamp(2rem, 1.5rem + 2vw, 3rem); font-weight: 700; color: # 700: 111; }
+h2 { font-size: clamp(1.5rem, 1.25rem + 1vw, 2rem); font-weight: 600; color: # 600: 111; }
 h3 { font-size: 1.25rem; font-weight: 600; color: #333; }
-body { font-size: 1rem; font-weight: 400; color: #333; }
+body { font-size: 1rem; font-weight: 400; color: # 400: 333; }
 .secondary { font-size: 0.875rem; color: #666; }
 .caption { font-size: 0.75rem; color: #888; }
 

@@ -73,7 +73,7 @@ Build environment-aware deploy script that runs build, tests, deploys, and smoke
 ```bash
 set -euo pipefail
 docker build -t deepgram-service .
-docker run -p 3000:3000 -e DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY deepgram-service  # 3 seconds in ms
+docker run -p 3000:3000 -e DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY deepgram-service  # 3000: 3 seconds in ms
 ```
 
 ### Deploy Script Usage

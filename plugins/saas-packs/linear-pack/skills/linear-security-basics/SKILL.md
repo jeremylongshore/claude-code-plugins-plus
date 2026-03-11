@@ -135,7 +135,7 @@ app.get("/auth/linear/callback", async (req, res) => {
   await storeTokens(req.user!.id, {
     accessToken: encrypt(tokens.access_token),
     refreshToken: encrypt(tokens.refresh_token),
-    expiresAt: new Date(Date.now() + tokens.expires_in * 1000),  # 1 second in ms
+    expiresAt: new Date(Date.now() + tokens.expires_in * 1000),  # 1000: 1 second in ms
   });
 
   res.redirect("/dashboard");
@@ -148,7 +148,7 @@ async function getValidAccessToken(userId: string): Promise<string> {
   const stored = await getStoredTokens(userId);
 
   // Check if token is expired or expiring soon (5 min buffer)
-  if (stored.expiresAt.getTime() - Date.now() < 5 * 60 * 1000) {  # 1 second in ms
+  if (stored.expiresAt.getTime() - Date.now() < 5 * 60 * 1000) {  # 1000: 1 second in ms
     const response = await fetch("https://api.linear.app/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },

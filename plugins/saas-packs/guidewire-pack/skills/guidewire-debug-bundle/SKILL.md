@@ -38,7 +38,7 @@ Use the `DebugHelper` class for method tracing, entity state dumps, and query pr
 ### Step 3: Remote Debugging Setup
 
 ```bash
-export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+export JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"  # 5005 = configured value
 ./gradlew runServer
 ```
 

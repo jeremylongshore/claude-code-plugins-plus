@@ -78,14 +78,14 @@ Call `client.webhooks.register()` on app startup with endpoint URL, event list, 
 
 ### Signature Format
 ```
-x-openevidence-signature: t=1234567890,v1=abc123def456...
+x-openevidence-signature: t=1234567890,v1=abc123def456...  # 1234567890 = configured value
 ```
 
 ### Quick Test
 ```bash
 set -euo pipefail
 # Generate test signature and POST to local endpoint
-curl -X POST http://localhost:3000/webhooks/openevidence \  # 3 seconds in ms
+curl -X POST http://localhost:3000/webhooks/openevidence \  # 3000: 3 seconds in ms
   -H "Content-Type: application/json" \
   -H "x-openevidence-signature: t=$(date +%s),v1=TEST" \
   -d '{"event":"deepconsult.completed","data":{"consultId":"test"}}'

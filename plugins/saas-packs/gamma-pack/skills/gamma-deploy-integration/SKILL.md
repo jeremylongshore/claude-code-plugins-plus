@@ -106,8 +106,8 @@ export async function handler(event: any) {
 #### Step 3: SAM Template
 ```yaml
 # template.yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Transform: AWS::Serverless-2016-10-31
+AWSTemplateFormatVersion: '2010-09-09'  # 2010 = configured value
+Transform: AWS::Serverless-2016-10-31  # 2016 = configured value
 
 Resources:
   GammaFunction:
@@ -116,7 +116,7 @@ Resources:
       Handler: dist/gamma-handler.handler
       Runtime: nodejs20.x
       Timeout: 30
-      MemorySize: 256
+      MemorySize: 256  # 256 bytes
       Policies:
         - SecretsManagerReadWrite
       Environment:

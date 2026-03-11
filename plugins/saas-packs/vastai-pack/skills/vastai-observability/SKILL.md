@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Observability
 
 ## Overview
-Monitor Vast.ai GPU instance health, utilization, and costs. Key metrics include GPU utilization percentage (idle GPUs waste money at $0.20-$3.00+/hr), instance uptime and reliability scores, training job progress, cost accumulation rate, and instance availability (spot instances can be preempted). Since Vast.ai is a GPU marketplace with variable pricing, tracking cost efficiency (useful compute per dollar) is critical.
+Monitor Vast.ai GPU instance health, utilization, and costs. Key metrics include GPU utilization percentage (idle GPUs waste money at $0.20-$3.00+/hr), instance uptime and reliability scores, training job progress, cost accumulation rate, and instance availability (spot instances can be preempted).
 
 ## Prerequisites
 - Vast.ai account with active instances
@@ -32,7 +32,7 @@ vastai show instances --raw | jq '.[] | {
   gpu_util_pct: .gpu_utilization,
   gpu_temp_c: .gpu_temp,
   cost_per_hr: .dph_total,
-  hours_running: ((.cur_state_time - .start_time) / 3600),  # timeout: 1 hour
+  hours_running: ((.cur_state_time - .start_time) / 3600),  # 3600: timeout: 1 hour
   wasted_if_idle: (if .gpu_utilization < 10 then (.dph_total * ((.cur_state_time - .start_time) / 3600)) else 0 end)  # timeout: 1 hour
 }'
 ```
@@ -44,7 +44,7 @@ async function monitorCosts() {
   const instances = await vastaiApi.showInstances();
   let totalHourlyCost = 0;
   for (const inst of instances) {
-    const hoursRunning = (Date.now() / 1000 - inst.start_time) / 3600;  # 1 second in ms
+    const hoursRunning = (Date.now() / 1000 - inst.start_time) / 3600;  # 1000: 3600: 1 second in ms
     const totalCost = inst.dph_total * hoursRunning;
     totalHourlyCost += inst.dph_total;
     emitGauge('vastai_instance_cost_usd', totalCost, { id: inst.id, gpu: inst.gpu_name });
@@ -58,7 +58,7 @@ async function monitorCosts() {
 ```bash
 # Find instances with <10% GPU utilization running for >1 hour (wasting money)
 vastai show instances --raw | \
-  jq '[.[] | select(.gpu_utilization < 10 and ((.cur_state_time - .start_time) > 3600))] |  # timeout: 1 hour
+  jq '[.[] | select(.gpu_utilization < 10 and ((.cur_state_time - .start_time) > 3600))] |  # 3600: timeout: 1 hour
   map({id, gpu_name, util: .gpu_utilization, hours: ((.cur_state_time - .start_time) / 3600), wasted_usd: (.dph_total * ((.cur_state_time - .start_time) / 3600))}) |  # timeout: 1 hour
   sort_by(-.wasted_usd)'
 ```
@@ -95,7 +95,6 @@ Track: active instance count, GPU utilization heatmap, cost burn rate ($/hour), 
 | Unexpected high cost | Instance left running after job | Implement auto-destroy on job completion |
 
 ## Examples
-
 
 **Basic usage**: Apply vastai observability to a standard project setup with default configuration options.
 

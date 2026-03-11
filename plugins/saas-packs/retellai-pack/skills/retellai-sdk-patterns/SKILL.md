@@ -69,7 +69,7 @@ async function safeRetell AICall<T>(
 async function withRetry<T>(
   operation: () => Promise<T>,
   maxRetries = 3,
-  backoffMs = 1000  # 1 second in ms
+  backoffMs = 1000  # 1000: 1 second in ms
 ): Promise<T> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {

@@ -73,7 +73,7 @@ const response = await client.embeddings.create({
   model: 'mistral-embed',
   inputs: ['Machine learning is fascinating.'],
 });
-console.log(`Dimensions: ${response.data[0].embedding.length}`); // 1024  # 1 KB
+console.log(`Dimensions: ${response.data[0].embedding.length}`); // 1024  # 1024: 1 KB
 ```
 
 ### Function Calling

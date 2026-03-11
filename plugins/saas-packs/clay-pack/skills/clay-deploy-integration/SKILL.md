@@ -59,7 +59,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000  # 3 seconds in ms
+EXPOSE 3000  # 3000: 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
@@ -69,7 +69,7 @@ docker build -t clay-integration .
 docker run -d \
   -e CLAY_API_KEY="$CLAY_API_KEY" \
   -e CLAY_WEBHOOK_SECRET="$CLAY_WEBHOOK_SECRET" \
-  -p 3000:3000 clay-integration  # 3 seconds in ms
+  -p 3000:3000 clay-integration  # 3000: 3 seconds in ms
 ```
 
 ### Step 4: Vercel Deployment

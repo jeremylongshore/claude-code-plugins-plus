@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Query and analyze blockchain data across multiple EVM-compatible networks including Ethereum, Polygon, Arbitrum, Optimism, and BSC. Supports transaction lookups, address balance checks, block inspection, token balance queries, transaction history retrieval, and whale wallet tracking via a unified CLI. Designed for blockchain developers, security researchers, and on-chain analysts who need rapid access to transaction details, decoded contract interactions, and multi-chain address portfolios without navigating separate block explorers.
+Query and analyze blockchain data across multiple EVM-compatible networks including Ethereum, Polygon, Arbitrum, Optimism, and BSC. Supports transaction lookups, address balance checks, block inspection, token balance queries, transaction history retrieval, and whale wallet tracking via a unified CLI.
 
 ## Prerequisites
 

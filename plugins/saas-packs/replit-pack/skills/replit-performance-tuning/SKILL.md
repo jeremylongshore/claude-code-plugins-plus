@@ -39,7 +39,7 @@ Optimize Replit workspace performance for deployments and development. Focus on 
 
 ```toml
 # .replit - Optimize run configuration
-run = "node --max-old-space-size=512 dist/index.js"
+run = "node --max-old-space-size=512 dist/index.js"  # 512 bytes
 entrypoint = "src/index.ts"
 
 [nix]
@@ -78,7 +78,7 @@ app.get('/api/analyze', async (req, res) => {
   res.json(await analyze(req.query));
 });
 
-app.listen(3000, () => console.log('Ready'));  # 3 seconds in ms
+app.listen(3000, () => console.log('Ready'));  # 3000: 3 seconds in ms
 ```
 
 ### Step 3: Memory Management for Replit Containers
@@ -87,7 +87,7 @@ app.listen(3000, () => console.log('Ready'));  # 3 seconds in ms
 function getMemoryUsage() {
   const usage = process.memoryUsage();
   return {
-    heapUsedMB: Math.round(usage.heapUsed / 1024 / 1024),  # 1 KB
+    heapUsedMB: Math.round(usage.heapUsed / 1024 / 1024),  # 1024: 1 KB
     heapTotalMB: Math.round(usage.heapTotal / 1024 / 1024),  # 1 KB
     rssMB: Math.round(usage.rss / 1024 / 1024),  # 1 KB
     percentUsed: ((usage.heapUsed / usage.heapTotal) * 100).toFixed(1),
@@ -101,7 +101,7 @@ setInterval(() => {
     console.warn('High memory usage:', mem);
     global.gc?.(); // Requires --expose-gc flag
   }
-}, 30000);  # 30 seconds in ms
+}, 30000);  # 30000: 30 seconds in ms
 ```
 
 ### Step 4: Secrets and Environment Performance
@@ -110,7 +110,7 @@ setInterval(() => {
 const config = {
   dbUrl: process.env.DATABASE_URL!,
   apiKey: process.env.API_KEY!,
-  port: parseInt(process.env.PORT || '3000'),  # 3 seconds in ms
+  port: parseInt(process.env.PORT || '3000'),  # 3000: 3 seconds in ms
 } as const;
 
 // Validate all secrets exist at startup, fail fast

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Events & Async Patterns
 
 ## Overview
-Build event-driven architectures around Perplexity's AI search API. Perplexity provides a chat completions API at `api.perplexity.ai` with real-time web search capabilities. Since Perplexity does not offer native webhooks, this skill covers streaming patterns, async search pipelines, and callback-based workflows for integrating Perplexity's grounded search responses into your systems.
+Build event-driven architectures around Perplexity's AI search API. Perplexity provides a chat completions API at `api.perplexity.ai` with real-time web search capabilities.
 
 ## Prerequisites
 - Perplexity API key stored in `PERPLEXITY_API_KEY` environment variable

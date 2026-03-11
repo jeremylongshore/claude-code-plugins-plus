@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Firecrawl Cost Tuning
 
 ## Overview
-Reduce Firecrawl web scraping costs by limiting crawl depth, caching scraped content, and choosing the right scrape mode. Firecrawl charges credits per page: 1 credit for single-page scrape, variable credits for crawl jobs (each discovered page costs credits). The biggest cost levers are: setting `limit` and `maxDepth` on every crawl job (unbounded crawls can consume thousands of credits), caching previously scraped URLs, and using `scrape` instead of `crawl` when you only need specific pages.
+Reduce Firecrawl web scraping costs by limiting crawl depth, caching scraped content, and choosing the right scrape mode. Firecrawl charges credits per page: 1 credit for single-page scrape, variable credits for crawl jobs (each discovered page costs credits).
 
 ## Prerequisites
 - Firecrawl account with credit balance visibility
@@ -64,7 +64,7 @@ for (const url of targetUrls) {
 import { createHash } from 'crypto';
 
 const scrapeCache = new Map<string, { content: string; timestamp: number }>();
-const CACHE_TTL = 24 * 3600 * 1000; // 24 hours  # timeout: 1 hour
+const CACHE_TTL = 24 * 3600 * 1000; // 24 hours  # 1000: 3600: timeout: 1 hour
 
 async function cachedScrape(url: string): Promise<string> {
   const key = createHash('md5').update(url).digest('hex');
@@ -114,7 +114,6 @@ curl -s https://api.firecrawl.dev/v1/usage \
 | Budget overrun | Automated crawls without caps | Set per-job credit limits and daily caps |
 
 ## Examples
-
 
 **Basic usage**: Apply firecrawl cost tuning to a standard project setup with default configuration options.
 

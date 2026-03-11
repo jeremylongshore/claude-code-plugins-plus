@@ -79,7 +79,7 @@ class DistributedCallHandler {
     let response = await this.redis.get(cacheKey);
     if (!response) {
       response = await this.llm.generate(context);
-      await this.redis.setex(cacheKey, 3600, response);  # timeout: 1 hour
+      await this.redis.setex(cacheKey, 3600, response);  # 3600: timeout: 1 hour
     }
     await this.redis.setex(`call:${callId}`, 3600, JSON.stringify(context));  # timeout: 1 hour
     return response;

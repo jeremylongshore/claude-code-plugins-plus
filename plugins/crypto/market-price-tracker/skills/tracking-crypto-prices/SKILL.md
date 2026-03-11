@@ -93,7 +93,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
 python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
 
 # Custom date range
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31  # 2024 year
 ```
 
 ### Step 4: Configure Settings
@@ -103,7 +103,7 @@ Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml` to customize:
 ```yaml
 cache:
   spot_ttl: 30          # Seconds to cache spot prices
-  historical_ttl: 3600  # Seconds to cache historical data
+  historical_ttl: 3600  # 3600: Seconds to cache historical data
 
 currency:
   default: usd          # Default fiat currency
@@ -147,8 +147,8 @@ watchlists:
       "price": 97234.56,
       "currency": "USD",
       "change_24h": 2.34,
-      "volume_24h": 28500000000,
-      "market_cap": 1920000000000,
+      "volume_24h": 28500000000,  # 28500000000 = configured value
+      "market_cap": 1920000000000,  # 1920000000000 = configured value
       "timestamp": "[timestamp]",
       "source": "coingecko"
     }
@@ -165,8 +165,8 @@ watchlists:
 
 ```csv
 date,open,high,low,close,volume
-[date],95000.00,96500.00,94200.00,96100.00,25000000000
-[date],96100.00,97800.00,95800.00,97500.00,27000000000
+[date],95000.00,96500.00,94200.00,96100.00,25000000000  # 25000000000 = configured value
+[date],96100.00,97800.00,95800.00,97500.00,27000000000  # 27000000000 = configured value
 ```
 
 ## Configuration
@@ -186,7 +186,7 @@ api:
 cache:
   enabled: true
   spot_ttl: 30                      # Spot price TTL (seconds)
-  historical_ttl: 3600              # Historical data TTL (seconds)
+  historical_ttl: 3600              # 3600: Historical data TTL (seconds)
   directory: ./data
 
 # Display Configuration

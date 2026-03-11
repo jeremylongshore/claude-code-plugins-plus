@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Memory provides persistent context across Claude Code sessions by storing and retrieving project decisions, user preferences, and coding conventions from a local JSON file. When a new session starts, stored memories load automatically so previously established patterns carry forward without re-explanation. Developers working on long-running projects use this skill to maintain consistency across context window boundaries.
+Memory provides persistent context across Claude Code sessions by storing and retrieving project decisions, user preferences, and coding conventions from a local JSON file. When a new session starts, stored memories load automatically so previously established patterns carry forward without re-explanation.
 
 ## Prerequisites
 

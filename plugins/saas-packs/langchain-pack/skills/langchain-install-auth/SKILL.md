@@ -89,7 +89,7 @@ assert os.environ.get("OPENAI_API_KEY"), "Set OPENAI_API_KEY"
 llm = ChatOpenAI(
     model="gpt-4o-mini",
     temperature=0.7,
-    max_tokens=1000  # 1 second in ms
+    max_tokens=1000  # 1000: 1 second in ms
 )
 ```
 
@@ -98,7 +98,7 @@ llm = ChatOpenAI(
 from langchain_anthropic import ChatAnthropic
 
 llm = ChatAnthropic(
-    model="claude-3-5-sonnet-20241022",
+    model="claude-3-5-sonnet-20241022",  # 20241022 = date/version stamp
     temperature=0.7
 )
 ```

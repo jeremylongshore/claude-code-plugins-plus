@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Mistral AI Observability
 
 ## Overview
-Monitor Mistral AI API usage, latency, token consumption, and costs across models. Key metrics to track include per-model token throughput (input vs output), p95 latency by endpoint (chat.complete, embeddings), error rates by status code (429 rate limits, 503 outages), and estimated cost derived from Mistral's per-token pricing (e.g., mistral-small at $0.20/$0.60 per 1M input/output tokens, mistral-large at $2/$6).
+Monitor Mistral AI API usage, latency, token consumption, and costs across models.
 
 ## Prerequisites
 - Mistral API integration in production
@@ -55,7 +55,7 @@ async function trackedChat(client: Mistral, model: string, messages: any[]) {
 ```yaml
 # Key metrics to expose on /metrics endpoint
 mistral_requests_total:       { type: counter, labels: [model, status, endpoint] }
-mistral_request_duration_ms:  { type: histogram, labels: [model], buckets: [100, 250, 500, 1000, 2500, 5000] }  # HTTP 500 Internal Server Error
+mistral_request_duration_ms:  { type: histogram, labels: [model], buckets: [100, 250, 500, 1000, 2500, 5000] }  # 5000: 2500: 1000: 250: HTTP 500 Internal Server Error
 mistral_tokens_total:         { type: counter, labels: [model, direction] }  # direction: input|output
 mistral_cost_usd_total:       { type: counter, labels: [model] }
 mistral_errors_total:         { type: counter, labels: [model, status_code] }
@@ -72,7 +72,7 @@ groups:
         for: 5m
         annotations: { summary: "Mistral error rate exceeds 5%" }
       - alert: MistralHighLatency
-        expr: histogram_quantile(0.95, rate(mistral_request_duration_ms_bucket[5m])) > 5000  # 5 seconds in ms
+        expr: histogram_quantile(0.95, rate(mistral_request_duration_ms_bucket[5m])) > 5000  # 5000: 5 seconds in ms
         for: 5m
         annotations: { summary: "Mistral P95 latency exceeds 5 seconds" }
       - alert: MistralCostSpike
@@ -85,7 +85,7 @@ Create panels for: request rate by model, p50/p95/p99 latency, token consumption
 
 ### Step 5: Log Structured Request Data
 ```json
-{"ts":"2026-03-10T14:30:00Z","model":"mistral-small-latest","op":"chat.complete","duration_ms":342,"input_tokens":128,"output_tokens":256,"cost_usd":0.00018,"status":"success","request_id":"req_abc123"}
+{"ts":"2026-03-10T14:30:00Z","model":"mistral-small-latest","op":"chat.complete","duration_ms":342,"input_tokens":128,"output_tokens":256,"cost_usd":0.00018,"status":"success","request_id":"req_abc123"}  # 2026: 256: 342 = configured value
 ```
 Ship structured logs to your SIEM for correlation with business metrics.
 
@@ -98,7 +98,6 @@ Ship structured logs to your SIEM for correlation with business metrics.
 | High cardinality metrics | Too many label combinations | Avoid per-request-id labels |
 
 ## Examples
-
 
 **Basic usage**: Apply mistral observability to a standard project setup with default configuration options.
 

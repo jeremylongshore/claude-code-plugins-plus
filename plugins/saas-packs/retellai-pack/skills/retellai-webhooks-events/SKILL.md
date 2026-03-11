@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Webhooks & Events
 
 ## Overview
-Handle Retell AI webhooks for real-time voice call lifecycle events. Retell AI fires webhooks when calls start, end, or encounter events during conversation. Use these to build real-time call monitoring dashboards, post-call processing pipelines, and automated follow-up workflows for AI voice agents.
+Handle Retell AI webhooks for real-time voice call lifecycle events. Retell AI fires webhooks when calls start, end, or encounter events during conversation.
 
 ## Prerequisites
 - Retell AI account with API access
@@ -107,7 +107,7 @@ async function handleRetellEvent(payload: RetellWebhookPayload) {
 ```typescript
 async function handleCallEnded(call: any) {
   const { call_id, duration_ms, transcript, from_number } = call;
-  const durationMin = Math.round(duration_ms / 60000);  # 1 minute in ms
+  const durationMin = Math.round(duration_ms / 60000);  # 60000: 1 minute in ms
 
   console.log(`Call ${call_id} ended: ${durationMin}min`);
 
@@ -150,8 +150,8 @@ curl -X POST https://api.retellai.com/v2/create-phone-call \
   -H "Authorization: Bearer $RETELL_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "from_number": "+11234567890",
-    "to_number": "+10987654321",
+    "from_number": "+11234567890",  # 11234567890 = configured value
+    "to_number": "+10987654321",  # 10987654321 = configured value
     "agent_id": "agt_abc123",
     "webhook_url": "https://api.yourapp.com/webhooks/retellai"
   }'

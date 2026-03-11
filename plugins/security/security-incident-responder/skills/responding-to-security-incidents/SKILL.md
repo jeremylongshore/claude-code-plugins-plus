@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Guide the full NIST SP 800-61 incident response lifecycle: detection, containment, eradication, recovery, and post-incident analysis. Classify incidents by type (ransomware, data breach, DDoS, credential compromise, insider threat) and severity, then coordinate evidence preservation, threat containment, and root-cause investigation. Produce a timestamped incident report with indicators of compromise (IOCs), an after-action review (AAR), and a remediation backlog.
+Guide the full NIST SP 800-61 incident response lifecycle: detection, containment, eradication, recovery, and post-incident analysis. Classify incidents by type (ransomware, data breach, DDoS, credential compromise, insider threat) and severity, then coordinate evidence preservation, threat containment, and root-cause investigation.
 
 ## Prerequisites
 

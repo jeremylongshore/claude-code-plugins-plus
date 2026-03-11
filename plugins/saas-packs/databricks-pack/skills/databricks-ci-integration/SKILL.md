@@ -99,7 +99,7 @@ def test_clean_events(spark):
     ])
 
     raw_data = [
-        ("1", "user-1", "click", "2024-01-01T00:00:00Z"),
+        ("1", "user-1", "click", "2024-01-01T00:00:00Z"),  # 2024 year
         ("1", "user-1", "click", "2024-01-01T00:00:00Z"),  # Duplicate
         ("2", None, "click", "2024-01-02T00:00:00Z"),       # Null user
     ]

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # FireCrawl Enterprise RBAC
 
 ## Overview
-Control access to Firecrawl web scraping and crawling resources through API key management and team credit allocation. Firecrawl uses credit-based pricing where each page scraped costs credits (1 credit for scrape, 5+ for full crawl). Access control focuses on API key scoping, credit budgets per key, and restricting which endpoints each consumer can call.
+Control access to Firecrawl web scraping and crawling resources through API key management and team credit allocation. Firecrawl uses credit-based pricing where each page scraped costs credits (1 credit for scrape, 5+ for full crawl).
 
 ## Prerequisites
 - Firecrawl account with Team or Scale plan
@@ -33,7 +33,7 @@ curl -X POST https://api.firecrawl.dev/v1/api-keys \
   -d '{
     "name": "content-indexer-prod",
     "allowed_endpoints": ["scrape", "crawl", "map"],
-    "monthly_credit_limit": 50000
+    "monthly_credit_limit": 50000  # 50000ms = 50 seconds
   }'
 
 # Key for the sales team (scrape only, limited)
@@ -42,7 +42,7 @@ curl -X POST https://api.firecrawl.dev/v1/api-keys \
   -d '{
     "name": "sales-prospect-research",
     "allowed_endpoints": ["scrape"],
-    "monthly_credit_limit": 5000  # 5 seconds in ms
+    "monthly_credit_limit": 5000  # 5000: 5 seconds in ms
   }'
 ```
 
@@ -98,7 +98,6 @@ Rotate keys quarterly. Create new key, update consumers, delete old key after 48
 | Unexpected credit burn | No `limit` set on crawl | Always set `limit` and `maxDepth` |
 
 ## Examples
-
 
 **Basic usage**: Apply firecrawl enterprise rbac to a standard project setup with default configuration options.
 

@@ -58,7 +58,7 @@ curl -s https://api.yourapp.com/health | jq '.services.mistral' 2>/dev/null || e
 # 3. Check recent error rate
 echo ""
 echo "3. Recent errors (if Prometheus available)..."
-curl -s "localhost:9090/api/v1/query?query=rate(mistral_errors_total[5m])" | jq '.data.result' 2>/dev/null || echo "   Prometheus not available"  # Prometheus port
+curl -s "localhost:9090/api/v1/query?query=rate(mistral_errors_total[5m])" | jq '.data.result' 2>/dev/null || echo "   Prometheus not available"  # 9090: Prometheus port
 
 # 4. Check recent logs
 echo ""
@@ -152,7 +152,7 @@ curl -v --connect-timeout 5 https://api.mistral.ai/v1/models
 nslookup api.mistral.ai
 
 # 3. Increase timeout
-kubectl set env deployment/mistral-service MISTRAL_TIMEOUT=60000  # 1 minute in ms
+kubectl set env deployment/mistral-service MISTRAL_TIMEOUT=60000  # 60000: 1 minute in ms
 
 # 4. Check egress rules
 kubectl get networkpolicy
@@ -203,7 +203,7 @@ mkdir -p "$INCIDENT_DIR"
 kubectl logs -l app=mistral-service --since=1h > "$INCIDENT_DIR/logs.txt"
 
 # Export metrics
-curl "localhost:9090/api/v1/query_range?query=mistral_errors_total&start=$(date -d '2 hours ago' +%s)&end=$(date +%s)&step=60" \  # Prometheus port
+curl "localhost:9090/api/v1/query_range?query=mistral_errors_total&start=$(date -d '2 hours ago' +%s)&end=$(date +%s)&step=60" \  # 9090: Prometheus port
   > "$INCIDENT_DIR/metrics.json"
 
 # Collect config (redacted)

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Exa Enterprise RBAC
 
 ## Overview
-Manage access to Exa AI search API through API key scoping and team-level controls. Exa is an API-first product with per-search pricing, so access control centers on API key management, rate limiting, and domain restrictions rather than traditional user roles. Each key can be scoped to specific search types (neural, keyword, auto) and rate-limited independently.
+Manage access to Exa AI search API through API key scoping and team-level controls. Exa is an API-first product with per-search pricing, so access control centers on API key management, rate limiting, and domain restrictions rather than traditional user roles.
 
 ## Prerequisites
 - Exa API account with team plan
@@ -33,8 +33,8 @@ curl -X POST https://api.exa.ai/v1/api-keys \
   -d '{
     "name": "rag-pipeline-prod",
     "allowed_endpoints": ["search", "get-contents"],
-    "rate_limit_rpm": 300,  # timeout: 5 minutes
-    "monthly_search_limit": 50000
+    "rate_limit_rpm": 300,  # 300: timeout: 5 minutes
+    "monthly_search_limit": 50000  # 50000ms = 50 seconds
   }'
 
 # Create a restricted key for the internal tool (low volume)
@@ -43,7 +43,7 @@ curl -X POST https://api.exa.ai/v1/api-keys \
   -d '{
     "name": "internal-research-tool",
     "rate_limit_rpm": 30,
-    "monthly_search_limit": 5000  # 5 seconds in ms
+    "monthly_search_limit": 5000  # 5000: 5 seconds in ms
   }'
 ```
 
@@ -101,7 +101,6 @@ echo "Update services with new key, then delete old key"
 | Empty results | Domain filter too restrictive | Widen `includeDomains` or remove filter |
 
 ## Examples
-
 
 **Basic usage**: Apply exa enterprise rbac to a standard project setup with default configuration options.
 

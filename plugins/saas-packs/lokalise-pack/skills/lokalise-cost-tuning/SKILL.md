@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Cost Tuning
 
 ## Overview
-Optimize Lokalise localization spending across plan costs, contributor seats, and machine translation usage. Lokalise pricing combines per-seat subscription (Team plan: ~$120/user/month) with optional pay-per-use for Translation Memory matches, machine translation, and AI features. The biggest cost levers are: minimizing contributor seats (use groups with shared access), leveraging Translation Memory to avoid re-translating unchanged strings, and choosing human vs machine translation strategically.
+Optimize Lokalise localization spending across plan costs, contributor seats, and machine translation usage. Lokalise pricing combines per-seat subscription (Team plan: ~$120/user/month) with optional pay-per-use for Translation Memory matches, machine translation, and AI features.
 
 ## Prerequisites
 - Lokalise Admin role for billing access
@@ -96,7 +96,6 @@ curl "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?filter_archived=inc
 | Budget overrun | New languages added without planning | Budget per-language before adding to projects |
 
 ## Examples
-
 
 **Basic usage**: Apply lokalise cost tuning to a standard project setup with default configuration options.
 

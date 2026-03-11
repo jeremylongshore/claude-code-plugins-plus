@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Enterprise RBAC
 
 ## Overview
-Control access to PostHog analytics data, feature flags, and experiments using its organization and project-level permission model. PostHog has three hierarchy levels: Organization > Project > Resource. Roles (Admin, Member) are set per organization, while project-level access controls which dashboards, feature flags, and session recordings each team can see. Feature flag permissions are critical -- an unauthorized flag change can break production.
+Control access to PostHog analytics data, feature flags, and experiments using its organization and project-level permission model. PostHog has three hierarchy levels: Organization > Project > Resource.
 
 ## Prerequisites
 - PostHog Cloud or self-hosted with Enterprise license
@@ -94,7 +94,6 @@ curl "https://app.posthog.com/api/projects/PROJECT_ID/activity_log/?scope=Organi
 | Activity log gaps | Self-hosted log rotation | Increase retention in `posthog-config` |
 
 ## Examples
-
 
 **Basic usage**: Apply posthog enterprise rbac to a standard project setup with default configuration options.
 

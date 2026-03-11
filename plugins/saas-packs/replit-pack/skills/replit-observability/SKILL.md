@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Replit Observability
 
 ## Overview
-Monitor Replit deployment health, development environment uptime, and AI feature usage across your team. Key signals include deployment status and latency (Replit Deployments serve live apps), Repl boot time (cold starts for on-demand environments), AI feature adoption (Ghostwriter completions accepted per developer), and resource consumption (CPU, memory, egress) which drive billing on Replit's compute-based pricing.
+Monitor Replit deployment health, development environment uptime, and AI feature usage across your team.
 
 ## Prerequisites
 - Replit Teams for Business or Enterprise plan
@@ -39,7 +39,7 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/deployments" \
 async function checkDeploymentHealth(deploymentUrl: string) {
   const start = performance.now();
   try {
-    const res = await fetch(`${deploymentUrl}/health`, { signal: AbortSignal.timeout(5000) });  # 5 seconds in ms
+    const res = await fetch(`${deploymentUrl}/health`, { signal: AbortSignal.timeout(5000) });  # 5000: 5 seconds in ms
     const latency = performance.now() - start;
     emitHistogram('replit_deployment_latency_ms', latency, { url: deploymentUrl });
     emitGauge('replit_deployment_up', res.ok ? 1 : 0, { url: deploymentUrl });
@@ -72,7 +72,7 @@ groups:
         for: 5m
         annotations: { summary: "Replit deployment {{ $labels.url }} is down" }
       - alert: ReplitColdStartSlow
-        expr: histogram_quantile(0.95, rate(replit_deployment_latency_ms_bucket[10m])) > 10000  # 10 seconds in ms
+        expr: histogram_quantile(0.95, rate(replit_deployment_latency_ms_bucket[10m])) > 10000  # 10000: 10 seconds in ms
         annotations: { summary: "Replit deployment cold start P95 exceeds 10 seconds" }
       - alert: ReplitHighComputeCost
         expr: increase(replit_compute_cost_usd[24h]) > 50
@@ -91,7 +91,6 @@ Track: deployment uptime by app, response latency (cold start detection), CPU/me
 | AI features not working | Ghostwriter disabled for team | Enable in Team Settings > AI Features |
 
 ## Examples
-
 
 **Basic usage**: Apply replit observability to a standard project setup with default configuration options.
 

@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Analyze database index usage, identify missing indexes causing sequential scans, detect redundant or unused indexes wasting write performance, and recommend optimal index configurations for PostgreSQL and MySQL. This skill uses query execution plans, index usage statistics, and table access patterns to produce actionable CREATE INDEX and DROP INDEX recommendations ranked by expected performance impact.
+Analyze database index usage, identify missing indexes causing sequential scans, detect redundant or unused indexes wasting write performance, and recommend optimal index configurations for PostgreSQL and MySQL.
 
 ## Prerequisites
 

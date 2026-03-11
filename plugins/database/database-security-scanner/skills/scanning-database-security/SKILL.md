@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Audit database security configurations, user privileges, network exposure, and data protection controls for PostgreSQL, MySQL, and MongoDB. This skill scans for common vulnerabilities including excessive privileges, missing encryption, default passwords, exposed network ports, unpatched versions, and SQL injection vectors in application code. Findings are prioritized by severity with specific remediation steps.
+Audit database security configurations, user privileges, network exposure, and data protection controls for PostgreSQL, MySQL, and MongoDB. This skill scans for common vulnerabilities including excessive privileges, missing encryption, default passwords, exposed network ports, unpatched versions, and SQL injection vectors in application code.
 
 ## Prerequisites
 

@@ -43,7 +43,7 @@ curl -s https://status.coderabbit.com | jq
 curl -s https://api.yourapp.com/health | jq '.services.coderabbit'
 
 # 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(coderabbit_errors_total[5m])  # Prometheus port
+curl -s localhost:9090/api/v1/query?query=rate(coderabbit_errors_total[5m])  # 9090: Prometheus port
 
 # 4. Recent error logs
 kubectl logs -l app=coderabbit-integration --since=5m | grep -i error | tail -20
@@ -137,7 +137,7 @@ set -euo pipefail
 kubectl logs -l app=coderabbit-integration --since=1h > incident-logs.txt
 
 # Capture metrics
-curl "localhost:9090/api/v1/query_range?query=coderabbit_errors_total&start=2h" > metrics.json  # Prometheus port
+curl "localhost:9090/api/v1/query_range?query=coderabbit_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
 ```
 
 ### Postmortem Template

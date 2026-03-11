@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Groq Cost Tuning
 
 ## Overview
-Optimize Groq inference costs by selecting the right model for each use case and managing token volume. Groq's pricing is extremely competitive (Llama 3.1 8B at ~$0.05/M tokens, Llama 3.3 70B at ~$0.59/M tokens, Mixtral at ~$0.24/M tokens), but high throughput (500+ tokens/sec) makes it easy to burn through large volumes quickly. The main cost lever is routing requests to the smallest model that produces acceptable quality -- the 8B model is 12x cheaper than the 70B model.
+Optimize Groq inference costs by selecting the right model for each use case and managing token volume. Groq's pricing is extremely competitive (Llama 3.1 8B at ~$0.05/M tokens, Llama 3.3 70B at ~$0.59/M tokens, Mixtral at ~$0.24/M tokens), but high throughput (500+ tokens/sec) makes it easy to burn through large volumes quickly.
 
 ## Prerequisites
 - Groq Cloud account with billing dashboard access
@@ -52,7 +52,7 @@ const OPTIMIZATION_TIPS = {
   fewShot: 'Use 1-2 examples instead of 5-6 for few-shot learning.',
 };
 
-// Example: reduce a 2000-token prompt to 500 tokens  # 2 seconds in ms
+// Example: reduce a 2000-token prompt to 500 tokens  # 500: 2000: 2 seconds in ms
 const optimizedRequest = {
   model: 'llama-3.1-8b-instant',
   messages: [
@@ -112,7 +112,6 @@ In Groq Console > Organization > Billing:
 | Cache hit rate low | Unique prompts every time | Normalize prompts before caching |
 
 ## Examples
-
 
 **Basic usage**: Apply groq cost tuning to a standard project setup with default configuration options.
 

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Databricks Enterprise RBAC
 
 ## Overview
-Implement access control across Databricks using Unity Catalog privileges, workspace-level entitlements, and SCIM-provisioned groups. Unity Catalog enforces a three-level namespace (catalog.schema.table) with privilege inheritance, so granting `USAGE` on a catalog cascades to its schemas. Combine this with cluster policies and SQL warehouse permissions for full coverage.
+Implement access control across Databricks using Unity Catalog privileges, workspace-level entitlements, and SCIM-provisioned groups. Unity Catalog enforces a three-level namespace (catalog.schema.table) with privilege inheritance, so granting `USAGE` on a catalog cascades to its schemas.
 
 ## Prerequisites
 - Databricks Premium or Enterprise tier with Unity Catalog enabled
@@ -90,7 +90,6 @@ ORDER BY event_time DESC;
 | Cannot see SQL warehouse | Missing `CAN_USE` grant | Add warehouse permission for the group |
 
 ## Examples
-
 
 **Basic usage**: Apply databricks enterprise rbac to a standard project setup with default configuration options.
 

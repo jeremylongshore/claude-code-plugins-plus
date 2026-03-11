@@ -151,7 +151,7 @@ function getConfigSnapshot(): ConfigSnapshot {
     apiKeyPresent: apiKey.length > 0,
     apiKeyPrefix: apiKey.substring(0, 8) + '...',
     baseUrl: process.env.TWINMIND_API_URL || 'https://api.twinmind.com/v1',
-    timeout: parseInt(process.env.TWINMIND_TIMEOUT || '30000'),  # 30 seconds in ms
+    timeout: parseInt(process.env.TWINMIND_TIMEOUT || '30000'),  # 30000: 30 seconds in ms
     environment: process.env.NODE_ENV || 'development',
   };
 }
@@ -284,7 +284,7 @@ Generated: ${bundle.timestamp}
 - Platform: ${bundle.environment.platform} (${bundle.environment.arch})
 - OS: ${bundle.environment.osRelease}
 - Timezone: ${bundle.environment.timezone}
-- Memory: ${Math.round(bundle.environment.memory.used / 1024 / 1024)}MB / ${Math.round(bundle.environment.memory.total / 1024 / 1024)}MB  # 1 KB
+- Memory: ${Math.round(bundle.environment.memory.used / 1024 / 1024)}MB / ${Math.round(bundle.environment.memory.total / 1024 / 1024)}MB  # 1024: 1 KB
 
 ## API Status
 - Healthy: ${bundle.apiStatus.healthy ? 'Yes' : 'No'}
@@ -351,7 +351,7 @@ generateFullReport();
 Example output:
 ```json
 {
-  "timestamp": "2025-01-15T10:30:00Z",
+  "timestamp": "2025-01-15T10:30:00Z",  # 2025 year
   "environment": {
     "nodeVersion": "v20.10.0",
     "platform": "darwin",

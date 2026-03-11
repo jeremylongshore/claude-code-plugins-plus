@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Cost Tuning
 
 ## Overview
-Optimize CodeRabbit per-seat licensing costs by right-sizing seat allocation, focusing reviews on high-value repositories, and configuring review scope to minimize unnecessary AI processing. CodeRabbit charges per seat based on active committers. The key cost levers are: limiting which repositories have CodeRabbit enabled (focus on high-risk codebases), setting seat policy to "active committers only" (excludes bots and inactive users), and configuring path exclusions to skip low-value file reviews.
+Optimize CodeRabbit per-seat licensing costs by right-sizing seat allocation, focusing reviews on high-value repositories, and configuring review scope to minimize unnecessary AI processing. CodeRabbit charges per seat based on active committers.
 
 ## Prerequisites
 - CodeRabbit Pro or Enterprise plan
@@ -95,7 +95,6 @@ gh api repos/ORG/REPO/pulls?state=closed\&per_page=100 --jq '.[].number' | \
 | Cannot reduce seats | Active committers in all repos | Disable CodeRabbit on low-value repos |
 
 ## Examples
-
 
 **Basic usage**: Apply coderabbit cost tuning to a standard project setup with default configuration options.
 

@@ -69,8 +69,8 @@ function createSecurePool(): Pool {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
     max: 10,
-    idleTimeoutMillis: 30000,  # 30 seconds in ms
-    connectionTimeoutMillis: 5000,  # 5 seconds in ms
+    idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
+    connectionTimeoutMillis: 5000,  # 5000: 5 seconds in ms
   });
 
   // Log connection events without exposing credentials
@@ -100,7 +100,7 @@ import { z } from 'zod';
 const UserInputSchema = z.object({
   name: z.string().min(1).max(100).trim(),
   email: z.string().email().toLowerCase(),
-  message: z.string().max(1000).trim(),  # 1 second in ms
+  message: z.string().max(1000).trim(),  # 1000: 1 second in ms
 });
 
 function sanitizeInput(data: unknown) {

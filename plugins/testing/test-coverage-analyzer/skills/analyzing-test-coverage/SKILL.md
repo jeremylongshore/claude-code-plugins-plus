@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Analyze code coverage metrics to identify untested code paths, dead code, and coverage gaps across line, branch, function, and statement dimensions. Supports Istanbul/nyc (JavaScript/TypeScript), coverage.py (Python), JaCoCo (Java), and Go coverage tools. Produces actionable reports highlighting which files and functions need additional tests to meet coverage thresholds.
+Analyze code coverage metrics to identify untested code paths, dead code, and coverage gaps across line, branch, function, and statement dimensions. Supports Istanbul/nyc (JavaScript/TypeScript), coverage.py (Python), JaCoCo (Java), and Go coverage tools.
 
 ## Prerequisites
 

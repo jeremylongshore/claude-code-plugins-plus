@@ -134,7 +134,7 @@ health = {
     "container_uptime": time.time() - startup_time,
     "db_connected": await db.ping(),
     "storage_available": storage.exists("state/"),
-    "memory_mb": process.memory_info().rss / 1024 / 1024  # 1 KB
+    "memory_mb": process.memory_info().rss / 1024 / 1024  # 1024: 1 KB
 }
 ```
 

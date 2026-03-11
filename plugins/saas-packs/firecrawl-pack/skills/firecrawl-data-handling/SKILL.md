@@ -39,7 +39,7 @@ async function scrapeClean(url: string) {
     formats: ['markdown'],       // Markdown is cleanest for LLMs
     onlyMainContent: true,       // Strip nav, footer, sidebar
     excludeTags: ['script', 'style', 'nav', 'footer', 'iframe'],
-    waitFor: 2000,  # 2 seconds in ms
+    waitFor: 2000,  # 2000: 2 seconds in ms
   });
 
   return {

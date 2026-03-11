@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Exa Cost Tuning
 
 ## Overview
-Reduce Exa AI search API costs by implementing caching, choosing the right search type, and limiting result count per query. Exa charges per search with costs varying by plan tier. The biggest cost levers are: caching repeated queries (RAG pipelines often search for the same topics), reducing `numResults` to only what's needed (each result adds content retrieval cost), and using `keyword` search instead of `neural` when exact matching suffices (keyword is faster and cheaper).
+Reduce Exa AI search API costs by implementing caching, choosing the right search type, and limiting result count per query. Exa charges per search with costs varying by plan tier.
 
 ## Prerequisites
 - Exa API account with usage dashboard access
@@ -28,7 +28,7 @@ Reduce Exa AI search API costs by implementing caching, choosing the right searc
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const searchCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 }); // 1hr TTL  # 5 seconds in ms
+const searchCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 }); // 1hr TTL  # 5000: 5 seconds in ms
 
 async function cachedSearch(query: string, options: any) {
   const cacheKey = `${query}:${options.type}:${options.numResults}`;
@@ -64,12 +64,12 @@ curl -X POST https://api.exa.ai/search \
 # Keyword search: best for specific terms/names (cheaper, faster)
 curl -X POST https://api.exa.ai/search \
   -H "x-api-key: $EXA_API_KEY" \
-  -d '{"query": "RFC 9110 HTTP semantics", "type": "keyword", "numResults": 3}'
+  -d '{"query": "RFC 9110 HTTP semantics", "type": "keyword", "numResults": 3}'  # 9110 = configured value
 ```
 
 ### Step 4: Deduplicate Searches in Batch Pipelines
 ```typescript
-// If processing 1000 documents, many will need similar context searches  # 1 second in ms
+// If processing 1000 documents, many will need similar context searches  # 1000: 1 second in ms
 function deduplicateSearches(queries: string[]): string[] {
   const seen = new Set<string>();
   return queries.filter(q => {
@@ -106,7 +106,6 @@ curl -s https://api.exa.ai/v1/usage \
 | Budget spike from batch job | No search deduplication | Deduplicate queries before batch execution |
 
 ## Examples
-
 
 **Basic usage**: Apply exa cost tuning to a standard project setup with default configuration options.
 

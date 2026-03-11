@@ -110,7 +110,7 @@ if __name__ == "__main__":
    Granola captures notes automatically
 
 2. Notes sync to local directory
-   ~/dev/meeting-notes/2025-01-06-sprint-planning.md
+   ~/dev/meeting-notes/2025-01-06-sprint-planning.md  # 2025 year
 
 3. Extract action items
    python extract_action_items.py notes/sprint-planning.md

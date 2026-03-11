@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Enterprise RBAC
 
 ## Overview
-Manage team access to Windsurf AI IDE features, workspace settings, and code generation capabilities. Windsurf (by Codeium) uses per-seat licensing with workspace roles that control access to AI features like Cascade (agentic flows), Supercomplete, and Command. Enterprise plans add SSO, admin dashboards, and the ability to set organization-wide AI usage policies including model selection and code context boundaries.
+Manage team access to Windsurf AI IDE features, workspace settings, and code generation capabilities. Windsurf (by Codeium) uses per-seat licensing with workspace roles that control access to AI features like Cascade (agentic flows), Supercomplete, and Command.
 
 ## Prerequisites
 - Windsurf Pro or Enterprise plan (per-seat pricing)
@@ -88,7 +88,6 @@ Monitor the Admin Dashboard for per-user AI usage: completions accepted, Cascade
 | Code context leak concern | No exclusion rules set | Add `.windsurf/settings.json` with exclusions |
 
 ## Examples
-
 
 **Basic usage**: Apply windsurf enterprise rbac to a standard project setup with default configuration options.
 

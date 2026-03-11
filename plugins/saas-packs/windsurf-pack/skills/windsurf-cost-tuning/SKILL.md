@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Cost Tuning
 
 ## Overview
-Optimize Windsurf AI IDE licensing costs by right-sizing seat allocation and matching plan tiers to actual AI feature usage. Windsurf charges per seat with different tiers offering different AI capabilities (Free: basic completions, Pro: Cascade + Supercomplete + Command). The primary cost lever is ensuring every Pro seat is actively used -- a developer averaging <5 AI interactions per day may not justify the Pro tier cost.
+Optimize Windsurf AI IDE licensing costs by right-sizing seat allocation and matching plan tiers to actual AI feature usage. Windsurf charges per seat with different tiers offering different AI capabilities (Free: basic completions, Pro: Cascade + Supercomplete + Command).
 
 ## Prerequisites
 - Windsurf Admin dashboard access
@@ -107,7 +107,6 @@ quarterly_review:
 | Cost growing with team | No seat approval process | Require manager approval for new Pro seats |
 
 ## Examples
-
 
 **Basic usage**: Apply windsurf cost tuning to a standard project setup with default configuration options.
 

@@ -27,7 +27,7 @@ Encrypted Transmission (TLS 1.3)
         ↓
 Processing Server (Transient)
         ↓
-Encrypted Storage (AES-256)
+Encrypted Storage (AES-256)  # 256 bytes
         ↓
 Access via App (Auth Required)
 ```

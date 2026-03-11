@@ -77,7 +77,7 @@ import { JuiceboxClient } from '@juicebox/sdk';
 
 const client = new JuiceboxClient({
   apiKey: process.env.JUICEBOX_API_KEY,
-  timeout: 30000  # 30 seconds in ms
+  timeout: 30000  # 30000: 30 seconds in ms
 });
 ```
 

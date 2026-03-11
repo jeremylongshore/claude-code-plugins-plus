@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Replit Webhooks & Events
 
 ## Overview
-Handle Replit deployment and workspace events for CI/CD integration. Replit provides deployment hooks and the Replit Extensions API for responding to workspace changes, deployment status updates, and collaboration events. Use these to build automated deployment pipelines, monitoring dashboards, and team notification systems.
+Handle Replit deployment and workspace events for CI/CD integration. Replit provides deployment hooks and the Replit Extensions API for responding to workspace changes, deployment status updates, and collaboration events.
 
 ## Prerequisites
 - Replit account with Deployments enabled (Replit Core or Teams)

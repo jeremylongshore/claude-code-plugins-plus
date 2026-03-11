@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Exa Observability
 
 ## Overview
-Monitor Exa AI search API performance, result quality, and cost efficiency. Key metrics include search latency (Exa neural search typically takes 500-2000ms), result relevance (measured by click-through or downstream usage), search volume by type (neural vs keyword vs auto), per-search cost tracking, and cache hit rates for repeated queries. Since Exa charges per search, tracking search efficiency directly impacts cost.
+Monitor Exa AI search API performance, result quality, and cost efficiency. Key metrics include search latency (Exa neural search typically takes 500-2000ms), result relevance (measured by click-through or downstream usage), search volume by type (neural vs keyword vs auto), per-search cost tracking, and cache hit rates for repeated queries.
 
 ## Prerequisites
 - Exa API integration in production
@@ -68,10 +68,10 @@ groups:
   - name: exa
     rules:
       - alert: ExaHighLatency
-        expr: histogram_quantile(0.95, rate(exa_search_duration_ms_bucket[5m])) > 3000  # 3 seconds in ms
+        expr: histogram_quantile(0.95, rate(exa_search_duration_ms_bucket[5m])) > 3000  # 3000: 3 seconds in ms
         annotations: { summary: "Exa search P95 latency exceeds 3 seconds" }
       - alert: ExaBudgetLow
-        expr: exa_monthly_searches_remaining < 1000  # 1 second in ms
+        expr: exa_monthly_searches_remaining < 1000  # 1000: 1 second in ms
         annotations: { summary: "Exa monthly search budget nearly exhausted" }
       - alert: ExaLowResultQuality
         expr: rate(exa_result_usage{action="discarded"}[1h]) / rate(exa_result_usage[1h]) > 0.5
@@ -93,7 +93,6 @@ Key panels: search volume by type (neural/keyword/auto), latency p50/p95, result
 | Monthly budget exhausted | Uncapped search volume | Add application-level search budget tracking |
 
 ## Examples
-
 
 **Basic usage**: Apply exa observability to a standard project setup with default configuration options.
 

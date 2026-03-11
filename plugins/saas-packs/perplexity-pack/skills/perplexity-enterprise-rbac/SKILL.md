@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Enterprise RBAC
 
 ## Overview
-Manage access to Perplexity's AI search API through API key scoping and per-query cost controls. Perplexity charges per query with pricing varying by model -- `sonar` (lightweight) costs less per query than `sonar-pro` (deeper research). Access control centers on creating scoped API keys with model restrictions, rate limits, and monthly budget caps to prevent teams from inadvertently using expensive models.
+Manage access to Perplexity's AI search API through API key scoping and per-query cost controls. Perplexity charges per query with pricing varying by model -- `sonar` (lightweight) costs less per query than `sonar-pro` (deeper research).
 
 ## Prerequisites
 - Perplexity API account at docs.perplexity.ai
@@ -44,7 +44,7 @@ curl -X POST https://api.perplexity.ai/v1/api-keys \
     "name": "research-team",
     "allowed_models": ["sonar", "sonar-pro"],
     "rate_limit_rpm": 60,
-    "monthly_budget_usd": 1000  # 1 second in ms
+    "monthly_budget_usd": 1000  # 1000: 1 second in ms
   }'
 ```
 
@@ -52,9 +52,9 @@ curl -X POST https://api.perplexity.ai/v1/api-keys \
 ```typescript
 // pplx-gateway.ts - Route queries to appropriate model by team
 const TEAM_CONFIG: Record<string, { model: string; maxTokens: number }> = {
-  support:    { model: 'sonar',     maxTokens: 512 },
-  sales:      { model: 'sonar',     maxTokens: 1024 },  # 1 KB
-  research:   { model: 'sonar-pro', maxTokens: 4096 },  # 4 KB
+  support:    { model: 'sonar',     maxTokens: 512 },  # 512 bytes
+  sales:      { model: 'sonar',     maxTokens: 1024 },  # 1024: 1 KB
+  research:   { model: 'sonar-pro', maxTokens: 4096 },  # 4096: 4 KB
 };
 
 function getModelForTeam(team: string): { model: string; maxTokens: number } {
@@ -97,7 +97,6 @@ Rotate API keys every 90 days. Label keys with creation date (`research-team-202
 | Budget cap reached | Monthly spend exhausted | Increase budget or wait for cycle reset |
 
 ## Examples
-
 
 **Basic usage**: Apply perplexity enterprise rbac to a standard project setup with default configuration options.
 

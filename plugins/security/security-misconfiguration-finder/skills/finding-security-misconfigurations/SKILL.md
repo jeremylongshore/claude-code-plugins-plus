@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Scan infrastructure-as-code templates, application configuration files, and system settings to detect security misconfigurations mapped to OWASP A05:2021 (Security Misconfiguration) and CIS Benchmarks. Cover cloud resources (AWS, GCP, Azure), container orchestration (Kubernetes, Docker), web servers (Nginx, Apache), and application frameworks. Classify each finding by severity and provide minimal-change remediation with verification commands.
+Scan infrastructure-as-code templates, application configuration files, and system settings to detect security misconfigurations mapped to OWASP A05:2021 (Security Misconfiguration) and CIS Benchmarks. Cover cloud resources (AWS, GCP, Azure), container orchestration (Kubernetes, Docker), web servers (Nginx, Apache), and application frameworks.
 
 ## Prerequisites
 

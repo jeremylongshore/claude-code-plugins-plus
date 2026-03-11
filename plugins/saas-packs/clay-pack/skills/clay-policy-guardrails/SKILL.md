@@ -31,9 +31,9 @@ Prevent runaway enrichment costs with per-user and per-table spending caps.
 ```python
 class CreditPolicy:
     LIMITS = {
-        "per_table_max": 10000,  # 10 seconds in ms
-        "per_user_daily": 5000,  # 5 seconds in ms
-        "per_enrichment_column": 2000,  # 2 seconds in ms
+        "per_table_max": 10000,  # 10000: 10 seconds in ms
+        "per_user_daily": 5000,  # 5000: 5 seconds in ms
+        "per_enrichment_column": 2000,  # 2000: 2 seconds in ms
         "alert_threshold_pct": 80
     }
 
@@ -104,7 +104,7 @@ class DataRetentionPolicy:
     RETENTION_DAYS = {
         "enrichment_results": 90,
         "raw_input_data": 30,
-        "export_logs": 365
+        "export_logs": 365  # 365 days = 1 year
     }
 
     def enforce_retention(self, table_id: str):

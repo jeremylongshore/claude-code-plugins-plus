@@ -34,14 +34,14 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 // Model speed tiers (approximate TTFT):
 // llama-3.3-70b-versatile: ~200ms TTFT, best quality
 // llama-3.1-8b-instant:    ~80ms TTFT, fastest
-// mixtral-8x7b-32768:      ~150ms TTFT, long context
+// mixtral-8x7b-32768:      ~150ms TTFT, long context  # 32768 = configured value
 
 async function fastCompletion(prompt: string) {
   return groq.chat.completions.create({
     model: 'llama-3.1-8b-instant', // Fastest model
     messages: [{ role: 'user', content: prompt }],
     temperature: 0,       // Deterministic = cacheable
-    max_tokens: 256,      // Limit output for speed
+    max_tokens: 256,      // Limit output for speed  # 256 bytes
   });
 }
 ```
@@ -56,7 +56,7 @@ async function streamCompletion(
     model: 'llama-3.3-70b-versatile',
     messages,
     stream: true,
-    max_tokens: 1024,  # 1 KB
+    max_tokens: 1024,  # 1024: 1 KB
   });
 
   let fullResponse = '';
@@ -76,7 +76,7 @@ import { createHash } from 'crypto';
 
 const promptCache = new LRUCache<string, string>({
   max: 500,  # HTTP 500 Internal Server Error
-  ttl: 1000 * 60 * 10, // 10 min for deterministic prompts  # 1 second in ms
+  ttl: 1000 * 60 * 10, // 10 min for deterministic prompts  # 1000: 1 second in ms
 });
 
 function hashPrompt(messages: any[], model: string): string {

@@ -71,7 +71,7 @@ async function generateWithTracking(prompt: string, options: any = {}) {
       seed: image.seed,
       imageUrl: image.url,
       generatedAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + 3600000).toISOString(), // ~1hr
+      expiresAt: new Date(Date.now() + 3600000).toISOString(), // ~1hr  # 3600000 = configured value
     };
     generationHistory.push(record);
     return record;
@@ -121,7 +121,7 @@ function cleanExpiredAssets(
   records: GenerationRecord[],
   retentionDays = 30
 ) {
-  const cutoff = Date.now() - retentionDays * 86400000;
+  const cutoff = Date.now() - retentionDays * 86400000;  # 86400000 = configured value
   const results = { kept: 0, deleted: 0 };
 
   for (const record of records) {
@@ -176,7 +176,7 @@ async function batchGenerateAssets(prompts: string[]) {
   for (const prompt of prompts) {
     const record = await generateAndPersist(prompt);
     results.push(record);
-    await new Promise(r => setTimeout(r, 3000)); // Rate limit  # 3 seconds in ms
+    await new Promise(r => setTimeout(r, 3000)); // Rate limit  # 3000: 3 seconds in ms
   }
   return results;
 }

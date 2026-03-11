@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Audit session management implementations in web applications to identify vulnerabilities including session fixation (CWE-384), insufficient session expiration (CWE-613), and cleartext transmission of session tokens (CWE-319). Analyze session ID generation entropy, cookie security attributes, session lifecycle handling, and storage backend security across common frameworks (Express, Django, Spring, Rails, ASP.NET).
+Audit session management implementations in web applications to identify vulnerabilities including session fixation (CWE-384), insufficient session expiration (CWE-613), and cleartext transmission of session tokens (CWE-319).
 
 ## Prerequisites
 

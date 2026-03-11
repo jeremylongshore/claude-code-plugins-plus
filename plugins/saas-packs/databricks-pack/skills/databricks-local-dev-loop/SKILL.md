@@ -79,7 +79,7 @@ databricks-connect configure
 # Or set environment variables
 export DATABRICKS_HOST="https://adb-1234567890.1.azuredatabricks.net"
 export DATABRICKS_TOKEN="dapi..."
-export DATABRICKS_CLUSTER_ID="1234-567890-abcde123"
+export DATABRICKS_CLUSTER_ID="1234-567890-abcde123"  # 567890: port 1234 - example/test
 ```
 
 ### Step 4: Create databricks.yml (Asset Bundle)

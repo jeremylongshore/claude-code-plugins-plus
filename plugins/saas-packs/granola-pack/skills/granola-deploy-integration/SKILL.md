@@ -52,7 +52,7 @@ Configure and deploy native Granola integrations with Slack, Notion, HubSpot, an
 #### Message Format
 ```
 Meeting Notes: Sprint Planning
-January 6, 2025 | 45 minutes | 5 attendees
+January 6, 2025 | 45 minutes | 5 attendees  # 2025 year
 
 Summary:
 Discussed Q1 priorities. Agreed on feature freeze

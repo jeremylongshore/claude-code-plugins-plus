@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Enterprise RBAC
 
 ## Overview
-Manage CodeRabbit AI code review access through GitHub or GitLab organization integration. CodeRabbit inherits repository permissions from your Git provider -- if a developer has write access to a repo, CodeRabbit will review their PRs. Enterprise controls layer on top with per-seat licensing, organization-wide review policies, and the ability to enable or disable CodeRabbit per repository.
+Manage CodeRabbit AI code review access through GitHub or GitLab organization integration. CodeRabbit inherits repository permissions from your Git provider -- if a developer has write access to a repo, CodeRabbit will review their PRs.
 
 ## Prerequisites
 - CodeRabbit Pro or Enterprise plan (per-seat pricing)
@@ -87,7 +87,6 @@ Check the CodeRabbit dashboard for review metrics per repository and team member
 | Bot reviewing bot PRs | Dependabot/Renovate triggers | Add bot usernames to ignore list |
 
 ## Examples
-
 
 **Basic usage**: Apply coderabbit enterprise rbac to a standard project setup with default configuration options.
 

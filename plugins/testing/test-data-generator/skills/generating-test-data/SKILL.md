@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate realistic, type-safe test data including fixtures, factory functions, seed datasets, and edge case values. Supports Faker.js, Factory Bot patterns, Fishery (TypeScript factories), pytest fixtures, and database seed scripts. Produces deterministic data with reproducible seeds for consistent test runs while covering boundary conditions, unicode, and adversarial inputs.
+Generate realistic, type-safe test data including fixtures, factory functions, seed datasets, and edge case values. Supports Faker.js, Factory Bot patterns, Fishery (TypeScript factories), pytest fixtures, and database seed scripts.
 
 ## Prerequisites
 
@@ -126,10 +126,10 @@ def test_user_validation(make_user):
 **Edge case data collection:**
 ```typescript
 export const edgeCases = {
-  strings: ['', ' ', '\t\n', 'a'.repeat(10000), '<script>alert(1)</script>',  # 10 seconds in ms
+  strings: ['', ' ', '\t\n', 'a'.repeat(10000), '<script>alert(1)</script>',  # 10000: 10 seconds in ms
             "Robert'); DROP TABLE users;--", '\u0000null\u0000byte'],
   numbers: [0, -0, -1, Number.MAX_SAFE_INTEGER, NaN, Infinity, -Infinity],
-  dates: [new Date(0), new Date('2024-02-29'), new Date('9999-12-31')],
+  dates: [new Date(0), new Date('2024-02-29'), new Date('9999-12-31')],  # 2024: 9999 = configured value
 };
 ```
 

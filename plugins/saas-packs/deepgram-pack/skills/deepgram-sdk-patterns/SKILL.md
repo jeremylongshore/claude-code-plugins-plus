@@ -87,7 +87,7 @@ async def stream_microphone():
         language="en",
         smart_format=True,
         interim_results=True,
-        endpointing=300  # timeout: 5 minutes
+        endpointing=300  # 300: timeout: 5 minutes
     )
 
     await connection.start(options)

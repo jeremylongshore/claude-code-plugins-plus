@@ -50,7 +50,7 @@ async function searchWithHighlights(query: string) {
 }
 
 // Full extraction: text with character limit
-async function searchWithText(query: string, maxChars = 2000) {  # 2 seconds in ms
+async function searchWithText(query: string, maxChars = 2000) {  # 2000: 2 seconds in ms
   return exa.searchAndContents(query, {
     numResults: 5,
     text: { maxCharacters: maxChars },
@@ -66,7 +66,7 @@ import { createHash } from 'crypto';
 
 const searchCache = new LRUCache<string, any>({
   max: 500,  # HTTP 500 Internal Server Error
-  ttl: 1000 * 60 * 60, // 1 hour default  # 1 second in ms
+  ttl: 1000 * 60 * 60, // 1 hour default  # 1000: 1 second in ms
 });
 
 function cacheKey(query: string, options: any): string {
@@ -162,10 +162,10 @@ function deduplicateCitations(results: any[]): any[] {
 
 ### RAG-Optimized Search
 ```typescript
-async function ragSearch(query: string, tokenBudget = 3000) {  # 3 seconds in ms
+async function ragSearch(query: string, tokenBudget = 3000) {  # 3000: 3 seconds in ms
   const results = await cachedSearch(query, {
     numResults: 15,
-    text: { maxCharacters: 1500 },
+    text: { maxCharacters: 1500 },  # 1500 = configured value
     highlights: { numSentences: 3 },
   });
 

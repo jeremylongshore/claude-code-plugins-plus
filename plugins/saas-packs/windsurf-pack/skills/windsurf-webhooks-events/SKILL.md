@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Webhooks & Events
 
 ## Overview
-Handle Windsurf workspace and editor events for extension development and team workflow integration. Windsurf, built on VS Code architecture, exposes extension events for workspace changes, editor actions, AI interactions (Cascade), and terminal activity. Use these to build custom extensions, sync state with external tools, or automate development workflows.
+Handle Windsurf workspace and editor events for extension development and team workflow integration. Windsurf, built on VS Code architecture, exposes extension events for workspace changes, editor actions, AI interactions (Cascade), and terminal activity.
 
 ## Prerequisites
 - Windsurf IDE installed with extension development support
@@ -153,7 +153,7 @@ function trackFileOpen(document: vscode.TextDocument) {
 ```typescript
 const saveDebounce = new Map<string, NodeJS.Timeout>();
 
-function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {  # 2 seconds in ms
+function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {  # 2000: 2 seconds in ms
   const key = document.uri.fsPath;
   clearTimeout(saveDebounce.get(key));
   saveDebounce.set(key, setTimeout(() => {

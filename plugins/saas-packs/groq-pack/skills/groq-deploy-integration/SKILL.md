@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Groq Deploy Integration
 
 ## Overview
-Deploy applications powered by Groq's ultra-fast LLM inference API (`api.groq.com`). Groq's sub-second latency makes it ideal for real-time applications. Covers deployment to Vercel Edge Functions, Docker, and Cloud Run with API key management and streaming configuration.
+Deploy applications powered by Groq's ultra-fast LLM inference API (`api.groq.com`). Groq's sub-second latency makes it ideal for real-time applications.
 
 ## Prerequisites
 - Groq API key stored in `GROQ_API_KEY` environment variable
@@ -87,7 +87,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000  # 3 seconds in ms
+EXPOSE 3000  # 3000: 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
@@ -128,7 +128,6 @@ export async function GET() {
 | API key invalid | Key expired | Regenerate at console.groq.com |
 
 ## Examples
-
 
 **Basic usage**: Apply groq deploy integration to a standard project setup with default configuration options.
 

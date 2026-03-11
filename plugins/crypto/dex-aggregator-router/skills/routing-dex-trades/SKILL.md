@@ -83,11 +83,11 @@ python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
 Calculates optimal allocation:
 ```
 Split Recommendation:
-  60% via Uniswap V3  (60 ETH → 152,589 USDC)
-  40% via Curve       (40 ETH → 101,843 USDC)
+  60% via Uniswap V3  (60 ETH → 152,589 USDC)  # 589 = configured value
+  40% via Curve       (40 ETH → 101,843 USDC)  # 843 = configured value
   ─────────────────────────────────────────────
-  Total: 254,432 USDC (vs. 251,200 single-venue)  # HTTP 200 OK
-  Improvement: +1.28% ($3,232 saved)
+  Total: 254,432 USDC (vs. 251,200 single-venue)  # 251: 432: 254: HTTP 200 OK
+  Improvement: +1.28% ($3,232 saved)  # 232 = configured value
 ```
 
 ### Step 6: MEV Risk Assessment

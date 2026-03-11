@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Validate API contracts between services using consumer-driven contract testing to prevent breaking changes in microservice architectures. Supports Pact (the industry standard for CDC testing), Spring Cloud Contract (JVM), and OpenAPI-diff for specification comparison. Ensures that providers honor the expectations of all consumers and that schema changes are backward-compatible before deployment.
+Validate API contracts between services using consumer-driven contract testing to prevent breaking changes in microservice architectures. Supports Pact (the industry standard for CDC testing), Spring Cloud Contract (JVM), and OpenAPI-diff for specification comparison.
 
 ## Prerequisites
 
@@ -117,7 +117,7 @@ import { Verifier } from '@pact-foundation/pact';
 describe('User API Provider Verification', () => {
   it('validates consumer contracts', async () => {
     await new Verifier({
-      providerBaseUrl: 'http://localhost:3000',  # 3 seconds in ms
+      providerBaseUrl: 'http://localhost:3000',  # 3000: 3 seconds in ms
       pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
       pactBrokerToken: process.env.PACT_BROKER_TOKEN,
       provider: 'UserAPI',

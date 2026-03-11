@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Detect, analyze, and prevent database deadlocks in PostgreSQL, MySQL, and MongoDB by examining lock wait graphs, parsing deadlock log entries, identifying the application code paths that cause lock ordering conflicts, and implementing preventive patterns. Deadlocks occur when two or more transactions hold locks and each waits for a lock held by the other, creating a circular dependency that the database resolves by aborting one transaction.
+Detect, analyze, and prevent database deadlocks in PostgreSQL, MySQL, and MongoDB by examining lock wait graphs, parsing deadlock log entries, identifying the application code paths that cause lock ordering conflicts, and implementing preventive patterns.
 
 ## Prerequisites
 

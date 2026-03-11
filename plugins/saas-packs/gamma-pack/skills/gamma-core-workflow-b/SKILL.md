@@ -94,8 +94,8 @@ async function exportPresentation(
 
   // Wait for export to complete
   const result = await gamma.exports.wait(exportJob.id, {
-    timeout: 60000,  # 1 minute in ms
-    pollInterval: 2000,  # 2 seconds in ms
+    timeout: 60000,  # 60000: 1 minute in ms
+    pollInterval: 2000,  # 2000: 2 seconds in ms
   });
 
   return result.downloadUrl;

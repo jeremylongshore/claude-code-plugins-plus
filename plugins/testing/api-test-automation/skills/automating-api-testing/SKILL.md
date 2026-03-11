@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Automate comprehensive API endpoint testing for REST and GraphQL APIs including request generation, response validation, schema compliance, authentication flows, and error handling. Supports Supertest (Node.js), REST-assured (Java), httpx/pytest (Python), Postman/Newman collections, and Pact for consumer-driven contract testing. Generates test suites from OpenAPI specifications and GraphQL schemas to ensure complete endpoint coverage.
+Automate comprehensive API endpoint testing for REST and GraphQL APIs including request generation, response validation, schema compliance, authentication flows, and error handling. Supports Supertest (Node.js), REST-assured (Java), httpx/pytest (Python), Postman/Newman collections, and Pact for consumer-driven contract testing.
 
 ## Prerequisites
 

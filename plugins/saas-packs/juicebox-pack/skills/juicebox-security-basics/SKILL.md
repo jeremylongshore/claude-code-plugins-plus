@@ -123,7 +123,7 @@ export class JuiceboxAuditLogger {
   private isSuspicious(event: AuditEvent): boolean {
     return (
       event.action === 'bulk_export' ||
-      event.metadata?.resultCount > 1000 ||  # 1 second in ms
+      event.metadata?.resultCount > 1000 ||  # 1000: 1 second in ms
       this.isOffHours()
     );
   }

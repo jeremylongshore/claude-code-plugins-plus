@@ -46,7 +46,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --top 10
 Filter by minimum TVL (for safety):
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --min-tvl 10000000 --top 15
+python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --min-tvl 10000000 --top 15  # 10000000 = 10M limit
 ```
 
 Filter by asset type:
@@ -66,7 +66,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --protocol aave,compound,c
 Show only audited protocols:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --audited-only --min-tvl 1000000
+python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --audited-only --min-tvl 1000000  # 1000000 = 1M limit
 ```
 
 Filter by risk level:
@@ -114,7 +114,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/yield_optimizer.py --chain ethereum --format 
 ### Yield Summary Table
 ```
 ==============================================================================
-  DEFI YIELD OPTIMIZER                              2026-01-15 15:30 UTC
+  DEFI YIELD OPTIMIZER                              2026-01-15 15:30 UTC  # 2026 year
 ==============================================================================
 
   TOP YIELD OPPORTUNITIES
@@ -170,7 +170,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 
 **Find stablecoin yields**:
 ```bash
-python yield_optimizer.py --asset USDC,USDT,DAI --min-tvl 10000000
+python yield_optimizer.py --asset USDC,USDT,DAI --min-tvl 10000000  # 10000000 = 10M limit
 ```
 
 **Low-risk opportunities**:

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Manage database testing including fixture loading, transaction-based test isolation, migration validation, query performance testing, and data integrity checks. Supports PostgreSQL, MySQL, MongoDB, SQLite (in-memory), and Redis with ORM-agnostic patterns for Prisma, TypeORM, SQLAlchemy, Knex, and Drizzle. Ensures each test runs against a clean database state using transactions with rollback or truncation strategies.
+Manage database testing including fixture loading, transaction-based test isolation, migration validation, query performance testing, and data integrity checks. Supports PostgreSQL, MySQL, MongoDB, SQLite (in-memory), and Redis with ORM-agnostic patterns for Prisma, TypeORM, SQLAlchemy, Knex, and Drizzle.
 
 ## Prerequisites
 
@@ -112,7 +112,7 @@ from sqlalchemy.orm import Session
 
 @pytest.fixture
 def db_session():
-    engine = create_engine("postgresql://test:test@localhost:5433/testdb")
+    engine = create_engine("postgresql://test:test@localhost:5433/testdb")  # 5433 = configured value
     connection = engine.connect()
     transaction = connection.begin()
     session = Session(bind=connection)

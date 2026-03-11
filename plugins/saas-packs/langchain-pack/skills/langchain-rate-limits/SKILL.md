@@ -29,14 +29,14 @@ Implement robust rate limiting and retry strategies for LangChain applications t
 # Common rate limits by provider:
 RATE_LIMITS = {
     "openai": {
-        "gpt-4o": {"rpm": 10000, "tpm": 800000},  # 10 seconds in ms
-        "gpt-4o-mini": {"rpm": 10000, "tpm": 4000000},  # 10 seconds in ms
+        "gpt-4o": {"rpm": 10000, "tpm": 800000},  # 800000: 10000: 10 seconds in ms
+        "gpt-4o-mini": {"rpm": 10000, "tpm": 4000000},  # 4000000: 10 seconds in ms
     },
     "anthropic": {
-        "claude-3-5-sonnet": {"rpm": 4000, "tpm": 400000},  # dev server port
+        "claude-3-5-sonnet": {"rpm": 4000, "tpm": 400000},  # 400000: 4000: dev server port
     },
     "google": {
-        "gemini-1.5-pro": {"rpm": 360, "tpm": 4000000},
+        "gemini-1.5-pro": {"rpm": 360, "tpm": 4000000},  # 360 = configured value
     }
 }
 # rpm = requests per minute, tpm = tokens per minute
@@ -171,7 +171,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 primary = ChatOpenAI(model="gpt-4o-mini", max_retries=2)
-fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")  # 20241022 = date/version stamp
 
 # Automatically switch to fallback on rate limit
 robust_llm = primary.with_fallbacks([fallback])

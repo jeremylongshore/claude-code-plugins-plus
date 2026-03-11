@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Configure and optimize database connection pooling using external poolers (PgBouncer, ProxySQL, Odyssey) and application-level pool settings to prevent connection exhaustion, reduce connection overhead, and improve database throughput. This skill sizes connection pools correctly based on workload patterns, configures pool modes (session, transaction, statement), and diagnoses connection-related failures like pool exhaustion, idle connection waste, and connection storms.
+Configure and optimize database connection pooling using external poolers (PgBouncer, ProxySQL, Odyssey) and application-level pool settings to prevent connection exhaustion, reduce connection overhead, and improve database throughput.
 
 ## Prerequisites
 

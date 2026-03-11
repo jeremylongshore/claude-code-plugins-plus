@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate type-safe ORM model classes, migration files, and repository patterns from existing database schemas or domain specifications. Supports Prisma, TypeORM, Sequelize, SQLAlchemy, Django ORM, and Drizzle ORM. This skill introspects live databases to produce model code that matches the actual schema, including relationships, constraints, indexes, and custom types.
+Generate type-safe ORM model classes, migration files, and repository patterns from existing database schemas or domain specifications. Supports Prisma, TypeORM, Sequelize, SQLAlchemy, Django ORM, and Drizzle ORM.
 
 ## Prerequisites
 

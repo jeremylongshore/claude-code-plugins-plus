@@ -67,7 +67,7 @@ reviews:
         Review for REST API best practices:
         - Validate all inputs with zod schemas
         - Return proper HTTP status codes
-        - Include error response bodies per RFC 7807
+        - Include error response bodies per RFC 7807  # 7807 = configured value
         - Check for SQL injection in query parameters
     - path: "src/components/**"
       instructions: |

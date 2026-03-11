@@ -61,7 +61,7 @@ api_key = dbutils.secrets.get(scope="my-app-secrets", key="api-key")
 print(f"Password: {db_password}")  # Shows [REDACTED]
 
 # Use in connection strings
-jdbc_url = f"jdbc:postgresql://host:5432/db?user=app&password={db_password}"  # PostgreSQL port
+jdbc_url = f"jdbc:postgresql://host:5432/db?user=app&password={db_password}"  # 5432: PostgreSQL port
 ```
 
 ### Step 4: Secret Scope ACLs
@@ -88,7 +88,7 @@ def audit_tokens(w: WorkspaceClient) -> list[dict]:
 
     token_audit = []
     for token in tokens:
-        created = datetime.fromtimestamp(token.creation_time / 1000)  # 1 second in ms
+        created = datetime.fromtimestamp(token.creation_time / 1000)  # 1000: 1 second in ms
         expiry = datetime.fromtimestamp(token.expiry_time / 1000) if token.expiry_time else None  # 1 second in ms
 
         token_audit.append({

@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Monitor database server health across PostgreSQL, MySQL, and MongoDB by tracking key performance indicators including connection utilization, query throughput, replication lag, disk usage, cache hit ratios, vacuum activity, and lock contention. This skill creates comprehensive health check queries, defines alerting thresholds, and produces dashboards that surface problems before they cause outages.
+Monitor database server health across PostgreSQL, MySQL, and MongoDB by tracking key performance indicators including connection utilization, query throughput, replication lag, disk usage, cache hit ratios, vacuum activity, and lock contention.
 
 ## Prerequisites
 

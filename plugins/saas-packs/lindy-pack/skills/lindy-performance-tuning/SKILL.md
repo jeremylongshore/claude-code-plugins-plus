@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Lindy AI Performance Tuning
 
 ## Overview
-Optimize Lindy AI agent execution speed and reliability. Lindy agents run as multi-step automations where each step (LLM call, tool execution, API call) adds latency. A typical 5-step agent takes 10-30 seconds total. The biggest performance levers are: reducing step count (combine LLM calls), using faster tool configurations, implementing parallel step execution where possible, and caching frequently-accessed data in agent memory.
+Optimize Lindy AI agent execution speed and reliability. Lindy agents run as multi-step automations where each step (LLM call, tool execution, API call) adds latency.
 
 ## Prerequisites
 - Lindy workspace with active agents
@@ -42,7 +42,6 @@ For detailed implementation code and configurations, load the reference guide:
 | High run frequency | Trigger firing too often | Add filters to trigger configuration |
 
 ## Examples
-
 
 **Basic usage**: Apply lindy performance tuning to a standard project setup with default configuration options.
 

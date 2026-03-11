@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Cost Tuning
 
 ## Overview
-Optimize Instantly email outreach costs by managing sending account count, right-sizing your plan tier, and maximizing deliverability (which is the core ROI metric). Instantly pricing combines per-seat costs with sending volume tiers (Growth: 5K leads/month, Hypergrowth: 25K leads/month, Light Speed: 100K leads/month). The biggest cost lever is improving deliverability -- a well-warmed account sending 50 emails/day with 40% open rate outperforms 3 accounts sending 200 emails/day with 10% open rate, at 1/3 the cost.
+Optimize Instantly email outreach costs by managing sending account count, right-sizing your plan tier, and maximizing deliverability (which is the core ROI metric). Instantly pricing combines per-seat costs with sending volume tiers (Growth: 5K leads/month, Hypergrowth: 25K leads/month, Light Speed: 100K leads/month).
 
 ## Prerequisites
 - Instantly workspace admin access
@@ -77,12 +77,12 @@ warmup_best_practices:
 ```yaml
 # Plan selection based on actual sending needs
 growth_plan:
-  leads: 5000/month  # 5 seconds in ms
+  leads: 5000/month  # 5000: 5 seconds in ms
   best_for: "Small team, 1-2 SDRs, testing campaigns"
   cost: "$37/month"
 
 hypergrowth_plan:
-  leads: 25000/month
+  leads: 25000/month  # 25000 = configured value
   best_for: "Active outbound team, 3-5 SDRs"
   cost: "$97/month"
   tip: "Only upgrade when Growth plan consistently hits >80% lead capacity"
@@ -118,7 +118,6 @@ optimization_priority:
 | High bounce rate | Unverified lead lists | Use email verification before import |
 
 ## Examples
-
 
 **Basic usage**: Apply instantly cost tuning to a standard project setup with default configuration options.
 

@@ -135,7 +135,7 @@ export class PresentationService {
     this.gamma = new GammaClient({
       apiKey: process.env.GAMMA_API_KEY,
     });
-    this.cache = new Cache({ ttl: 300 });  # timeout: 5 minutes
+    this.cache = new Cache({ ttl: 300 });  # 300: timeout: 5 minutes
     this.queue = new Queue('presentations');
   }
 

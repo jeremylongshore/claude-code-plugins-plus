@@ -41,7 +41,7 @@ def home():
     db["visits"] = count + 1
     return f"Visit #{count + 1}"
 
-app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))  # 3 seconds in ms
+app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))  # 3000: 3 seconds in ms
 ```
 
 **Limits:** Sleeps after inactivity (free plan). 512MB RAM. Replit DB (50MB).

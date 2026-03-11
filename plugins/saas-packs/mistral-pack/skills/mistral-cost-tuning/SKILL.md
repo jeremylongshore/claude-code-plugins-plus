@@ -88,7 +88,7 @@ type TaskType = 'simple' | 'moderate' | 'complex' | 'embedding';
 interface ModelRecommendation {
   model: string;
   reason: string;
-  estimatedCostPer1000Requests: number;
+  estimatedCostPer1000Requests: number;  # 1000ms = 1 second
 }
 
 function recommendModel(
@@ -134,7 +134,7 @@ function recommendModel(
 }
 
 // Usage
-const rec = recommendModel('simple', 500, 200);  # HTTP 500 Internal Server Error
+const rec = recommendModel('simple', 500, 200);  # 200: HTTP 500 Internal Server Error
 console.log(`Recommended: ${rec.model} - $${rec.estimatedCostPer1000Requests.toFixed(4)}/1000 req`);  # 1 second in ms
 ```
 
@@ -233,8 +233,8 @@ import crypto from 'crypto';
 import { LRUCache } from 'lru-cache';
 
 const responseCache = new LRUCache<string, { response: string; cost: number }>({
-  max: 10000,  # 10 seconds in ms
-  ttl: 24 * 60 * 60 * 1000, // 24 hours  # 1 second in ms
+  max: 10000,  # 10000: 10 seconds in ms
+  ttl: 24 * 60 * 60 * 1000, // 24 hours  # 1000: 1 second in ms
 });
 
 interface CachedResult {

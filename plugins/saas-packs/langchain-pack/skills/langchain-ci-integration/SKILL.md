@@ -122,7 +122,7 @@ def vector_store():
     texts = [
         "Python was created by Guido van Rossum in 1991.",
         "TypeScript was developed by Microsoft and released in 2012.",
-        "Rust was first released in 2010 by Mozilla.",
+        "Rust was first released in 2010 by Mozilla.",  # 2010 = configured value
     ]
     return FAISS.from_texts(texts, embeddings)
 

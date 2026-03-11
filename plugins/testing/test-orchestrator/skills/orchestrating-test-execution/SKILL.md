@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Coordinate parallel test execution across multiple test suites, frameworks, and environments. Manages test splitting, worker allocation, result aggregation, and intelligent retry strategies. Supports Jest `--shard`, pytest-xdist, Playwright sharding, and custom CI matrix configurations for maximum throughput.
+Coordinate parallel test execution across multiple test suites, frameworks, and environments. Manages test splitting, worker allocation, result aggregation, and intelligent retry strategies.
 
 ## Prerequisites
 

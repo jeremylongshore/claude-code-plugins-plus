@@ -108,7 +108,7 @@ RequestTimeoutError: Request exceeded timeout
 // Increase timeout for large files
 const client = new TwinMindClient({
   apiKey: process.env.TWINMIND_API_KEY,
-  timeout: 600000, // 10 minutes
+  timeout: 600000, // 10 minutes  # 600000 = configured value
 });
 
 // Or use async processing with webhooks
@@ -144,7 +144,7 @@ async function withBackoff<T>(operation: () => Promise<T>): Promise<T> {
 
       const retryAfter = parseInt(error.response.headers['retry-after'] || '60');
       console.log(`Rate limited. Waiting ${retryAfter}s...`);
-      await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1 second in ms
+      await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1000: 1 second in ms
     }
   }
   throw new Error('Max retries exceeded');
@@ -320,7 +320,7 @@ set -euo pipefail
 curl -v https://api.twinmind.com/v1/health
 
 # Check if firewall is blocking
-telnet api.twinmind.com 443  # HTTPS port
+telnet api.twinmind.com 443  # 443: HTTPS port
 
 # Test with different DNS
 curl --resolve api.twinmind.com:443:$(dig +short api.twinmind.com) \  # HTTPS port

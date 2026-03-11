@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Multi-Environment Setup
 
 ## Overview
-Separate PostHog projects per environment is strongly recommended over using one project with event filtering. Each environment gets its own Project API Key (starts with `phc_`) and Project ID. This prevents dev/staging events from polluting production analytics and dashboards. Feature flag environments in PostHog also map to separate projects. For self-hosted PostHog, separate organizations or flag environments provide the same isolation.
+Separate PostHog projects per environment is strongly recommended over using one project with event filtering. Each environment gets its own Project API Key (starts with `phc_`) and Project ID.
 
 ## Prerequisites
 - PostHog Cloud account or self-hosted instance
@@ -134,7 +134,7 @@ export function getPostHogServer(): PostHog {
   _client = new PostHog(config.apiKey, {
     host: config.host,
     flushAt: 20,
-    flushInterval: 10000,  # 10 seconds in ms
+    flushInterval: 10000,  # 10000: 10 seconds in ms
   });
 
   return _client;
@@ -145,11 +145,11 @@ export function getPostHogServer(): PostHog {
 ```bash
 # .env.local
 NEXT_PUBLIC_POSTHOG_KEY_DEV=phc_dev_abc123
-POSTHOG_PROJECT_ID_DEV=12345
+POSTHOG_PROJECT_ID_DEV=12345  # port 12345 - example/test
 
 # .env.staging
 NEXT_PUBLIC_POSTHOG_KEY_STAGING=phc_staging_def456
-POSTHOG_PROJECT_ID_STAGING=12346
+POSTHOG_PROJECT_ID_STAGING=12346  # 12346 = configured value
 
 # Production (GitHub Actions / cloud secret manager)
 # NEXT_PUBLIC_POSTHOG_KEY_PROD=phc_prod_xyz789

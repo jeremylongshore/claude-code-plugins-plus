@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Multi-Environment Setup
 
 ## Overview
-Windsurf is an IDE, not a cloud API -- "multi-environment setup" means configuring Cascade AI context and behavior consistently across team members, projects, and deployment targets. The key configuration files are `.windsurfrules` (AI context per project), `.windsurf/settings.json` (IDE preferences), and `.windsurfignore` (indexing exclusions). Each project gets its own rules file; team-wide defaults live in shared dotfiles or onboarding scripts.
+Windsurf is an IDE, not a cloud API -- "multi-environment setup" means configuring Cascade AI context and behavior consistently across team members, projects, and deployment targets. The key configuration files are `.windsurfrules` (AI context per project), `.windsurf/settings.json` (IDE preferences), and `.windsurfignore` (indexing exclusions).
 
 ## Prerequisites
 - Windsurf IDE installed on developer machines

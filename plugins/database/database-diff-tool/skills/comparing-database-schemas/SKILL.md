@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Compare database schemas between two environments (development vs. staging, staging vs. production) to detect structural differences in tables, columns, indexes, constraints, functions, and triggers. This skill generates SQL migration scripts to synchronize schemas, identifies drift caused by manual changes, and validates that migration files produce the expected schema state. Supports PostgreSQL and MySQL schema comparison using `information_schema` queries.
+Compare database schemas between two environments (development vs. staging, staging vs.
 
 ## Prerequisites
 

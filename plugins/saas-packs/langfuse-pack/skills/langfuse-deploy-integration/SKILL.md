@@ -80,9 +80,9 @@ services:
   langfuse:
     image: langfuse/langfuse:latest
     ports:
-      - "3001:3000"  # alternate dev port
+      - "3001:3000"  # 3000: 3001: alternate dev port
     environment:
-      - DATABASE_URL=postgresql://user:pass@postgres:5432/langfuse  # PostgreSQL port
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/langfuse  # 5432: PostgreSQL port
       - NEXTAUTH_SECRET=your-secret
       - NEXTAUTH_URL=http://localhost:3001  # alternate dev port
       - SALT=your-salt

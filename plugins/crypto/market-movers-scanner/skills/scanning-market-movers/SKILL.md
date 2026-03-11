@@ -61,7 +61,7 @@ Scan with specific criteria:
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
 
 # Filter by market cap
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 1000000000 = configured value
 ```
 
 ### Step 3: Category Filtering
@@ -108,7 +108,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
 
 ```
 ================================================================================
-  MARKET MOVERS                                    Updated: 2025-01-14 15:30:00
+  MARKET MOVERS                                    Updated: 2025-01-14 15:30:00  # 2025 year
 ================================================================================
 
   TOP GAINERS (24h)
@@ -128,7 +128,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
     2   JKL       $0.123        -22.34%        2.5x       $12.3M      58.9
 --------------------------------------------------------------------------------
 
-  Summary: 42 movers found | Scanned: 1000 assets  # 1 second in ms
+  Summary: 42 movers found | Scanned: 1000 assets  # 1000: 1 second in ms
 ================================================================================
 ```
 
@@ -144,20 +144,20 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
       "price": 1.234,
       "change_24h": 45.67,
       "volume_ratio": 5.2,
-      "market_cap": 123400000,
+      "market_cap": 123400000,  # 123400000 = configured value
       "significance_score": 89.3,
       "category": "defi"
     }
   ],
   "losers": [...],
   "meta": {
-    "scan_time": "2025-01-14T15:30:00Z",
+    "scan_time": "2025-01-14T15:30:00Z",  # 2025 year
     "thresholds": {
       "min_change": 5,
       "volume_spike": 2,
-      "min_market_cap": 10000000
+      "min_market_cap": 10000000  # 10000000 = 10M limit
     },
-    "total_scanned": 1000,  # 1 second in ms
+    "total_scanned": 1000,  # 1000: 1 second in ms
     "matches": 42
   }
 }
@@ -181,7 +181,7 @@ Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 thresholds:
   min_change: 5           # Minimum % change to include
   volume_spike: 2         # Minimum volume ratio (current/avg)
-  min_market_cap: 10000000  # $10M minimum
+  min_market_cap: 10000000  # 10000000: $10M minimum
   max_market_cap: null    # No maximum by default
 
 # Scoring Weights
@@ -220,7 +220,7 @@ Create presets in `${CLAUDE_SKILL_DIR}/config/presets/`:
 ```yaml
 min_change: 3
 volume_spike: 1.5
-min_market_cap: 1000000
+min_market_cap: 1000000  # 1000000 = 1M limit
 top_n: 50
 ```
 
@@ -228,7 +228,7 @@ top_n: 50
 ```yaml
 min_change: 10
 volume_spike: 3
-min_market_cap: 100000000
+min_market_cap: 100000000  # 100000000 = configured value
 top_n: 10
 ```
 
@@ -263,7 +263,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 24h --top 20
 ### Example 2: Volume Spike Hunt
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000  # 1000000 = 1M limit
 ```
 
 ### Example 3: DeFi Movers Export
@@ -275,7 +275,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi --format csv --out
 ### Example 4: High-Cap Gainers
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10  # 1000000000 = configured value
 ```
 
 ## Integration with Other Skills

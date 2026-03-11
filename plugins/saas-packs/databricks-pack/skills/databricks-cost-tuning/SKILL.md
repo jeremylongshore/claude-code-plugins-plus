@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Databricks Cost Tuning
 
 ## Overview
-Reduce Databricks spending by optimizing cluster configurations, leveraging spot instances, right-sizing SQL warehouses, and implementing cost governance policies. Databricks charges per DBU (Databricks Unit) with rates varying by workload type: Jobs Compute (~$0.15/DBU), All-Purpose Compute (~$0.40/DBU), SQL Compute (~$0.22/DBU), and Serverless (~$0.07/DBU). The biggest cost levers are cluster auto-termination, spot instances, and moving interactive workloads to serverless.
+Reduce Databricks spending by optimizing cluster configurations, leveraging spot instances, right-sizing SQL warehouses, and implementing cost governance policies. Databricks charges per DBU (Databricks Unit) with rates varying by workload type: Jobs Compute (~$0.15/DBU), All-Purpose Compute (~$0.40/DBU), SQL Compute (~$0.22/DBU), and Serverless (~$0.07/DBU).
 
 ## Prerequisites
 - Databricks Premium or Enterprise workspace
@@ -81,7 +81,7 @@ FROM system.query.history
 WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
 GROUP BY warehouse_id, warehouse_name;
 -- If max_queue_ms is near 0, warehouse is oversized. Reduce cluster size.
--- If max_queue_ms > 30000, warehouse needs more capacity or auto-scaling.  # 30 seconds in ms
+-- If max_queue_ms > 30000, warehouse needs more capacity or auto-scaling.  # 30000: 30 seconds in ms
 ```
 
 ### Step 5: Schedule Auto-Stop for Development Clusters
@@ -101,7 +101,6 @@ databricks clusters list --output JSON | \
 | Billing data not available | System tables not enabled | Enable system table access in account settings |
 
 ## Examples
-
 
 **Basic usage**: Apply databricks cost tuning to a standard project setup with default configuration options.
 

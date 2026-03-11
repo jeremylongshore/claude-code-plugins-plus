@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute end-to-end tests that simulate real user workflows across the full application stack -- browser interactions, API calls, database operations, and third-party integrations. Supports Playwright (recommended), Cypress, Selenium, and Puppeteer. Covers critical user journeys including authentication, form submission, navigation, data persistence, and payment flows.
+Execute end-to-end tests that simulate real user workflows across the full application stack -- browser interactions, API calls, database operations, and third-party integrations. Supports Playwright (recommended), Cypress, Selenium, and Puppeteer.
 
 ## Prerequisites
 

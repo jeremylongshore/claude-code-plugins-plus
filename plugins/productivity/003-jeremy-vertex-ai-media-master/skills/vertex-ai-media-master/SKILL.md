@@ -12,7 +12,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Multimodal media operations on Google Cloud Vertex AI covering video understanding, audio generation, image creation, and marketing campaign automation. This skill orchestrates Gemini 2.5 Pro/Flash, Imagen 4, and Lyria models to process, analyze, and generate rich media assets. Suited for marketing teams, content creators, and developers building media pipelines on Google Cloud.
+Multimodal media operations on Google Cloud Vertex AI covering video understanding, audio generation, image creation, and marketing campaign automation. This skill orchestrates Gemini 2.5 Pro/Flash, Imagen 4, and Lyria models to process, analyze, and generate rich media assets.
 
 ## Prerequisites
 

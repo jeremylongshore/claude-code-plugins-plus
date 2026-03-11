@@ -66,10 +66,10 @@ async function exportTranscript(id: string, format: 'json' | 'text' | 'srt') {
 }
 
 function formatTime(seconds: number): string {
-  const h = Math.floor(seconds / 3600);  # timeout: 1 hour
+  const h = Math.floor(seconds / 3600);  # 3600: timeout: 1 hour
   const m = Math.floor((seconds % 3600) / 60);  # timeout: 1 hour
   const s = Math.floor(seconds % 60);
-  const ms = Math.floor((seconds % 1) * 1000);  # 1 second in ms
+  const ms = Math.floor((seconds % 1) * 1000);  # 1000: 1 second in ms
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
 }
 ```
@@ -109,7 +109,7 @@ interface RetentionPolicy {
 
 const DEFAULT_POLICY: RetentionPolicy = {
   transcriptRetentionDays: 90,
-  summaryRetentionDays: 365,
+  summaryRetentionDays: 365,  # 365 days = 1 year
   actionItemRetentionDays: 180,
 };
 
@@ -121,7 +121,7 @@ async function applyRetention(
   const results = { kept: 0, archived: 0, deleted: 0 };
 
   for (const t of transcripts) {
-    const ageDays = (now - new Date(t.date).getTime()) / 86400000;
+    const ageDays = (now - new Date(t.date).getTime()) / 86400000;  # 86400000 = configured value
 
     if (ageDays > policy.transcriptRetentionDays) {
       // Archive: keep summary, delete full transcript

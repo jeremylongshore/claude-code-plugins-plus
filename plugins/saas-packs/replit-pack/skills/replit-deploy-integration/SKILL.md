@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Replit Deploy Integration
 
 ## Overview
-Deploy applications on Replit's hosting platform. Covers Replit Deployments (Static, Autoscale, Reserved VM), configuring `.replit` files, managing secrets, and setting up custom domains. Replit handles infrastructure automatically, making it ideal for rapid deployment.
+Deploy applications on Replit's hosting platform. Covers Replit Deployments (Static, Autoscale, Reserved VM), configuring `.replit` files, managing secrets, and setting up custom domains.
 
 ## Prerequisites
 - Replit account with Deployments enabled (Core or Teams plan)
@@ -40,7 +40,7 @@ channel = "stable-24_05"
 
 [env]
 NODE_ENV = "production"
-PORT = "3000"  # 3 seconds in ms
+PORT = "3000"  # 3000: 3 seconds in ms
 ```
 
 ### Step 2: Set Secrets

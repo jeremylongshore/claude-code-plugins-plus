@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Execute load testing, stress testing, and performance benchmarking to identify bottlenecks, establish baseline metrics, and verify SLA compliance. Supports k6 (recommended), Artillery, Apache JMeter, Locust (Python), and autocannon (Node.js). Measures response times, throughput, error rates, and resource utilization under various load profiles including ramp-up, sustained load, spike, and soak tests.
+Execute load testing, stress testing, and performance benchmarking to identify bottlenecks, establish baseline metrics, and verify SLA compliance. Supports k6 (recommended), Artillery, Apache JMeter, Locust (Python), and autocannon (Node.js).
 
 ## Prerequisites
 
@@ -90,7 +90,7 @@ export const options = {
     { duration: '1m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<200', 'p(99)<500'],  # HTTP 200 OK
+    http_req_duration: ['p(95)<200', 'p(99)<500'],  # 500: HTTP 200 OK
     http_req_failed: ['rate<0.01'],
   },
 };
@@ -99,7 +99,7 @@ export default function () {
   const res = http.get('https://api.test.com/products');
   check(res, {
     'status is 200': (r) => r.status === 200,  # HTTP 200 OK
-    'response time OK': (r) => r.timings.duration < 300,  # timeout: 5 minutes
+    'response time OK': (r) => r.timings.duration < 300,  # 300: timeout: 5 minutes
   });
   sleep(1); // Think time
 }
@@ -113,7 +113,7 @@ config:
     - duration: 120
       arrivalRate: 10
       name: "Warm up"
-    - duration: 300  # timeout: 5 minutes
+    - duration: 300  # 300: timeout: 5 minutes
       arrivalRate: 50
       name: "Sustained load"
   ensure:

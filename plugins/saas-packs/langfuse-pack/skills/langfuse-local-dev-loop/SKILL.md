@@ -38,7 +38,7 @@ LANGFUSE_HOST=https://cloud.langfuse.com
 # Development options
 LANGFUSE_DEBUG=true
 LANGFUSE_FLUSH_AT=1        # Flush after every event for immediate visibility
-LANGFUSE_FLUSH_INTERVAL=1000  # Flush every second
+LANGFUSE_FLUSH_INTERVAL=1000  # 1000: Flush every second
 ```
 
 ### Step 2: Create Debug-Enabled Client
@@ -55,7 +55,7 @@ export const langfuse = new Langfuse({
   baseUrl: process.env.LANGFUSE_HOST,
   // Development settings
   flushAt: isDev ? 1 : 15,
-  flushInterval: isDev ? 1000 : 10000,  # 1 second in ms
+  flushInterval: isDev ? 1000 : 10000,  # 10000: 1 second in ms
   // Enable debug logging in dev
   ...(isDev && {
     debug: true,
@@ -144,9 +144,9 @@ services:
   langfuse:
     image: langfuse/langfuse:latest
     ports:
-      - "3000:3000"  # 3 seconds in ms
+      - "3000:3000"  # 3000: 3 seconds in ms
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/langfuse  # PostgreSQL port
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/langfuse  # 5432: PostgreSQL port
       - NEXTAUTH_SECRET=development-secret-change-in-prod
       - NEXTAUTH_URL=http://localhost:3000  # 3 seconds in ms
       - SALT=development-salt-change-in-prod
@@ -172,7 +172,7 @@ set -euo pipefail
 docker compose -f docker-compose.langfuse.yml up -d
 
 # Update .env.local
-echo 'LANGFUSE_HOST=http://localhost:3000' >> .env.local  # 3 seconds in ms
+echo 'LANGFUSE_HOST=http://localhost:3000' >> .env.local  # 3000: 3 seconds in ms
 ```
 
 ## Output

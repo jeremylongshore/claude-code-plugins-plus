@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement database audit logging to track all data modifications (INSERT, UPDATE, DELETE) with full before/after values, user identity, timestamps, and application context. This skill supports trigger-based auditing for PostgreSQL and MySQL, change data capture (CDC) patterns, and application-level audit logging. Audit logs support compliance requirements (GDPR, HIPAA, SOX, PCI-DSS) by providing immutable, queryable records of who changed what and when.
+Implement database audit logging to track all data modifications (INSERT, UPDATE, DELETE) with full before/after values, user identity, timestamps, and application context. This skill supports trigger-based auditing for PostgreSQL and MySQL, change data capture (CDC) patterns, and application-level audit logging.
 
 ## Prerequisites
 

@@ -102,7 +102,7 @@ interface CallRecord {
 
 function calculateRetention(callRecord: any): CallRecord {
   const retentionDays = 90; // Default 90-day retention
-  const retainUntil = new Date(callRecord.end_timestamp * 1000);  # 1 second in ms
+  const retainUntil = new Date(callRecord.end_timestamp * 1000);  # 1000: 1 second in ms
   retainUntil.setDate(retainUntil.getDate() + retentionDays);
 
   return {
@@ -179,7 +179,7 @@ async function complianceReport(records: CallRecord[]) {
     withRecordings: records.filter(r => r.recordingUrl).length,
     expiringThisWeek: records.filter(r => {
       const exp = new Date(r.retainUntil);
-      return exp > now && exp < new Date(now.getTime() + 7 * 86400000);
+      return exp > now && exp < new Date(now.getTime() + 7 * 86400000);  # 86400000 = configured value
     }).length,
   };
 }

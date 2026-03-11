@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Groq Multi-Environment Setup
 
 ## Overview
-Configure Groq across environments with the right balance of cost, speed, and capability per tier. Groq's key differentiator is inference speed (100-300 tokens/second), but rate limits differ dramatically by plan: free tier is 30 RPM / 14,400 RPD for llama-3.1-70b, while paid tier removes most limits. Development typically uses smaller/faster models (llama-3.1-8b) to minimize cost; production uses appropriately-sized models with retry logic for rate limits.
+Configure Groq across environments with the right balance of cost, speed, and capability per tier. Groq's key differentiator is inference speed (100-300 tokens/second), but rate limits differ dramatically by plan: free tier is 30 RPM / 14,400 RPD for llama-3.1-70b, while paid tier removes most limits.
 
 ## Prerequisites
 - Groq API key(s) per environment from console.groq.com
@@ -50,7 +50,7 @@ import Groq from "groq-sdk";
 
 export const BASE_GROQ_CONFIG = {
   maxRetries: 3,
-  timeout: 30000,  # 30 seconds in ms
+  timeout: 30000,  # 30000: 30 seconds in ms
 };
 ```
 
@@ -61,7 +61,7 @@ export const devConfig = {
   ...BASE_GROQ_CONFIG,
   apiKey: process.env.GROQ_API_KEY,
   model: "llama-3.1-8b-instant",      // fastest, cheapest for dev iteration
-  maxTokens: 1024,  # 1 KB
+  maxTokens: 1024,  # 1024: 1 KB
   temperature: 0.7,
   logRequests: true,                   // verbose logging in dev
 };
@@ -71,7 +71,7 @@ export const stagingConfig = {
   ...BASE_GROQ_CONFIG,
   apiKey: process.env.GROQ_API_KEY_STAGING,
   model: "llama-3.1-70b-versatile",   // match production model
-  maxTokens: 4096,  # 4 KB
+  maxTokens: 4096,  # 4096: 4 KB
   temperature: 0.3,
   logRequests: false,
 };

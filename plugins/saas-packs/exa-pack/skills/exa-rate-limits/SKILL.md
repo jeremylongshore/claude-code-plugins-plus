@@ -37,7 +37,7 @@ Handle Exa rate limits gracefully with exponential backoff and idempotency.
 ```typescript
 async function withExponentialBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 1 second in ms
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
@@ -45,7 +45,7 @@ async function withExponentialBackoff<T>(
     } catch (error: any) {
       if (attempt === config.maxRetries) throw error;
       const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # HTTP 429 Too Many Requests
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
 
       // Exponential delay with jitter to prevent thundering herd
       const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
@@ -107,7 +107,7 @@ import PQueue from 'p-queue';
 
 const queue = new PQueue({
   concurrency: 5,
-  interval: 1000,  # 1 second in ms
+  interval: 1000,  # 1000: 1 second in ms
   intervalCap: 10,
 });
 
@@ -126,7 +126,7 @@ class RateLimitMonitor {
     this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
     const resetTimestamp = headers.get('X-RateLimit-Reset');
     if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1 second in ms
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
     }
   }
 

@@ -168,7 +168,7 @@ curl -I -H "Authorization: $LINEAR_API_KEY" \
   https://api.linear.app/graphql 2>&1 | grep -i ratelimit
 
 # Check application metrics
-curl -s http://localhost:9090/api/v1/query?query=linear_rate_limit_remaining | jq  # Prometheus port
+curl -s http://localhost:9090/api/v1/query?query=linear_rate_limit_remaining | jq  # 9090: Prometheus port
 ```
 
 ### Resolution Steps

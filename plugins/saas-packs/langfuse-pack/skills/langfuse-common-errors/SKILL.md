@@ -110,7 +110,7 @@ curl -v $LANGFUSE_HOST/api/public/health
 ```typescript
 // Increase timeout if needed
 const langfuse = new Langfuse({
-  requestTimeout: 30000, // 30 seconds  # 30 seconds in ms
+  requestTimeout: 30000, // 30 seconds  # 30000: 30 seconds in ms
 });
 ```
 
@@ -253,7 +253,7 @@ config({ path: ".env.local" });
 ### 9. Self-Hosted Connection Issues
 **Error Message:**
 ```
-Failed to connect to localhost:3000  # 3 seconds in ms
+Failed to connect to localhost:3000  # 3000: 3 seconds in ms
 Certificate verification failed
 ```
 
@@ -264,7 +264,7 @@ Certificate verification failed
 set -euo pipefail
 # Check if Langfuse is running
 docker ps | grep langfuse
-curl http://localhost:3000/api/public/health  # 3 seconds in ms
+curl http://localhost:3000/api/public/health  # 3000: 3 seconds in ms
 
 # For HTTPS without valid cert
 export NODE_TLS_REJECT_UNAUTHORIZED=0  # Development only!
@@ -273,7 +273,7 @@ export NODE_TLS_REJECT_UNAUTHORIZED=0  # Development only!
 ```typescript
 // Verify host URL doesn't have trailing slash
 const langfuse = new Langfuse({
-  baseUrl: "http://localhost:3000", // No trailing slash  # 3 seconds in ms
+  baseUrl: "http://localhost:3000", // No trailing slash  # 3000: 3 seconds in ms
 });
 ```
 
@@ -293,7 +293,7 @@ Retry-After: 60
 // Increase batch size to reduce requests
 const langfuse = new Langfuse({
   flushAt: 50,        // Batch more events
-  flushInterval: 30000, // Flush less often  # 30 seconds in ms
+  flushInterval: 30000, // Flush less often  # 30000: 30 seconds in ms
 });
 
 // See langfuse-rate-limits skill for advanced handling

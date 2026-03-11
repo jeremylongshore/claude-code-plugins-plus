@@ -37,7 +37,7 @@ async function startLiveTranscription(onTranscript: (text: string, isFinal: bool
     language: 'en-US',
     smart_format: true,
     interim_results: true,
-    utterance_end_ms: 1000,  # 1 second in ms
+    utterance_end_ms: 1000,  # 1000: 1 second in ms
     vad_events: true,
     diarize: true,
   });
@@ -86,7 +86,7 @@ async function captureAndTranscribe() {
   const mic = spawn('rec', [
     '-q',            // Quiet
     '-t', 'raw',     // Raw format
-    '-r', '16000',   // 16kHz sample rate
+    '-r', '16000',   // 16kHz sample rate  # 16000 = configured value
     '-e', 'signed',  // Signed integer encoding
     '-b', '16',      // 16-bit
     '-c', '1',       // Mono
@@ -101,7 +101,7 @@ async function captureAndTranscribe() {
   setTimeout(() => {
     mic.kill();
     connection.finish();
-  }, 30000);  # 30 seconds in ms
+  }, 30000);  # 30000: 30 seconds in ms
 }
 ```
 

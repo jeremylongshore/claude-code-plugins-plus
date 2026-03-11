@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Provision, configure, and manage isolated test environments for reliable test execution. Supports Docker Compose environments, Testcontainers, local service stacks, and ephemeral CI environments. Handles database seeding, service discovery, port allocation, and teardown to ensure each test run operates against a clean, reproducible state.
+Provision, configure, and manage isolated test environments for reliable test execution. Supports Docker Compose environments, Testcontainers, local service stacks, and ephemeral CI environments.
 
 ## Prerequisites
 
@@ -75,14 +75,14 @@ services:
     environment:
       POSTGRES_DB: testdb
       POSTGRES_PASSWORD: testpass
-    ports: ["5433:5432"]  # PostgreSQL port
+    ports: ["5433:5432"]  # 5432: 5433: PostgreSQL port
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
       retries: 10
   redis-test:
     image: redis:7-alpine
-    ports: ["6380:6379"]  # Redis TLS port
+    ports: ["6380:6379"]  # 6379: 6380: Redis TLS port
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
 ```
@@ -95,7 +95,7 @@ let container;
 beforeAll(async () => {
   container = await new PostgreSqlContainer().start();
   process.env.DATABASE_URL = container.getConnectionUri();
-}, 30000);  # 30 seconds in ms
+}, 30000);  # 30000: 30 seconds in ms
 afterAll(async () => { await container.stop(); });
 ```
 

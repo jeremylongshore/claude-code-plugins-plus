@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Automatically generate comprehensive unit tests from source code analysis covering happy paths, edge cases, boundary conditions, and error handling. Supports Jest, Vitest, Mocha (JavaScript/TypeScript), pytest (Python), JUnit 5 (Java), and Go testing with testify. Produces tests following the Arrange-Act-Assert pattern with proper mocking of external dependencies.
+Automatically generate comprehensive unit tests from source code analysis covering happy paths, edge cases, boundary conditions, and error handling. Supports Jest, Vitest, Mocha (JavaScript/TypeScript), pytest (Python), JUnit 5 (Java), and Go testing with testify.
 
 ## Prerequisites
 

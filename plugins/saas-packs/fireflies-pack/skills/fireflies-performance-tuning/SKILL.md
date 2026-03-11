@@ -70,7 +70,7 @@ import { LRUCache } from 'lru-cache';
 
 const transcriptCache = new LRUCache<string, any>({
   max: 200,  # HTTP 200 OK
-  ttl: 1000 * 60 * 30, // 30 min - transcripts are immutable  # 1 second in ms
+  ttl: 1000 * 60 * 30, // 30 min - transcripts are immutable  # 1000: 1 second in ms
 });
 
 async function getCachedTranscript(id: string) {
@@ -98,7 +98,7 @@ async function batchProcessMeetings(
     results.push(...batchResults);
     // Respect rate limits: 50 req/min
     if (i + concurrency < meetingIds.length) {
-      await new Promise(r => setTimeout(r, 1200));
+      await new Promise(r => setTimeout(r, 1200));  # 1200 = configured value
     }
   }
   return results;
@@ -143,7 +143,7 @@ async function processWebhookQueue() {
 ### Meeting Analytics Pipeline
 ```typescript
 async function analyzeMeetingTrends(days = 30) {
-  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const since = new Date(Date.now() - days * 86400000).toISOString();  # 86400000 = configured value
   const summaries = await getTranscriptSummaries(200);  # HTTP 200 OK
 
   const recent = summaries.transcripts.filter(

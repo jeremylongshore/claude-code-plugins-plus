@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Analyze DeFi protocol metrics, chain-level TVL, fee revenue, DEX volumes, yield opportunities, and stablecoin market caps using DeFiLlama as the primary data source. Designed for DeFi researchers, protocol analysts, and yield farmers who need programmatic access to on-chain analytics without writing custom subgraph queries. Supports protocol ranking, category breakdowns, trending detection, and multi-format export.
+Analyze DeFi protocol metrics, chain-level TVL, fee revenue, DEX volumes, yield opportunities, and stablecoin market caps using DeFiLlama as the primary data source. Designed for DeFi researchers, protocol analysts, and yield farmers who need programmatic access to on-chain analytics without writing custom subgraph queries.
 
 ## Prerequisites
 
@@ -82,7 +82,7 @@ Ranks all lending protocols by TVL-to-market-cap ratio (identifying potentially 
 
 ### Find High-TVL Yield Opportunities on Ethereum
 ```bash
-python onchain_analytics.py yields --min-tvl 10000000 --chain ethereum --limit 50
+python onchain_analytics.py yields --min-tvl 10000000 --chain ethereum --limit 50  # 10000000 = 10M limit
 ```
 Returns up to 50 yield pools on Ethereum with at least $10M in TVL, sorted by APY. Export with `--format csv > yields.csv` for spreadsheet analysis.
 

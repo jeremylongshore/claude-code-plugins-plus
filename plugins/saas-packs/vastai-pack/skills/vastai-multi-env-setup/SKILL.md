@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Multi-Environment Setup
 
 ## Overview
-Vast.ai "environments" for GPU workloads map to separate API keys with different spending limits, allowed GPU types, and maximum instance counts. Development experiments should be restricted to cost-efficient spot instances with low spending caps. Production training jobs get access to premium GPUs (A100, H100) with higher spending. The `vastai` CLI and Python SDK both read API keys from environment variables or the `~/.vast_api_key` file, enabling clean environment separation.
+Vast.ai "environments" for GPU workloads map to separate API keys with different spending limits, allowed GPU types, and maximum instance counts. Development experiments should be restricted to cost-efficient spot instances with low spending caps.
 
 ## Prerequisites
 - Vast.ai account with API key from cloud.vast.ai

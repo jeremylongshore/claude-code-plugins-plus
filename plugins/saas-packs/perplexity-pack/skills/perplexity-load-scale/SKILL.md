@@ -76,7 +76,7 @@ brew install k6  # macOS
 k6 run --env PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY} perplexity-load-test.js
 
 # Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 perplexity-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 perplexity-load-test.js  # 8086 = configured value
 ```
 
 ## Scaling Patterns
@@ -126,7 +126,7 @@ const perplexityPool = Pool.create({
   },
   max: 20,
   min: 5,
-  idleTimeoutMillis: 30000,  # 30 seconds in ms
+  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
 });
 
 async function withPerplexityClient<T>(

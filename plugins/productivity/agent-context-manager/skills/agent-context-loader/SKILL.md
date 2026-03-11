@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Automatic discovery and loading of `AGENTS.md` files across project hierarchies for AI coding agents. This skill scans the current workspace and its parent directories to locate agent instruction files, then surfaces their contents so the active agent session has full operational context. Essential for multi-project monorepos, nested workspaces, and teams that maintain per-directory agent instructions.
+Automatic discovery and loading of `AGENTS.md` files across project hierarchies for AI coding agents. This skill scans the current workspace and its parent directories to locate agent instruction files, then surfaces their contents so the active agent session has full operational context.
 
 ## Prerequisites
 

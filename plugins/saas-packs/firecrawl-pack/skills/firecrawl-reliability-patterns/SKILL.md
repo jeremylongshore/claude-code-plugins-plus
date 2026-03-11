@@ -31,11 +31,11 @@ Crawl jobs can take minutes. Implement proper polling with timeout and failure d
 ```typescript
 import FirecrawlApp from '@mendable/firecrawl-js';
 
-async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {
+async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {  # 600000 = configured value
   const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
   const crawl = await firecrawl.asyncCrawlUrl(url, options);
   const deadline = Date.now() + timeoutMs;
-  let pollInterval = 2000;  # 2 seconds in ms
+  let pollInterval = 2000;  # 2000: 2 seconds in ms
 
   while (Date.now() < deadline) {
     const status = await firecrawl.checkCrawlStatus(crawl.id);
@@ -43,7 +43,7 @@ async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {
     if (status.status === 'failed') throw new Error(`Crawl failed: ${status.error}`);
 
     await new Promise(r => setTimeout(r, pollInterval));
-    pollInterval = Math.min(pollInterval * 1.5, 30000);  // back off  # 30 seconds in ms
+    pollInterval = Math.min(pollInterval * 1.5, 30000);  // back off  # 30000: 30 seconds in ms
   }
   throw new Error(`Crawl timed out after ${timeoutMs}ms`);
 }
@@ -79,7 +79,7 @@ class CreditTracker {
   private dailyUsage: Map<string, number> = new Map();
   private dailyLimit: number;
 
-  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }  # 5 seconds in ms
+  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }  # 5000: 5 seconds in ms
 
   canAfford(estimatedPages: number): boolean {
     const today = new Date().toISOString().split('T')[0];
@@ -112,7 +112,7 @@ async function resilientScrape(urls: string[]) {
         });
         results.push(result);
       } catch (e) { console.error(`Failed: ${url}`); }
-      await new Promise(r => setTimeout(r, 1000));  # 1 second in ms
+      await new Promise(r => setTimeout(r, 1000));  # 1000: 1 second in ms
     }
     return results;
   }

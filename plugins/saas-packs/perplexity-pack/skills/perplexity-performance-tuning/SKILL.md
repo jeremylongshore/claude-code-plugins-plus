@@ -43,7 +43,7 @@ async function quickSearch(query: string) {
   return perplexity.chat.completions.create({
     model: 'sonar',
     messages: [{ role: 'user', content: query }],
-    max_tokens: 512,
+    max_tokens: 512,  # 512 bytes
   });
 }
 
@@ -54,7 +54,7 @@ async function deepResearch(query: string) {
       { role: 'system', content: 'Provide comprehensive research with citations.' },
       { role: 'user', content: query },
     ],
-    max_tokens: 2048,  # 2 KB
+    max_tokens: 2048,  # 2048: 2 KB
   });
 }
 ```
@@ -65,7 +65,7 @@ import { LRUCache } from 'lru-cache';
 import { createHash } from 'crypto';
 
 const searchCache = new LRUCache<string, any>({
-  max: 1000,  # 1 second in ms
+  max: 1000,  # 1000: 1 second in ms
   ttl: 1000 * 60 * 60, // 1 hour - search results age  # 1 second in ms
 });
 
@@ -100,7 +100,7 @@ async function streamResearch(
     model: 'sonar-pro',
     messages: [{ role: 'user', content: query }],
     stream: true,
-    max_tokens: 4096,  # 4 KB
+    max_tokens: 4096,  # 4096: 4 KB
   });
 
   let fullText = '';

@@ -71,7 +71,7 @@ import { LRUCache } from 'lru-cache';
 
 const analyticsCache = new LRUCache<string, any>({
   max: 100,
-  ttl: 1000 * 60 * 5, // 5 min - analytics change slowly  # 1 second in ms
+  ttl: 1000 * 60 * 5, // 5 min - analytics change slowly  # 1000: 1 second in ms
 });
 
 async function getCampaignAnalytics(campaignId: string) {

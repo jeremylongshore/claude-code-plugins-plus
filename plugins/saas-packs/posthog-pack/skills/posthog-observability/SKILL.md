@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Observability
 
 ## Overview
-Monitor PostHog event ingestion health, query performance, and feature flag evaluation reliability. Key signals include event ingestion rate and latency (time from `posthog.capture()` to event appearing in queries), feature flag evaluation latency (critical for server-side flags in hot paths), event volume by type (to detect instrumentation regressions), and API rate limit consumption. PostHog's event-based pricing means tracking event volume is directly tied to billing.
+Monitor PostHog event ingestion health, query performance, and feature flag evaluation reliability. Key signals include event ingestion rate and latency (time from `posthog.capture()` to event appearing in queries), feature flag evaluation latency (critical for server-side flags in hot paths), event volume by type (to detect instrumentation regressions), and API rate limit consumption.
 
 ## Prerequisites
 - PostHog Cloud or self-hosted instance
@@ -79,7 +79,7 @@ groups:
         expr: histogram_quantile(0.95, rate(posthog_flag_eval_ms_bucket[5m])) > 500  # HTTP 500 Internal Server Error
         annotations: { summary: "PostHog feature flag P95 evaluation exceeds 500ms" }
       - alert: PostHogEventBudgetHigh
-        expr: posthog_projected_monthly_events > 10000000
+        expr: posthog_projected_monthly_events > 10000000  # 10000000 = 10M limit
         annotations: { summary: "Projected PostHog events exceed 10M/month (check billing tier)" }
       - alert: PostHogApiErrors
         expr: rate(posthog_api_errors_total[5m]) > 0.1
@@ -98,7 +98,6 @@ Track: event ingestion rate over time, event volume by type ($pageview, $autocap
 | API `429` rate limited | Too many insight queries | Cache insight results, reduce poll frequency |
 
 ## Examples
-
 
 **Basic usage**: Apply posthog observability to a standard project setup with default configuration options.
 

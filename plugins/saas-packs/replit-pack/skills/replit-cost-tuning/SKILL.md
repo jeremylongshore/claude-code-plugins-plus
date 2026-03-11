@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Replit Cost Tuning
 
 ## Overview
-Optimize Replit costs by right-sizing deployment tiers, managing compute resources, and controlling AI feature (Ghostwriter) consumption. Replit pricing combines per-seat subscription (Teams: ~$25/seat/month) with deployment compute costs (billed by CPU/memory/egress). The biggest cost levers are: using Reserved VMs for predictable workloads instead of on-demand (40% savings), configuring auto-sleep for development Repls, and right-sizing deployment resources to actual usage.
+Optimize Replit costs by right-sizing deployment tiers, managing compute resources, and controlling AI feature (Ghostwriter) consumption. Replit pricing combines per-seat subscription (Teams: ~$25/seat/month) with deployment compute costs (billed by CPU/memory/egress).
 
 ## Prerequisites
 - Replit Teams account with billing access
@@ -38,7 +38,7 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/usage?period=last_30d" \
 # Match resources to actual workload needs
 undersized:  # Causes crashes, bad UX
   cpu: 0.25 vCPU
-  memory: 512 MB
+  memory: 512 MB  # 512 bytes
   cost: "$5/month"
 
 right_sized:  # Handles normal traffic
@@ -98,7 +98,6 @@ audit:
 | Seat costs growing | Team expanding without audit | Quarterly seat utilization review |
 
 ## Examples
-
 
 **Basic usage**: Apply replit cost tuning to a standard project setup with default configuration options.
 

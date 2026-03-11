@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Create, validate, and execute database schema migrations with full rollback support across PostgreSQL, MySQL, and MongoDB. This skill generates versioned migration files compatible with popular migration frameworks (Flyway, Liquibase, Alembic, Prisma Migrate, Knex, Django migrations) and ensures safe deployment with pre-flight checks, data preservation, and zero-downtime strategies for production environments.
+Create, validate, and execute database schema migrations with full rollback support across PostgreSQL, MySQL, and MongoDB.
 
 ## Prerequisites
 

@@ -45,7 +45,7 @@ Export your transaction history from each exchange as CSV. Supported formats:
 Execute the tax calculator with your transaction file:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 year
 ```
 
 This uses FIFO (IRS default) and outputs:
@@ -74,7 +74,7 @@ Or specify a method:
 Create Form 8949 compatible CSV:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 year
 ```
 
 Output includes:
@@ -104,7 +104,7 @@ This identifies:
 Combine multiple exchange exports:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 year
 ```
 
 The tool:
@@ -119,14 +119,14 @@ The tool:
 ```
 set -euo pipefail
 ============================================================
-  CRYPTO TAX REPORT - 2025
+  CRYPTO TAX REPORT - 2025  # 2025 year
 ============================================================
 
 SHORT-TERM CAPITAL GAINS/LOSSES (< 1 year)
 ------------------------------------------------------------
 Description      Acquired    Sold        Proceeds    Cost      Gain/Loss
 0.5 BTC          03/15/25    06/20/25    $52,500     $47,500   $5,000  # HTTP 500 Internal Server Error
-2.0 ETH          04/01/25    08/15/25    $7,200      $6,400    $800  # HTTP 200 OK
+2.0 ETH          04/01/25    08/15/25    $7,200      $6,400    $800  # 400: 800: HTTP 200 OK
 ------------------------------------------------------------
 Short-term Total:                                              $5,800
 
@@ -140,8 +140,8 @@ Long-term Total:                                               $53,000
 ============================================================
 SUMMARY
 ------------------------------------------------------------
-Total Proceeds:           $154,700
-Total Cost Basis:         $95,900  # timeout: 15 minutes
+Total Proceeds:           $154,700  # 700 = configured value
+Total Cost Basis:         $95,900  # 900: timeout: 15 minutes
 Net Capital Gain:         $58,800
 
 Short-term Gains:         $5,800
@@ -151,7 +151,7 @@ Long-term Gains:          $53,000
 
 ### Income Report
 ```
-CRYPTO INCOME - 2025
+CRYPTO INCOME - 2025  # 2025 year
 ------------------------------------------------------------
 Type            Date        Asset    Quantity    FMV (USD)
 Staking         01/15/25    ETH      0.05        $160.00
@@ -178,12 +178,12 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 
 **Basic tax calculation**:
 ```bash
-python tax_calculator.py --transactions trades.csv --year 2025
+python tax_calculator.py --transactions trades.csv --year 2025  # 2025 year
 ```
 
 **HIFO to minimize gains**:
 ```bash
-python tax_calculator.py --transactions trades.csv --method hifo --year 2025
+python tax_calculator.py --transactions trades.csv --method hifo --year 2025  # 2025 year
 ```
 
 **JSON output for processing**:

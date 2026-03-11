@@ -85,7 +85,7 @@ client = EvernoteClient(
 
 ```javascript
 // Step 5a: Get request token and redirect URL
-const callbackUrl = 'http://localhost:3000/oauth/callback';  # 3 seconds in ms
+const callbackUrl = 'http://localhost:3000/oauth/callback';  # 3000: 3 seconds in ms
 
 client.getRequestToken(callbackUrl, (error, oauthToken, oauthTokenSecret) => {
   if (error) {

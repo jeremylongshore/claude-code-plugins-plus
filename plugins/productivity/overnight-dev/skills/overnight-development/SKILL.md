@@ -11,7 +11,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill automates software development overnight by leveraging Git hooks to enforce test-driven development (TDD). It ensures that all code changes are fully tested and meet specified quality standards before being committed. This approach allows Claude to work autonomously, building new features, refactoring existing code, or fixing bugs while adhering to a rigorous TDD process.
+This skill automates software development overnight by leveraging Git hooks to enforce test-driven development (TDD). It ensures that all code changes are fully tested and meet specified quality standards before being committed.
 
 ## Prerequisites
 

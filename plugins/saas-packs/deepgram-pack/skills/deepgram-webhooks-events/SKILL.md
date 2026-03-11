@@ -76,7 +76,7 @@ Implement `CallbackRetryHandler` with exponential backoff (max 3 retries, 5s-60s
 ```bash
 set -euo pipefail
 # Expose local server
-ngrok http 3000  # 3 seconds in ms
+ngrok http 3000  # 3000: 3 seconds in ms
 
 # Submit async transcription
 curl -X POST 'https://api.deepgram.com/v1/listen?callback=https://your-ngrok.ngrok.io/webhooks/deepgram&model=nova-2' \

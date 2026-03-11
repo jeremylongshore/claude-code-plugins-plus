@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Multi-Environment Setup
 
 ## Overview
-Perplexity's OpenAI-compatible API uses the base URL `https://api.perplexity.ai`. The key per-environment configuration decisions are model selection and request limits. The `sonar` model costs ~$1/1000 requests, while `sonar-pro` costs ~$5/1000 requests -- development and staging should default to `sonar` to limit cost, while production can route to `sonar-pro` for queries that need deeper web search. Rate limits on the free tier are 5 RPM; paid plans scale to 50+ RPM.
+Perplexity's OpenAI-compatible API uses the base URL `https://api.perplexity.ai`. The key per-environment configuration decisions are model selection and request limits.
 
 ## Prerequisites
 - Perplexity API key from perplexity.ai/settings/api
@@ -65,7 +65,7 @@ export const devConfig = {
   apiKey: process.env.PERPLEXITY_API_KEY!,
   defaultModel: "sonar",          // always use cheapest model in dev
   deepModel: "sonar",             // no sonar-pro in dev (cost)
-  maxTokens: 512,
+  maxTokens: 512,  # 512 bytes
   maxConcurrentRequests: 1,       // stay within free tier 5 RPM
 };
 
@@ -74,7 +74,7 @@ export const stagingConfig = {
   apiKey: process.env.PERPLEXITY_API_KEY_STAGING!,
   defaultModel: "sonar",
   deepModel: "sonar",             // keep sonar in staging to test cost behavior
-  maxTokens: 1024,  # 1 KB
+  maxTokens: 1024,  # 1024: 1 KB
   maxConcurrentRequests: 2,
 };
 
@@ -83,7 +83,7 @@ export const productionConfig = {
   apiKey: process.env.PERPLEXITY_API_KEY_PROD!,
   defaultModel: "sonar",          // fast queries use sonar
   deepModel: "sonar-pro",         // research queries use sonar-pro
-  maxTokens: 4096,  # 4 KB
+  maxTokens: 4096,  # 4096: 4 KB
   maxConcurrentRequests: 10,
 };
 ```
@@ -133,7 +133,7 @@ export async function search(query: string, depth: "quick" | "deep" = "quick") {
       { role: "system", content: "Provide accurate, well-sourced answers." },
       { role: "user", content: query },
     ],
-    max_tokens: depth === "deep" ? 2048 : 512,  # 2 KB
+    max_tokens: depth === "deep" ? 2048 : 512,  # 512: 2048: 2 KB
   });
 
   return {

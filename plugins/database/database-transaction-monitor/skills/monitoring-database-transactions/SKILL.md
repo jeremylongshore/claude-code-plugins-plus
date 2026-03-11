@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Monitor active database transactions in real time to detect long-running queries, lock contention, uncommitted transactions, and transaction throughput anomalies across PostgreSQL, MySQL, and MongoDB. This skill instruments transaction lifecycle tracking, identifies transactions holding locks beyond acceptable thresholds, and generates alerts before stalled transactions cascade into application-wide failures.
+Monitor active database transactions in real time to detect long-running queries, lock contention, uncommitted transactions, and transaction throughput anomalies across PostgreSQL, MySQL, and MongoDB.
 
 ## Prerequisites
 

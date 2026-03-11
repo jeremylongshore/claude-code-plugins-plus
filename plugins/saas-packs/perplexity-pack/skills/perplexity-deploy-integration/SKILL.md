@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Deploy Integration
 
 ## Overview
-Deploy applications using Perplexity's AI search API (`api.perplexity.ai`). Perplexity uses an OpenAI-compatible chat completions format with real-time web search grounding. Covers deployment with streaming support, caching for repeated queries, and proper API key management.
+Deploy applications using Perplexity's AI search API (`api.perplexity.ai`). Perplexity uses an OpenAI-compatible chat completions format with real-time web search grounding.
 
 ## Prerequisites
 - Perplexity API key stored in `PERPLEXITY_API_KEY` environment variable
@@ -67,7 +67,7 @@ import { Redis } from "ioredis";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
-async function searchWithCache(query: string, ttl = 1800) {  # timeout: 30 minutes
+async function searchWithCache(query: string, ttl = 1800) {  # 1800: timeout: 30 minutes
   const cacheKey = `pplx:${Buffer.from(query).toString("base64")}`;
   const cached = await redis.get(cacheKey);
   if (cached) return JSON.parse(cached);
@@ -132,7 +132,6 @@ export async function GET() {
 | Stream interrupted | Network timeout | Implement reconnection logic |
 
 ## Examples
-
 
 **Basic usage**: Apply perplexity deploy integration to a standard project setup with default configuration options.
 

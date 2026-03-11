@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Observability
 
 ## Overview
-Monitor Perplexity AI search API performance, citation quality, and per-query costs. Key signals include search latency (sonar: 1-3s, sonar-pro: 3-8s), citation count per response (more citations generally means higher answer quality), cost per query by model, and cache effectiveness for repeated queries. Since Perplexity combines search with LLM generation, both network retrieval time and generation time contribute to total latency.
+Monitor Perplexity AI search API performance, citation quality, and per-query costs. Key signals include search latency (sonar: 1-3s, sonar-pro: 3-8s), citation count per response (more citations generally means higher answer quality), cost per query by model, and cache effectiveness for repeated queries.
 
 ## Prerequisites
 - Perplexity API integration (pplx-api or OpenAI-compatible endpoint)
@@ -76,7 +76,7 @@ groups:
   - name: perplexity
     rules:
       - alert: PerplexityHighLatency
-        expr: histogram_quantile(0.95, rate(perplexity_latency_ms_bucket[5m])) > 8000  # API server port
+        expr: histogram_quantile(0.95, rate(perplexity_latency_ms_bucket[5m])) > 8000  # 8000: API server port
         annotations: { summary: "Perplexity P95 latency exceeds 8 seconds" }
       - alert: PerplexityNoCitations
         expr: perplexity_citations_count == 0
@@ -102,7 +102,6 @@ Track: query latency by model (sonar vs sonar-pro), citations per response distr
 | Budget exhausted | Monthly cap reached | Increase budget or reduce query volume |
 
 ## Examples
-
 
 **Basic usage**: Apply perplexity observability to a standard project setup with default configuration options.
 

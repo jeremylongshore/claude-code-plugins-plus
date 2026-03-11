@@ -85,7 +85,7 @@ python derivatives_tracker.py liquidations BTC
 python derivatives_tracker.py liquidations BTC --recent
 
 # Set minimum size filter
-python derivatives_tracker.py liquidations BTC --min-size 100000
+python derivatives_tracker.py liquidations BTC --min-size 100000  # 100000 = configured value
 ```
 
 **Liquidation Signals**:
@@ -105,7 +105,7 @@ python derivatives_tracker.py options BTC
 python derivatives_tracker.py options BTC --pcr
 
 # Find max pain for expiry
-python derivatives_tracker.py options BTC --expiry 2025-01-31
+python derivatives_tracker.py options BTC --expiry 2025-01-31  # 2025 year
 
 # Track large options trades
 python derivatives_tracker.py options BTC --flow

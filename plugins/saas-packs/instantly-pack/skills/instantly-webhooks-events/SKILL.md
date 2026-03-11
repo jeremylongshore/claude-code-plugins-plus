@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Webhooks & Events
 
 ## Overview
-Handle Instantly webhooks for real-time email outreach event notifications. Instantly fires webhooks when emails are sent, opened, replied to, bounced, or when leads change status. Use these events to sync lead engagement data with your CRM, trigger follow-up sequences, and build real-time campaign analytics.
+Handle Instantly webhooks for real-time email outreach event notifications. Instantly fires webhooks when emails are sent, opened, replied to, bounced, or when leads change status.
 
 ## Prerequisites
 - Instantly account with API access enabled

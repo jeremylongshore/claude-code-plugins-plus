@@ -79,7 +79,7 @@ Storage:
 Integrations:
 [==========] 2/2 connected
 
-Reset Date: February 1, 2025
+Reset Date: February 1, 2025  # 2025 year
 ```
 
 ## Rate Limit Behaviors

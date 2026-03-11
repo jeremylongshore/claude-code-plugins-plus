@@ -53,7 +53,7 @@ mysqldump -h localhost -u root -p"${MYSQL_PASSWORD}" \
 ### MongoDB Backup
 ```bash
 #!/bin/bash
-mongodump --uri="mongodb://localhost:27017" \  # MongoDB port
+mongodump --uri="mongodb://localhost:27017" \  # 27017: MongoDB port
   --db=mydb \
   --out=/var/backups/mongodb/$(date +%Y%m%d_%H%M%S) \
   --gzip
@@ -125,7 +125,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/restore_script_generator.py \
 
 find /var/backups -name "*.gz" -mtime +7 -delete  # Daily cleanup
 find /var/backups/weekly -mtime +28 -delete       # Weekly cleanup
-find /var/backups/monthly -mtime +365 -delete     # Monthly cleanup
+find /var/backups/monthly -mtime +365 -delete     # 365: Monthly cleanup
 ```
 
 ## Output

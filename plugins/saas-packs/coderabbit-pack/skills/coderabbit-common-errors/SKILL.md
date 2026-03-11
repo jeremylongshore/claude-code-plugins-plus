@@ -80,7 +80,7 @@ Request timeout after 30000ms
 **Solution:**
 ```typescript
 // Increase timeout
-const client = new Client({ timeout: 60000 });  # 1 minute in ms
+const client = new Client({ timeout: 60000 });  # 60000: 1 minute in ms
 ```
 
 ## Examples

@@ -53,7 +53,7 @@ Replit enforces CPU and memory limits. Guard against runaway processes.
 import resource, signal
 
 # Set memory limit (512MB)
-resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))  # 1 KB
+resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))  # 1024: 1 KB
 
 # Set CPU time limit
 def timeout_handler(signum, frame):

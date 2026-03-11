@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies Enterprise RBAC
 
 ## Overview
-Manage who can record, view, and share meeting transcripts in Fireflies.ai. Fireflies uses per-seat licensing with three workspace roles: Admin, Member, and Guest. Admins control recording policies, transcript visibility, and integration settings. Privacy controls determine whether transcripts are visible to the meeting organizer only, all attendees, or the entire workspace.
+Manage who can record, view, and share meeting transcripts in Fireflies.ai. Fireflies uses per-seat licensing with three workspace roles: Admin, Member, and Guest.
 
 ## Prerequisites
 - Fireflies Business or Enterprise plan (per-seat pricing)
@@ -85,7 +85,6 @@ curl -X POST https://api.fireflies.ai/graphql \
 | SSO login fails | SAML assertion clock skew | Sync server clocks, allow 5-min skew tolerance |
 
 ## Examples
-
 
 **Basic usage**: Apply fireflies enterprise rbac to a standard project setup with default configuration options.
 

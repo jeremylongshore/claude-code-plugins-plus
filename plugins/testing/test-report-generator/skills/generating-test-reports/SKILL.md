@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate structured, human-readable test reports from raw test runner output including JUnit XML, Jest JSON, pytest results, and coverage data. Produces Markdown summaries, HTML dashboards, and CI-compatible annotations. Aggregates metrics across test suites to surface pass rates, coverage trends, slowest tests, and flaky test patterns.
+Generate structured, human-readable test reports from raw test runner output including JUnit XML, Jest JSON, pytest results, and coverage data. Produces Markdown summaries, HTML dashboards, and CI-compatible annotations.
 
 ## Prerequisites
 
@@ -70,8 +70,8 @@ Generate structured, human-readable test reports from raw test runner output inc
 
 | Metric | Value |
 |--------|-------|
-| Total Tests | 847 |
-| Passed | 839 (99.1%) |
+| Total Tests | 847 |  # 847 = configured value
+| Passed | 839 (99.1%) |  # 839 = configured value
 | Failed | 5 |
 | Skipped | 3 |
 | Duration | 42.3s |

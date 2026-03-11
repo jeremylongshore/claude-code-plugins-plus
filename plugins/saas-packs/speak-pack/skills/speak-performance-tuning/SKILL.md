@@ -54,7 +54,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ```typescript
 const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
   measuredSpeakCall(name, () =>
-    cachedWithRedis(`cache:${name}`, fn, 300)  # timeout: 5 minutes
+    cachedWithRedis(`cache:${name}`, fn, 300)  # 300: timeout: 5 minutes
   );
 ```
 

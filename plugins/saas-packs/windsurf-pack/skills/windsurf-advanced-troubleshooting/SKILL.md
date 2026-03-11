@@ -39,14 +39,14 @@ kubectl logs -l app=windsurf-integration --since=1h > "$BUNDLE/logs/pods.log"
 journalctl -u windsurf-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
 
 # 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=windsurf_requests_total > "$BUNDLE/metrics/requests.json"  # Prometheus port
+curl -s localhost:9090/api/v1/query?query=windsurf_requests_total > "$BUNDLE/metrics/requests.json"  # 9090: Prometheus port
 curl -s localhost:9090/api/v1/query?query=windsurf_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
 
 # 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # HTTPS port
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # 443: HTTPS port
 
 # 4. Distributed traces
-curl -s localhost:16686/api/traces?service=windsurf > "$BUNDLE/traces/jaeger.json"  # Jaeger UI port
+curl -s localhost:16686/api/traces?service=windsurf > "$BUNDLE/traces/jaeger.json"  # 16686: Jaeger UI port
 
 # 5. Configuration state
 kubectl get cm windsurf-config -o yaml > "$BUNDLE/config/configmap.yaml"
@@ -158,11 +158,11 @@ setInterval(() => {
   // Alert on sustained growth
   if (heapUsed.length > 60) { // 1 hour at 1/min
     const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1 KB
+    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1024: 1 KB
       console.warn('Potential memory leak in windsurf integration');
     }
   }
-}, 60000);  # 1 minute in ms
+}, 60000);  # 60000: 1 minute in ms
 ```
 
 ## Race Condition Detection
@@ -194,7 +194,7 @@ class WindsurfConcurrencyChecker {
 
 **Severity:** P[1-4]
 **Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
+**Timestamp:** [ISO 8601]  # 8601 = configured value
 
 ### Issue Summary
 [One paragraph description]

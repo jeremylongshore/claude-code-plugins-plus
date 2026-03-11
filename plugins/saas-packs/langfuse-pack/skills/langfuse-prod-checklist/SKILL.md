@@ -80,8 +80,8 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ```typescript
 {
   flushAt: 25,
-  flushInterval: 5000,  # 5 seconds in ms
-  requestTimeout: 15000,
+  flushInterval: 5000,  # 5000: 5 seconds in ms
+  requestTimeout: 15000,  # 15000 = configured value
   enabled: process.env.NODE_ENV === "production",
   debug: false,
 }

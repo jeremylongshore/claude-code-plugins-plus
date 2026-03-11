@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Observability
 
 ## Overview
-Monitor Retell AI voice agent performance, call quality, and costs. Key signals include call completion rate (successful conversations vs dropped/failed calls), average call duration, latency between user speech and agent response (conversational latency), per-minute cost tracking, and agent-level success metrics (did the voice agent accomplish its goal). Since Retell charges per minute of voice call, monitoring call duration directly tracks cost.
+Monitor Retell AI voice agent performance, call quality, and costs. Key signals include call completion rate (successful conversations vs dropped/failed calls), average call duration, latency between user speech and agent response (conversational latency), per-minute cost tracking, and agent-level success metrics (did the voice agent accomplish its goal).
 
 ## Prerequisites
 - Retell AI account with active voice agents
@@ -83,7 +83,7 @@ groups:
         expr: rate(retell_calls_total{status="failed"}[1h]) / rate(retell_calls_total[1h]) > 0.1
         annotations: { summary: "Retell call failure rate exceeds 10%" }
       - alert: RetellHighLatency
-        expr: histogram_quantile(0.95, rate(retell_response_latency_ms_bucket[1h])) > 2000  # 2 seconds in ms
+        expr: histogram_quantile(0.95, rate(retell_response_latency_ms_bucket[1h])) > 2000  # 2000: 2 seconds in ms
         annotations: { summary: "Retell agent response latency P95 exceeds 2 seconds" }
       - alert: RetellCostSpike
         expr: increase(retell_cost_usd[1h]) > 50
@@ -105,7 +105,6 @@ Track: call volume by agent, call completion rate (pie chart), duration distribu
 | No webhook events | Endpoint unreachable | Verify webhook URL and SSL certificate |
 
 ## Examples
-
 
 **Basic usage**: Apply retellai observability to a standard project setup with default configuration options.
 

@@ -248,7 +248,7 @@ export const productionConfig = {
   // Endpoints
   api: {
     baseUrl: 'https://api.openevidence.com',
-    timeout: 30000,  # 30 seconds in ms
+    timeout: 30000,  # 30000: 30 seconds in ms
     retries: 3,
   },
 
@@ -269,8 +269,8 @@ export const productionConfig = {
   // Caching
   cache: {
     enabled: true,
-    ttlSeconds: 3600,  # timeout: 1 hour
-    maxEntries: 10000,  # 10 seconds in ms
+    ttlSeconds: 3600,  # 3600: timeout: 1 hour
+    maxEntries: 10000,  # 10000: 10 seconds in ms
   },
 
   // Monitoring

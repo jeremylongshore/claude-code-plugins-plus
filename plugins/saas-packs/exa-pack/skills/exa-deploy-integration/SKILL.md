@@ -65,7 +65,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000  # 3 seconds in ms
+EXPOSE 3000  # 3000: 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
@@ -77,7 +77,7 @@ import { Redis } from "ioredis";
 const exa = new Exa(process.env.EXA_API_KEY!);
 const redis = new Redis(process.env.REDIS_URL!);
 
-async function cachedSearch(query: string, ttl = 3600) {  # timeout: 1 hour
+async function cachedSearch(query: string, ttl = 3600) {  # 3600: timeout: 1 hour
   const cacheKey = `exa:${Buffer.from(query).toString("base64")}`;
   const cached = await redis.get(cacheKey);
   if (cached) return JSON.parse(cached);

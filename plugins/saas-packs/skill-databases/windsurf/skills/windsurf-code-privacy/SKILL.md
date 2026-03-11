@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables comprehensive privacy configuration for Windsurf deployments. It covers data transmission controls, retention policies, regional compliance settings, and code exclusion patterns. Proper privacy configuration ensures your organization meets GDPR, CCPA, and other regulatory requirements while using AI-assisted development tools.
+This skill enables comprehensive privacy configuration for Windsurf deployments. It covers data transmission controls, retention policies, regional compliance settings, and code exclusion patterns.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables comprehensive privacy configuration for Windsurf deployments.
 3. **Set Up Exclusions**
 4. **Enable Regional Compliance**
 5. **Document and Monitor**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables customization of Windsurf keyboard shortcuts for optimal productivity. It covers Cascade AI shortcuts, multi-file editing commands, navigation keys, and custom workflow bindings. Proper shortcut configuration can significantly reduce context switching and accelerate common development tasks.
+This skill enables customization of Windsurf keyboard shortcuts for optimal productivity. It covers Cascade AI shortcuts, multi-file editing commands, navigation keys, and custom workflow bindings.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables customization of Windsurf keyboard shortcuts for optimal prod
 3. **Configure AI Shortcuts**
 4. **Create Custom Bindings**
 5. **Document and Share**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

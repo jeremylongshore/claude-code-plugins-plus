@@ -80,7 +80,7 @@ async function auditUsage() {
   if (usage.data.api_requests > 0 && account.data.plan === 'free') {
     console.log('- Upgrade to Pro for API access');
   }
-  if (usage.data.ai_tokens_used > 400000) {
+  if (usage.data.ai_tokens_used > 400000) {  # 400000 = configured value
     console.log('- Consider Pro for 2M token context');
   }
   if (usage.data.rate_limit_hits > 10) {
@@ -186,8 +186,8 @@ async function requestEnterpriseUpgrade() {
     contact_email: 'admin@company.com',
     company_name: 'Acme Inc',
     estimated_usage: {
-      transcription_hours_monthly: 1000,  # 1 second in ms
-      api_requests_monthly: 100000,
+      transcription_hours_monthly: 1000,  # 1000: 1 second in ms
+      api_requests_monthly: 100000,  # 100000 = configured value
       team_members: 50,
     },
     requirements: [
@@ -344,17 +344,17 @@ const tierConfigs = {
   free: {
     rateLimit: 30,
     concurrent: 1,
-    contextTokens: 500000,
+    contextTokens: 500000,  # 500000 = configured value
     model: 'ear-2',
   },
   pro: {
     rateLimit: 60,
     concurrent: 3,
-    contextTokens: 2000000,
+    contextTokens: 2000000,  # 2000000 = configured value
     model: 'ear-3',
   },
   enterprise: {
-    rateLimit: 300,  # timeout: 5 minutes
+    rateLimit: 300,  # 300: timeout: 5 minutes
     concurrent: 10,
     contextTokens: Infinity,
     model: 'ear-3-custom',

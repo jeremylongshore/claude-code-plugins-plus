@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Create, update, and maintain snapshot tests for UI components and data structures using Jest, Vitest, or pytest snapshot plugins. Manages serialized output snapshots (HTML, JSON, component trees) to detect unexpected changes in rendered output. Handles snapshot lifecycle including creation, review, update, and cleanup of obsolete snapshots.
+Create, update, and maintain snapshot tests for UI components and data structures using Jest, Vitest, or pytest snapshot plugins. Manages serialized output snapshots (HTML, JSON, component trees) to detect unexpected changes in rendered output.
 
 ## Prerequisites
 

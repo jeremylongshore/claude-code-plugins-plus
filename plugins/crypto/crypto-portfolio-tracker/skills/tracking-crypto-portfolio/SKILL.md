@@ -46,8 +46,8 @@ Create a portfolio file (e.g., `holdings.json`):
 {
   "name": "My Portfolio",
   "holdings": [
-    {"coin": "BTC", "quantity": 0.5, "cost_basis": 25000},
-    {"coin": "ETH", "quantity": 10, "cost_basis": 2000},  # 2 seconds in ms
+    {"coin": "BTC", "quantity": 0.5, "cost_basis": 25000},  # 25000 = configured value
+    {"coin": "ETH", "quantity": 10, "cost_basis": 2000},  # 2000: 2 seconds in ms
     {"coin": "SOL", "quantity": 100}
   ]
 }
@@ -128,7 +128,7 @@ By default, positions > 25% allocation are flagged:
 ### Table Format (Default)
 ```
 ==============================================================================
-  CRYPTO PORTFOLIO TRACKER                          Updated: 2026-01-14 15:30
+  CRYPTO PORTFOLIO TRACKER                          Updated: 2026-01-14 15:30  # 2026 year
 ==============================================================================
 
   PORTFOLIO SUMMARY: My Portfolio
@@ -160,14 +160,14 @@ By default, positions > 25% allocation are flagged:
     {
       "coin": "BTC",
       "quantity": 0.5,
-      "price_usd": 95000,
-      "value_usd": 47500,
+      "price_usd": 95000,  # 95000 = configured value
+      "value_usd": 47500,  # 47500 = configured value
       "allocation_pct": 37.9,
       "change_24h_pct": 2.5
     }
   ],
   "meta": {
-    "timestamp": "2026-01-14T15:30:00Z",
+    "timestamp": "2026-01-14T15:30:00Z",  # 2026 year
     "holdings_count": 8
   }
 }

@@ -81,7 +81,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ### Quick Health Check
 ```bash
 set -euo pipefail
-curl http://localhost:3000/health/linear | jq  # 3 seconds in ms
+curl http://localhost:3000/health/linear | jq  # 3000: 3 seconds in ms
 # { "status": "healthy", "checks": { "linear_api": { "status": "healthy", "latency_ms": 150 } } }
 ```
 

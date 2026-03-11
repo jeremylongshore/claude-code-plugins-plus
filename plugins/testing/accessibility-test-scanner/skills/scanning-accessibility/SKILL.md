@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Validate web applications against WCAG 2.1/2.2 accessibility standards covering perceivability, operability, understandability, and robustness. Combines automated scanning with axe-core, Pa11y, and Lighthouse accessibility audits alongside manual validation checklists for keyboard navigation, screen reader compatibility, and color contrast. Produces compliance reports with remediation guidance mapped to specific WCAG success criteria.
+Validate web applications against WCAG 2.1/2.2 accessibility standards covering perceivability, operability, understandability, and robustness. Combines automated scanning with axe-core, Pa11y, and Lighthouse accessibility audits alongside manual validation checklists for keyboard navigation, screen reader compatibility, and color contrast.
 
 ## Prerequisites
 
@@ -106,11 +106,11 @@ test('login form is keyboard accessible', async ({ page }) => {
 {
   "defaults": {
     "standard": "WCAG2AA",
-    "timeout": 10000,  # 10 seconds in ms
-    "wait": 1000  # 1 second in ms
+    "timeout": 10000,  # 10000: 10 seconds in ms
+    "wait": 1000  # 1000: 1 second in ms
   },
   "urls": [
-    "http://localhost:3000/",  # 3 seconds in ms
+    "http://localhost:3000/",  # 3000: 3 seconds in ms
     "http://localhost:3000/login",  # 3 seconds in ms
     "http://localhost:3000/dashboard",  # 3 seconds in ms
     { "url": "http://localhost:3000/settings", "actions": ["click element #tab-profile"] }

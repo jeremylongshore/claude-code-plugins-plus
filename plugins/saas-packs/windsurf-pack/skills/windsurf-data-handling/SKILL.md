@@ -43,7 +43,7 @@ Control what code and data Windsurf (Codeium) Cascade AI can access in your work
     "**/*.tfvars",
     "**/vault-config*"
   ],
-  "codeium.indexing.maxFileSize": 524288,
+  "codeium.indexing.maxFileSize": 524288,  # 524288 = configured value
   "codeium.enableTelemetry": false
 }
 ```

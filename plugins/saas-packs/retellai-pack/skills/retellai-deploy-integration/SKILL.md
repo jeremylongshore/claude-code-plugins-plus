@@ -42,7 +42,7 @@ import { WebSocketServer } from "ws";
 import express from "express";
 
 const app = express();
-const server = app.listen(process.env.PORT || 3000);  # 3 seconds in ms
+const server = app.listen(process.env.PORT || 3000);  # 3000: 3 seconds in ms
 const wss = new WebSocketServer({ server, path: "/ws/call" });
 
 wss.on("connection", (ws, req) => {
@@ -70,7 +70,7 @@ primary_region = "iad"
 NODE_ENV = "production"
 
 [http_service]
-internal_port = 3000  # 3 seconds in ms
+internal_port = 3000  # 3000: 3 seconds in ms
 force_https = true
 auto_stop_machines = false
 auto_start_machines = true

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Validate AI/ML models and datasets for bias, fairness, and ethical compliance using quantitative fairness metrics and structured audit workflows. This skill computes demographic parity, equalized odds, calibration scores, and disparate impact ratios across protected groups, then generates severity-classified findings with actionable mitigation strategies aligned to IEEE, EU, and ACM ethical frameworks.
+Validate AI/ML models and datasets for bias, fairness, and ethical compliance using quantitative fairness metrics and structured audit workflows.
 
 ## Prerequisites
 

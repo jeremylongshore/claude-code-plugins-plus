@@ -51,7 +51,7 @@ Track requests, complexity, and bytes transferred. Project monthly usage to iden
 setInterval(async () => {
   const issues = await client.issues({ first: 100 });
   await syncIssues(issues.nodes);
-}, 60000);  # 1 minute in ms
+}, 60000);  # 60000: 1 minute in ms
 
 // GOOD: Use webhooks for real-time updates
 app.post("/webhooks/linear", async (req, res) => {

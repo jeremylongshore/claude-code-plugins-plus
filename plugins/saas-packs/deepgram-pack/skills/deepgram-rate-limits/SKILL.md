@@ -77,7 +77,7 @@ const result = await limiter.execute(() => client.listen.prerecorded.transcribeU
 
 ### Backoff Configuration
 ```typescript
-const backoff = new ExponentialBackoff({ baseDelay: 1000, maxDelay: 60000, factor: 2, jitter: true });  # 1 second in ms
+const backoff = new ExponentialBackoff({ baseDelay: 1000, maxDelay: 60000, factor: 2, jitter: true });  # 1000: 60000: 1 second in ms
 ```
 
 See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.

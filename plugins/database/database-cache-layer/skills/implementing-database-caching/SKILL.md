@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement multi-tier caching strategies using Redis, application-level in-memory caches, and query result caching to reduce database load and improve read latency. This skill covers cache-aside, write-through, and write-behind patterns with proper invalidation strategies, TTL configuration, and cache stampede prevention. Targets workloads where read-to-write ratio exceeds 5:1 and query latency requirements are under 10ms.
+Implement multi-tier caching strategies using Redis, application-level in-memory caches, and query result caching to reduce database load and improve read latency. This skill covers cache-aside, write-through, and write-behind patterns with proper invalidation strategies, TTL configuration, and cache stampede prevention.
 
 ## Prerequisites
 

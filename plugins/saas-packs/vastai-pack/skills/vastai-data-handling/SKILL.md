@@ -44,7 +44,7 @@ fi
 
 # Compress and encrypt
 tar czf - "$DATA_DIR" | \
-  openssl enc -aes-256-cbc -salt -pbkdf2 -pass env:ENCRYPTION_KEY \
+  openssl enc -aes-256-cbc -salt -pbkdf2 -pass env:ENCRYPTION_KEY \  # 256 bytes
   > /tmp/data.tar.gz.enc
 
 # Transfer encrypted archive

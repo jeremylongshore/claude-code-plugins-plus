@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables integration of MCP (Model Context Protocol) servers with Windsurf, extending Cascade's capabilities with external tools and services. MCP allows Cascade to interact with databases, filesystems, APIs, and custom tools through a standardized protocol. Configure servers, manage permissions, and enable seamless tool access within your AI-assisted development workflow.
+This skill enables integration of MCP (Model Context Protocol) servers with Windsurf, extending Cascade's capabilities with external tools and services. MCP allows Cascade to interact with databases, filesystems, APIs, and custom tools through a standardized protocol.
 
 ## Prerequisites
 
@@ -32,7 +32,6 @@ This skill enables integration of MCP (Model Context Protocol) servers with Wind
 3. **Set Up Authentication**
 4. **Test Integration**
 5. **Deploy to Team**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

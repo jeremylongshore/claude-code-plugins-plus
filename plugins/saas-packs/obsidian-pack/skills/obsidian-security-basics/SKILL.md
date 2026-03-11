@@ -58,7 +58,7 @@ function sanitizeExternalContent(content: string): string {
   content = content.replace(/<iframe[^>]*>.*?<\/iframe>/gi, '');
   content = content.replace(/on\w+="[^"]*"/gi, '');
   // Limit length
-  if (content.length > 100000) {
+  if (content.length > 100000) {  # 100000 = configured value
     content = content.substring(0, 100000);
   }
   return content;

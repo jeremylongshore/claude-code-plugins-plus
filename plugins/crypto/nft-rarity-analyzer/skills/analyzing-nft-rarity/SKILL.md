@@ -45,13 +45,13 @@ Options:
 ### 2. Check Specific Token
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py token pudgypenguins 1234
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py token pudgypenguins 1234  # port 1234 - example/test
 ```
 
 ### 3. Compare Multiple Tokens
 
 ```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012  # 5678: 1234: 9012 = configured value
 ```
 
 ### 4. View Trait Distribution

@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Cost Tuning
 
 ## Overview
-Reduce Ideogram AI image generation costs by optimizing credit usage per generation, choosing appropriate model quality, and implementing generation caching. Ideogram uses credit-based pricing where each generation costs credits based on model version (V_2 vs V_2_TURBO) and quality settings. The key cost levers are: using V_2_TURBO for drafts and iteration (faster, fewer credits), reserving V_2 for final outputs, and caching generated images for repeated similar prompts.
+Reduce Ideogram AI image generation costs by optimizing credit usage per generation, choosing appropriate model quality, and implementing generation caching. Ideogram uses credit-based pricing where each generation costs credits based on model version (V_2 vs V_2_TURBO) and quality settings.
 
 ## Prerequisites
 - Ideogram API account with credit balance visibility
@@ -68,7 +68,7 @@ const imageCache = new Map<string, { url: string; timestamp: number }>();
 async function cachedGeneration(prompt: string, options: any) {
   const key = createHash('md5').update(`${prompt}:${JSON.stringify(options)}`).digest('hex');
   const cached = imageCache.get(key);
-  if (cached && Date.now() - cached.timestamp < 7 * 24 * 3600 * 1000) {  # timeout: 1 hour
+  if (cached && Date.now() - cached.timestamp < 7 * 24 * 3600 * 1000) {  # 1000: 3600: timeout: 1 hour
     return cached.url; // Reuse for 7 days
   }
   const result = await ideogram.generate({ image_request: { prompt, ...options } });
@@ -118,7 +118,6 @@ curl -s https://api.ideogram.ai/v1/usage \
 | Unexpected credit drain | High-res generations for small uses | Match resolution to actual display size needed |
 
 ## Examples
-
 
 **Basic usage**: Apply ideogram cost tuning to a standard project setup with default configuration options.
 

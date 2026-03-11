@@ -76,7 +76,7 @@ brew install k6  # macOS
 k6 run --env REPLIT_API_KEY=${REPLIT_API_KEY} replit-load-test.js
 
 # Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 replit-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 replit-load-test.js  # 8086 = configured value
 ```
 
 ## Scaling Patterns
@@ -126,7 +126,7 @@ const replitPool = Pool.create({
   },
   max: 20,
   min: 5,
-  idleTimeoutMillis: 30000,  # 30 seconds in ms
+  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
 });
 
 async function withReplitClient<T>(

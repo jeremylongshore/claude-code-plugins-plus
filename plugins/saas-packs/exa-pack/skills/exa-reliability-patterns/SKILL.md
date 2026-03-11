@@ -32,7 +32,7 @@ Search results for the same query are stable over short periods. Caching reduces
 import hashlib, json, time
 
 class ExaSearchCache:
-    def __init__(self, redis_client, default_ttl=300):  # timeout: 5 minutes
+    def __init__(self, redis_client, default_ttl=300):  # 300: timeout: 5 minutes
         self.r = redis_client
         self.ttl = default_ttl
 
@@ -86,7 +86,7 @@ def exa_with_retry(fn, max_retries=3, base_delay=1.0):
             return fn()
         except Exception as e:
             status = getattr(e, 'status_code', 0)
-            if status == 429 or status >= 500:  # HTTP 429 Too Many Requests
+            if status == 429 or status >= 500:  # 500: HTTP 429 Too Many Requests
                 if attempt == max_retries:
                     raise
                 delay = base_delay * (2 ** attempt) + random.uniform(0, 0.5)
@@ -111,7 +111,7 @@ class SearchQualityMonitor:
             self.r.hincrby(key, "empty", 1)
         if not has_content:
             self.r.hincrby(key, "no_content", 1)
-        self.r.expire(key, 86400 * 7)  # timeout: 24 hours
+        self.r.expire(key, 86400 * 7)  # 86400: timeout: 24 hours
 
     def get_health(self) -> dict:
         key = f"exa:quality:{time.strftime('%Y-%m-%d-%H')}"

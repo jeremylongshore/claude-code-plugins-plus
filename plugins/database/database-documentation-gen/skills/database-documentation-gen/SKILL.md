@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate comprehensive database documentation by introspecting live PostgreSQL or MySQL schemas, extracting table structures, column descriptions, relationships, indexes, constraints, stored procedures, and views. Produces human-readable documentation in Markdown format including entity-relationship descriptions, data dictionary, and column-level metadata. Keeps documentation synchronized with the actual database schema rather than relying on manually maintained documents.
+Generate comprehensive database documentation by introspecting live PostgreSQL or MySQL schemas, extracting table structures, column descriptions, relationships, indexes, constraints, stored procedures, and views. Produces human-readable documentation in Markdown format including entity-relationship descriptions, data dictionary, and column-level metadata.
 
 ## Prerequisites
 

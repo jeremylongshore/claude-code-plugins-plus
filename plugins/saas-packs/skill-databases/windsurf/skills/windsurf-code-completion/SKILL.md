@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables configuration and optimization of Windsurf's Supercomplete AI-powered code completion. Supercomplete provides intelligent, context-aware suggestions that go beyond traditional autocomplete. It understands your codebase patterns, follows your conventions, and can complete multi-line blocks of code. Proper configuration ensures relevant, fast suggestions that match your coding style.
+This skill enables configuration and optimization of Windsurf's Supercomplete AI-powered code completion. Supercomplete provides intelligent, context-aware suggestions that go beyond traditional autocomplete.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables configuration and optimization of Windsurf's Supercomplete AI
 3. **Create Custom Snippets**
 4. **Optimize Performance**
 5. **Personalize Experience**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

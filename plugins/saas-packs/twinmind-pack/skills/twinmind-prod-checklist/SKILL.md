@@ -50,7 +50,7 @@ Comprehensive checklist for deploying TwinMind integrations to production.
 
 ```markdown
 ## Data Protection
-- [ ] Transcripts encrypted at rest (AES-256)
+- [ ] Transcripts encrypted at rest (AES-256)  # 256 bytes
 - [ ] PII redaction enabled and tested
 - [ ] Data retention policies configured
 - [ ] Backup encryption verified
@@ -247,7 +247,7 @@ echo -n "Checking encryption key... "
 if [ -n "$TWINMIND_ENCRYPTION_KEY" ]; then
   KEY_LEN=${#TWINMIND_ENCRYPTION_KEY}
   if [ "$KEY_LEN" -ge 64 ]; then
-    echo "OK (256-bit)"
+    echo "OK (256-bit)"  # 256 bytes
   else
     echo "WARNING: Key too short"
   fi

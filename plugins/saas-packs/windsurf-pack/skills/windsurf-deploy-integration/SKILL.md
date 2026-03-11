@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Deploy Integration
 
 ## Overview
-Deploy Windsurf extensions and configurations to teams. Windsurf, as a VS Code-based IDE, uses the standard extension deployment model. Covers packaging extensions with `vsce`, publishing to marketplaces, and distributing team-wide Windsurf configurations via shared settings and extension packs.
+Deploy Windsurf extensions and configurations to teams. Windsurf, as a VS Code-based IDE, uses the standard extension deployment model.
 
 ## Prerequisites
 - Node.js and npm installed

@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables AI-assisted Git workflows within Windsurf. Cascade can generate commit messages from staged changes, suggest branch names, assist with merge conflict resolution, and automate common Git operations. It integrates with hooks for validation and provides intelligent suggestions that follow your team's conventions.
+This skill enables AI-assisted Git workflows within Windsurf. Cascade can generate commit messages from staged changes, suggest branch names, assist with merge conflict resolution, and automate common Git operations.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables AI-assisted Git workflows within Windsurf. Cascade can genera
 3. **Install Git Hooks**
 4. **Configure Team Standards**
 5. **Train on Workflow**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

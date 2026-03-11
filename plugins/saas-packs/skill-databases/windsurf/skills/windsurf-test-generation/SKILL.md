@@ -14,7 +14,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill enables AI-powered test generation for any codebase using Windsurf's Cascade. It analyzes function signatures, identifies edge cases, creates meaningful assertions, and generates mock data. Supports unit tests, integration tests, and component tests across multiple frameworks including Jest, Vitest, Mocha, pytest, and testing-library.
+This skill enables AI-powered test generation for any codebase using Windsurf's Cascade. It analyzes function signatures, identifies edge cases, creates meaningful assertions, and generates mock data.
 
 ## Prerequisites
 
@@ -31,7 +31,6 @@ This skill enables AI-powered test generation for any codebase using Windsurf's 
 3. **Generate Tests with Cascade**
 4. **Add Custom Scenarios**
 5. **Integrate into Workflow**
-
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 

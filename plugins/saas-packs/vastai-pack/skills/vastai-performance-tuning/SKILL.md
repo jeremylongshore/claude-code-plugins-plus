@@ -39,7 +39,7 @@ vastai search offers \
 
 # Filter by DLPerf score for training workloads
 vastai search offers \
-  --gpu-name "RTX 4090" \
+  --gpu-name "RTX 4090" \  # 4090 = configured value
   --min-dlperf 30 \
   --order "dlperf_per_dphtotal-desc" \
   --limit 5

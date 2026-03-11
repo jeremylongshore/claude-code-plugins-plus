@@ -44,7 +44,7 @@ add_routes(app, chain, path="/chat")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)  # API server port
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # 8000: API server port
 ```
 
 ### Step 2: Dockerfile
@@ -60,7 +60,7 @@ COPY . .
 ENV LANGCHAIN_TRACING_V2=true
 ENV LANGCHAIN_PROJECT=production
 
-EXPOSE 8000  # API server port
+EXPOSE 8000  # 8000: API server port
 CMD ["uvicorn", "serve:app", "--host", "0.0.0.0", "--port", "8000"]  # API server port
 ```
 
@@ -71,7 +71,7 @@ services:
   langchain-api:
     build: .
     ports:
-      - "8000:8000"  # API server port
+      - "8000:8000"  # 8000: API server port
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}

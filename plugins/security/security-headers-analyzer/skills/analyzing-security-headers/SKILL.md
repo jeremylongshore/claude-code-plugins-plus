@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Evaluate HTTP response headers for web applications against OWASP Secure Headers Project recommendations and browser security baselines. Identify missing, misconfigured, or information-leaking headers across both HTTP and HTTPS responses. Assign a letter grade (A+ through F) and produce actionable remediation directives with server-specific configuration snippets.
+Evaluate HTTP response headers for web applications against OWASP Secure Headers Project recommendations and browser security baselines. Identify missing, misconfigured, or information-leaking headers across both HTTP and HTTPS responses.
 
 ## Prerequisites
 

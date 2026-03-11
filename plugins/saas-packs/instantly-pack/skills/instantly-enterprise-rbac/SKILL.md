@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Enterprise RBAC
 
 ## Overview
-Manage team access to Instantly email outreach campaigns, sending accounts, and lead lists. Instantly uses per-seat pricing with workspace-level roles: Owner, Admin, and Member. Critical controls include sending account assignment (which team member can send from which email accounts), campaign visibility, and lead list access -- preventing one SDR from accidentally sending to another SDR's prospects.
+Manage team access to Instantly email outreach campaigns, sending accounts, and lead lists. Instantly uses per-seat pricing with workspace-level roles: Owner, Admin, and Member.
 
 ## Prerequisites
 - Instantly Growth or Hypergrowth plan (per-seat + sending volume pricing)
@@ -87,7 +87,6 @@ curl https://api.instantly.ai/api/v1/account/status \
 | Duplicate leads across SDRs | No lead deduplication | Enable workspace-level lead dedup in settings |
 
 ## Examples
-
 
 **Basic usage**: Apply instantly enterprise rbac to a standard project setup with default configuration options.
 

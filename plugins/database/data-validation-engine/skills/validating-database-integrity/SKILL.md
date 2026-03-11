@@ -16,7 +16,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Implement and enforce data integrity rules at the database level using CHECK constraints, triggers, foreign keys, and custom validation functions across PostgreSQL and MySQL. This skill audits existing data for constraint violations, generates validation rules from business requirements, creates migration scripts to apply constraints safely on tables with existing data, and produces data quality reports identifying orphaned records, format violations, and business rule breaches.
+Implement and enforce data integrity rules at the database level using CHECK constraints, triggers, foreign keys, and custom validation functions across PostgreSQL and MySQL.
 
 ## Prerequisites
 

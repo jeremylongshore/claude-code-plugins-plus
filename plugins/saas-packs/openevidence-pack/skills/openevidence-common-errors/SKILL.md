@@ -194,8 +194,8 @@ interface RetryConfig {
 
 const DEFAULT_CONFIG: RetryConfig = {
   maxRetries: 3,
-  baseDelayMs: 1000,  # 1 second in ms
-  maxDelayMs: 30000,  # 30 seconds in ms
+  baseDelayMs: 1000,  # 1000: 1 second in ms
+  maxDelayMs: 30000,  # 30000: 30 seconds in ms
   jitterMs: 500,  # HTTP 500 Internal Server Error
 };
 

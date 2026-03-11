@@ -37,7 +37,7 @@ interface CacheOptions {
 }
 
 export class JuiceboxCache {
-  constructor(private options: CacheOptions = { ttl: 300 }) {}  # timeout: 5 minutes
+  constructor(private options: CacheOptions = { ttl: 300 }) {}  # 300: timeout: 5 minutes
 
   private getKey(type: string, params: any): string {
     const hash = crypto
@@ -151,7 +151,7 @@ class ClientPool {
       this.clients.push(new JuiceboxClient({
         apiKey,
         keepAlive: true,
-        timeout: 30000  # 30 seconds in ms
+        timeout: 30000  # 30000: 30 seconds in ms
       }));
     }
   }

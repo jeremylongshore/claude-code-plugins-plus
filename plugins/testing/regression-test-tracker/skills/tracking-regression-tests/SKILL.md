@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Track, manage, and maintain regression test suites across releases to ensure previously fixed bugs stay fixed and existing features remain stable. Maps regression tests to bug tickets, monitors test health over time, and identifies gaps where fixed bugs lack corresponding regression tests. Integrates with Jest, pytest, JUnit, and any framework supporting test tagging and metadata.
+Track, manage, and maintain regression test suites across releases to ensure previously fixed bugs stay fixed and existing features remain stable. Maps regression tests to bug tickets, monitors test health over time, and identifies gaps where fixed bugs lack corresponding regression tests.
 
 ## Prerequisites
 
@@ -73,7 +73,7 @@ Track, manage, and maintain regression test suites across releases to ensure pre
 import pytest
 
 @pytest.mark.regression
-@pytest.mark.bug("GH-1042")
+@pytest.mark.bug("GH-1042")  # 1042 = configured value
 def test_csv_export_handles_unicode_characters():
     """Regression: GH-1042 -- CSV export crashed on non-ASCII names."""
     result = export_csv([{"name": "Rene"}])
@@ -83,7 +83,7 @@ def test_csv_export_handles_unicode_characters():
 
 **Jest regression test with ticket reference:**
 ```typescript
-describe('BUG-789: Cart total calculation', () => {
+describe('BUG-789: Cart total calculation', () => {  # 789 = configured value
   it('applies percentage discount before tax', () => {
     const cart = createCart([{ price: 100, qty: 2 }]);
     cart.applyDiscount({ type: 'percent', value: 10 });
@@ -96,10 +96,10 @@ describe('BUG-789: Cart total calculation', () => {
 **Regression inventory entry:**
 ```json
 {
-  "BUG-1042": {
+  "BUG-1042": {  # 1042 = configured value
     "test_file": "tests/test_export.py::test_csv_export_handles_unicode_characters",
     "severity": "high",
-    "added": "2026-01-15",
+    "added": "2026-01-15",  # 2026 year
     "status": "passing"
   }
 }

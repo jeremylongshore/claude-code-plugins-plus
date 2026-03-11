@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Generate mocks, stubs, spies, and fakes to isolate units under test from external dependencies. Supports Jest mocks, Sinon.js stubs, Python unittest.mock, Go interfaces, and testdouble.js patterns. Produces type-safe test doubles that mirror production interfaces while providing full control over return values, call tracking, and side effects.
+Generate mocks, stubs, spies, and fakes to isolate units under test from external dependencies. Supports Jest mocks, Sinon.js stubs, Python unittest.mock, Go interfaces, and testdouble.js patterns.
 
 ## Prerequisites
 
