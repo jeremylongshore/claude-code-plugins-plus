@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-11T04:49:17.535Z",
+    "generated": "2026-03-11T05:22:47.425Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
@@ -42,7 +42,6 @@
     "skillTools": [
       "\"Read",
       "AskUserQuestion",
-      "Bash",
       "Bash(analysis:*)\"",
       "Bash(ansible:*)",
       "Bash(api:auth-*)",
@@ -15609,7 +15608,7 @@
       "id": "automating-database-backups",
       "slug": "automating-database-backups",
       "name": "automating-database-backups",
-      "description": "Automate database backup processes with scheduling, compression, and encryption. Supports PostgreSQL (pg_dump), MySQL (mysqldump), MongoDB (mongodump), and SQLite. Generates production-ready backup scripts with retention policies and restore procedures. Trigger: \"automate database backups\", \"schedule backups\", \"create backup script\", \"disaster recovery\".",
+      "description": "Automate database backup processes with scheduling, compression, and encryption. Supports PostgreSQL (pg_dump), MySQL (mysqldump), MongoDB (mongodump), and SQLite. Generates production-ready backup scripts with retention policies and restore procedures. Trigger: \"automate database backups\", \"schedule backups\", \"create backup script\", \"disaster recovery\". Use when working with automating database backups. Trigger with 'automating', 'database', 'backups'.",
       "category": "database",
       "allowedTools": [
         "Read",
@@ -15633,7 +15632,7 @@
         "name": "database-backup-automator",
         "category": "database"
       },
-      "searchText": "automating-database-backups automate database backup processes with scheduling, compression, and encryption. supports postgresql (pg_dump), mysql (mysqldump), mongodb (mongodump), and sqlite. generates production-ready backup scripts with retention policies and restore procedures. trigger: \"automate database backups\", \"schedule backups\", \"create backup script\", \"disaster recovery\". database read write edit grep glob bash(pg_dump:*) bash(mysqldump:*) bash(mongodump:*) bash(cron:*) bash(gpg:*) claude-code codex openclaw"
+      "searchText": "automating-database-backups automate database backup processes with scheduling, compression, and encryption. supports postgresql (pg_dump), mysql (mysqldump), mongodb (mongodump), and sqlite. generates production-ready backup scripts with retention policies and restore procedures. trigger: \"automate database backups\", \"schedule backups\", \"create backup script\", \"disaster recovery\". use when working with automating database backups. trigger with 'automating', 'database', 'backups'. database read write edit grep glob bash(pg_dump:*) bash(mysqldump:*) bash(mongodump:*) bash(cron:*) bash(gpg:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -15667,7 +15666,7 @@
       "id": "blue-ocean-strategy",
       "slug": "blue-ocean-strategy",
       "name": "blue-ocean-strategy",
-      "description": "'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"ERRC framework\", \"value innovation\", or \"non-customers\". Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'",
+      "description": "Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"ERRC framework\", \"value innovation\", or \"non-customers\". Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome. Trigger with 'blue', 'ocean', 'strategy'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -15684,14 +15683,14 @@
         "name": "wondelai-blue-ocean-strategy",
         "category": "business-tools"
       },
-      "searchText": "blue-ocean-strategy 'create uncontested market space using value innovation instead of competing head-to-head. use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"errc framework\", \"value innovation\", or \"non-customers\". covers the four actions framework, buyer utility map, and value-cost trade-offs. for tech adoption strategy, see crossing-the-chasm. for product positioning, see obviously-awesome.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "blue-ocean-strategy create uncontested market space using value innovation instead of competing head-to-head. use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"errc framework\", \"value innovation\", or \"non-customers\". covers the four actions framework, buyer utility map, and value-cost trade-offs. for tech adoption strategy, see crossing-the-chasm. for product positioning, see obviously-awesome. trigger with 'blue', 'ocean', 'strategy'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "brand-strategy",
       "slug": "brand-strategy",
       "name": "brand-strategy",
-      "description": "A 7-part brand strategy framework for building comprehensive brand foundations. Trigger with phrases like \"create brand strategy\", \"build brand brief\", \"define brand positioning\", \"brand messaging\", \"audience architecture\", \"brand truth\", or \"go-to-market brand plan\".",
+      "description": "A 7-part brand strategy framework for building comprehensive brand foundations. Trigger with phrases like \"create brand strategy\", \"build brand brief\", \"define brand positioning\", \"brand messaging\", \"audience architecture\", \"brand truth\", or \"go-to-market brand plan\". Use when working with brand strategy.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -15710,7 +15709,7 @@
         "name": "brand-strategy-framework",
         "category": "business-tools"
       },
-      "searchText": "brand-strategy a 7-part brand strategy framework for building comprehensive brand foundations. trigger with phrases like \"create brand strategy\", \"build brand brief\", \"define brand positioning\", \"brand messaging\", \"audience architecture\", \"brand truth\", or \"go-to-market brand plan\". business-tools read write edit glob grep claude-code codex openclaw"
+      "searchText": "brand-strategy a 7-part brand strategy framework for building comprehensive brand foundations. trigger with phrases like \"create brand strategy\", \"build brand brief\", \"define brand positioning\", \"brand messaging\", \"audience architecture\", \"brand truth\", or \"go-to-market brand plan\". use when working with brand strategy. business-tools read write edit glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -18347,7 +18346,7 @@
       "id": "contagious",
       "slug": "contagious",
       "name": "contagious",
-      "description": "'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'",
+      "description": "Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology. Trigger with 'contagious'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -18364,7 +18363,7 @@
         "name": "wondelai-contagious",
         "category": "business-tools"
       },
-      "searchText": "contagious 'engineer word-of-mouth and virality using the stepps framework (social currency, triggers, emotion, public, practical value, stories). use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". covers environmental triggers and high-arousal emotional content. for sticky messaging, see made-to-stick. for persuasion tactics, see influence-psychology.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "contagious engineer word-of-mouth and virality using the stepps framework (social currency, triggers, emotion, public, practical value, stories). use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". covers environmental triggers and high-arousal emotional content. for sticky messaging, see made-to-stick. for persuasion tactics, see influence-psychology. trigger with 'contagious'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -18505,7 +18504,7 @@
       "id": "creating-kubernetes-deployments",
       "slug": "creating-kubernetes-deployments",
       "name": "creating-kubernetes-deployments",
-      "description": "Deploy applications to Kubernetes with production-ready manifests. Supports Deployments, Services, Ingress, HPA, ConfigMaps, Secrets, StatefulSets, and NetworkPolicies. Includes health checks, resource limits, auto-scaling, and TLS termination.",
+      "description": "Deploy applications to Kubernetes with production-ready manifests. Supports Deployments, Services, Ingress, HPA, ConfigMaps, Secrets, StatefulSets, and NetworkPolicies. Includes health checks, resource limits, auto-scaling, and TLS termination. Use when working with creating kubernetes deployments. Trigger with 'creating', 'kubernetes', 'deployments'.",
       "category": "devops",
       "allowedTools": [
         "Read",
@@ -18525,7 +18524,7 @@
         "name": "kubernetes-deployment-creator",
         "category": "devops"
       },
-      "searchText": "creating-kubernetes-deployments deploy applications to kubernetes with production-ready manifests. supports deployments, services, ingress, hpa, configmaps, secrets, statefulsets, and networkpolicies. includes health checks, resource limits, auto-scaling, and tls termination. devops read write edit grep glob bash(kubectl:*) claude-code codex openclaw"
+      "searchText": "creating-kubernetes-deployments deploy applications to kubernetes with production-ready manifests. supports deployments, services, ingress, hpa, configmaps, secrets, statefulsets, and networkpolicies. includes health checks, resource limits, auto-scaling, and tls termination. use when working with creating kubernetes deployments. trigger with 'creating', 'kubernetes', 'deployments'. devops read write edit grep glob bash(kubectl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -18559,7 +18558,7 @@
       "id": "cro-methodology",
       "slug": "cro-methodology",
       "name": "cro-methodology",
-      "description": "'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"A/B test\", \"why visitors leave\", or \"objection handling\". Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'",
+      "description": "Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"A/B test\", \"why visitors leave\", or \"objection handling\". Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics. Trigger with 'cro', 'methodology'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -18576,14 +18575,14 @@
         "name": "wondelai-cro-methodology",
         "category": "business-tools"
       },
-      "searchText": "cro-methodology 'audit websites and landing pages for conversion issues and design evidence-based a/b tests. use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"a/b test\", \"why visitors leave\", or \"objection handling\". covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. for overall marketing strategy, see one-page-marketing. for usability issues, see ux-heuristics.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "cro-methodology audit websites and landing pages for conversion issues and design evidence-based a/b tests. use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"a/b test\", \"why visitors leave\", or \"objection handling\". covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. for overall marketing strategy, see one-page-marketing. for usability issues, see ux-heuristics. trigger with 'cro', 'methodology'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "crossing-the-chasm",
       "slug": "crossing-the-chasm",
       "name": "crossing-the-chasm",
-      "description": "'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'",
+      "description": "Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy. Trigger with 'crossing', 'the', 'chasm'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -18600,7 +18599,7 @@
         "name": "wondelai-crossing-the-chasm",
         "category": "business-tools"
       },
-      "searchText": "crossing-the-chasm 'navigate the technology adoption lifecycle from early adopters to mainstream market. use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". covers d-day analogy, bowling-pin strategy, and positioning against incumbents. for product positioning, see obviously-awesome. for new market creation, see blue-ocean-strategy.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "crossing-the-chasm navigate the technology adoption lifecycle from early adopters to mainstream market. use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". covers d-day analogy, bowling-pin strategy, and positioning against incumbents. for product positioning, see obviously-awesome. for new market creation, see blue-ocean-strategy. trigger with 'crossing', 'the', 'chasm'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -20526,7 +20525,7 @@
       "id": "design-everyday-things",
       "slug": "design-everyday-things",
       "name": "design-everyday-things",
-      "description": "'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'",
+      "description": "Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -20543,14 +20542,14 @@
         "name": "wondelai-design-everyday-things",
         "category": "design"
       },
-      "searchText": "design-everyday-things 'apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design.' design read glob grep claude-code codex openclaw"
+      "searchText": "design-everyday-things apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design. trigger with 'design', 'everyday', 'things'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "design-sprint",
       "slug": "design-sprint",
       "name": "design-sprint",
-      "description": "'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done.'",
+      "description": "Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done. Trigger with 'design', 'sprint'.",
       "category": "productivity",
       "allowedTools": [
         "Read",
@@ -20567,7 +20566,7 @@
         "name": "wondelai-design-sprint",
         "category": "productivity"
       },
-      "searchText": "design-sprint 'run a structured 5-day process to prototype, test, and validate product ideas with real users. use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". covers mapping, sketching, deciding, prototyping, and testing. for ongoing experimentation, see lean-startup. for customer job analysis, see jobs-to-be-done.' productivity read glob grep claude-code codex openclaw"
+      "searchText": "design-sprint run a structured 5-day process to prototype, test, and validate product ideas with real users. use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". covers mapping, sketching, deciding, prototyping, and testing. for ongoing experimentation, see lean-startup. for customer job analysis, see jobs-to-be-done. trigger with 'design', 'sprint'. productivity read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -21391,7 +21390,7 @@
       "id": "drive-motivation",
       "slug": "drive-motivation",
       "name": "drive-motivation",
-      "description": "'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'",
+      "description": "Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention. Trigger with 'drive', 'motivation'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -21408,7 +21407,7 @@
         "name": "wondelai-drive-motivation",
         "category": "business-tools"
       },
-      "searchText": "drive-motivation 'design motivation systems using autonomy, mastery, and purpose (amp) for products and teams. use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". covers why carrot-and-stick fails and how to build progress systems. for habit-forming product loops, see hooked-ux. for retention behavior design, see improve-retention.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "drive-motivation design motivation systems using autonomy, mastery, and purpose (amp) for products and teams. use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". covers why carrot-and-stick fails and how to build progress systems. for habit-forming product loops, see hooked-ux. for retention behavior design, see improve-retention. trigger with 'drive', 'motivation'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27206,7 +27205,7 @@
       "id": "guidewire-cost-tuning",
       "slug": "guidewire-cost-tuning",
       "name": "guidewire-cost-tuning",
-      "description": "Optimize Guidewire Cloud costs including license management, resource allocation, API usage optimization, and cloud infrastructure right-sizing. Trigger with phrases like \"guidewire costs\", \"reduce spending\", \"license optimization\", \"cloud costs\", \"resource optimization guidewire\".",
+      "description": "Optimize Guidewire Cloud costs including license management, resource allocation, API usage optimization, and cloud infrastructure right-sizing. Trigger with phrases like \"guidewire costs\", \"reduce spending\", \"license optimization\", \"cloud costs\", \"resource optimization guidewire\". Use when working with guidewire cost tuning.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27225,14 +27224,14 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-cost-tuning optimize guidewire cloud costs including license management, resource allocation, api usage optimization, and cloud infrastructure right-sizing. trigger with phrases like \"guidewire costs\", \"reduce spending\", \"license optimization\", \"cloud costs\", \"resource optimization guidewire\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-cost-tuning optimize guidewire cloud costs including license management, resource allocation, api usage optimization, and cloud infrastructure right-sizing. trigger with phrases like \"guidewire costs\", \"reduce spending\", \"license optimization\", \"cloud costs\", \"resource optimization guidewire\". use when working with guidewire cost tuning. saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "guidewire-data-handling",
       "slug": "guidewire-data-handling",
       "name": "guidewire-data-handling",
-      "description": "Data handling best practices for Guidewire InsuranceSuite including entity management, data migration, batch operations, and data governance. Trigger with phrases like \"guidewire data\", \"entity management\", \"data migration\", \"batch processing\", \"data governance guidewire\".",
+      "description": "Data handling best practices for Guidewire InsuranceSuite including entity management, data migration, batch operations, and data governance. Trigger with phrases like \"guidewire data\", \"entity management\", \"data migration\", \"batch processing\", \"data governance guidewire\". Use when working with guidewire data handling.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27252,7 +27251,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-data-handling data handling best practices for guidewire insurancesuite including entity management, data migration, batch operations, and data governance. trigger with phrases like \"guidewire data\", \"entity management\", \"data migration\", \"batch processing\", \"data governance guidewire\". saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-data-handling data handling best practices for guidewire insurancesuite including entity management, data migration, batch operations, and data governance. trigger with phrases like \"guidewire data\", \"entity management\", \"data migration\", \"batch processing\", \"data governance guidewire\". use when working with guidewire data handling. saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27313,7 +27312,7 @@
       "id": "guidewire-enterprise-rbac",
       "slug": "guidewire-enterprise-rbac",
       "name": "guidewire-enterprise-rbac",
-      "description": "Implement enterprise role-based access control for Guidewire InsuranceSuite including API roles, user permissions, and security policies. Trigger with phrases like \"guidewire rbac\", \"permissions guidewire\", \"user roles\", \"api access control\", \"security permissions\".",
+      "description": "Implement enterprise role-based access control for Guidewire InsuranceSuite including API roles, user permissions, and security policies. Trigger with phrases like \"guidewire rbac\", \"permissions guidewire\", \"user roles\", \"api access control\", \"security permissions\". Use when working with guidewire enterprise rbac.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27332,7 +27331,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-enterprise-rbac implement enterprise role-based access control for guidewire insurancesuite including api roles, user permissions, and security policies. trigger with phrases like \"guidewire rbac\", \"permissions guidewire\", \"user roles\", \"api access control\", \"security permissions\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-enterprise-rbac implement enterprise role-based access control for guidewire insurancesuite including api roles, user permissions, and security policies. trigger with phrases like \"guidewire rbac\", \"permissions guidewire\", \"user roles\", \"api access control\", \"security permissions\". use when working with guidewire enterprise rbac. saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27448,7 +27447,7 @@
       "id": "guidewire-migration-deep-dive",
       "slug": "guidewire-migration-deep-dive",
       "name": "guidewire-migration-deep-dive",
-      "description": "Deep dive into Guidewire migration strategies including self-managed to Cloud, legacy system migrations, data migration, and integration cutover planning. Trigger with phrases like \"guidewire migration\", \"cloud migration\", \"legacy migration\", \"data migration guidewire\", \"cutover planning\".",
+      "description": "Deep dive into Guidewire migration strategies including self-managed to Cloud, legacy system migrations, data migration, and integration cutover planning. Trigger with phrases like \"guidewire migration\", \"cloud migration\", \"legacy migration\", \"data migration guidewire\", \"cutover planning\". Use when working with guidewire migration deep dive.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27468,14 +27467,14 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-migration-deep-dive deep dive into guidewire migration strategies including self-managed to cloud, legacy system migrations, data migration, and integration cutover planning. trigger with phrases like \"guidewire migration\", \"cloud migration\", \"legacy migration\", \"data migration guidewire\", \"cutover planning\". saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-migration-deep-dive deep dive into guidewire migration strategies including self-managed to cloud, legacy system migrations, data migration, and integration cutover planning. trigger with phrases like \"guidewire migration\", \"cloud migration\", \"legacy migration\", \"data migration guidewire\", \"cutover planning\". use when working with guidewire migration deep dive. saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "guidewire-multi-env-setup",
       "slug": "guidewire-multi-env-setup",
       "name": "guidewire-multi-env-setup",
-      "description": "Configure multi-environment setup for Guidewire InsuranceSuite including development, staging, and production environments with proper isolation and promotion workflows. Trigger with phrases like \"guidewire environments\", \"multi-environment\", \"dev staging production\", \"environment configuration\", \"environment promotion\".",
+      "description": "Configure multi-environment setup for Guidewire InsuranceSuite including development, staging, and production environments with proper isolation and promotion workflows. Trigger with phrases like \"guidewire environments\", \"multi-environment\", \"dev staging production\", \"environment configuration\", \"environment promotion\". Use when working with guidewire multi env setup.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27495,14 +27494,14 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-multi-env-setup configure multi-environment setup for guidewire insurancesuite including development, staging, and production environments with proper isolation and promotion workflows. trigger with phrases like \"guidewire environments\", \"multi-environment\", \"dev staging production\", \"environment configuration\", \"environment promotion\". saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-multi-env-setup configure multi-environment setup for guidewire insurancesuite including development, staging, and production environments with proper isolation and promotion workflows. trigger with phrases like \"guidewire environments\", \"multi-environment\", \"dev staging production\", \"environment configuration\", \"environment promotion\". use when working with guidewire multi env setup. saas-packs read write edit bash(curl:*) bash(gradle:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "guidewire-observability",
       "slug": "guidewire-observability",
       "name": "guidewire-observability",
-      "description": "Implement comprehensive observability for Guidewire InsuranceSuite including logging, metrics, tracing, and alerting. Trigger with phrases like \"guidewire monitoring\", \"logging guidewire\", \"metrics\", \"observability\", \"alerting\", \"dashboards guidewire\".",
+      "description": "Implement comprehensive observability for Guidewire InsuranceSuite including logging, metrics, tracing, and alerting. Trigger with phrases like \"guidewire monitoring\", \"logging guidewire\", \"metrics\", \"observability\", \"alerting\", \"dashboards guidewire\". Use when working with guidewire observability.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27521,14 +27520,14 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-observability implement comprehensive observability for guidewire insurancesuite including logging, metrics, tracing, and alerting. trigger with phrases like \"guidewire monitoring\", \"logging guidewire\", \"metrics\", \"observability\", \"alerting\", \"dashboards guidewire\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-observability implement comprehensive observability for guidewire insurancesuite including logging, metrics, tracing, and alerting. trigger with phrases like \"guidewire monitoring\", \"logging guidewire\", \"metrics\", \"observability\", \"alerting\", \"dashboards guidewire\". use when working with guidewire observability. saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "guidewire-performance-tuning",
       "slug": "guidewire-performance-tuning",
       "name": "guidewire-performance-tuning",
-      "description": "Optimize Guidewire InsuranceSuite performance including query optimization, batch processing, caching, and JVM tuning. Trigger with phrases like \"guidewire performance\", \"slow queries\", \"optimize policycenter\", \"batch processing\", \"query tuning\".",
+      "description": "Optimize Guidewire InsuranceSuite performance including query optimization, batch processing, caching, and JVM tuning. Trigger with phrases like \"guidewire performance\", \"slow queries\", \"optimize policycenter\", \"batch processing\", \"query tuning\". Use when working with guidewire performance tuning.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27547,7 +27546,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-performance-tuning optimize guidewire insurancesuite performance including query optimization, batch processing, caching, and jvm tuning. trigger with phrases like \"guidewire performance\", \"slow queries\", \"optimize policycenter\", \"batch processing\", \"query tuning\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-performance-tuning optimize guidewire insurancesuite performance including query optimization, batch processing, caching, and jvm tuning. trigger with phrases like \"guidewire performance\", \"slow queries\", \"optimize policycenter\", \"batch processing\", \"query tuning\". use when working with guidewire performance tuning. saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27658,7 +27657,7 @@
       "id": "guidewire-security-basics",
       "slug": "guidewire-security-basics",
       "name": "guidewire-security-basics",
-      "description": "Implement security best practices for Guidewire InsuranceSuite including OAuth2, JWT handling, API roles, secure Gosu coding, and data protection. Trigger with phrases like \"guidewire security\", \"oauth2 guidewire\", \"jwt token\", \"api roles\", \"secure gosu code\", \"guidewire authentication\".",
+      "description": "Implement security best practices for Guidewire InsuranceSuite including OAuth2, JWT handling, API roles, secure Gosu coding, and data protection. Trigger with phrases like \"guidewire security\", \"oauth2 guidewire\", \"jwt token\", \"api roles\", \"secure gosu code\", \"guidewire authentication\". Use when working with guidewire security basics.",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27677,7 +27676,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-security-basics implement security best practices for guidewire insurancesuite including oauth2, jwt handling, api roles, secure gosu coding, and data protection. trigger with phrases like \"guidewire security\", \"oauth2 guidewire\", \"jwt token\", \"api roles\", \"secure gosu code\", \"guidewire authentication\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-security-basics implement security best practices for guidewire insurancesuite including oauth2, jwt handling, api roles, secure gosu coding, and data protection. trigger with phrases like \"guidewire security\", \"oauth2 guidewire\", \"jwt token\", \"api roles\", \"secure gosu code\", \"guidewire authentication\". use when working with guidewire security basics. saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27765,7 +27764,7 @@
       "id": "hooked-ux",
       "slug": "hooked-ux",
       "name": "hooked-ux",
-      "description": "'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'",
+      "description": "Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious. Trigger with 'hooked', 'ux'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -27782,14 +27781,14 @@
         "name": "wondelai-hooked-ux",
         "category": "design"
       },
-      "searchText": "hooked-ux 'design habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious.' design read glob grep claude-code codex openclaw"
+      "searchText": "hooked-ux design habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious. trigger with 'hooked', 'ux'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "hundred-million-offers",
       "slug": "hundred-million-offers",
       "name": "hundred-million-offers",
-      "description": "'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'",
+      "description": "Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue. Trigger with 'hundred', 'million', 'offers'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -27806,7 +27805,7 @@
         "name": "wondelai-hundred-million-offers",
         "category": "business-tools"
       },
-      "searchText": "hundred-million-offers 'create irresistible offers using the value equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". covers the magic naming formula and starving-crowd targeting. for product positioning, see obviously-awesome. for outbound sales, see predictable-revenue.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "hundred-million-offers create irresistible offers using the value equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". covers the magic naming formula and starving-crowd targeting. for product positioning, see obviously-awesome. for outbound sales, see predictable-revenue. trigger with 'hundred', 'million', 'offers'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -28527,7 +28526,7 @@
       "id": "influence-psychology",
       "slug": "influence-psychology",
       "name": "influence-psychology",
-      "description": "'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'",
+      "description": "Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious. Trigger with 'influence', 'psychology'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -28544,7 +28543,7 @@
         "name": "wondelai-influence-psychology",
         "category": "business-tools"
       },
-      "searchText": "influence-psychology 'apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". for deal negotiation tactics, see negotiation. for viral word-of-mouth, see contagious.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "influence-psychology apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". for deal negotiation tactics, see negotiation. for viral word-of-mouth, see contagious. trigger with 'influence', 'psychology'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29179,7 +29178,7 @@
       "id": "ios-hig-design",
       "slug": "ios-hig-design",
       "name": "ios-hig-design",
-      "description": "'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", or \"HIG compliance\". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'",
+      "description": "Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", or \"HIG compliance\". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -29196,14 +29195,14 @@
         "name": "wondelai-ios-hig-design",
         "category": "design"
       },
-      "searchText": "ios-hig-design 'design native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", or \"hig compliance\". covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things.' design read glob grep claude-code codex openclaw"
+      "searchText": "ios-hig-design design native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", or \"hig compliance\". covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things. trigger with 'ios', 'hig', 'design'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "jobs-to-be-done",
       "slug": "jobs-to-be-done",
       "name": "jobs-to-be-done",
-      "description": "'Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint.'",
+      "description": "Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -29220,7 +29219,7 @@
         "name": "wondelai-jobs-to-be-done",
         "category": "business-tools"
       },
-      "searchText": "jobs-to-be-done 'discover what customers truly need by analyzing the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "jobs-to-be-done discover what customers truly need by analyzing the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint. trigger with 'jobs', 'to', 'be'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -31791,7 +31790,7 @@
       "id": "lean-startup",
       "slug": "lean-startup",
       "name": "lean-startup",
-      "description": "'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions \"MVP scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'",
+      "description": "Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions \"MVP scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done. Trigger with 'lean', 'startup'.",
       "category": "productivity",
       "allowedTools": [
         "Read",
@@ -31808,7 +31807,7 @@
         "name": "wondelai-lean-startup",
         "category": "productivity"
       },
-      "searchText": "lean-startup 'design mvps, validated learning experiments, and pivot-or-persevere decisions using build-measure-learn. use when the user mentions \"mvp scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". covers innovation accounting and actionable metrics. for 5-day prototype testing, see design-sprint. for customer motivation analysis, see jobs-to-be-done.' productivity read glob grep claude-code codex openclaw"
+      "searchText": "lean-startup design mvps, validated learning experiments, and pivot-or-persevere decisions using build-measure-learn. use when the user mentions \"mvp scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". covers innovation accounting and actionable metrics. for 5-day prototype testing, see design-sprint. for customer motivation analysis, see jobs-to-be-done. trigger with 'lean', 'startup'. productivity read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33688,7 +33687,7 @@
       "id": "made-to-stick",
       "slug": "made-to-stick",
       "name": "made-to-stick",
-      "description": "'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'",
+      "description": "Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -33705,7 +33704,7 @@
         "name": "wondelai-made-to-stick",
         "category": "business-tools"
       },
-      "searchText": "made-to-stick 'craft messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "made-to-stick craft messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious. trigger with 'made', 'to', 'stick'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -35650,7 +35649,7 @@
       "id": "negotiation",
       "slug": "negotiation",
       "name": "negotiation",
-      "description": "'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". Covers accusation audits, Black Swan discovery, and the \"That''s Right\" technique. For persuasion in product/marketing, see influence-psychology.'",
+      "description": "Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". Covers accusation audits, Black Swan discovery, and the \"That''s Right\" technique. For persuasion in product/marketing, see influence-psychology. Trigger with 'negotiation'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -35667,14 +35666,14 @@
         "name": "wondelai-negotiation",
         "category": "business-tools"
       },
-      "searchText": "negotiation 'prepare and execute negotiations using tactical empathy, calibrated questions, and the ackerman method. use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". covers accusation audits, black swan discovery, and the \"that''s right\" technique. for persuasion in product/marketing, see influence-psychology.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "negotiation prepare and execute negotiations using tactical empathy, calibrated questions, and the ackerman method. use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". covers accusation audits, black swan discovery, and the \"that''s right\" technique. for persuasion in product/marketing, see influence-psychology. trigger with 'negotiation'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "neurodivergent-visual-org",
       "slug": "neurodivergent-visual-org",
       "name": "neurodivergent-visual-org",
-      "description": "Creates ADHD-friendly visual organizational tools using Mermaid diagrams optimized for neurodivergent thinking patterns. Auto-detects overwhelm, provides compassionate task breakdowns with realistic time estimates. Use when creating visual task breakdowns, decision trees, or organizational diagrams for neurodivergent users or accessibility-focused projects.",
+      "description": "Creates ADHD-friendly visual organizational tools using Mermaid diagrams optimized for neurodivergent thinking patterns. Auto-detects overwhelm, provides compassionate task breakdowns with realistic time estimates. Use when creating visual task breakdowns, decision trees, or organizational diagrams for neurodivergent users or accessibility-focused projects. Trigger with 'neurodivergent', 'visual', 'org'.",
       "category": "productivity",
       "allowedTools": [
         "Read",
@@ -35682,7 +35681,7 @@
         "Edit",
         "Grep",
         "Glob",
-        "Bash"
+        "Bash(cmd:*)"
       ],
       "compatibleWith": [
         "claude-code",
@@ -35694,7 +35693,7 @@
         "name": "neurodivergent-visual-org",
         "category": "productivity"
       },
-      "searchText": "neurodivergent-visual-org creates adhd-friendly visual organizational tools using mermaid diagrams optimized for neurodivergent thinking patterns. auto-detects overwhelm, provides compassionate task breakdowns with realistic time estimates. use when creating visual task breakdowns, decision trees, or organizational diagrams for neurodivergent users or accessibility-focused projects. productivity read write edit grep glob bash claude-code codex openclaw"
+      "searchText": "neurodivergent-visual-org creates adhd-friendly visual organizational tools using mermaid diagrams optimized for neurodivergent thinking patterns. auto-detects overwhelm, provides compassionate task breakdowns with realistic time estimates. use when creating visual task breakdowns, decision trees, or organizational diagrams for neurodivergent users or accessibility-focused projects. trigger with 'neurodivergent', 'visual', 'org'. productivity read write edit grep glob bash(cmd:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36297,7 +36296,7 @@
       "id": "obviously-awesome",
       "slug": "obviously-awesome",
       "name": "obviously-awesome",
-      "description": "'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'",
+      "description": "Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm. Trigger with 'obviously', 'awesome'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -36314,7 +36313,7 @@
         "name": "wondelai-obviously-awesome",
         "category": "business-tools"
       },
-      "searchText": "obviously-awesome 'define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". covers positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "obviously-awesome define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". covers positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm. trigger with 'obviously', 'awesome'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36345,7 +36344,7 @@
       "id": "one-page-marketing",
       "slug": "one-page-marketing",
       "name": "one-page-marketing",
-      "description": "'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions \"marketing plan\", \"target market\", \"USP\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'",
+      "description": "Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions \"marketing plan\", \"target market\", \"USP\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology. Trigger with 'one', 'page', 'marketing'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -36362,7 +36361,7 @@
         "name": "wondelai-one-page-marketing",
         "category": "business-tools"
       },
-      "searchText": "one-page-marketing 'build a complete marketing plan covering the full customer journey from stranger to raving fan. use when the user mentions \"marketing plan\", \"target market\", \"usp\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". covers the pvp index, channel selection, and advocacy systems. for brand messaging, see storybrand-messaging. for conversion optimization, see cro-methodology.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "one-page-marketing build a complete marketing plan covering the full customer journey from stranger to raving fan. use when the user mentions \"marketing plan\", \"target market\", \"usp\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". covers the pvp index, channel selection, and advocacy systems. for brand messaging, see storybrand-messaging. for conversion optimization, see cro-methodology. trigger with 'one', 'page', 'marketing'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -39655,7 +39654,7 @@
       "id": "predictable-revenue",
       "slug": "predictable-revenue",
       "name": "predictable-revenue",
-      "description": "'Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions \"outbound sales\", \"Cold Calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"SDR process\", or \"B2B SaaS sales\". Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'",
+      "description": "Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions \"outbound sales\", \"Cold Calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"SDR process\", or \"B2B SaaS sales\". Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology. Trigger with 'predictable', 'revenue'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -39672,7 +39671,7 @@
         "name": "wondelai-predictable-revenue",
         "category": "business-tools"
       },
-      "searchText": "predictable-revenue 'build a scalable outbound b2b sales process with specialized roles (sdr, ae, csm). use when the user mentions \"outbound sales\", \"cold calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"sdr process\", or \"b2b saas sales\". covers lead generation, qualification frameworks, and separating prospecting from closing. for offer design, see hundred-million-offers. for persuasion science, see influence-psychology.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "predictable-revenue build a scalable outbound b2b sales process with specialized roles (sdr, ae, csm). use when the user mentions \"outbound sales\", \"cold calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"sdr process\", or \"b2b saas sales\". covers lead generation, qualification frameworks, and separating prospecting from closing. for offer design, see hundred-million-offers. for persuasion science, see influence-psychology. trigger with 'predictable', 'revenue'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -39842,7 +39841,7 @@
       "id": "refactoring-ui",
       "slug": "refactoring-ui",
       "name": "refactoring-ui",
-      "description": "'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\", \"fix the design\", \"Tailwind styling\", \"color palette\", or \"visual hierarchy\". Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'",
+      "description": "Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\", \"fix the design\", \"Tailwind styling\", \"color palette\", or \"visual hierarchy\". Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics. Trigger with 'refactoring', 'ui'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -39859,7 +39858,7 @@
         "name": "wondelai-refactoring-ui",
         "category": "design"
       },
-      "searchText": "refactoring-ui 'audit and fix visual hierarchy, spacing, color, and depth in web uis. use when the user mentions \"my ui looks off\", \"fix the design\", \"tailwind styling\", \"color palette\", or \"visual hierarchy\". covers grayscale-first workflow, constrained design scales, shadows, and component styling. for typeface selection, see web-typography. for usability audits, see ux-heuristics.' design read glob grep claude-code codex openclaw"
+      "searchText": "refactoring-ui audit and fix visual hierarchy, spacing, color, and depth in web uis. use when the user mentions \"my ui looks off\", \"fix the design\", \"tailwind styling\", \"color palette\", or \"visual hierarchy\". covers grayscale-first workflow, constrained design scales, shadows, and component styling. for typeface selection, see web-typography. for usability audits, see ux-heuristics. trigger with 'refactoring', 'ui'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -41943,7 +41942,7 @@
       "id": "scorecard-marketing",
       "slug": "scorecard-marketing",
       "name": "scorecard-marketing",
-      "description": "'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". Covers question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'",
+      "description": "Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". Covers question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing. Trigger with 'scorecard', 'marketing'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -41960,7 +41959,7 @@
         "name": "wondelai-scorecard-marketing",
         "category": "business-tools"
       },
-      "searchText": "scorecard-marketing 'build quiz and assessment funnels that generate qualified leads at 30-50% conversion. use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". covers question design, dynamic results by tier, and automated follow-up sequences. for landing page conversion, see cro-methodology. for full marketing plans, see one-page-marketing.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "scorecard-marketing build quiz and assessment funnels that generate qualified leads at 30-50% conversion. use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". covers question design, dynamic results by tier, and automated follow-up sequences. for landing page conversion, see cro-methodology. for full marketing plans, see one-page-marketing. trigger with 'scorecard', 'marketing'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -43538,7 +43537,7 @@
       "id": "storybrand-messaging",
       "slug": "storybrand-messaging",
       "name": "storybrand-messaging",
-      "description": "'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'",
+      "description": "Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -43555,7 +43554,7 @@
         "name": "wondelai-storybrand-messaging",
         "category": "business-tools"
       },
-      "searchText": "storybrand-messaging 'clarify brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "storybrand-messaging clarify brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome. trigger with 'storybrand', 'messaging'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -44445,7 +44444,7 @@
       "id": "top-design",
       "slug": "top-design",
       "name": "top-design",
-      "description": "'Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"Awwwards quality\", or \"brand experience\". Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography.'",
+      "description": "Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"Awwwards quality\", or \"brand experience\". Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography. Trigger with 'top', 'design'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -44462,7 +44461,7 @@
         "name": "wondelai-top-design",
         "category": "design"
       },
-      "searchText": "top-design 'create award-winning, immersive web experiences at the level of awwwards-featured agencies. use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"awwwards quality\", or \"brand experience\". covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. for foundational ui, see refactoring-ui. for type selection, see web-typography.' design read glob grep claude-code codex openclaw"
+      "searchText": "top-design create award-winning, immersive web experiences at the level of awwwards-featured agencies. use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"awwwards quality\", or \"brand experience\". covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. for foundational ui, see refactoring-ui. for type selection, see web-typography. trigger with 'top', 'design'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -44712,7 +44711,7 @@
       "id": "traction-eos",
       "slug": "traction-eos",
       "name": "traction-eos",
-      "description": "'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions \"EOS\", \"V/TO\", \"quarterly rocks\", \"Level 10 meetings\", \"accountability chart\", or \"IDS process\". Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'",
+      "description": "Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions \"EOS\", \"V/TO\", \"quarterly rocks\", \"Level 10 meetings\", \"accountability chart\", or \"IDS process\". Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup. Trigger with 'traction', 'eos'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -44729,7 +44728,7 @@
         "name": "wondelai-traction-eos",
         "category": "business-tools"
       },
-      "searchText": "traction-eos 'implement the entrepreneurial operating system (eos) to align vision and execution across a company. use when the user mentions \"eos\", \"v/to\", \"quarterly rocks\", \"level 10 meetings\", \"accountability chart\", or \"ids process\". covers the six eos components: vision, people, data, issues, process, traction. for team motivation design, see drive-motivation. for lean experimentation, see lean-startup.' business-tools read glob grep claude-code codex openclaw"
+      "searchText": "traction-eos implement the entrepreneurial operating system (eos) to align vision and execution across a company. use when the user mentions \"eos\", \"v/to\", \"quarterly rocks\", \"level 10 meetings\", \"accountability chart\", or \"ids process\". covers the six eos components: vision, people, data, issues, process, traction. for team motivation design, see drive-motivation. for lean experimentation, see lean-startup. trigger with 'traction', 'eos'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -45386,7 +45385,7 @@
       "id": "ux-heuristics",
       "slug": "ux-heuristics",
       "name": "ux-heuristics",
-      "description": "'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions \"usability audit\", \"UX review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". Covers Nielsen''s 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'",
+      "description": "Evaluate and improve interface usability using heuristic analysis. Use when the user mentions \"usability audit\", \"UX review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". Covers Nielsen''s 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology. Trigger with 'ux', 'heuristics'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -45403,7 +45402,7 @@
         "name": "wondelai-ux-heuristics",
         "category": "design"
       },
-      "searchText": "ux-heuristics 'evaluate and improve interface usability using heuristic analysis. use when the user mentions \"usability audit\", \"ux review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". covers nielsen''s 10 heuristics, severity ratings, and information architecture. for visual design fixes, see refactoring-ui. for conversion-focused audits, see cro-methodology.' design read glob grep claude-code codex openclaw"
+      "searchText": "ux-heuristics evaluate and improve interface usability using heuristic analysis. use when the user mentions \"usability audit\", \"ux review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". covers nielsen''s 10 heuristics, severity ratings, and information architecture. for visual design fixes, see refactoring-ui. for conversion-focused audits, see cro-methodology. trigger with 'ux', 'heuristics'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -47221,7 +47220,7 @@
       "id": "web-typography",
       "slug": "web-typography",
       "name": "web-typography",
-      "description": "'Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'",
+      "description": "Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design. Trigger with 'web', 'typography'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -47238,14 +47237,14 @@
         "name": "wondelai-web-typography",
         "category": "design"
       },
-      "searchText": "web-typography 'select, pair, and implement typefaces for web projects. use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". covers readability evaluation, css implementation, and performance optimization. for overall ui design systems, see refactoring-ui. for dramatic typographic experiences, see top-design.' design read glob grep claude-code codex openclaw"
+      "searchText": "web-typography select, pair, and implement typefaces for web projects. use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". covers readability evaluation, css implementation, and performance optimization. for overall ui design systems, see refactoring-ui. for dramatic typographic experiences, see top-design. trigger with 'web', 'typography'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "website-generator",
       "slug": "website-generator",
       "name": "website-generator",
-      "description": "Use when the user asks to create a website, build a site, generate a landing page, or mentions B12. Trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"B12 website\".",
+      "description": "Use when the user asks to create a website, build a site, generate a landing page, or mentions B12. Trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"B12 website\". Trigger with 'website', 'generator'.",
       "category": "community",
       "allowedTools": [
         "AskUserQuestion"
@@ -47260,7 +47259,7 @@
         "name": "b12-claude-plugin",
         "category": "community"
       },
-      "searchText": "website-generator use when the user asks to create a website, build a site, generate a landing page, or mentions b12. trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"b12 website\". community askuserquestion claude-code codex openclaw"
+      "searchText": "website-generator use when the user asks to create a website, build a site, generate a landing page, or mentions b12. trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"b12 website\". trigger with 'website', 'generator'. community askuserquestion claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -48040,7 +48039,7 @@
       "id": "yt-brief",
       "slug": "yt-brief",
       "name": "yt-brief",
-      "description": "Refine a YouTube video idea into a structured production brief with angle, key points, value proposition, CTA asset, and audience segment. Use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining.",
+      "description": "Refine a YouTube video idea into a structured production brief with angle, key points, value proposition, CTA asset, and audience segment. Use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining. Use when working with yt brief. Trigger with 'yt', 'brief'.",
       "category": "productivity",
       "allowedTools": [
         "WebSearch",
@@ -48057,14 +48056,14 @@
         "name": "youtube-strategy",
         "category": "productivity"
       },
-      "searchText": "yt-brief refine a youtube video idea into a structured production brief with angle, key points, value proposition, cta asset, and audience segment. use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining. productivity websearch read write claude-code codex openclaw"
+      "searchText": "yt-brief refine a youtube video idea into a structured production brief with angle, key points, value proposition, cta asset, and audience segment. use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining. use when working with yt brief. trigger with 'yt', 'brief'. productivity websearch read write claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "yt-ideation",
       "slug": "yt-ideation",
       "name": "yt-ideation",
-      "description": "Generate and validate YouTube video ideas aligned with content pillars, audience strategy, and priority tiers. Use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should I make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should I cover\", or wants to come up with new video concepts.",
+      "description": "Generate and validate YouTube video ideas aligned with content pillars, audience strategy, and priority tiers. Use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should I make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should I cover\", or wants to come up with new video concepts. Use when working with yt ideation. Trigger with 'yt', 'ideation'.",
       "category": "productivity",
       "allowedTools": [
         "WebSearch",
@@ -48082,14 +48081,14 @@
         "name": "youtube-strategy",
         "category": "productivity"
       },
-      "searchText": "yt-ideation generate and validate youtube video ideas aligned with content pillars, audience strategy, and priority tiers. use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should i make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should i cover\", or wants to come up with new video concepts. productivity websearch read write task claude-code codex openclaw"
+      "searchText": "yt-ideation generate and validate youtube video ideas aligned with content pillars, audience strategy, and priority tiers. use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should i make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should i cover\", or wants to come up with new video concepts. use when working with yt ideation. trigger with 'yt', 'ideation'. productivity websearch read write task claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "yt-outline",
       "slug": "yt-outline",
       "name": "yt-outline",
-      "description": "Build detailed step-by-step YouTube video outlines with demo prep, screen-share sequences, and visual planning. Use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming.",
+      "description": "Build detailed step-by-step YouTube video outlines with demo prep, screen-share sequences, and visual planning. Use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming. Use when working with yt outline. Trigger with 'yt', 'outline'.",
       "category": "productivity",
       "allowedTools": [
         "WebSearch",
@@ -48106,14 +48105,14 @@
         "name": "youtube-strategy",
         "category": "productivity"
       },
-      "searchText": "yt-outline build detailed step-by-step youtube video outlines with demo prep, screen-share sequences, and visual planning. use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming. productivity websearch read write claude-code codex openclaw"
+      "searchText": "yt-outline build detailed step-by-step youtube video outlines with demo prep, screen-share sequences, and visual planning. use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming. use when working with yt outline. trigger with 'yt', 'outline'. productivity websearch read write claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "yt-packaging",
       "slug": "yt-packaging",
       "name": "yt-packaging",
-      "description": "Create optimized YouTube titles and thumbnail concepts for maximum CTR. Use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"CTR optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. Packaging determines whether viewers click.",
+      "description": "Create optimized YouTube titles and thumbnail concepts for maximum CTR. Use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"CTR optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. Packaging determines whether viewers click. Use when working with yt packaging. Trigger with 'yt', 'packaging'.",
       "category": "productivity",
       "allowedTools": [
         "WebSearch",
@@ -48130,14 +48129,14 @@
         "name": "youtube-strategy",
         "category": "productivity"
       },
-      "searchText": "yt-packaging create optimized youtube titles and thumbnail concepts for maximum ctr. use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"ctr optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. packaging determines whether viewers click. productivity websearch read write claude-code codex openclaw"
+      "searchText": "yt-packaging create optimized youtube titles and thumbnail concepts for maximum ctr. use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"ctr optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. packaging determines whether viewers click. use when working with yt packaging. trigger with 'yt', 'packaging'. productivity websearch read write claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "yt-research",
       "slug": "yt-research",
       "name": "yt-research",
-      "description": "Research competitor YouTube channels, niches, and trending topics for your content strategy. Use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape YouTube channels\", or wants to understand the competitive landscape for a specific tool or topic area.",
+      "description": "Research competitor YouTube channels, niches, and trending topics for your content strategy. Use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape YouTube channels\", or wants to understand the competitive landscape for a specific tool or topic area. Use when working with yt research. Trigger with 'yt', 'research'.",
       "category": "productivity",
       "allowedTools": [
         "WebSearch",
@@ -48155,7 +48154,7 @@
         "name": "youtube-strategy",
         "category": "productivity"
       },
-      "searchText": "yt-research research competitor youtube channels, niches, and trending topics for your content strategy. use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape youtube channels\", or wants to understand the competitive landscape for a specific tool or topic area. productivity websearch read write task claude-code codex openclaw"
+      "searchText": "yt-research research competitor youtube channels, niches, and trending topics for your content strategy. use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape youtube channels\", or wants to understand the competitive landscape for a specific tool or topic area. use when working with yt research. trigger with 'yt', 'research'. productivity websearch read write task claude-code codex openclaw"
     },
     {
       "type": "skill",
