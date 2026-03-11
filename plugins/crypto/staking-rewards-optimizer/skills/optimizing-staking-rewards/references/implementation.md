@@ -1,33 +1,85 @@
-# Implementation Guide
+# Optimizing Staking Rewards - Implementation Reference
 
-### Step 1: Configure Data Sources
-Set up connections to crypto data providers:
-1. Use Read tool to load API credentials from ${CLAUDE_SKILL_DIR}/config/crypto-apis.env
-2. Configure blockchain RPC endpoints for target networks
-3. Set up exchange API connections if required
-4. Verify rate limits and subscription tiers
-5. Test connectivity and authentication
+## Optimization Report Output
 
-### Step 2: Query Crypto Data
-Retrieve relevant blockchain and market data:
-1. Use Bash(crypto:staking-*) to execute crypto data queries
-2. Fetch real-time prices, volumes, and market cap data
-3. Query blockchain for on-chain metrics and transactions
-4. Retrieve exchange order book and trade history
-5. Aggregate data from multiple sources for accuracy
+When using `--optimize`, the tool generates a full portfolio optimization:
 
-### Step 3: Analyze and Process
-Process crypto data to generate insights:
-- Calculate key metrics (returns, volatility, correlation)
-- Identify patterns and anomalies in data
-- Apply technical indicators or on-chain signals
-- Compare across timeframes and assets
-- Generate actionable insights and alerts
+```
+==============================================================================
+  PORTFOLIO OPTIMIZATION
+==============================================================================
 
-### Step 4: Generate Reports
-Document findings in ${CLAUDE_SKILL_DIR}/crypto-reports/:
-- Market summary with key price movements
-- Detailed analysis with charts and metrics
-- Trading signals or opportunity recommendations
-- Risk assessment and position sizing guidance
-- Historical context and trend analysis
+  CURRENT PORTFOLIO
+------------------------------------------------------------------------------
+  Position              APY      Annual Return
+  10 ETH @ Lido         3.60%    $720
+  100 ATOM @ Native     18.00%   $3,600
+  50 DOT @ Native       14.00%   $1,400
+------------------------------------------------------------------------------
+  Total Portfolio: $25,000      Blended APY: 22.88%    Annual: $5,720
+
+  OPTIMIZED ALLOCATION
+------------------------------------------------------------------------------
+  Recommendation        APY      Annual Return   Change
+  10 ETH -> Frax        4.59%    $918           +$198
+  100 ATOM -> Keep      18.00%   $3,600         $0
+  50 DOT -> Keep        14.00%   $1,400         $0
+------------------------------------------------------------------------------
+  Optimized Annual: $5,918      Improvement: +$198 (+3.5%)
+
+  IMPLEMENTATION
+  1. Unstake 10 ETH from Lido (instant - liquid)
+  2. Swap stETH -> ETH on Curve (0.01% slippage est.)
+  3. Stake ETH for sfrxETH on Frax Finance
+  4. Est. gas cost: ~$15 (current gas: 25 gwei)
+==============================================================================
+```
+
+## Risk Assessment Detail
+
+Detailed risk output (with `--detailed` flag):
+
+```
+  RISK ASSESSMENT: Lido (stETH)
+------------------------------------------------------------------------------
+  Overall Score: 9/10 (Low Risk)
+
+  Breakdown:
+  - Audit Status:        Multiple audits, latest 6 months ago (+2.0)
+  - Time in Production:  3+ years live (+2.0)
+  - TVL Size:            $15B+ locked (+2.0)
+  - Protocol Reputation: Industry standard, DAO governance (+1.5)
+  - Validator Diversity:  30+ validators (+1.5)
+
+  Considerations:
+  - Largest LSD by market share (potential centralization concerns)
+  - stETH occasionally trades at slight discount to ETH
+  - 10% fee on staking rewards
+
+  Historical:
+  - No slashing events to date
+  - stETH peg maintained through market stress
+  - Consistent validator performance
+------------------------------------------------------------------------------
+```
+
+## Protocol Deep Dive
+
+Use `--protocol <name> --detailed` for full protocol analysis including:
+- Validator count and diversity metrics
+- Fee structure breakdown
+- Historical APY trends
+- Smart contract audit history
+- Slashing incident reports
+
+```bash
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --protocol rocket-pool --detailed
+```
+
+## Important Notes
+
+- APYs are variable and change based on network participation
+- Historical yields do not guarantee future returns
+- This tool provides information, not financial advice
+- Always DYOR (Do Your Own Research) before staking
+- Consider your risk tolerance and liquidity needs

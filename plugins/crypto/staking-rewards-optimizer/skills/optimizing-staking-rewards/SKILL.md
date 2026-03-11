@@ -45,43 +45,29 @@ Analyze staking opportunities across PoS blockchains and liquid staking protocol
    ```
    Suggests higher-yield alternatives with projected improvement and switching costs.
 
-4. **Compare specific protocols** head-to-head:
+4. **Compare protocols or run risk assessment**:
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
-   ```
-
-5. **Run detailed risk assessment** with audit and validator metrics:
-   ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --detailed
    ```
 
-6. **Export results** in JSON or CSV:
+5. **Export results** in JSON or CSV:
    ```bash
    python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format json --output staking.json
-   python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format csv --output staking.csv
    ```
 
 ## Output
 
-Comparison table ranked by risk-adjusted return (Net APY multiplied by Risk Score / 10). Shows native and liquid staking options side by side:
+Comparison table ranked by risk-adjusted return (Net APY multiplied by Risk Score / 10), showing native and liquid staking options:
 
 ```
-==============================================================================
-  STAKING REWARDS OPTIMIZER                              2025-01-15 15:30 UTC  # 2025 - year reference
-==============================================================================
-
-  STAKING OPTIONS FOR ETH
-------------------------------------------------------------------------------
+  STAKING OPTIONS FOR ETH                              2025-01-15 15:30 UTC  # 2025 timestamp
   Protocol        Type      Gross APY  Net APY  Risk   TVL         Unbond
-------------------------------------------------------------------------------
   Frax (sfrxETH)  liquid      5.10%     4.59%   7/10   $450M       instant
   Lido (stETH)    liquid      4.00%     3.60%   9/10   $15B        instant
   Rocket Pool     liquid      4.20%     3.61%   8/10   $3B         instant
   Coinbase cbETH  liquid      3.80%     3.42%   9/10   $2B         instant
   ETH Native      native      4.00%     4.00%   10/10  $50B        variable
-------------------------------------------------------------------------------
-  Ranked by risk-adjusted return (Net APY x Risk Score / 10)
-==============================================================================
 ```
 
 ## Error Handling

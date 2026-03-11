@@ -1,33 +1,83 @@
-# Implementation Guide
+# Analyzing Market Sentiment - Implementation Reference
 
-### Step 1: Configure Data Sources
-Set up connections to crypto data providers:
-1. Use Read tool to load API credentials from ${CLAUDE_SKILL_DIR}/config/crypto-apis.env
-2. Configure blockchain RPC endpoints for target networks
-3. Set up exchange API connections if required
-4. Verify rate limits and subscription tiers
-5. Test connectivity and authentication
+## Command-Line Options
 
-### Step 2: Query Crypto Data
-Retrieve relevant blockchain and market data:
-1. Use Bash(crypto:sentiment-*) to execute crypto data queries
-2. Fetch real-time prices, volumes, and market cap data
-3. Query blockchain for on-chain metrics and transactions
-4. Retrieve exchange order book and trade history
-5. Aggregate data from multiple sources for accuracy
+| Option | Description | Default |
+|--------|-------------|---------|
+| `--coin` | Analyze specific coin (BTC, ETH, etc.) | All market |
+| `--period` | Time period (1h, 4h, 24h, 7d) | 24h |
+| `--detailed` | Show full component breakdown | false |
+| `--format` | Output format (table, json, csv) | table |
+| `--output` | Output file path | stdout |
+| `--weights` | Custom weights (e.g., "news:0.5,fng:0.3,momentum:0.2") | Default |
+| `--verbose` | Enable verbose output | false |
 
-### Step 3: Analyze and Process
-Process crypto data to generate insights:
-- Calculate key metrics (returns, volatility, correlation)
-- Identify patterns and anomalies in data
-- Apply technical indicators or on-chain signals
-- Compare across timeframes and assets
-- Generate actionable insights and alerts
+## Sentiment Classifications
 
-### Step 4: Generate Reports
-Document findings in ${CLAUDE_SKILL_DIR}/crypto-reports/:
-- Market summary with key price movements
-- Detailed analysis with charts and metrics
-- Trading signals or opportunity recommendations
-- Risk assessment and position sizing guidance
-- Historical context and trend analysis
+| Score Range | Classification | Description |
+|-------------|----------------|-------------|
+| 0-20 | Extreme Fear | Market panic, potential bottom |
+| 21-40 | Fear | Cautious sentiment, bearish |
+| 41-60 | Neutral | Balanced, no strong bias |
+| 61-80 | Greed | Optimistic, bullish sentiment |
+| 81-100 | Extreme Greed | Euphoria, potential top |
+
+## JSON Output Format
+
+```json
+{
+  "composite_score": 65.5,
+  "classification": "Greed",
+  "components": {
+    "fear_greed": {
+      "score": 72,
+      "classification": "Greed",
+      "weight": 0.40,
+      "contribution": 28.8
+    },
+    "news_sentiment": {
+      "score": 58.5,
+      "articles_analyzed": 25,
+      "positive": 12,
+      "negative": 5,
+      "neutral": 8,
+      "weight": 0.40,
+      "contribution": 23.4
+    },
+    "market_momentum": {
+      "score": 66.5,
+      "btc_change_24h": 3.5,
+      "weight": 0.20,
+      "contribution": 13.3
+    }
+  },
+  "meta": {
+    "timestamp": "2026-01-14T15:30:00Z",
+    "period": "24h"
+  }
+}
+```
+
+## Advanced Examples
+
+```bash
+# Custom weights (emphasize news)
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
+
+# Weekly sentiment comparison
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
+
+# Export for trading model
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+
+# Bitcoin-specific detailed analysis
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC --detailed
+```
+
+## Contrarian Indicator Theory
+
+Sentiment is often used as a contrarian indicator:
+- **Extreme Fear** readings historically correlate with market bottoms and buying opportunities
+- **Extreme Greed** readings historically correlate with market tops and selling opportunities
+- The Fear & Greed Index has shown predictive value when combined with technical analysis
+- Best used in conjunction with other analysis tools rather than as a sole decision driver
