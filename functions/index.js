@@ -15,6 +15,12 @@ exports.subscribeEmail = onCall(
       throw new HttpsError("invalid-argument", "Valid email required");
     }
 
+    // Validate source
+    const allowedSources = ["footer", "homepage"];
+    if (!source || !allowedSources.includes(source)) {
+      throw new HttpsError("invalid-argument", "Invalid source provided");
+    }
+
     const db = admin.firestore();
 
     // Check for duplicate

@@ -78,26 +78,9 @@ jobs:
       - name: Install Cloud Function dependencies
         run: cd functions && npm install
 
-      - name: Deploy to Firebase Hosting
+      - name: Deploy to Firebase
         run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          npx firebase-tools deploy --only hosting:marketplace \
+          npx firebase-tools deploy \
+            --only hosting:marketplace,functions,firestore:rules \
             --project claude-code-plugins-io \
-            --non-interactive \
-            --token "$ACCESS_TOKEN"
-
-      - name: Deploy Cloud Functions
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          npx firebase-tools deploy --only functions \
-            --project claude-code-plugins-io \
-            --non-interactive \
-            --token "$ACCESS_TOKEN"
-
-      - name: Deploy Firestore Rules
-        run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
-          npx firebase-tools deploy --only firestore:rules \
-            --project claude-code-plugins-io \
-            --non-interactive \
-            --token "$ACCESS_TOKEN"
+            --non-interactive

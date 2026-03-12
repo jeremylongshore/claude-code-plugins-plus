@@ -118,7 +118,7 @@ function checkHardcodedPaths(content: string): string[] {
 
   for (const [pattern, desc] of pathPatterns) {
     if (pattern.test(contentNoCode)) {
-      issues.push(`Hardcoded path detected (use ${CLAUDE_SKILL_DIR}): ${desc}`);
+      issues.push(`Hardcoded path detected (use \${CLAUDE_SKILL_DIR}): ${desc}`);
     }
   }
 

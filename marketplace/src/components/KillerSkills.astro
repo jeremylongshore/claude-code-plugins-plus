@@ -7,7 +7,7 @@ const week = spotlightData.week;
 
 <div class="killer-grid">
   {spotlights.map(skill => (
-    <a href={skill.link} class="killer-card" data-slug={skill.pluginSlug} data-week={week}>
+    <div class="killer-card" style="cursor: pointer;" data-href={skill.link} data-slug={skill.pluginSlug} data-week={week}>
       <div class="killer-top">
         <span class="killer-grade">{skill.grade}</span>
         <span class="killer-category">{skill.category}</span>
@@ -15,14 +15,14 @@ const week = spotlightData.week;
       <h3 class="killer-headline">{skill.headline}</h3>
       <p class="killer-why">{skill.whyKiller}</p>
       <div class="killer-meta">
-        <a href={`https://github.com/${skill.authorGithub}`} target="_blank" rel="noopener noreferrer" class="killer-author" onclick="event.stopPropagation();">
+        <a href={`https://github.com/${skill.authorGithub}`} target="_blank" rel="noopener noreferrer" class="killer-author">
           <img src={`https://github.com/${skill.authorGithub}.png?size=24`} alt={skill.author} class="killer-avatar" width="24" height="24" loading="lazy" />
           {skill.author}
         </a>
         <span class="killer-skills">{skill.skillCount} skills</span>
       </div>
       <span class="killer-cta">View plugin &rarr;</span>
-    </a>
+    </div>
   ))}
 </div>
 
@@ -174,7 +174,10 @@ const week = spotlightData.week;
 
 <script is:inline>
   document.querySelectorAll('.killer-card').forEach(function(card) {
-    card.addEventListener('click', function() {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) {
+        return;
+      }
       var slug = card.dataset.slug;
       var week = card.dataset.week;
       if (window.trackEvent) {
@@ -182,6 +185,10 @@ const week = spotlightData.week;
       }
       if (window.logFirebaseEvent) {
         window.logFirebaseEvent('killer_skill_click', { slug: slug, week: week });
+      }
+      var href = card.dataset.href;
+      if (href) {
+        window.location.href = href;
       }
     });
   });

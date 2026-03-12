@@ -3,26 +3,26 @@
   "title": "Killer Skills This Week",
   "spotlights": [
     {
-      "pluginSlug": "executive-assistant-skills",
-      "headline": "Replaced a $4k/mo human EA with 6 Claude Code skills",
-      "whyKiller": "Real Granola + Grain + Gmail + Todoist integrations with state management, deduplication, and cron automation. Not a toy — production EA replacement.",
-      "author": "Gonto",
-      "authorGithub": "mgonto",
-      "grade": "A",
-      "skillCount": 6,
-      "category": "productivity",
-      "link": "/plugins/executive-assistant-skills"
-    },
-    {
-      "pluginSlug": "crypto-intelligence-pack",
-      "headline": "25 crypto skills from DeFi to on-chain analysis",
-      "whyKiller": "Complete trading intelligence suite: portfolio tracking, yield farming, MEV detection, whale watching. All A-grade.",
+      "pluginSlug": "cursor-pack",
+      "headline": "30 skills that make Cursor actually intelligent",
+      "whyKiller": "Complete Cursor IDE mastery: composer workflows, AI code completion patterns, multi-file edits, and context management. Cross-platform proof that skills aren't Claude-only.",
       "author": "Jeremy Longshore",
       "authorGithub": "jeremylongshore",
       "grade": "A",
-      "skillCount": 25,
+      "skillCount": 30,
+      "category": "saas-packs",
+      "link": "/plugins/cursor-pack"
+    },
+    {
+      "pluginSlug": "crypto-portfolio-tracker",
+      "headline": "Professional crypto portfolio tracking with real-time PnL",
+      "whyKiller": "Real-time price feeds, position tracking, risk metrics, and tax-lot accounting. One of 26 A-grade crypto skills covering the full DeFi stack.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 5,
       "category": "crypto",
-      "link": "/plugins/crypto-intelligence-pack"
+      "link": "/plugins/crypto-portfolio-tracker"
     }
   ],
   "archive": [],

@@ -409,6 +409,55 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             margin-bottom: 0.75rem;
         }
 
+        .footer-signup-form {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .footer-signup-form input {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .footer-signup-form input:focus {
+            border-color: var(--gold);
+        }
+
+        .footer-signup-form button {
+            padding: 0.6rem 1rem;
+            background: var(--gold);
+            color: var(--navy, #0C2340);
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .footer-signup-form button:hover {
+            opacity: 0.9;
+        }
+
+        .footer-form-note {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-3);
+            font-family: 'DM Mono', monospace;
+        }
+
         .footer-links {
             display: flex;
             justify-content: center;
@@ -560,11 +609,11 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         <div class="footer-inner">
             <div class="footer-signup-row">
                 <h4>Stay in the Loop</h4>
-                <form data-signup-form="footer" style="display: flex; gap: 0.5rem; max-width: 400px; margin: 0 auto;">
-                    <input type="email" name="email" placeholder="you@example.com" required style="flex: 1; padding: 0.6rem 0.75rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.85rem; font-family: 'DM Sans', system-ui, sans-serif; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'" />
-                    <button type="submit" style="padding: 0.6rem 1rem; background: var(--gold); color: var(--navy, #0C2340); border: none; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', system-ui, sans-serif; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Subscribe</button>
+                <form data-signup-form="footer" class="footer-signup-form">
+                    <input type="email" name="email" placeholder="you@example.com" required />
+                    <button type="submit">Subscribe</button>
                 </form>
-                <p style="margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-3); font-family: 'DM Mono', monospace;">No spam. Unsubscribe anytime.</p>
+                <p class="footer-form-note">No spam. Unsubscribe anytime.</p>
             </div>
             <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank" style="color: var(--text-2); text-decoration: underline;">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect. I build what I sell.</p>
             <div class="footer-links">
@@ -626,8 +675,8 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                 window.logFirebaseEvent('email_signup', { source: form.dataset.signupForm });
               }
             } catch (err) {
-              btn.textContent = 'Try Again';
-              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 2000);
+              btn.textContent = (err.code === 'invalid-argument') ? 'Invalid Email' : 'Try Again';
+              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 3000);
             }
           });
         });

@@ -780,6 +780,82 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         /* ========================================
+           EMAIL SIGNUP SECTION
+           ======================================== */
+        .signup-section {
+            padding: 5rem 2rem;
+            background: var(--surface);
+        }
+
+        .signup-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .signup-title {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .signup-desc {
+            color: var(--text-2);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .signup-form {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .signup-form input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .signup-form input:focus {
+            border-color: var(--gold);
+        }
+
+        .signup-form button {
+            padding: 0.75rem 1.5rem;
+            background: var(--gold);
+            color: var(--navy, #0C2340);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: 'DM Sans', system-ui, sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .signup-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(234, 170, 0, 0.3);
+        }
+
+        .signup-note {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* ========================================
            PRODUCTS & SERVICES SECTION
            ======================================== */
         .products-section {
@@ -1480,16 +1556,16 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
     </section>
 
     <!-- Email Signup -->
-    <section class="signup-section" style="padding: 5rem 2rem; background: var(--surface);">
-        <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+    <section class="signup-section">
+        <div class="signup-inner">
             <div class="section-label">STAY SHARP</div>
-            <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Agent Skills in Your Inbox</h2>
-            <p style="color: var(--text-2); margin-bottom: 2rem; font-size: 1rem; line-height: 1.6;">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
-            <form data-signup-form="homepage" style="display: flex; gap: 0.75rem; max-width: 480px; margin: 0 auto;">
-                <input type="email" name="email" placeholder="you@example.com" required style="flex: 1; padding: 0.75rem 1rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; font-family: 'DM Sans', system-ui, sans-serif; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'" />
-                <button type="submit" style="padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy, #0C2340); border: none; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; font-family: 'DM Sans', system-ui, sans-serif; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(234,170,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Subscribe</button>
+            <h2 class="section-title signup-title">Agent Skills in Your Inbox</h2>
+            <p class="signup-desc">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
+            <form data-signup-form="homepage" class="signup-form">
+                <input type="email" name="email" placeholder="you@example.com" required />
+                <button type="submit">Subscribe</button>
             </form>
-            <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-3); font-family: 'DM Mono', monospace;">No spam, ever. Unsubscribe with one click.</p>
+            <p class="signup-note">No spam, ever. Unsubscribe with one click.</p>
         </div>
     </section>
 
