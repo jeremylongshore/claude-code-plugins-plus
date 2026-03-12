@@ -375,59 +375,73 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         footer {
             background: var(--surface);
             color: var(--text-2);
-            padding: 3rem 2rem 2rem;
             margin-top: 4rem;
+            padding: 2.5rem 2rem 2rem;
             border-top: 1px solid var(--border);
+            text-align: center;
         }
 
-        .footer-content {
-            max-width: 1200px;
+        .footer-inner {
+            max-width: 680px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            padding-bottom: 2rem;
+        }
+
+        .footer-blurb {
+            font-size: 0.875rem;
+            line-height: 1.6;
+            color: var(--text-2);
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-signup-row {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
             border-bottom: 1px solid var(--border);
         }
 
-        .footer-section h4 {
+        .footer-signup-row h4 {
             color: var(--gold);
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             font-family: 'DM Mono', monospace;
+            margin-bottom: 0.75rem;
         }
 
-        .footer-section ul {
-            list-style: none;
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem 1.5rem;
+            margin-bottom: 1rem;
         }
 
-        .footer-section a {
+        .footer-links a {
             color: var(--text-2);
             text-decoration: none;
             font-size: 0.85rem;
-            line-height: 2;
-            transition: color 0.3s;
+            transition: color 0.2s;
         }
 
-        .footer-section a:hover {
-            color: var(--gold);
+        .footer-links a:hover {
+            color: var(--text);
+            text-decoration: underline;
         }
 
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 2rem;
-            text-align: center;
-            font-size: 0.85rem;
+        .footer-copyright {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
             color: var(--text-3);
         }
 
-        .footer-bottom a {
-            color: var(--gold);
+        .footer-copyright a {
+            color: var(--text-2);
             text-decoration: none;
+        }
+
+        .footer-copyright a:hover {
+            color: var(--text);
         }
 
         /* Mobile Styles */
@@ -488,8 +502,8 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                 display: none; /* Hide on mobile for cleaner look */
             }
 
-            .footer-content {
-                grid-template-columns: 1fr;
+            .footer-links {
+                gap: 0.4rem 1rem;
             }
         }
 
@@ -543,50 +557,25 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="/getting-started">Getting Started</a></li>
-                    <li><a href="/explore">Explore Plugins</a></li>
-                    <li><a href="/skills">Agent Skills</a></li>
-                    <li><a href="/learning">Learning Hub</a></li>
-                    <li><a href="/research">Research</a></li>
-                    <li><a href="/blog">Blog & Changelog</a></li>
-                    <li><a href="/cowork">Cowork Downloads</a></li>
-                    <li><a href="/community">Community</a></li>
-                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
-                </ul>
+        <div class="footer-inner">
+            <div class="footer-signup-row">
+                <h4>Stay in the Loop</h4>
+                <form data-signup-form="footer" style="display: flex; gap: 0.5rem; max-width: 400px; margin: 0 auto;">
+                    <input type="email" name="email" placeholder="you@example.com" required style="flex: 1; padding: 0.6rem 0.75rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.85rem; font-family: 'DM Sans', system-ui, sans-serif; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'" />
+                    <button type="submit" style="padding: 0.6rem 1rem; background: var(--gold); color: var(--navy, #0C2340); border: none; border-radius: 6px; font-weight: 700; font-size: 0.85rem; cursor: pointer; font-family: 'DM Sans', system-ui, sans-serif; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">Subscribe</button>
+                </form>
+                <p style="margin-top: 0.5rem; font-size: 0.7rem; color: var(--text-3); font-family: 'DM Mono', monospace;">No spam. Unsubscribe anytime.</p>
             </div>
-            <div class="footer-section">
-                <h4>Featured</h4>
-                <ul>
-                    <li><a href="/plugins/gh-dash">gh-dash (PR Dashboard)</a></li>
-                    <li><a href="/explore?category=devops">DevOps Plugins</a></li>
-                    <li><a href="/explore?category=security">Security Plugins</a></li>
-                    <li><a href="/explore?category=ai-ml-assistance">AI/ML Plugins</a></li>
-                </ul>
+            <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank" style="color: var(--text-2); text-decoration: underline;">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect. I build what I sell.</p>
+            <div class="footer-links">
+                <a href="/explore">Explore</a>
+                <a href="/skills">Skills</a>
+                <a href="/learning">Learning</a>
+                <a href="/cowork">Cowork</a>
+                <a href="/community">Community</a>
+                <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank">GitHub</a>
             </div>
-            <div class="footer-section">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="https://github.com/sponsors/jeremylongshore">Sponsor</a></li>
-                    <li><a href="https://buymeacoffee.com/jeremylongshore">Buy me a monster</a></li>
-                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins/discussions">Discussions</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="/privacy">Privacy</a></li>
-                    <li><a href="/terms">Terms</a></li>
-                    <li><a href="/acceptable-use">Acceptable Use</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Claude Code Plugins · Open Source (MIT) · Built by <a href="https://intentsolutions.io" target="_blank">intent solutions io</a></p>
-            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Sponsored by <a href="https://nixtla.io" target="_blank">nixtla.io</a></p>
+            <p class="footer-copyright">&copy; 2026 Tons of Skills | <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a> | <a href="/privacy">Privacy</a> | <a href="/terms">Terms</a></p>
         </div>
     </footer>
 
@@ -602,6 +591,54 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             background: var(--surface-3);
         }
     </style>
+
+    <!-- Email Signup Form Handler -->
+    <script type="module" is:inline>
+      import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
+      import { getApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
+
+      function initSignupForms() {
+        var functions;
+        try {
+          functions = getFunctions(getApp());
+        } catch (e) {
+          return;
+        }
+        var subscribeEmail = httpsCallable(functions, 'subscribeEmail');
+
+        document.querySelectorAll('[data-signup-form]').forEach(function(form) {
+          form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var input = form.querySelector('input[type="email"]');
+            var btn = form.querySelector('button');
+            var originalText = btn.textContent;
+            btn.textContent = 'Subscribing...';
+            btn.disabled = true;
+
+            try {
+              var result = await subscribeEmail({
+                email: input.value,
+                source: form.dataset.signupForm
+              });
+              btn.textContent = result.data.status === 'already_subscribed' ? 'Already Subscribed!' : 'Subscribed!';
+              input.value = '';
+              if (window.logFirebaseEvent) {
+                window.logFirebaseEvent('email_signup', { source: form.dataset.signupForm });
+              }
+            } catch (err) {
+              btn.textContent = 'Try Again';
+              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 2000);
+            }
+          });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSignupForms);
+      } else {
+        initSignupForms();
+      }
+    </script>
 
     <!-- Theme Toggle Script -->
     <script is:inline>

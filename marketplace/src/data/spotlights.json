@@ -1,0 +1,34 @@
+{
+  "week": "2026-W11",
+  "title": "Killer Skills This Week",
+  "spotlights": [
+    {
+      "pluginSlug": "executive-assistant-skills",
+      "headline": "Replaced a $4k/mo human EA with 6 Claude Code skills",
+      "whyKiller": "Real Granola + Grain + Gmail + Todoist integrations with state management, deduplication, and cron automation. Not a toy — production EA replacement.",
+      "author": "Gonto",
+      "authorGithub": "mgonto",
+      "grade": "A",
+      "skillCount": 6,
+      "category": "productivity",
+      "link": "/plugins/executive-assistant-skills"
+    },
+    {
+      "pluginSlug": "crypto-intelligence-pack",
+      "headline": "25 crypto skills from DeFi to on-chain analysis",
+      "whyKiller": "Complete trading intelligence suite: portfolio tracking, yield farming, MEV detection, whale watching. All A-grade.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 25,
+      "category": "crypto",
+      "link": "/plugins/crypto-intelligence-pack"
+    }
+  ],
+  "archive": [],
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-03-11",
+    "curatedBy": "Jeremy Longshore"
+  }
+}

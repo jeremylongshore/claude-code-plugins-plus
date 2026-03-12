@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
 import CollectionsGrid from '../components/CollectionsGrid.astro';
 import CoworkGrid from '../components/CoworkGrid.astro';
+import KillerSkills from '../components/KillerSkills.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -1128,6 +1129,15 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         </div>
     </section>
 
+    <!-- Killer Skills This Week -->
+    <section class="killer-skills-section" style="padding: 5rem 2rem; background: var(--surface);">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+            <div class="section-label">THIS WEEK'S PICKS</div>
+            <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Killer Skills</h2>
+            <KillerSkills />
+        </div>
+    </section>
+
     <!-- Cowork Downloads Section -->
     <section class="cowork-home-section">
         <div class="cowork-home-container">
@@ -1466,6 +1476,20 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                 <h3>Open Source</h3>
                 <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
             </div>
+        </div>
+    </section>
+
+    <!-- Email Signup -->
+    <section class="signup-section" style="padding: 5rem 2rem; background: var(--surface);">
+        <div style="max-width: 600px; margin: 0 auto; text-align: center;">
+            <div class="section-label">STAY SHARP</div>
+            <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Agent Skills in Your Inbox</h2>
+            <p style="color: var(--text-2); margin-bottom: 2rem; font-size: 1rem; line-height: 1.6;">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
+            <form data-signup-form="homepage" style="display: flex; gap: 0.75rem; max-width: 480px; margin: 0 auto;">
+                <input type="email" name="email" placeholder="you@example.com" required style="flex: 1; padding: 0.75rem 1rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.95rem; font-family: 'DM Sans', system-ui, sans-serif; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--gold)'" onblur="this.style.borderColor='var(--border)'" />
+                <button type="submit" style="padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy, #0C2340); border: none; border-radius: 8px; font-weight: 700; font-size: 0.95rem; cursor: pointer; font-family: 'DM Sans', system-ui, sans-serif; transition: all 0.2s; white-space: nowrap;" onmouseover="this.style.transform='translateY(-1px)';this.style.boxShadow='0 4px 12px rgba(234,170,0,0.3)'" onmouseout="this.style.transform='';this.style.boxShadow=''">Subscribe</button>
+            </form>
+            <p style="margin-top: 1rem; font-size: 0.75rem; color: var(--text-3); font-family: 'DM Mono', monospace;">No spam, ever. Unsubscribe with one click.</p>
         </div>
     </section>
 

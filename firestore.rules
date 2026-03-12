@@ -1,0 +1,9 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /email-signups/{doc} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}
