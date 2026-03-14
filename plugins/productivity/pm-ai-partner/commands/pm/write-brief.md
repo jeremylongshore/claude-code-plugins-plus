@@ -1,3 +1,9 @@
+---
+name: write-brief
+description: Guide the user through creating a clear, actionable product brief
+allowed-tools: Read, Write, Edit, Glob
+---
+
 Help me write a product brief for: $ARGUMENTS
 
 ## Instructions

@@ -1,3 +1,9 @@
+---
+name: audit-codebase
+description: PM-focused codebase exploration and capability mapping
+allowed-tools: Read, Glob, Grep
+---
+
 Help me understand the codebase for: $ARGUMENTS
 
 ## Instructions

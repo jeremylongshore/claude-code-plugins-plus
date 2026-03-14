@@ -1,6 +1,10 @@
 ---
 name: stakeholder-update
 description: Stakeholder communication assistant for status updates, progress reports, and executive summaries. Use when the user needs to write a stakeholder update, status report, progress summary, or any upward communication. Triggers include "stakeholder update", "status update", "progress report", "update leadership", "weekly update", or "executive summary".
+version: 1.0.0
+author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
+license: MIT
+allowed-tools: Read, Glob, Grep
 argument-hint: [project or team]
 ---
 

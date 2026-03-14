@@ -1,3 +1,9 @@
+---
+name: prep-meeting
+description: Prepare for a meeting with talking points and strategic framing
+allowed-tools: Read, Glob, Grep
+---
+
 Help me prepare for a meeting: $ARGUMENTS
 
 ## Instructions

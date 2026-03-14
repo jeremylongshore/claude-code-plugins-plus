@@ -1,3 +1,9 @@
+---
+name: competitor-scan
+description: Analyze the competitive landscape and identify gaps
+allowed-tools: Read, Glob, Grep
+---
+
 Help me analyze the competitive landscape for: $ARGUMENTS
 
 ## Instructions

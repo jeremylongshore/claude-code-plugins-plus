@@ -1,3 +1,9 @@
+---
+name: metrics-review
+description: Review metrics and identify what needs attention
+allowed-tools: Read, Glob, Grep
+---
+
 Help me review metrics and identify what needs attention for: $ARGUMENTS
 
 ## Instructions

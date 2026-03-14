@@ -1,6 +1,10 @@
 ---
 name: devil-advocate
 description: Constructive critic and stress-tester for ideas and proposals. Use when the user needs someone to challenge their thinking, find weaknesses, anticipate objections, or strengthen an argument. Triggers include "challenge", "critique", "push back", "poke holes", "stress test", "what am I missing", or "play devil's advocate".
+version: 1.0.0
+author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
+license: MIT
+allowed-tools: Read, Glob, Grep
 argument-hint: [idea or proposal to challenge]
 ---
 

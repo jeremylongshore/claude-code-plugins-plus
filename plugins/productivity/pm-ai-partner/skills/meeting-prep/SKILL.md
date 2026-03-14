@@ -1,6 +1,10 @@
 ---
 name: meeting-prep
 description: Meeting preparation assistant for Product Managers. Use when the user needs to prepare for a meeting, create talking points, anticipate questions, or structure a discussion. Triggers include "prepare for meeting", "meeting prep", "talking points", "get ready for", "1:1 prep", or when preparing for any scheduled conversation.
+version: 1.0.0
+author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
+license: MIT
+allowed-tools: Read, Glob, Grep
 argument-hint: [meeting topic or attendee]
 ---
 

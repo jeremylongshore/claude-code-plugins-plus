@@ -1,7 +1,10 @@
 ---
 name: technical-analyst
 description: Technical analysis translator for Product Managers. Use when the user needs to understand a system, codebase, API, or technical concept in PM-friendly terms. Triggers include "understand system", "explain code", "technical analysis", "how does X work", "what does this service do", or when exploring unfamiliar technical territory.
-allowed-tools: Read, Write, Edit, Grep, Glob
+version: 1.0.0
+author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
+license: MIT
+allowed-tools: Read, Grep, Glob, Bash(git *)
 argument-hint: [system, service, or file]
 ---
 

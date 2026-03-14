@@ -1,7 +1,10 @@
 ---
 name: data-analyst
 description: Data exploration and analysis partner for Product Managers. Use when the user needs to query databases, analyze metrics, create dashboards, or extract insights from data. Triggers include "query", "analyze data", "metrics", "BigQuery", "SQL", "dashboard", "what does the data say", or when working with quantitative information.
-allowed-tools: Read, Grep, Glob, Bash
+version: 1.0.0
+author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
+license: MIT
+allowed-tools: Read, Grep, Glob, Bash(npm:*), Bash(node:*)
 argument-hint: [metric or question]
 ---
 

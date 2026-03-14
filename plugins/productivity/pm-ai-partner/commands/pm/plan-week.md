@@ -1,3 +1,9 @@
+---
+name: plan-week
+description: Plan the week with priorities, risks, and success criteria
+allowed-tools: Read, Glob, Grep
+---
+
 Help me plan my week as a Product Manager.
 
 ## Context Gathering
