@@ -1,7 +1,7 @@
 ---
 name: customerio-primary-workflow
 description: |
-  Execute Customer.io primary messaging workflow.
+  Manage Customer.io primary messaging workflow.
   Use when setting up email campaigns, push notifications,
   SMS messaging, or in-app message workflows.
   Trigger with phrases like "customer.io campaign", "customer.io workflow",

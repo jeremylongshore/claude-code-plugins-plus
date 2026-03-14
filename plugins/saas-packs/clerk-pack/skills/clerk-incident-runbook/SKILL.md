@@ -1,7 +1,7 @@
 ---
 name: clerk-incident-runbook
 description: |
-  Incident response procedures for Clerk authentication issues.
+  Manage incident response for Clerk authentication issues.
   Use when handling auth outages, security incidents,
   or production authentication problems.
   Trigger with phrases like "clerk incident", "clerk outage",

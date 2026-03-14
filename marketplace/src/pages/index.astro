@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
 import CollectionsGrid from '../components/CollectionsGrid.astro';
 import CoworkGrid from '../components/CoworkGrid.astro';
+import KillerSkills from '../components/KillerSkills.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -65,48 +66,46 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             justify-content: center;
-            text-align: center;
-            padding: 8rem 2rem 5rem;
+            text-align: left;
+            padding: 8rem 4rem 5rem;
             position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .hero-inner {
             width: 100%;
             max-width: 800px;
-            margin: 0 auto;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             gap: 0;
         }
 
-        /* H1 — Bebas Neue, huge, gold gradient */
+        /* H1 — Instrument Sans, large, solid primary color */
         .hero h1 {
-            font-family: 'Bebas Neue', 'Arial Black', sans-serif;
-            font-size: clamp(4rem, 12vw, 8rem);
-            font-weight: 400;
+            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-size: var(--text-3xl);
+            font-weight: 700;
             line-height: 0.95;
-            letter-spacing: 0.05em;
+            letter-spacing: -0.02em;
             margin: 0 0 1.5rem;
-            background: linear-gradient(135deg, var(--gold) 0%, #F5C842 50%, var(--gold) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            color: var(--primary);
+            animation: fadeInUp 0.7s var(--ease-out) forwards;
             opacity: 0;
         }
 
         /* Subtitle */
         .hero-subtitle {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 1.1rem;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-size: var(--text-lg);
             color: var(--text-2);
             max-width: 500px;
-            margin: 0 auto 2.5rem;
+            margin: 0 0 2.5rem;
             line-height: 1.6;
-            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+            animation: fadeInUp 0.7s var(--ease-out) 0.1s forwards;
             opacity: 0;
         }
 
@@ -114,9 +113,9 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         .hero-search {
             width: 100%;
             max-width: 640px;
-            margin: 0 auto 2.5rem;
+            margin: 0 0 2.5rem;
             position: relative;
-            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            animation: fadeInUp 0.7s var(--ease-out) 0.2s forwards;
             opacity: 0;
         }
 
@@ -134,8 +133,8 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .search-container:focus-within {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(234, 170, 0, 0.12);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px oklch(62% 0.16 35 / 0.12);
         }
 
         .search-icon {
@@ -153,7 +152,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             border: none;
             background: transparent;
             font-size: 1rem;
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
             color: var(--text);
             outline: none;
         }
@@ -194,7 +193,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             border: none;
             background: transparent;
             color: var(--text-3);
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
             font-size: 0.875rem;
             font-weight: 500;
             border-radius: 6px;
@@ -410,10 +409,10 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             left: 0;
             width: 100%;
             height: 3px;
-            background: linear-gradient(90deg, var(--gold) 0%, var(--red) 100%);
+            background: var(--primary);
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform var(--duration-normal) var(--ease-out);
         }
 
         .feature-card:hover {
@@ -507,7 +506,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
            ======================================== */
         .saas-packs-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, var(--red) 0%, #8B0A2D 100%);
+            background: var(--surface);
         }
 
         .saas-packs-container {
@@ -521,8 +520,8 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .saas-badge {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: oklch(62% 0.16 35 / 0.12);
+            color: var(--primary);
             padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -534,14 +533,14 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .saas-title {
-            color: white;
+            color: var(--text);
             font-size: clamp(2rem, 4vw, 2.8rem);
             margin: 1rem 0 0.5rem;
             font-weight: 700;
         }
 
         .saas-subtitle {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-2);
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
@@ -638,8 +637,8 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .saas-card.coming-soon {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px dashed rgba(255, 255, 255, 0.2);
+            background: var(--surface-3);
+            border: 1px dashed var(--border);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -653,13 +652,13 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .saas-card.coming-soon h3 {
-            color: white;
+            color: var(--text);
             margin: 0 0 0.5rem;
             font-size: 1.1rem;
         }
 
         .saas-card.coming-soon p {
-            color: rgba(255, 255, 255, 0.6);
+            color: var(--text-3);
             font-size: 0.85rem;
             margin: 0;
         }
@@ -679,7 +678,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             font-weight: 700;
             text-decoration: none;
             font-size: 1rem;
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
@@ -703,7 +702,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
            ======================================== */
         .cowork-home-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, var(--navy) 0%, var(--red) 50%, #8B0A2D 100%);
+            background: var(--surface-2);
         }
 
         .cowork-home-container {
@@ -713,8 +712,8 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .cowork-home-badge {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: oklch(72% 0.18 160 / 0.12);
+            color: var(--accent);
             padding: 0.4rem 1rem;
             border-radius: 20px;
             font-size: 0.85rem;
@@ -726,14 +725,14 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
 
         .cowork-home-title {
-            color: white;
+            color: var(--text);
             font-size: clamp(2rem, 4vw, 2.8rem);
             margin: 1rem 0 0.5rem;
             font-weight: 700;
         }
 
         .cowork-home-subtitle {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text-2);
             font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto 2.5rem;
@@ -748,34 +747,103 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             display: inline-flex;
             align-items: center;
             gap: 0.75rem;
-            background: white;
-            color: var(--navy);
-            padding: 1.2rem 3rem;
-            border-radius: 12px;
+            background: var(--accent);
+            color: var(--surface);
+            padding: 1rem 2.5rem;
+            border-radius: 10px;
             font-weight: 700;
             text-decoration: none;
-            font-size: 1.25rem;
-            font-family: 'DM Sans', sans-serif;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
-            animation: cowork-pulse 2.5s ease-in-out infinite;
+            font-size: 1.1rem;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out);
         }
 
         .cowork-home-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
-            animation: none;
-        }
-
-        @keyframes cowork-pulse {
-            0%, 100% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3); }
-            50% { box-shadow: 0 4px 36px rgba(0, 0, 0, 0.5); }
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+            color: var(--surface);
         }
 
         @media (max-width: 768px) {
             .cowork-home-section {
                 padding: 3rem 1.5rem;
             }
+        }
+
+        /* ========================================
+           EMAIL SIGNUP SECTION
+           ======================================== */
+        .signup-section {
+            padding: 5rem 2rem;
+            background: var(--surface);
+        }
+
+        .signup-inner {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .signup-title {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .signup-desc {
+            color: var(--text-2);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .signup-form {
+            display: flex;
+            gap: 0.75rem;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .signup-form input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .signup-form input:focus {
+            border-color: var(--gold);
+        }
+
+        .signup-form button {
+            padding: 0.75rem 1.5rem;
+            background: var(--gold);
+            color: var(--navy, #0C2340);
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .signup-form button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(234, 170, 0, 0.3);
+        }
+
+        .signup-note {
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            font-family: 'DM Mono', monospace;
         }
 
         /* ========================================
@@ -942,6 +1010,8 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             .hero {
                 padding: 6rem 1.5rem 3rem;
                 min-height: auto;
+                text-align: left;
+                align-items: flex-start;
             }
 
             .features {
@@ -1128,6 +1198,15 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         </div>
     </section>
 
+    <!-- Killer Skills This Week -->
+    <section class="killer-skills-section" style="padding: 5rem 2rem; background: var(--surface);">
+        <div style="max-width: 1100px; margin: 0 auto; text-align: center;">
+            <div class="section-label">THIS WEEK'S PICKS</div>
+            <h2 class="section-title" style="margin-left: auto; margin-right: auto;">Killer Skills</h2>
+            <KillerSkills />
+        </div>
+    </section>
+
     <!-- Cowork Downloads Section -->
     <section class="cowork-home-section">
         <div class="cowork-home-container">
@@ -1160,7 +1239,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1170,7 +1249,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1180,7 +1259,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1190,7 +1269,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'Source Sans 3', system-ui, sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
         </div>
@@ -1424,7 +1503,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         </div>
 
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy); text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'DM Sans', sans-serif;">
+            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy); text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'Source Sans 3', system-ui, sans-serif;">
                 View All Collections &rarr;
             </a>
         </div>
@@ -1466,6 +1545,20 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                 <h3>Open Source</h3>
                 <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
             </div>
+        </div>
+    </section>
+
+    <!-- Email Signup -->
+    <section class="signup-section">
+        <div class="signup-inner">
+            <div class="section-label">STAY SHARP</div>
+            <h2 class="section-title signup-title">Agent Skills in Your Inbox</h2>
+            <p class="signup-desc">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
+            <form data-signup-form="homepage" class="signup-form">
+                <input type="email" name="email" placeholder="you@example.com" required />
+                <button type="submit">Subscribe</button>
+            </form>
+            <p class="signup-note">No spam, ever. Unsubscribe with one click.</p>
         </div>
     </section>
 

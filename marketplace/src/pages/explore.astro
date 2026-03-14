@@ -33,7 +33,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     .explorer-subtitle {
       font-size: 1.2rem;
-      opacity: 0.95;
+      color: var(--text-2);
       max-width: 700px;
       margin: 0 auto 2.5rem;
     }
@@ -50,7 +50,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-size: 1.1rem;
       border: 1px solid var(--border);
       border-radius: 12px;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       background: var(--surface-1);
       color: var(--text);
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
@@ -71,7 +71,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       justify-content: center;
       margin-top: 2rem;
       font-size: 0.9rem;
-      opacity: 0.9;
+      color: var(--text-2);
     }
 
     .hero-stat span {
@@ -108,7 +108,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .type-btn {
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       padding: 0.5rem 1.25rem;
       border: none;
       background: transparent;
@@ -131,7 +131,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border: 2px solid var(--brand-light-gray);
       border-radius: 8px;
       font-size: 0.9rem;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       background: var(--surface-2);
       color: var(--text);
       cursor: pointer;
@@ -154,8 +154,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       align-items: center;
       gap: 0.25rem;
       font-size: 0.75rem;
-      color: var(--brand-mid-gray);
-      opacity: 0.7;
+      color: var(--text-3);
     }
 
     .keyboard-hint kbd {
@@ -213,9 +212,9 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     .card-actions {
       display: flex;
       gap: 0.5rem;
-      position: absolute;
-      bottom: 1rem;
-      right: 1rem;
+      justify-content: flex-end;
+      margin-top: auto;
+      padding-top: 1rem;
     }
 
     .install-copy-btn {
@@ -228,7 +227,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--surface);
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
     }
 
     .install-copy-btn:hover {
@@ -251,7 +250,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--brand-mid-gray);
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       position: static;
     }
 
@@ -384,7 +383,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       padding: 0.35rem 0.75rem;
       font-size: 0.7rem;
       font-weight: 700;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       border-radius: 6px;
@@ -425,7 +424,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-weight: 600;
       color: var(--text);
       margin-bottom: 0.75rem;
-      padding-right: 4rem;
+      padding-right: 5rem;
     }
 
     .result-description {
@@ -456,7 +455,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border-radius: 6px;
       color: var(--gold);
       font-weight: 600;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
     }
 
     .result-category {
@@ -487,7 +486,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       font-size: 0.7rem;
       font-weight: 600;
       border-radius: 4px;
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
     }
 
     .no-results {
@@ -508,7 +507,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .no-results button {
-      font-family: 'DM Sans', system-ui, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       padding: 0.75rem 1.5rem;
       background: var(--gold);
       color: var(--surface);
@@ -532,6 +531,10 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     @media (max-width: 768px) {
+      .explorer-hero {
+        padding: 2.5rem 2rem 2rem;
+      }
+
       .explorer-hero,
       .filters-bar,
       .results-section {
@@ -546,11 +549,23 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       .filters-container {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.75rem;
       }
 
       .type-toggle {
         justify-content: center;
         flex-wrap: wrap;
+      }
+
+      .type-btn {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+      }
+
+      .filter-select {
+        width: 100%;
+        max-width: none;
+        min-width: 0;
       }
 
       .results-info {
@@ -562,6 +577,18 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         grid-template-columns: 1fr;
       }
 
+      .result-card {
+        padding: 1.25rem;
+      }
+
+      .result-name {
+        padding-right: 3.5rem;
+      }
+
+      .official-badge {
+        right: 4.5rem;
+      }
+
       .hero-stats {
         flex-direction: column;
         gap: 1rem;
@@ -569,8 +596,73 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
       .card-badge,
       .result-type-badge,
-      .tool-tag {
+      .tool-tag,
+      .keyword-tag {
         font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .explorer-hero {
+        padding: 2rem 1rem 1.5rem;
+      }
+
+      .filters-bar,
+      .results-section {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+
+      .explorer-title {
+        font-size: 1.5rem;
+      }
+
+      .explorer-subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .hero-search-input {
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
+      }
+
+      .result-card {
+        padding: 1rem;
+      }
+
+      .result-name {
+        font-size: 1rem;
+        padding-right: 3rem;
+      }
+
+      .result-description {
+        font-size: 0.85rem;
+      }
+
+      .result-type-badge {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.65rem;
+      }
+
+      .official-badge {
+        right: 3.5rem;
+      }
+
+      .card-actions {
+        flex-wrap: wrap;
+      }
+
+      .hero-stats {
+        gap: 0.75rem;
+      }
+
+      .hero-stat span {
+        font-size: 1rem;
+      }
+
+      .no-results {
+        padding: 2rem 1rem;
       }
     }
   </style>

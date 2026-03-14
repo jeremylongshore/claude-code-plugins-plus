@@ -1,10 +1,10 @@
 ---
 name: jobs-to-be-done
 description: |
-  Discover what customers truly need by analyzing the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", or "product-market fit". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.
+  Analyze what customers truly need by discovering the "job" they hire your product to do. Use when the user mentions "customer discovery", "why customers churn", "what job does this solve", "competing against luck", or "product-market fit". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -191,7 +191,7 @@ See: [references/innovation-process.md](references/innovation-process.md)
 
 **Core concept:** Build the entire product experience -- features, metrics, and organization -- around helping the customer accomplish their job, not around internal capabilities or competitive feature parity.
 
-**Why it works:** When every product decision answers "will this help the customer better accomplish their job?", teams avoid feature bloat, build coherent experiences, and create products that customers genuinely value. If you can't answer the question, you don't understand the job yet.
+**Why it works:** When every product decision answers "will this help the customer better accomplish their job?", teams avoid feature bloat, build coherent experiences, and create products that customers genuinely value. If the team cannot answer the question, the job is not yet understood.
 
 **Key insights:**
 - Replace customer satisfaction metrics with "did the job get done?" metrics
@@ -238,7 +238,7 @@ See: [references/organizational-change.md](references/organizational-change.md)
 | Have you mapped all four forces (Push, Pull, Anxiety, Habit)? | You're likely over-investing in Pull and ignoring barriers | Map each force and design specific interventions for Anxiety and Habit |
 | Do you know the emotional and social dimensions of the job? | Your product may win functionally but lose on experience | Conduct discovery interviews focused on feelings and social context around the decision |
 | Have you identified non-obvious competitors from other categories? | You have blind spots in your competitive landscape | List everything a customer could "hire" for the same job, including non-consumption |
-| Are you tracking Little Hire separately from Big Hire? | You can't distinguish acquisition problems from retention problems | Create separate metrics for purchase conversion and repeated usage engagement |
+| Are you tracking Little Hire separately from Big Hire? | Acquisition problems become indistinguishable from retention problems | Create separate metrics for purchase conversion and repeated usage engagement |
 | Can your team explain how a feature helps accomplish the job? | You're building features without strategic grounding | Require every feature proposal to reference the specific job dimension it serves |
 | Have you interviewed customers about their purchase timeline? | Your understanding of the job is based on assumptions, not evidence | Conduct 10+ discovery interviews reconstructing the first-thought-to-usage journey |
 

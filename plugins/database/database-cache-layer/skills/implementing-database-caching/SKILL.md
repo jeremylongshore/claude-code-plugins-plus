@@ -31,7 +31,7 @@ Implement multi-tier caching strategies using Redis, application-level in-memory
 
 1. Profile database queries to identify caching candidates. Focus on queries that: execute more than 100 times per minute, take longer than 50ms, return data that changes less frequently than every 5 minutes, and produce results smaller than 1MB. Use `pg_stat_statements` or MySQL slow query log.
 
-2. Design the cache key schema with a consistent naming convention: `{service}:{entity}:{id}:{variant}`. Examples: `app:user:12345:profile`, `app:products:category:electronics:page:1`. Include a version prefix to enable bulk invalidation: `v2:app:user:12345`.
+2. Design the cache key schema with a consistent naming convention: `service:entity:identifier:variant`. Examples: `app:user:12345:profile`, `app:products:category:electronics:page:1`. Include a version prefix to enable bulk invalidation: `v2:app:user:12345`.
 
 3. Implement the cache-aside pattern for read-heavy data:
    - Check Redis first: `GET app:user:12345:profile`

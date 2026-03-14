@@ -24,7 +24,7 @@ Generate production-ready stored procedures for PostgreSQL, MySQL, and SQL Serve
 
 ## Instructions
 
-### 1. Identify Database Type and Requirements
+### Step 1: Identify Database Type and Requirements
 
 Determine the target database and procedure requirements:
 
@@ -41,7 +41,7 @@ SHOW VARIABLES LIKE 'sql_mode';
 SELECT @@VERSION;
 ```
 
-### 2. Generate Stored Procedure
+### Step 2: Generate Stored Procedure
 
 **PostgreSQL Function (PL/pgSQL):**
 
@@ -108,7 +108,7 @@ END;
 GO
 ```
 
-### 3. Add Transaction Management
+### Step 3: Add Transaction Management
 
 **PostgreSQL with Transaction:**
 
@@ -180,7 +180,7 @@ END //
 DELIMITER ;
 ```
 
-### 4. Validate Syntax
+### Step 4: Validate Syntax
 
 Use the validation script to check procedure syntax:
 
@@ -196,7 +196,7 @@ python3 ${CLAUDE_SKILL_DIR}/scripts/stored_procedure_syntax_validator.py \
     --file procedure.sql
 ```
 
-### 5. Deploy to Database
+### Step 5: Deploy to Database
 
 ```bash
 # Deploy to PostgreSQL

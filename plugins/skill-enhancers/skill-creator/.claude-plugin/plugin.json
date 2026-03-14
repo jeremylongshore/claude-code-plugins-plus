@@ -1,0 +1,9 @@
+{
+  "name": "skill-creator",
+  "version": "5.0.0",
+  "description": "Create and validate production-grade agent skills with 100-point marketplace grading",
+  "author": "Jeremy Longshore",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["skill-creation", "validation", "meta-tooling", "marketplace"]
+}

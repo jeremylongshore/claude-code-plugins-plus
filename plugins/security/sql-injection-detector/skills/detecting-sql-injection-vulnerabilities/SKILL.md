@@ -32,7 +32,7 @@ Scan application source code for SQL injection vulnerabilities (CWE-89, OWASP A0
 3. **Trace data flows**: follow each input surface through the code to determine whether user data reaches a SQL query. Flag any path where input is not passed through parameterized query binding.
 4. **Detect vulnerable patterns**:
    - String concatenation: `"SELECT * FROM users WHERE id=" + userId`
-   - f-string/format interpolation: `f"SELECT * FROM users WHERE name='{name}'"`
+   - f-string/format interpolation: Python f-strings embedding variables directly into SQL strings
    - Template literals: `` `SELECT * FROM users WHERE id=${req.params.id}` ``
    - ORM raw queries without bindings: `Model.objects.raw("SELECT * FROM t WHERE x='" + val + "'")`
 5. **Classify each finding**: assign CVSS 3.1 score, identify attack type (classic injection, blind boolean/time-based, UNION-based exfiltration, second-order/stored injection), and document exploitability (authentication required, network access).

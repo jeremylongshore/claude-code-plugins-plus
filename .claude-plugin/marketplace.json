@@ -4740,6 +4740,24 @@
       }
     },
     {
+      "name": "skill-creator",
+      "source": "./plugins/skill-enhancers/skill-creator",
+      "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
+      "version": "5.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "skill-creation",
+        "validation",
+        "meta-tooling",
+        "grading",
+        "anthropic-spec"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
       "name": "claude-never-forgets",
       "source": "./plugins/community/claude-never-forgets",
       "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
@@ -6627,6 +6645,23 @@
       "author": {
         "name": "Ahmed Khaled",
         "email": "ahmd.khaled.a.mohamed@gmail.com"
+      }
+    },
+    {
+      "name": "validate-plugin",
+      "source": "./plugins/skill-enhancers/validate-plugin",
+      "description": "Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "validation",
+        "plugin-development",
+        "quality-assurance",
+        "linting"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       }
     }
   ]

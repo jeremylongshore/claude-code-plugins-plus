@@ -1,7 +1,7 @@
 ---
 name: gamma-incident-runbook
 description: |
-  Incident response runbook for Gamma integration issues.
+  Manage incident response for Gamma integration issues.
   Use when experiencing production incidents, outages,
   or need systematic troubleshooting procedures.
   Trigger with phrases like "gamma incident", "gamma outage",

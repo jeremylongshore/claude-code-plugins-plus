@@ -44,7 +44,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 | Missing translations | Export incomplete | Re-export from source |
 | Encoding issues | Non-UTF8 files | Convert to UTF-8 |
 | Rate limit during import | Too fast | Increase delays between batches |
-| Placeholder mismatch | Different syntax | Transform placeholders |
+| Variable syntax mismatch | Different interpolation syntax between platforms | Transform variable tokens to match Lokalise format |
 
 ## Examples
 ### Migration Rollback

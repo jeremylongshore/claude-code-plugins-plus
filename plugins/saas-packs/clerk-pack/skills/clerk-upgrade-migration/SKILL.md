@@ -1,7 +1,7 @@
 ---
 name: clerk-upgrade-migration
 description: |
-  Upgrade Clerk SDK versions and handle breaking changes.
+  Manage Clerk SDK version upgrades and handle breaking changes.
   Use when upgrading Clerk packages, migrating to new SDK versions,
   or handling deprecation warnings.
   Trigger with phrases like "upgrade clerk", "clerk migration",

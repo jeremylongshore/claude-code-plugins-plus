@@ -1,7 +1,7 @@
 ---
 name: langchain-upgrade-migration
 description: |
-  Plan and execute LangChain SDK upgrades and migrations.
+  Manage LangChain SDK upgrades and migrations.
   Use when upgrading LangChain versions, migrating from legacy patterns,
   or updating to new APIs after breaking changes.
   Trigger with phrases like "upgrade langchain", "langchain migration",

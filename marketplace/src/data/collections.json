@@ -90,9 +90,21 @@
       ],
       "featured": false
     }
+    ,
+    {
+      "id": "jeremys-picks",
+      "name": "Jeremy's Picks",
+      "description": "Personal favorites and tools I actually use every day - built by the marketplace creator",
+      "icon": "star",
+      "color": "#F97316",
+      "plugins": [
+        "skill-creator"
+      ],
+      "featured": true
+    }
   ],
   "meta": {
-    "version": "1.0.0",
-    "lastUpdated": "2025-12-27"
+    "version": "1.1.0",
+    "lastUpdated": "2026-03-12"
   }
 }

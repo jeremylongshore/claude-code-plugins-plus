@@ -1,7 +1,7 @@
 ---
 name: granola-rate-limits
 description: |
-  Understand Granola usage limits, quotas, and plan restrictions.
+  Monitor Granola usage limits, quotas, and plan restrictions.
   Use when hitting usage limits, planning capacity,
   or understanding plan differences.
   Trigger with phrases like "granola limits", "granola quota",

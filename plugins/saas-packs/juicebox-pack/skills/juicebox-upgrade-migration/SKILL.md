@@ -1,7 +1,7 @@
 ---
 name: juicebox-upgrade-migration
 description: |
-  Plan and execute Juicebox SDK upgrades.
+  Manage Juicebox SDK upgrades.
   Use when upgrading SDK versions, migrating between API versions,
   or handling breaking changes.
   Trigger with phrases like "upgrade juicebox", "juicebox migration",

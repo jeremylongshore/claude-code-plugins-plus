@@ -1,7 +1,7 @@
 ---
 name: lokalise-core-workflow-b
 description: |
-  Execute Lokalise secondary workflow: Download translations and integrate with app.
+  Manage Lokalise secondary workflow: Download translations and integrate with app.
   Use when downloading translation files, exporting translations,
   or integrating Lokalise output into your application.
   Trigger with phrases like "lokalise download", "lokalise pull translations",

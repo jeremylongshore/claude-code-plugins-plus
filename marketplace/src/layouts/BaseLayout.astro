@@ -6,6 +6,8 @@ interface Props {
 }
 
 const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png" } = Astro.props;
+
+const currentPath = Astro.url.pathname;
 ---
 
 <!DOCTYPE html>
@@ -16,7 +18,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <title>{title}</title>
     <meta name="description" content={description}>
     <meta name="author" content="Intent Solutions IO">
-    <meta name="theme-color" content="#5436DA">
+    <meta name="theme-color" content="#1a1816">
     <link rel="canonical" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
@@ -92,104 +94,107 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <!-- Unified Analytics Helper -->
     <script is:inline src="/scripts/analytics.js"></script>
 
-    <!-- Fonts: Bebas Neue (display), DM Sans (body), DM Mono (mono/labels) -->
+    <!-- Fonts: Instrument Sans (display), Source Sans 3 (body), DM Mono (mono/labels) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
+        @import '../styles/tokens.css';
+
         /* ========================================
-           BRAVES BOOTH DARK THEME
+           DARK THEME (default)
            ======================================== */
         :root {
-            /* Core surface palette */
-            --surface:   #06090f;
-            --surface-1: #0d1117;
-            --surface-2: #161b22;
-            --surface-3: #1c2333;
+            /* Core surface palette — warm-tinted, never pure black */
+            --surface:   oklch(12% 0.010 60);
+            --surface-1: oklch(14% 0.010 60);
+            --surface-2: oklch(18% 0.010 60);
+            --surface-3: oklch(22% 0.010 60);
 
-            /* Brand accents */
-            --navy:  #0C2340;
-            --red:   #CE1141;
-            --gold:  #EAAA00;
+            /* Legacy accent aliases — map to new OKLCH tokens */
+            --navy:  oklch(20% 0.010 60);
+            --red:   var(--danger);
+            --gold:  var(--primary);
 
             /* Borders */
-            --border:        #30363d;
-            --border-bright: #484f58;
+            --border:        oklch(30% 0.008 60);
+            --border-bright: oklch(38% 0.008 60);
 
             /* Text */
-            --text:   #e6edf3;
-            --text-2: #8b949e;
-            --text-3: #6e7681;
+            --text:   oklch(92% 0.005 60);
+            --text-2: oklch(65% 0.008 60);
+            --text-3: oklch(50% 0.008 60);
 
             /* Cards */
-            --card: #ffffff;
-            --card-hover: #f6f8fa;
+            --card: oklch(18% 0.010 60);
+            --card-hover: oklch(22% 0.010 60);
 
             /* Status */
-            --positive: #3fb950;
-            --warning:  #d29922;
-            --danger:   #f85149;
+            --positive: oklch(65% 0.18 145);
+            --warning:  oklch(75% 0.15 85);
+            --danger:   oklch(60% 0.20 25);
 
-            /* ----------------------------------------
-               Legacy brand-* aliases — kept so that
-               existing pages that reference these vars
-               continue to work unchanged.
-               ---------------------------------------- */
-            --brand-dark:         #06090f;        /* was #141413 → surface */
-            --brand-light:        #e6edf3;        /* was #faf9f5 → text */
-            --brand-mid-gray:     #8b949e;        /* was #b0aea5 → text-2 */
-            --brand-light-gray:   #30363d;        /* was #e8e6dc → border */
-            --brand-orange:       #EAAA00;        /* was #d97757 → gold */
-            --brand-orange-dark:  #CE1141;        /* was #c45e3e → red */
-            --brand-orange-light: #f0c040;        /* was #e8937a → gold lighter */
-            --brand-blue:         #4493f8;        /* was #6a9bcc */
-            --brand-green:        #3fb950;        /* was #788c5d → positive */
+            /* Legacy brand-* aliases */
+            --brand-dark:         oklch(12% 0.010 60);
+            --brand-light:        oklch(92% 0.005 60);
+            --brand-mid-gray:     oklch(65% 0.008 60);
+            --brand-light-gray:   oklch(30% 0.008 60);
+            --brand-orange:       oklch(62% 0.16 35);
+            --brand-orange-dark:  oklch(48% 0.14 35);
+            --brand-orange-light: oklch(78% 0.10 35);
+            --brand-blue:         oklch(62% 0.15 250);
+            --brand-green:        oklch(65% 0.18 145);
 
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: var(--ease-out);
+
+            /* Dark mode: lighter font weight */
+            --body-weight: 350;
         }
 
         /* ========================================
-           LIGHT THEME OVERRIDES
+           LIGHT THEME
            ======================================== */
         :global([data-theme="light"]) {
             /* Core surface palette */
-            --surface:   #f0f2f5;
-            --surface-1: #ffffff;
-            --surface-2: #f6f8fa;
-            --surface-3: #eaeef2;
+            --surface:   oklch(94% 0.005 60);
+            --surface-1: oklch(99% 0.002 60);
+            --surface-2: oklch(97% 0.004 60);
+            --surface-3: oklch(93% 0.005 60);
 
-            /* Brand accents (adjusted for light bg contrast) */
-            --gold:  #B8860B;
+            /* Accent adjustment for light bg */
+            --gold:  oklch(52% 0.14 35);
 
             /* Borders */
-            --border:        #d0d7de;
-            --border-bright: #afb8c1;
+            --border:        oklch(82% 0.005 60);
+            --border-bright: oklch(72% 0.005 60);
 
             /* Text */
-            --text:   #1f2328;
-            --text-2: #656d76;
-            --text-3: #8b949e;
+            --text:   oklch(18% 0.010 60);
+            --text-2: oklch(45% 0.008 60);
+            --text-3: oklch(58% 0.008 60);
 
             /* Cards */
-            --card: #ffffff;
-            --card-hover: #f6f8fa;
+            --card: oklch(99% 0.002 60);
+            --card-hover: oklch(97% 0.004 60);
 
-            /* Status */
-            --positive: #1a7f37;
-            --warning:  #9a6700;
-            --danger:   #cf222e;
+            /* Status (vibrant on light) */
+            --positive: oklch(48% 0.18 145);
+            --warning:  oklch(55% 0.15 85);
+            --danger:   oklch(50% 0.22 25);
 
-            /* Legacy brand-* aliases for light-native pages */
-            --brand-dark:         #1f2328;
-            --brand-light:        #ffffff;
-            --brand-mid-gray:     #656d76;
-            --brand-light-gray:   #d0d7de;
-            --brand-orange:       #d97757;
-            --brand-orange-dark:  #c45e3e;
-            --brand-orange-light: #e8937a;
-            --brand-blue:         #0969da;
-            --brand-green:        #1a7f37;
+            /* Legacy brand-* aliases for light */
+            --brand-dark:         oklch(18% 0.010 60);
+            --brand-light:        oklch(99% 0.002 60);
+            --brand-mid-gray:     oklch(45% 0.008 60);
+            --brand-light-gray:   oklch(82% 0.005 60);
+            --brand-orange:       oklch(55% 0.16 35);
+            --brand-orange-dark:  oklch(45% 0.14 35);
+            --brand-orange-light: oklch(70% 0.10 35);
+            --brand-blue:         oklch(50% 0.15 250);
+            --brand-green:        oklch(48% 0.18 145);
+
+            --body-weight: 400;
         }
 
         :global(*), :global(*::before), :global(*::after) {
@@ -206,19 +211,22 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         body {
-            font-family: 'DM Sans', system-ui, sans-serif;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            font-weight: var(--body-weight, 400);
             background-color: var(--surface-1);
             color: var(--text);
             line-height: 1.7;
         }
 
         h1, h2 {
-            font-family: 'Bebas Neue', Impact, Arial, sans-serif;
-            letter-spacing: 0.03em;
+            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
         }
 
         h3, h4, h5, h6 {
-            font-family: 'DM Sans', system-ui, sans-serif;
+            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-weight: 600;
         }
 
         /* Navigation */
@@ -231,8 +239,9 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: var(--navy);
+            background: var(--surface);
             border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(12px);
         }
 
         .logo {
@@ -244,7 +253,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             letter-spacing: -0.02em;
             color: var(--text);
             text-decoration: none;
-            font-family: 'DM Sans', system-ui, sans-serif;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
         }
 
         .logo-text {
@@ -254,11 +263,11 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .logo-title {
-            font-family: 'Bebas Neue', Impact, Arial, sans-serif;
-            font-weight: 400;
-            font-size: 1.35rem;
-            letter-spacing: 0.06em;
-            color: var(--gold);
+            font-family: 'Instrument Sans', system-ui, sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: -0.01em;
+            color: var(--primary);
         }
 
         .logo-subtitle {
@@ -272,21 +281,22 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         .logo-icon {
             width: 36px;
             height: 36px;
-            background: var(--gold);
+            background: var(--primary);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--navy);
+            color: var(--surface);
             font-weight: 700;
             font-size: 1.2rem;
         }
 
         .nav-links {
             display: flex;
-            gap: 2.5rem;
+            gap: 2rem;
             list-style: none;
-            font-family: 'DM Sans', system-ui, sans-serif;
+            align-items: center;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
         }
 
         .nav-links a {
@@ -294,26 +304,30 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
-            transition: color 0.3s var(--transition-smooth);
+            transition: color var(--duration-fast) var(--ease-out);
         }
 
         .nav-links a:hover {
-            color: var(--gold);
+            color: var(--text);
+        }
+
+        .nav-links a[aria-current="page"] {
+            color: var(--primary);
         }
 
         .nav-cta {
-            background: var(--red) !important;
-            color: white !important;
+            background: var(--accent);
+            color: var(--surface);
             padding: 0.5rem 1.25rem;
             border-radius: 6px;
             font-weight: 600;
-            transition: all 0.3s var(--transition-smooth);
+            transition: all var(--duration-fast) var(--ease-out);
         }
 
         .nav-cta:hover {
-            background: #a50d33 !important;
-            color: white !important;
-            transform: translateY(-2px);
+            opacity: 0.9;
+            color: var(--surface);
+            transform: translateY(-1px);
         }
 
         /* Nav Right (toggle + hamburger) */
@@ -335,13 +349,13 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             background: transparent;
             color: var(--text-2);
             cursor: pointer;
-            transition: all 0.2s var(--transition-smooth);
+            transition: all var(--duration-fast) var(--ease-out);
         }
 
         .theme-toggle:hover {
-            color: var(--gold);
-            border-color: var(--gold);
-            background: rgba(234, 170, 0, 0.1);
+            color: var(--primary);
+            border-color: var(--primary);
+            background: oklch(62% 0.16 35 / 0.1);
         }
 
         /* Show sun in dark mode, moon in light mode */
@@ -367,67 +381,165 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
         /* Main Content */
         main {
-            padding-top: 72px; /* nav height only — no top banner */
+            padding-top: 72px;
             min-height: calc(100vh - 72px);
         }
 
-        /* Footer */
+        /* ========================================
+           FOOTER — semantic columns
+           ======================================== */
         footer {
             background: var(--surface);
             color: var(--text-2);
-            padding: 3rem 2rem 2rem;
-            margin-top: 4rem;
+            margin-top: var(--space-10);
+            padding: var(--space-8) var(--space-6) var(--space-6);
             border-top: 1px solid var(--border);
         }
 
-        .footer-content {
-            max-width: 1200px;
+        .footer-inner {
+            max-width: 1100px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            padding-bottom: 2rem;
+        }
+
+        .footer-signup-row {
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-6);
             border-bottom: 1px solid var(--border);
+            text-align: center;
         }
 
-        .footer-section h4 {
-            color: var(--gold);
-            font-size: 0.8rem;
+        .footer-signup-row h4 {
+            color: var(--primary);
+            font-size: 0.7rem;
             font-weight: 600;
-            margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             font-family: 'DM Mono', monospace;
+            margin-bottom: 0.75rem;
         }
 
-        .footer-section ul {
+        .footer-signup-form {
+            display: flex;
+            gap: 0.5rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .footer-signup-form input {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            outline: none;
+            transition: border-color var(--duration-fast);
+        }
+
+        .footer-signup-form input:focus {
+            border-color: var(--primary);
+        }
+
+        .footer-signup-form button {
+            padding: 0.6rem 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: 'Source Sans 3', system-ui, sans-serif;
+            transition: all var(--duration-fast);
+            white-space: nowrap;
+        }
+
+        .footer-signup-form button:hover {
+            opacity: 0.9;
+        }
+
+        .footer-form-note {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--text-3);
+            font-family: 'DM Mono', monospace;
+            text-align: center;
+        }
+
+        .footer-columns {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--space-6);
+            margin-bottom: var(--space-6);
+        }
+
+        .footer-col h5 {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-3);
+            margin-bottom: var(--space-3);
+        }
+
+        .footer-col ul {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
 
-        .footer-section a {
+        .footer-col li {
+            margin-bottom: var(--space-2);
+        }
+
+        .footer-col a {
             color: var(--text-2);
             text-decoration: none;
             font-size: 0.85rem;
-            line-height: 2;
-            transition: color 0.3s;
+            transition: color var(--duration-fast);
         }
 
-        .footer-section a:hover {
-            color: var(--gold);
+        .footer-col a:hover {
+            color: var(--text);
         }
 
         .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 2rem;
-            text-align: center;
-            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-5);
+            border-top: 1px solid var(--border);
+            flex-wrap: wrap;
+            gap: var(--space-3);
+        }
+
+        .footer-blurb {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-3);
+            max-width: 480px;
+        }
+
+        .footer-blurb a {
+            color: var(--text-2);
+            text-decoration: underline;
+        }
+
+        .footer-copyright {
+            font-size: 0.75rem;
             color: var(--text-3);
         }
 
-        .footer-bottom a {
-            color: var(--gold);
+        .footer-copyright a {
+            color: var(--text-2);
             text-decoration: none;
+        }
+
+        .footer-copyright a:hover {
+            color: var(--text);
         }
 
         /* Mobile Styles */
@@ -441,7 +553,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             }
 
             .nav-links {
-                display: none; /* Hidden by default on mobile to prevent horizontal scroll */
+                display: none;
                 position: fixed;
                 top: 0;
                 right: -100%;
@@ -453,14 +565,14 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                 flex-direction: column;
                 gap: 0;
                 padding: 5rem 0 2rem;
-                transition: right 0.3s var(--transition-smooth);
+                transition: right var(--duration-normal) var(--ease-out);
                 overflow-y: auto;
                 z-index: 999;
                 box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
             }
 
             .nav-links.active {
-                display: flex; /* Show when menu is opened */
+                display: flex;
                 right: 0;
             }
 
@@ -481,14 +593,30 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             }
 
             main {
-                padding-top: 64px; /* nav only on mobile */
+                padding-top: 64px;
             }
 
             .logo-subtitle {
-                display: none; /* Hide on mobile for cleaner look */
+                display: none;
             }
 
-            .footer-content {
+            .footer-columns {
+                grid-template-columns: repeat(2, 1fr);
+                gap: var(--space-5);
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-blurb {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-columns {
                 grid-template-columns: 1fr;
             }
         }
@@ -505,7 +633,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         <a href="/" class="logo">
             <div class="logo-icon">&#8984;</div>
             <div class="logo-text">
-                <span class="logo-title">TONS OF SKILLS</span>
+                <span class="logo-title">Tons of Skills</span>
                 <span class="logo-subtitle">by intent solutions io</span>
             </div>
         </a>
@@ -523,15 +651,12 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             </svg>
         </button>
         <ul class="nav-links">
-            <li><a href="/getting-started">Start Here</a></li>
-            <li><a href="/explore">Explore</a></li>
-            <li><a href="/explore?category=devops">DevOps</a></li>
-            <li><a href="/skills">Skills</a></li>
-            <li><a href="/learning">Learning</a></li>
-            <li><a href="/#products">Products</a></li>
-            <li><a href="/cowork">Cowork</a></li>
-            <li><a href="/community">Community</a></li>
-            <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">GitHub</a></li>
+            <li><a href="/explore" aria-current={currentPath.startsWith('/explore') ? 'page' : undefined}>Explore</a></li>
+            <li><a href="/skills" aria-current={currentPath.startsWith('/skills') ? 'page' : undefined}>Skills</a></li>
+            <li><a href="/learning" aria-current={currentPath.startsWith('/learning') ? 'page' : undefined}>Learn</a></li>
+            <li><a href="/cowork" aria-current={currentPath.startsWith('/cowork') ? 'page' : undefined}>Cowork</a></li>
+            <li><a href="/community" aria-current={currentPath.startsWith('/community') ? 'page' : undefined}>Community</a></li>
+            <li><a href="/getting-started" class="nav-cta">Get Started</a></li>
         </ul>
         </div>
     </nav>
@@ -543,50 +668,59 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
     <!-- Footer -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>Resources</h4>
-                <ul>
-                    <li><a href="/getting-started">Getting Started</a></li>
-                    <li><a href="/explore">Explore Plugins</a></li>
-                    <li><a href="/skills">Agent Skills</a></li>
-                    <li><a href="/learning">Learning Hub</a></li>
-                    <li><a href="/research">Research</a></li>
-                    <li><a href="/blog">Blog & Changelog</a></li>
-                    <li><a href="/cowork">Cowork Downloads</a></li>
-                    <li><a href="/community">Community</a></li>
-                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
-                </ul>
+        <div class="footer-inner">
+            <div class="footer-signup-row">
+                <h4>Stay in the Loop</h4>
+                <form data-signup-form="footer" class="footer-signup-form">
+                    <input type="email" name="email" placeholder="you@example.com" required />
+                    <button type="submit">Subscribe</button>
+                </form>
+                <p class="footer-form-note">No spam. Unsubscribe anytime.</p>
             </div>
-            <div class="footer-section">
-                <h4>Featured</h4>
-                <ul>
-                    <li><a href="/plugins/gh-dash">gh-dash (PR Dashboard)</a></li>
-                    <li><a href="/explore?category=devops">DevOps Plugins</a></li>
-                    <li><a href="/explore?category=security">Security Plugins</a></li>
-                    <li><a href="/explore?category=ai-ml-assistance">AI/ML Plugins</a></li>
-                </ul>
+
+            <div class="footer-columns">
+                <div class="footer-col">
+                    <h5>Product</h5>
+                    <ul>
+                        <li><a href="/explore">Explore</a></li>
+                        <li><a href="/skills">Skills</a></li>
+                        <li><a href="/cowork">Cowork</a></li>
+                        <li><a href="/compare-marketplaces">Compare</a></li>
+                        <li><a href="/tools">Tools</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Resources</h5>
+                    <ul>
+                        <li><a href="/changelog">Changelog</a></li>
+                        <li><a href="/collections">Collections</a></li>
+                        <li><a href="/playbooks">Playbooks</a></li>
+                        <li><a href="/research">Research</a></li>
+                        <li><a href="/learning">Learning</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="/community">Community</a></li>
+                        <li><a href="/spotlight">Spotlight</a></li>
+                        <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Legal</h5>
+                    <ul>
+                        <li><a href="/privacy">Privacy</a></li>
+                        <li><a href="/terms">Terms</a></li>
+                        <li><a href="/acceptable-use">Acceptable Use</a></li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-section">
-                <h4>Community</h4>
-                <ul>
-                    <li><a href="https://github.com/sponsors/jeremylongshore">Sponsor</a></li>
-                    <li><a href="https://buymeacoffee.com/jeremylongshore">Buy me a monster</a></li>
-                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins/discussions">Discussions</a></li>
-                </ul>
+
+            <div class="footer-bottom">
+                <p class="footer-blurb">Tons of Skills by <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a>. Marine. Citadel Grad. 20 years ops &rarr; self-taught dev &rarr; AI architect.</p>
+                <p class="footer-copyright">&copy; {new Date().getFullYear()} Tons of Skills | <a href="https://intentsolutions.io" target="_blank">Intent Solutions</a></p>
             </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="/privacy">Privacy</a></li>
-                    <li><a href="/terms">Terms</a></li>
-                    <li><a href="/acceptable-use">Acceptable Use</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 Claude Code Plugins · Open Source (MIT) · Built by <a href="https://intentsolutions.io" target="_blank">intent solutions io</a></p>
-            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Sponsored by <a href="https://nixtla.io" target="_blank">nixtla.io</a></p>
         </div>
     </footer>
 
@@ -596,12 +730,60 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             background-color: var(--surface-2);
         }
         [data-theme="light"] nav {
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
         }
         [data-theme="light"] footer {
             background: var(--surface-3);
         }
     </style>
+
+    <!-- Email Signup Form Handler -->
+    <script type="module" is:inline>
+      import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-functions.js';
+      import { getApp } from 'https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js';
+
+      function initSignupForms() {
+        var functions;
+        try {
+          functions = getFunctions(getApp());
+        } catch (e) {
+          return;
+        }
+        var subscribeEmail = httpsCallable(functions, 'subscribeEmail');
+
+        document.querySelectorAll('[data-signup-form]').forEach(function(form) {
+          form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            var input = form.querySelector('input[type="email"]');
+            var btn = form.querySelector('button');
+            var originalText = btn.textContent;
+            btn.textContent = 'Subscribing...';
+            btn.disabled = true;
+
+            try {
+              var result = await subscribeEmail({
+                email: input.value,
+                source: form.dataset.signupForm
+              });
+              btn.textContent = result.data.status === 'already_subscribed' ? 'Already Subscribed!' : 'Subscribed!';
+              input.value = '';
+              if (window.logFirebaseEvent) {
+                window.logFirebaseEvent('email_signup', { source: form.dataset.signupForm });
+              }
+            } catch (err) {
+              btn.textContent = (err.code === 'invalid-argument') ? 'Invalid Email' : 'Try Again';
+              setTimeout(function() { btn.textContent = originalText; btn.disabled = false; }, 3000);
+            }
+          });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initSignupForms);
+      } else {
+        initSignupForms();
+      }
+    </script>
 
     <!-- Theme Toggle Script -->
     <script is:inline>
@@ -613,12 +795,10 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                     var next = current === 'dark' ? 'light' : 'dark';
                     document.documentElement.setAttribute('data-theme', next);
                     localStorage.setItem('theme', next);
-                    // Update meta theme-color
                     var meta = document.querySelector('meta[name="theme-color"]');
-                    if (meta) meta.setAttribute('content', next === 'dark' ? '#5436DA' : '#0C2340');
+                    if (meta) meta.setAttribute('content', next === 'dark' ? '#1a1816' : '#f5f3f0');
                 });
             }
-            // Listen for system preference changes
             window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', function(e) {
                 if (!localStorage.getItem('theme')) {
                     document.documentElement.setAttribute('data-theme', e.matches ? 'light' : 'dark');
@@ -649,7 +829,6 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                     }
                 });
 
-                // Close menu when clicking a link
                 navLinks.querySelectorAll('a').forEach(function(link) {
                     link.addEventListener('click', function() {
                         navLinks.classList.remove('active');
@@ -659,7 +838,6 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                     });
                 });
 
-                // Close menu when clicking outside
                 document.addEventListener('click', function(e) {
                     if (navLinks.classList.contains('active') &&
                         !navLinks.contains(e.target) &&

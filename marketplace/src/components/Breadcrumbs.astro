@@ -1,0 +1,126 @@
+---
+/**
+ * Breadcrumbs — semantic nav with Schema.org BreadcrumbList markup.
+ *
+ * Usage:
+ *   import Breadcrumbs from '../components/Breadcrumbs.astro';
+ *
+ *   // Renders: Home > Plugins > My Plugin
+ *   <Breadcrumbs crumbs={[
+ *     { label: 'Plugins', href: '/plugins' },
+ *     { label: 'My Plugin' },
+ *   ]} />
+ *
+ * The "Home / /" crumb is always prepended automatically.
+ * The last crumb (current page) renders as plain text, not a link.
+ */
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  crumbs: Crumb[];
+}
+
+const { crumbs } = Astro.props;
+
+// Always prepend Home as the root crumb
+const allCrumbs: Crumb[] = [{ label: 'Home', href: '/' }, ...crumbs];
+---
+
+<nav aria-label="Breadcrumb" class="breadcrumbs">
+  <ol
+    class="breadcrumbs__list"
+    itemscope
+    itemtype="https://schema.org/BreadcrumbList"
+  >
+    {allCrumbs.map((crumb, index) => {
+      const isLast = index === allCrumbs.length - 1;
+      const position = index + 1;
+
+      return (
+        <li
+          class="breadcrumbs__item"
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+        >
+          {isLast ? (
+            <span
+              class="breadcrumbs__current"
+              aria-current="page"
+              itemprop="name"
+            >
+              {crumb.label}
+            </span>
+          ) : (
+            <>
+              <a
+                href={crumb.href}
+                class="breadcrumbs__link"
+                itemprop="item"
+              >
+                <span itemprop="name">{crumb.label}</span>
+              </a>
+              <span class="breadcrumbs__sep" aria-hidden="true">&gt;</span>
+            </>
+          )}
+          <meta itemprop="position" content={String(position)} />
+        </li>
+      );
+    })}
+  </ol>
+</nav>
+
+<style>
+  .breadcrumbs {
+    margin-bottom: var(--space-5);
+  }
+
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: var(--text-sm, 0.8rem);
+  }
+
+  .breadcrumbs__item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .breadcrumbs__link {
+    color: var(--text-3);
+    text-decoration: none;
+    transition: color var(--duration-fast, 200ms) var(--ease-out);
+  }
+
+  .breadcrumbs__link:hover {
+    color: var(--primary);
+  }
+
+  .breadcrumbs__link:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .breadcrumbs__sep {
+    color: var(--text-3);
+    user-select: none;
+    font-size: 0.7em;
+    line-height: 1;
+  }
+
+  .breadcrumbs__current {
+    color: var(--text-2);
+  }
+</style>

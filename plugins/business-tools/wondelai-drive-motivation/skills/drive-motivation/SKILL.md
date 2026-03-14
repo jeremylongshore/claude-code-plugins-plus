@@ -4,7 +4,7 @@ description: |
   Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions "intrinsic motivation", "gamification isn''t working", "team incentives", "autonomy", "mastery", or "purpose-driven". Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention. Trigger with 'drive', 'motivation'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -67,7 +67,7 @@ See: [references/extrinsic-rewards.md](references/extrinsic-rewards.md) for the 
 
 **Definition:** The desire to direct our own lives — to have choice over what we do, when we do it, how we do it, and who we do it with.
 
-**Autonomy ≠ independence.** Autonomy means acting with choice. You can be autonomous while being interdependent with a team.
+**Autonomy ≠ independence.** Autonomy means acting with choice. A person is autonomous while being interdependent with a team.
 
 **The Four T's of Autonomy:**
 
@@ -108,7 +108,7 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 
 **Definition:** The desire to get better at something that matters — to continually improve and grow.
 
-**Mastery is a mindset, not a destination.** It's asymptotic — you can approach it but never fully reach it. The joy is in the pursuit.
+**Mastery is a mindset, not a destination.** It's asymptotic — approachable but never fully reachable. The joy is in the pursuit.
 
 **Three laws of mastery:**
 
@@ -125,7 +125,7 @@ See: [references/autonomy.md](references/autonomy.md) for autonomy design patter
 - **Design implication:** Calibrate difficulty to user's level
 
 **Law 3: Mastery is Asymptotic**
-- You can approach mastery but never fully arrive
+- Mastery is approachable but never fully attainable
 - The pursuit itself is the reward
 - **Design implication:** Always have next level, next challenge
 

@@ -4,7 +4,7 @@ description: |
   Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", or "referral program". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology. Trigger with 'one', 'page', 'marketing'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -155,7 +155,7 @@ See: `references/craft-message.md`
 
 See: `references/advertising-media.md`
 
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 ---
 
@@ -362,7 +362,7 @@ See: `references/lifetime-value.md`
 
 See: `references/referral-systems.md`
 
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 ---
 

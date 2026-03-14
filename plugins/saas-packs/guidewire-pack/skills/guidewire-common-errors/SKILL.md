@@ -1,7 +1,7 @@
 ---
 name: guidewire-common-errors
 description: |
-  Diagnose and resolve common Guidewire InsuranceSuite errors.
+  Debug and fix common Guidewire InsuranceSuite errors.
   Use when encountering API errors, Gosu exceptions, validation failures,
   or integration issues in PolicyCenter, ClaimCenter, or BillingCenter.
   Trigger with phrases like "guidewire error", "policycenter error",

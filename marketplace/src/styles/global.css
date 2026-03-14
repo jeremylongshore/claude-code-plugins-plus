@@ -1,60 +1,57 @@
-/* IBM Plex Mono Font - Loaded from Google Fonts CDN for optimal performance */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap');
-
-/* Anthropic Brand Theme - Unified with BaseLayout */
+/* Brand Theme — Unified with tokens.css and BaseLayout */
 :root {
-  /* Brand Colors - Primary */
-  --brand-dark: #141413;
-  --brand-light: #faf9f5;
-  --brand-mid-gray: #b0aea5;
-  --brand-light-gray: #e8e6dc;
+  /* Brand Colors - mapped to OKLCH system */
+  --brand-dark: var(--neutral-950);
+  --brand-light: var(--neutral-50);
+  --brand-mid-gray: var(--neutral-400);
+  --brand-light-gray: var(--neutral-200);
 
   /* Brand Colors - Accent */
-  --brand-orange: #d97757;
-  --brand-orange-dark: #c45e3e;
-  --brand-orange-light: #e8937a;
-  --brand-blue: #6a9bcc;
-  --brand-green: #788c5d;
+  --brand-orange: var(--primary);
+  --brand-orange-dark: var(--primary-dark);
+  --brand-orange-light: var(--primary-light);
+  --brand-blue: oklch(62% 0.15 250);
+  --brand-green: var(--positive);
 
-  /* Legacy support - map to brand colors */
-  --slate-950: var(--brand-dark);
-  --slate-900: var(--brand-dark);
-  --slate-850: #1a1a19;
-  --slate-800: var(--brand-light-gray);
-  --slate-700: var(--brand-mid-gray);
-  --slate-600: var(--brand-mid-gray);
-  --slate-500: var(--brand-mid-gray);
-  --slate-400: var(--brand-mid-gray);
-  --slate-300: var(--brand-light-gray);
-  --slate-200: var(--brand-light);
-  --slate-100: var(--brand-light);
+  /* Legacy support - map to neutral scale */
+  --slate-950: var(--neutral-950);
+  --slate-900: var(--neutral-900);
+  --slate-850: var(--neutral-800);
+  --slate-800: var(--neutral-200);
+  --slate-700: var(--neutral-400);
+  --slate-600: var(--neutral-400);
+  --slate-500: var(--neutral-400);
+  --slate-400: var(--neutral-400);
+  --slate-300: var(--neutral-200);
+  --slate-200: var(--neutral-100);
+  --slate-100: var(--neutral-50);
 
-  --green-600: var(--brand-orange-dark);
-  --green-500: var(--brand-orange);
-  --green-400: var(--brand-orange);
-  --green-300: var(--brand-orange-light);
+  --green-600: var(--primary-dark);
+  --green-500: var(--primary);
+  --green-400: var(--primary);
+  --green-300: var(--primary-light);
 
   --blue-500: var(--brand-blue);
   --blue-400: var(--brand-blue);
-  --yellow-500: #eab308;
-  --red-500: #ef4444;
+  --yellow-500: var(--warning);
+  --red-500: var(--danger);
 
   /* Typography */
-  --font-mono: 'IBM Plex Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-  --font-sans: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'DM Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  --font-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  /* Shadows */
+  /* Shadows — subtle, no glow */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.08);
-  --shadow-glow: 0 0 20px rgba(217, 119, 87, 0.2);
 
-  /* Transitions */
-  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  /* Transitions — mapped to motion tokens */
+  --transition-fast: var(--duration-instant) var(--ease-out);
+  --transition-base: var(--duration-fast) var(--ease-out);
+  --transition-slow: var(--duration-normal) var(--ease-out);
+  --transition-smooth: var(--ease-out);
 }
 
 /* Reset */
@@ -69,7 +66,7 @@ html {
 }
 
 body {
-  font-family: 'Lora', Georgia, serif;
+  font-family: var(--font-sans);
   background: var(--brand-light);
   color: var(--brand-dark);
   line-height: 1.7;
@@ -80,26 +77,26 @@ body {
 
 /* Selection */
 ::selection {
-  background: var(--brand-orange);
+  background: var(--primary);
   color: white;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Poppins', Arial, sans-serif;
+  font-family: var(--font-display);
   font-weight: 700;
   line-height: 1.2;
   color: var(--brand-dark);
 }
 
 a {
-  color: var(--brand-orange);
+  color: var(--primary);
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 
 a:hover {
-  color: var(--brand-orange-dark);
+  color: var(--primary-dark);
 }
 
 code {
@@ -125,7 +122,7 @@ pre code {
   background: transparent;
   border: none;
   padding: 0;
-  color: var(--brand-orange-light);
+  color: var(--primary-light);
 }
 
 /* Utilities */
@@ -133,13 +130,6 @@ pre code {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1rem;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-blue) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Animations */
@@ -182,11 +172,11 @@ pre code {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.5s var(--ease-out);
 }
 
 .animate-slide-in {
-  animation: slideIn 0.5s ease-out;
+  animation: slideIn 0.5s var(--ease-out);
 }
 
 /* Scrollbar */
@@ -210,7 +200,7 @@ pre code {
 
 /* Focus styles */
 :focus-visible {
-  outline: 2px solid var(--brand-orange);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
@@ -229,5 +219,5 @@ pre code {
 
 /* Loading state */
 .loading {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: pulse 2s var(--ease-in-out) infinite;
 }

@@ -156,7 +156,7 @@ rules:
         - "https://owasp.org/www-community/attacks/CSRF"
       confidence: MEDIUM
 
-  # Rule 7: Detect use of hardcoded secrets (Placeholder, example-value)
+  # Rule 7: Detect use of hardcoded secrets
   - id: input-validation.hardcoded-secret
     message: |
       Hardcoded secret detected.  Avoid storing secrets directly in code.
@@ -181,7 +181,7 @@ rules:
         - "https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"
       confidence: HIGH
 
-  # Rule 8: Example for detecting weak password storage (Placeholder, example-value)
+  # Rule 8: Detect weak password storage (MD5/SHA1 hashing)
   - id: input-validation.weak-password-storage
     message: |
       Weak password storage detected.  Use a strong hashing algorithm like bcrypt or Argon2.
@@ -223,7 +223,7 @@ rules:
         - "https://cwe.mitre.org/data/definitions/120.html"
       confidence: HIGH
 
-  # Rule 10: Detect path traversal vulnerabilities (Placeholder, example-value)
+  # Rule 10: Detect path traversal vulnerabilities
   - id: input-validation.path-traversal
     message: |
       Potential path traversal vulnerability detected. Ensure that file paths are properly validated to prevent access to unauthorized files.

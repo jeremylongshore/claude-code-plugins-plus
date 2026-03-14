@@ -50,15 +50,15 @@ POST driver details (name, DOB, license) to the policy period.
 
 ### Step 5: Quote the Submission
 
-POST to `/job/v1/submissions/{id}/quote` to trigger rating. Retrieve premium breakdown from the policy period.
+POST to `/job/v1/submissions/<submissionId>/quote` to trigger rating. Retrieve premium breakdown from the policy period.
 
 ### Step 6: Bind the Policy
 
-POST to `/job/v1/submissions/{id}/bind`. Verify status is `Bound` and capture the policy number.
+POST to `/job/v1/submissions/<submissionId>/bind`. Verify status is `Bound` and capture the policy number.
 
 ### Step 7: Issue the Policy
 
-POST to `/job/v1/submissions/{id}/issue`. The policy is now in-force.
+POST to `/job/v1/submissions/<submissionId>/issue`. The policy is now in-force.
 
 For complete TypeScript API calls and Gosu server-side implementations, load the reference guide:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
@@ -92,6 +92,6 @@ For claims processing workflow, see `guidewire-core-workflow-b`.
 
 ## Examples
 
-**Basic usage**: Apply guidewire core workflow a to a standard project setup with default configuration options.
+**Personal auto policy lifecycle**: Create an account, submit a PersonalAuto policy with two vehicles and one driver, add liability and collision coverages, quote the submission to get premium breakdown, bind and issue the policy. The resulting policy number can be used for endorsements and renewals.
 
-**Advanced scenario**: Customize guidewire core workflow a for production environments with multiple constraints and team-specific requirements.
+**Commercial property endorsement**: Start with an in-force commercial property policy, create a policy change job to add a new building location, adjust coverages for the added location, re-quote to calculate the premium adjustment, then bind and issue the endorsement.

@@ -4,7 +4,7 @@ description: |
   Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions "go viral", "word of mouth", "shareable content", "social currency", or "why people share". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology. Trigger with 'contagious'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

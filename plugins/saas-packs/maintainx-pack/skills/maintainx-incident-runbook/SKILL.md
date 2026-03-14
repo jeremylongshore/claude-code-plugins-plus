@@ -1,7 +1,7 @@
 ---
 name: maintainx-incident-runbook
 description: |
-  Incident response procedures for MaintainX integration failures.
+  Manage incident response for MaintainX integration failures.
   Use when experiencing outages, investigating issues,
   or responding to MaintainX integration incidents.
   Trigger with phrases like "maintainx incident", "maintainx outage",

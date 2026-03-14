@@ -23,7 +23,7 @@ Optimize Mistral AI costs through smart model selection, token management, and u
 - Database for usage tracking (optional)
 - Alerting system configured (optional)
 
-## Pricing Overview (as of 2024)
+## Pricing Overview
 
 | Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
 |-------|----------------------|------------------------|----------|

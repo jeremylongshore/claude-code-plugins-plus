@@ -1,0 +1,187 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+const title = "Changelog — Tons of Skills";
+const description = "Release notes, plugin updates, and changelog for the Claude Code Plugins marketplace.";
+---
+
+<BaseLayout title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      "name": "Tons of Skills Changelog",
+      "description": description,
+      "url": "https://tonsofskills.com/changelog",
+      "publisher": {
+        "@type": "Organization",
+        "name": "Claude Code Plugins",
+        "url": "https://tonsofskills.com"
+      },
+      "blogPost": posts.map(post => ({
+        "@type": "BlogPosting",
+        "headline": post.data.title,
+        "description": post.data.description,
+        "datePublished": post.data.date,
+        "url": `https://tonsofskills.com/changelog/${post.slug}`
+      }))
+    })} />
+  </Fragment>
+
+  <section class="blog-hero">
+    <div class="blog-hero-inner">
+      <p class="eyebrow">Changelog</p>
+      <h1>What's New</h1>
+      <p class="hero-desc">Release notes, feature launches, and updates to the Claude Code Plugins ecosystem.</p>
+    </div>
+  </section>
+
+  <section class="posts-section">
+    <div class="container">
+      {posts.map((post) => (
+        <a href={`/changelog/${post.slug}`} class="post-card">
+          <div class="post-meta">
+            <time datetime={post.data.date}>
+              {new Date(post.data.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </time>
+            {post.data.version && <span class="version-badge">v{post.data.version}</span>}
+            {post.data.featured && <span class="featured-badge">Featured</span>}
+          </div>
+          <h2>{post.data.title}</h2>
+          <p class="post-desc">{post.data.description}</p>
+          <div class="post-tags">
+            {post.data.tags.map((tag: string) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .blog-hero {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-1) 100%);
+    padding: 5rem 1.5rem 3rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-hero-inner { max-width: 42rem; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+  }
+  .blog-hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .hero-desc {
+    color: var(--text-2);
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  .posts-section {
+    padding: 3rem 0 4rem;
+  }
+  .container {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .post-card {
+    display: block;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .post-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  time {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-3);
+  }
+  .version-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(234, 170, 0, 0.12);
+    color: var(--gold);
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .featured-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(206, 17, 65, 0.15);
+    color: var(--red);
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .post-card h2 {
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+    letter-spacing: 0;
+  }
+  .post-desc {
+    color: var(--text-2);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  .post-tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+    background: var(--surface-3);
+    color: var(--text-3);
+    border-radius: 4px;
+  }
+
+  @media (max-width: 768px) {
+    .blog-hero { padding: 3rem 1rem 2rem; }
+    .post-card { padding: 1.5rem; }
+  }
+</style>

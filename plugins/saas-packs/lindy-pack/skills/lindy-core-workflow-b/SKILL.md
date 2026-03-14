@@ -1,7 +1,7 @@
 ---
 name: lindy-core-workflow-b
 description: |
-  Core Lindy workflow for automating tasks and scheduling agents.
+  Configure core Lindy workflow for automating tasks and scheduling agents.
   Use when setting up automated workflows, scheduling agent runs,
   or creating trigger-based automations.
   Trigger with phrases like "lindy automation", "schedule lindy agent",

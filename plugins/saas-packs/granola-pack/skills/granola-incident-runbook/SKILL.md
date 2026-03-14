@@ -1,7 +1,7 @@
 ---
 name: granola-incident-runbook
 description: |
-  Incident response procedures for Granola meeting capture issues.
+  Manage incident response for Granola meeting capture issues.
   Use when handling meeting capture failures, system outages,
   or urgent troubleshooting situations.
   Trigger with phrases like "granola incident", "granola outage",

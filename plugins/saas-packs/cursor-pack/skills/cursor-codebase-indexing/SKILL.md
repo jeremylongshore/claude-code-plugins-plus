@@ -11,6 +11,8 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Cursor Codebase Indexing
 
+Provides setup and optimization of Cursor's codebase indexing for semantic code search and improved AI context awareness.
+
 ## Overview
 
 ### What is Codebase Indexing?

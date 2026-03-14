@@ -81,7 +81,7 @@ Generate realistic database seed scripts that populate development and testing e
 
 **Creating test data for a multi-tenant SaaS application**: Generate 5 tenants, each with 20-100 users, organization settings, and tenant-specific data. Tenant isolation is maintained in seed data by assigning all records to a specific tenant_id. One "demo" tenant has curated showcase data with meaningful names and descriptions.
 
-**Populating a social media prototype**: Generate 1,000 users with profile photos (placeholder URLs), 5,000 posts with timestamps following a realistic posting pattern (more activity on weekdays, peak at noon), 15,000 comments with reply threading (30% of comments are replies to other comments), and 50,000 likes distributed by post popularity.
+**Populating a social media prototype**: Generate 1,000 users with profile photos (sample image URLs from picsum.photos), 5,000 posts with timestamps following a realistic posting pattern (more activity on weekdays, peak at noon), 15,000 comments with reply threading (30% of comments are replies to other comments), and 50,000 likes distributed by post popularity.
 
 ## Resources
 

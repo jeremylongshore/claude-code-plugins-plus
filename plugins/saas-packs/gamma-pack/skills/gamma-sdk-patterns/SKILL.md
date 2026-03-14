@@ -24,7 +24,7 @@ Learn idiomatic patterns and best practices for the Gamma SDK to build robust pr
 
 ## Instructions
 
-### Pattern 1: Client Singleton
+### Step 1: Client Singleton
 ```typescript
 // lib/gamma.ts
 import { GammaClient } from '@gamma/sdk';
@@ -43,7 +43,7 @@ export function getGammaClient(): GammaClient {
 }
 ```
 
-### Pattern 2: Presentation Builder
+### Step 2: Presentation Builder
 ```typescript
 // lib/presentation-builder.ts
 import { getGammaClient } from './gamma';
@@ -85,7 +85,7 @@ export class PresentationBuilder {
 }
 ```
 
-### Pattern 3: Error Handling Wrapper
+### Step 3: Error Handling Wrapper
 ```typescript
 // lib/safe-gamma.ts
 import { GammaError } from '@gamma/sdk';
@@ -105,7 +105,7 @@ export async function safeGammaCall<T>(
 }
 ```
 
-### Pattern 4: Template Factory
+### Step 4: Template Factory
 ```typescript
 // lib/templates.ts
 type TemplateType = 'pitch-deck' | 'report' | 'tutorial' | 'proposal';

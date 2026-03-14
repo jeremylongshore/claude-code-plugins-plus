@@ -1,10 +1,10 @@
 ---
 name: ios-hig-design
 description: |
-  Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", or "HIG compliance". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.
+  Build native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions "iPhone app", "iPad layout", "SwiftUI", "UIKit", "Dynamic Island", "safe areas", or "HIG compliance". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

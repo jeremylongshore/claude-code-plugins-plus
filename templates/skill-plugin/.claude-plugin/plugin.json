@@ -1,0 +1,9 @@
+{
+  "name": "my-skill-plugin",
+  "version": "1.0.0",
+  "description": "A plugin with a skill that does X",
+  "author": "Your Name <your@email.com>",
+  "repository": "https://github.com/username/my-skill-plugin",
+  "license": "MIT",
+  "keywords": ["skill"]
+}

@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-11T05:22:47.262Z",
+    "generated": "2026-03-13T04:52:15.400Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 341,
-    "totalSkills": 1410,
+    "totalPlugins": 343,
+    "totalSkills": 1412,
     "totalCommands": 66,
-    "pluginsWithSkills": 312,
+    "pluginsWithSkills": 314,
     "byCategory": {
       "productivity": 27,
       "security": 28,
@@ -19,7 +19,7 @@
       "devops": 37,
       "api-development": 25,
       "crypto": 26,
-      "skill-enhancers": 6,
+      "skill-enhancers": 8,
       "debugging": 1,
       "packages": 1,
       "database": 28,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 322,
+      "active": 324,
       "maintained": 19
     },
-    "featured": 2,
-    "new": 320,
-    "generatedAt": "2026-03-11T05:22:47.262Z"
+    "featured": 3,
+    "new": 322,
+    "generatedAt": "2026-03-13T04:52:15.400Z"
   },
   "plugins": [
     {
@@ -11642,6 +11642,71 @@
       "sourcePath": "./plugins/saas-packs/skill-databases/windsurf",
       "lastUpdatedEpoch": 1773195376,
       "lastUpdatedDate": "2026-03-11T02:16:16.550Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "skill-creator",
+      "name": "skill-creator",
+      "displayName": "skill creator",
+      "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
+      "version": "5.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "skill-creation",
+        "validation",
+        "meta-tooling",
+        "grading",
+        "anthropic-spec"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install skill-creator",
+      "sourcePath": "./plugins/skill-enhancers/skill-creator",
+      "lastUpdatedEpoch": 1773359552,
+      "lastUpdatedDate": "2026-03-12T23:52:32.058Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": true,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "validate-plugin",
+      "name": "validate-plugin",
+      "displayName": "validate plugin",
+      "description": "Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "validation",
+        "plugin-development",
+        "quality-assurance",
+        "linting"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install validate-plugin",
+      "sourcePath": "./plugins/skill-enhancers/validate-plugin",
+      "lastUpdatedEpoch": 1773369204,
+      "lastUpdatedDate": "2026-03-13T02:33:24.261Z",
       "status": "active",
       "badges": [
         "new"

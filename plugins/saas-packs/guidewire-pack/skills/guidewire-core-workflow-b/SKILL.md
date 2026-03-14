@@ -38,7 +38,7 @@ POST to `/fnol/v1/fnol` with loss date, loss type/cause, description, policy num
 
 ### Step 2: Add Exposures
 
-POST exposures to `/claim/v1/claims/{id}/exposures` specifying exposure type (`VehicleDamage`, `BodilyInjury`), loss party (`insured`, `claimant`), and primary coverage.
+POST exposures to `/claim/v1/claims/<claimId>/exposures` specifying exposure type (`VehicleDamage`, `BodilyInjury`), loss party (`insured`, `claimant`), and primary coverage.
 
 ### Step 3: Add Incidents
 
@@ -58,7 +58,7 @@ POST to each exposure's `/close` endpoint with the closed outcome (`completed`, 
 
 ### Step 7: Close Claim
 
-POST to `/claim/v1/claims/{id}/close` with outcome. All exposures must be closed first.
+POST to `/claim/v1/claims/<claimId>/close` with outcome. All exposures must be closed first.
 
 For complete TypeScript API calls and Gosu server-side implementations, load the reference guide:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
@@ -93,6 +93,6 @@ For error handling patterns, see `guidewire-common-errors`.
 
 ## Examples
 
-**Basic usage**: Apply guidewire core workflow b to a standard project setup with default configuration options.
+**Auto collision claim**: File an FNOL for a two-vehicle accident, create VehicleDamage and BodilyInjury exposures, set reserves of $5,000 for vehicle repair and $2,000 for medical expenses, issue a partial payment to the body shop, then close exposures and the claim after settlement.
 
-**Advanced scenario**: Customize guidewire core workflow b for production environments with multiple constraints and team-specific requirements.
+**Property damage claim with subrogation**: File an FNOL for water damage at a commercial property, create a PropertyDamage exposure, set indemnity reserves, process payments to the restoration contractor, pursue subrogation against the responsible party, and close the claim with recovered amounts.

@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'marketplace/**'
+      - 'functions/**'
+      - 'firestore.rules'
       - 'firebase.json'
       - '.github/workflows/deploy-firebase.yml'
   workflow_dispatch:
@@ -73,10 +75,25 @@ jobs:
 
           echo "Build validation passed"
 
-      - name: Deploy to Firebase Hosting
+      - name: Install Cloud Function dependencies
+        run: cd functions && npm install
+
+      - name: Deploy Hosting
         run: |
-          ACCESS_TOKEN=$(gcloud auth print-access-token)
           npx firebase-tools deploy --only hosting:marketplace \
             --project claude-code-plugins-io \
-            --non-interactive \
-            --token "$ACCESS_TOKEN"
+            --non-interactive
+
+      - name: Deploy Cloud Functions
+        continue-on-error: true
+        run: |
+          npx firebase-tools deploy --only functions \
+            --project claude-code-plugins-io \
+            --non-interactive --force
+
+      - name: Deploy Firestore Rules
+        continue-on-error: true
+        run: |
+          npx firebase-tools deploy --only firestore:rules \
+            --project claude-code-plugins-io \
+            --non-interactive

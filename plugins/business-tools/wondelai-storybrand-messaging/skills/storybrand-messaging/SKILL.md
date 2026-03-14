@@ -1,10 +1,10 @@
 ---
 name: storybrand-messaging
 description: |
-  Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isn''t resonating", or "brand script". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.
+  Build clear brand messaging using narrative structure that positions the customer as hero. Use when the user mentions "brand message", "website copy", "elevator pitch", "one-liner", "messaging isn''t resonating", or "brand script". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -89,7 +89,7 @@ See: [references/brand-script.md](references/brand-script.md)
 
 ### 3. And Meets a Guide
 
-**Core concept:** Enter the guide — a character who has empathy AND authority. Your brand is the guide, not the hero. You demonstrate empathy by understanding the customer's pain, and authority by proving you can actually solve it. The balance of both is what earns trust.
+**Core concept:** Enter the guide — a character who has empathy AND authority. Your brand is the guide, not the hero. You demonstrate empathy by understanding the customer's pain, and authority by proving the ability to actually solve it. The balance of both is what earns trust.
 
 **Why it works:** Customers are not looking for another hero — they are looking for a guide. Think Yoda, not Luke. When a brand expresses empathy, the customer feels seen. When the brand demonstrates authority (testimonials, logos, statistics), the customer feels safe. Together, these two qualities create the trust needed for a customer to engage.
 
@@ -146,7 +146,7 @@ See: [references/sales-conversations.md](references/sales-conversations.md)
 - "We promise [agreement plan commitment]."
 - "Your plan is simple: [3 clear steps]."
 
-**Ethical boundary:** Never promise outcomes in the plan that you cannot reliably deliver. Agreement plan commitments must be honored without exception.
+**Ethical boundary:** Never promise outcomes in the plan that cannot be reliably delivered. Agreement plan commitments must be honored without exception.
 
 See: [references/brand-script.md](references/brand-script.md)
 
@@ -243,7 +243,7 @@ See: [references/brand-script.md](references/brand-script.md)
 - "What would it mean for you to [self-realization outcome]?"
 - "Finally, [completeness outcome] — without [old frustration]."
 
-**Ethical boundary:** Never promise results you cannot substantiate. Success pictures must reflect realistic outcomes, and testimonials must represent genuine customer experiences.
+**Ethical boundary:** Never promise results that cannot be substantiated. Success pictures must reflect realistic outcomes, and testimonials must represent genuine customer experiences.
 
 See: [references/brand-script.md](references/brand-script.md)
 

@@ -1,7 +1,7 @@
 ---
 name: customerio-upgrade-migration
 description: |
-  Plan and execute Customer.io SDK upgrades.
+  Manage Customer.io SDK upgrades.
   Use when upgrading SDK versions, migrating integrations,
   or updating to new API versions.
   Trigger with phrases like "upgrade customer.io", "customer.io migration",

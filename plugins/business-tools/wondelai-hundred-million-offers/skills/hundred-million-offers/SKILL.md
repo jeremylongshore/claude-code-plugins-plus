@@ -4,7 +4,7 @@ description: |
   Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", or "offer naming". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue. Trigger with 'hundred', 'million', 'offers'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

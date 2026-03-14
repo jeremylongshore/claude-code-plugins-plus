@@ -1,10 +1,10 @@
 ---
 name: made-to-stick
 description: |
-  Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", or "why the message isn''t landing". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.
+  Create messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", or "why the message isn''t landing". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -133,7 +133,7 @@ See: [references/unexpected.md](references/unexpected.md) for pattern-breaking t
 
 **The Velcro theory of memory:**
 - Concrete ideas have more "hooks" for memory
-- "Bicycle" is easier to remember than "vehicle" (you can picture it)
+- "Bicycle" is easier to remember than "vehicle" (it evokes a clear mental image)
 - Sensory details create mental images
 
 **Techniques for concreteness:**
@@ -215,7 +215,7 @@ See: [references/credible.md](references/credible.md) for credibility-building t
 | Identity Frame | Product | Message |
 |---------------|---------|---------|
 | "I'm an innovative leader" | SaaS tool | "For teams that move fast" |
-| "I care about my health" | Food product | "Made with ingredients you can pronounce" |
+| "I care about my health" | Food product | "Made with pronounceable ingredients" |
 | "I'm a serious professional" | B2B service | "The tool Fortune 500 CTOs rely on" |
 
 **Avoiding the "semantic stretch":**
@@ -266,7 +266,7 @@ See: [references/stories.md](references/stories.md) for story templates and coll
 
 **The biggest enemy of sticky ideas.**
 
-**Definition:** Once you know something, you can't imagine not knowing it.
+**Definition:** Once something is known, it becomes impossible to imagine not knowing it.
 
 **How it manifests:**
 - Using jargon your audience doesn't know

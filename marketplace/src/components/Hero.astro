@@ -10,17 +10,17 @@ const { totalPlugins, totalCategories } = Astro.props;
 <section class="hero">
   <div class="container">
     <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="gradient-text">{totalPlugins} Production-Ready</span>
+      <h1 class="hero-title animate-title">
+        <span class="plugin-count">{totalPlugins} Production-Ready</span>
         <br />
         Claude Code Plugins
       </h1>
-      <p class="hero-subtitle">
+      <p class="hero-subtitle animate-subtitle">
         The definitive marketplace for professional Claude Code plugins.
         Supercharge your development workflow with battle-tested tools.
       </p>
 
-      <div class="hero-stats">
+      <div class="hero-stats animate-stats">
         <div class="stat-item">
           <div class="stat-number">{totalPlugins}</div>
           <div class="stat-label">Plugins</div>
@@ -58,6 +58,17 @@ const { totalPlugins, totalCategories } = Astro.props;
 </section>
 
 <style>
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .hero {
     padding: 4rem 0 3rem;
     position: relative;
@@ -68,24 +79,36 @@ const { totalPlugins, totalCategories } = Astro.props;
     content: '';
     position: absolute;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(ellipse at top, rgba(217, 119, 87, 0.12) 0%, transparent 70%);
+    background: radial-gradient(ellipse at top left, oklch(62% 0.16 35 / 0.10) 0%, transparent 65%);
     pointer-events: none;
   }
 
   .hero-content {
     position: relative;
     z-index: 1;
-    text-align: center;
+    text-align: left;
     max-width: 900px;
-    margin: 0 auto;
+  }
+
+  /* Staggered entrance animations */
+  .animate-title {
+    animation: fade-up var(--duration-slow) var(--ease-out) 0s both;
+  }
+
+  .animate-subtitle {
+    animation: fade-up var(--duration-slow) var(--ease-out) 0.1s both;
+  }
+
+  .animate-stats {
+    animation: fade-up var(--duration-slow) var(--ease-out) 0.2s both;
   }
 
   .hero-title {
-    font-size: clamp(2rem, 5vw, 3.75rem);
+    font-family: 'Instrument Sans', sans-serif;
+    font-size: var(--text-3xl);
     font-weight: 900;
     letter-spacing: -0.025em;
     margin-bottom: 1.5rem;
@@ -93,19 +116,22 @@ const { totalPlugins, totalCategories } = Astro.props;
     color: var(--brand-dark);
   }
 
+  .plugin-count {
+    color: var(--primary);
+  }
+
   .hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: var(--text-lg);
     color: var(--brand-mid-gray);
     margin-bottom: 2.5rem;
     line-height: 1.6;
-    max-width: 700px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 640px;
   }
 
   .hero-stats {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     gap: 2rem;
     margin-bottom: 3rem;
@@ -113,21 +139,20 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .stat-item {
-    text-align: center;
+    text-align: left;
   }
 
   .stat-number {
+    font-family: 'Instrument Sans', sans-serif;
     font-size: 2.5rem;
     font-weight: 900;
-    background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--primary);
     line-height: 1;
     margin-bottom: 0.5rem;
   }
 
   .stat-label {
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 0.875rem;
     color: var(--brand-mid-gray);
     text-transform: uppercase;
@@ -143,10 +168,10 @@ const { totalPlugins, totalCategories } = Astro.props;
 
   .quick-install {
     max-width: 600px;
-    margin: 0 auto;
   }
 
   .install-label {
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--brand-mid-gray);
@@ -164,12 +189,13 @@ const { totalPlugins, totalCategories } = Astro.props;
     display: flex;
     align-items: center;
     gap: 1rem;
-    transition: border-color 0.2s ease;
+    transition: border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
   }
 
   .install-code-wrapper:hover {
-    border-color: var(--brand-orange);
-    box-shadow: 0 0 0 1px var(--brand-orange);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
   }
 
   .install-code {
@@ -187,13 +213,13 @@ const { totalPlugins, totalCategories } = Astro.props;
     background: transparent;
     border: none;
     padding: 0;
-    color: var(--brand-orange-light);
+    color: var(--primary-light);
     font-size: 0.875rem;
   }
 
   .copy-btn {
     flex-shrink: 0;
-    background: var(--brand-orange);
+    background: var(--primary);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -201,14 +227,16 @@ const { totalPlugins, totalCategories } = Astro.props;
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', sans-serif;
+    transition: background var(--duration-fast) var(--ease-out),
+                transform var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-fast) var(--ease-out);
   }
 
   .copy-btn:hover {
-    background: var(--brand-orange-dark);
+    background: var(--primary-dark);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(217, 119, 87, 0.3);
+    box-shadow: 0 4px 12px oklch(62% 0.16 35 / 0.30);
   }
 
   .copy-btn:active {
@@ -218,6 +246,7 @@ const { totalPlugins, totalCategories } = Astro.props;
   .install-note,
   .intent-note {
     margin-top: 1rem;
+    font-family: 'Source Sans 3', sans-serif;
     font-size: 0.875rem;
     color: var(--brand-mid-gray);
     line-height: 1.6;
@@ -232,14 +261,15 @@ const { totalPlugins, totalCategories } = Astro.props;
   }
 
   .intent-note a {
-    color: var(--brand-orange);
+    color: var(--primary);
     font-weight: 600;
     text-decoration: none;
-    border-bottom: 1px solid rgba(217, 119, 87, 0.4);
+    border-bottom: 1px solid oklch(62% 0.16 35 / 0.40);
+    transition: border-color var(--duration-fast) var(--ease-out);
   }
 
   .intent-note a:hover {
-    border-bottom-color: rgba(217, 119, 87, 0.8);
+    border-bottom-color: oklch(62% 0.16 35 / 0.80);
   }
 
   @media (max-width: 640px) {

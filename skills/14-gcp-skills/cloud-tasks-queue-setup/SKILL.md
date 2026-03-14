@@ -14,57 +14,51 @@ author: "Jeremy Longshore <jeremy@intentsolutions.io>"
 
 ## Overview
 
-This skill provides automated assistance for cloud tasks queue setup tasks within the GCP Skills domain.
-
-## When to Use
-
-This skill activates automatically when you:
-- Mention "cloud tasks queue setup" in your request
-- Ask about cloud tasks queue setup patterns or best practices
-- Need help with google cloud platform skills covering compute, storage, bigquery, vertex ai, and gcp-specific services.
-
-## Instructions
-
-1. Provides step-by-step guidance for cloud tasks queue setup
-2. Follows industry best practices and patterns
-3. Generates production-ready code and configurations
-4. Validates outputs against common standards
-
-## Examples
-
-**Example: Basic Usage**
-Request: "Help me with cloud tasks queue setup"
-Result: Provides step-by-step guidance and generates appropriate configurations
-
+Create and configure Google Cloud Tasks queues for reliable asynchronous task execution. Covers queue creation with rate limiting and retry policies, HTTP and App Engine task targets, task dispatching with scheduling delays, and queue management operations (pause, resume, purge).
 
 ## Prerequisites
 
-- Relevant development environment configured
-- Access to necessary tools and services
-- Basic understanding of gcp skills concepts
+- Google Cloud project with Cloud Tasks API enabled (`gcloud services enable cloudtasks.googleapis.com`)
+- `gcloud` CLI authenticated with `roles/cloudtasks.admin` or `roles/cloudtasks.enqueuer` IAM role
+- Target HTTP endpoint or App Engine service to receive dispatched tasks
+- Service account with appropriate permissions for task execution
 
+## Instructions
+
+1. Create a Cloud Tasks queue with rate limiting: `gcloud tasks queues create <queue-name> --location=<region> --max-dispatches-per-second=10 --max-concurrent-dispatches=5`
+2. Configure retry policy for failed tasks: `gcloud tasks queues update <queue-name> --max-attempts=5 --min-backoff=1s --max-backoff=300s --max-doublings=4`
+3. Create an HTTP task targeting your endpoint: `gcloud tasks create-http-task --queue=<queue-name> --url=https://your-service.run.app/process --method=POST --body-content='<json-payload>'`
+4. Schedule a delayed task by adding `--schedule-time` with an ISO 8601 timestamp up to 30 days in the future
+5. Verify queue status and task counts: `gcloud tasks queues describe <queue-name>` to check dispatch rate, retry config, and queue state
+6. Manage queue operations: pause (`gcloud tasks queues pause`), resume (`gcloud tasks queues resume`), or purge all tasks (`gcloud tasks queues purge`)
+
+## Examples
+
+**Setting up an email processing queue**: Create a queue with 5 dispatches per second rate limit and 3 max concurrent tasks to avoid overwhelming the email service. Configure retry with exponential backoff (1s min, 60s max, 3 doublings) and 10 max attempts for transient failures.
+
+**Scheduling delayed webhook callbacks**: Create HTTP tasks with a 15-minute schedule delay to implement webhook retries. Each task POSTs to the callback URL with the original event payload and includes an OIDC token for authentication.
 
 ## Output
 
-- Generated configurations and code
-- Best practice recommendations
-- Validation results
-
+- Cloud Tasks queue created with rate limiting and retry configuration
+- Task creation commands for HTTP and App Engine targets
+- Queue management commands for operational control
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Configuration invalid | Missing required fields | Check documentation for required parameters |
-| Tool not found | Dependency not installed | Install required tools per prerequisites |
-| Permission denied | Insufficient access | Verify credentials and permissions |
-
+| Queue already exists | Queue name taken in the specified region | Use `gcloud tasks queues describe` to check existing config; update if needed |
+| PERMISSION_DENIED on task creation | Service account lacks `cloudtasks.tasks.create` permission | Grant `roles/cloudtasks.enqueuer` to the service account |
+| Task handler returns 5xx | Target endpoint failed to process the task | Tasks auto-retry per queue retry policy; check handler logs for root cause |
+| Rate limit exceeded | Dispatch rate exceeds queue configuration | Increase `max-dispatches-per-second` or reduce task creation rate |
 
 ## Resources
 
-- Official documentation for related tools
-- Best practices guides
-- Community examples and tutorials
+- Cloud Tasks documentation: https://cloud.google.com/tasks/docs
+- Queue configuration reference: https://cloud.google.com/tasks/docs/configuring-queues
+- Creating HTTP tasks: https://cloud.google.com/tasks/docs/creating-http-target-tasks
+- IAM permissions: https://cloud.google.com/tasks/docs/access-control
 
 ## Related Skills
 

@@ -109,7 +109,7 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
         <div class="hero-content">
           <span class="hero-badge">Production Engineering</span>
           <h1 class="hero-title">
-            <span class="gradient-text">Production Playbooks</span>
+            <span style="color: var(--primary);">Production Playbooks</span>
           </h1>
           <p class="hero-subtitle">
             Comprehensive technical guides for building production-grade Claude Code plugin systems. Each playbook provides deep implementation details, production-ready code examples, and real-world patterns learned from operating large-scale AI agent deployments.
@@ -260,9 +260,7 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       line-height: 1.1;
     }
 
-    .gradient-text {
-      color: white;
-    }
+    /* gradient-text replaced with inline color */
 
     .hero-subtitle {
       font-size: clamp(1rem, 2vw, 1.25rem);

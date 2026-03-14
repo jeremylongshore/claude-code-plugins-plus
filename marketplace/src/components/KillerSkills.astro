@@ -1,0 +1,195 @@
+---
+import spotlightData from '../data/spotlights.json';
+
+const spotlights = spotlightData.spotlights;
+const week = spotlightData.week;
+---
+
+<div class="killer-grid">
+  {spotlights.map(skill => (
+    <div class="killer-card" style="cursor: pointer;" data-href={skill.link} data-slug={skill.pluginSlug} data-week={week}>
+      <div class="killer-top">
+        <span class="killer-grade">{skill.grade}</span>
+        <span class="killer-category">{skill.category}</span>
+      </div>
+      <h3 class="killer-headline">{skill.headline}</h3>
+      <p class="killer-why">{skill.whyKiller}</p>
+      <div class="killer-meta">
+        <a href={`https://github.com/${skill.authorGithub}`} target="_blank" rel="noopener noreferrer" class="killer-author">
+          <img src={`https://github.com/${skill.authorGithub}.png?size=24`} alt={skill.author} class="killer-avatar" width="24" height="24" loading="lazy" />
+          {skill.author}
+        </a>
+        <span class="killer-skills">{skill.skillCount} skills</span>
+      </div>
+      <span class="killer-cta">View plugin &rarr;</span>
+    </div>
+  ))}
+</div>
+
+<style>
+  .killer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .killer-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .killer-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, #F5C842 100%);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .killer-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold);
+    box-shadow: 0 12px 40px rgba(234, 170, 0, 0.12);
+  }
+
+  .killer-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .killer-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .killer-grade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--gold);
+    color: var(--navy, #0C2340);
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    border-radius: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .killer-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-2);
+    background: var(--surface-3);
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+  }
+
+  .killer-headline {
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .killer-why {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-2);
+    margin: 0;
+    flex: 1;
+  }
+
+  .killer-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .killer-author {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--text-2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .killer-author:hover {
+    color: var(--gold);
+  }
+
+  .killer-avatar {
+    border-radius: 50%;
+  }
+
+  .killer-skills {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-3);
+  }
+
+  .killer-cta {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gold);
+    transition: letter-spacing 0.2s;
+  }
+
+  .killer-card:hover .killer-cta {
+    letter-spacing: 0.03em;
+  }
+
+  @media (max-width: 768px) {
+    .killer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script is:inline>
+  document.querySelectorAll('.killer-card').forEach(function(card) {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a')) {
+        return;
+      }
+      var slug = card.dataset.slug;
+      var week = card.dataset.week;
+      if (window.trackEvent) {
+        window.trackEvent('killer_skill_click', { slug: slug, week: week });
+      }
+      if (window.logFirebaseEvent) {
+        window.logFirebaseEvent('killer_skill_click', { slug: slug, week: week });
+      }
+      var href = card.dataset.href;
+      if (href) {
+        window.location.href = href;
+      }
+    });
+  });
+</script>

@@ -207,7 +207,7 @@ flowchart TD
 
 #### Shape Coding:
 - `([text])` - Rounded rectangle: Standard process steps
-- `{text}` - Diamond: Decision points
+- Diamond shape `{ }` - Decision points
 - `[[text]]` - Hexagon-style: Critical deadlines
 - `[/text/]` - Trapezoid: Break/rest states
 - `>text]` - Asymmetric: External dependencies

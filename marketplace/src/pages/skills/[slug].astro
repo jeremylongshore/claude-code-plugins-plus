@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 
 export async function getStaticPaths() {
@@ -20,6 +21,11 @@ const pageDescription = skill.description || `Agent skill for Claude Code: ${ski
 const authorName = skill.author && typeof skill.author === 'string'
   ? skill.author.split('<')[0].trim()
   : 'Unknown';
+
+// Related skills from the same plugin category
+const relatedSkills = (skillsCatalog as any).skills
+  .filter((s: any) => s.parentPlugin?.category === skill.parentPlugin?.category && s.slug !== skill.slug)
+  .slice(0, 4);
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -107,7 +113,7 @@ const authorName = skill.author && typeof skill.author === 'string'
       font-weight: 600;
       color: var(--brand-dark);
       margin-bottom: 1rem;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
     }
 
     .section-box.dark .section-title {
@@ -127,7 +133,7 @@ const authorName = skill.author && typeof skill.author === 'string'
       border-radius: 6px;
       font-size: 0.8rem;
       font-weight: 600;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
     }
 
     .plugin-info {
@@ -178,7 +184,7 @@ const authorName = skill.author && typeof skill.author === 'string'
       color: white;
       border-radius: 8px;
       text-decoration: none;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'Source Sans 3', system-ui, sans-serif;
       font-weight: 600;
       font-size: 0.875rem;
       transition: all 0.2s;
@@ -321,6 +327,51 @@ const authorName = skill.author && typeof skill.author === 'string'
       font-size: 0.75rem;
     }
 
+    .related-skills-section {
+      margin-top: 2rem;
+    }
+
+    .related-skills-heading {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .related-skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .related-skill-card {
+      display: block;
+      padding: 1rem;
+      background: var(--card);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+    }
+
+    .related-skill-card:hover {
+      border-color: var(--primary);
+      transform: var(--card-hover-lift);
+    }
+
+    .related-skill-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .related-skill-description {
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.4;
+    }
+
     @media (max-width: 768px) {
       .skill-detail {
         padding: 1rem;
@@ -357,10 +408,10 @@ const authorName = skill.author && typeof skill.author === 'string'
   })} />
 
   <div class="skill-detail">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a href="/">Home</a> → <a href="/skills/">Skills</a> → {skill.name}
-    </nav>
+    <Breadcrumbs crumbs={[
+      { label: 'Skills', href: '/skills/' },
+      { label: skill.name },
+    ]} />
 
     <!-- Header -->
     <header class="skill-header">
@@ -435,6 +486,21 @@ const authorName = skill.author && typeof skill.author === 'string'
         <div set:html={skill.content} />
       </div>
     </section>
+
+    <!-- Related Skills -->
+    {relatedSkills.length > 0 && (
+      <section class="related-skills-section">
+        <h2 class="related-skills-heading">Related Skills</h2>
+        <div class="related-skills-grid">
+          {relatedSkills.map((related: any) => (
+            <a href={`/skills/${related.slug}/`} class="related-skill-card">
+              <h3 class="related-skill-title">{related.name}</h3>
+              <p class="related-skill-description">{related.description?.split('.')[0]}.</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- Footer -->
     <footer class="skill-footer">

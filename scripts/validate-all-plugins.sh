@@ -60,8 +60,8 @@ while IFS= read -r json_file; do
     fi
 
     # NEW: Check for invalid/forbidden fields (Claude Code strict schema)
-    # Allowed fields: name, version, description, author, repository, homepage, license, keywords
-    INVALID_FIELDS=$(jq -r 'keys - ["name","version","description","author","repository","homepage","license","keywords"] | .[]' "$json_file" 2>/dev/null)
+    # Allowed fields per Anthropic spec: metadata + component paths
+    INVALID_FIELDS=$(jq -r 'keys - ["name","version","description","author","repository","homepage","license","keywords","commands","agents","skills","hooks","mcpServers","outputStyles","lspServers"] | .[]' "$json_file" 2>/dev/null)
 
     if [ -n "$INVALID_FIELDS" ]; then
       echo -e "${RED}❌ Invalid fields in $json_file:${NC}"

@@ -1,7 +1,7 @@
 ---
 name: evernote-incident-runbook
 description: |
-  Incident response runbook for Evernote integration issues.
+  Manage incident response for Evernote integration issues.
   Use when troubleshooting production incidents, handling outages,
   or responding to Evernote service issues.
   Trigger with phrases like "evernote incident", "evernote outage",

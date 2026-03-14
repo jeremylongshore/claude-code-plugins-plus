@@ -5,7 +5,7 @@ databases:
   postgresql:
     default_port: 5432
     client: psql
-    connection_string: "postgresql://{user}:{password}@{host}:{port}/{database}"
+    connection_string: "postgresql://db_admin:$DB_PASSWORD@localhost:5432/app_database"
     test_query: "SELECT version();"
     permissions_query: |
       SELECT privilege_type
@@ -15,14 +15,14 @@ databases:
   mysql:
     default_port: 3306
     client: mysql
-    connection_string: "mysql://{user}:{password}@{host}:{port}/{database}"
+    connection_string: "mysql://db_admin:$DB_PASSWORD@localhost:3306/app_database"
     test_query: "SELECT VERSION();"
     permissions_query: "SHOW GRANTS;"
 
   sqlserver:
     default_port: 1433
     client: sqlcmd
-    connection_string: "Server={host},{port};Database={database};User Id={user};Password={password};"
+    connection_string: "Server=localhost,1433;Database=app_database;User Id=db_admin;Password=$DB_PASSWORD;"
     test_query: "SELECT @@VERSION;"
     permissions_query: "SELECT permission_name FROM fn_my_permissions(NULL, 'DATABASE');"
 

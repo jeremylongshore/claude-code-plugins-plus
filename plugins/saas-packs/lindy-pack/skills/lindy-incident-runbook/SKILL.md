@@ -1,7 +1,7 @@
 ---
 name: lindy-incident-runbook
 description: |
-  Incident response runbook for Lindy AI integrations.
+  Manage incident response for Lindy AI integrations.
   Use when responding to incidents, troubleshooting outages,
   or creating on-call procedures.
   Trigger with phrases like "lindy incident", "lindy outage",

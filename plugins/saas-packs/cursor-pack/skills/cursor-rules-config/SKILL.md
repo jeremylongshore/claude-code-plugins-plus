@@ -11,6 +11,8 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Cursor Rules Config
 
+Provides project-specific AI behavior configuration for Cursor IDE through `.cursorrules` files.
+
 ## Overview
 
 ### What is .cursorrules?

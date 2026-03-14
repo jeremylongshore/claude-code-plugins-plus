@@ -48,7 +48,7 @@ A structured adaptation report containing:
 | No matching plugins found | Search terms too narrow or domain not represented | Broaden search keywords; check alternative categories; fall back to general-purpose approach |
 | Plugin directory inaccessible | Missing read permissions or incorrect path | Verify `plugins/` directory exists and permissions allow traversal |
 | Incompatible patterns | Extracted approaches conflict with current environment | Prioritize the most relevant plugin's approach; discard conflicting elements |
-| Empty skill/command files | Plugin has placeholder content without real instructions | Skip that plugin and note it as incomplete; rely on other sources |
+| Empty skill/command files | Plugin has stub content without real instructions | Skip that plugin and note it as incomplete; rely on other sources |
 
 ## Examples
 

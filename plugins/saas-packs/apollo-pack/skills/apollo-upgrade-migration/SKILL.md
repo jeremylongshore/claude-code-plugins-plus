@@ -1,7 +1,7 @@
 ---
 name: apollo-upgrade-migration
 description: |
-  Plan and execute Apollo.io SDK upgrades.
+  Manage Apollo.io SDK upgrades.
   Use when upgrading Apollo API versions, migrating to new endpoints,
   or updating deprecated API usage.
   Trigger with phrases like "apollo upgrade", "apollo migration",

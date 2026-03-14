@@ -60,7 +60,7 @@ Generate comprehensive database documentation by introspecting live PostgreSQL o
 
 | Error | Cause | Solution |
 |-------|-------|---------|
-| Missing column comments | `COMMENT ON COLUMN` not used in the database | Generate placeholder descriptions based on column name patterns; flag columns needing manual description |
+| Missing column comments | `COMMENT ON COLUMN` not used in the database | Generate inferred descriptions based on column name patterns; flag columns needing manual description |
 | Permission denied on pg_catalog | Restricted database user without catalog access | Request `pg_read_all_settings` role; or use `pg_dump --schema-only` as an alternative schema source |
 | Large schema with 500+ tables | Documentation generation takes too long or produces unmanageable output | Generate per-schema or per-module documentation; create a table-of-contents index; filter to specific table prefixes |
 | Custom types not resolved | PostgreSQL domain types or composite types not in standard introspection | Query `pg_type` for custom type definitions; include type documentation in a separate section |

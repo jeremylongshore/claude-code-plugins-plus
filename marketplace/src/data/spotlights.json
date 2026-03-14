@@ -1,0 +1,45 @@
+{
+  "week": "2026-W11",
+  "title": "Killer Skills This Week",
+  "spotlights": [
+    {
+      "pluginSlug": "skill-creator",
+      "headline": "The meta-tool that builds and grades other skills",
+      "whyKiller": "Create marketplace-ready skill packages with 100-point grading, eval-driven development, and auto-fix. The tool Jeremy uses to build every skill in the marketplace.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 1,
+      "category": "skill-enhancers",
+      "link": "/plugins/skill-creator"
+    },
+    {
+      "pluginSlug": "cursor-pack",
+      "headline": "30 skills that make Cursor actually intelligent",
+      "whyKiller": "Complete Cursor IDE mastery: composer workflows, AI code completion patterns, multi-file edits, and context management. Cross-platform proof that skills aren't Claude-only.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 30,
+      "category": "saas-packs",
+      "link": "/plugins/cursor-pack"
+    },
+    {
+      "pluginSlug": "crypto-portfolio-tracker",
+      "headline": "Professional crypto portfolio tracking with real-time PnL",
+      "whyKiller": "Real-time price feeds, position tracking, risk metrics, and tax-lot accounting. One of 26 A-grade crypto skills covering the full DeFi stack.",
+      "author": "Jeremy Longshore",
+      "authorGithub": "jeremylongshore",
+      "grade": "A",
+      "skillCount": 5,
+      "category": "crypto",
+      "link": "/plugins/crypto-portfolio-tracker"
+    }
+  ],
+  "archive": [],
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-03-11",
+    "curatedBy": "Jeremy Longshore"
+  }
+}

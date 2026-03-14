@@ -1,0 +1,9 @@
+{
+  "name": "validate-plugin",
+  "version": "1.0.0",
+  "description": "Validates Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard",
+  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["validation", "plugin-development", "quality-assurance", "linting"]
+}

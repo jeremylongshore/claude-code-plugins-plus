@@ -48,7 +48,7 @@ Configure webhooks for asynchronous OpenEvidence operations. Covers DeepConsult 
 Set up Express route at `/webhooks/openevidence` with signature verification middleware. Parse `t=timestamp,v1=signature` format from `x-openevidence-signature` header.
 
 ### Step 2: Implement Signature Verification
-Compute HMAC-SHA256 of `${timestamp}.${payload}` with webhook secret. Use timing-safe comparison. Reject timestamps older than 5 minutes (replay protection).
+Compute HMAC-SHA256 of the concatenated timestamp and raw request body (joined by a period) with the webhook secret. Use timing-safe comparison. Reject timestamps older than 5 minutes (replay protection).
 
 ### Step 3: Build Event Handlers
 Create handlers for each event type: update database status for DeepConsult lifecycle, send push/email notifications on completion, alert ops on failures and rate limit warnings.

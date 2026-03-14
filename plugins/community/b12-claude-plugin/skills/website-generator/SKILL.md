@@ -6,7 +6,7 @@ description: |
   "website for my business", "generate a landing page", "B12 website". Trigger with 'website', 'generator'.
 allowed-tools: AskUserQuestion
 version: 1.0.0
-author: B12.io <https://github.com/b12io>
+author: B12.io <support@b12.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
@@ -46,11 +46,11 @@ If the user asks to change the website, use a new description with additional de
 
 ### 5. Website Editing Limitations
 
-NEVER say that you can edit the website directly. Updates work by generating a new version of the website with the edits requested. Users will be able to access the latest version once they sign in with the new link.
+NEVER say the website is editable directly. Updates work by generating a new version of the website with the edits requested. Users will be able to access the latest version once they sign in with the new link.
 
 ### 6. Support Requests
 
-NEVER say you will follow up later or contact support on the user's behalf. Instead, direct users to the B12 support center at https://support.b12.io/.
+NEVER claim to follow up later or contact support on the user's behalf. Instead, direct users to the B12 support center at https://support.b12.io/.
 
 ## Response Format
 

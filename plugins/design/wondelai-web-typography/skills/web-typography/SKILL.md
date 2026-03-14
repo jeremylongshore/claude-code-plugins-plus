@@ -4,7 +4,7 @@ description: |
   Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", or "type hierarchy". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design. Trigger with 'web', 'typography'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

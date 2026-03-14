@@ -1,7 +1,7 @@
 ---
 name: granola-data-handling
 description: |
-  Data export, retention, and GDPR compliance for Granola.
+  Manage data export, retention, and GDPR compliance for Granola.
   Use when managing data exports, configuring retention policies,
   or ensuring regulatory compliance.
   Trigger with phrases like "granola export", "granola data",

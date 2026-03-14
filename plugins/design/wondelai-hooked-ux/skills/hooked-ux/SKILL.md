@@ -1,10 +1,10 @@
 ---
 name: hooked-ux
 description: |
-  Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions "users aren''t coming back", "engagement loops", "habit formation", "push notifications", or "variable rewards". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious. Trigger with 'hooked', 'ux'.
+  Build habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions "users aren''t coming back", "engagement loops", "habit formation", "push notifications", or "variable rewards". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious. Trigger with 'hooked', 'ux'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

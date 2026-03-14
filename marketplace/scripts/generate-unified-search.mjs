@@ -81,13 +81,21 @@ if (fs.existsSync(EXTENDED_CATALOG_FILE)) {
   console.log(`   Verification data loaded for ${verificationMap.size} plugins`);
 }
 
-// Determine if author is official (Intent Solutions / Jeremy Longshore)
+// Determine if author is official (Intent Solutions / Jeremy Longshore / house accounts)
 function getAuthorType(author) {
   if (!author) return 'community';
   const name = (author.name || '').toLowerCase();
   const email = (author.email || '').toLowerCase();
-  if (name.includes('jeremy longshore') || email.includes('intentsolutions.io') ||
-      name.includes('claude code plugins team')) {
+  if (
+    name.includes('jeremy longshore') ||
+    email.endsWith('@intentsolutions.io') ||
+    name.includes('claude code plugins team') ||
+    name.includes('claude code plugin hub') ||
+    name.includes('claude code plugins') ||
+    name === 'claudecodeplugins' ||
+    name.includes('intent solutions') ||
+    name === 'community'
+  ) {
     return 'official';
   }
   return 'community';

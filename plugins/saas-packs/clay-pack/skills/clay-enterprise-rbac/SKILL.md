@@ -77,7 +77,7 @@ curl -X PATCH https://api.clay.com/v1/tables/tbl_abc123 \
 ```
 
 ### Step 4: Separate API Keys by Integration
-Create distinct API keys for each downstream integration (CRM sync, outbound tool, internal dashboard) so you can revoke one without disrupting others. Label keys clearly: `crm-sync-prod`, `outbound-instantly`, `internal-dashboard`.
+Create distinct API keys for each downstream integration (CRM sync, outbound tool, internal dashboard) to allow revoking one without disrupting others. Label keys clearly: `crm-sync-prod`, `outbound-instantly`, `internal-dashboard`.
 
 ### Step 5: Review Credit Usage by Member
 ```bash

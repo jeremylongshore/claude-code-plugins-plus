@@ -4,7 +4,7 @@ description: |
   Evaluate and improve interface usability using heuristic analysis. Use when the user mentions "usability audit", "UX review", "users are confused", "heuristic evaluation", "form usability", or "navigation problems". Covers Nielsen''s 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology. Trigger with 'ux', 'heuristics'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -114,7 +114,7 @@ See: [references/krug-principles.md](references/krug-principles.md) for Krug's c
 | **Onboarding** | One instruction per screen | "Choose your interests" not a wall of explanatory text |
 
 **Copy patterns:**
-- Before: "Please kindly note that you will need to enter your password in order to proceed to the next step."
+- Before: "Please kindly note that a password is required in order to proceed to the next step."
 - After: "Enter your password to continue."
 - Before: "We've received your message and will get back to you as soon as possible."
 - After: "Message sent. We'll reply within 24 hours."

@@ -1,7 +1,7 @@
 ---
 name: documenso-incident-runbook
 description: |
-  Incident response procedures for Documenso integration issues.
+  Manage incident response for Documenso integration issues.
   Use when diagnosing production incidents, handling outages,
   or responding to Documenso service disruptions.
   Trigger with phrases like "documenso incident", "documenso outage",

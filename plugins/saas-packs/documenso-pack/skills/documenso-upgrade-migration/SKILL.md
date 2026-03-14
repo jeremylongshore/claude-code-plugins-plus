@@ -1,7 +1,7 @@
 ---
 name: documenso-upgrade-migration
 description: |
-  Execute Documenso API version upgrades and SDK migrations.
+  Manage Documenso API version upgrades and SDK migrations.
   Use when upgrading from v1 to v2 API, updating SDK versions,
   or migrating between Documenso versions.
   Trigger with phrases like "documenso upgrade", "documenso v2 migration",

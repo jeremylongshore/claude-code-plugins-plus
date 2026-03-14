@@ -153,7 +153,7 @@ userStore.getUser().then(user => {
 
 ## Development Tokens (Sandbox Only)
 
-For development, you can use a Developer Token instead of full OAuth:
+For development, use a Developer Token instead of full OAuth:
 
 1. Create a sandbox account at https://sandbox.evernote.com
 2. Get a Developer Token from https://sandbox.evernote.com/api/DeveloperToken.action

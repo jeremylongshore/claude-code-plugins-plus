@@ -28,7 +28,7 @@ Inspect and validate Vertex AI Agent Engine deployments across seven categories:
 2. Parse the runtime configuration: model selection (Gemini 2.5 Pro/Flash), tools enabled, VPC settings, and scaling policies
 3. Validate Code Execution Sandbox settings: confirm state TTL is 7-14 days, sandbox type is `SECURE_ISOLATED`, and IAM permissions are scoped to required GCP services only
 4. Check Memory Bank configuration: verify enabled status, retention policy (min 100 memories), Firestore encryption, indexing enabled, and auto-cleanup active
-5. Test A2A protocol compliance by probing `/.well-known/agent-card`, `POST /v1/tasks:send`, and `GET /v1/tasks/{task_id}` endpoints for correct responses
+5. Test A2A protocol compliance by probing `/.well-known/agent-card`, `POST /v1/tasks:send`, and `GET /v1/tasks/<task-id>` endpoints for correct responses
 6. Audit security posture: validate IAM least-privilege roles, VPC Service Controls perimeter, Model Armor activation, encryption at rest and in transit, and absence of hardcoded credentials
 7. Query Cloud Monitoring for performance metrics: request count, error rate (target < 5%), latency percentiles (p50/p95/p99), token usage, and cost estimates over the last 24 hours
 8. Assess monitoring and observability: confirm Cloud Monitoring dashboards, alerting policies, structured logging, OpenTelemetry tracing, and Cloud Error Reporting are configured

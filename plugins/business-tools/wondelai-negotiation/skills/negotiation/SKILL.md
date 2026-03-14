@@ -4,7 +4,7 @@ description: |
   Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions "salary negotiation", "contract terms", "handling objections", "mirroring and labeling", or "difficult conversation". Covers accusation audits, Black Swan discovery, and the "That''s Right" technique. For persuasion in product/marketing, see influence-psychology. Trigger with 'negotiation'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---

@@ -48,7 +48,7 @@ Audit database security configurations, user privileges, network exposure, and d
    - Flag columns storing PII without encryption or hashing
 
 6. Scan application source code for SQL injection vulnerabilities using Grep:
-   - Search for string concatenation in SQL queries: patterns like `"SELECT * FROM " + variable` or `f"SELECT * FROM {table}"`
+   - Search for string concatenation in SQL queries: patterns like `"SELECT * FROM " + variable` or Python f-strings with interpolated table names
    - Search for missing parameterized queries: raw SQL construction without bind parameters
    - Flag ORM `raw()` or `execute()` calls with string interpolation
 

@@ -1,7 +1,7 @@
 ---
 name: guidewire-incident-runbook
 description: |
-  Incident response runbook for Guidewire InsuranceSuite production incidents.
+  Manage incident response for Guidewire InsuranceSuite production incidents.
   Use when responding to production issues, outages, or degraded performance.
   Trigger with phrases like "guidewire incident", "production issue",
   "outage response", "incident runbook", "troubleshooting guidewire".

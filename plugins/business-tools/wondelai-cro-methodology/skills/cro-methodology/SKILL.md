@@ -4,7 +4,7 @@ description: |
   Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions "landing page isn''t converting", "conversion rate", "A/B test", "why visitors leave", or "objection handling". Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics. Trigger with 'cro', 'methodology'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -201,7 +201,7 @@ See: [testing-methodology.md](references/testing-methodology.md) for ICE scoring
 
 **Core concept:** Run controlled experiments comparing page versions to determine which performs better, using proper statistical rigor to ensure results are real, not random noise.
 
-**Why it works:** Without controlled experiments, you can't distinguish real improvements from random variation. Proper A/B testing methodology prevents the most common errors: peeking and stopping early, insufficient sample size, ignoring practical significance, and the multiple comparison problem.
+**Why it works:** Without controlled experiments, it is impossible to distinguish real improvements from random variation. Proper A/B testing methodology prevents the most common errors: peeking and stopping early, insufficient sample size, ignoring practical significance, and the multiple comparison problem.
 
 **Key insights:**
 - Calculate required sample size BEFORE starting (inputs: baseline rate, minimum detectable effect, 80% power, 95% significance)

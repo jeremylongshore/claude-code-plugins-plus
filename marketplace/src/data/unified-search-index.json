@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-11T05:22:47.425Z",
+    "generated": "2026-03-13T05:00:21.221Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 341,
-    "totalSkills": 1397,
-    "totalItems": 1738,
+    "totalPlugins": 343,
+    "totalSkills": 1399,
+    "totalItems": 1742,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -42,6 +42,7 @@
     "skillTools": [
       "\"Read",
       "AskUserQuestion",
+      "AskUserQuestion\"",
       "Bash(analysis:*)\"",
       "Bash(ansible:*)",
       "Bash(api:auth-*)",
@@ -80,7 +81,9 @@
       "Bash(bandit:*)",
       "Bash(brew:*)",
       "Bash(cat:*)",
+      "Bash(chmod:*)",
       "Bash(ci:*)",
+      "Bash(claude:*)",
       "Bash(cmd:*)",
       "Bash(cmd:*)\"",
       "Bash(code-scan:*)",
@@ -307,6 +310,7 @@
       "ansible",
       "answers",
       "anthropic",
+      "anthropic-spec",
       "api",
       "api-gateway",
       "api-integration",
@@ -694,6 +698,7 @@
       "google",
       "google-cloud",
       "gpu-marketplace",
+      "grading",
       "grafana",
       "granola",
       "graphql",
@@ -881,6 +886,7 @@
       "mermaid-diagrams",
       "messaging",
       "meta-plugin",
+      "meta-tooling",
       "metrics",
       "mev",
       "microservices",
@@ -1008,6 +1014,7 @@
       "playbooks",
       "playwright",
       "plots",
+      "plugin-development",
       "plugin-intelligence",
       "plugin-management",
       "plugins",
@@ -1185,6 +1192,7 @@
       "signifiers",
       "simulation",
       "sinon",
+      "skill-creation",
       "skill-enhancer",
       "skill-extraction",
       "skills",
@@ -1418,9 +1426,9 @@
     "totalHooks": 8,
     "pluginsWithAgents": 38,
     "pluginsWithHooks": 8,
-    "officialPlugins": 273,
-    "communityPlugins": 68,
-    "communityContributors": 20
+    "officialPlugins": 302,
+    "communityPlugins": 41,
+    "communityContributors": 15
   },
   "items": [
     {
@@ -1632,7 +1640,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -1755,7 +1763,7 @@
       "author": {
         "name": "Claude Code Plugins"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -2174,7 +2182,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -2928,7 +2936,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -3048,7 +3056,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -3373,7 +3381,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -4475,7 +4483,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -4865,7 +4873,7 @@
       "author": {
         "name": "Claude Code Plugin Hub"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -5119,7 +5127,7 @@
         "name": "ClaudeCodePlugins",
         "email": "plugins@claudecodeplugins.io"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -5221,7 +5229,7 @@
       "author": {
         "name": "Community"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -5963,7 +5971,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -6090,7 +6098,7 @@
       "author": {
         "name": "Claude Code Plugin Hub"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -6350,7 +6358,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -6575,7 +6583,7 @@
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -6931,7 +6939,7 @@
         "url": "https://intentsolutions.io",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -7526,7 +7534,7 @@
       "author": {
         "name": "Claude Code Plugin Hub"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -7984,7 +7992,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8017,7 +8025,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8079,7 +8087,7 @@
       "author": {
         "name": "Claude Code Plugin Hub"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -8473,7 +8481,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8506,7 +8514,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8539,7 +8547,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8572,7 +8580,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -8837,7 +8845,7 @@
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -9119,7 +9127,7 @@
       "author": {
         "name": "Claude Code Plugin Hub"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": false,
@@ -9702,7 +9710,7 @@
         "name": "Claude Code Plugins",
         "email": "[email protected]"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "2.0.0",
       "isFeatured": true,
       "isNew": true,
@@ -11635,7 +11643,7 @@
       "author": {
         "name": "Claude Code Plugins"
       },
-      "authorType": "community",
+      "authorType": "official",
       "version": "1.0.0",
       "isFeatured": false,
       "isNew": true,
@@ -12586,6 +12594,63 @@
       ],
       "skillCount": 30,
       "searchText": "windsurf windsurf ai ide skill pack with 30 skills covering code flows, ai workflows, workspace management, and productivity features. saas-packs windsurf ai-ide code-editor cascade ai-coding"
+    },
+    {
+      "type": "plugin",
+      "id": "skill-creator",
+      "slug": "skill-creator",
+      "name": "skill-creator",
+      "displayName": "skill creator",
+      "description": "Create and validate production-grade agent skills with 100-point marketplace grading. Supports creation workflows, eval-driven development, and auto-fix for spec compliance.",
+      "category": "skill-enhancers",
+      "keywords": [
+        "skill-creation",
+        "validation",
+        "meta-tooling",
+        "grading",
+        "anthropic-spec"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "5.0.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "skill creator create and validate production-grade agent skills with 100-point marketplace grading. supports creation workflows, eval-driven development, and auto-fix for spec compliance. skill-enhancers skill-creation validation meta-tooling grading anthropic-spec"
+    },
+    {
+      "type": "plugin",
+      "id": "validate-plugin",
+      "slug": "validate-plugin",
+      "name": "validate-plugin",
+      "displayName": "validate plugin",
+      "description": "Validate Claude Code plugin structure against official Anthropic spec and Intent Solutions enterprise standard with 100-point grading.",
+      "category": "skill-enhancers",
+      "keywords": [
+        "validation",
+        "plugin-development",
+        "quality-assurance",
+        "linting"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "validate plugin validate claude code plugin structure against official anthropic spec and intent solutions enterprise standard with 100-point grading. skill-enhancers validation plugin-development quality-assurance linting"
     },
     {
       "type": "skill",
@@ -15417,7 +15482,7 @@
       "id": "apollo-upgrade-migration",
       "slug": "apollo-upgrade-migration",
       "name": "apollo-upgrade-migration",
-      "description": "Plan and execute Apollo.io SDK upgrades. Use when upgrading Apollo API versions, migrating to new endpoints, or updating deprecated API usage. Trigger with phrases like \"apollo upgrade\", \"apollo migration\", \"update apollo api\", \"apollo breaking changes\", \"apollo deprecation\".",
+      "description": "Manage Apollo.io SDK upgrades. Use when upgrading Apollo API versions, migrating to new endpoints, or updating deprecated API usage. Trigger with phrases like \"apollo upgrade\", \"apollo migration\", \"update apollo api\", \"apollo breaking changes\", \"apollo deprecation\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -15434,7 +15499,7 @@
         "name": "apollo-pack",
         "category": "saas-packs"
       },
-      "searchText": "apollo-upgrade-migration plan and execute apollo.io sdk upgrades. use when upgrading apollo api versions, migrating to new endpoints, or updating deprecated api usage. trigger with phrases like \"apollo upgrade\", \"apollo migration\", \"update apollo api\", \"apollo breaking changes\", \"apollo deprecation\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
+      "searchText": "apollo-upgrade-migration manage apollo.io sdk upgrades. use when upgrading apollo api versions, migrating to new endpoints, or updating deprecated api usage. trigger with phrases like \"apollo upgrade\", \"apollo migration\", \"update apollo api\", \"apollo breaking changes\", \"apollo deprecation\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -17214,7 +17279,7 @@
       "id": "clerk-incident-runbook",
       "slug": "clerk-incident-runbook",
       "name": "clerk-incident-runbook",
-      "description": "Incident response procedures for Clerk authentication issues. Use when handling auth outages, security incidents, or production authentication problems. Trigger with phrases like \"clerk incident\", \"clerk outage\", \"clerk down\", \"auth not working\", \"clerk emergency\".",
+      "description": "Manage incident response for Clerk authentication issues. Use when handling auth outages, security incidents, or production authentication problems. Trigger with phrases like \"clerk incident\", \"clerk outage\", \"clerk down\", \"auth not working\", \"clerk emergency\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -17234,7 +17299,7 @@
         "name": "clerk-pack",
         "category": "saas-packs"
       },
-      "searchText": "clerk-incident-runbook incident response procedures for clerk authentication issues. use when handling auth outages, security incidents, or production authentication problems. trigger with phrases like \"clerk incident\", \"clerk outage\", \"clerk down\", \"auth not working\", \"clerk emergency\". saas-packs read write edit bash(npm:*) bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "clerk-incident-runbook manage incident response for clerk authentication issues. use when handling auth outages, security incidents, or production authentication problems. trigger with phrases like \"clerk incident\", \"clerk outage\", \"clerk down\", \"auth not working\", \"clerk emergency\". saas-packs read write edit bash(npm:*) bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -17524,7 +17589,7 @@
       "id": "clerk-upgrade-migration",
       "slug": "clerk-upgrade-migration",
       "name": "clerk-upgrade-migration",
-      "description": "Upgrade Clerk SDK versions and handle breaking changes. Use when upgrading Clerk packages, migrating to new SDK versions, or handling deprecation warnings. Trigger with phrases like \"upgrade clerk\", \"clerk migration\", \"update clerk SDK\", \"clerk breaking changes\".",
+      "description": "Manage Clerk SDK version upgrades and handle breaking changes. Use when upgrading Clerk packages, migrating to new SDK versions, or handling deprecation warnings. Trigger with phrases like \"upgrade clerk\", \"clerk migration\", \"update clerk SDK\", \"clerk breaking changes\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -17544,7 +17609,7 @@
         "name": "clerk-pack",
         "category": "saas-packs"
       },
-      "searchText": "clerk-upgrade-migration upgrade clerk sdk versions and handle breaking changes. use when upgrading clerk packages, migrating to new sdk versions, or handling deprecation warnings. trigger with phrases like \"upgrade clerk\", \"clerk migration\", \"update clerk sdk\", \"clerk breaking changes\". saas-packs read write edit bash(npm:*) bash(pnpm:*) grep claude-code codex openclaw"
+      "searchText": "clerk-upgrade-migration manage clerk sdk version upgrades and handle breaking changes. use when upgrading clerk packages, migrating to new sdk versions, or handling deprecation warnings. trigger with phrases like \"upgrade clerk\", \"clerk migration\", \"update clerk sdk\", \"clerk breaking changes\". saas-packs read write edit bash(npm:*) bash(pnpm:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -18996,7 +19061,7 @@
       "id": "customerio-primary-workflow",
       "slug": "customerio-primary-workflow",
       "name": "customerio-primary-workflow",
-      "description": "Execute Customer.io primary messaging workflow. Use when setting up email campaigns, push notifications, SMS messaging, or in-app message workflows. Trigger with phrases like \"customer.io campaign\", \"customer.io workflow\", \"customer.io email automation\", \"customer.io messaging\".",
+      "description": "Manage Customer.io primary messaging workflow. Use when setting up email campaigns, push notifications, SMS messaging, or in-app message workflows. Trigger with phrases like \"customer.io campaign\", \"customer.io workflow\", \"customer.io email automation\", \"customer.io messaging\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -19016,7 +19081,7 @@
         "name": "customerio-pack",
         "category": "saas-packs"
       },
-      "searchText": "customerio-primary-workflow execute customer.io primary messaging workflow. use when setting up email campaigns, push notifications, sms messaging, or in-app message workflows. trigger with phrases like \"customer.io campaign\", \"customer.io workflow\", \"customer.io email automation\", \"customer.io messaging\". saas-packs read write edit bash(npm:*) bash(pip:*) grep claude-code codex openclaw"
+      "searchText": "customerio-primary-workflow manage customer.io primary messaging workflow. use when setting up email campaigns, push notifications, sms messaging, or in-app message workflows. trigger with phrases like \"customer.io campaign\", \"customer.io workflow\", \"customer.io email automation\", \"customer.io messaging\". saas-packs read write edit bash(npm:*) bash(pip:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -19174,7 +19239,7 @@
       "id": "customerio-upgrade-migration",
       "slug": "customerio-upgrade-migration",
       "name": "customerio-upgrade-migration",
-      "description": "Plan and execute Customer.io SDK upgrades. Use when upgrading SDK versions, migrating integrations, or updating to new API versions. Trigger with phrases like \"upgrade customer.io\", \"customer.io migration\", \"update customer.io sdk\", \"customer.io version\".",
+      "description": "Manage Customer.io SDK upgrades. Use when upgrading SDK versions, migrating integrations, or updating to new API versions. Trigger with phrases like \"upgrade customer.io\", \"customer.io migration\", \"update customer.io sdk\", \"customer.io version\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -19191,7 +19256,7 @@
         "name": "customerio-pack",
         "category": "saas-packs"
       },
-      "searchText": "customerio-upgrade-migration plan and execute customer.io sdk upgrades. use when upgrading sdk versions, migrating integrations, or updating to new api versions. trigger with phrases like \"upgrade customer.io\", \"customer.io migration\", \"update customer.io sdk\", \"customer.io version\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
+      "searchText": "customerio-upgrade-migration manage customer.io sdk upgrades. use when upgrading sdk versions, migrating integrations, or updating to new api versions. trigger with phrases like \"upgrade customer.io\", \"customer.io migration\", \"update customer.io sdk\", \"customer.io version\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -20525,7 +20590,7 @@
       "id": "design-everyday-things",
       "slug": "design-everyday-things",
       "name": "design-everyday-things",
-      "description": "Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.",
+      "description": "Analyze and apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -20542,7 +20607,7 @@
         "name": "wondelai-design-everyday-things",
         "category": "design"
       },
-      "searchText": "design-everyday-things apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design. trigger with 'design', 'everyday', 'things'. design read glob grep claude-code codex openclaw"
+      "searchText": "design-everyday-things analyze and apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design. trigger with 'design', 'everyday', 'things'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -21041,7 +21106,7 @@
       "id": "documenso-incident-runbook",
       "slug": "documenso-incident-runbook",
       "name": "documenso-incident-runbook",
-      "description": "Incident response procedures for Documenso integration issues. Use when diagnosing production incidents, handling outages, or responding to Documenso service disruptions. Trigger with phrases like \"documenso incident\", \"documenso outage\", \"documenso down\", \"documenso troubleshooting\".",
+      "description": "Manage incident response for Documenso integration issues. Use when diagnosing production incidents, handling outages, or responding to Documenso service disruptions. Trigger with phrases like \"documenso incident\", \"documenso outage\", \"documenso down\", \"documenso troubleshooting\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -21059,7 +21124,7 @@
         "name": "documenso-pack",
         "category": "saas-packs"
       },
-      "searchText": "documenso-incident-runbook incident response procedures for documenso integration issues. use when diagnosing production incidents, handling outages, or responding to documenso service disruptions. trigger with phrases like \"documenso incident\", \"documenso outage\", \"documenso down\", \"documenso troubleshooting\". saas-packs read bash(curl:*) bash(kubectl:*) grep claude-code codex openclaw"
+      "searchText": "documenso-incident-runbook manage incident response for documenso integration issues. use when diagnosing production incidents, handling outages, or responding to documenso service disruptions. trigger with phrases like \"documenso incident\", \"documenso outage\", \"documenso down\", \"documenso troubleshooting\". saas-packs read bash(curl:*) bash(kubectl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -21339,7 +21404,7 @@
       "id": "documenso-upgrade-migration",
       "slug": "documenso-upgrade-migration",
       "name": "documenso-upgrade-migration",
-      "description": "Execute Documenso API version upgrades and SDK migrations. Use when upgrading from v1 to v2 API, updating SDK versions, or migrating between Documenso versions. Trigger with phrases like \"documenso upgrade\", \"documenso v2 migration\", \"update documenso SDK\", \"documenso API version\".",
+      "description": "Manage Documenso API version upgrades and SDK migrations. Use when upgrading from v1 to v2 API, updating SDK versions, or migrating between Documenso versions. Trigger with phrases like \"documenso upgrade\", \"documenso v2 migration\", \"update documenso SDK\", \"documenso API version\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -21357,7 +21422,7 @@
         "name": "documenso-pack",
         "category": "saas-packs"
       },
-      "searchText": "documenso-upgrade-migration execute documenso api version upgrades and sdk migrations. use when upgrading from v1 to v2 api, updating sdk versions, or migrating between documenso versions. trigger with phrases like \"documenso upgrade\", \"documenso v2 migration\", \"update documenso sdk\", \"documenso api version\". saas-packs read write edit bash(npm:*) claude-code codex openclaw"
+      "searchText": "documenso-upgrade-migration manage documenso api version upgrades and sdk migrations. use when upgrading from v1 to v2 api, updating sdk versions, or migrating between documenso versions. trigger with phrases like \"documenso upgrade\", \"documenso v2 migration\", \"update documenso sdk\", \"documenso api version\". saas-packs read write edit bash(npm:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -21779,7 +21844,7 @@
       "id": "evernote-incident-runbook",
       "slug": "evernote-incident-runbook",
       "name": "evernote-incident-runbook",
-      "description": "Incident response runbook for Evernote integration issues. Use when troubleshooting production incidents, handling outages, or responding to Evernote service issues. Trigger with phrases like \"evernote incident\", \"evernote outage\", \"evernote emergency\", \"troubleshoot evernote production\".",
+      "description": "Manage incident response for Evernote integration issues. Use when troubleshooting production incidents, handling outages, or responding to Evernote service issues. Trigger with phrases like \"evernote incident\", \"evernote outage\", \"evernote emergency\", \"troubleshoot evernote production\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -21798,7 +21863,7 @@
         "name": "evernote-pack",
         "category": "saas-packs"
       },
-      "searchText": "evernote-incident-runbook incident response runbook for evernote integration issues. use when troubleshooting production incidents, handling outages, or responding to evernote service issues. trigger with phrases like \"evernote incident\", \"evernote outage\", \"evernote emergency\", \"troubleshoot evernote production\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "evernote-incident-runbook manage incident response for evernote integration issues. use when troubleshooting production incidents, handling outages, or responding to evernote service issues. trigger with phrases like \"evernote incident\", \"evernote outage\", \"evernote emergency\", \"troubleshoot evernote production\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -24836,7 +24901,7 @@
       "id": "gamma-incident-runbook",
       "slug": "gamma-incident-runbook",
       "name": "gamma-incident-runbook",
-      "description": "Incident response runbook for Gamma integration issues. Use when experiencing production incidents, outages, or need systematic troubleshooting procedures. Trigger with phrases like \"gamma incident\", \"gamma outage\", \"gamma down\", \"gamma emergency\", \"gamma runbook\".",
+      "description": "Manage incident response for Gamma integration issues. Use when experiencing production incidents, outages, or need systematic troubleshooting procedures. Trigger with phrases like \"gamma incident\", \"gamma outage\", \"gamma down\", \"gamma emergency\", \"gamma runbook\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -24855,7 +24920,7 @@
         "name": "gamma-pack",
         "category": "saas-packs"
       },
-      "searchText": "gamma-incident-runbook incident response runbook for gamma integration issues. use when experiencing production incidents, outages, or need systematic troubleshooting procedures. trigger with phrases like \"gamma incident\", \"gamma outage\", \"gamma down\", \"gamma emergency\", \"gamma runbook\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "gamma-incident-runbook manage incident response for gamma integration issues. use when experiencing production incidents, outages, or need systematic troubleshooting procedures. trigger with phrases like \"gamma incident\", \"gamma outage\", \"gamma down\", \"gamma emergency\", \"gamma runbook\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -26028,7 +26093,7 @@
       "id": "granola-data-handling",
       "slug": "granola-data-handling",
       "name": "granola-data-handling",
-      "description": "Data export, retention, and GDPR compliance for Granola. Use when managing data exports, configuring retention policies, or ensuring regulatory compliance. Trigger with phrases like \"granola export\", \"granola data\", \"granola GDPR\", \"granola retention\", \"granola compliance\".",
+      "description": "Manage data export, retention, and GDPR compliance for Granola. Use when managing data exports, configuring retention policies, or ensuring regulatory compliance. Trigger with phrases like \"granola export\", \"granola data\", \"granola GDPR\", \"granola retention\", \"granola compliance\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -26045,7 +26110,7 @@
         "name": "granola-pack",
         "category": "saas-packs"
       },
-      "searchText": "granola-data-handling data export, retention, and gdpr compliance for granola. use when managing data exports, configuring retention policies, or ensuring regulatory compliance. trigger with phrases like \"granola export\", \"granola data\", \"granola gdpr\", \"granola retention\", \"granola compliance\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "granola-data-handling manage data export, retention, and gdpr compliance for granola. use when managing data exports, configuring retention policies, or ensuring regulatory compliance. trigger with phrases like \"granola export\", \"granola data\", \"granola gdpr\", \"granola retention\", \"granola compliance\". saas-packs read write edit claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -26152,7 +26217,7 @@
       "id": "granola-incident-runbook",
       "slug": "granola-incident-runbook",
       "name": "granola-incident-runbook",
-      "description": "Incident response procedures for Granola meeting capture issues. Use when handling meeting capture failures, system outages, or urgent troubleshooting situations. Trigger with phrases like \"granola incident\", \"granola outage\", \"granola emergency\", \"granola not recording\", \"granola down\".",
+      "description": "Manage incident response for Granola meeting capture issues. Use when handling meeting capture failures, system outages, or urgent troubleshooting situations. Trigger with phrases like \"granola incident\", \"granola outage\", \"granola emergency\", \"granola not recording\", \"granola down\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -26170,7 +26235,7 @@
         "name": "granola-pack",
         "category": "saas-packs"
       },
-      "searchText": "granola-incident-runbook incident response procedures for granola meeting capture issues. use when handling meeting capture failures, system outages, or urgent troubleshooting situations. trigger with phrases like \"granola incident\", \"granola outage\", \"granola emergency\", \"granola not recording\", \"granola down\". saas-packs read write edit bash(curl:*) claude-code codex openclaw"
+      "searchText": "granola-incident-runbook manage incident response for granola meeting capture issues. use when handling meeting capture failures, system outages, or urgent troubleshooting situations. trigger with phrases like \"granola incident\", \"granola outage\", \"granola emergency\", \"granola not recording\", \"granola down\". saas-packs read write edit bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -26349,7 +26414,7 @@
       "id": "granola-rate-limits",
       "slug": "granola-rate-limits",
       "name": "granola-rate-limits",
-      "description": "Understand Granola usage limits, quotas, and plan restrictions. Use when hitting usage limits, planning capacity, or understanding plan differences. Trigger with phrases like \"granola limits\", \"granola quota\", \"granola usage\", \"granola plan limits\", \"granola restrictions\".",
+      "description": "Monitor Granola usage limits, quotas, and plan restrictions. Use when hitting usage limits, planning capacity, or understanding plan differences. Trigger with phrases like \"granola limits\", \"granola quota\", \"granola usage\", \"granola plan limits\", \"granola restrictions\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -26366,7 +26431,7 @@
         "name": "granola-pack",
         "category": "saas-packs"
       },
-      "searchText": "granola-rate-limits understand granola usage limits, quotas, and plan restrictions. use when hitting usage limits, planning capacity, or understanding plan differences. trigger with phrases like \"granola limits\", \"granola quota\", \"granola usage\", \"granola plan limits\", \"granola restrictions\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "granola-rate-limits monitor granola usage limits, quotas, and plan restrictions. use when hitting usage limits, planning capacity, or understanding plan differences. trigger with phrases like \"granola limits\", \"granola quota\", \"granola usage\", \"granola plan limits\", \"granola restrictions\". saas-packs read write edit claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27125,7 +27190,7 @@
       "id": "guidewire-common-errors",
       "slug": "guidewire-common-errors",
       "name": "guidewire-common-errors",
-      "description": "Diagnose and resolve common Guidewire InsuranceSuite errors. Use when encountering API errors, Gosu exceptions, validation failures, or integration issues in PolicyCenter, ClaimCenter, or BillingCenter. Trigger with phrases like \"guidewire error\", \"policycenter error\", \"claimcenter error\", \"gosu exception\", \"api error 422\".",
+      "description": "Debug and fix common Guidewire InsuranceSuite errors. Use when encountering API errors, Gosu exceptions, validation failures, or integration issues in PolicyCenter, ClaimCenter, or BillingCenter. Trigger with phrases like \"guidewire error\", \"policycenter error\", \"claimcenter error\", \"gosu exception\", \"api error 422\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27144,7 +27209,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-common-errors diagnose and resolve common guidewire insurancesuite errors. use when encountering api errors, gosu exceptions, validation failures, or integration issues in policycenter, claimcenter, or billingcenter. trigger with phrases like \"guidewire error\", \"policycenter error\", \"claimcenter error\", \"gosu exception\", \"api error 422\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-common-errors debug and fix common guidewire insurancesuite errors. use when encountering api errors, gosu exceptions, validation failures, or integration issues in policycenter, claimcenter, or billingcenter. trigger with phrases like \"guidewire error\", \"policycenter error\", \"claimcenter error\", \"gosu exception\", \"api error 422\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27365,7 +27430,7 @@
       "id": "guidewire-incident-runbook",
       "slug": "guidewire-incident-runbook",
       "name": "guidewire-incident-runbook",
-      "description": "Incident response runbook for Guidewire InsuranceSuite production incidents. Use when responding to production issues, outages, or degraded performance. Trigger with phrases like \"guidewire incident\", \"production issue\", \"outage response\", \"incident runbook\", \"troubleshooting guidewire\".",
+      "description": "Manage incident response for Guidewire InsuranceSuite production incidents. Use when responding to production issues, outages, or degraded performance. Trigger with phrases like \"guidewire incident\", \"production issue\", \"outage response\", \"incident runbook\", \"troubleshooting guidewire\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -27384,7 +27449,7 @@
         "name": "guidewire-pack",
         "category": "saas-packs"
       },
-      "searchText": "guidewire-incident-runbook incident response runbook for guidewire insurancesuite production incidents. use when responding to production issues, outages, or degraded performance. trigger with phrases like \"guidewire incident\", \"production issue\", \"outage response\", \"incident runbook\", \"troubleshooting guidewire\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
+      "searchText": "guidewire-incident-runbook manage incident response for guidewire insurancesuite production incidents. use when responding to production issues, outages, or degraded performance. trigger with phrases like \"guidewire incident\", \"production issue\", \"outage response\", \"incident runbook\", \"troubleshooting guidewire\". saas-packs read write edit bash(curl:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -27764,7 +27829,7 @@
       "id": "hooked-ux",
       "slug": "hooked-ux",
       "name": "hooked-ux",
-      "description": "Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious. Trigger with 'hooked', 'ux'.",
+      "description": "Build habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious. Trigger with 'hooked', 'ux'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -27781,7 +27846,7 @@
         "name": "wondelai-hooked-ux",
         "category": "design"
       },
-      "searchText": "hooked-ux design habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious. trigger with 'hooked', 'ux'. design read glob grep claude-code codex openclaw"
+      "searchText": "hooked-ux build habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious. trigger with 'hooked', 'ux'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29178,7 +29243,7 @@
       "id": "ios-hig-design",
       "slug": "ios-hig-design",
       "name": "ios-hig-design",
-      "description": "Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", or \"HIG compliance\". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.",
+      "description": "Build native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", or \"HIG compliance\". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things. Trigger with 'ios', 'hig', 'design'.",
       "category": "design",
       "allowedTools": [
         "Read",
@@ -29195,14 +29260,14 @@
         "name": "wondelai-ios-hig-design",
         "category": "design"
       },
-      "searchText": "ios-hig-design design native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", or \"hig compliance\". covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things. trigger with 'ios', 'hig', 'design'. design read glob grep claude-code codex openclaw"
+      "searchText": "ios-hig-design build native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", or \"hig compliance\". covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things. trigger with 'ios', 'hig', 'design'. design read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "jobs-to-be-done",
       "slug": "jobs-to-be-done",
       "name": "jobs-to-be-done",
-      "description": "Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.",
+      "description": "Analyze what customers truly need by discovering the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint. Trigger with 'jobs', 'to', 'be'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -29219,7 +29284,7 @@
         "name": "wondelai-jobs-to-be-done",
         "category": "business-tools"
       },
-      "searchText": "jobs-to-be-done discover what customers truly need by analyzing the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint. trigger with 'jobs', 'to', 'be'. business-tools read glob grep claude-code codex openclaw"
+      "searchText": "jobs-to-be-done analyze what customers truly need by discovering the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint. trigger with 'jobs', 'to', 'be'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29794,7 +29859,7 @@
       "id": "juicebox-upgrade-migration",
       "slug": "juicebox-upgrade-migration",
       "name": "juicebox-upgrade-migration",
-      "description": "Plan and execute Juicebox SDK upgrades. Use when upgrading SDK versions, migrating between API versions, or handling breaking changes. Trigger with phrases like \"upgrade juicebox\", \"juicebox migration\", \"update juicebox SDK\", \"juicebox breaking changes\".",
+      "description": "Manage Juicebox SDK upgrades. Use when upgrading SDK versions, migrating between API versions, or handling breaking changes. Trigger with phrases like \"upgrade juicebox\", \"juicebox migration\", \"update juicebox SDK\", \"juicebox breaking changes\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -29811,7 +29876,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-upgrade-migration plan and execute juicebox sdk upgrades. use when upgrading sdk versions, migrating between api versions, or handling breaking changes. trigger with phrases like \"upgrade juicebox\", \"juicebox migration\", \"update juicebox sdk\", \"juicebox breaking changes\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-upgrade-migration manage juicebox sdk upgrades. use when upgrading sdk versions, migrating between api versions, or handling breaking changes. trigger with phrases like \"upgrade juicebox\", \"juicebox migration\", \"update juicebox sdk\", \"juicebox breaking changes\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -31138,7 +31203,7 @@
       "id": "langchain-upgrade-migration",
       "slug": "langchain-upgrade-migration",
       "name": "langchain-upgrade-migration",
-      "description": "Plan and execute LangChain SDK upgrades and migrations. Use when upgrading LangChain versions, migrating from legacy patterns, or updating to new APIs after breaking changes. Trigger with phrases like \"upgrade langchain\", \"langchain migration\", \"langchain breaking changes\", \"update langchain version\", \"langchain 0.3\".",
+      "description": "Manage LangChain SDK upgrades and migrations. Use when upgrading LangChain versions, migrating from legacy patterns, or updating to new APIs after breaking changes. Trigger with phrases like \"upgrade langchain\", \"langchain migration\", \"langchain breaking changes\", \"update langchain version\", \"langchain 0.3\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -31157,7 +31222,7 @@
         "name": "langchain-pack",
         "category": "saas-packs"
       },
-      "searchText": "langchain-upgrade-migration plan and execute langchain sdk upgrades and migrations. use when upgrading langchain versions, migrating from legacy patterns, or updating to new apis after breaking changes. trigger with phrases like \"upgrade langchain\", \"langchain migration\", \"langchain breaking changes\", \"update langchain version\", \"langchain 0.3\". saas-packs read write edit bash(pip:*) grep claude-code codex openclaw"
+      "searchText": "langchain-upgrade-migration manage langchain sdk upgrades and migrations. use when upgrading langchain versions, migrating from legacy patterns, or updating to new apis after breaking changes. trigger with phrases like \"upgrade langchain\", \"langchain migration\", \"langchain breaking changes\", \"update langchain version\", \"langchain 0.3\". saas-packs read write edit bash(pip:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -31888,7 +31953,7 @@
       "id": "lindy-core-workflow-b",
       "slug": "lindy-core-workflow-b",
       "name": "lindy-core-workflow-b",
-      "description": "Core Lindy workflow for automating tasks and scheduling agents. Use when setting up automated workflows, scheduling agent runs, or creating trigger-based automations. Trigger with phrases like \"lindy automation\", \"schedule lindy agent\", \"lindy workflow automation\", \"automate with lindy\".",
+      "description": "Configure core Lindy workflow for automating tasks and scheduling agents. Use when setting up automated workflows, scheduling agent runs, or creating trigger-based automations. Trigger with phrases like \"lindy automation\", \"schedule lindy agent\", \"lindy workflow automation\", \"automate with lindy\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -31905,7 +31970,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-core-workflow-b core lindy workflow for automating tasks and scheduling agents. use when setting up automated workflows, scheduling agent runs, or creating trigger-based automations. trigger with phrases like \"lindy automation\", \"schedule lindy agent\", \"lindy workflow automation\", \"automate with lindy\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "lindy-core-workflow-b configure core lindy workflow for automating tasks and scheduling agents. use when setting up automated workflows, scheduling agent runs, or creating trigger-based automations. trigger with phrases like \"lindy automation\", \"schedule lindy agent\", \"lindy workflow automation\", \"automate with lindy\". saas-packs read write edit claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -32060,7 +32125,7 @@
       "id": "lindy-incident-runbook",
       "slug": "lindy-incident-runbook",
       "name": "lindy-incident-runbook",
-      "description": "Incident response runbook for Lindy AI integrations. Use when responding to incidents, troubleshooting outages, or creating on-call procedures. Trigger with phrases like \"lindy incident\", \"lindy outage\", \"lindy on-call\", \"lindy runbook\".",
+      "description": "Manage incident response for Lindy AI integrations. Use when responding to incidents, troubleshooting outages, or creating on-call procedures. Trigger with phrases like \"lindy incident\", \"lindy outage\", \"lindy on-call\", \"lindy runbook\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -32078,7 +32143,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-incident-runbook incident response runbook for lindy ai integrations. use when responding to incidents, troubleshooting outages, or creating on-call procedures. trigger with phrases like \"lindy incident\", \"lindy outage\", \"lindy on-call\", \"lindy runbook\". saas-packs read write edit bash(curl:*) claude-code codex openclaw"
+      "searchText": "lindy-incident-runbook manage incident response for lindy ai integrations. use when responding to incidents, troubleshooting outages, or creating on-call procedures. trigger with phrases like \"lindy incident\", \"lindy outage\", \"lindy on-call\", \"lindy runbook\". saas-packs read write edit bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -32358,7 +32423,7 @@
       "id": "lindy-upgrade-migration",
       "slug": "lindy-upgrade-migration",
       "name": "lindy-upgrade-migration",
-      "description": "Guide for upgrading Lindy SDK and migrating between versions. Use when upgrading SDK versions, migrating agents, or handling breaking changes. Trigger with phrases like \"upgrade lindy\", \"lindy migration\", \"lindy breaking changes\", \"update lindy SDK\".",
+      "description": "Manage Lindy SDK upgrades and migrate between versions. Use when upgrading SDK versions, migrating agents, or handling breaking changes. Trigger with phrases like \"upgrade lindy\", \"lindy migration\", \"lindy breaking changes\", \"update lindy SDK\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -32376,7 +32441,7 @@
         "name": "lindy-pack",
         "category": "saas-packs"
       },
-      "searchText": "lindy-upgrade-migration guide for upgrading lindy sdk and migrating between versions. use when upgrading sdk versions, migrating agents, or handling breaking changes. trigger with phrases like \"upgrade lindy\", \"lindy migration\", \"lindy breaking changes\", \"update lindy sdk\". saas-packs read write edit bash(npm:*) claude-code codex openclaw"
+      "searchText": "lindy-upgrade-migration manage lindy sdk upgrades and migrate between versions. use when upgrading sdk versions, migrating agents, or handling breaking changes. trigger with phrases like \"upgrade lindy\", \"lindy migration\", \"lindy breaking changes\", \"update lindy sdk\". saas-packs read write edit bash(npm:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33158,7 +33223,7 @@
       "id": "lokalise-core-workflow-b",
       "slug": "lokalise-core-workflow-b",
       "name": "lokalise-core-workflow-b",
-      "description": "Execute Lokalise secondary workflow: Download translations and integrate with app. Use when downloading translation files, exporting translations, or integrating Lokalise output into your application. Trigger with phrases like \"lokalise download\", \"lokalise pull translations\", \"export lokalise\", \"get translations from lokalise\".",
+      "description": "Manage Lokalise secondary workflow: Download translations and integrate with app. Use when downloading translation files, exporting translations, or integrating Lokalise output into your application. Trigger with phrases like \"lokalise download\", \"lokalise pull translations\", \"export lokalise\", \"get translations from lokalise\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -33178,7 +33243,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-core-workflow-b execute lokalise secondary workflow: download translations and integrate with app. use when downloading translation files, exporting translations, or integrating lokalise output into your application. trigger with phrases like \"lokalise download\", \"lokalise pull translations\", \"export lokalise\", \"get translations from lokalise\". saas-packs read write edit bash(lokalise2:*) bash(npm:*) grep claude-code codex openclaw"
+      "searchText": "lokalise-core-workflow-b manage lokalise secondary workflow: download translations and integrate with app. use when downloading translation files, exporting translations, or integrating lokalise output into your application. trigger with phrases like \"lokalise download\", \"lokalise pull translations\", \"export lokalise\", \"get translations from lokalise\". saas-packs read write edit bash(lokalise2:*) bash(npm:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33687,7 +33752,7 @@
       "id": "made-to-stick",
       "slug": "made-to-stick",
       "name": "made-to-stick",
-      "description": "Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.",
+      "description": "Create messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -33704,7 +33769,7 @@
         "name": "wondelai-made-to-stick",
         "category": "business-tools"
       },
-      "searchText": "made-to-stick craft messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious. trigger with 'made', 'to', 'stick'. business-tools read glob grep claude-code codex openclaw"
+      "searchText": "made-to-stick create messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious. trigger with 'made', 'to', 'stick'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33974,7 +34039,7 @@
       "id": "maintainx-incident-runbook",
       "slug": "maintainx-incident-runbook",
       "name": "maintainx-incident-runbook",
-      "description": "Incident response procedures for MaintainX integration failures. Use when experiencing outages, investigating issues, or responding to MaintainX integration incidents. Trigger with phrases like \"maintainx incident\", \"maintainx outage\", \"maintainx down\", \"maintainx emergency\", \"maintainx runbook\".",
+      "description": "Manage incident response for MaintainX integration failures. Use when experiencing outages, investigating issues, or responding to MaintainX integration incidents. Trigger with phrases like \"maintainx incident\", \"maintainx outage\", \"maintainx down\", \"maintainx emergency\", \"maintainx runbook\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -33993,7 +34058,7 @@
         "name": "maintainx-pack",
         "category": "saas-packs"
       },
-      "searchText": "maintainx-incident-runbook incident response procedures for maintainx integration failures. use when experiencing outages, investigating issues, or responding to maintainx integration incidents. trigger with phrases like \"maintainx incident\", \"maintainx outage\", \"maintainx down\", \"maintainx emergency\", \"maintainx runbook\". saas-packs read write edit bash(curl:*) bash(npm:*) claude-code codex openclaw"
+      "searchText": "maintainx-incident-runbook manage incident response for maintainx integration failures. use when experiencing outages, investigating issues, or responding to maintainx integration incidents. trigger with phrases like \"maintainx incident\", \"maintainx outage\", \"maintainx down\", \"maintainx emergency\", \"maintainx runbook\". saas-packs read write edit bash(curl:*) bash(npm:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36296,7 +36361,7 @@
       "id": "obviously-awesome",
       "slug": "obviously-awesome",
       "name": "obviously-awesome",
-      "description": "Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm. Trigger with 'obviously', 'awesome'.",
+      "description": "Build product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm. Trigger with 'obviously', 'awesome'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -36313,7 +36378,7 @@
         "name": "wondelai-obviously-awesome",
         "category": "business-tools"
       },
-      "searchText": "obviously-awesome define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". covers positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm. trigger with 'obviously', 'awesome'. business-tools read glob grep claude-code codex openclaw"
+      "searchText": "obviously-awesome build product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". covers positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm. trigger with 'obviously', 'awesome'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -42862,6 +42927,38 @@
     },
     {
       "type": "skill",
+      "id": "skill-creator",
+      "slug": "skill-creator",
+      "name": "skill-creator",
+      "description": "Create production-grade agent skills aligned with the 2026 AgentSkills.io spec and Anthropic best practices. Also validates existing skills against the Intent Solutions 100-point rubric. Use when building, testing, validating, or optimizing Claude Code skills. Trigger with \"/skill-creator\", \"create a skill\", \"validate my skill\", or \"check skill quality\". Make sure to use this skill whenever creating a new skill, slash command, or agent capability.",
+      "category": "skill-enhancers",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Glob",
+        "Grep",
+        "Bash(mkdir:*)",
+        "Bash(chmod:*)",
+        "Bash(python:*)",
+        "Bash(claude:*)",
+        "Task",
+        "AskUserQuestion\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "5.0.0",
+      "parentPlugin": {
+        "name": "skill-creator",
+        "category": "skill-enhancers"
+      },
+      "searchText": "skill-creator create production-grade agent skills aligned with the 2026 agentskills.io spec and anthropic best practices. also validates existing skills against the intent solutions 100-point rubric. use when building, testing, validating, or optimizing claude code skills. trigger with \"/skill-creator\", \"create a skill\", \"validate my skill\", or \"check skill quality\". make sure to use this skill whenever creating a new skill, slash command, or agent capability. skill-enhancers \"read write edit glob grep bash(mkdir:*) bash(chmod:*) bash(python:*) bash(claude:*) task askuserquestion\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
       "id": "speak-ci-integration",
       "slug": "speak-ci-integration",
       "name": "speak-ci-integration",
@@ -43537,7 +43634,7 @@
       "id": "storybrand-messaging",
       "slug": "storybrand-messaging",
       "name": "storybrand-messaging",
-      "description": "Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.",
+      "description": "Build clear brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome. Trigger with 'storybrand', 'messaging'.",
       "category": "business-tools",
       "allowedTools": [
         "Read",
@@ -43554,7 +43651,7 @@
         "name": "wondelai-storybrand-messaging",
         "category": "business-tools"
       },
-      "searchText": "storybrand-messaging clarify brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome. trigger with 'storybrand', 'messaging'. business-tools read glob grep claude-code codex openclaw"
+      "searchText": "storybrand-messaging build clear brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome. trigger with 'storybrand', 'messaging'. business-tools read glob grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -45403,6 +45500,29 @@
         "category": "design"
       },
       "searchText": "ux-heuristics evaluate and improve interface usability using heuristic analysis. use when the user mentions \"usability audit\", \"ux review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". covers nielsen''s 10 heuristics, severity ratings, and information architecture. for visual design fixes, see refactoring-ui. for conversion-focused audits, see cro-methodology. trigger with 'ux', 'heuristics'. design read glob grep claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "validate-plugin",
+      "slug": "validate-plugin",
+      "name": "validate-plugin",
+      "description": "Validate a Claude Code plugin directory against the official Anthropic spec and Intent Solutions enterprise standard. Runs structural validation (plugin.json fields, file references, permissions) and content validation (SKILL.md grading, command/agent frontmatter). Use when building a new plugin, preparing for marketplace submission, or auditing existing plugins. Trigger with \"validate this plugin\", \"check plugin structure\", \"grade my plugin\", \"/validate-plugin\".",
+      "category": "skill-enhancers",
+      "allowedTools": [
+        "Read",
+        "Bash(python3:*)",
+        "Bash(jq:*)",
+        "Bash(chmod:*)",
+        "Glob",
+        "Grep"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "validate-plugin",
+        "category": "skill-enhancers"
+      },
+      "searchText": "validate-plugin validate a claude code plugin directory against the official anthropic spec and intent solutions enterprise standard. runs structural validation (plugin.json fields, file references, permissions) and content validation (skill.md grading, command/agent frontmatter). use when building a new plugin, preparing for marketplace submission, or auditing existing plugins. trigger with \"validate this plugin\", \"check plugin structure\", \"grade my plugin\", \"/validate-plugin\". skill-enhancers read bash(python3:*) bash(jq:*) bash(chmod:*) glob grep "
     },
     {
       "type": "skill",

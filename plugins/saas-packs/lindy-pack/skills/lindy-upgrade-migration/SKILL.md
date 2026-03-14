@@ -1,7 +1,7 @@
 ---
 name: lindy-upgrade-migration
 description: |
-  Guide for upgrading Lindy SDK and migrating between versions.
+  Manage Lindy SDK upgrades and migrate between versions.
   Use when upgrading SDK versions, migrating agents,
   or handling breaking changes.
   Trigger with phrases like "upgrade lindy", "lindy migration",

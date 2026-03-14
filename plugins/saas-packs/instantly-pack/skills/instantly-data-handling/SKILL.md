@@ -179,7 +179,7 @@ async function removeFromAllCampaigns(email: string) {
 | High bounce rate | Invalid emails imported | Validate before upload |
 | Compliance violation | Emailing unsubscribed leads | Check suppression list before import |
 | Duplicate sends | Lead in multiple campaigns | Use `skip_if_in_workspace` or manual dedup |
-| Missing opt-out link | Template misconfigured | Always include `{unsubscribe}` variable |
+| Missing opt-out link | Template misconfigured | Always include the Instantly unsubscribe merge tag in email templates |
 
 ## Examples
 

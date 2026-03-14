@@ -2,6 +2,8 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import skillsCatalog from '../../data/skills-catalog.json';
 
 export async function getStaticPaths() {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
@@ -57,6 +59,18 @@ const relatedPlugins = await (async () => {
     .filter((p: any) => p.category === plugin.category && p.name !== plugin.name)
     .slice(0, 6);
 })();
+
+// Load skills for this plugin from the skills catalog
+const pluginSkills = (skillsCatalog as any).skills
+  .filter((s: any) => s.parentPlugin?.name === plugin.name)
+  .sort((a: any, b: any) => a.slug.localeCompare(b.slug));
+
+const cleanName = (name: string) => name.replace(/^"|"$/g, '');
+const cleanTools = (tools: string[]) =>
+  tools.map((t: string) => t.replace(/^"|"$/g, '')).filter((t: string) => t.length > 0);
+
+const isSaasPack = plugin.category === 'saas-packs';
+const hasSkills = pluginSkills.length > 0;
 ---
 
 <BaseLayout title={`${plugin.name} | Claude Code Plugins`} description={plugin.description}>
@@ -72,9 +86,10 @@ const relatedPlugins = await (async () => {
   })} />
   <div class="plugin-page">
     <div class="container">
-      <a href="/explore" class="back-link">
-        ← Back to Explore
-      </a>
+      <Breadcrumbs crumbs={[
+        { label: 'Explore', href: '/explore' },
+        { label: plugin.name },
+      ]} />
 
       <div class="header">
         <h1>
@@ -89,7 +104,7 @@ const relatedPlugins = await (async () => {
           {plugin.featured && <span class="badge featured">Featured</span>}
           {badgeInfo && (
             <a href="/verification" class="badge verified" style={`border-color: ${badgeInfo.color}; color: ${badgeInfo.color};`}>
-              {badgeInfo.label} · {plugin.verification.score}/100
+              {badgeInfo.label} &middot; {plugin.verification.score}/100
             </a>
           )}
           <span class="badge category">{plugin.category}</span>
@@ -112,29 +127,83 @@ const relatedPlugins = await (async () => {
         </p>
       </div>
 
-      <div class="section">
-        <h2>Plugin Information</h2>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">Version</span>
-            <span class="info-value">{plugin.version}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Category</span>
-            <span class="info-value">{plugin.category}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">License</span>
-            <span class="info-value">{plugin.license || 'MIT'}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Pricing</span>
-            <span class="info-value">{formatPricing(plugin.pricing)}</span>
+      {!isSaasPack && !hasSkills && (
+        <div class="section">
+          <h2>Plugin Information</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <span class="info-label">Version</span>
+              <span class="info-value">{plugin.version}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Category</span>
+              <span class="info-value">{plugin.category}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">License</span>
+              <span class="info-value">{plugin.license || 'MIT'}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Pricing</span>
+              <span class="info-value">{formatPricing(plugin.pricing)}</span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {componentList.length > 0 && (
+      {hasSkills ? (
+        <div class="section skills-section">
+          <div class="skills-header">
+            <h2>Skills ({pluginSkills.length})</h2>
+            {pluginSkills.length > 1 && (
+              <button class="expand-all-btn" id="expand-all-btn">Expand All</button>
+            )}
+          </div>
+          <div class="gist-list">
+            {pluginSkills.map((skill: any) => (
+              <div class="gist-card" data-skill-slug={skill.slug}>
+                <div class="gist-header">
+                  <button class="gist-toggle" aria-label="Toggle skill content">
+                    <svg class="toggle-icon" width="12" height="12" viewBox="0 0 12 12">
+                      <path d="M4 2 L10 6 L4 10 Z" fill="currentColor"/>
+                    </svg>
+                  </button>
+                  <svg class="file-icon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/>
+                  </svg>
+                  <span class="gist-filename">{cleanName(skill.name)}</span>
+                  <span class="gist-filetype">SKILL.md</span>
+                  <a href={`/skills/${skill.slug}/`} class="gist-view-link">View full skill &rarr;</a>
+                </div>
+                <div class="gist-body">
+                  <p class="gist-description">{skill.description?.split('.')[0]}.</p>
+                  {cleanTools(skill.allowedTools || []).length > 0 && (
+                    <div class="gist-tools">
+                      {cleanTools(skill.allowedTools).map((tool: string) => (
+                        <span class="tool-pill">{tool}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div class="gist-content" style="display: none;">
+                  <div class="gist-content-inner" set:html={
+                    skill.content
+                      ? skill.content
+                          .replace(/^# .+\n/, '')
+                          .replace(/## /g, '<strong>')
+                          .replace(/\n\n/g, '</strong><br/><br/>')
+                          .replace(/\n- /g, '<br/>&#8226; ')
+                          .replace(/\n\d+\. /g, (m: string) => '<br/>' + m.trim() + ' ')
+                          .replace(/`([^`]+)`/g, '<code>$1</code>')
+                          .slice(0, 2000)
+                      : ''
+                  } />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : componentList.length > 0 && (
         <div class="section">
           <h2>Components</h2>
           <div class="components-list">
@@ -145,22 +214,11 @@ const relatedPlugins = await (async () => {
         </div>
       )}
 
-      {plugin.keywords && plugin.keywords.length > 0 && (
-        <div class="section">
-          <h2>Keywords</h2>
-          <div class="keywords">
-            {plugin.keywords.map((keyword: string) => (
-              <span class="keyword">{keyword}</span>
-            ))}
-          </div>
-        </div>
-      )}
-
       {plugin.repository && (
         <div class="section">
           <h2>Links</h2>
           <a href={plugin.repository} class="repo-link" target="_blank" rel="noopener">
-            View on GitHub →
+            View on GitHub &rarr;
           </a>
         </div>
       )}
@@ -174,6 +232,17 @@ const relatedPlugins = await (async () => {
                 <h3>{related.name}</h3>
                 <p>{related.description}</p>
               </a>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {plugin.keywords && plugin.keywords.length > 0 && (
+        <div class="tags-footer">
+          <span class="tags-label">Tags</span>
+          <div class="tags-list">
+            {plugin.keywords.map((keyword: string) => (
+              <span class="tag">{keyword}</span>
             ))}
           </div>
         </div>
@@ -206,6 +275,53 @@ const relatedPlugins = await (async () => {
         }, 2000);
       });
     }
+
+    // Gist expand/collapse
+    document.querySelectorAll('.gist-toggle').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const card = btn.closest('.gist-card');
+        if (!card) return;
+        const content = card.querySelector('.gist-content') as HTMLElement;
+        const icon = btn.querySelector('.toggle-icon') as HTMLElement;
+        if (!content || !icon) return;
+
+        const isExpanded = content.style.display !== 'none';
+        content.style.display = isExpanded ? 'none' : 'block';
+        icon.style.transform = isExpanded ? '' : 'rotate(90deg)';
+        card.classList.toggle('expanded', !isExpanded);
+      });
+    });
+
+    // Also allow clicking the gist-header (but not links) to toggle
+    document.querySelectorAll('.gist-header').forEach(header => {
+      header.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('a')) return;
+        if (target.closest('.gist-toggle')) return;
+        const toggle = header.querySelector('.gist-toggle') as HTMLElement;
+        if (toggle) toggle.click();
+      });
+    });
+
+    // Expand All / Collapse All
+    const expandAllBtn = document.getElementById('expand-all-btn');
+    if (expandAllBtn) {
+      let allExpanded = false;
+      expandAllBtn.addEventListener('click', () => {
+        allExpanded = !allExpanded;
+        expandAllBtn.textContent = allExpanded ? 'Collapse All' : 'Expand All';
+
+        document.querySelectorAll('.gist-card').forEach(card => {
+          const content = card.querySelector('.gist-content') as HTMLElement;
+          const icon = card.querySelector('.toggle-icon') as HTMLElement;
+          if (!content || !icon) return;
+
+          content.style.display = allExpanded ? 'block' : 'none';
+          icon.style.transform = allExpanded ? 'rotate(90deg)' : '';
+          card.classList.toggle('expanded', allExpanded);
+        });
+      });
+    }
   </script>
 </BaseLayout>
 
@@ -230,7 +346,7 @@ const relatedPlugins = await (async () => {
     text-decoration: none;
     margin-bottom: 2rem;
     font-size: 0.95rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
     transition: opacity 0.2s;
   }
 
@@ -246,8 +362,8 @@ const relatedPlugins = await (async () => {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: var(--brand-dark);
-    font-family: 'Poppins', sans-serif;
+    color: var(--text, var(--brand-dark));
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .meta {
@@ -256,21 +372,21 @@ const relatedPlugins = await (async () => {
     gap: 0.75rem;
     align-items: center;
     font-size: 0.9rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .meta-item {
-    color: var(--brand-mid-gray);
+    color: var(--text-2, var(--brand-mid-gray));
   }
 
   .badge {
-    background: var(--brand-light-gray);
-    border: 1px solid var(--brand-mid-gray);
+    background: var(--surface-2, var(--brand-light-gray));
+    border: 1px solid var(--border, var(--brand-mid-gray));
     padding: 0.25rem 0.75rem;
     border-radius: 999px;
     font-size: 0.85rem;
     font-weight: 500;
-    color: var(--brand-dark);
+    color: var(--text, var(--brand-dark));
   }
 
   .verification-badge {
@@ -315,12 +431,12 @@ const relatedPlugins = await (async () => {
     font-size: 1.15rem;
     line-height: 1.8;
     margin-bottom: 2rem;
-    color: var(--brand-dark);
+    color: var(--text, var(--brand-dark));
   }
 
   .section {
-    background: var(--card);
-    border: 1px solid var(--brand-light-gray);
+    background: var(--surface-2, var(--card));
+    border: 1px solid var(--border, var(--brand-light-gray));
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -331,13 +447,13 @@ const relatedPlugins = await (async () => {
     font-size: 1.25rem;
     font-weight: 600;
     margin-bottom: 1rem;
-    color: var(--brand-dark);
-    font-family: 'Poppins', sans-serif;
+    color: var(--text, var(--brand-dark));
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .section-hint {
     margin-bottom: 1rem;
-    color: var(--brand-mid-gray);
+    color: var(--text-2, var(--brand-mid-gray));
     font-size: 0.95rem;
   }
 
@@ -368,7 +484,7 @@ const relatedPlugins = await (async () => {
     color: white;
     cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .copy-btn:hover {
@@ -382,16 +498,16 @@ const relatedPlugins = await (async () => {
   }
 
   .tip {
-    color: var(--brand-mid-gray);
+    color: var(--text-2, var(--brand-mid-gray));
     font-size: 0.9rem;
   }
 
   .tip code {
-    background: var(--brand-light-gray);
+    background: var(--surface-3, var(--brand-light-gray));
     padding: 0.15rem 0.4rem;
     border-radius: 4px;
     font-size: 0.85rem;
-    color: var(--brand-dark);
+    color: var(--text, var(--brand-dark));
   }
 
   .info-grid {
@@ -408,29 +524,15 @@ const relatedPlugins = await (async () => {
 
   .info-label {
     font-size: 0.85rem;
-    color: var(--brand-mid-gray);
+    color: var(--text-2, var(--brand-mid-gray));
     font-weight: 500;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .info-value {
     font-size: 1rem;
-    color: var(--brand-dark);
+    color: var(--text, var(--brand-dark));
     text-transform: capitalize;
-  }
-
-  .keywords {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .keyword {
-    background: var(--brand-light-gray);
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    color: var(--brand-mid-gray);
   }
 
   .components-list {
@@ -446,9 +548,194 @@ const relatedPlugins = await (async () => {
     border-radius: 6px;
     font-size: 0.9rem;
     font-weight: 500;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
+  /* Skill Gist Explorer */
+  .skills-section {
+    padding: 1.5rem;
+  }
+
+  .skills-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .skills-header h2 {
+    margin-bottom: 0;
+  }
+
+  .expand-all-btn {
+    background: var(--surface-3, var(--brand-light-gray));
+    border: 1px solid var(--border, var(--brand-mid-gray));
+    border-radius: 6px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-2, var(--brand-mid-gray));
+    cursor: pointer;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    transition: all 0.2s;
+  }
+
+  .expand-all-btn:hover {
+    border-color: var(--brand-orange);
+    color: var(--brand-orange);
+  }
+
+  .gist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .gist-card {
+    border: 1px solid var(--border, var(--brand-light-gray));
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .gist-card:hover {
+    border-color: var(--border-bright, var(--brand-mid-gray));
+  }
+
+  .gist-card.expanded {
+    border-color: var(--brand-orange);
+  }
+
+  .gist-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 0.85rem;
+    background: var(--surface-3, #f6f8fa);
+    border-bottom: 1px solid var(--border, var(--brand-light-gray));
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .gist-toggle {
+    background: none;
+    border: none;
+    padding: 0.15rem;
+    cursor: pointer;
+    color: var(--text-3, var(--brand-mid-gray));
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+  }
+
+  .gist-toggle:hover {
+    color: var(--brand-orange);
+  }
+
+  .toggle-icon {
+    transition: transform 0.2s;
+  }
+
+  .file-icon {
+    color: var(--text-3, var(--brand-mid-gray));
+    flex-shrink: 0;
+  }
+
+  .gist-filename {
+    font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--brand-orange);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .gist-filetype {
+    font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
+    font-size: 0.7rem;
+    color: var(--text-3, var(--brand-mid-gray));
+    background: var(--surface-2, var(--brand-light-gray));
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .gist-view-link {
+    margin-left: auto;
+    font-size: 0.78rem;
+    color: var(--text-3, var(--brand-mid-gray));
+    text-decoration: none;
+    white-space: nowrap;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    transition: color 0.2s;
+  }
+
+  .gist-view-link:hover {
+    color: var(--brand-orange);
+  }
+
+  .gist-body {
+    padding: 0.75rem 0.85rem;
+    background: var(--surface-1, #ffffff);
+  }
+
+  .gist-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-2, var(--brand-mid-gray));
+    margin: 0 0 0.5rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .gist-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tool-pill {
+    font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
+    font-size: 0.7rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    background: rgba(234, 170, 0, 0.1);
+    color: var(--brand-orange);
+    border: 1px solid rgba(234, 170, 0, 0.2);
+  }
+
+  .gist-content {
+    border-top: 1px solid var(--border, var(--brand-light-gray));
+    background: var(--surface-1, #ffffff);
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .gist-content-inner {
+    padding: 1rem 0.85rem;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: var(--text, var(--brand-dark));
+  }
+
+  .gist-content-inner :global(code) {
+    background: var(--surface-3, var(--brand-light-gray));
+    padding: 0.1rem 0.35rem;
+    border-radius: 3px;
+    font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
+    font-size: 0.8rem;
+  }
+
+  .gist-content-inner :global(strong) {
+    color: var(--text, var(--brand-dark));
+    font-weight: 600;
+  }
+
+  /* Related plugins */
   .related-plugins {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -456,12 +743,12 @@ const relatedPlugins = await (async () => {
   }
 
   .related-card {
-    background: var(--brand-light);
-    border: 1px solid var(--brand-light-gray);
+    background: var(--surface-2, var(--brand-light));
+    border: 1px solid var(--border, var(--brand-light-gray));
     border-radius: 8px;
     padding: 1rem;
     text-decoration: none;
-    color: var(--brand-dark);
+    color: var(--text, var(--brand-dark));
     transition: all 0.2s;
   }
 
@@ -476,18 +763,53 @@ const relatedPlugins = await (async () => {
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--brand-orange);
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
   }
 
   .related-card p {
     font-size: 0.85rem;
-    color: var(--brand-mid-gray);
+    color: var(--text-2, var(--brand-mid-gray));
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     line-height: 1.5;
+  }
+
+  /* Tags footer (moved keywords) */
+  .tags-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border, var(--brand-light-gray));
+  }
+
+  .tags-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-3, var(--brand-mid-gray));
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+  }
+
+  .tags-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tag {
+    background: var(--surface-3, var(--brand-light-gray));
+    padding: 0.2rem 0.55rem;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    color: var(--text-2, var(--brand-mid-gray));
+    font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
   }
 
   .repo-link {
@@ -497,7 +819,7 @@ const relatedPlugins = await (async () => {
     color: var(--brand-orange);
     text-decoration: none;
     font-size: 0.95rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Source Sans 3', system-ui, sans-serif;
     font-weight: 500;
   }
 
@@ -520,6 +842,21 @@ const relatedPlugins = await (async () => {
 
     .related-plugins {
       grid-template-columns: 1fr;
+    }
+
+    .gist-header {
+      flex-wrap: wrap;
+    }
+
+    .gist-view-link {
+      margin-left: 0;
+      width: 100%;
+      margin-top: 0.25rem;
+      padding-left: 1.85rem;
+    }
+
+    .gist-filename {
+      max-width: 50vw;
     }
   }
 </style>

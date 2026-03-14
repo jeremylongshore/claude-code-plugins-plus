@@ -20,47 +20,85 @@ communityPlugins.forEach(plugin => {
   contributorMap.get(name).plugins.push(plugin);
 });
 const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.length - a.plugins.length);
+
+// Deterministic color from name for avatar initials
+function nameToColor(name: string): string {
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 45%, 35%)`;
+}
+
+function getInitials(name: string): string {
+  const parts = name.split(' ').filter(Boolean);
+  if (parts.length > 1) {
+    return (parts[0][0] + (parts[1][0] || '')).toUpperCase();
+  }
+  return name.slice(0, 2).toUpperCase();
+}
+
+function getTopPluginSummary(plugins: any[]): string {
+  const names = plugins.slice(0, 3).map(p => p.displayName || p.name);
+  const remaining = plugins.length - 3;
+  if (remaining > 0) {
+    return `${names.join(', ')}, and ${remaining} more`;
+  }
+  return names.join(', ');
+}
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
   <style>
+    /* ── Hero ── */
     .community-hero {
       background: linear-gradient(135deg, var(--navy) 0%, #0a1628 100%);
       color: var(--text);
-      padding: 5rem 2rem 4rem;
+      padding: 3rem 2rem 2rem;
       text-align: center;
     }
 
     .community-title {
       font-size: clamp(2.5rem, 5vw, 3.5rem);
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 0.75rem;
       line-height: 1.1;
     }
 
     .community-subtitle {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      max-width: 700px;
-      margin: 0 auto 2.5rem;
+      font-size: 1.1rem;
+      color: var(--text-2);
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .hero-stats-row {
       display: flex;
-      gap: 3rem;
+      gap: 1.5rem;
       justify-content: center;
-      margin-top: 2rem;
-      font-size: 0.9rem;
-      opacity: 0.9;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-2);
+    }
+
+    .hero-stat {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md, 8px);
+      padding: 0.75rem 1.25rem;
+      text-align: center;
     }
 
     .hero-stat span {
       font-weight: 700;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       display: block;
       color: var(--gold);
+      line-height: 1.2;
     }
 
+    /* ── Layout ── */
     .section-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -75,92 +113,208 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
       text-align: center;
     }
 
-    /* Contributor Cards */
+    /* ── Contributor Cards ── */
     .contributors-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card, 300px), 1fr));
+      gap: var(--grid-gap, 1.5rem);
       margin-bottom: 4rem;
     }
 
     .contributor-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      border-radius: var(--card-standard-radius, 12px);
+      padding: var(--card-standard-padding, 1.5rem);
+      transition: var(--card-transition, border-color 0.2s ease);
+      cursor: pointer;
     }
 
     .contributor-card:hover {
       border-color: var(--gold);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      transform: var(--card-hover-lift, translateY(-2px));
+      box-shadow: var(--card-hover-shadow-accent, 0 4px 16px rgba(234, 170, 0, 0.08));
+    }
+
+    .contributor-card:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .contributor-card.expanded {
+      border-color: var(--border-bright);
+    }
+
+    .contributor-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .contributor-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      letter-spacing: 0.02em;
+    }
+
+    .contributor-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .contributor-name {
-      font-size: 1.15rem;
+      font-size: var(--text-card-title, 1.1rem);
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 0.5rem;
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .contributor-summary {
+      font-size: var(--text-card-desc, 0.875rem);
+      color: var(--text-2);
+      line-height: var(--text-line-height, 1.5);
+      margin-top: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .contributor-count {
-      font-size: 0.85rem;
+      font-size: var(--text-card-meta, 0.8rem);
       color: var(--gold);
       font-weight: 600;
-      margin-bottom: 1rem;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
-    .contributor-plugins {
+    .toggle-chevron {
+      color: var(--text-3);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+
+    .contributor-card.expanded .toggle-chevron {
+      transform: rotate(90deg);
+    }
+
+    /* ── Expanded Plugin List ── */
+    .contributor-detail {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 0.3s ease;
+    }
+
+    .contributor-card.expanded .contributor-detail {
+      grid-template-rows: 1fr;
+    }
+
+    .contributor-plugin-list {
+      overflow: hidden;
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.75rem;
+    }
+
+    .contributor-plugin-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.15s ease;
     }
 
-    .contributor-plugin-tag {
-      font-size: 0.75rem;
-      padding: 0.25rem 0.6rem;
+    .contributor-plugin-row:last-child {
+      border-bottom: none;
+    }
+
+    .contributor-plugin-row:hover {
       background: var(--surface-2);
-      border-radius: 6px;
-      color: var(--text-2, var(--text));
-      border: 1px solid var(--border);
+      margin: 0 -0.5rem;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm, 6px);
     }
 
-    /* Community Plugin Grid */
+    .plugin-row-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .plugin-row-name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .plugin-row-desc {
+      font-size: 0.8rem;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0.125rem;
+    }
+
+    .plugin-row-arrow {
+      color: var(--text-3);
+      flex-shrink: 0;
+      font-size: 0.875rem;
+    }
+
+    /* ── Community Plugin Grid ── */
     .plugins-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-card, 300px), 1fr));
+      gap: var(--grid-gap, 1.5rem);
       margin-bottom: 4rem;
     }
 
     .plugin-card {
       background: var(--card);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
+      border-radius: var(--card-standard-radius, 12px);
+      padding: var(--card-standard-padding, 1.5rem);
       text-decoration: none;
       color: inherit;
       display: block;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: var(--card-transition, border-color 0.2s ease);
     }
 
     .plugin-card:hover {
       border-color: var(--gold);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      transform: var(--card-hover-lift, translateY(-2px));
+      box-shadow: var(--card-hover-shadow-accent, 0 4px 16px rgba(234, 170, 0, 0.08));
     }
 
     .plugin-card-name {
-      font-size: 1.05rem;
+      font-size: var(--text-card-title, 1.1rem);
       font-weight: 600;
       color: var(--text);
       margin-bottom: 0.5rem;
     }
 
     .plugin-card-desc {
-      font-size: 0.875rem;
-      color: var(--text-2, var(--text));
-      opacity: 0.85;
-      line-height: 1.5;
+      font-size: var(--text-card-desc, 0.875rem);
+      color: var(--text-2);
+      line-height: var(--text-line-height, 1.5);
       margin-bottom: 0.75rem;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -172,21 +326,20 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.8rem;
-      color: var(--text-2, var(--text));
-      opacity: 0.7;
+      font-size: var(--text-card-meta, 0.8rem);
+      color: var(--text-3);
     }
 
     .plugin-card-category {
       text-transform: capitalize;
     }
 
-    /* CTA Section */
+    /* ── CTA Section ── */
     .cta-section {
       background: var(--surface-1);
       border: 2px solid var(--border);
-      border-radius: 16px;
-      padding: 3rem 2rem;
+      border-radius: var(--card-featured-radius, 16px);
+      padding: var(--card-featured-padding, 2rem);
       text-align: center;
       margin-bottom: 3rem;
     }
@@ -199,8 +352,7 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
     }
 
     .cta-text {
-      color: var(--text-2, var(--text));
-      opacity: 0.85;
+      color: var(--text-2);
       max-width: 600px;
       margin: 0 auto 1.5rem;
       line-height: 1.6;
@@ -218,7 +370,7 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
       align-items: center;
       gap: 0.5rem;
       padding: 0.75rem 1.5rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md, 8px);
       font-weight: 600;
       font-size: 0.95rem;
       text-decoration: none;
@@ -244,9 +396,12 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
       border-color: var(--gold);
     }
 
+    /* ── Responsive ── */
     @media (max-width: 768px) {
-      .community-hero { padding: 3rem 1rem 2.5rem; }
-      .hero-stats-row { gap: 1.5rem; flex-wrap: wrap; }
+      .community-hero { padding: 2.5rem 1rem 1.5rem; }
+      .hero-stats-row { gap: 0.75rem; flex-wrap: wrap; }
+      .hero-stat { padding: 0.5rem 0.75rem; flex: 1; min-width: 80px; }
+      .hero-stat span { font-size: 1.1rem; }
       .section-container { padding: 2rem 1rem; }
       .contributors-grid { grid-template-columns: 1fr; }
       .plugins-grid { grid-template-columns: 1fr; }
@@ -257,25 +412,21 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
   <section class="community-hero">
     <h1 class="community-title">Community Contributors</h1>
     <p class="community-subtitle">
-      Plugins built by the community, for the community. Every contribution makes the Claude Code ecosystem stronger.
+      {communityPlugins.length} plugins from {contributors.length} contributors
     </p>
 
     <div class="hero-stats-row">
       <div class="hero-stat">
-        <span>{communityPlugins.length}</span>
-        Community Plugins
-      </div>
-      <div class="hero-stat">
         <span>{contributors.length}</span>
-        Contributors
+        Authors
       </div>
       <div class="hero-stat">
-        <span>{officialPlugins.length}</span>
-        Official Plugins
+        <span>{communityPlugins.length}</span>
+        Community
       </div>
       <div class="hero-stat">
-        <span>{allPlugins.length}</span>
-        Total Plugins
+        <span>{officialPlugins.length}+</span>
+        Official
       </div>
     </div>
   </section>
@@ -285,16 +436,41 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
     <h2 class="section-heading">Contributors</h2>
     <div class="contributors-grid">
       {contributors.map(contrib => (
-        <div class="contributor-card">
-          <div class="contributor-name">{contrib.name}</div>
-          <div class="contributor-count">{contrib.plugins.length} plugin{contrib.plugins.length !== 1 ? 's' : ''}</div>
-          <div class="contributor-plugins">
-            {contrib.plugins.slice(0, 6).map(p => (
-              <span class="contributor-plugin-tag">{p.displayName || p.name}</span>
-            ))}
-            {contrib.plugins.length > 6 && (
-              <span class="contributor-plugin-tag">+{contrib.plugins.length - 6} more</span>
-            )}
+        <div
+          class="contributor-card"
+          role="button"
+          tabindex="0"
+          aria-expanded="false"
+          aria-label={`${contrib.name}, ${contrib.plugins.length} plugins`}
+        >
+          <div class="contributor-header">
+            <div
+              class="contributor-avatar"
+              style={`background: ${nameToColor(contrib.name)}`}
+            >
+              {getInitials(contrib.name)}
+            </div>
+            <div class="contributor-info">
+              <div class="contributor-name">{contrib.name}</div>
+              <div class="contributor-summary">{getTopPluginSummary(contrib.plugins)}</div>
+            </div>
+            <div class="contributor-count">
+              {contrib.plugins.length} plugin{contrib.plugins.length !== 1 ? 's' : ''}
+            </div>
+            <span class="toggle-chevron" aria-hidden="true">&#9656;</span>
+          </div>
+          <div class="contributor-detail">
+            <div class="contributor-plugin-list">
+              {contrib.plugins.map(p => (
+                <a href={`/plugins/${p.name}/`} class="contributor-plugin-row">
+                  <div class="plugin-row-info">
+                    <div class="plugin-row-name">{p.displayName || p.name}</div>
+                    <div class="plugin-row-desc">{p.description}</div>
+                  </div>
+                  <span class="plugin-row-arrow" aria-hidden="true">&#8594;</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       ))}
@@ -331,4 +507,26 @@ const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.lengt
       </div>
     </div>
   </div>
+
+  <!-- Expand/Collapse Script -->
+  <script is:inline>
+    document.querySelectorAll('.contributor-card').forEach(function(card) {
+      function toggle(e) {
+        // Don't toggle when clicking plugin links
+        if (e.target.closest('a')) return;
+
+        var expanded = card.classList.contains('expanded');
+        card.classList.toggle('expanded', !expanded);
+        card.setAttribute('aria-expanded', String(!expanded));
+      }
+
+      card.addEventListener('click', toggle);
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          toggle(e);
+        }
+      });
+    });
+  </script>
 </BaseLayout>

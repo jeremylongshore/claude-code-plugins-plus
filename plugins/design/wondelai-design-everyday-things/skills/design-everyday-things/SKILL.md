@@ -1,10 +1,10 @@
 ---
 name: design-everyday-things
 description: |
-  Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", or "fault tolerance". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.
+  Analyze and apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", or "fault tolerance". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design. Trigger with 'design', 'everyday', 'things'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -16,7 +16,7 @@ Foundational design principles for creating products that are intuitive, discove
 
 **Good design is actually a lot harder to notice than poor design, in part because good designs fit our needs so well that the design is invisible.** When something works well, we take it for granted. When it fails, we blame ourselves — but the fault is almost always in the design.
 
-**The foundation:** Design must bridge the gap between what people want to do and what the product allows them to do. The best designs are discoverable (you can figure out what to do) and understandable (you can figure out what happened).
+**The foundation:** Design must bridge the gap between what people want to do and what the product allows them to do. The best designs are discoverable (users figure out what to do) and understandable (users figure out what happened).
 
 ## Scoring
 
@@ -112,7 +112,7 @@ See: [references/two-gulfs.md](references/two-gulfs.md) for gulf analysis exerci
 | Element | Affordance | How to Signal |
 |---------|------------|---------------|
 | **Button** | Affords clicking/tapping | Raised, colored, shadow, hover state |
-| **Text field** | Affords text input | Border, placeholder text, label |
+| **Text field** | Affords text input | Border, hint text, label |
 | **Link** | Affords navigation | Color, underline, cursor change |
 | **Slider** | Affords dragging | Handle, track, visual range |
 | **Scroll area** | Affords scrolling | Scroll bar, fade at edge, partial content |
@@ -130,13 +130,13 @@ See: [references/affordances.md](references/affordances.md) for affordance desig
 
 **Key insight:** Affordances determine what's possible. Signifiers communicate where and how.
 
-**If affordances are what you CAN do, signifiers show you HOW to do it.**
+**Affordances define what CAN be done; signifiers show HOW to do it.**
 
 **Types:**
 
 | Type | Definition | Example |
 |------|------------|---------|
-| **Deliberate signifier** | Designed to communicate | "Push" label on door, placeholder text |
+| **Deliberate signifier** | Designed to communicate | "Push" label on door, input hint text |
 | **Accidental signifier** | Unintentional but informative | Worn path in grass (people walk here) |
 | **Social signifier** | Other people's behavior | Line of people indicates entrance |
 
@@ -146,7 +146,7 @@ See: [references/affordances.md](references/affordances.md) for affordance desig
 |-----------|---------------------|---------|
 | **Cursor change** | This is interactive | Pointer → hand on links |
 | **Hover state** | This responds to interaction | Button color change on hover |
-| **Placeholder text** | What to type here | "Enter your email..." |
+| **Input hint text** | What to type here | "Enter your email..." |
 | **Icons** | Function of the element | Magnifying glass = search |
 | **Labels** | What this control does | "Submit", "Cancel", "Next" |
 | **Color** | Status or category | Red = error, green = success |

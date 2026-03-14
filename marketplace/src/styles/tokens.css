@@ -1,0 +1,112 @@
+/* ══════════════════════════════════════════════════════
+   Design Tokens — Single source of truth for the
+   Claude Code Plugins marketplace design system.
+   All card components reference these — never raw values.
+   ══════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color System (OKLCH, tinted neutrals) ── */
+
+  /* Primary — warm terracotta (brand DNA, refined) */
+  --primary: oklch(62% 0.16 35);
+  --primary-light: oklch(78% 0.10 35);
+  --primary-dark: oklch(48% 0.14 35);
+
+  /* Neutral — warm-tinted grays (hint of brand hue, not dead gray) */
+  --neutral-50:  oklch(97% 0.005 60);
+  --neutral-100: oklch(95% 0.005 60);
+  --neutral-200: oklch(90% 0.008 60);
+  --neutral-300: oklch(82% 0.008 60);
+  --neutral-400: oklch(65% 0.008 60);
+  --neutral-500: oklch(50% 0.008 60);
+  --neutral-600: oklch(40% 0.010 60);
+  --neutral-700: oklch(30% 0.010 60);
+  --neutral-800: oklch(20% 0.010 60);
+  --neutral-900: oklch(14% 0.010 60);
+  --neutral-950: oklch(10% 0.010 60);
+
+  /* Semantic — one accent, sparing use (60-30-10 rule) */
+  --accent: oklch(72% 0.18 160);
+  --positive: oklch(65% 0.18 145);
+  --warning: oklch(75% 0.15 85);
+  --danger: oklch(60% 0.20 25);
+
+  /* ── Fluid Typography ── */
+  --text-xs:   clamp(0.75rem, 0.7rem + 0.25vw, 0.8rem);
+  --text-sm:   clamp(0.8rem, 0.75rem + 0.3vw, 0.875rem);
+  --text-base: clamp(0.95rem, 0.9rem + 0.3vw, 1.05rem);
+  --text-lg:   clamp(1.15rem, 1rem + 0.5vw, 1.35rem);
+  --text-xl:   clamp(1.5rem, 1.2rem + 1vw, 2rem);
+  --text-2xl:  clamp(2rem, 1.5rem + 1.5vw, 3rem);
+  --text-3xl:  clamp(2.5rem, 2rem + 2vw, 4rem);
+
+  /* ── 4pt Spacing Grid ── */
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.5rem;   /* 24px */
+  --space-6: 2rem;     /* 32px */
+  --space-8: 3rem;     /* 48px */
+  --space-10: 4rem;    /* 64px */
+  --space-12: 6rem;    /* 96px */
+
+  /* ── Border radius scale ── */
+  --radius-sm: 6px;    /* tags, pills */
+  --radius-md: 8px;    /* compact cards */
+  --radius-lg: 12px;   /* standard cards */
+  --radius-xl: 16px;   /* featured cards, sections */
+
+  /* ── Card system (3 tiers) ── */
+  --card-compact-padding: var(--space-4);
+  --card-compact-radius: var(--radius-md);
+
+  --card-standard-padding: var(--space-5);
+  --card-standard-radius: var(--radius-lg);
+
+  --card-featured-padding: var(--space-6);
+  --card-featured-radius: var(--radius-xl);
+
+  /* ── Motion ── */
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in: cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+
+  /* ── Hover choreography ── */
+  --card-transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-normal) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+  --card-hover-lift: translateY(-2px);
+  --card-hover-shadow: 0 4px 12px oklch(0% 0 0 / 0.2);
+  --card-hover-shadow-accent: 0 4px 16px oklch(62% 0.16 35 / 0.08);
+
+  /* ── Typography scale (consistent across all cards) ── */
+  --text-card-title: 1.1rem;
+  --text-card-desc: 0.875rem;
+  --text-card-meta: 0.8rem;
+  --text-card-tag: 0.8rem;
+  --text-line-height: 1.5;
+
+  /* ── Grid ── */
+  --grid-gap: var(--space-5);  /* 24px — consistent everywhere */
+  --grid-min-card: 300px;      /* minmax base for auto-fill grids */
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast: 0ms;
+    --duration-normal: 0ms;
+    --duration-slow: 0ms;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

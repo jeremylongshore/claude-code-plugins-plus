@@ -23,6 +23,7 @@ Usage:
     python scripts/validate-skills-schema.py --skills-only
     python scripts/validate-skills-schema.py --commands-only
     python scripts/validate-skills-schema.py --agents-only
+    python scripts/validate-skills-schema.py path/to/SKILL.md    # Single-file mode
 
 Author: Jeremy Longshore <jeremy@intentsolutions.io>
 Version: 3.0.0
@@ -925,12 +926,12 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             if len(desc) > 1024:
                 errors.append("[frontmatter] 'description' exceeds 1024 characters")
 
-            # Nixtla quality checks (WARN for now, upgrade to ERROR when compliant)
+            # Nixtla quality checks
             if not RE_DESCRIPTION_USE_WHEN.search(desc):
-                warnings.append("[frontmatter] 'description' should include 'Use when ...' phrase (nixtla quality standard)")
+                errors.append("[frontmatter] 'description' must include 'Use when ...' phrase for model discoverability")
 
             if not RE_DESCRIPTION_TRIGGER_WITH.search(desc):
-                warnings.append("[frontmatter] 'description' should include 'Trigger with ...' phrase (nixtla quality standard)")
+                errors.append("[frontmatter] 'description' must include 'Trigger with ...' phrase for user discoverability")
 
             # Voice checks (nixtla strict mode)
             if RE_FIRST_PERSON.search(desc):
@@ -986,9 +987,9 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             if not valid:
                 errors.append(f"[frontmatter] allowed-tools: {msg}")
 
-        # Nixtla strict mode: forbid unscoped Bash (WARN for now)
+        # Nixtla strict mode: forbid unscoped Bash
         if 'Bash' in tools:
-            warnings.append("[frontmatter] allowed-tools: unscoped 'Bash' should use scoped Bash(git:*) or Bash(npm:*)")
+            errors.append("[frontmatter] allowed-tools: unscoped 'Bash' is not allowed - use scoped Bash(git:*), Bash(npm:*), etc.")
 
         # Info about over-permissioning
         # Count unique base tools (Bash scopes like Bash(git:*) should not inflate the tool count).
@@ -1378,15 +1379,24 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
     # Check embedded scripts for error handling
     code_blocks = re.findall(r'```(?:bash|sh|python|py)?\n(.*?)```', body, re.DOTALL | re.IGNORECASE)
     for i, block in enumerate(code_blocks):
-        # Check for error handling in bash scripts
+        # Check for error handling in bash scripts (only for substantial scripts, not examples)
         if 'set -e' not in block and '|| ' not in block and 'if [' not in block:
-            if len(block.strip().splitlines()) > 5:  # Only warn for non-trivial scripts
+            if len(block.strip().splitlines()) > 15:  # Only warn for substantial scripts
                 if re.search(r'\b(rm|mv|cp|curl|wget|pip|npm)\b', block):
                     warnings.append(f"[scripts] Code block {i+1}: Consider adding error handling (set -e or || exit)")
 
         # Check for unexplained magic numbers (voodoo constants)
+        # Whitelist well-known HTTP status codes and common port numbers
+        KNOWN_NUMBERS = {
+            '200', '201', '204', '301', '302', '304', '307', '308',
+            '400', '401', '403', '404', '405', '408', '409', '422', '429',
+            '500', '502', '503', '504',
+            '3000', '5000', '8000', '8080', '8443', '9090',  # common ports
+        }
         magic_numbers = re.findall(r'(?<![.\d])\b(?:(?:[2-9]\d{2,})|(?:1\d{3,}))\b(?![.\d])', block)
         for num in magic_numbers[:3]:  # Limit warnings
+            if num in KNOWN_NUMBERS:
+                continue
             if not re.search(rf'#.*{num}', block):  # No comment explaining it
                 warnings.append(f"[scripts] Code block {i+1}: Magic number '{num}' - add comment explaining why")
 
@@ -1818,8 +1828,89 @@ def main() -> int:
         action="store_true",
         help="Output machine-readable JSON with per-skill scoring data",
     )
+    parser.add_argument(
+        "path",
+        nargs="?",
+        default=None,
+        help="Path to a single SKILL.md file to validate (optional)",
+    )
     args, _unknown = parser.parse_known_args()
     verbose = args.verbose
+
+    # Single-file mode: validate just one SKILL.md
+    if args.path:
+        target = Path(args.path).resolve()
+        if not target.exists():
+            print(f"ERROR: File not found: {args.path}", file=sys.stderr)
+            return 1
+        if target.name != 'SKILL.md' and not target.name.endswith('.md'):
+            print(f"ERROR: Expected a SKILL.md or .md file: {args.path}", file=sys.stderr)
+            return 1
+
+        print(f"🔍 CLAUDE CODE PLUGIN VALIDATOR v3.0")
+        print(f"   Single-file mode: {target}")
+        print(f"{'=' * 70}\n")
+
+        if target.name == 'SKILL.md':
+            result = validate_skill(target)
+            if 'fatal' in result:
+                print(f"❌ FATAL: {result['fatal']}")
+                return 1
+
+            grade_info = result.get('grade', {})
+            score = grade_info.get('score', 0)
+            letter = grade_info.get('grade', 'F')
+
+            if result['errors']:
+                for error in result['errors']:
+                    print(f"   ERROR: {error}")
+            if result['warnings']:
+                for warning in result['warnings']:
+                    print(f"   WARN: {warning}")
+
+            # Always show grade in single-file mode
+            print(f"\n{'=' * 70}")
+            print(f"📊 GRADE: {letter} ({score}/100)")
+            print(f"{'=' * 70}")
+            breakdown = grade_info.get('breakdown', {})
+            for pillar_name, pillar_data in breakdown.items():
+                if pillar_name == 'modifiers':
+                    mod_score = pillar_data.get('score', 0)
+                    print(f"  {'Modifiers':<30} {mod_score:+d}")
+                    for item_name, (pts, note) in pillar_data.get('items', {}).items():
+                        print(f"    {item_name:<28} {pts:+d} - {note}")
+                else:
+                    pil_score = pillar_data.get('score', 0)
+                    pil_max = pillar_data.get('max', 0)
+                    print(f"  {pillar_name.replace('_', ' ').title():<30} {pil_score}/{pil_max}")
+                    for item_name, (pts, note) in pillar_data.get('breakdown', {}).items():
+                        print(f"    {item_name:<28} {pts} - {note}")
+            print(f"{'=' * 70}")
+
+            return 1 if result['errors'] else 0
+        else:
+            # Command or agent file
+            if '/commands/' in str(target):
+                result = validate_command(target)
+            elif '/agents/' in str(target):
+                result = validate_agent(target)
+            else:
+                print(f"Cannot determine file type for: {target}")
+                print("File must be in a commands/ or agents/ directory, or named SKILL.md")
+                return 1
+
+            if 'fatal' in result:
+                print(f"❌ FATAL: {result['fatal']}")
+                return 1
+            if result.get('errors'):
+                for error in result['errors']:
+                    print(f"   ERROR: {error}")
+                return 1
+            if result.get('warnings'):
+                for warning in result['warnings']:
+                    print(f"   WARN: {warning}")
+            print(f"\n✅ Validation passed")
+            return 0
 
     # Determine what to validate
     validate_skills = not args.commands_only and not args.agents_only

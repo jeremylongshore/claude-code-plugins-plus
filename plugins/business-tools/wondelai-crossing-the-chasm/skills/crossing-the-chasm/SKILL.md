@@ -4,7 +4,7 @@ description: |
   Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions "crossing the chasm", "beachhead segment", "whole product", "early adopters vs. mainstream", or "tech go-to-market". Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy. Trigger with 'crossing', 'the', 'chasm'.
 allowed-tools: Read, Glob, Grep
 license: MIT
-author: Wondel.ai <https://github.com/wondelai>
+author: Wondelai <hello@wondelai.com>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
@@ -60,7 +60,7 @@ Innovators → Early Adopters → [CHASM] → Early Majority → Late Majority �
 - Want standards
 - Low risk tolerance
 
-**Why this matters:** You can't market to both simultaneously. Visionary testimonials scare off pragmatists. "Revolutionary" positioning is a red flag to the early majority.
+**Why this matters:** Marketing to both simultaneously is impossible. Visionary testimonials scare off pragmatists. "Revolutionary" positioning is a red flag to the early majority.
 
 See: [references/buyer-segments.md](references/buyer-segments.md) for detailed buyer psychographics.
 
@@ -94,9 +94,9 @@ See: [references/buyer-segments.md](references/buyer-segments.md) for detailed b
 **Beachhead characteristics:**
 - **Specific:** Not "healthcare" but "orthopedic surgical centers with 5-10 surgeons"
 - **Urgent pain:** Problem is costing them real money/time
-- **Accessible:** You can reach them (conferences, publications, channels)
+- **Accessible:** Reachable through known channels (conferences, publications)
 - **Compelling reason to buy:** Your solution is 10x better for their specific problem
-- **Whole product potential:** You can assemble partners to deliver complete solution
+- **Whole product potential:** Partners exist to assemble a complete solution
 - **Reference potential:** They'll be vocal advocates
 
 **Target segment criteria:**
@@ -191,7 +191,7 @@ See: [references/whole-product.md](references/whole-product.md) for whole produc
 - Often it's NOT a direct competitor—it's manual processes, spreadsheets, or old systems
 
 **Frame the competition:**
-- Don't pick fights you can't win
+- Don't pick unwinnable fights
 - Differentiate on dimension you dominate
 - Make their strength irrelevant
 

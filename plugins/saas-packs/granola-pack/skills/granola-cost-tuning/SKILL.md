@@ -19,7 +19,7 @@ Optimize Granola costs by selecting the right plan and maximizing usage efficien
 
 ## Plan Comparison
 
-### Current Pricing (as of 2025)
+### Current Pricing
 | Plan | Price | Best For |
 |------|-------|----------|
 | Free | $0/month | Trying Granola, < 10 meetings/month |
