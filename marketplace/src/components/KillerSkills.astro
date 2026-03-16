@@ -1,54 +1,76 @@
 ---
 import spotlightData from '../data/spotlights.json';
 
-const spotlights = spotlightData.spotlights;
+const skill = spotlightData.spotlight;
 const week = spotlightData.week;
 ---
 
-<div class="killer-grid">
-  {spotlights.map(skill => (
-    <div class="killer-card" style="cursor: pointer;" data-href={skill.link} data-slug={skill.pluginSlug} data-week={week}>
-      <div class="killer-top">
-        <span class="killer-grade">{skill.grade}</span>
-        <span class="killer-category">{skill.category}</span>
-      </div>
-      <h3 class="killer-headline">{skill.headline}</h3>
-      <p class="killer-why">{skill.whyKiller}</p>
-      <div class="killer-meta">
-        <a href={`https://github.com/${skill.authorGithub}`} target="_blank" rel="noopener noreferrer" class="killer-author">
-          <img src={`https://github.com/${skill.authorGithub}.png?size=56`} alt={skill.author} class="killer-avatar" width="28" height="28" loading="lazy" />
-          {skill.author}
-        </a>
-        <span class="killer-skills">{skill.skillCount} skills</span>
-      </div>
-      <span class="killer-cta">View plugin &rarr;</span>
-    </div>
-  ))}
+<div
+  class="killer-card"
+  style="cursor: pointer;"
+  data-href={skill.link}
+  data-slug={skill.pluginSlug}
+  data-week={week}
+>
+  <div class="killer-top">
+    <span class="killer-grade">{skill.grade}</span>
+    <span class="killer-category">{skill.category}</span>
+  </div>
+
+  <h3 class="killer-headline">{skill.headline}</h3>
+  <p class="killer-why">{skill.whyKiller}</p>
+
+  {skill.quote && (
+    <blockquote class="killer-quote">{skill.quote}</blockquote>
+  )}
+
+  <div class="killer-meta">
+    <a
+      href={`https://github.com/${skill.authorGithub}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="killer-author"
+    >
+      <img
+        src={`https://github.com/${skill.authorGithub}.png?size=80`}
+        alt={skill.author}
+        class="killer-avatar"
+        width="40"
+        height="40"
+        loading="lazy"
+      />
+      <span class="killer-author-name">{skill.author}</span>
+    </a>
+    <span class="killer-skills">{skill.skillCount} skills</span>
+  </div>
+
+  <div class="killer-actions">
+    <a href={skill.link} class="killer-cta-primary">View Plugin &rarr;</a>
+    <a
+      href={`/downloads/plugins/${skill.pluginSlug}.zip`}
+      class="killer-cta-secondary"
+      download
+    >Download for Cowork</a>
+  </div>
 </div>
 
 <style>
-  .killer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.25rem;
-    margin-top: 1.5rem;
-  }
-
   .killer-card {
     background: var(--surface-2);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 1.75rem;
-    text-decoration: none;
+    padding: 2rem;
     color: inherit;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
+    max-width: 700px;
     transition: transform var(--duration-fast) var(--ease-out),
                 border-color var(--duration-fast) var(--ease-out),
                 box-shadow var(--duration-normal) var(--ease-out);
     position: relative;
     overflow: hidden;
+    margin-top: 1.5rem;
   }
 
   /* Always-visible 3px primary gradient top bar */
@@ -87,6 +109,7 @@ const week = spotlightData.week;
     font-weight: 700;
     border-radius: 8px;
     letter-spacing: 0.02em;
+    flex-shrink: 0;
   }
 
   .killer-category {
@@ -103,7 +126,7 @@ const week = spotlightData.week;
 
   .killer-headline {
     font-family: 'Instrument Sans', system-ui, sans-serif;
-    font-size: 1.2rem;
+    font-size: 1.45rem;
     font-weight: 700;
     line-height: 1.2;
     color: var(--text);
@@ -111,11 +134,22 @@ const week = spotlightData.week;
   }
 
   .killer-why {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--text-2);
+    margin: 0;
+  }
+
+  .killer-quote {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--primary);
+    background: var(--primary-tint);
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
     font-size: 0.9rem;
     line-height: 1.6;
     color: var(--text-2);
-    margin: 0;
-    flex: 1;
   }
 
   .killer-meta {
@@ -129,9 +163,7 @@ const week = spotlightData.week;
   .killer-author {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    font-size: 0.85rem;
-    color: var(--text-2);
+    gap: 0.6rem;
     text-decoration: none;
     transition: color var(--duration-fast);
   }
@@ -141,10 +173,21 @@ const week = spotlightData.week;
   }
 
   .killer-avatar {
-    width: 28px;
-    height: 28px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     border: 2px solid var(--primary-border);
+    flex-shrink: 0;
+  }
+
+  .killer-author-name {
+    font-size: 0.9rem;
+    color: var(--text-2);
+    transition: color var(--duration-fast);
+  }
+
+  .killer-author:hover .killer-author-name {
+    color: var(--primary);
   }
 
   .killer-skills {
@@ -157,26 +200,56 @@ const week = spotlightData.week;
     border-radius: 4px;
   }
 
-  .killer-cta {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--primary);
-    transition: letter-spacing var(--duration-fast);
+  .killer-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
 
-  .killer-card:hover .killer-cta {
+  .killer-cta-primary {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: letter-spacing var(--duration-fast), opacity var(--duration-fast);
+  }
+
+  .killer-cta-primary:hover {
     letter-spacing: 0.04em;
+    opacity: 0.85;
+  }
+
+  .killer-cta-secondary {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-2);
+    text-decoration: none;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    transition: border-color var(--duration-fast), color var(--duration-fast);
+  }
+
+  .killer-cta-secondary:hover {
+    border-color: var(--primary-border);
+    color: var(--text);
   }
 
   @media (max-width: 768px) {
-    .killer-grid {
-      grid-template-columns: 1fr;
+    .killer-actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.6rem;
     }
   }
 </style>
 
 <script is:inline>
-  document.querySelectorAll('.killer-card').forEach(function(card) {
+  (function() {
+    var card = document.querySelector('.killer-card');
+    if (!card) return;
     card.addEventListener('click', function(e) {
       if (e.target.closest('a')) {
         return;
@@ -194,5 +267,5 @@ const week = spotlightData.week;
         window.location.href = href;
       }
     });
-  });
+  })();
 </script>

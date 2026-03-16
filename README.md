@@ -26,7 +26,9 @@ Or use Claude's built-in command:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 ```
 
-**[Browse the marketplace](https://claudecodeplugins.io/)** | **[Explore plugins](https://claudecodeplugins.io/explore)** | **[Download bundles](https://claudecodeplugins.io/cowork)**
+**[Browse the marketplace](https://tonsofskills.com)** | **[Explore plugins](https://tonsofskills.com/explore)** | **[Download bundles](https://tonsofskills.com/cowork)**
+
+> **Killer Skill of the Week** — Every week we scour GitHub for the most impressive Claude Code skills and spotlight one that's popping. Sign up at [tonsofskills.com](https://tonsofskills.com) and we'll email you the pick — no searching required.
 
 ---
 

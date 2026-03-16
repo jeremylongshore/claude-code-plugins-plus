@@ -9091,6 +9091,19 @@
         "agents": 0,
         "total": 1
       }
+    },
+    {
+      "name": "executive-assistant-skills",
+      "source": "./plugins/business-tools/executive-assistant-skills",
+      "version": "1.0.0",
+      "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
+      "author": { "name": "Martin Gontovnikas", "email": "gonto@hypergrowthpartners.com", "url": "https://github.com/mgonto" },
+      "category": "business-tools",
+      "keywords": ["executive-assistant", "meeting-prep", "email", "productivity", "automation", "todoist"],
+      "license": "MIT",
+      "repository": "https://github.com/mgonto/executive-assistant-skills",
+      "featured": true,
+      "components": { "skills": 5 }
     }
   ]
 }

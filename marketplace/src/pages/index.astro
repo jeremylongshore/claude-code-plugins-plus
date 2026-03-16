@@ -1247,11 +1247,18 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
     <!-- Killer Skills This Week -->
     <section class="killer-skills-section" style="padding: 3rem 2rem; background: var(--surface);">
         <div style="max-width: 1100px; margin: 0 auto;">
-            <span class="spotlight-badge">OPEN SOURCE SPOTLIGHT</span>
-            <h2 class="section-title" style="text-align: left;">Killer Skills This Week</h2>
-            <p style="color: var(--text-2); margin-bottom: 0.5rem; max-width: 500px;">Top-graded skills from community creators, handpicked weekly.</p>
+            <span class="spotlight-badge">KILLER SKILL OF THE WEEK</span>
+            <h2 class="section-title" style="text-align: left;">Killer Skill of the Week</h2>
+            <p style="color: var(--text-2); margin-bottom: 0.5rem; max-width: 500px;">We scour GitHub for the most impressive agent skills and spotlight one each week.</p>
             <a href="/community" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.25rem; margin-bottom: 1.5rem;">Meet the contributors <span style="transition: transform 0.2s; display: inline-block;">&rarr;</span></a>
             <KillerSkills />
+            <div class="killer-signup" style="margin-top: 2rem; padding: 1.25rem 1.5rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                <p style="margin: 0; color: var(--text); font-weight: 600; font-size: 0.95rem;">Get the Killer Skill of the Week in your inbox</p>
+                <form data-signup-form="killer-skills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <input type="email" name="email" placeholder="you@example.com" required style="padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.85rem; min-width: 200px;" />
+                    <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
+                </form>
+            </div>
         </div>
     </section>
 

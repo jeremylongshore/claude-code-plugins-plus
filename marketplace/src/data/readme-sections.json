@@ -1447,5 +1447,8 @@
   "validate-plugin": {
     "overview": "<p>Validates full Claude Code plugin directory structure against the official Anthropic spec and Intent Solutions enterprise standard.</p>",
     "usage": "<p>Say \"validate this plugin\" or \"/validate-plugin\" pointing at any plugin directory.</p>"
+  },
+  "executive-assistant-skills": {
+    "overview": "<p>AI-powered executive assistant skills for Claude Code that <strong>fully replace a human EA</strong>. These skills were born from a real experiment by Martin Gontovnikas (<a href=\"https://github.com/mgonto\">@mgonto</a>), Auth0's former VP of Marketing/Growth, who discovered that a set of well-crafted Claude Code skills could handle everything his executive assistant used to do — meeting prep, email drafting, action item tracking, and daily digests.</p>\n<p>The result: a suite of 5 skills that autonomously research attendees before meetings, draft personalized emails, extract and manage action items in Todoist, and deliver a morning executive briefing — all without human intervention.</p>"
   }
 }

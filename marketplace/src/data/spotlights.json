@@ -1,11 +1,23 @@
 {
-  "week": "2026-W11",
-  "title": "Killer Skills This Week",
-  "spotlights": [
+  "week": "2026-W12",
+  "title": "Killer Skill of the Week",
+  "spotlight": {
+    "pluginSlug": "executive-assistant-skills",
+    "headline": "The AI skills that fully replaced a $4k/mo executive assistant",
+    "whyKiller": "Research meeting attendees, gather email history, create meeting briefs, and manage action items via Todoist — the complete EA workflow automated by Auth0's former VP of Marketing/Growth.",
+    "author": "Martin Gontovnikas",
+    "authorGithub": "mgonto",
+    "grade": "A",
+    "skillCount": 5,
+    "category": "business-tools",
+    "link": "/plugins/executive-assistant-skills",
+    "quote": "These skills fully replaced my human executive assistant."
+  },
+  "hallOfFame": [
     {
+      "week": "2026-W11",
       "pluginSlug": "skill-creator",
       "headline": "The meta-tool that builds and grades other skills",
-      "whyKiller": "Create marketplace-ready skill packages with 100-point grading, eval-driven development, and auto-fix. The tool Jeremy uses to build every skill in the marketplace.",
       "author": "Jeremy Longshore",
       "authorGithub": "jeremylongshore",
       "grade": "A",
@@ -14,9 +26,9 @@
       "link": "/plugins/skill-creator"
     },
     {
+      "week": "2026-W11",
       "pluginSlug": "cursor-pack",
       "headline": "30 skills that make Cursor actually intelligent",
-      "whyKiller": "Complete Cursor IDE mastery: composer workflows, AI code completion patterns, multi-file edits, and context management. Cross-platform proof that skills aren't Claude-only.",
       "author": "Jeremy Longshore",
       "authorGithub": "jeremylongshore",
       "grade": "A",
@@ -25,9 +37,9 @@
       "link": "/plugins/cursor-pack"
     },
     {
+      "week": "2026-W11",
       "pluginSlug": "crypto-portfolio-tracker",
       "headline": "Professional crypto portfolio tracking with real-time PnL",
-      "whyKiller": "Real-time price feeds, position tracking, risk metrics, and tax-lot accounting. One of 26 A-grade crypto skills covering the full DeFi stack.",
       "author": "Jeremy Longshore",
       "authorGithub": "jeremylongshore",
       "grade": "A",
@@ -36,10 +48,9 @@
       "link": "/plugins/crypto-portfolio-tracker"
     }
   ],
-  "archive": [],
   "meta": {
-    "version": "1.0.0",
-    "lastUpdated": "2026-03-11",
+    "version": "2.0.0",
+    "lastUpdated": "2026-03-15",
     "curatedBy": "Jeremy Longshore"
   }
 }

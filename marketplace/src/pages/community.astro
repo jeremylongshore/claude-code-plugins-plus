@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import searchIndex from '../data/unified-search-index.json';
+import spotlightData from '../data/spotlights.json';
+const hallOfFame = spotlightData.hallOfFame || [];
 
 const pageTitle = 'Community Contributors';
 const pageDescription = 'Meet the community contributors who build and share plugins for the Claude Code ecosystem.';
@@ -369,6 +371,118 @@ function getContributionSummary(plugins: any[]): string {
       border-color: var(--gold);
     }
 
+    /* ── Hall of Fame ── */
+    .hof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+
+    .hof-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hof-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold) 0%, oklch(75% 0.15 85) 100%);
+    }
+
+    .hof-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    .hof-top {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .hof-grade {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: var(--gold);
+      color: var(--navy);
+      font-family: 'Instrument Sans', system-ui, sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: 6px;
+    }
+
+    .hof-week {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-3);
+    }
+
+    .hof-category {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-2);
+      background: var(--surface-2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-left: auto;
+    }
+
+    .hof-headline {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .hof-author {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--text-2);
+    }
+
+    .hof-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+    }
+
+    .hof-skills {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-left: auto;
+    }
+
+    .hof-link {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gold);
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .community-hero { padding: 2.5rem 1rem 1.5rem; }
@@ -381,6 +495,7 @@ function getContributionSummary(plugins: any[]): string {
       .contributor-name { font-size: 1rem; }
       .contributor-summary { font-size: 0.8rem; }
       .plugins-grid { grid-template-columns: 1fr; }
+      .hof-grid { grid-template-columns: 1fr; }
     }
   </style>
 
@@ -406,6 +521,31 @@ function getContributionSummary(plugins: any[]): string {
       </div>
     </div>
   </section>
+
+  {hallOfFame.length > 0 && (
+    <div class="section-container" style="padding-bottom: 0;">
+      <h2 class="section-heading">Skills Hall of Fame</h2>
+      <p style="text-align: center; color: var(--text-2); margin: -1rem auto 2rem; max-width: 550px; font-size: 0.95rem;">Past Killer Skill of the Week picks — the best community skills we've spotlighted.</p>
+      <div class="hof-grid">
+        {hallOfFame.map(item => (
+          <a href={item.link} class="hof-card">
+            <div class="hof-top">
+              <span class="hof-grade">{item.grade}</span>
+              <span class="hof-week">{item.week}</span>
+              <span class="hof-category">{item.category}</span>
+            </div>
+            <h3 class="hof-headline">{item.headline}</h3>
+            <div class="hof-author">
+              <img src={`https://github.com/${item.authorGithub}.png?size=48`} alt={item.author} class="hof-avatar" width="24" height="24" loading="lazy" />
+              <span>{item.author}</span>
+              <span class="hof-skills">{item.skillCount} skills</span>
+            </div>
+            <span class="hof-link">View plugin →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  )}
 
   <!-- Contributors Section -->
   <div class="section-container">

@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-13T05:00:21.221Z",
+    "generated": "2026-03-16T02:56:12.054Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 343,
-    "totalSkills": 1399,
-    "totalItems": 1742,
+    "totalPlugins": 344,
+    "totalSkills": 1404,
+    "totalItems": 1748,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -614,6 +614,7 @@
       "excel",
       "exceptions",
       "execution",
+      "executive-assistant",
       "experimentation",
       "experiments",
       "explain",
@@ -877,6 +878,7 @@
       "medicine",
       "meeting-intelligence",
       "meeting-notes",
+      "meeting-prep",
       "meeting-transcription",
       "meetings",
       "memory",
@@ -1298,6 +1300,7 @@
       "timezone",
       "titles",
       "tms",
+      "todoist",
       "token-launch",
       "tokenization",
       "tools",
@@ -1427,8 +1430,8 @@
     "pluginsWithAgents": 38,
     "pluginsWithHooks": 8,
     "officialPlugins": 302,
-    "communityPlugins": 41,
-    "communityContributors": 15
+    "communityPlugins": 42,
+    "communityContributors": 16
   },
   "items": [
     {
@@ -12653,6 +12656,37 @@
       "searchText": "validate plugin validate claude code plugin structure against official anthropic spec and intent solutions enterprise standard with 100-point grading. skill-enhancers validation plugin-development quality-assurance linting"
     },
     {
+      "type": "plugin",
+      "id": "executive-assistant-skills",
+      "slug": "executive-assistant-skills",
+      "name": "executive-assistant-skills",
+      "displayName": "executive assistant skills",
+      "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
+      "category": "business-tools",
+      "keywords": [
+        "executive-assistant",
+        "meeting-prep",
+        "email",
+        "productivity",
+        "automation",
+        "todoist"
+      ],
+      "author": {
+        "name": "Martin Gontovnikas",
+        "email": "gonto@hypergrowthpartners.com",
+        "url": "https://github.com/mgonto"
+      },
+      "authorType": "community",
+      "version": "1.0.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 5,
+      "searchText": "executive assistant skills ai-powered executive assistant skills that fully replace a human ea. research meeting attendees, draft emails, create meeting briefs, and manage action items. business-tools executive-assistant meeting-prep email productivity automation todoist"
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -14210,6 +14244,22 @@
         "category": "productivity"
       },
       "searchText": "000-jeremy-content-consistency-validator validate messaging consistency across website, github repos, and local documentation generating read-only discrepancy reports. use when checking content alignment or finding mixed messaging. trigger with phrases like \"check consistency\", \"validate documentation\", or \"audit messaging\". productivity read webfetch websearch grep bash(diff:*) bash(grep:*) claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "action-items-todoist",
+      "slug": "action-items-todoist",
+      "name": "action-items-todoist",
+      "description": "\"Extract action items from today's Granola/Grain meetings, create Todoist tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. Use when running the daily action items cron, post-meeting cron, or when user asks to process meeting action items. NOT for general email drafting without meeting context.\"",
+      "category": "business-tools",
+      "allowedTools": [],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "executive-assistant-skills",
+        "category": "business-tools"
+      },
+      "searchText": "action-items-todoist \"extract action items from today's granola/grain meetings, create todoist tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. use when running the daily action items cron, post-meeting cron, or when user asks to process meeting action items. not for general email drafting without meeting context.\" business-tools  "
     },
     {
       "type": "skill",
@@ -21476,6 +21526,22 @@
     },
     {
       "type": "skill",
+      "id": "email-drafting",
+      "slug": "email-drafting",
+      "name": "email-drafting",
+      "description": "Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. Use when user asks to draft or reply to an email, or when Gmail webhook triggers arrive for auto-draft classification. Draft-only mode — never sends automatically.",
+      "category": "business-tools",
+      "allowedTools": [],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "executive-assistant-skills",
+        "category": "business-tools"
+      },
+      "searchText": "email-drafting draft email replies for gonto's gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. use when user asks to draft or reply to an email, or when gmail webhook triggers arrive for auto-draft classification. draft-only mode — never sends automatically. business-tools  "
+    },
+    {
+      "type": "skill",
       "id": "emitting-api-events",
       "slug": "emitting-api-events",
       "name": "emitting-api-events",
@@ -23053,6 +23119,22 @@
         "category": "business-tools"
       },
       "searchText": "excel-variance-analyzer analyze budget vs actual variances in excel with drill-down and root cause analysis. use when performing variance analysis or explaining budget differences. trigger with phrases like 'excel variance', 'analyze budget variance', 'actual vs budget'. business-tools read write edit grep glob bash(cmd:*) claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "executive-digest",
+      "slug": "executive-digest",
+      "name": "executive-digest",
+      "description": "\"Generate the daily executive digest — a single WhatsApp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open Todoist tasks, and upcoming calendar events. Use when running the daily digest cron, or when user asks for a status digest, daily summary, \\\"what's pending\\\", or \\\"catch me up\\\".\"",
+      "category": "business-tools",
+      "allowedTools": [],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "executive-assistant-skills",
+        "category": "business-tools"
+      },
+      "searchText": "executive-digest \"generate the daily executive digest — a single whatsapp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open todoist tasks, and upcoming calendar events. use when running the daily digest cron, or when user asks for a status digest, daily summary, \\\"what's pending\\\", or \\\"catch me up\\\".\" business-tools  "
     },
     {
       "type": "skill",
@@ -34811,6 +34893,22 @@
     },
     {
       "type": "skill",
+      "id": "meeting-prep",
+      "slug": "meeting-prep",
+      "name": "meeting-prep",
+      "description": "Prepare briefings for today's meetings — attendee research, email history, past meeting notes, LinkedIn, and company context. Use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls.",
+      "category": "business-tools",
+      "allowedTools": [],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "executive-assistant-skills",
+        "category": "business-tools"
+      },
+      "searchText": "meeting-prep prepare briefings for today's meetings — attendee research, email history, past meeting notes, linkedin, and company context. use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls. business-tools  "
+    },
+    {
+      "type": "skill",
       "id": "memory",
       "slug": "memory",
       "name": "memory",
@@ -44535,6 +44633,22 @@
         "category": "api-development"
       },
       "searchText": "throttling-apis implement api throttling policies to protect backend services from overload. use when controlling api request rates. trigger with phrases like \"throttle api\", \"control request rate\", or \"add throttling\". api-development read write edit grep glob bash(api:throttle-*) claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "todoist-due-drafts",
+      "slug": "todoist-due-drafts",
+      "name": "todoist-due-drafts",
+      "description": "Check Todoist for tasks due today (and overdue) that involve pinging, emailing, or following up with someone. Auto-draft the emails using meeting context and notify via WhatsApp. Use when running the daily due-drafts cron, or when user asks to process email tasks from Todoist.",
+      "category": "business-tools",
+      "allowedTools": [],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "executive-assistant-skills",
+        "category": "business-tools"
+      },
+      "searchText": "todoist-due-drafts check todoist for tasks due today (and overdue) that involve pinging, emailing, or following up with someone. auto-draft the emails using meeting context and notify via whatsapp. use when running the daily due-drafts cron, or when user asks to process email tasks from todoist. business-tools  "
     },
     {
       "type": "skill",

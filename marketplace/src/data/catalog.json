@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-13T04:52:15.400Z",
+    "generated": "2026-03-16T02:56:11.846Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 343,
-    "totalSkills": 1412,
+    "totalPlugins": 344,
+    "totalSkills": 1417,
     "totalCommands": 66,
-    "pluginsWithSkills": 314,
+    "pluginsWithSkills": 315,
     "byCategory": {
       "productivity": 27,
       "security": 28,
@@ -25,7 +25,7 @@
       "database": 28,
       "design": 8,
       "ai-agency": 6,
-      "business-tools": 24,
+      "business-tools": 25,
       "fullstack": 1,
       "example": 3,
       "finance": 1,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 324,
+      "active": 325,
       "maintained": 19
     },
-    "featured": 3,
-    "new": 322,
-    "generatedAt": "2026-03-13T04:52:15.400Z"
+    "featured": 4,
+    "new": 323,
+    "generatedAt": "2026-03-16T02:56:11.846Z"
   },
   "plugins": [
     {
@@ -11716,6 +11716,41 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "executive-assistant-skills",
+      "name": "executive-assistant-skills",
+      "displayName": "executive assistant skills",
+      "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "executive-assistant",
+        "meeting-prep",
+        "email",
+        "productivity",
+        "automation",
+        "todoist"
+      ],
+      "hasSkills": true,
+      "skillCount": 5,
+      "commandCount": 0,
+      "installCommand": "/plugin install executive-assistant-skills",
+      "sourcePath": "./plugins/business-tools/executive-assistant-skills",
+      "lastUpdatedEpoch": 1773629771,
+      "lastUpdatedDate": "2026-03-16T02:56:11.846Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": true,
+      "isNew": true,
+      "author": {
+        "name": "Martin Gontovnikas",
+        "email": "gonto@hypergrowthpartners.com",
+        "url": "https://github.com/mgonto"
       },
       "type": "instruction-plugin"
     }
