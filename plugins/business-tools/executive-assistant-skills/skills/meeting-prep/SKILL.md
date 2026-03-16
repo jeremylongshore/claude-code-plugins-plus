@@ -12,7 +12,7 @@ Extract and use throughout:
 - `whatsapp` — WhatsApp number for delivery
 - `timezone` — IANA timezone (e.g. America/Argentina/Buenos_Aires)
 - `slack_username` — Slack DM target
-- `workspace` — absolute path to OpenClaw workspace (e.g. /home/user/.openclaw/workspace)
+- `workspace` — absolute path to OpenClaw workspace (e.g. ~/.openclaw/workspace)
 
 Do not proceed until you have these values.
 
