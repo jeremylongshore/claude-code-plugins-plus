@@ -1,6 +1,6 @@
 # Box Cloud Filesystem
 
-Transparent cloud filesystem for AI agents using Box CLI (`@box/cli`). Upload, download, search, share, and sync files to Box with operational safety guardrails.
+Transparent cloud filesystem for AI agents using the official [Box](https://www.box.com/) CLI (`@box/cli`). Upload, download, search, share, and sync files to Box cloud storage with operational safety guardrails. Works with any Box account — personal, business, or enterprise.
 
 **Compatible with:** Claude Code, Codex, Perplexity Computer, OpenClaw, and any agent platform that supports skills or system prompts.
 
@@ -39,7 +39,7 @@ box users:get --me   # verify auth
 
 `jq` is required for the hook scripts. Install via your system package manager if not present.
 
-**Free tier:** 10GB storage, 250MB file size limit. No credit card required.
+Box offers a free tier for individual users. See [box.com](https://www.box.com/) for current pricing and storage limits.
 
 ## What's Inside
 

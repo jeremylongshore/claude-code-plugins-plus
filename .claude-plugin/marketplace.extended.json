@@ -9239,7 +9239,7 @@
     {
       "name": "box-cloud-filesystem",
       "source": "./plugins/productivity/box-cloud-filesystem",
-      "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box with operational safety guardrails. Free 10GB.",
+      "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box cloud storage with operational safety guardrails.",
       "version": "1.0.0",
       "category": "productivity",
       "keywords": [

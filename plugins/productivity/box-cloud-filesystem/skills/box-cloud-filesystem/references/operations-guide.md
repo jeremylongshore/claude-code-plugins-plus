@@ -137,7 +137,7 @@ box files:unshare FILE_ID
 | `Forbidden` (403) | Auth token lacks permission | Re-run `box login` or check JWT scopes; ensure collaborator access to target folder |
 | `Rate Limited` (429) | Too many API calls in succession | CLI retries automatically; for bulk ops, use `--bulk-file-path` to batch via CSV |
 | `Auth expired` | Developer token (60 min) or OAuth refresh failed | Run `box login` again; for production use JWT or CCG |
-| `File too large` | Free tier: 250MB/file; Business: 5GB/file | Split large files or upgrade Box plan |
+| `File too large` | Box enforces per-file size limits by plan | Split large files or check Box plan limits |
 | `box: command not found` | CLI not installed or not in PATH | Run `npm install --global @box/cli` and ensure npm global bin is in PATH |
 | Empty search results | Box indexes asynchronously; new files may take 5-10 min | Wait and retry, or use `box folders:items` to browse directly |
 | `Name collision` | Multiple files with same name in different folders | Always use file ID, never filename, to identify targets |

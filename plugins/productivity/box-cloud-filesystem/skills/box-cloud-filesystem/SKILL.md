@@ -174,4 +174,4 @@ More detailed examples: `references/sync-pattern.md`
 - Box CLI: https://github.com/box/boxcli
 - Box Developer Docs: https://developer.box.com/
 - Box API Reference: https://developer.box.com/reference/
-- Free tier: 10GB storage, 250MB file size limit
+- Box pricing: https://www.box.com/ (free tier available for individual users)
