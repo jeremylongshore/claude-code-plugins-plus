@@ -1,0 +1,199 @@
+---
+import stashData from '../data/jeremys-stash.json';
+
+const items = stashData.items;
+---
+
+<div class="stash-grid">
+  {items.map((item) => (
+    <div class="stash-card" data-slug={item.slug}>
+      <div class="stash-top">
+        <span class="stash-grade">{item.grade}</span>
+        {item.new && <span class="stash-new-badge">NEW</span>}
+        <div class="stash-tags">
+          {item.tags.map((tag) => (
+            <span class="stash-tag">{tag}</span>
+          ))}
+        </div>
+      </div>
+
+      <h3 class="stash-name">{item.name}</h3>
+      <p class="stash-desc">{item.description}</p>
+
+      <div class="stash-actions">
+        <a href={item.repoUrl} target="_blank" rel="noopener noreferrer" class="stash-repo-link">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          Clone repo
+        </a>
+        <a href={item.pluginLink} class="stash-plugin-link">View on marketplace &rarr;</a>
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .stash-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .stash-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: transform var(--duration-fast) var(--ease-out),
+                border-color var(--duration-fast) var(--ease-out),
+                box-shadow var(--duration-normal) var(--ease-out);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stash-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary) 0%, oklch(70% 0.14 45) 100%);
+  }
+
+  .stash-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--primary-border);
+    box-shadow: 0 6px 20px oklch(0% 0 0 / 0.2);
+  }
+
+  .stash-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .stash-grade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: var(--primary);
+    color: white;
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: 6px;
+    flex-shrink: 0;
+  }
+
+  .stash-new-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: oklch(95% 0 0);
+    background: oklch(55% 0.2 145);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+  }
+
+  .stash-tags {
+    display: flex;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  .stash-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    background: var(--surface-3);
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+  }
+
+  .stash-name {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text);
+    margin: 0;
+  }
+
+  .stash-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-2);
+    margin: 0;
+    flex-grow: 1;
+  }
+
+  .stash-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .stash-repo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    background: var(--surface-3);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.75rem;
+    border-radius: 6px;
+    transition: border-color var(--duration-fast), color var(--duration-fast), background var(--duration-fast);
+  }
+
+  .stash-repo-link:hover {
+    border-color: var(--primary-border);
+    color: var(--primary);
+    background: var(--primary-tint);
+  }
+
+  .stash-repo-link svg {
+    flex-shrink: 0;
+  }
+
+  .stash-plugin-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-decoration: none;
+    transition: letter-spacing var(--duration-fast), opacity var(--duration-fast);
+  }
+
+  .stash-plugin-link:hover {
+    letter-spacing: 0.03em;
+    opacity: 0.85;
+  }
+
+  @media (max-width: 640px) {
+    .stash-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stash-tags {
+      margin-left: 0;
+    }
+  }
+</style>

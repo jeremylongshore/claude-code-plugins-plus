@@ -5,6 +5,7 @@ import StackBuilder from '../components/StackBuilder.astro';
 import CollectionsGrid from '../components/CollectionsGrid.astro';
 import CoworkGrid from '../components/CoworkGrid.astro';
 import KillerSkills from '../components/KillerSkills.astro';
+import JeremysStash from '../components/JeremysStash.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -1259,6 +1260,16 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                     <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
                 </form>
             </div>
+        </div>
+    </section>
+
+    <!-- Jeremy's Stash -->
+    <section class="stash-section" style="padding: 3rem 2rem; background: var(--surface);">
+        <div style="max-width: 1100px; margin: 0 auto;">
+            <span class="spotlight-badge">JEREMY'S STASH</span>
+            <h2 class="section-title" style="text-align: left;">Jeremy's Stash</h2>
+            <p style="color: var(--text-2); margin-bottom: 0; max-width: 600px;">Standalone plugins I built and maintain. Each has its own repo you can clone directly.</p>
+            <JeremysStash />
         </div>
     </section>
 

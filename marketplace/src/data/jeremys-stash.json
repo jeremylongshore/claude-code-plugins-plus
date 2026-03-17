@@ -1,0 +1,20 @@
+{
+  "title": "Jeremy's Stash",
+  "subtitle": "Standalone plugins I built and maintain. Each has its own repo you can clone directly.",
+  "items": [
+    {
+      "name": "Box Cloud Filesystem",
+      "slug": "box-cloud-filesystem",
+      "description": "Transparent cloud storage for AI agents. Two modes: auto-sync hooks on Write/Edit, or explicit Box CLI operations with safety guardrails.",
+      "repoUrl": "https://github.com/jeremylongshore/box-cloud-filesystem",
+      "pluginLink": "/plugins/box-cloud-filesystem",
+      "tags": ["cloud-storage", "hooks", "sync"],
+      "grade": "A",
+      "new": true
+    }
+  ],
+  "meta": {
+    "lastUpdated": "2026-03-17",
+    "curatedBy": "Jeremy Longshore"
+  }
+}
