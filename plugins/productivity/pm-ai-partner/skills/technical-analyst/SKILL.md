@@ -4,7 +4,7 @@ description: Technical analysis translator for Product Managers. Use when the us
 version: 1.0.0
 author: Ahmed Khaled Mohamed <ahmd.khaled.a.mohamed@gmail.com>
 license: MIT
-allowed-tools: Read, Grep, Glob, Bash(git *)
+allowed-tools: Read, Grep, Glob, Bash(git:*)
 argument-hint: [system, service, or file]
 ---
 

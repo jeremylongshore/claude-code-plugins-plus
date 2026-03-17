@@ -24,7 +24,7 @@ const EXCLUDE_DIRS = ['downloads'];
 
 // Performance budgets (calibrated for 343+ plugin marketplace, 2026-03)
 const BUDGETS = {
-  totalSize: 18 * 1024 * 1024,  // 18MB gzipped (343+ plugin pages + README sections + dark/light theme CSS + scroll reveals + explore/skills/compare)
+  totalSize: 18.5 * 1024 * 1024,  // 18.5MB gzipped (346+ plugin pages + README sections + dark/light theme CSS + scroll reveals + explore/skills/compare)
   largestFile: 550 * 1024,      // 550KB gzipped (explore page lists all plugins + keyword filter + install buttons)
   buildTime: 10 * 1000,         // 10 seconds (ms)
   routeCount: {
