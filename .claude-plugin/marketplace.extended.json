@@ -2728,6 +2728,33 @@
       }
     },
     {
+      "name": "lumera-agent-memory",
+      "source": "./plugins/mcp/lumera-agent-memory",
+      "description": "Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across sessions.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "mcp",
+        "memory",
+        "cascade",
+        "storage",
+        "encryption",
+        "search",
+        "fts",
+        "agent"
+      ],
+      "author": {
+        "name": "Intent Solutions IO",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "mcpTools": [
+        "store_memory",
+        "recall_memory",
+        "search_memory",
+        "delete_memory"
+      ]
+    },
+    {
       "name": "e2e-test-framework",
       "source": "./plugins/testing/e2e-test-framework",
       "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
@@ -6483,6 +6510,31 @@
       }
     },
     {
+      "name": "geepers",
+      "source": "./plugins/community/geepers-agents",
+      "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built with MCP tools and Claude Code plugin agents.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "mcp",
+        "orchestration",
+        "multi-agent",
+        "development-workflow",
+        "code-quality",
+        "deployment",
+        "geepers",
+        "claude-code"
+      ],
+      "author": {
+        "name": "Luke Steuber"
+      },
+      "homepage": "https://dr.eamer.dev/geepers/",
+      "repository": "https://github.com/lukeslp/geepers",
+      "components": {
+        "agents": 51
+      }
+    },
+    {
       "name": "jeremy-firebase",
       "source": "./plugins/community/jeremy-firebase",
       "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
@@ -8096,7 +8148,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -9163,13 +9215,26 @@
       "source": "./plugins/business-tools/executive-assistant-skills",
       "version": "1.0.0",
       "description": "AI-powered executive assistant skills that fully replace a human EA. Research meeting attendees, draft emails, create meeting briefs, and manage action items.",
-      "author": { "name": "Martin Gontovnikas", "email": "gonto@hypergrowthpartners.com", "url": "https://github.com/mgonto" },
+      "author": {
+        "name": "Martin Gontovnikas",
+        "email": "gonto@hypergrowthpartners.com",
+        "url": "https://github.com/mgonto"
+      },
       "category": "business-tools",
-      "keywords": ["executive-assistant", "meeting-prep", "email", "productivity", "automation", "todoist"],
+      "keywords": [
+        "executive-assistant",
+        "meeting-prep",
+        "email",
+        "productivity",
+        "automation",
+        "todoist"
+      ],
       "license": "MIT",
       "repository": "https://github.com/mgonto/executive-assistant-skills",
       "featured": true,
-      "components": { "skills": 5 }
+      "components": {
+        "skills": 5
+      }
     }
   ]
 }

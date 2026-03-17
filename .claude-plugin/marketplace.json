@@ -2041,6 +2041,27 @@
       }
     },
     {
+      "name": "lumera-agent-memory",
+      "source": "./plugins/mcp/lumera-agent-memory",
+      "description": "Durable agent memory with Cascade object storage, client-side encryption, and local full-text search index. Persists agent context across sessions.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "mcp",
+        "memory",
+        "cascade",
+        "storage",
+        "encryption",
+        "search",
+        "fts",
+        "agent"
+      ],
+      "author": {
+        "name": "Intent Solutions IO",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
       "name": "e2e-test-framework",
       "source": "./plugins/testing/e2e-test-framework",
       "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
@@ -4872,6 +4893,28 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       }
+    },
+    {
+      "name": "geepers",
+      "source": "./plugins/community/geepers-agents",
+      "description": "Multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, and more. Built with MCP tools and Claude Code plugin agents.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "mcp",
+        "orchestration",
+        "multi-agent",
+        "development-workflow",
+        "code-quality",
+        "deployment",
+        "geepers",
+        "claude-code"
+      ],
+      "author": {
+        "name": "Luke Steuber"
+      },
+      "homepage": "https://dr.eamer.dev/geepers/",
+      "repository": "https://github.com/lukeslp/geepers"
     },
     {
       "name": "jeremy-firebase",
