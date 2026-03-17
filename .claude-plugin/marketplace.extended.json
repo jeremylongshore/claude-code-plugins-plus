@@ -9263,7 +9263,7 @@
       "license": "MIT",
       "featured": true,
       "pricing": "free",
-      "external_sync": false,
+      "external_sync": true,
       "components": {
         "skills": 1,
         "hooks": 2

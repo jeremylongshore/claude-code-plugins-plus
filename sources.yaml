@@ -572,6 +572,34 @@ sources:
       - "*.log"
 
   # ============================================================
+  # Jeremy's Stash (Jeremy Longshore standalone repos)
+  # ============================================================
+
+  - name: box-cloud-filesystem
+    description: Transparent cloud filesystem for AI agents using Box CLI
+    repo: jeremylongshore/box-cloud-filesystem
+    source_path: .
+    target_path: plugins/productivity/box-cloud-filesystem
+    author:
+      name: Jeremy Longshore
+      github: jeremylongshore
+      email: jeremy@intentsolutions.io
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - ".claude-plugin/**"
+      - "hooks/**"
+      - "scripts/**"
+      - "skills/**"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  # ============================================================
   # Add more external sources below
   # ============================================================
 
