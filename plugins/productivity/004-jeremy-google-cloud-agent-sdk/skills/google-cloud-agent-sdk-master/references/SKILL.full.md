@@ -19,7 +19,35 @@ This skill provides automated assistance for the described functionality.
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+### Quickstart: Hello World Agent
+
+```python
+from google.adk.agents import Agent
+
+root_agent = Agent(
+    name="hello-world-agent",
+    model="gemini-2.0-flash-exp",
+    instruction="You are a helpful assistant. Answer questions concisely.",
+)
+
+if __name__ == "__main__":
+    from google.adk.runners import InMemoryRunner
+    runner = InMemoryRunner(agent=root_agent)
+    response = runner.run("What is the Google Agent Development Kit?")
+    print(response)
+```
+
+### Deploy to Cloud Run
+
+```bash
+# Build and deploy using Agent Starter Pack
+gcloud run deploy my-agent \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars GOOGLE_CLOUD_PROJECT=$PROJECT_ID
+```
+
 ## Core Capabilities
 
 ### 🤖 Agent Development Kit (ADK)

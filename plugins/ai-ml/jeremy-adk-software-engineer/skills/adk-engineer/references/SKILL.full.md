@@ -88,7 +88,56 @@ The skill produces structured output relevant to the task.
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+### Minimal ADK Agent
+
+```python
+from google.adk.agents import Agent
+from google.adk.tools import Tool
+
+def fetch_status(service: str) -> dict:
+    """Check the status of a given service."""
+    # Replace with real implementation
+    return {"service": service, "status": "ok"}
+
+status_tool = Tool(func=fetch_status, description="Check service status")
+
+agent = Agent(
+    name="status-checker",
+    model="gemini-2.0-flash",
+    tools=[status_tool],
+    instruction="You help engineers check service status and diagnose issues.",
+)
+
+if __name__ == "__main__":
+    from google.adk.runners import Runner
+    runner = Runner(agent=agent)
+    result = runner.run("Check the status of the payments service")
+    print(result.output)
+```
+
+### Multi-Agent Orchestration
+
+```python
+from google.adk.agents import Agent, SequentialAgent
+
+research_agent = Agent(
+    name="researcher",
+    model="gemini-2.0-flash",
+    instruction="Research the given topic and return structured findings.",
+)
+
+writer_agent = Agent(
+    name="writer",
+    model="gemini-2.0-flash",
+    instruction="Take the research findings and write a concise summary.",
+)
+
+pipeline = SequentialAgent(
+    name="research-pipeline",
+    agents=[research_agent, writer_agent],
+)
+```
+
 project/
 ├── src/
 │   ├── agents/              # Agent definitions

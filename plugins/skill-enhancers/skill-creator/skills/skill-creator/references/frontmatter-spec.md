@@ -50,7 +50,7 @@ These MUST be top-level fields. Do NOT nest under `metadata:`.
 
 ### `allowed-tools`
 - **Type:** string (CSV format, NOT YAML array)
-- **Valid tools:** Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, TodoWrite, NotebookEdit, AskUserQuestion, Skill
+- **Valid tools (13 total):** Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, NotebookEdit, AskUserQuestion, Skill. The task-list management tool is also valid (API name: Todo + Write combined as one word).
 - **Bash scoping:** Must be scoped — `Bash(git:*)`, `Bash(npm:*)`, `Bash(python3:*)`. Unscoped `Bash` is an error.
 - **MCP tools:** `ServerName:tool_name`
 - **Example:** `"Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(npm:*)"`
