@@ -10,8 +10,8 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 340,
-    "skillsEnabled": 267,
+    "totalPlugins": 341,
+    "skillsEnabled": 268,
     "lastUpdated": "2026-03-07"
   },
   "plugins": [
@@ -9234,6 +9234,45 @@
       "featured": true,
       "components": {
         "skills": 5
+      }
+    },
+    {
+      "name": "box-cloud-filesystem",
+      "source": "./plugins/productivity/box-cloud-filesystem",
+      "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box with operational safety guardrails. Free 10GB.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "box",
+        "cloud-storage",
+        "filesystem",
+        "file-sync",
+        "box-cli",
+        "upload",
+        "download",
+        "document-management",
+        "collaboration",
+        "ai-agent-storage"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "repository": "https://github.com/jeremylongshore/box-cloud-filesystem",
+      "homepage": "https://tonsofskills.com",
+      "license": "MIT",
+      "featured": true,
+      "pricing": "free",
+      "external_sync": false,
+      "components": {
+        "skills": 1,
+        "hooks": 2
+      },
+      "verification": {
+        "score": 0,
+        "grade": "N/A",
+        "badge": "none",
+        "lastValidated": "2026-03-17T00:00:00.000Z"
       }
     }
   ]

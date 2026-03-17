@@ -1,0 +1,24 @@
+{
+  "name": "box-cloud-filesystem",
+  "version": "1.0.0",
+  "description": "Transparent cloud filesystem for AI agents using Box CLI (@box/cli). Upload, download, search, share, and sync files to Box with operational safety guardrails. Free 10GB.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/box-cloud-filesystem",
+  "homepage": "https://tonsofskills.com",
+  "license": "MIT",
+  "keywords": [
+    "box",
+    "cloud-storage",
+    "filesystem",
+    "file-sync",
+    "box-cli",
+    "upload",
+    "download",
+    "document-management",
+    "collaboration",
+    "ai-agent-storage"
+  ]
+}
