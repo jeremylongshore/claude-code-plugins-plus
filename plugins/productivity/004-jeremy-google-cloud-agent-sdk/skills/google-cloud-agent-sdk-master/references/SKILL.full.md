@@ -15,11 +15,33 @@ This Agent Skill provides comprehensive mastery of Google's Agent Development Ki
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+This skill provides automated assistance for building and deploying Google Cloud ADK agents.
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+### Minimal ADK agent (Python)
+
+```python
+from google.adk.agents import Agent
+
+root_agent = Agent(
+    name="hello_agent",
+    model="gemini-2.0-flash",
+    description="A simple greeting agent.",
+    instruction="Greet the user warmly and answer any questions.",
+)
+```
+
+### Deploy with Agent Starter Pack
+
+```bash
+# Clone starter pack, create agent, deploy to Cloud Run
+git clone https://github.com/GoogleCloudPlatform/agent-starter-pack
+cd agent-starter-pack
+make new-agent NAME=my_agent
+make deploy PROJECT_ID=my-gcp-project REGION=us-central1
+```
+
 ## Core Capabilities
 
 ### 🤖 Agent Development Kit (ADK)

@@ -89,7 +89,7 @@ REFERENCE_PLACEHOLDER_CRITICAL = [
 REFERENCE_PLACEHOLDER_HIGH = [
     re.compile(r"^#\s+\w+\s*$", re.MULTILINE),  # heading-only file (caught by length check too)
     re.compile(r"Refer to the main SKILL\.md for", re.IGNORECASE),
-    re.compile(r"TODO:?\s*(add|write|fill|complete)", re.IGNORECASE),
+    re.compile(r"\bTODO\b:?\s*(add|write|fill|complete)", re.IGNORECASE),
 ]
 
 # ─── Stub script patterns ────────────────────────────────────────────────────

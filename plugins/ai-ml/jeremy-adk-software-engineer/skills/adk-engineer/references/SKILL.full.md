@@ -88,7 +88,41 @@ The skill produces structured output relevant to the task.
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+### Build a minimal ADK agent with a custom tool
+
+```python
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
+
+def get_weather(city: str) -> dict:
+    """Fetch weather for a city (stub — replace with real API)."""
+    return {"city": city, "temp_c": 22, "condition": "sunny"}
+
+weather_tool = FunctionTool(func=get_weather)
+
+root_agent = Agent(
+    name="weather_agent",
+    model="gemini-2.0-flash",
+    description="Answers weather questions for any city.",
+    instruction="Use the get_weather tool to answer user questions.",
+    tools=[weather_tool],
+)
+```
+
+### Run the agent locally
+
+```bash
+adk web  # opens browser chat at http://localhost:8000
+```
+
+### Deploy to Cloud Run via Agent Starter Pack
+
+```bash
+git clone https://github.com/GoogleCloudPlatform/agent-starter-pack
+cd agent-starter-pack
+make deploy AGENT_DIR=../my_agent PROJECT_ID=my-gcp-project REGION=us-central1
+```
+
 project/
 ├── src/
 │   ├── agents/              # Agent definitions
