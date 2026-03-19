@@ -1,3 +1,15 @@
+---
+name: memory-kit
+description: |
+  Persistent context management for Claude Code sessions. Save, load, update,
+  share, and audit session memory via MEMORY.md. Use when starting a session,
+  before compaction, or to sync context across teammates.
+allowed-tools: Read, Write, Edit, Bash(git:*)
+version: 1.0.0
+author: Claude Code Plugins Contributors
+license: MIT
+---
+
 # Memory Kit Skills
 
 Five skills for persistent context management in Claude Code.
