@@ -142,5 +142,10 @@ Detailed sub-criteria for the Intent Solutions 100-point grading system.
 - -1: XML-like tags in body
 - -1: TOC wastes tokens (use clear section headers instead)
 
+### Relative Markdown Links
+- Validator checks that relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
+- Links to URLs (`https://...`) are ignored
+- Broken relative links produce a warning
+
 ### DCI Bonus
 - +1: Uses dynamic context injection (`` !`command` `` directives)

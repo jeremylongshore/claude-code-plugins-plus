@@ -106,6 +106,7 @@ RE_DESCRIPTION_TRIGGER_WITH = re.compile(r"\bTrigger with\b", re.IGNORECASE)
 RE_SKILLDIR_SCRIPTS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/scripts/([\w\-./]+)")
 RE_SKILLDIR_REFERENCES = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/references/([\w\-./]+)")
 RE_SKILLDIR_ASSETS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/assets/([\w\-./]+)")
+RE_RELATIVE_MD_LINK = re.compile(r"\[([^\]]*)\]\(((?!https?://|#)[^)]+)\)")
 RE_FIRST_PERSON = re.compile(r"\b(I can|I will|I'm going to|I help)\b", re.IGNORECASE)
 RE_SECOND_PERSON = re.compile(r"\b(You can|You should|You will)\b", re.IGNORECASE)
 FORBIDDEN_WORDS = ("anthropic", "claude")
@@ -1573,6 +1574,53 @@ def validate_resource_files_exist(path: Path, body: str) -> Tuple[List[str], Lis
     return errors, warnings
 
 
+def validate_relative_links(path: Path, body: str) -> Tuple[List[str], List[str]]:
+    """
+    Validate that relative markdown links in SKILL.md point to existing files.
+    Per Anthropic docs, [text](relative-path) is the official pattern for supporting files.
+    Returns (errors, warnings).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    skill_dir = path.parent.resolve()
+
+    # Skip links inside code blocks and inline code
+    in_code_block = False
+    filtered_lines = []
+    for line in body.splitlines():
+        if CODE_FENCE_PATTERN.match(line):
+            in_code_block = not in_code_block
+        if not in_code_block:
+            # Strip inline code spans to avoid matching example links
+            filtered_lines.append(re.sub(r'`[^`]+`', '', line))
+    filtered_body = "\n".join(filtered_lines)
+
+    for match in RE_RELATIVE_MD_LINK.finditer(filtered_body):
+        link_text = match.group(1)
+        link_target = match.group(2)
+
+        # Skip anchors, mailto, and template variables
+        if link_target.startswith(("mailto:", "${", "${")):
+            continue
+
+        target_path = (skill_dir / link_target).resolve()
+
+        # Ensure path doesn't escape skill directory
+        try:
+            target_path.relative_to(skill_dir)
+        except ValueError:
+            errors.append(f"[relative-link] Link escapes skill directory: [{link_text}]({link_target})")
+            continue
+
+        if not target_path.exists():
+            warnings.append(
+                f"[relative-link] Linked file not found: [{link_text}]({link_target}) "
+                f"(expected at {skill_dir.name}/{link_target})"
+            )
+
+    return errors, warnings
+
+
 # === CONTENT QUALITY VALIDATION (Phase 4: Hightower Feedback) ===
 #
 # These functions catch content quality issues that structural validation misses:
@@ -1842,6 +1890,11 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     resource_errors, resource_warnings = validate_resource_files_exist(path, body)
     errors.extend(resource_errors)
     warnings.extend(resource_warnings)
+
+    # Validate relative markdown links (Anthropic-recommended pattern)
+    link_errors, link_warnings = validate_relative_links(path, body)
+    errors.extend(link_errors)
+    warnings.extend(link_warnings)
 
     # === CONTENT QUALITY VALIDATION (Hightower feedback) ===
     # Validate files listed in references/README.md and assets/README.md actually exist

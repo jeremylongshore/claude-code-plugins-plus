@@ -176,8 +176,12 @@ license: MIT
 
 Valid tools: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `WebFetch`, `WebSearch`, `Task`, `TodoWrite`, `NotebookEdit`, `AskUserQuestion`, `Skill`
 
+Supporting file references (per Anthropic docs):
+- Relative markdown links: `[API Reference](reference.md)`, `[Examples](examples/sample.md)` — Claude follows these with Read tool on demand
+- In DCI/bash commands: `${CLAUDE_SKILL_DIR}` resolves to the skill's directory at runtime
+
 Path variables:
-- `${CLAUDE_SKILL_DIR}` for portable file references within skills
+- `${CLAUDE_SKILL_DIR}` for bash/DCI contexts within skills (not needed for markdown links)
 - `${CLAUDE_PLUGIN_ROOT}` for plugin root directory references in hooks
 - `${CLAUDE_PLUGIN_DATA}` for persistent plugin state (survives updates/reinstalls, v2.1.78+)
 

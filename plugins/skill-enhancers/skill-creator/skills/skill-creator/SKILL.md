@@ -199,7 +199,8 @@ Additional guidelines:
 - Keep under 500 lines (offload to `references/` if longer)
 - Concise — Claude is smart, don't over-explain
 - Concrete examples over abstract descriptions
-- Use `${CLAUDE_SKILL_DIR}/` for internal file references in the skills you create
+- Reference supporting files with relative markdown links: `[details](reference.md)` or `[API](references/api.md)` — Claude reads these on demand
+- Use `${CLAUDE_SKILL_DIR}/` in DCI/bash contexts only: `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` ``
 - Include edge cases that actually matter
 - No time-sensitive information
 - Consistent terminology throughout
