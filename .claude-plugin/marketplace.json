@@ -6780,6 +6780,26 @@
       "repository": "https://github.com/jeremylongshore/box-cloud-filesystem",
       "homepage": "https://tonsofskills.com",
       "license": "MIT"
+    },
+    {
+      "name": "pr-to-spec",
+      "source": "./plugins/mcp/pr-to-spec",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "version": "0.8.0",
+      "category": "code-quality",
+      "repository": "https://github.com/jeremylongshore/pr-to-spec",
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "license": "MIT",
+      "keywords": [
+        "mcp",
+        "pr-analysis",
+        "intent-drift",
+        "code-review",
+        "agent-protocol"
+      ]
     }
   ]
 }
