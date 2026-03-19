@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Gamma Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for upgrading Gamma SDK versions and migrating between API versions safely.
 

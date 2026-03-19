@@ -181,6 +181,16 @@ Path variables:
 - `${CLAUDE_PLUGIN_ROOT}` for plugin root directory references in hooks
 - `${CLAUDE_PLUGIN_DATA}` for persistent plugin state (survives updates/reinstalls, v2.1.78+)
 
+String substitutions (replaced before Claude processes the skill):
+- `$ARGUMENTS` / `$0`, `$1`, ..., `$9` — user-provided arguments (pair with `argument-hint` frontmatter)
+- `${CLAUDE_SESSION_ID}` — current session identifier
+
+Dynamic context injection (DCI) — runs shell commands at skill activation time:
+- Syntax: `` !`command` `` on its own line — output injected verbatim into skill body
+- Use for pre-loading discovery data (git status, versions, env detection) to save tool call rounds
+- Always add fallbacks: `` !`terraform version 2>/dev/null || echo 'not installed'` ``
+- Keep injections small — summaries, not full file contents
+
 ### Agent Frontmatter (agents/*.md)
 ```yaml
 ---

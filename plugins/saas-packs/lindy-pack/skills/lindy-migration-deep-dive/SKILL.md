@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Lindy Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Advanced migration strategies for moving to or upgrading Lindy AI integrations including platform migration, agent consolidation, and multi-environment rollout.
 

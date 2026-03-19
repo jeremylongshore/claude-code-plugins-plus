@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Clerk Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Safely upgrade Clerk SDK versions and handle breaking changes.
 

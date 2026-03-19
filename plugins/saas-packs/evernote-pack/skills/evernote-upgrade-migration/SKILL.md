@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Evernote Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for upgrading Evernote SDK versions, handling breaking changes, and migrating legacy integrations to current API patterns.
 

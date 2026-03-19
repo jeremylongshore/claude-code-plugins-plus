@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Customer.io Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Plan and execute Customer.io SDK upgrades and migrations safely with staged rollouts, feature flags, and rollback procedures.
 

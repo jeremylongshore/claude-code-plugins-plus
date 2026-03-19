@@ -14,6 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # MaintainX Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 Complete debugging toolkit for diagnosing and resolving MaintainX integration issues with detailed logging, diagnostic scripts, and troubleshooting procedures.
 

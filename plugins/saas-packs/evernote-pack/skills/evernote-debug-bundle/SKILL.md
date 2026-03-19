@@ -14,6 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Evernote Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 Comprehensive debugging toolkit for Evernote API integrations, including request logging, ENML validation, token inspection, and diagnostic utilities.
 

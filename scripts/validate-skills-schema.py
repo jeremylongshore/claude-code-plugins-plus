@@ -83,8 +83,8 @@ OPTIONAL_FIELDS = {
 # Deprecated fields (warn but don't error)
 DEPRECATED_FIELDS = {'when_to_use'}
 
-# Enterprise recommended sections (not required in standard tier)
-ENTERPRISE_SECTIONS = [
+# Recommended sections (best practices, not mandated by any published standard)
+RECOMMENDED_SECTIONS = [
     "# ",  # title line
     "## Overview",
     "## Prerequisites",
@@ -95,8 +95,9 @@ ENTERPRISE_SECTIONS = [
     "## Resources",
 ]
 
-# Backward compat alias
-REQUIRED_SECTIONS = ENTERPRISE_SECTIONS
+# Backward compat aliases
+ENTERPRISE_SECTIONS = RECOMMENDED_SECTIONS
+REQUIRED_SECTIONS = RECOMMENDED_SECTIONS
 
 # Regex patterns
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
@@ -162,7 +163,7 @@ def score_progressive_disclosure(path: Path, body: str, fm: dict) -> dict:
     - Token Economy (10): SKILL.md line count
     - Layered Structure (10): Has references/ directory with content
     - Reference Depth (5): References are one level deep only
-    - Navigation Signals (5): Has TOC for long files
+    - Navigation Signals (5): Well-structured sections for navigability
     """
     breakdown = {}
     lines = len(body.splitlines())
@@ -196,6 +197,12 @@ def score_progressive_disclosure(path: Path, body: str, fm: dict) -> dict:
         else:
             breakdown['layered_structure'] = (0, "No references/ (long skill needs extraction)")
 
+    # Info note: dynamic injection + references/ = sophisticated progressive disclosure
+    has_dynamic_injection = bool(re.search(r'(?m)^!\`[^`]+\`\s*$', body))
+    if has_dynamic_injection and refs_dir.exists() and refs_dir.glob("*.md"):
+        score, msg = breakdown['layered_structure']
+        breakdown['layered_structure'] = (score, msg + " + dynamic injection")
+
     # Reference Depth (5 pts) - One level deep only (no nested subdirs in references/)
     if refs_dir.exists():
         nested_dirs = [d for d in refs_dir.iterdir() if d.is_dir()]
@@ -206,15 +213,20 @@ def score_progressive_disclosure(path: Path, body: str, fm: dict) -> dict:
     else:
         breakdown['reference_depth'] = (5, "N/A - no references/")
 
-    # Navigation Signals (5 pts) - TOC for files >100 lines
-    has_toc = bool(re.search(r'(?mi)^##?\s*(table of contents|contents|toc)\b', body))
-    has_nav_links = bool(re.search(r'\[.*?\]\(#.*?\)', body))  # Anchor links
+    # Navigation Signals (5 pts) - Well-structured sections for navigability
+    # Note: No published standard mandates specific sections. Scoring is softened
+    # to reflect that these are best practices, not requirements.
+    sections = len(re.findall(r'(?m)^##\s+', body))
     if lines <= 100:
-        breakdown['navigation_signals'] = (5, "Short file, TOC optional")
-    elif has_toc or has_nav_links:
-        breakdown['navigation_signals'] = (5, "Has navigation/TOC")
+        breakdown['navigation_signals'] = (5, "Short file, navigation implicit")
+    elif sections >= 7:
+        breakdown['navigation_signals'] = (5, f"Well-structured: {sections} section headers")
+    elif sections >= 4:
+        breakdown['navigation_signals'] = (4, f"Adequate structure: {sections} sections (7+ ideal)")
+    elif sections >= 2:
+        breakdown['navigation_signals'] = (2, f"Minimal structure: {sections} sections (4+ recommended)")
     else:
-        breakdown['navigation_signals'] = (0, "Long file needs TOC/navigation")
+        breakdown['navigation_signals'] = (0, f"Poor structure: only {sections} sections")
 
     total = sum(v[0] for v in breakdown.values())
     return {'score': total, 'max': 30, 'breakdown': breakdown}
@@ -529,7 +541,7 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     """
     Modifiers (±15 pts)
     Bonuses: gerund name, grep-friendly, exemplary examples
-    Penalties: first/second person description, no TOC on long file
+    Penalties: first/second person description, unnecessary TOC
     """
     modifiers = {}
     name = str(fm.get('name', ''))
@@ -564,10 +576,16 @@ def calculate_modifiers(path: Path, body: str, fm: dict) -> dict:
     if 'i can' in desc_lower or 'i will' in desc_lower or 'you can' in desc_lower or 'you should' in desc_lower:
         modifiers['person_in_desc'] = (-2, "first/second person in description")
 
-    # No TOC on long file -2
+    # TOC wastes tokens — Anthropic spec doesn't require it, progressive disclosure does
     has_toc = bool(re.search(r'(?mi)^##?\s*(table of contents|contents|toc)\b', body))
-    if lines > 150 and not has_toc:
-        modifiers['missing_toc'] = (-2, "long file needs TOC")
+    if has_toc:
+        modifiers['unnecessary_toc'] = (-1, "TOC wastes tokens — use clear section headers instead")
+
+    # Dynamic context injection (Anthropic spec feature) +1
+    has_dynamic_injection = bool(re.search(r'(?m)^!\`[^`]+\`\s*$', body))
+    if has_dynamic_injection:
+        injection_count = len(re.findall(r'(?m)^!\`[^`]+\`\s*$', body))
+        modifiers['dynamic_injection'] = (+1, f"Uses preprocessing injection ({injection_count} directives)")
 
     # XML tags in body (anti-pattern) -1
     if '<' in body and '>' in body and re.search(r'<[a-z]+>', body):
@@ -1192,13 +1210,16 @@ def validate_frontmatter(path: Path, fm: dict, tier: str = TIER_STANDARD) -> Tup
     return errors, warnings, infos
 
 
-def validate_body(path: Path, body: str, tier: str = TIER_STANDARD) -> Tuple[List[str], List[str]]:
+def validate_body(path: Path, body: str, tier: str = TIER_STANDARD, fm: dict = None) -> Tuple[List[str], List[str], List[str]]:
     """
     Validate SKILL.md body content.
-    Returns: (errors, warnings)
+    Returns: (errors, warnings, infos)
     """
     errors: List[str] = []
     warnings: List[str] = []
+    infos: List[str] = []
+    if fm is None:
+        fm = {}
     lines = body.splitlines()
 
     # === LENGTH CHECKS ===
@@ -1241,13 +1262,13 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD) -> Tuple[Lis
         return False
 
     if tier == TIER_ENTERPRISE:
-        for sec in ENTERPRISE_SECTIONS:
+        for sec in RECOMMENDED_SECTIONS:
             if sec == "# ":
                 if not has_markdown_h1(body):
-                    warnings.append(f"[body] Recommended section missing: '{sec}' (enterprise quality standard)")
+                    warnings.append(f"[body] Recommended section missing: '{sec}' (best practice, not spec-mandated)")
             else:
                 if not has_heading_line(body, sec):
-                    warnings.append(f"[body] Recommended section missing: '{sec}' (enterprise quality standard)")
+                    warnings.append(f"[body] Recommended section missing: '{sec}' (best practice, not spec-mandated)")
 
     # === LEE HAN CHUNG: SECTION CONTENT MUST BE NON-EMPTY ===
 
@@ -1468,12 +1489,20 @@ def validate_body(path: Path, body: str, tier: str = TIER_STANDARD) -> Tuple[Lis
             if not re.search(rf'#.*{num}', block):  # No comment explaining it
                 warnings.append(f"[scripts] Code block {i+1}: Magic number '{num}' - add comment explaining why")
 
+    # === STRING SUBSTITUTION CHECKS ===
+    # Detect $ARGUMENTS / $ARGUMENTS[N] / $0-$9 usage and validate argument-hint presence
+    has_arguments = bool(re.search(r'\$ARGUMENTS', body))
+    has_positional = bool(re.search(r'\$[0-9]', body))
+    if (has_arguments or has_positional) and 'argument-hint' not in fm:
+        infos.append("[body] Uses $ARGUMENTS/$N but 'argument-hint' frontmatter is missing — "
+                     "add argument-hint for autocomplete support (per official docs)")
+
     # === VOICE CHECKS ===
 
     if re.search(r'\byou should\b|\byou can\b|\byou will\b', body, re.IGNORECASE):
         warnings.append("[body] Consider imperative language instead of 'you should/can/will'")
 
-    return errors, warnings
+    return errors, warnings, infos
 
 
 def validate_scripts_exist(path: Path, body: str) -> Tuple[List[str], List[str]]:
@@ -1799,9 +1828,10 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     infos.extend(fm_infos)
 
     # Validate body
-    body_errors, body_warnings = validate_body(path, body, tier)
+    body_errors, body_warnings, body_infos = validate_body(path, body, tier, fm)
     errors.extend(body_errors)
     warnings.extend(body_warnings)
+    infos.extend(body_infos)
 
     # Validate scripts
     script_errors, script_warnings = validate_scripts_exist(path, body)

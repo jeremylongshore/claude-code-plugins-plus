@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Instantly Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for upgrading Instantly SDK versions and handling breaking changes.
 

@@ -14,6 +14,9 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Building CI/CD Pipelines
 
+## Current State
+!`ls .github/workflows/*.yml .gitlab-ci.yml Jenkinsfile .circleci/config.yml 2>/dev/null || echo 'No CI/CD config found'`
+
 ## Overview
 
 Generate CI/CD pipeline configurations for GitHub Actions, GitLab CI, Jenkins, CircleCI, and Azure DevOps. Produce multi-stage workflows covering linting, testing, building container images, security scanning, and deploying to staging/production with proper gating and rollback mechanisms.

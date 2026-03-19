@@ -10,6 +10,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Detecting Infrastructure Drift
 
+## Current State
+!`ls *.tf Dockerfile docker-compose.yml 2>/dev/null || echo 'No IaC files found'`
+!`terraform version 2>/dev/null || echo 'Terraform not installed'`
+
 ## Overview
 
 Detect discrepancies between actual cloud infrastructure state and the desired state defined in IaC (Terraform, CloudFormation, Pulumi). Run drift detection commands, analyze modified/added/deleted resources, generate drift reports with affected resources, and provide remediation steps to bring infrastructure back into compliance.

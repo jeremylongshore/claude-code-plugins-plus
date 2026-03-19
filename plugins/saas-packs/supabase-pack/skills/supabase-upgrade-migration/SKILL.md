@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Supabase Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Prerequisites
 - Current Supabase SDK installed
 - Git for version control

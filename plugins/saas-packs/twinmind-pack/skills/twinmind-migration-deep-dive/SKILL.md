@@ -13,6 +13,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # TwinMind Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Contents
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)

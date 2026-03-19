@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Guidewire Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Plan and execute Guidewire InsuranceSuite version upgrades and migrations between self-managed and cloud environments.
 

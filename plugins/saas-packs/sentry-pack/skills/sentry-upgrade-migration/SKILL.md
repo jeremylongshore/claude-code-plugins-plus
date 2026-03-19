@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Sentry Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Prerequisites
 
 - Current Sentry SDK version identified

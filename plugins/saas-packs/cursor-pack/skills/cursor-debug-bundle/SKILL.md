@@ -11,6 +11,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Cursor Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 
 This skill helps debug AI suggestions and code generation issues in Cursor. It covers understanding why AI gives wrong suggestions, debugging completions, chat context issues, and diagnostic tools for troubleshooting AI behavior.

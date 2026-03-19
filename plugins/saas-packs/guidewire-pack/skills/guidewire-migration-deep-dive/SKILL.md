@@ -13,6 +13,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Guidewire Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Comprehensive guide for Guidewire migrations including self-managed to Cloud migrations, legacy system replacements, data migrations, and integration cutover strategies.
 

@@ -10,6 +10,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Generating Smart Commits
 
+## Current State
+!`git diff --cached --stat`
+!`git log --oneline -5`
+!`git status --short`
+
 ## Overview
 
 Analyze staged git changes and generate Conventional Commits messages with accurate type classification, scope detection, and breaking change identification. Supports `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, and `build` types following the Conventional Commits 1.0.0 specification.

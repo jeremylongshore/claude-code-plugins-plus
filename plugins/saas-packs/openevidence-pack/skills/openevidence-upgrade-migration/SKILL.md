@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # OpenEvidence Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Safely upgrade OpenEvidence SDK versions and migrate between API versions with minimal disruption to clinical workflows.
 

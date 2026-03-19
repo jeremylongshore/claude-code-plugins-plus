@@ -14,6 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Guidewire Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 
 Comprehensive debugging techniques for Guidewire InsuranceSuite including Gosu debugging, Cloud API tracing, log analysis, and performance profiling.

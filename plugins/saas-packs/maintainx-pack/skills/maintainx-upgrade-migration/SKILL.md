@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # MaintainX Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for handling MaintainX API version upgrades, deprecations, and breaking changes in your integrations.
 

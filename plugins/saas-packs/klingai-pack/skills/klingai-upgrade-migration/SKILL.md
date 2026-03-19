@@ -12,6 +12,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Klingai Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 
 This skill guides you through SDK version upgrades, API migrations, configuration changes, and handling breaking changes safely in Kling AI integrations.

@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Juicebox Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Advanced strategies for migrating data to Juicebox from other recruiting and people search platforms.
 

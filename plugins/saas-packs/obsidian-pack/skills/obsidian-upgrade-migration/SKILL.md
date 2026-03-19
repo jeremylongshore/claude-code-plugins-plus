@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Obsidian Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for migrating Obsidian plugins to new API versions and handling breaking changes.
 

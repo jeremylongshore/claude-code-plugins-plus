@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Lokalise Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Comprehensive guide for migrating to Lokalise from other TMS platforms or legacy systems.
 

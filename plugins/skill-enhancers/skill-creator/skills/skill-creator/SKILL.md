@@ -205,9 +205,27 @@ Additional guidelines:
 - Consistent terminology throughout
 
 **String substitutions available:**
-- `$ARGUMENTS` / `$0`, `$1` - user-provided arguments
-- `${CLAUDE_SESSION_ID}` - current session ID
-- `` !`command` `` - dynamic context injection
+- `$ARGUMENTS` / `$0`, `$1` - user-provided arguments (pair with `argument-hint` frontmatter)
+- `${CLAUDE_SESSION_ID}` - current session identifier
+
+**Dynamic Context Injection (DCI):**
+DCI runs shell commands BEFORE Claude sees the skill content, injecting output verbatim. This eliminates discovery tool calls — Claude starts with context already loaded.
+
+Syntax: `` !`command` `` on its own line (Anthropic preprocessing spec).
+
+Best practices:
+- Add a `## Current State` section with DCI directives right after the title
+- Always use fallbacks: `` !`terraform version 2>/dev/null || echo 'not installed'` ``
+- Keep injections small — summaries and version info, not full file contents
+- For skills that typically run 3+ discovery commands first, DCI saves those entire tool call rounds
+
+Example:
+```markdown
+## Current State
+!`git status --short`
+!`git log --oneline -5`
+!`node -v 2>/dev/null || echo 'N/A'`
+```
 
 ### Step 5: Create Supporting Files
 

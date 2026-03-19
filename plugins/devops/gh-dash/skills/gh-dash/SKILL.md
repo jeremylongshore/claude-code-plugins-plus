@@ -16,6 +16,10 @@ tags: [github, pull-request, ci-cd, dashboard, devops, merge, code-review]
 
 # gh-dash
 
+## Current State
+!`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo 'Not in a git repo'`
+!`gh auth status 2>&1 | head -1`
+
 GitHub pull request dashboard for Claude Code with CI/CD monitoring and merge capabilities.
 
 ## Overview

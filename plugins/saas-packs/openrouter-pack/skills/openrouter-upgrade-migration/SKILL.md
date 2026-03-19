@@ -10,6 +10,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Openrouter Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 
 This skill provides a step-by-step migration guide for upgrading SDK versions, switching between models, or migrating from direct provider APIs to OpenRouter.

@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Apollo Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Plan and execute safe upgrades for Apollo.io API integrations, handling breaking changes and deprecated endpoints.
 

@@ -13,6 +13,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Test Coverage Analyzer
 
+## Current State
+!`ls package.json pyproject.toml Cargo.toml go.mod 2>/dev/null || echo 'No project manifest found'`
+!`node -v 2>/dev/null || python3 --version 2>/dev/null || echo 'No runtime detected'`
+
 ## Overview
 
 Analyze code coverage metrics to identify untested code paths, dead code, and coverage gaps across line, branch, function, and statement dimensions. Supports Istanbul/nyc (JavaScript/TypeScript), coverage.py (Python), JaCoCo (Java), and Go coverage tools.

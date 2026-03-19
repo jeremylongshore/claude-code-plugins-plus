@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Mistral AI Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Table of Contents
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)

@@ -12,6 +12,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Klingai Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 
 This skill shows how to implement request/response logging, timing metrics, and debugging utilities for Kling AI integrations to quickly identify and resolve issues.

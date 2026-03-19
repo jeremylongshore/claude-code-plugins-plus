@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Documenso Upgrade & Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for upgrading Documenso SDK versions and migrating from API v1 to v2.
 

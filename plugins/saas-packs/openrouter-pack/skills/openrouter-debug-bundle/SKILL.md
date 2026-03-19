@@ -10,6 +10,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Openrouter Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 
 This skill provides a systematic approach to collecting diagnostic information when OpenRouter requests fail or return unexpected results.

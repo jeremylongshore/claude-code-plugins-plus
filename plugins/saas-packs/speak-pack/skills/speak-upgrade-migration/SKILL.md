@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Speak Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Guide for upgrading Speak SDK versions and handling breaking changes in language learning integrations.
 

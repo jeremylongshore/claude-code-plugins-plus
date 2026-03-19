@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # PostHog Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Comprehensive guide for migrating to or from PostHog, or major version upgrades.
 

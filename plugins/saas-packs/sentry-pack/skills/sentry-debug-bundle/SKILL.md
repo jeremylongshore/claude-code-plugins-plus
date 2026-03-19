@@ -14,6 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Sentry Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Prerequisites
 
 - Debug mode enabled in SDK

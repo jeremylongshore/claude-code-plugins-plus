@@ -14,6 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Documenso Debug Bundle
 
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`python3 --version 2>/dev/null || echo 'N/A'`
+!`uname -a`
+
 ## Overview
 Comprehensive debugging tools and diagnostic scripts for Documenso integration issues.
 

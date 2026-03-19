@@ -13,6 +13,9 @@ compatible-with: claude-code, codex, openclaw
 ---
 # E2E Test Framework
 
+## Current State
+!`cat package.json 2>/dev/null | grep -oE 'playwright|cypress|selenium' || echo 'No E2E framework detected'`
+
 ## Overview
 
 Execute end-to-end tests that simulate real user workflows across the full application stack -- browser interactions, API calls, database operations, and third-party integrations. Supports Playwright (recommended), Cypress, Selenium, and Puppeteer.

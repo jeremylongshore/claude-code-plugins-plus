@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Obsidian Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Comprehensive guide for migrating to Obsidian from other note-taking apps, or performing major plugin architecture rewrites.
 

@@ -11,6 +11,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Cursor Upgrade Migration
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 
 Provides guidance for upgrading Cursor IDE versions and migrating settings between installations. It covers version checking, upgrade methods, settings backup, and troubleshooting common migration issues.

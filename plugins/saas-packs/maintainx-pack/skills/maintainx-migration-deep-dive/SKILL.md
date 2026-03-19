@@ -14,6 +14,10 @@ compatible-with: claude-code, codex, openclaw
 ---
 # MaintainX Migration Deep Dive
 
+## Current State
+!`npm list 2>/dev/null | head -20`
+!`pip freeze 2>/dev/null | head -20`
+
 ## Overview
 Comprehensive guide for migrating to MaintainX from legacy CMMS systems, spreadsheets, or other maintenance management tools.
 

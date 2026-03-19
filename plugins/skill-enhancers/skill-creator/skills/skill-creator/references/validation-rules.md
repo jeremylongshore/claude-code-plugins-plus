@@ -37,8 +37,10 @@ Detailed sub-criteria for the Intent Solutions 100-point grading system.
 - 5 pts: N/A (no references directory)
 
 ### Navigation Signals (5 pts)
-- 5 pts: Short file (≤100 lines) OR has TOC/anchor links
-- 0 pts: Long file without navigation
+- 5 pts: Short file (≤100 lines) OR ≥7 section headers
+- 4 pts: 4-6 section headers (>100 lines)
+- 2 pts: 2-3 section headers (>100 lines)
+- 0 pts: 0-1 section headers (>100 lines)
 
 ---
 
@@ -137,5 +139,8 @@ Detailed sub-criteria for the Intent Solutions 100-point grading system.
 
 ### Penalties
 - -2: First/second person in description
-- -2: Long file (>150 lines) without TOC
 - -1: XML-like tags in body
+- -1: TOC wastes tokens (use clear section headers instead)
+
+### DCI Bonus
+- +1: Uses dynamic context injection (`` !`command` `` directives)
