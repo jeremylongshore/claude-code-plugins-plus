@@ -201,6 +201,9 @@ Additional guidelines:
 - Concrete examples over abstract descriptions
 - Reference supporting files with relative markdown links: `[details](reference.md)` or `[API](references/api.md)` — Claude reads these on demand
 - Use `${CLAUDE_SKILL_DIR}/` in DCI/bash contexts only: `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` ``
+- Sections >20 lines (Output, Error Handling, Examples) → offload to `references/` with relative links
+- If skill has 3+ distinct user operations → split into individual `commands/*.md` files
+- Add DCI for common discovery: file existence checks, git status, tool version detection
 - Include edge cases that actually matter
 - No time-sensitive information
 - Consistent terminology throughout

@@ -149,3 +149,15 @@ Detailed sub-criteria for the Intent Solutions 100-point grading system.
 
 ### DCI Bonus
 - +1: Uses dynamic context injection (`` !`command` `` directives)
+
+---
+
+## Structural Advisors (Enterprise Tier)
+
+INFO-level suggestions emitted after grading. Not scored — purely advisory.
+
+| Advisor | Trigger | Suggestion |
+|---------|---------|------------|
+| Split to Commands | 3+ kebab-case `## op-name` sections, no `commands/` | Split into individual `commands/*.md` |
+| Offload to References | Sections >20 lines (Output, Error Handling, etc.), no `references/` | Move to `references/` with relative link |
+| DCI Opportunities | File checks, git ops, or tool detection without DCI | Add `` !`command` `` directives |

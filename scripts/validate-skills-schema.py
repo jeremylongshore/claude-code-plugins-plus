@@ -1840,6 +1840,126 @@ def detect_boilerplate(skill_path: Path) -> Tuple[List[str], List[str]]:
     return errors, warnings
 
 
+# === STRUCTURAL ADVISORS (suggest architecture improvements) ===
+
+RE_OPERATION_HEADER = re.compile(r'^##\s+[\w-]+(?:\s*\(.*\))?\s*$', re.MULTILINE)
+
+
+def advise_split_to_commands(path: Path, body: str) -> List[str]:
+    """
+    Detect multiple distinct operation sections that would be better as
+    individual commands/*.md files. Looks for 3+ ## headers that follow
+    step/operation naming patterns (## verb-noun, ## Step N: name, ## N. name).
+    Returns info-level suggestions.
+    """
+    infos: List[str] = []
+    skill_dir = path.parent.resolve()
+
+    # Walk up to find the plugin root (directory containing .claude-plugin/)
+    plugin_dir = None
+    for parent in skill_dir.parents:
+        if (parent / ".claude-plugin").exists():
+            plugin_dir = parent
+            break
+
+    # Find ## headers that look like distinct user-invocable operations
+    # Only matches kebab-case names (## verb-noun) — the clearest signal
+    operation_pattern = re.compile(
+        r'^##\s+(?:\d+\.\s+)?([\w]+-[\w]+(?:-[\w]+)*)\s*$', re.MULTILINE
+    )
+    operations = operation_pattern.findall(body)
+
+    if len(operations) >= 3:
+        # Check if plugin already has commands/ directory
+        has_commands = plugin_dir and (plugin_dir / "commands").exists()
+
+        if not has_commands:
+            op_list = ", ".join(operations[:5])
+            infos.append(
+                f"[advisor] Found {len(operations)} operation sections ({op_list}). "
+                f"Consider splitting into individual commands/*.md files for independent invocation."
+            )
+
+    return infos
+
+
+def advise_offload_to_references(path: Path, body: str) -> List[str]:
+    """
+    Identify body sections >20 lines that could be offloaded to references/.
+    Returns info-level suggestions.
+    """
+    infos: List[str] = []
+    skill_dir = path.parent.resolve()
+    refs_dir = skill_dir / "references"
+
+    # Split body by ## headers
+    sections: List[Tuple[str, int]] = []
+    current_header = ""
+    current_lines = 0
+
+    for line in body.splitlines():
+        if line.startswith("## "):
+            if current_header and current_lines > 0:
+                sections.append((current_header, current_lines))
+            current_header = line.strip("# ").strip()
+            current_lines = 0
+        else:
+            current_lines += 1
+
+    if current_header and current_lines > 0:
+        sections.append((current_header, current_lines))
+
+    # Flag sections >20 lines that are good candidates for references
+    offload_candidates = ["Output", "Error Handling", "Examples", "Resources",
+                          "Reference", "API", "Configuration", "Schema"]
+    for header, line_count in sections:
+        if line_count > 20:
+            is_candidate = any(kw.lower() in header.lower() for kw in offload_candidates)
+            if is_candidate and not refs_dir.exists():
+                infos.append(
+                    f"[advisor] Section '## {header}' is {line_count} lines. "
+                    f"Consider offloading to references/{header.lower().replace(' ', '-')}.md "
+                    f"with a relative link: [details](references/{header.lower().replace(' ', '-')}.md)"
+                )
+
+    return infos
+
+
+def advise_dci_opportunities(path: Path, body: str) -> List[str]:
+    """
+    Detect patterns where DCI (dynamic context injection) would save tool calls.
+    Returns info-level suggestions.
+    """
+    infos: List[str] = []
+
+    # Already has DCI? Skip.
+    has_dci = bool(re.search(r'(?m)^!\`[^`]+\`\s*$', body))
+    if has_dci:
+        return infos
+
+    # Patterns that suggest DCI would help
+    dci_triggers = [
+        (r'(?i)check if .+ exists', "file existence check",
+         '!`[ -f FILE ] && echo "exists" || echo "not found"`'),
+        (r'(?i)read .+\.md', "file reading at start",
+         '!`[ -f FILE ] && head -5 FILE || echo "not found"`'),
+        (r'(?i)git status|git log|git branch', "git state discovery",
+         '!`git status --short 2>/dev/null || echo "not a git repo"`'),
+        (r'(?i)check (?:which |if )?(?:node|python|docker|terraform|npm|pnpm)', "tool version check",
+         '!`command -v TOOL 2>/dev/null && TOOL --version 2>/dev/null || echo "not installed"`'),
+    ]
+
+    for pattern, desc, example in dci_triggers:
+        if re.search(pattern, body):
+            infos.append(
+                f"[advisor] Skill performs {desc} — consider DCI to auto-detect at activation: "
+                f"`{example}`"
+            )
+            break  # One suggestion is enough
+
+    return infos
+
+
 def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     """
     Validate a single SKILL.md file.
@@ -1916,6 +2036,12 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     boilerplate_errors, boilerplate_warnings = detect_boilerplate(path)
     errors.extend(boilerplate_errors)
     warnings.extend(boilerplate_warnings)
+
+    # === STRUCTURAL ADVISORS (enterprise tier only) ===
+    if tier == TIER_ENTERPRISE:
+        infos.extend(advise_split_to_commands(path, body))
+        infos.extend(advise_offload_to_references(path, body))
+        infos.extend(advise_dci_opportunities(path, body))
 
     description = str(fm.get("description") or "")
 
@@ -2045,6 +2171,9 @@ def main() -> int:
             if result['warnings']:
                 for warning in result['warnings']:
                     print(f"   WARN: {warning}")
+            if result.get('infos'):
+                for info in result['infos']:
+                    print(f"   INFO: {info}")
 
             # Always show grade in single-file mode
             print(f"\n{'=' * 70}")
@@ -2198,7 +2327,13 @@ def main() -> int:
                 files_with_warnings.append(str(rel))
             has_issues = True
 
-        if verbose and not has_issues and not args.json:
+        if result.get('infos') and verbose and not args.json:
+            if not has_issues:
+                print(f"💡 {rel}:")
+            for info in result['infos']:
+                print(f"   INFO: {info}")
+
+        if verbose and not has_issues and not result.get('infos') and not args.json:
             print(f"✅ {rel} - {letter} ({score}/100) ({result['word_count']} words, {result['line_count']} lines)")
 
         if not result['errors'] and not result['warnings']:
