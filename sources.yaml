@@ -599,6 +599,38 @@ sources:
       - ".git/**"
       - "*.log"
 
+  - name: pr-to-spec
+    description: The flight envelope for agentic coding — structured specs with intent drift detection
+    repo: jeremylongshore/pr-to-prompt
+    source_path: .
+    target_path: plugins/mcp/pr-to-spec
+    author:
+      name: Jeremy Longshore
+      github: jeremylongshore
+      email: jeremy@intentsolutions.io
+    license: MIT
+    category: code-quality
+    verified: true
+    include:
+      - ".claude-plugin/**"
+      - ".mcp.json"
+      - "src/servers/**"
+      - ".claude/skills/**"
+      - "dist/servers/**"
+      - "dist/index.js"
+      - "dist/index.d.ts"
+      - "dist/core/**"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+      - "tests/**"
+      - "src/!(servers)/**"
+      - "dist/cli/**"
+      - "dist/action/**"
+
   # ============================================================
   # Add more external sources below
   # ============================================================
