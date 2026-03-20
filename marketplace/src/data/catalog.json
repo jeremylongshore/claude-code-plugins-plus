@@ -1,12 +1,12 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-18T14:09:14.880Z",
+    "generated": "2026-03-20T05:11:29.228Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 349,
+    "totalPlugins": 350,
     "totalSkills": 1436,
     "totalCommands": 73,
     "pluginsWithSkills": 323,
@@ -29,7 +29,7 @@
       "fullstack": 1,
       "example": 3,
       "finance": 1,
-      "code-quality": 2,
+      "code-quality": 3,
       "automation": 2,
       "community": 6,
       "development": 1,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 330,
+      "active": 331,
       "maintained": 19
     },
-    "featured": 5,
-    "new": 328,
-    "generatedAt": "2026-03-18T14:09:14.880Z"
+    "featured": 6,
+    "new": 329,
+    "generatedAt": "2026-03-20T05:11:29.228Z"
   },
   "plugins": [
     {
@@ -11933,6 +11933,39 @@
       "author": {
         "name": "Ahmed Khaled",
         "email": "ahmd.khaled.a.mohamed@gmail.com"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "pr-to-spec",
+      "name": "pr-to-spec",
+      "displayName": "pr to spec",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "version": "0.8.0",
+      "category": "code-quality",
+      "keywords": [
+        "mcp",
+        "pr-analysis",
+        "intent-drift",
+        "code-review",
+        "agent-protocol"
+      ],
+      "hasSkills": false,
+      "skillCount": 0,
+      "commandCount": 0,
+      "installCommand": "/plugin install pr-to-spec",
+      "sourcePath": "./plugins/mcp/pr-to-spec",
+      "lastUpdatedEpoch": 1773981970,
+      "lastUpdatedDate": "2026-03-20T04:46:10.859Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": true,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "type": "instruction-plugin"
     }

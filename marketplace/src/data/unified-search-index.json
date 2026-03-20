@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-18T14:09:15.094Z",
+    "generated": "2026-03-20T05:11:29.493Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 349,
+    "totalPlugins": 350,
     "totalSkills": 1423,
-    "totalItems": 1772,
+    "totalItems": 1773,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -138,6 +138,7 @@
       "Bash(log:*)",
       "Bash(logs:*)",
       "Bash(lokalise2:*)",
+      "Bash(ls:*)",
       "Bash(memory:*)\"",
       "Bash(metrics:*)",
       "Bash(metrics:*)\"",
@@ -184,6 +185,7 @@
       "Bash(security-scan:*)",
       "Bash(security-test:*)",
       "Bash(security:*)",
+      "Bash(sed:*)",
       "Bash(sentry-cli:*)",
       "Bash(sqlcmd:*)",
       "Bash(ssh:*)",
@@ -269,6 +271,7 @@
       "agent-development-kit",
       "agent-engine",
       "agent-monitoring",
+      "agent-protocol",
       "agent-skills",
       "agent-starter-pack",
       "agent-to-agent",
@@ -787,6 +790,7 @@
       "integration-tests",
       "integromat",
       "intelligent-automation",
+      "intent-drift",
       "interactive-learning",
       "interface-guidelines",
       "internationalization",
@@ -1052,6 +1056,7 @@
       "postgres",
       "postgresql",
       "posthog",
+      "pr-analysis",
       "pr-automation",
       "prediction",
       "predictor",
@@ -1455,7 +1460,7 @@
     "totalHooks": 13,
     "pluginsWithAgents": 38,
     "pluginsWithHooks": 10,
-    "officialPlugins": 305,
+    "officialPlugins": 306,
     "communityPlugins": 44,
     "communityContributors": 17
   },
@@ -12881,6 +12886,35 @@
       "searchText": "pm ai partner 12 pm-specific agent skills, 6 workflow commands, 3 automation hooks for product managers productivity product-management pm ai-partner skills commands hooks"
     },
     {
+      "type": "plugin",
+      "id": "pr-to-spec",
+      "slug": "pr-to-spec",
+      "name": "pr-to-spec",
+      "displayName": "pr to spec",
+      "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
+      "category": "code-quality",
+      "keywords": [
+        "mcp",
+        "pr-analysis",
+        "intent-drift",
+        "code-review",
+        "agent-protocol"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "0.8.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
+      "searchText": "pr to spec the flight envelope for agentic coding — convert prs and local diffs into structured, agent-consumable specs with intent drift detection code-quality mcp pr-analysis intent-drift code-review agent-protocol"
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -19766,6 +19800,7 @@
         "Write",
         "Edit",
         "Bash(databricks:*)",
+        "Bash(pip:*)",
         "Grep"
       ],
       "compatibleWith": [
@@ -19778,7 +19813,7 @@
         "name": "databricks-pack",
         "category": "saas-packs"
       },
-      "searchText": "databricks-core-workflow-b execute databricks secondary workflow: mlflow model training and deployment. use when building ml pipelines, training models, or deploying to production. trigger with phrases like \"databricks ml\", \"mlflow training\", \"databricks model\", \"feature store\", \"model registry\". saas-packs read write edit bash(databricks:*) grep claude-code codex openclaw"
+      "searchText": "databricks-core-workflow-b execute databricks secondary workflow: mlflow model training and deployment. use when building ml pipelines, training models, or deploying to production. trigger with phrases like \"databricks ml\", \"mlflow training\", \"databricks model\", \"feature store\", \"model registry\". saas-packs read write edit bash(databricks:*) bash(pip:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29805,7 +29840,7 @@
       "id": "juicebox-common-errors",
       "slug": "juicebox-common-errors",
       "name": "juicebox-common-errors",
-      "description": "Diagnose and fix Juicebox common errors. Use when encountering API errors, debugging integration issues, or troubleshooting Juicebox connection problems. Trigger with phrases like \"juicebox error\", \"fix juicebox issue\", \"juicebox not working\", \"debug juicebox\".",
+      "description": "Diagnose and fix common Juicebox API errors. Use when encountering API errors, debugging integration issues, or troubleshooting Juicebox connection problems. Trigger with phrases like \"juicebox error\", \"fix juicebox issue\", \"juicebox not working\", \"debug juicebox\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -29822,7 +29857,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-common-errors diagnose and fix juicebox common errors. use when encountering api errors, debugging integration issues, or troubleshooting juicebox connection problems. trigger with phrases like \"juicebox error\", \"fix juicebox issue\", \"juicebox not working\", \"debug juicebox\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-common-errors diagnose and fix common juicebox api errors. use when encountering api errors, debugging integration issues, or troubleshooting juicebox connection problems. trigger with phrases like \"juicebox error\", \"fix juicebox issue\", \"juicebox not working\", \"debug juicebox\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29909,7 +29944,7 @@
       "id": "juicebox-data-handling",
       "slug": "juicebox-data-handling",
       "name": "juicebox-data-handling",
-      "description": "Implement Juicebox data privacy and handling. Use when managing personal data, implementing GDPR compliance, or handling sensitive candidate information. Trigger with phrases like \"juicebox data privacy\", \"juicebox GDPR\", \"juicebox PII handling\", \"juicebox data compliance\".",
+      "description": "Implement Juicebox data privacy and handling (GDPR/PII). Use when classifying candidate PII, building redaction pipelines, enforcing retention policies, or handling data subject access/deletion requests. Trigger with phrases like \"juicebox data privacy\", \"juicebox GDPR\", \"juicebox PII handling\", \"juicebox candidate data compliance\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -29928,7 +29963,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-data-handling implement juicebox data privacy and handling. use when managing personal data, implementing gdpr compliance, or handling sensitive candidate information. trigger with phrases like \"juicebox data privacy\", \"juicebox gdpr\", \"juicebox pii handling\", \"juicebox data compliance\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-data-handling implement juicebox data privacy and handling (gdpr/pii). use when classifying candidate pii, building redaction pipelines, enforcing retention policies, or handling data subject access/deletion requests. trigger with phrases like \"juicebox data privacy\", \"juicebox gdpr\", \"juicebox pii handling\", \"juicebox candidate data compliance\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -29985,7 +30020,7 @@
       "id": "juicebox-enterprise-rbac",
       "slug": "juicebox-enterprise-rbac",
       "name": "juicebox-enterprise-rbac",
-      "description": "Configure Juicebox enterprise role-based access control. Use when implementing team permissions, configuring access policies, or setting up enterprise security controls. Trigger with phrases like \"juicebox RBAC\", \"juicebox permissions\", \"juicebox access control\", \"juicebox enterprise security\".",
+      "description": "Configure Juicebox enterprise RBAC with role definitions, permission guards, team-based access control, and audit logging. Use when restricting search/enrichment/export by role, isolating candidate pools per team, or building authorization middleware for Juicebox API operations. Trigger with phrases like \"juicebox RBAC\", \"juicebox permissions\", \"juicebox access control\", \"juicebox team permissions\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -30004,7 +30039,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-enterprise-rbac configure juicebox enterprise role-based access control. use when implementing team permissions, configuring access policies, or setting up enterprise security controls. trigger with phrases like \"juicebox rbac\", \"juicebox permissions\", \"juicebox access control\", \"juicebox enterprise security\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-enterprise-rbac configure juicebox enterprise rbac with role definitions, permission guards, team-based access control, and audit logging. use when restricting search/enrichment/export by role, isolating candidate pools per team, or building authorization middleware for juicebox api operations. trigger with phrases like \"juicebox rbac\", \"juicebox permissions\", \"juicebox access control\", \"juicebox team permissions\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -30144,7 +30179,7 @@
       "id": "juicebox-multi-env-setup",
       "slug": "juicebox-multi-env-setup",
       "name": "juicebox-multi-env-setup",
-      "description": "Configure Juicebox multi-environment setup. Use when setting up dev/staging/production environments, managing per-environment configurations, or implementing environment isolation. Trigger with phrases like \"juicebox environments\", \"juicebox staging\", \"juicebox dev prod\", \"juicebox environment setup\".",
+      "description": "Configure Juicebox multi-environment setup with dev/staging/prod configs, secret management, and environment guards. Use when setting up separate Juicebox API keys per environment, building an environment-aware client factory, or preventing production data leaks in dev. Trigger with phrases like \"juicebox environments\", \"juicebox staging\", \"juicebox dev prod\", \"juicebox environment setup\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -30163,14 +30198,14 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-multi-env-setup configure juicebox multi-environment setup. use when setting up dev/staging/production environments, managing per-environment configurations, or implementing environment isolation. trigger with phrases like \"juicebox environments\", \"juicebox staging\", \"juicebox dev prod\", \"juicebox environment setup\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-multi-env-setup configure juicebox multi-environment setup with dev/staging/prod configs, secret management, and environment guards. use when setting up separate juicebox api keys per environment, building an environment-aware client factory, or preventing production data leaks in dev. trigger with phrases like \"juicebox environments\", \"juicebox staging\", \"juicebox dev prod\", \"juicebox environment setup\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "juicebox-observability",
       "slug": "juicebox-observability",
       "name": "juicebox-observability",
-      "description": "Set up Juicebox monitoring and observability. Use when implementing logging, metrics, tracing, or alerting for Juicebox integrations. Trigger with phrases like \"juicebox monitoring\", \"juicebox metrics\", \"juicebox logging\", \"juicebox observability\".",
+      "description": "Set up Juicebox monitoring and observability with structured logging, Prometheus metrics, health checks, and alerting rules. Use when instrumenting search latency, tracking enrichment success rates, monitoring API quota usage, or building Grafana dashboards for Juicebox. Trigger with phrases like \"juicebox monitoring\", \"juicebox metrics\", \"juicebox logging\", \"juicebox observability\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -30189,7 +30224,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-observability set up juicebox monitoring and observability. use when implementing logging, metrics, tracing, or alerting for juicebox integrations. trigger with phrases like \"juicebox monitoring\", \"juicebox metrics\", \"juicebox logging\", \"juicebox observability\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-observability set up juicebox monitoring and observability with structured logging, prometheus metrics, health checks, and alerting rules. use when instrumenting search latency, tracking enrichment success rates, monitoring api quota usage, or building grafana dashboards for juicebox. trigger with phrases like \"juicebox monitoring\", \"juicebox metrics\", \"juicebox logging\", \"juicebox observability\". saas-packs read write edit bash(kubectl:*) bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -30222,7 +30257,7 @@
       "id": "juicebox-prod-checklist",
       "slug": "juicebox-prod-checklist",
       "name": "juicebox-prod-checklist",
-      "description": "Execute Juicebox production deployment checklist. Use when preparing for production launch, validating deployment readiness, or performing pre-launch reviews. Trigger with phrases like \"juicebox production\", \"deploy juicebox prod\", \"juicebox launch checklist\", \"juicebox go-live\".",
+      "description": "Production deployment checklist for Juicebox. Use when preparing for production launch, validating deployment readiness, or performing pre-launch reviews. Trigger with phrases like \"juicebox production\", \"deploy juicebox prod\", \"juicebox launch checklist\", \"juicebox go-live\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -30239,7 +30274,7 @@
         "name": "juicebox-pack",
         "category": "saas-packs"
       },
-      "searchText": "juicebox-prod-checklist execute juicebox production deployment checklist. use when preparing for production launch, validating deployment readiness, or performing pre-launch reviews. trigger with phrases like \"juicebox production\", \"deploy juicebox prod\", \"juicebox launch checklist\", \"juicebox go-live\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
+      "searchText": "juicebox-prod-checklist production deployment checklist for juicebox. use when preparing for production launch, validating deployment readiness, or performing pre-launch reviews. trigger with phrases like \"juicebox production\", \"deploy juicebox prod\", \"juicebox launch checklist\", \"juicebox go-live\". saas-packs read grep bash(curl:*) claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33793,6 +33828,11 @@
         "Bash(curl:*)",
         "Bash(tar:*)",
         "Bash(lokalise2:*)",
+        "Bash(node:*)",
+        "Bash(npm:*)",
+        "Bash(jq:*)",
+        "Bash(sed:*)",
+        "Bash(mkdir:*)",
         "Grep"
       ],
       "compatibleWith": [
@@ -33805,7 +33845,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-debug-bundle collect lokalise debug evidence for support tickets and troubleshooting. use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for lokalise problems. trigger with phrases like \"lokalise debug\", \"lokalise support bundle\", \"collect lokalise logs\", \"lokalise diagnostic\". saas-packs read bash(grep:*) bash(curl:*) bash(tar:*) bash(lokalise2:*) grep claude-code codex openclaw"
+      "searchText": "lokalise-debug-bundle collect lokalise debug evidence for support tickets and troubleshooting. use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for lokalise problems. trigger with phrases like \"lokalise debug\", \"lokalise support bundle\", \"collect lokalise logs\", \"lokalise diagnostic\". saas-packs read bash(grep:*) bash(curl:*) bash(tar:*) bash(lokalise2:*) bash(node:*) bash(npm:*) bash(jq:*) bash(sed:*) bash(mkdir:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33844,7 +33884,12 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit"
+        "Edit",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(node:*)",
+        "Bash(npm:*)",
+        "Grep"
       ],
       "compatibleWith": [
         "claude-code",
@@ -33856,7 +33901,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-enterprise-rbac configure lokalise enterprise sso, role-based access control, and team management. use when implementing sso integration, configuring role-based permissions, or setting up organization-level controls for lokalise. trigger with phrases like \"lokalise sso\", \"lokalise rbac\", \"lokalise enterprise\", \"lokalise roles\", \"lokalise permissions\", \"lokalise team\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "lokalise-enterprise-rbac configure lokalise enterprise sso, role-based access control, and team management. use when implementing sso integration, configuring role-based permissions, or setting up organization-level controls for lokalise. trigger with phrases like \"lokalise sso\", \"lokalise rbac\", \"lokalise enterprise\", \"lokalise roles\", \"lokalise permissions\", \"lokalise team\". saas-packs read write edit bash(curl:*) bash(jq:*) bash(node:*) bash(npm:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -33975,7 +34020,13 @@
         "Write",
         "Edit",
         "Bash(npm:*)",
-        "Bash(lokalise2:*)"
+        "Bash(lokalise2:*)",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Bash(node:*)",
+        "Bash(python3:*)",
+        "Bash(mkdir:*)",
+        "Grep"
       ],
       "compatibleWith": [
         "claude-code",
@@ -33987,7 +34038,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-migration-deep-dive execute major migration to lokalise from other tms platforms with data migration strategies. use when migrating to lokalise from competitors, performing data imports, or re-platforming existing translation management to lokalise. trigger with phrases like \"migrate to lokalise\", \"lokalise migration\", \"switch to lokalise\", \"lokalise import\", \"lokalise replatform\". saas-packs read write edit bash(npm:*) bash(lokalise2:*) claude-code codex openclaw"
+      "searchText": "lokalise-migration-deep-dive execute major migration to lokalise from other tms platforms with data migration strategies. use when migrating to lokalise from competitors, performing data imports, or re-platforming existing translation management to lokalise. trigger with phrases like \"migrate to lokalise\", \"lokalise migration\", \"switch to lokalise\", \"lokalise import\", \"lokalise replatform\". saas-packs read write edit bash(npm:*) bash(lokalise2:*) bash(curl:*) bash(jq:*) bash(node:*) bash(python3:*) bash(mkdir:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -34050,7 +34101,12 @@
       "allowedTools": [
         "Read",
         "Write",
-        "Edit"
+        "Edit",
+        "Bash(npm:*)",
+        "Bash(node:*)",
+        "Bash(curl:*)",
+        "Bash(jq:*)",
+        "Grep"
       ],
       "compatibleWith": [
         "claude-code",
@@ -34062,7 +34118,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-performance-tuning optimize lokalise api performance with caching, pagination, and bulk operations. use when experiencing slow api responses, implementing caching strategies, or optimizing request throughput for lokalise integrations. trigger with phrases like \"lokalise performance\", \"optimize lokalise\", \"lokalise latency\", \"lokalise caching\", \"lokalise slow\", \"lokalise batch\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "lokalise-performance-tuning optimize lokalise api performance with caching, pagination, and bulk operations. use when experiencing slow api responses, implementing caching strategies, or optimizing request throughput for lokalise integrations. trigger with phrases like \"lokalise performance\", \"optimize lokalise\", \"lokalise latency\", \"lokalise caching\", \"lokalise slow\", \"lokalise batch\". saas-packs read write edit bash(npm:*) bash(node:*) bash(curl:*) bash(jq:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -34196,7 +34252,11 @@
         "Write",
         "Edit",
         "Bash(npm:*)",
-        "Bash(git:*)"
+        "Bash(npx:*)",
+        "Bash(git:*)",
+        "Bash(node:*)",
+        "Bash(grep:*)",
+        "Grep"
       ],
       "compatibleWith": [
         "claude-code",
@@ -34208,7 +34268,7 @@
         "name": "lokalise-pack",
         "category": "saas-packs"
       },
-      "searchText": "lokalise-upgrade-migration analyze, plan, and execute lokalise sdk upgrades with breaking change detection. use when upgrading lokalise sdk versions, detecting deprecations, or migrating to new api versions. trigger with phrases like \"upgrade lokalise\", \"lokalise migration\", \"lokalise breaking changes\", \"update lokalise sdk\", \"analyze lokalise version\". saas-packs read write edit bash(npm:*) bash(git:*) claude-code codex openclaw"
+      "searchText": "lokalise-upgrade-migration analyze, plan, and execute lokalise sdk upgrades with breaking change detection. use when upgrading lokalise sdk versions, detecting deprecations, or migrating to new api versions. trigger with phrases like \"upgrade lokalise\", \"lokalise migration\", \"lokalise breaking changes\", \"update lokalise sdk\", \"analyze lokalise version\". saas-packs read write edit bash(npm:*) bash(npx:*) bash(git:*) bash(node:*) bash(grep:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36371,33 +36431,35 @@
       "id": "obsidian-core-workflow-a",
       "slug": "obsidian-core-workflow-a",
       "name": "obsidian-core-workflow-a",
-      "description": "Execute Obsidian primary workflow: note manipulation and vault operations. Use when implementing file operations, frontmatter handling, or programmatic note creation and modification. Trigger with phrases like \"obsidian vault operations\", \"obsidian file manipulation\", \"obsidian note management\".",
+      "description": "Create an Obsidian plugin from scratch with full project scaffolding. Covers Plugin class, ribbon icons, commands, settings tab, esbuild config, manifest.json, and building/testing. Use when starting a new plugin, scaffolding a project, or learning the plugin lifecycle. Trigger with \"create obsidian plugin\", \"scaffold obsidian plugin\", \"new obsidian plugin\", \"obsidian plugin from scratch\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
         "Edit",
         "Bash(npm:*)",
-        "Grep"
+        "Bash(mkdir:*)",
+        "Bash(ln:*)",
+        "Glob"
       ],
       "compatibleWith": [
         "claude-code",
         "codex",
         "openclaw"
       ],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "obsidian-pack",
         "category": "saas-packs"
       },
-      "searchText": "obsidian-core-workflow-a execute obsidian primary workflow: note manipulation and vault operations. use when implementing file operations, frontmatter handling, or programmatic note creation and modification. trigger with phrases like \"obsidian vault operations\", \"obsidian file manipulation\", \"obsidian note management\". saas-packs read write edit bash(npm:*) grep claude-code codex openclaw"
+      "searchText": "obsidian-core-workflow-a create an obsidian plugin from scratch with full project scaffolding. covers plugin class, ribbon icons, commands, settings tab, esbuild config, manifest.json, and building/testing. use when starting a new plugin, scaffolding a project, or learning the plugin lifecycle. trigger with \"create obsidian plugin\", \"scaffold obsidian plugin\", \"new obsidian plugin\", \"obsidian plugin from scratch\". saas-packs read write edit bash(npm:*) bash(mkdir:*) bash(ln:*) glob claude-code codex openclaw"
     },
     {
       "type": "skill",
       "id": "obsidian-core-workflow-b",
       "slug": "obsidian-core-workflow-b",
       "name": "obsidian-core-workflow-b",
-      "description": "Execute Obsidian secondary workflow: UI components and user interaction. Use when building modals, views, suggestions, or custom UI elements. Trigger with phrases like \"obsidian modal\", \"obsidian UI\", \"obsidian view\", \"obsidian custom interface\".",
+      "description": "Build advanced Obsidian plugin features: custom views (ItemView), modals, editor commands with selection manipulation, status bar, context menus, and Vault API file creation/modification. Use when adding UI components to a plugin, building sidebar views, or creating modal dialogs. Trigger with \"obsidian modal\", \"obsidian custom view\", \"obsidian sidebar\", \"obsidian context menu\", \"obsidian editor command\", \"obsidian UI\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -36411,12 +36473,12 @@
         "codex",
         "openclaw"
       ],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "obsidian-pack",
         "category": "saas-packs"
       },
-      "searchText": "obsidian-core-workflow-b execute obsidian secondary workflow: ui components and user interaction. use when building modals, views, suggestions, or custom ui elements. trigger with phrases like \"obsidian modal\", \"obsidian ui\", \"obsidian view\", \"obsidian custom interface\". saas-packs read write edit bash(npm:*) grep claude-code codex openclaw"
+      "searchText": "obsidian-core-workflow-b build advanced obsidian plugin features: custom views (itemview), modals, editor commands with selection manipulation, status bar, context menus, and vault api file creation/modification. use when adding ui components to a plugin, building sidebar views, or creating modal dialogs. trigger with \"obsidian modal\", \"obsidian custom view\", \"obsidian sidebar\", \"obsidian context menu\", \"obsidian editor command\", \"obsidian ui\". saas-packs read write edit bash(npm:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36622,7 +36684,7 @@
       "id": "obsidian-local-dev-loop",
       "slug": "obsidian-local-dev-loop",
       "name": "obsidian-local-dev-loop",
-      "description": "Configure Obsidian plugin development with hot-reload and fast iteration. Use when setting up development workflow, configuring test vaults, or establishing a rapid development cycle. Trigger with phrases like \"obsidian dev loop\", \"obsidian hot reload\", \"obsidian development workflow\", \"develop obsidian plugin\".",
+      "description": "Set up a fast Obsidian plugin development loop with hot reload. Covers cloning the sample plugin, esbuild watch mode, symlinking into a vault, Ctrl+R hot reload, Chrome DevTools debugging, and testing with vitest. Use when starting plugin development or configuring a dev environment. Trigger with \"obsidian dev loop\", \"obsidian hot reload\", \"obsidian development setup\", \"develop obsidian plugin\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
@@ -36630,6 +36692,9 @@
         "Edit",
         "Bash(npm:*)",
         "Bash(pnpm:*)",
+        "Bash(mkdir:*)",
+        "Bash(ln:*)",
+        "Bash(ls:*)",
         "Grep"
       ],
       "compatibleWith": [
@@ -36637,12 +36702,12 @@
         "codex",
         "openclaw"
       ],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "obsidian-pack",
         "category": "saas-packs"
       },
-      "searchText": "obsidian-local-dev-loop configure obsidian plugin development with hot-reload and fast iteration. use when setting up development workflow, configuring test vaults, or establishing a rapid development cycle. trigger with phrases like \"obsidian dev loop\", \"obsidian hot reload\", \"obsidian development workflow\", \"develop obsidian plugin\". saas-packs read write edit bash(npm:*) bash(pnpm:*) grep claude-code codex openclaw"
+      "searchText": "obsidian-local-dev-loop set up a fast obsidian plugin development loop with hot reload. covers cloning the sample plugin, esbuild watch mode, symlinking into a vault, ctrl+r hot reload, chrome devtools debugging, and testing with vitest. use when starting plugin development or configuring a dev environment. trigger with \"obsidian dev loop\", \"obsidian hot reload\", \"obsidian development setup\", \"develop obsidian plugin\". saas-packs read write edit bash(npm:*) bash(pnpm:*) bash(mkdir:*) bash(ln:*) bash(ls:*) grep claude-code codex openclaw"
     },
     {
       "type": "skill",
@@ -36820,24 +36885,25 @@
       "id": "obsidian-sdk-patterns",
       "slug": "obsidian-sdk-patterns",
       "name": "obsidian-sdk-patterns",
-      "description": "Apply production-ready Obsidian plugin patterns for TypeScript. Use when implementing complex features, refactoring plugins, or establishing coding standards for Obsidian development. Trigger with phrases like \"obsidian patterns\", \"obsidian best practices\", \"obsidian code patterns\", \"idiomatic obsidian plugin\".",
+      "description": "Production-ready Obsidian plugin patterns: typed settings with migration, safe vault operations, event auto-cleanup, workspace layout, metadata cache, and debounced file handlers. Use when hardening a plugin for release, refactoring for reliability, or learning idiomatic Obsidian TypeScript. Trigger with \"obsidian patterns\", \"obsidian best practices\", \"obsidian production code\", \"idiomatic obsidian plugin\".",
       "category": "saas-packs",
       "allowedTools": [
         "Read",
         "Write",
-        "Edit"
+        "Edit",
+        "Grep"
       ],
       "compatibleWith": [
         "claude-code",
         "codex",
         "openclaw"
       ],
-      "version": "1.0.0",
+      "version": "2.0.0",
       "parentPlugin": {
         "name": "obsidian-pack",
         "category": "saas-packs"
       },
-      "searchText": "obsidian-sdk-patterns apply production-ready obsidian plugin patterns for typescript. use when implementing complex features, refactoring plugins, or establishing coding standards for obsidian development. trigger with phrases like \"obsidian patterns\", \"obsidian best practices\", \"obsidian code patterns\", \"idiomatic obsidian plugin\". saas-packs read write edit claude-code codex openclaw"
+      "searchText": "obsidian-sdk-patterns production-ready obsidian plugin patterns: typed settings with migration, safe vault operations, event auto-cleanup, workspace layout, metadata cache, and debounced file handlers. use when hardening a plugin for release, refactoring for reliability, or learning idiomatic obsidian typescript. trigger with \"obsidian patterns\", \"obsidian best practices\", \"obsidian production code\", \"idiomatic obsidian plugin\". saas-packs read write edit grep claude-code codex openclaw"
     },
     {
       "type": "skill",
