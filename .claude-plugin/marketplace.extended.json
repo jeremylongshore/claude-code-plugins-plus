@@ -9281,7 +9281,7 @@
       "description": "The flight envelope for agentic coding — convert PRs and local diffs into structured, agent-consumable specs with intent drift detection",
       "version": "0.8.0",
       "category": "code-quality",
-      "repository": "https://github.com/jeremylongshore/pr-to-spec",
+      "repository": "https://github.com/jeremylongshore/pr-to-prompt",
       "author": { "name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io" },
       "license": "MIT",
       "featured": true,

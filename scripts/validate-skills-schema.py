@@ -1600,7 +1600,7 @@ def validate_relative_links(path: Path, body: str) -> Tuple[List[str], List[str]
         link_target = match.group(2)
 
         # Skip anchors, mailto, and template variables
-        if link_target.startswith(("mailto:", "${", "${")):
+        if link_target.startswith(("#", "mailto:", "${")):
             continue
 
         target_path = (skill_dir / link_target).resolve()
