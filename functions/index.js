@@ -8,7 +8,12 @@ const slackWebhookUrl = defineSecret("SLACK_OPERATION_HIRED_WEBHOOK_URL");
 exports.subscribeEmail = onCall(
   { secrets: [slackWebhookUrl] },
   async (request) => {
-    const { email, source } = request.data;
+    const { email, source, website } = request.data;
+
+    // Honeypot — bots fill hidden fields, humans don't
+    if (website) {
+      return { status: "subscribed" };
+    }
 
     // Validate email
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -16,7 +21,7 @@ exports.subscribeEmail = onCall(
     }
 
     // Validate source
-    const allowedSources = ["footer", "homepage"];
+    const allowedSources = ["footer", "homepage", "killer-skills"];
     if (!source || !allowedSources.includes(source)) {
       throw new HttpsError("invalid-argument", "Invalid source provided");
     }
@@ -36,20 +41,24 @@ exports.subscribeEmail = onCall(
     // Save to Firestore
     await db.collection("email-signups").add({
       email: email.toLowerCase(),
-      source, // "footer" or "homepage"
+      source,
       subscribedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
     // Send Slack notification to #intent-notifier
-    const webhookUrl = slackWebhookUrl.value();
-    if (webhookUrl) {
-      await fetch(webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: `New email signup: *${email.toLowerCase()}* (from ${source} form)`,
-        }),
-      });
+    try {
+      const webhookUrl = slackWebhookUrl.value();
+      if (webhookUrl) {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: `New email signup: *${email.toLowerCase()}* (from ${source} form)`,
+          }),
+        });
+      }
+    } catch (slackErr) {
+      console.error("Slack notification failed:", slackErr.message);
     }
 
     return { status: "subscribed" };

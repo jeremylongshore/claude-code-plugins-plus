@@ -1256,6 +1256,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                 <p style="margin: 0; color: var(--text); font-weight: 600; font-size: 0.95rem;">Get the Killer Skill of the Week in your inbox</p>
                 <form data-signup-form="killer-skills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
                     <input type="email" name="email" placeholder="you@example.com" required style="padding: 0.5rem 0.75rem; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 0.85rem; min-width: 200px;" />
+                    <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
                     <button type="submit" style="padding: 0.5rem 1rem; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer;">Subscribe</button>
                 </form>
             </div>
@@ -1620,6 +1621,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             <p class="signup-desc">Weekly deep-dives on agent skills, new plugin drops, and workflow tips.</p>
             <form data-signup-form="homepage" class="signup-form">
                 <input type="email" name="email" placeholder="you@example.com" required />
+                <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;" />
                 <button type="submit">Subscribe</button>
             </form>
             <p class="signup-note">No spam, ever. Unsubscribe with one click.</p>
