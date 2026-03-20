@@ -97,18 +97,24 @@ curl "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?filter_archived=inc
 
 ## Examples
 
-**Basic usage**: Apply lokalise cost tuning to a standard project setup with default configuration options.
+**Solo project with 5 languages**: You have 2 full-time translators and 8 freelancers. Move freelancers to task-based access (add when task opens, remove on completion). Result: seats drop from 10 to 2, saving ~$960/month.
 
-**Advanced scenario**: Customize lokalise cost tuning for production environments with multiple constraints and team-specific requirements.
+**Multi-app suite sharing terminology**: Three apps (web, iOS, Android) use overlapping UI strings. Translate the largest project first to seed Translation Memory, then translate the others sequentially. TM matches on shared strings (buttons, navigation, error messages) cut human translation volume by 30-50%.
+
+**MT triage for a 10,000-key project**: Tag keys by content type. Apply machine translation to `tooltip.*`, `help.*`, and `log.*` prefixes. Route `legal.*`, `marketing.*`, and `ui.cta.*` to human translators. Pre-translating the low-risk 40% of keys with MT saves roughly $2,000 per target language.
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Cost audit report: current spend breakdown by seats, translation volume, and MT usage
+- Seat optimization plan with contributor group structure and task-based access schedule
+- List of orphaned/archived keys with cross-reference against source code
+- MT triage matrix mapping key prefixes to translation method (human vs. MT)
+- Projected monthly savings with before/after comparison
 
 ## Resources
 
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Lokalise Pricing Plans](https://lokalise.com/pricing) -- plan tiers, per-seat costs, feature comparison
+- [Lokalise API: Project Statistics](https://developers.lokalise.com/reference/retrieve-a-project) -- `GET /projects/{id}` returns key counts and progress
+- [Translation Memory in Lokalise](https://docs.lokalise.com/translation-memory/) -- TM leverage, match thresholds, cross-project sharing
+- [Lokalise Machine Translation](https://docs.lokalise.com/machine-translation/) -- supported MT engines, pre-translation setup
+- [Keys API: List and Filter](https://developers.lokalise.com/reference/list-all-keys) -- `filter_archived`, pagination for key cleanup

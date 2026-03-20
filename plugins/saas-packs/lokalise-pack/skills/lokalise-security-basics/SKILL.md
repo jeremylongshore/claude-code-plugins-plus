@@ -132,6 +132,8 @@ grep -rn "LOKALISE" --include="*.py" --include="*.ts" src/ | grep -v "os.environ
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Scoped token configuration: separate `LOKALISE_READ_TOKEN`, `LOKALISE_WRITE_TOKEN`, and `LOKALISE_ADMIN_TOKEN` environment variables with least-privilege assignment
+- Translation content validator catching XSS payloads, leaked credentials, and suspicious interpolation placeholders
+- CI/CD workflow using repository secrets with masked token output and read-only scope for pull operations
+- Audit logging function recording translation changes with timestamp, user, project, and key metadata (content omitted for PII safety)
+- Hardcoded token scan command for pre-commit or CI gate verification

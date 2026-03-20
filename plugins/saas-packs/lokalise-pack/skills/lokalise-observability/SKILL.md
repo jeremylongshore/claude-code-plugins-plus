@@ -103,18 +103,24 @@ Key panels: API request rate and latency, translation completion % by locale (ba
 
 ## Examples
 
-**Basic usage**: Apply lokalise observability to a standard project setup with default configuration options.
+**Single-project monitoring**: Wrap your existing `@lokalise/node-api` calls with `trackedApiCall()` from Step 1. Set up a Prometheus gauge for translation progress per locale. Add a `TranslationStalled` alert with a 24-hour threshold. Total setup: ~30 minutes.
 
-**Advanced scenario**: Customize lokalise observability for production environments with multiple constraints and team-specific requirements.
+**Multi-project release pipeline**: Register webhooks for `project.translation_completed` on all projects feeding a release train. Build a Grafana dashboard showing per-project completion bars, API latency P95, and webhook delivery rate. Alert when any project drops below 95% translated within 48 hours of release.
+
+**Cost-aware observability**: Combine the per-word cost tracking panel from Step 5 with the cost-tuning skill. Emit a `lokalise_mt_words_total` counter each time machine translation runs. Alert when monthly MT word count exceeds budget threshold (e.g., 50,000 words).
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- `trackedApiCall()` wrapper function emitting duration and error metrics for every Lokalise API operation
+- Translation progress gauge metric (`lokalise_translation_progress_pct`) broken down by project and locale
+- Webhook registration for `project.translation_completed`, `project.exported`, and `project.key.added` events
+- Prometheus alerting rules for rate limiting (429), stalled translations, and webhook delivery failures
+- Dashboard specification with panels: API request rate/latency, per-locale completion bars, daily key churn, webhook success rate
 
 ## Resources
 
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Lokalise Webhooks API](https://developers.lokalise.com/reference/create-a-webhook) -- event types, payload format, `event_lang_map` filtering
+- [Lokalise API Rate Limits](https://developers.lokalise.com/reference/api-rate-limits) -- 6 requests/second per token, burst behavior
+- [Lokalise Project Statistics](https://developers.lokalise.com/reference/retrieve-a-project) -- progress percentages, key/word counts per language
+- [Prometheus Alerting Rules](https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/) -- `expr`, `for`, and `annotations` syntax
+- [p-queue](https://github.com/sindresorhus/p-queue) -- concurrency-limited queue for staying under the 6 req/s rate limit
