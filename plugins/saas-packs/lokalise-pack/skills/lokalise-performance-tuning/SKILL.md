@@ -6,7 +6,7 @@ description: |
   or optimizing request throughput for Lokalise integrations.
   Trigger with phrases like "lokalise performance", "optimize lokalise",
   "lokalise latency", "lokalise caching", "lokalise slow", "lokalise batch".
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,27 +15,33 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Performance Tuning
 
 ## Overview
-Optimize Lokalise API throughput and response times for translation pipeline integrations. Lokalise enforces a global rate limit of 6 requests per second across most endpoints, making request efficiency critical for projects with thousands of keys.
+
+Optimize Lokalise API throughput for translation pipelines by implementing cursor pagination, local caching, batch key operations (500/request), request throttling under the 6 req/s rate limit, and selective language downloads.
 
 ## Prerequisites
-- Lokalise SDK (`@lokalise/node-api`) or REST API access
-- Understanding of project size (key count, language count)
-- Cache layer (Redis or in-memory LRU)
+
+- `@lokalise/node-api` SDK v9+ (ESM) or REST API access
+- `LOKALISE_API_TOKEN` environment variable set
+- Understanding of project size (key count, language count) to calibrate batch sizes
+- Optional: Redis or LRU cache library for persistent caching
 
 ## Instructions
 
-### Step 1: Use Cursor Pagination with Maximum Page Size
+### Step 1: Use Cursor Pagination for Large Datasets
+
+Cursor pagination is significantly faster than offset pagination for projects with 5K+ keys. Offset pagination degrades as page numbers increase because the server must skip rows; cursor pagination uses a pointer.
+
 ```typescript
 import { LokaliseApi } from '@lokalise/node-api';
 const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
 
-// Use cursor pagination (faster than offset for large datasets)
+// Generator that yields all keys using cursor pagination
 async function* getAllKeys(projectId: string) {
   let cursor: string | undefined;
   do {
     const result = await lok.keys().list({
       project_id: projectId,
-      limit: 500,           // Maximum allowed  # HTTP 500 Internal Server Error
+      limit: 500,              // Maximum allowed per request
       pagination: 'cursor',
       cursor,
     });
@@ -43,95 +49,369 @@ async function* getAllKeys(projectId: string) {
     cursor = result.hasNextCursor() ? result.nextCursor : undefined;
   } while (cursor);
 }
-// 10,000 keys: 20 API calls instead of 100 (at limit=500 vs default limit=100)  # HTTP 500 Internal Server Error
+
+// Usage: 10,000 keys = 20 API calls (vs 100 with default limit=100)
+let count = 0;
+for await (const key of getAllKeys('PROJECT_ID')) {
+  count++;
+}
+console.log(`Fetched ${count} keys`);
 ```
 
-### Step 2: Cache Translation Downloads
+**Offset pagination comparison (avoid for large projects):**
+
+| Keys | Offset (limit=100) | Cursor (limit=500) | Time saved |
+|------|--------------------|--------------------|-----------|
+| 1,000 | 10 requests | 2 requests | 80% |
+| 10,000 | 100 requests | 20 requests | 80% |
+| 50,000 | 500 requests (~84s) | 100 requests (~17s) | 80% |
+
+### Step 2: Cache Translation Downloads Locally
+
+Translation file downloads are the most expensive Lokalise operation. Cache them locally and use project `last_activity` timestamps to invalidate.
+
 ```typescript
-import { LRUCache } from 'lru-cache';
+import { LokaliseApi } from '@lokalise/node-api';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 
-const downloadCache = new LRUCache<string, any>({ max: 100, ttl: 300_000 }); // 5 min
+const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
+const CACHE_DIR = '.lokalise-cache';
 
-async function cachedDownload(projectId: string, format: string, langIso: string) {
-  const key = `${projectId}:${format}:${langIso}`;
-  const cached = downloadCache.get(key);
-  if (cached) return cached;
+interface CacheEntry {
+  url: string;
+  timestamp: string;
+  languages: string[];
+}
 
+function getCachePath(projectId: string, langIso: string): string {
+  return `${CACHE_DIR}/${projectId}/${langIso}.json`;
+}
+
+function getMetaPath(projectId: string): string {
+  return `${CACHE_DIR}/${projectId}/meta.json`;
+}
+
+async function downloadWithCache(projectId: string, langIso: string, format = 'json') {
+  mkdirSync(`${CACHE_DIR}/${projectId}`, { recursive: true });
+  const cachePath = getCachePath(projectId, langIso);
+  const metaPath = getMetaPath(projectId);
+
+  // Check if project was modified since last cache
+  const project = await lok.projects().get(projectId);
+  const lastActivity = project.statistics?.last_activity ?? project.created_at;
+
+  if (existsSync(metaPath)) {
+    const meta: CacheEntry = JSON.parse(readFileSync(metaPath, 'utf8'));
+    if (meta.timestamp === lastActivity && existsSync(cachePath)) {
+      console.log(`Cache hit: ${langIso} (unchanged since ${lastActivity})`);
+      return JSON.parse(readFileSync(cachePath, 'utf8'));
+    }
+  }
+
+  // Cache miss — download fresh
   const bundle = await lok.files().download(projectId, {
-    format, filter_langs: [langIso], original_filenames: false,
+    format,
+    filter_langs: [langIso],
+    original_filenames: false,
   });
-  downloadCache.set(key, bundle);
-  return bundle;
+
+  // bundle.bundle_url contains a temporary download URL
+  const response = await fetch(bundle.bundle_url);
+  const data = await response.arrayBuffer();
+
+  writeFileSync(cachePath, Buffer.from(data));
+  writeFileSync(metaPath, JSON.stringify({
+    url: bundle.bundle_url,
+    timestamp: lastActivity,
+    languages: [langIso],
+  }));
+
+  console.log(`Cache miss: downloaded ${langIso} (${data.byteLength} bytes)`);
+  return data;
 }
 ```
 
 ### Step 3: Batch Key Operations
+
+Lokalise supports creating, updating, and deleting up to 500 keys per request. Always batch instead of making individual requests.
+
 ```typescript
-// Bulk create keys (up to 500 per request)  # HTTP 500 Internal Server Error
+// Bulk create keys — 500 per batch with rate limit awareness
 async function createKeysBatched(projectId: string, keys: any[]) {
-  const BATCH_SIZE = 500;  # HTTP 500 Internal Server Error
+  const BATCH_SIZE = 500;
   const results = [];
+
   for (let i = 0; i < keys.length; i += BATCH_SIZE) {
     const batch = keys.slice(i, i + BATCH_SIZE);
-    const result = await lok.keys().create({ project_id: projectId, keys: batch });
+    const result = await lok.keys().create({
+      project_id: projectId,
+      keys: batch,
+    });
     results.push(...result.items);
-    await new Promise(r => setTimeout(r, 200)); // Respect rate limit  # HTTP 200 OK
+    console.log(`Batch ${Math.floor(i / BATCH_SIZE) + 1}: created ${result.items.length} keys`);
+    await new Promise(r => setTimeout(r, 200)); // Stay under 6 req/s
   }
+
   return results;
 }
-// 2,000 keys: 4 batched requests vs 2,000 individual requests
+
+// Bulk update keys — same 500-key batch limit
+async function updateKeysBatched(projectId: string, updates: Array<{key_id: number; [k: string]: any}>) {
+  const BATCH_SIZE = 500;
+  for (let i = 0; i < updates.length; i += BATCH_SIZE) {
+    const batch = updates.slice(i, i + BATCH_SIZE);
+    await lok.keys().bulk_update({
+      project_id: projectId,
+      keys: batch,
+    });
+    await new Promise(r => setTimeout(r, 200));
+  }
+}
+
+// Bulk delete — up to 500 key IDs per request
+async function deleteKeysBatched(projectId: string, keyIds: number[]) {
+  const BATCH_SIZE = 500;
+  for (let i = 0; i < keyIds.length; i += BATCH_SIZE) {
+    const batch = keyIds.slice(i, i + BATCH_SIZE);
+    await lok.keys().bulk_delete({
+      project_id: projectId,
+      keys: batch,
+    });
+    await new Promise(r => setTimeout(r, 200));
+  }
+}
+
+// 2,000 keys: 4 batched requests instead of 2,000 individual ones
 ```
 
 ### Step 4: Implement Request Throttling
+
+A proper request queue prevents `429 Too Many Requests` errors and makes your integration resilient under load.
+
 ```typescript
 import PQueue from 'p-queue';
 
 // Lokalise rate limit: 6 requests/second
-const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });  # 1000: 1 second in ms
+// Use 5 concurrent with 1s interval for safety margin
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 5,
+});
 
 async function throttledRequest<T>(fn: () => Promise<T>): Promise<T> {
   return queue.add(fn) as Promise<T>;
 }
 
-// All API calls go through the queue
+// All API calls go through the queue automatically
 const project = await throttledRequest(() => lok.projects().get(projectId));
+const keys = await throttledRequest(() => lok.keys().list({
+  project_id: projectId,
+  limit: 500,
+  pagination: 'cursor',
+}));
+
+// Works for parallel operations too — queue enforces the rate limit
+const projectIds = ['PROJ_1', 'PROJ_2', 'PROJ_3', 'PROJ_4', 'PROJ_5'];
+const allProjects = await Promise.all(
+  projectIds.map(id => throttledRequest(() => lok.projects().get(id)))
+);
 ```
 
-### Step 5: Use Webhooks Instead of Polling
+### Step 5: Async File Operations with Webhooks
+
+File uploads and downloads are processed asynchronously by Lokalise. Instead of polling the process status endpoint, use webhooks to get notified when processing completes.
+
 ```bash
 set -euo pipefail
-# Replace polling for translation status with webhooks
-curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
-  -H "X-Api-Token: $LOKALISE_API_TOKEN" \
+# Set up a webhook for file operation events
+curl -s -X POST "https://api.lokalise.com/api2/projects/${PROJECT_ID}/webhooks" \
+  -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  -H "Content-Type: application/json" \
   -d '{
     "url": "https://hooks.company.com/lokalise",
-    "events": ["project.translation_completed", "project.exported"]
-  }'
-# Eliminates need to poll project status every N seconds
+    "events": [
+      "project.imported",
+      "project.exported",
+      "project.keys_added"
+    ]
+  }' | jq '{webhook_id: .webhook.webhook_id, url: .webhook.url, events: .webhook.events}'
 ```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `429 Too Many Requests` | Exceeded 6 req/s rate limit | Use PQueue throttling, retry with backoff |
-| Slow file downloads | Large project with many languages | Filter by language, use async download + webhook |
-| Pagination timeout | Offset pagination on 50K+ keys | Switch to cursor pagination |
-| Bulk create fails partially | Network timeout on large batch | Reduce batch size to 200, add retry logic |
+**If you must poll (no webhook endpoint available):**
 
-## Examples
+```typescript
+async function waitForProcess(projectId: string, processId: string, timeoutMs = 120_000) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    const proc = await throttledRequest(() =>
+      lok.queuedProcesses().get(projectId, processId)
+    );
+    if (proc.status === 'finished') return proc;
+    if (proc.status === 'cancelled' || proc.status === 'failed') {
+      throw new Error(`Process ${processId} ${proc.status}: ${proc.message}`);
+    }
+    await new Promise(r => setTimeout(r, 2000)); // Poll every 2s
+  }
+  throw new Error(`Process ${processId} timed out after ${timeoutMs}ms`);
+}
+```
 
-**Basic usage**: Apply lokalise performance tuning to a standard project setup with default configuration options.
+### Step 6: Selective Language Downloads (Delta Exports)
 
-**Advanced scenario**: Customize lokalise performance tuning for production environments with multiple constraints and team-specific requirements.
+Downloading all languages when you only need one wastes bandwidth and API time. Always filter by language and, when possible, by modification timestamp.
+
+```typescript
+// Download only changed translations since last sync
+async function downloadDelta(projectId: string, langIso: string, sinceTimestamp: string) {
+  // Filter keys modified after the given timestamp
+  const keys = await lok.keys().list({
+    project_id: projectId,
+    limit: 500,
+    pagination: 'cursor',
+    filter_translation_lang_ids: langIso,
+    // Unfortunately, Lokalise doesn't support filter_modified_after on keys endpoint.
+    // Workaround: download full file and diff locally, or use webhooks for real-time sync.
+  });
+
+  return keys.items;
+}
+
+// Download a single language file instead of all languages
+async function downloadSingleLanguage(projectId: string, langIso: string) {
+  const result = await lok.files().download(projectId, {
+    format: 'json',
+    filter_langs: [langIso],        // Only this language
+    original_filenames: false,       // Flat structure
+    bundle_structure: '%LANG_ISO%.%FORMAT%', // e.g., fr.json
+    export_empty_as: 'base',         // Fall back to base language for untranslated
+    include_tags: ['production'],    // Only production-tagged keys
+  });
+  return result.bundle_url;
+}
+```
+
+### Step 7: Measure and Benchmark
+
+```bash
+set -euo pipefail
+# Benchmark API response times across endpoints
+echo "=== Lokalise API Benchmarks ==="
+
+echo -n "Projects list: "
+curl -s -o /dev/null -w "%{time_total}s" \
+  -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/projects?limit=10"
+echo ""
+
+echo -n "Keys list (limit=500): "
+curl -s -o /dev/null -w "%{time_total}s" \
+  -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/projects/${PROJECT_ID}/keys?limit=500"
+echo ""
+
+echo -n "File download trigger: "
+curl -s -o /dev/null -w "%{time_total}s" \
+  -X POST -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  -H "Content-Type: application/json" \
+  "https://api.lokalise.com/api2/projects/${PROJECT_ID}/files/download" \
+  -d '{"format":"json","filter_langs":["en"],"original_filenames":false}'
+echo ""
+
+echo -n "Rate limit headers: "
+curl -s -D - -o /dev/null \
+  -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/projects?limit=1" \
+  | grep -i x-ratelimit
+```
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Cursor pagination implemented for all list operations (80% fewer API calls)
+- Translation download cache with timestamp-based invalidation
+- Batch key operations (create/update/delete) using 500-key batches
+- Request queue with PQueue throttling at 5 req/s (safety margin under 6 req/s limit)
+- Webhooks configured for async file operations (replacing polling)
+- Selective language downloads reducing bandwidth and processing time
+- Benchmark results for baseline performance measurement
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `429 Too Many Requests` | Exceeded 6 req/s global rate limit | Use PQueue throttling (Step 4), retry with exponential backoff |
+| Slow file downloads | Large project with 50+ languages | Filter by `filter_langs` to download one language at a time |
+| Pagination timeout | Offset pagination on 50K+ key projects | Switch to cursor pagination (Step 1) |
+| Bulk create partial failure | Network timeout on large batch | Reduce batch size from 500 to 200 and add retry logic per batch |
+| Cache stale after team edits | `last_activity` not granular enough | Reduce cache TTL or use webhooks to invalidate on `project.translation_updated` |
+| `bundle_url` expired | Download URL only valid for ~30 minutes | Fetch the URL and download immediately; do not store URLs for later |
+
+## Examples
+
+### Quick Rate Limit Check
+
+```bash
+set -euo pipefail
+# See how much rate limit headroom you have right now
+curl -s -D - -o /dev/null \
+  -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/system/languages?limit=1" 2>/dev/null \
+  | grep -iE 'x-ratelimit' | while read -r line; do echo "  $line"; done
+```
+
+### Full Project Download with Progress
+
+```typescript
+async function downloadAllLanguages(projectId: string) {
+  const project = await lok.projects().get(projectId);
+  const languages = await lok.languages().list({ project_id: projectId, limit: 100 });
+
+  console.log(`Downloading ${languages.items.length} languages from "${project.name}"...`);
+
+  for (const lang of languages.items) {
+    const bundle = await throttledRequest(() =>
+      lok.files().download(projectId, {
+        format: 'json',
+        filter_langs: [lang.lang_iso],
+        original_filenames: false,
+      })
+    );
+    // Download the bundle_url content here
+    console.log(`  ${lang.lang_iso}: ${bundle.bundle_url.substring(0, 60)}...`);
+  }
+}
+```
+
+### Request Cost Calculator
+
+```bash
+set -euo pipefail
+# Estimate API calls needed for a full sync
+KEYS=$(curl -s -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/projects/${PROJECT_ID}" \
+  | jq '.project.statistics.keys_total')
+LANGS=$(curl -s -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
+  "https://api.lokalise.com/api2/projects/${PROJECT_ID}/languages?limit=100" \
+  | jq '.languages | length')
+
+KEY_PAGES=$(( (KEYS + 499) / 500 ))
+echo "Keys: ${KEYS} -> ${KEY_PAGES} paginated requests"
+echo "Languages: ${LANGS} -> ${LANGS} download requests"
+echo "Total: $(( KEY_PAGES + LANGS + 2 )) API calls"
+echo "Time at 5 req/s: $(( (KEY_PAGES + LANGS + 2) / 5 ))s"
+```
 
 ## Resources
 
-- Official ORM documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Lokalise Rate Limits](https://developers.lokalise.com/docs/api-rate-limits)
+- [Cursor Pagination Docs](https://developers.lokalise.com/docs/cursor-pagination)
+- [File Download API](https://developers.lokalise.com/reference/download-files)
+- [Bulk Key Operations](https://developers.lokalise.com/reference/create-keys)
+- [Webhook Events](https://developers.lokalise.com/reference/webhook-events)
+- [p-queue (npm)](https://www.npmjs.com/package/p-queue)
+
+## Next Steps
+
+- For debugging performance issues, collect diagnostics with `lokalise-debug-bundle`.
+- For SDK upgrade to get latest pagination improvements, see `lokalise-upgrade-migration`.
+- For setting up CI pipelines with optimized API usage, see `lokalise-ci-integration`.
