@@ -359,48 +359,6 @@ curl -s -D - -o /dev/null \
   | grep -iE 'x-ratelimit' | while read -r line; do echo "  $line"; done
 ```
 
-### Full Project Download with Progress
-
-```typescript
-async function downloadAllLanguages(projectId: string) {
-  const project = await lok.projects().get(projectId);
-  const languages = await lok.languages().list({ project_id: projectId, limit: 100 });
-
-  console.log(`Downloading ${languages.items.length} languages from "${project.name}"...`);
-
-  for (const lang of languages.items) {
-    const bundle = await throttledRequest(() =>
-      lok.files().download(projectId, {
-        format: 'json',
-        filter_langs: [lang.lang_iso],
-        original_filenames: false,
-      })
-    );
-    // Download the bundle_url content here
-    console.log(`  ${lang.lang_iso}: ${bundle.bundle_url.substring(0, 60)}...`);
-  }
-}
-```
-
-### Request Cost Calculator
-
-```bash
-set -euo pipefail
-# Estimate API calls needed for a full sync
-KEYS=$(curl -s -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
-  "https://api.lokalise.com/api2/projects/${PROJECT_ID}" \
-  | jq '.project.statistics.keys_total')
-LANGS=$(curl -s -H "X-Api-Token: ${LOKALISE_API_TOKEN}" \
-  "https://api.lokalise.com/api2/projects/${PROJECT_ID}/languages?limit=100" \
-  | jq '.languages | length')
-
-KEY_PAGES=$(( (KEYS + 499) / 500 ))
-echo "Keys: ${KEYS} -> ${KEY_PAGES} paginated requests"
-echo "Languages: ${LANGS} -> ${LANGS} download requests"
-echo "Total: $(( KEY_PAGES + LANGS + 2 )) API calls"
-echo "Time at 5 req/s: $(( (KEY_PAGES + LANGS + 2) / 5 ))s"
-```
-
 ## Resources
 
 - [Lokalise Rate Limits](https://developers.lokalise.com/docs/api-rate-limits)
