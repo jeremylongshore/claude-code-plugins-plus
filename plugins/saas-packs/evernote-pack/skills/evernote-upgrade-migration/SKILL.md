@@ -15,56 +15,113 @@ compatible-with: claude-code, codex, openclaw
 # Evernote Upgrade & Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list evernote 2>/dev/null || echo 'evernote SDK not installed'`
 
 ## Overview
-Guide for upgrading Evernote SDK versions, handling breaking changes, and migrating legacy integrations to current API patterns.
+Guide for upgrading Evernote SDK versions, converting callback-based code to Promises, handling breaking changes, and maintaining backward compatibility during gradual migration.
 
 ## Prerequisites
-- Existing Evernote integration
+- Existing Evernote integration to upgrade
 - Test environment for validation
-- Understanding of current implementation
+- Understanding of current implementation patterns
 
 ## Instructions
 
 ### Step 1: Check Current Version
 
+Identify your current SDK version and compare against the latest release. Check the changelog for breaking changes between versions.
+
+```bash
+# Check installed version
+npm list evernote
+
+# Check latest available
+npm view evernote version
+
+# View changelog
+npm view evernote repository.url
+```
+
 ### Step 2: Review Breaking Changes
 
-### Step 3: Migration Script
+Common breaking changes across Evernote SDK versions:
+- **Constructor changes**: `new Evernote.Note()` became `new Evernote.Types.Note()`
+- **Callback to Promise**: Older versions used callbacks, newer versions return Promises
+- **Import path changes**: Module structure may change between major versions
+- **Thrift version updates**: Underlying Thrift protocol may change serialization
 
-### Step 4: Convert Callbacks to Promises
+### Step 3: Convert Callbacks to Promises
 
-### Step 5: Upgrade Dependencies
+Wrap callback-based SDK calls in Promise wrappers for modern async/await usage.
 
-### Step 6: Test Suite Updates
+```javascript
+// OLD: Callback pattern
+noteStore.getNote(guid, true, false, false, false, (error, note) => {
+  if (error) return handleError(error);
+  processNote(note);
+});
 
-### Step 7: Compatibility Layer
+// NEW: Promise/async pattern
+const note = await noteStore.getNote(guid, true, false, false, false);
+processNote(note);
+```
 
-### Step 8: Deprecation Warnings
+### Step 4: Compatibility Layer
 
-For full implementation details and code examples, load:
-`references/implementation-guide.md`
+Build a compatibility layer that supports both old and new SDK patterns during gradual migration. This allows upgrading module by module instead of a big-bang rewrite.
+
+```javascript
+class EvernoteCompat {
+  constructor(noteStore) {
+    this.noteStore = noteStore;
+  }
+
+  // Works with both callback and Promise-based SDK
+  async getNote(guid, opts = {}) {
+    const { withContent = true, withResources = false } = opts;
+    return this.noteStore.getNote(guid, withContent, withResources, false, false);
+  }
+
+  async createNote(title, content, notebookGuid) {
+    const Note = Evernote.Types?.Note || Evernote.Note;
+    const note = new Note();
+    note.title = title;
+    note.content = content;
+    if (notebookGuid) note.notebookGuid = notebookGuid;
+    return this.noteStore.createNote(note);
+  }
+}
+```
+
+### Step 5: Test Suite Updates
+
+Update test assertions for new SDK response shapes. Add tests for the compatibility layer. Run both unit and integration tests against the sandbox.
+
+### Step 6: Deprecation Warnings
+
+Add deprecation warnings to old patterns so team members know to use new patterns. Remove after migration is complete.
+
+For the full migration script, compatibility layer, test suite updates, and deprecation system, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
-- SDK version comparison
-- Automated migration script
-- Callback to Promise conversion
-- Compatibility layer for gradual migration
-- Migration test suite
-- Deprecation warning system
+- SDK version comparison and changelog review
+- Callback-to-Promise conversion patterns
+- `EvernoteCompat` compatibility layer for gradual migration
+- Updated test suite for new SDK behavior
+- Deprecation warning system for old patterns
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `Evernote.Note is not a constructor` | Old import style | Use `Evernote.Types.Note` |
-| `callback is not a function` | Mixed patterns | Use Promise or callback, not both |
-| `Cannot read property 'then'` | Using old callback-only method | Update to Promise-based method |
+| `Evernote.Note is not a constructor` | Old import style after upgrade | Use `Evernote.Types.Note` |
+| `callback is not a function` | Mixed callback/Promise patterns | Use Promise consistently, remove callback arg |
+| `Cannot read property 'then'` | Using old callback-only method | Update to Promise-based SDK method |
+| Type mismatch | Thrift serialization change | Re-generate types from updated Thrift definitions |
 
 ## Resources
 - [Evernote SDK JS](https://github.com/Evernote/evernote-sdk-js)
-- [SDK Changelog](https://github.com/Evernote/evernote-sdk-js/releases)
+- [SDK Releases](https://github.com/Evernote/evernote-sdk-js/releases)
+- [Python SDK](https://github.com/Evernote/evernote-sdk-python)
 - [API Reference](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
@@ -72,6 +129,6 @@ For CI/CD integration, see `evernote-ci-integration`.
 
 ## Examples
 
-**Basic usage**: Apply evernote upgrade migration to a standard project setup with default configuration options.
+**Gradual migration**: Wrap existing NoteStore with `EvernoteCompat`, upgrade SDK version, update modules one at a time to use the new patterns, and remove the compatibility layer when migration is complete.
 
-**Advanced scenario**: Customize evernote upgrade migration for production environments with multiple constraints and team-specific requirements.
+**Callback to async/await**: Find all callback-based Evernote API calls using `grep -r 'noteStore.*function.*error'`, convert each to async/await, and update error handling from `if (error)` to `try/catch`.

@@ -208,6 +208,6 @@ After successful auth, proceed to `evernote-hello-world` for your first note cre
 
 ## Examples
 
-**Basic usage**: Apply evernote install auth to a standard project setup with default configuration options.
+**Sandbox quickstart**: Use a Developer Token from `sandbox.evernote.com/api/DeveloperToken.action` to skip OAuth during development. Set `EVERNOTE_DEV_TOKEN` and `sandbox: true`.
 
-**Advanced scenario**: Customize evernote install auth for production environments with multiple constraints and team-specific requirements.
+**Production OAuth**: Request full API key from the Developer Portal, implement the OAuth 1.0a flow with HTTPS callback, and store the access token securely with its `edam_expires` timestamp for refresh handling.

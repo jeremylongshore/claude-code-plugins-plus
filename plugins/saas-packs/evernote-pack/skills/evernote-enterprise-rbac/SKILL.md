@@ -15,58 +15,89 @@ compatible-with: claude-code, codex, openclaw
 # Evernote Enterprise RBAC
 
 ## Overview
-Implement role-based access control for Evernote integrations, including multi-tenant architecture, business account handling, and permission management.
+Implement role-based access control for Evernote integrations, including Evernote Business account handling, shared notebook permissions, multi-tenant architecture, and authorization middleware.
 
 ## Prerequisites
-- Understanding of Evernote Business accounts
+- Understanding of Evernote Business accounts and shared notebooks
 - Multi-tenant application architecture
 - Authentication/authorization infrastructure
 
 ## Instructions
 
-### Step 1: Permission Model
+### Step 1: Evernote Permission Model
 
-### Step 2: Role Definitions
+Evernote has built-in sharing permissions for notebooks: `READ_NOTEBOOK`, `MODIFY_NOTEBOOK_PLUS_ACTIVITY`, `READ_NOTEBOOK_PLUS_ACTIVITY`, `GROUP`, `FULL_ACCESS`. Map these to your application's role system.
 
-### Step 3: RBAC Service
+```javascript
+const EvernotePermissions = {
+  READ: 'READ_NOTEBOOK',
+  WRITE: 'MODIFY_NOTEBOOK_PLUS_ACTIVITY',
+  FULL: 'FULL_ACCESS'
+};
 
-### Step 4: Authorization Middleware
+const AppRoles = {
+  viewer: [EvernotePermissions.READ],
+  editor: [EvernotePermissions.READ, EvernotePermissions.WRITE],
+  admin:  [EvernotePermissions.FULL]
+};
+```
+
+### Step 2: RBAC Service
+
+Build a service that checks whether a user has the required permission for an operation. Query shared notebook privileges via `noteStore.listSharedNotebooks()` and `getSharedNotebookByAuth()`.
+
+```javascript
+class RBACService {
+  async canAccess(userToken, notebookGuid, requiredPermission) {
+    const noteStore = this.getAuthenticatedNoteStore(userToken);
+    const sharedNotebooks = await noteStore.listSharedNotebooks();
+    const shared = sharedNotebooks.find(sn => sn.notebookGuid === notebookGuid);
+    if (!shared) return false;
+    return this.hasPermission(shared.privilege, requiredPermission);
+  }
+}
+```
+
+### Step 3: Authorization Middleware
+
+Create Express middleware that validates the user's Evernote token and checks permissions before allowing access to protected routes.
+
+### Step 4: Evernote Business Integration
+
+For Evernote Business accounts, use `authenticateToBusiness()` to get a business token. Business notebooks are shared across the organization. Use `getBusinessNotebooks()` to list them.
 
 ### Step 5: Multi-Tenant Support
 
-### Step 6: Evernote Business Integration
+Isolate tenant data by scoping all Evernote operations to the tenant's access token. Never mix tokens between tenants. Store tenant-to-token mappings with encryption at rest.
 
-### Step 7: API Routes with RBAC
-
-For full implementation details and code examples, load:
-`references/implementation-guide.md`
+For the full RBAC service, middleware, Business account integration, and multi-tenant architecture, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
-- Permission and role models
-- RBAC service implementation
-- Authorization middleware
-- Multi-tenant support
-- Evernote Business integration
-- Protected API routes
+- Evernote permission model mapped to application roles
+- `RBACService` class with permission checking
+- Express authorization middleware for protected routes
+- Evernote Business account integration
+- Multi-tenant token isolation and scoping
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `PERMISSION_DENIED` | User lacks required notebook permission | Verify shared notebook privileges |
+| `INVALID_AUTH` | Business token expired | Re-authenticate with `authenticateToBusiness()` |
+| Tenant data leak | Token scoping error | Validate tenant ID on every request |
+| `LIMIT_REACHED` on sharing | Too many shared notebooks | Clean up unused shares (500 max per notebook) |
 
 ## Resources
-- [Evernote Business](https://evernote.com/business)
 - [Sharing and Permissions](https://dev.evernote.com/doc/articles/sharing.php)
 - [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
+- [Evernote Business](https://evernote.com/business)
+- [API Reference - SharedNotebook](https://dev.evernote.com/doc/reference/)
 
 ## Next Steps
 For migration strategies, see `evernote-migration-deep-dive`.
 
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Evernote Enterprise Rbac |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
 ## Examples
 
-**Basic usage**: Apply evernote enterprise rbac to a standard project setup with default configuration options.
+**Team workspace**: Create a shared notebook for each team. Assign `editor` role to team members and `viewer` role to stakeholders. Use middleware to enforce permissions on all note operations.
 
-**Advanced scenario**: Customize evernote enterprise rbac for production environments with multiple constraints and team-specific requirements.
+**Business account sync**: Authenticate to the business account, list all business notebooks, and sync shared notes to a central dashboard accessible by all organization members.

@@ -15,41 +15,105 @@ compatible-with: claude-code, codex, openclaw
 # Evernote Multi-Environment Setup
 
 ## Overview
-Configure separate development, staging, and production environments for Evernote integrations with proper isolation and configuration management.
+Configure separate development, staging, and production environments for Evernote integrations with proper isolation, configuration management, and environment-aware client factories.
 
 ## Prerequisites
-- Multiple Evernote API keys (sandbox and production)
+- Multiple Evernote API keys (sandbox for dev/staging, production for prod)
 - Environment management infrastructure
-- CI/CD pipeline
+- CI/CD pipeline (see `evernote-ci-integration`)
 
 ## Instructions
 
 ### Step 1: Environment Configuration Files
 
+Create per-environment config files that define the Evernote endpoint, sandbox flag, rate limit settings, and logging level.
+
+```javascript
+// config/environments.js
+const configs = {
+  development: {
+    sandbox: true,
+    apiUrl: 'https://sandbox.evernote.com',
+    rateLimitDelayMs: 0,  // No throttle in dev
+    logLevel: 'debug'
+  },
+  staging: {
+    sandbox: true,
+    apiUrl: 'https://sandbox.evernote.com',
+    rateLimitDelayMs: 100,
+    logLevel: 'info'
+  },
+  production: {
+    sandbox: false,
+    apiUrl: 'https://www.evernote.com',
+    rateLimitDelayMs: 200,
+    logLevel: 'warn'
+  }
+};
+
+module.exports = configs[process.env.NODE_ENV || 'development'];
+```
+
 ### Step 2: Environment Variables
 
-### Step 3: Configuration Loader
+Define environment-specific `.env` files. Each environment uses its own API key and token. The `EVERNOTE_SANDBOX` flag controls which Evernote endpoint the SDK connects to.
 
-### Step 4: Environment-Aware Client Factory
+```bash
+# .env.development - sandbox with dev token
+EVERNOTE_SANDBOX=true
+EVERNOTE_DEV_TOKEN=S=s1:U=...
 
-### Step 5: Docker Compose for Local Development
+# .env.production - production with OAuth
+EVERNOTE_SANDBOX=false
+EVERNOTE_CONSUMER_KEY=prod-key
+EVERNOTE_CONSUMER_SECRET=prod-secret
+```
 
-### Step 6: Environment-Specific Middleware
+### Step 3: Environment-Aware Client Factory
 
-### Step 7: CI/CD Environment Configuration
+Build a factory that creates properly configured Evernote clients based on the active environment. Include validation that production never uses sandbox tokens.
 
-### Step 8: Environment Health Check
+### Step 4: Docker Compose for Local Development
 
-For full implementation details and code examples, load:
-`references/implementation-guide.md`
+Define services for the app, Redis (caching), and a webhook receiver (ngrok or localtunnel) in `docker-compose.yml`. Mount `.env.development` as environment file.
+
+### Step 5: Health Check Endpoint
+
+Create a `/health` endpoint that verifies Evernote API connectivity, reports the active environment, and checks cache availability.
+
+```javascript
+app.get('/health', async (req, res) => {
+  const checks = {
+    environment: process.env.NODE_ENV,
+    sandbox: config.sandbox,
+    evernoteApi: 'unknown',
+    cacheConnected: false
+  };
+  try {
+    await userStore.getUser();
+    checks.evernoteApi = 'connected';
+  } catch { checks.evernoteApi = 'error'; }
+  res.json(checks);
+});
+```
+
+For the full configuration loader, client factory, Docker setup, and CI/CD environment matrix, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
-- Environment-specific configuration files
-- Configuration loader with environment variable support
-- Environment-aware client factory
-- Docker Compose for local development
-- CI/CD environment configuration
-- Health check endpoints
+- Per-environment configuration files (development, staging, production)
+- Environment-aware Evernote client factory
+- `.env` templates for each environment
+- Docker Compose setup for local development
+- Health check endpoint with environment reporting
+- CI/CD configuration with environment-specific secrets
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Invalid consumer key` | Using sandbox key in production | Verify `EVERNOTE_SANDBOX` matches key type |
+| Wrong environment | `NODE_ENV` not set | Default to `development`, warn in logs |
+| Sandbox data in production | Environment misconfiguration | Add startup validation that checks key/env match |
+| Docker connection refused | Service not started | Run `docker compose up` before testing |
 
 ## Resources
 - [12 Factor App - Config](https://12factor.net/config)
@@ -59,16 +123,8 @@ For full implementation details and code examples, load:
 ## Next Steps
 For observability setup, see `evernote-observability`.
 
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Evernote Multi Env Setup |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
 ## Examples
 
-**Basic usage**: Apply evernote multi env setup to a standard project setup with default configuration options.
+**Three-environment setup**: Development uses sandbox Developer Token for instant testing. Staging uses sandbox OAuth for integration testing. Production uses production OAuth with full rate limiting and monitoring.
 
-**Advanced scenario**: Customize evernote multi env setup for production environments with multiple constraints and team-specific requirements.
+**Docker local dev**: Run `docker compose up` to start the app with Redis caching and ngrok for webhook testing, all preconfigured for the sandbox environment.
