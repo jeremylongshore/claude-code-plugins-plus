@@ -31,6 +31,7 @@
     "@types/node": "^20.19.27",
     "archiver": "^7.0.1",
     "eslint": "^9.39.2",
+    "js-yaml": "^4.1.1",
     "prettier": "^3.7.4",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0"

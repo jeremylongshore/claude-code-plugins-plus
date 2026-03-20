@@ -9288,6 +9288,28 @@
       "external_sync": true,
       "mcpTools": 6,
       "keywords": ["mcp", "pr-analysis", "intent-drift", "code-review", "agent-protocol"]
+    },
+    {
+      "name": "slack-channel",
+      "source": "./plugins/mcp/slack-channel",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": ["slack", "channel", "mcp", "socket-mode", "chatops", "claude-code"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "repository": "https://github.com/jeremylongshore/claude-code-slack-channel",
+      "homepage": "https://tonsofskills.com",
+      "license": "Apache-2.0",
+      "featured": true,
+      "pricing": "free",
+      "external_sync": true,
+      "mcpTools": 5,
+      "components": {
+        "skills": 2
+      }
     }
   ]
 }

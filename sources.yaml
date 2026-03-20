@@ -631,6 +631,34 @@ sources:
       - "dist/cli/**"
       - "dist/action/**"
 
+  - name: slack-channel
+    description: Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode
+    repo: jeremylongshore/claude-code-slack-channel
+    source_path: .
+    target_path: plugins/mcp/slack-channel
+    author:
+      name: Jeremy Longshore
+      github: jeremylongshore
+      email: jeremy@intentsolutions.io
+    license: Apache-2.0
+    category: productivity
+    verified: true
+    include:
+      - ".claude-plugin/**"
+      - ".mcp.json"
+      - "server.ts"
+      - "lib.ts"
+      - "package.json"
+      - ".npmrc"
+      - "skills/**"
+      - "ACCESS.md"
+      - "README.md"
+      - "LICENSE"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
   # ============================================================
   # Add more external sources below
   # ============================================================

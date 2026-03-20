@@ -189,7 +189,7 @@ async function syncSource(source, config) {
 
     // Process each file
     for (const file of filteredFiles) {
-      const targetPath = path.join(ROOT_DIR, source.target_path, 'skills', source.name, file.path);
+      const targetPath = path.join(ROOT_DIR, source.target_path, file.path);
       const targetDir = path.dirname(targetPath);
 
       // Check if file exists and compare

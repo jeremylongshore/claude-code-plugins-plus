@@ -1,0 +1,29 @@
+{
+  "name": "@anthropic/claude-channel-slack",
+  "version": "0.1.0",
+  "description": "Slack channel for Claude Code — two-way chat via Socket Mode",
+  "type": "module",
+  "main": "server.ts",
+  "scripts": {
+    "start": "bun server.ts",
+    "start:node": "npx tsx server.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@slack/socket-mode": "^2.0.0",
+    "@slack/web-api": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.0",
+    "typescript": "^5.4.0"
+  },
+  "license": "Apache-2.0",
+  "author": "Anthropic",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anthropics/claude-plugins-official.git",
+    "directory": "slack"
+  }
+}
