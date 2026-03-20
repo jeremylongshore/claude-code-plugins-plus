@@ -8,6 +8,6 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-slack-channel",
   "homepage": "https://tonsofskills.com",
-  "license": "Apache-2.0",
+  "license": "MIT",
   "keywords": ["slack", "channel", "mcp", "socket-mode", "chatops", "claude-code"]
 }

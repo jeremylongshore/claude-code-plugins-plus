@@ -9302,7 +9302,7 @@
       },
       "repository": "https://github.com/jeremylongshore/claude-code-slack-channel",
       "homepage": "https://tonsofskills.com",
-      "license": "Apache-2.0",
+      "license": "MIT",
       "featured": true,
       "pricing": "free",
       "external_sync": true,
