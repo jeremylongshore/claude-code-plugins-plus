@@ -207,7 +207,7 @@ console.log(`Enriched ${enriched.length} candidates, ${errors.length} errors`);
 - [Juicebox People Search](https://docs.juicebox.ai/people-search)
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Enriched candidate profiles with full contact info, experience, and skills
+- Batch enrichment pipeline processing candidates with rate limiting
+- CRM-ready records with normalized fields for ATS export
+- Error report identifying profiles that failed enrichment
