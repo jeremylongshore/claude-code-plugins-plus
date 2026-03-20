@@ -21,7 +21,7 @@ const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extend
 // ── Markdown-to-HTML converter (tables, code blocks, lists, headings) ──
 
 function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 function inlineFormat(text) {
