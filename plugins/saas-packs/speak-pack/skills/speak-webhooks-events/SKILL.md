@@ -60,6 +60,72 @@ For performance optimization, see `speak-performance-tuning`.
 
 ## Examples
 
-**Basic usage**: Apply speak webhooks events to a standard project setup with default configuration options.
+### Basic: Webhook Endpoint with Signature Verification
+```typescript
+import express from "express";
+import crypto from "crypto";
 
-**Advanced scenario**: Customize speak webhooks events for production environments with multiple constraints and team-specific requirements.
+const app = express();
+app.use("/webhooks/speak", express.raw({ type: "application/json" }));
+
+function verifySignature(payload: Buffer, signature: string, secret: string): boolean {
+  const expected = crypto.createHmac("sha256", secret).update(payload).digest("hex");
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
+app.post("/webhooks/speak", (req, res) => {
+  const sig = req.headers["x-speak-signature"] as string;
+  if (!verifySignature(req.body, sig, process.env.SPEAK_WEBHOOK_SECRET!)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const event = JSON.parse(req.body.toString());
+  console.log(`Received event: ${event.type}`, event.data);
+  res.status(200).send("ok");
+});
+```
+
+### Advanced: Event Router with Idempotency and Async Processing
+```typescript
+import { createClient } from "redis";
+
+const redis = createClient({ url: process.env.REDIS_URL });
+await redis.connect();
+
+type EventHandler = (data: any) => Promise<void>;
+
+const handlers: Record<string, EventHandler> = {
+  "lesson.completed": async (data) => {
+    await db.updateStudentProgress(data.userId, data.lessonId, data.score);
+    if (data.score >= 80) await unlockNextLesson(data.userId);
+  },
+  "pronunciation.assessed": async (data) => {
+    await db.savePronunciationResult(data.userId, data.assessment);
+    if (data.assessment.score < 50) await scheduleRemedialDrill(data.userId, data.assessment.weakPhonemes);
+  },
+  "subscription.changed": async (data) => {
+    await db.updateUserTier(data.userId, data.newTier);
+  },
+};
+
+app.post("/webhooks/speak", async (req, res) => {
+  const sig = req.headers["x-speak-signature"] as string;
+  if (!verifySignature(req.body, sig, process.env.SPEAK_WEBHOOK_SECRET!)) {
+    return res.status(401).send("Invalid signature");
+  }
+
+  const event = JSON.parse(req.body.toString());
+
+  // Idempotency check — skip already-processed events
+  const seen = await redis.get(`speak:event:${event.id}`);
+  if (seen) return res.status(200).send("already processed");
+
+  const handler = handlers[event.type];
+  if (handler) {
+    await handler(event.data);
+    await redis.set(`speak:event:${event.id}`, "1", { EX: 86400 }); // 24h TTL
+  }
+
+  res.status(200).send("ok");
+});
+```

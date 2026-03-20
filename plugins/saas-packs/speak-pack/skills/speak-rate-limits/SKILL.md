@@ -137,6 +137,6 @@ status = {endpoint: {
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Rate limiter implementation configured per endpoint
+- Retry logic with exponential backoff for 429 responses
+- Monitoring dashboard or log output showing rate limit usage

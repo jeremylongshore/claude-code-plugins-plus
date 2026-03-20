@@ -54,6 +54,69 @@ For common errors, see `speak-common-errors`.
 
 ## Examples
 
-**Basic usage**: Apply speak core workflow b to a standard project setup with default configuration options.
+### Basic: Pronunciation Assessment with Phoneme Scores
+```typescript
+import { SpeakClient } from "./speak-client";
 
-**Advanced scenario**: Customize speak core workflow b for production environments with multiple constraints and team-specific requirements.
+const client = new SpeakClient(process.env.SPEAK_API_KEY!);
+
+const result = await client.assessPronunciation({
+  audioPath: "./recordings/hello-spanish.wav",
+  targetText: "Hola, como estas?",
+  language: "es",
+  detailLevel: "phoneme",
+});
+
+console.log(`Overall score: ${result.score}/100`);
+for (const phoneme of result.phonemes) {
+  if (phoneme.score < 70) {
+    console.log(`  Weak phoneme: "${phoneme.symbol}" — score ${phoneme.score}, tip: ${phoneme.suggestion}`);
+  }
+}
+```
+
+### Advanced: Adaptive Pronunciation Drill Loop
+```typescript
+async function runPronunciationDrill(client: SpeakClient, phrases: string[], language: string) {
+  const weakPoints: Map<string, number[]> = new Map();
+
+  for (const phrase of phrases) {
+    const audioPath = await recordStudentAudio(phrase);
+    const result = await client.assessPronunciation({
+      audioPath,
+      targetText: phrase,
+      language,
+      detailLevel: "phoneme",
+    });
+
+    for (const phoneme of result.phonemes.filter((p) => p.score < 70)) {
+      const scores = weakPoints.get(phoneme.symbol) || [];
+      scores.push(phoneme.score);
+      weakPoints.set(phoneme.symbol, scores);
+    }
+
+    // Re-drill if overall score is below threshold
+    if (result.score < 60) {
+      console.log(`Re-drilling: "${phrase}" (score: ${result.score})`);
+      const retryAudio = await recordStudentAudio(phrase);
+      await client.assessPronunciation({
+        audioPath: retryAudio,
+        targetText: phrase,
+        language,
+        detailLevel: "phoneme",
+      });
+    }
+  }
+
+  // Generate weakness report
+  const report = [...weakPoints.entries()]
+    .map(([phoneme, scores]) => ({
+      phoneme,
+      avgScore: scores.reduce((a, b) => a + b, 0) / scores.length,
+      occurrences: scores.length,
+    }))
+    .sort((a, b) => a.avgScore - b.avgScore);
+
+  console.log("Pronunciation weakness report:", report);
+}
+```

@@ -52,8 +52,8 @@ Integrate Speak language learning API validation into CI/CD pipelines. Covers pr
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- GitHub Actions workflow file (`.github/workflows/speak-tests.yml`)
+- Pronunciation regression test suite with audio fixtures
+- CI badge and test result artifacts uploaded per run
 
 See [CI/CD implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.

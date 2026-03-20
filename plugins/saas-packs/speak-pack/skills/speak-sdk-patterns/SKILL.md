@@ -128,6 +128,6 @@ def convert_to_wav(input_path: str, output_path: str):
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Production-ready Speak client class with typed methods
+- Audio preprocessing pipeline (format conversion, quality validation)
+- Batch assessment runner with rate-limit-aware scheduling
