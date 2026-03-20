@@ -1,19 +1,22 @@
 ---
 name: configure
 description: Configure Slack channel tokens (bot token + app-level token)
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 user-invocable: true
 argument-hint: "<bot-token> <app-token>"
-allowed-tools: Read, Write, Bash(cmd:chmod)
+allowed-tools: [Read, Write, "Bash(cmd:chmod)"]
 ---
 
-# /slack:configure
+# /slack-channel:configure
 
 Configure the Slack channel with your bot token and app-level token.
 
 ## Usage
 
 ```
-/slack:configure <xoxb-bot-token> <xapp-app-token>
+/slack-channel:configure <xoxb-bot-token> <xapp-app-token>
 ```
 
 ## Instructions
@@ -28,7 +31,7 @@ Configure the Slack channel with your bot token and app-level token.
      - Bot token (starts with xoxb-) from OAuth & Permissions
      - App token (starts with xapp-) from Socket Mode settings
 
-   Usage: /slack:configure xoxb-... xapp-...
+   Usage: /slack-channel:configure xoxb-... xapp-...
    ```
 
 3. Create the state directory if it doesn't exist:
@@ -52,7 +55,7 @@ Configure the Slack channel with your bot token and app-level token.
    Slack channel configured.
 
    Start Claude with the Slack channel:
-     claude --channels plugin:slack@claude-plugins-official
+     claude --channels plugin:slack-channel@claude-code-plugins
 
    Or for development:
      claude --dangerously-load-development-channels server:slack

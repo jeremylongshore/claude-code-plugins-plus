@@ -36,12 +36,12 @@ Controls how DMs from unknown users are handled.
 
 | Value | Behavior |
 |-------|----------|
-| `pairing` | Unknown senders get a 6-character code to approve via `/slack:access pair` (default) |
+| `pairing` | Unknown senders get a 6-character code to approve via `/slack-channel:access pair` (default) |
 | `allowlist` | Only users in `allowFrom` can DM; others are silently dropped |
 | `disabled` | All DMs dropped |
 
 ### `allowFrom`
-Array of Slack user IDs (e.g., `U12345678`) allowed to send DMs. Managed via `/slack:access add/remove`.
+Array of Slack user IDs (e.g., `U12345678`) allowed to send DMs. Managed via `/slack-channel:access add/remove`.
 
 ### `channels`
 Map of channel IDs to policies. Only channels listed here are monitored.

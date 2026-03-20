@@ -1,25 +1,28 @@
 ---
 name: access
 description: Manage Slack channel access control — pairing, allowlist, channel opt-in
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 user-invocable: true
 argument-hint: "pair <code> | policy <mode> | add <user_id> | remove <user_id> | channel <id> [opts] | status"
-allowed-tools: Read, Write, Edit
+allowed-tools: [Read, Write, Edit]
 ---
 
-# /slack:access
+# /slack-channel:access
 
 Manage who can reach your Claude Code session through Slack.
 
 ## Usage
 
 ```
-/slack:access pair <code>                          # Approve a pending pairing
-/slack:access policy <pairing|allowlist|disabled>   # Set DM policy
-/slack:access add <slack_user_id>                   # Add user to allowlist
-/slack:access remove <slack_user_id>                # Remove from allowlist
-/slack:access channel <channel_id> [--mention] [--allow <user_id,...>]  # Opt in a channel
-/slack:access channel remove <channel_id>           # Remove channel opt-in
-/slack:access status                                # Show current config
+/slack-channel:access pair <code>                          # Approve a pending pairing
+/slack-channel:access policy <pairing|allowlist|disabled>   # Set DM policy
+/slack-channel:access add <slack_user_id>                   # Add user to allowlist
+/slack-channel:access remove <slack_user_id>                # Remove from allowlist
+/slack-channel:access channel <channel_id> [--mention] [--allow <user_id,...>]  # Opt in a channel
+/slack-channel:access channel remove <channel_id>           # Remove channel opt-in
+/slack-channel:access status                                # Show current config
 ```
 
 ## State File

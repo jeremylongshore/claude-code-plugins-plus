@@ -1,11 +1,11 @@
 {
-  "name": "@anthropic/claude-channel-slack",
+  "name": "claude-channel-slack",
   "version": "0.1.0",
   "description": "Slack channel for Claude Code — two-way chat via Socket Mode",
   "type": "module",
-  "main": "server.ts",
+  "bin": "./server.ts",
   "scripts": {
-    "start": "bun server.ts",
+    "start": "bun install --no-summary && bun server.ts",
     "start:node": "npx tsx server.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit"
@@ -19,11 +19,13 @@
     "@types/bun": "^1.0.0",
     "typescript": "^5.4.0"
   },
-  "license": "Apache-2.0",
-  "author": "Anthropic",
+  "license": "MIT",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/anthropics/claude-plugins-official.git",
-    "directory": "slack"
+    "url": "https://github.com/jeremylongshore/claude-code-slack-channel.git"
   }
 }
