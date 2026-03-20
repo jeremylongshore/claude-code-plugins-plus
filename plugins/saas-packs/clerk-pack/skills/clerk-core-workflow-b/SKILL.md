@@ -14,15 +14,6 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Clerk Core Workflow B: Session & Middleware
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
 Implement session management and route protection with Clerk middleware. Covers Next.js middleware configuration, API route protection, role-based access control, and organization-scoped sessions.
 
@@ -30,29 +21,149 @@ Implement session management and route protection with Clerk middleware. Covers 
 - Clerk account with application created
 - `@clerk/nextjs` package installed
 - Next.js 14+ with App Router
-- Understanding of JWT session tokens
+- Sign-in/sign-up flows working (`clerk-core-workflow-a` completed)
 
 ## Instructions
 
 ### Step 1: Configure Clerk Middleware
-Create `middleware.ts` at project root. Define public routes (landing, sign-in, webhooks) and admin routes. Use `clerkMiddleware` with `auth.protect()` for private routes and role-based protection for admin routes.
+```typescript
+// middleware.ts (project root)
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+
+const isPublicRoute = createRouteMatcher([
+  '/',
+  '/sign-in(.*)',
+  '/sign-up(.*)',
+  '/api/webhooks(.*)',
+])
+
+const isAdminRoute = createRouteMatcher(['/admin(.*)'])
+
+export default clerkMiddleware(async (auth, req) => {
+  // Allow public routes
+  if (isPublicRoute(req)) return
+
+  // Require admin role for admin routes
+  if (isAdminRoute(req)) {
+    await auth.protect({ role: 'org:admin' })
+    return
+  }
+
+  // Require authentication for all other routes
+  await auth.protect()
+})
+
+export const config = {
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
+}
+```
 
 ### Step 2: Protect API Routes
-Use `auth()` in route handlers to get `userId`, `orgId`, and `has()` for permission checks. Return 401/403 for unauthorized/insufficient permissions.
+```typescript
+// app/api/data/route.ts
+import { auth } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 
-### Step 3: Handle Session Claims
-Access session data, user profile, and generate JWT tokens for external APIs (Supabase, etc.) using `getToken({ template: 'name' })`.
+export async function GET() {
+  const { userId, orgId, has } = await auth()
 
-### Step 4: Add Server Component Auth
-Use `auth()` in server components with `redirect('/sign-in')` for unauthenticated users. Check roles/permissions with `has()` for conditional UI rendering.
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete middleware config, API route examples, session claims, server component patterns, and role-based navigation.
+  // Check specific permission
+  if (!has({ permission: 'org:data:read' })) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+  }
+
+  return NextResponse.json({
+    data: 'Protected content',
+    userId,
+    orgId,
+  })
+}
+```
+
+### Step 3: Handle Session Claims and JWT
+```typescript
+// app/api/external/route.ts
+import { auth } from '@clerk/nextjs/server'
+
+export async function GET() {
+  const { userId, getToken, sessionClaims } = await auth()
+
+  // Get custom JWT for external service (e.g., Supabase)
+  const supabaseToken = await getToken({ template: 'supabase' })
+
+  // Access session claims
+  const userRole = sessionClaims?.metadata?.role
+
+  return Response.json({
+    userId,
+    role: userRole,
+    hasSupabaseToken: !!supabaseToken,
+  })
+}
+```
+
+### Step 4: Server Component Auth
+```typescript
+// app/dashboard/page.tsx
+import { auth, currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
+
+export default async function DashboardPage() {
+  const { userId, has } = await auth()
+
+  if (!userId) redirect('/sign-in')
+
+  const user = await currentUser()
+  const isAdmin = has({ role: 'org:admin' })
+
+  return (
+    <div>
+      <h1>Welcome, {user?.firstName}</h1>
+      {isAdmin && <a href="/admin">Admin Panel</a>}
+    </div>
+  )
+}
+```
+
+### Step 5: Organization-Scoped Sessions
+```typescript
+'use client'
+import { useOrganizationList, useOrganization } from '@clerk/nextjs'
+
+export function OrgSwitcher() {
+  const { organizationList, setActive } = useOrganizationList()
+  const { organization } = useOrganization()
+
+  return (
+    <div>
+      <p>Current: {organization?.name || 'Personal'}</p>
+      <ul>
+        {organizationList?.map(({ organization: org }) => (
+          <li key={org.id}>
+            <button onClick={() => setActive({ organization: org.id })}>
+              {org.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+```
 
 ## Output
 - Middleware protecting all non-public routes
 - API routes with auth and permission checks
 - Server components with role-based rendering
 - JWT tokens configured for external services
+- Organization-scoped session switching
 
 ## Error Handling
 | Issue | Cause | Solution |
@@ -61,18 +172,28 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | 401 on API route | Token not forwarded | Ensure fetch includes credentials |
 | Missing org context | User not in organization | Check `orgId` before org-scoped ops |
 | Session expired | Token TTL exceeded | Configure session lifetime in dashboard |
+| `has()` returns false | Permission not assigned | Check role in Clerk Dashboard > Organizations |
 
 ## Examples
 
 ### Quick Permission Check
 ```typescript
-const { has } = await auth();
-if (has({ permission: 'org:data:write' })) {
-  // User can write data in this organization
+// Inline permission guard for server actions
+import { auth } from '@clerk/nextjs/server'
+
+export async function deleteItem(itemId: string) {
+  const { has } = await auth()
+  if (!has({ permission: 'org:items:delete' })) {
+    throw new Error('Permission denied')
+  }
+  // proceed with deletion
 }
 ```
 
 ## Resources
 - [Clerk Middleware](https://clerk.com/docs/references/nextjs/clerk-middleware)
-- [Clerk Auth Helper](https://clerk.com/docs/references/nextjs/auth)
-- [Clerk Organizations](https://clerk.com/docs/organizations/overview)
+- [Auth Helper](https://clerk.com/docs/references/nextjs/auth)
+- [Organizations](https://clerk.com/docs/organizations/overview)
+
+## Next Steps
+Proceed to `clerk-webhooks-events` for webhook and event handling.
