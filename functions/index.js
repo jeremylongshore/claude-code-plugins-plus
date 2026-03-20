@@ -58,7 +58,7 @@ exports.subscribeEmail = onCall(
         });
       }
     } catch (slackErr) {
-      console.error("Slack notification failed:", slackErr.message);
+      console.error("Slack notification failed:", slackErr);
     }
 
     return { status: "subscribed" };

@@ -766,7 +766,7 @@ const currentPath = Astro.url.pathname;
           form.addEventListener('submit', async function(e) {
             e.preventDefault();
             var input = form.querySelector('input[type="email"]');
-            var honeypot = form.querySelector('input[name="website"]');
+            const honeypot = form.querySelector('input[name="website"]');
             var btn = form.querySelector('button');
             var originalText = btn.textContent;
             btn.textContent = 'Subscribing...';
