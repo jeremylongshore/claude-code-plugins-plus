@@ -139,212 +139,31 @@ SHOW TABLES IN main.migrated;
 DESCRIBE TABLE EXTENDED main.migrated.customers;
 ```
 
-#### Python Migration Script
-```python
-# scripts/migrate_to_unity_catalog.py
-from databricks.sdk import WorkspaceClient
-from pyspark.sql import SparkSession
-
-def migrate_schema_to_unity(
-    spark: SparkSession,
-    source_schema: str,
-    target_catalog: str,
-    target_schema: str,
-    tables: list[str] = None,
-    method: str = "sync",  # "sync" or "copy"
-) -> list[dict]:
-    """
-    Migrate Hive Metastore schema to Unity Catalog.
-
-    Args:
-        spark: SparkSession
-        source_schema: Hive metastore schema (e.g., "hive_metastore.old_db")
-        target_catalog: Unity Catalog catalog name
-        target_schema: Target schema name
-        tables: Specific tables to migrate (None = all)
-        method: "sync" (in-place) or "copy" (duplicate data)
-
-    Returns:
-        List of migration results
-    """
-    results = []
-
-    # Get tables to migrate
-    if tables is None:
-        tables_df = spark.sql(f"SHOW TABLES IN {source_schema}")
-        tables = [row.tableName for row in tables_df.collect()]
-
-    # Create target schema
-    spark.sql(f"CREATE SCHEMA IF NOT EXISTS {target_catalog}.{target_schema}")
-
-    for table in tables:
-        source_table = f"{source_schema}.{table}"
-        target_table = f"{target_catalog}.{target_schema}.{table}"
-
-        try:
-            if method == "sync":
-                # SYNC keeps data in original location
-                spark.sql(f"""
-                    CREATE TABLE IF NOT EXISTS {target_table}
-                    USING DELTA
-                    LOCATION (SELECT location FROM
-                        (DESCRIBE DETAIL {source_table}))
-                """)
-            else:
-                # Copy creates new data
-                spark.sql(f"""
-                    CREATE TABLE {target_table}
-                    DEEP CLONE {source_table}
-                """)
-
-            results.append({
-                "table": table,
-                "status": "SUCCESS",
-                "method": method,
-            })
-
-        except Exception as e:
-            results.append({
-                "table": table,
-                "status": "FAILED",
-                "error": str(e),
-            })
-
-    return results
-```
-
-### Step 3: API Migration (v2.0 to v2.1)
-
-```python
-# Migrate deprecated API calls
-from databricks.sdk import WorkspaceClient
-
-def migrate_api_calls(w: WorkspaceClient):
-    """Update deprecated API usage patterns."""
-
-    # Old: clusters/create with deprecated params
-    # New: Use instance pools and policies
-
-    # Old: jobs/create with existing_cluster_id
-    # New: Use job_cluster_key for better isolation
-
-    # Old: dbfs/put for large files
-    # New: Use Volumes or cloud storage
-
-    # Old: Workspace API for notebooks
-    # New: Use Repos API for version control
-
-    pass
-```
-
-### Step 4: Delta Lake Upgrade
-
-```python
-# Upgrade Delta Lake protocol version
-def upgrade_delta_tables(
-    spark: SparkSession,
-    catalog: str,
-    schema: str,
-    min_reader: int = 3,
-    min_writer: int = 7,
-) -> list[dict]:
-    """
-    Upgrade Delta Lake protocol for tables.
-
-    Protocol version benefits:
-    - Reader 2+: Column mapping
-    - Reader 3+: Deletion vectors
-    - Writer 5+: Change Data Feed
-    - Writer 7+: Deletion vectors, liquid clustering
-    """
-    results = []
-
-    tables = spark.sql(f"SHOW TABLES IN {catalog}.{schema}").collect()
-
-    for table_row in tables:
-        table = f"{catalog}.{schema}.{table_row.tableName}"
-
-        try:
-            # Check current protocol
-            detail = spark.sql(f"DESCRIBE DETAIL {table}").first()
-            current_reader = detail.minReaderVersion
-            current_writer = detail.minWriterVersion
-
-            if current_reader < min_reader or current_writer < min_writer:
-                # Upgrade protocol
-                spark.sql(f"""
-                    ALTER TABLE {table}
-                    SET TBLPROPERTIES (
-                        'delta.minReaderVersion' = '{min_reader}',
-                        'delta.minWriterVersion' = '{min_writer}'
-                    )
-                """)
-
-                results.append({
-                    "table": table,
-                    "status": "UPGRADED",
-                    "from": f"r{current_reader}/w{current_writer}",
-                    "to": f"r{min_reader}/w{min_writer}",
-                })
-            else:
-                results.append({
-                    "table": table,
-                    "status": "ALREADY_CURRENT",
-                })
-
-        except Exception as e:
-            results.append({
-                "table": table,
-                "status": "FAILED",
-                "error": str(e),
-            })
-
-    return results
-```
+For Unity Catalog migration script, API endpoint migration, Delta protocol upgrade, and complete migration runbook, see [Migration Scripts](references/migration-scripts.md).
 
 ## Output
-- Upgraded DBR version
-- Unity Catalog migration complete
-- Updated API calls
-- Delta Lake protocol upgraded
+- DBR version upgraded with compatibility verified
+- Hive Metastore tables migrated to Unity Catalog
+- Deprecated API calls updated to v2.1 endpoints
+- Delta Lake protocol upgraded for new features (deletion vectors, liquid clustering)
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Incompatible library | Version mismatch | Update library version |
-| Permission error | Missing grants | Add Unity Catalog grants |
-| Table sync failed | Location access | Check storage permissions |
-| Protocol downgrade | Reader/writer too high | Clone to new table |
+| Incompatible library | DBR version mismatch | Pin library to compatible version in `requirements.txt` |
+| `PERMISSION_DENIED` on table | Missing Unity Catalog grants | Run `GRANT USE CATALOG`, `GRANT USE SCHEMA` for target |
+| Table sync failed | Storage location inaccessible | Check cloud storage permissions and network config |
+| Protocol downgrade error | Target version lower than current | Cannot downgrade — `DEEP CLONE` to a new table instead |
 
 ## Examples
 
-### Complete Migration Runbook
+### Quick Upgrade Check
 ```bash
-#!/bin/bash
-# migrate_workspace.sh
-
-# 1. Pre-migration backup
-echo "Creating backup..."
-databricks workspace export-dir /production /tmp/backup --overwrite
-
-# 2. Test migration on staging
-echo "Testing on staging..."
-databricks bundle deploy -t staging
-databricks bundle run -t staging migration-test-job
-
-# 3. Run migration
-echo "Running migration..."
-python scripts/migrate_to_unity_catalog.py
-
-# 4. Validate migration
-echo "Validating..."
-databricks bundle run -t staging validation-job
-
-# 5. Update jobs to use new tables
-echo "Updating jobs..."
-databricks bundle deploy -t prod
-
-echo "Migration complete!"
+set -euo pipefail
+echo "Current DBR: $(databricks clusters get --cluster-id $CLUSTER_ID | jq -r .spark_version)"
+echo "Current SDK: $(pip show databricks-sdk | grep Version)"
+pip install --upgrade databricks-sdk
+echo "Updated SDK: $(pip show databricks-sdk | grep Version)"
 ```
 
 ## Resources

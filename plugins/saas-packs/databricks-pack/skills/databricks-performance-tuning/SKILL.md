@@ -213,174 +213,30 @@ def enable_predictive_optimization(
     """)
 ```
 
-### Step 4: Query Performance Analysis
-
-```sql
--- Find slow queries from query history
-SELECT
-    query_id,
-    query_text,
-    duration / 1000 as seconds,  # 1000: 1 second in ms
-    rows_produced,
-    bytes_read,
-    start_time
-FROM system.query.history
-WHERE duration > 60000  -- > 60 seconds  # 60000: 1 minute in ms
-  AND start_time > current_timestamp() - INTERVAL 24 HOURS
-ORDER BY duration DESC
-LIMIT 20;
-
--- Analyze query plan
-EXPLAIN FORMATTED
-SELECT * FROM main.silver.orders
-WHERE order_date > '2024-01-01'  # 2024 year
-  AND region = 'US';
-
--- Check table scan statistics
-SELECT
-    table_name,
-    SUM(bytes_read) / 1024 / 1024 / 1024 as gb_read,  # 1024: 1 KB
-    SUM(rows_produced) as total_rows,
-    COUNT(*) as query_count
-FROM system.query.history
-WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
-GROUP BY table_name
-ORDER BY gb_read DESC;
-```
-
-### Step 5: Caching Strategy
-
-```python
-# Intelligent caching for repeated queries
-from pyspark.sql import DataFrame
-from functools import lru_cache
-
-class CacheManager:
-    """Manage Spark DataFrame caching."""
-
-    def __init__(self, spark: SparkSession):
-        self.spark = spark
-        self._cache_registry = {}
-
-    def cache_table(
-        self,
-        table_name: str,
-        cache_level: str = "MEMORY_AND_DISK",
-    ) -> DataFrame:
-        """Cache table with specified storage level."""
-        if table_name in self._cache_registry:
-            return self._cache_registry[table_name]
-
-        df = self.spark.table(table_name)
-
-        if cache_level == "MEMORY_ONLY":
-            df.cache()
-        elif cache_level == "MEMORY_AND_DISK":
-            from pyspark import StorageLevel
-            df.persist(StorageLevel.MEMORY_AND_DISK)
-        elif cache_level == "DISK_ONLY":
-            from pyspark import StorageLevel
-            df.persist(StorageLevel.DISK_ONLY)
-
-        # Trigger caching
-        df.count()
-
-        self._cache_registry[table_name] = df
-        return df
-
-    def uncache_all(self):
-        """Clear all cached DataFrames."""
-        for df in self._cache_registry.values():
-            df.unpersist()
-        self._cache_registry.clear()
-        self.spark.catalog.clearCache()
-
-# Delta Cache (automatic)
-# Enable in cluster config:
-# "spark.databricks.io.cache.enabled": "true"
-# "spark.databricks.io.cache.maxDiskUsage": "50g"
-```
-
-### Step 6: Join Optimization
-
-```python
-from pyspark.sql import DataFrame
-from pyspark.sql.functions import broadcast
-
-def optimize_join(
-    df_large: DataFrame,
-    df_small: DataFrame,
-    join_key: str,
-    small_table_threshold_mb: int = 100,
-) -> DataFrame:
-    """
-    Optimize join based on table sizes.
-
-    Uses broadcast join for small tables,
-    sort-merge join for large tables.
-    """
-    # Estimate small table size
-    small_size_mb = df_small.count() * 100 / 1024 / 1024  # 1024: rough estimate
-
-    if small_size_mb < small_table_threshold_mb:
-        # Broadcast join (small table fits in memory)
-        return df_large.join(broadcast(df_small), join_key)
-    else:
-        # Sort-merge join with bucketing hint
-        return df_large.join(df_small, join_key, "inner")
-
-# Bucketed tables for frequent joins
-def create_bucketed_table(
-    spark: SparkSession,
-    df: DataFrame,
-    table_name: str,
-    bucket_columns: list[str],
-    num_buckets: int = 100,
-):
-    """Create bucketed table for join optimization."""
-    (
-        df.write
-        .bucketBy(num_buckets, *bucket_columns)
-        .sortBy(*bucket_columns)
-        .saveAsTable(table_name)
-    )
-```
+For query analysis, caching, join optimization, and benchmarking patterns, see [Advanced Patterns](references/advanced-patterns.md).
 
 ## Output
-- Optimized cluster configuration
-- Tuned Spark settings
-- Optimized Delta tables
-- Improved query performance
+- Optimized cluster configuration with right-sized workers and autoscaling
+- Spark configs tuned per workload type (ETL, ML, streaming, interactive)
+- Delta tables optimized with Z-ordering or Liquid Clustering
+- Query performance analysis queries for identifying slow operations
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | OOM errors | Insufficient memory | Increase executor memory or reduce partition size |
 | Skewed data | Uneven distribution | Use salting or AQE skew handling |
-| Slow joins | Large shuffle | Use broadcast for small tables |
-| Too many files | Small files problem | Run OPTIMIZE regularly |
+| Slow joins | Large shuffle | Use broadcast for small tables (<100MB) |
+| Too many files | Small files problem | Run `OPTIMIZE` regularly or enable autoCompact |
 
 ## Examples
 
-### Performance Benchmark
+### Quick Delta Table Tune-Up
 ```python
-import time
-
-def benchmark_query(spark, query: str, runs: int = 3) -> dict:
-    """Benchmark query execution time."""
-    times = []
-    for _ in range(runs):
-        spark.catalog.clearCache()
-        start = time.time()
-        spark.sql(query).collect()
-        times.append(time.time() - start)
-
-    return {
-        "min": min(times),
-        "max": max(times),
-        "avg": sum(times) / len(times),
-        "runs": runs,
-    }
+# One-command optimization for a table
+spark.sql("OPTIMIZE prod.silver.orders ZORDER BY (order_date, customer_id)")
+spark.sql("ANALYZE TABLE prod.silver.orders COMPUTE STATISTICS")
+spark.sql("VACUUM prod.silver.orders RETAIN 168 HOURS")
 ```
 
 ## Resources
