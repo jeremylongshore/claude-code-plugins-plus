@@ -289,30 +289,43 @@ const ALERTS = {
 ## Next Steps
 Learn SDK upgrade strategies with `linear-upgrade-migration`.
 
-## Instructions
-
-1. Assess the current state of the Go configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Health check returns `unhealthy` | API key invalid or expired | Regenerate key in Linear Settings, update secret manager |
+| Webhook signature fails in prod | Secret mismatch between environments | Verify `LINEAR_WEBHOOK_SECRET` matches Linear webhook settings |
+| Rate limit errors after deploy | Burst of requests on startup | Add request queue with 100ms spacing, cache team/state data |
+| Deployment verification fails | Missing env vars or wrong API endpoint | Run verification script locally first: `npx ts-node scripts/verify-deployment.ts` |
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Go |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+- Production API keys stored in secret manager (not env files)
+- Webhook signature verification enforced
+- Rate limiting with exponential backoff configured
+- Health check endpoint returning Linear connectivity status
+- Deployment verification script passing all checks
+- Rollback procedure documented and tested
 
 ## Examples
 
-**Basic usage**: Apply linear prod checklist to a standard project setup with default configuration options.
+### Quick Pre-Launch Audit
+```bash
+# Run the deployment verification script
+npx ts-node scripts/verify-deployment.ts
 
-**Advanced scenario**: Customize linear prod checklist for production environments with multiple constraints and team-specific requirements.
+# Expected output:
+# ✓ Environment variables set
+# ✓ API authentication works
+# ✓ Can access teams
+# ✓ Webhook endpoint reachable
+# Results: 4 passed, 0 failed
+```
+
+### Validate Webhook Connectivity
+```bash
+# Send a test event to verify webhook endpoint is live
+curl -X POST https://your-app.com/webhooks/linear \
+  -H "Content-Type: application/json" \
+  -H "Linear-Event: Test" \
+  -d '{"action":"test","type":"Test","data":{}}' \
+  -w "\nHTTP Status: %{http_code}\n"
+```

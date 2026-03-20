@@ -260,13 +260,36 @@ async function getWorkingClient(): Promise<LinearClient> {
 Prepare for production with `linear-prod-checklist`.
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- API key validation on startup catching invalid or missing keys
+- OAuth 2.0 authorization flow with CSRF-safe state parameter
+- Token refresh logic with encrypted storage
+- HMAC-SHA256 webhook signature verification middleware
+- Secret rotation support with multi-key fallback
 
 ## Examples
 
-**Basic usage**: Apply linear security basics to a standard project setup with default configuration options.
+### Minimal Secure Setup
+```typescript
+// Quickest path to a secure Linear client
+import { LinearClient } from "@linear/sdk";
 
-**Advanced scenario**: Customize linear security basics for production environments with multiple constraints and team-specific requirements.
+if (!process.env.LINEAR_API_KEY?.startsWith("lin_api_")) {
+  throw new Error("Set LINEAR_API_KEY (starts with lin_api_)");
+}
+
+const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY });
+const me = await client.viewer;
+console.log(`Connected as ${me.name}`);
+```
+
+### Test Webhook Signature Locally
+```typescript
+import crypto from "crypto";
+
+const secret = "test-secret";
+const payload = JSON.stringify({ action: "create", type: "Issue", data: {} });
+const sig = crypto.createHmac("sha256", secret).update(payload).digest("hex");
+console.log(`Signature: ${sig}`);
+// Use this to test your verifyWebhookSignature function
+console.log(`Valid: ${verifyWebhookSignature(payload, sig, secret)}`);
+```

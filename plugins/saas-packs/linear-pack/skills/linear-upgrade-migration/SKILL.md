@@ -97,10 +97,34 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Examples
 
+### Check for Breaking Changes Before Upgrading
+```bash
+# Compare your current version with latest
+npm list @linear/sdk
+npm view @linear/sdk versions --json | jq '.[-5:]'
+# Review changelog for breaking changes between versions
+npm view @linear/sdk repository.url
+```
 
-**Basic usage**: Apply linear upgrade migration to a standard project setup with default configuration options.
+### Compatibility Wrapper for Renamed Methods
+```typescript
+// Bridge pattern for gradual migration
+function getIssueState(issue: any): string {
+  // SDK v2: issue.state was a direct property
+  // SDK v3: issue.state is a lazy-loaded relation
+  if (typeof issue.state === "string") return issue.state;  // v2
+  return issue.state?.name ?? "unknown";  // v3
+}
+```
 
-**Advanced scenario**: Customize linear upgrade migration for production environments with multiple constraints and team-specific requirements.
+### Verify After Upgrade
+```bash
+# Type-check, test, and lint after upgrading
+npx tsc --noEmit && npm test && npm run lint
+# If clean, commit the upgrade
+git add package.json package-lock.json
+git commit -m "chore: upgrade @linear/sdk to vX.Y.Z"
+```
 
 ## Resources
 - [Linear SDK Changelog](https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md)
