@@ -15,46 +15,175 @@ compatible-with: claude-code, codex, openclaw
 # MaintainX Core Workflow A: Work Order Lifecycle
 
 ## Overview
-Master the complete work order lifecycle in MaintainX - from creation through completion. Work orders are the core unit of maintenance operations.
+Master the complete work order lifecycle in MaintainX -- from creation through completion. Work orders are the core unit of maintenance operations.
 
 ## Prerequisites
 - Completed `maintainx-install-auth` setup
-- Understanding of maintenance operations
+- `MAINTAINX_API_KEY` environment variable configured
 - MaintainX account with work order permissions
 
+## Status Transition Flow
+
+```
+OPEN ──→ IN_PROGRESS ──→ COMPLETED ──→ CLOSED
+  │           │               ↑
+  │           ↓               │
+  │        ON_HOLD ───────────┘
+  │
+  └──→ CLOSED (cancelled)
+```
+
 ## Instructions
-Follow these high-level steps to implement maintainx-core-workflow-a:
 
-1. Review the prerequisites and ensure your environment is configured
-2. Follow the detailed implementation guide for step-by-step code examples
-3. Validate your implementation against the output checklist below
+### Step 1: Create a Work Order
 
-For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/skills/maintainx-core-workflow-a/references/implementation-guide.md)`
+```typescript
+import { MaintainXClient } from './maintainx/client';
+
+const client = new MaintainXClient();
+
+// Create a corrective work order
+const { data: wo } = await client.createWorkOrder({
+  title: 'Pump Station #3 - Seal Leak Repair',
+  description: 'Detected water leak at the mechanical seal. Needs immediate attention.',
+  priority: 'HIGH',
+  status: 'OPEN',
+  assignees: [{ type: 'USER', id: 4521 }],
+  assetId: 8901,
+  locationId: 2345,
+  dueDate: '2026-03-21T17:00:00Z',
+  categories: ['CORRECTIVE'],
+});
+
+console.log(`Work order #${wo.id} created`);
+```
+
+### Step 2: Update Status Through Lifecycle
+
+```typescript
+// Technician starts work
+await client.updateWorkOrder(wo.id, {
+  status: 'IN_PROGRESS',
+});
+
+// Put on hold (waiting for parts)
+await client.updateWorkOrder(wo.id, {
+  status: 'ON_HOLD',
+  onHoldReason: 'Waiting for replacement seal kit from supplier',
+});
+
+// Resume and complete
+await client.updateWorkOrder(wo.id, {
+  status: 'IN_PROGRESS',
+});
+
+await client.updateWorkOrder(wo.id, {
+  status: 'COMPLETED',
+  completionNotes: 'Replaced mechanical seal. Tested for 30 min with no leaks.',
+});
+```
+
+### Step 3: Query Work Orders
+
+```typescript
+// Fetch open work orders sorted by priority
+const { data: openOrders } = await client.getWorkOrders({
+  status: 'OPEN',
+  limit: 25,
+});
+
+for (const order of openOrders.workOrders) {
+  console.log(`#${order.id} [${order.priority}] ${order.title}`);
+}
+
+// Paginate through all IN_PROGRESS orders
+async function getAllInProgress() {
+  const allOrders = [];
+  let cursor: string | undefined;
+
+  do {
+    const { data } = await client.getWorkOrders({
+      status: 'IN_PROGRESS',
+      limit: 100,
+      cursor,
+    });
+    allOrders.push(...data.workOrders);
+    cursor = data.cursor;
+  } while (cursor);
+
+  return allOrders;
+}
+```
+
+### Step 4: Add Comments and Attachments
+
+```typescript
+// Add a technician note
+await client.request('POST', `/workorders/${wo.id}/comments`, {
+  body: 'Arrived on site. Isolating pump before disassembly.',
+});
+
+// Add a completion photo (URL-based)
+await client.request('POST', `/workorders/${wo.id}/files`, {
+  url: 'https://storage.example.com/photos/seal-repair-complete.jpg',
+  name: 'seal-repair-complete.jpg',
+});
+```
+
+### Step 5: Assign to Teams
+
+```typescript
+// Assign to a team instead of individual
+const { data: teams } = await client.request('GET', '/teams');
+const mechTeam = teams.teams.find((t: any) => t.name === 'Mechanical');
+
+await client.updateWorkOrder(wo.id, {
+  assignees: [{ type: 'TEAM', id: mechTeam.id }],
+});
+```
 
 ## Output
-- Created work orders with full metadata
-- Proper status transitions
-- Completion documentation
-- Query results for work orders
+- Work orders created with full metadata (title, description, priority, assignees, asset, location)
+- Status transitions executed through the complete lifecycle
+- Paginated query results for filtering work orders
+- Comments and files attached to work orders
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| 400 Bad Request | Missing title | Ensure title field is provided |
-| 404 Not Found | Invalid asset/location ID | Verify IDs exist in system |
-| 403 Forbidden | Insufficient permissions | Check user role and plan tier |
-| Invalid transition | Wrong status flow | Follow valid transition paths |
+| 400 Bad Request | Missing `title` field | Include at least `title` in POST body |
+| 404 Not Found | Invalid asset/location/user ID | Verify referenced IDs exist via GET endpoints |
+| 403 Forbidden | Insufficient permissions | Check user role has work order write access |
+| 422 Invalid transition | Invalid status change (e.g., CLOSED to OPEN) | Follow the status transition flow above |
 
 ## Resources
-- [MaintainX Work Orders Guide](https://help.getmaintainx.com/about-work-orders)
+- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 - [Complete a Work Order](https://help.getmaintainx.com/complete-a-work-order)
-- [Work Order Settings](https://help.getmaintainx.com/work-order-settings)
 
 ## Next Steps
 For asset and location management, see `maintainx-core-workflow-b`.
 
 ## Examples
 
-**Basic usage**: Apply maintainx core workflow a to a standard project setup with default configuration options.
+**Bulk-create preventive maintenance work orders**:
 
-**Advanced scenario**: Customize maintainx core workflow a for production environments with multiple constraints and team-specific requirements.
+```typescript
+const pmSchedule = [
+  { title: 'Weekly HVAC Filter Check', priority: 'LOW', categories: ['PREVENTIVE'] },
+  { title: 'Monthly Fire Extinguisher Inspection', priority: 'MEDIUM', categories: ['PREVENTIVE'] },
+  { title: 'Quarterly Elevator Safety Audit', priority: 'HIGH', categories: ['PREVENTIVE'] },
+];
+
+for (const pm of pmSchedule) {
+  const { data } = await client.createWorkOrder(pm);
+  console.log(`PM created: #${data.id} - ${data.title}`);
+}
+```
+
+**Filter work orders by date range**:
+
+```bash
+curl -s "https://api.getmaintainx.com/v1/workorders?createdAtGte=2026-03-01T00:00:00Z&createdAtLte=2026-03-31T23:59:59Z&limit=50" \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY" | jq '.workOrders | length'
+```

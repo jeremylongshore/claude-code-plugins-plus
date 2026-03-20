@@ -15,45 +15,131 @@ compatible-with: claude-code, codex, openclaw
 # MaintainX Hello World
 
 ## Overview
-Create your first work order using the MaintainX REST API - the core building block of CMMS operations.
+Create your first work order using the MaintainX REST API -- the core building block of CMMS operations.
 
 ## Prerequisites
 - Completed `maintainx-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Valid `MAINTAINX_API_KEY` environment variable
+- Node.js 18+ or curl
 
 ## Instructions
-Follow these high-level steps to implement maintainx-hello-world:
 
-1. Review the prerequisites and ensure your environment is configured
-2. Follow the detailed implementation guide for step-by-step code examples
-3. Validate your implementation against the output checklist below
+### Step 1: Create a Work Order (curl)
 
-For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/skills/maintainx-hello-world/references/implementation-guide.md)`
+```bash
+curl -X POST https://api.getmaintainx.com/v1/workorders \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Hello World - Test Work Order",
+    "description": "First API-created work order. Safe to delete.",
+    "priority": "LOW",
+    "status": "OPEN"
+  }' | jq .
+```
+
+Expected response:
+```json
+{
+  "id": 12345,
+  "title": "Hello World - Test Work Order",
+  "status": "OPEN",
+  "priority": "LOW",
+  "createdAt": "2026-03-19T12:00:00Z"
+}
+```
+
+### Step 2: Create a Work Order (TypeScript)
+
+```typescript
+// hello-maintainx.ts
+import { MaintainXClient } from './maintainx/client';
+
+async function helloMaintainX() {
+  const client = new MaintainXClient();
+
+  // Create a basic work order
+  const { data: workOrder } = await client.createWorkOrder({
+    title: 'HVAC Filter Replacement - Building A',
+    description: 'Replace air filters in units 1-4 on the 3rd floor.',
+    priority: 'MEDIUM',
+  });
+  console.log('Created work order:', workOrder.id);
+
+  // Retrieve it back to confirm
+  const { data: fetched } = await client.getWorkOrder(workOrder.id);
+  console.log('Work order status:', fetched.status);
+  console.log('Created at:', fetched.createdAt);
+
+  // List open work orders
+  const { data: list } = await client.getWorkOrders({
+    status: 'OPEN',
+    limit: 5,
+  });
+  console.log(`Found ${list.workOrders.length} open work orders`);
+}
+
+helloMaintainX();
+```
+
+### Step 3: Verify and Clean Up
+
+```bash
+# List recent work orders to confirm creation
+curl -s "https://api.getmaintainx.com/v1/workorders?limit=3" \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY" | jq '.workOrders[] | {id, title, status}'
+
+# Delete the test work order (replace ID)
+curl -X DELETE "https://api.getmaintainx.com/v1/workorders/12345" \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY"
+```
 
 ## Output
-- Working code file with MaintainX client usage
-- Successfully created work order in your MaintainX account
-- Console output showing:
+- Working code file that creates a MaintainX work order via REST API
+- Console output showing the created work order ID, status, and timestamp
+- Verified retrieval of the created work order
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| 400 Bad Request | Missing required fields | Include at least `title` field |
+| 400 Bad Request | Missing required `title` field | Include at least `title` in the POST body |
 | 401 Unauthorized | Invalid API key | Check `MAINTAINX_API_KEY` environment variable |
 | 403 Forbidden | Plan limitations | Verify API access on your subscription |
-| 422 Unprocessable | Invalid field values | Check enum values (priority, status) |
+| 422 Unprocessable | Invalid enum value | Use valid `priority` (`NONE`, `LOW`, `MEDIUM`, `HIGH`) |
 
 ## Resources
-- [MaintainX Work Orders Guide](https://help.getmaintainx.com/about-work-orders)
-- [MaintainX API Reference](https://maintainx.dev/)
-- [Work Order Settings](https://help.getmaintainx.com/work-order-settings)
+- [MaintainX API Reference](https://developer.maintainx.com/reference)
+- [Work Orders Help](https://help.getmaintainx.com/about-work-orders)
 
 ## Next Steps
 Proceed to `maintainx-local-dev-loop` for development workflow setup.
 
 ## Examples
 
-**Basic usage**: Apply maintainx hello world to a standard project setup with default configuration options.
+**Create a work order tied to an asset**:
 
-**Advanced scenario**: Customize maintainx hello world for production environments with multiple constraints and team-specific requirements.
+```typescript
+const wo = await client.createWorkOrder({
+  title: 'Conveyor Belt #7 - Bearing Replacement',
+  description: 'Replace worn bearings on the main drive shaft.',
+  priority: 'HIGH',
+  assetId: 98765,       // Link to equipment asset
+  locationId: 54321,    // Link to facility location
+  assignees: [{ type: 'USER', id: 111 }],
+  dueDate: '2026-03-25T17:00:00Z',
+});
+```
+
+**Create a work order from a preventive maintenance template**:
+
+```bash
+curl -X POST https://api.getmaintainx.com/v1/workorders \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Monthly Fire Extinguisher Inspection",
+    "priority": "MEDIUM",
+    "categories": ["PREVENTIVE"],
+    "procedureId": 7890
+  }'
+```

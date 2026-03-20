@@ -257,6 +257,19 @@ After successful auth, proceed to `maintainx-hello-world` for your first API cal
 
 ## Examples
 
-**Basic usage**: Apply maintainx install auth to a standard project setup with default configuration options.
+**Quick test with curl**:
 
-**Advanced scenario**: Customize maintainx install auth for production environments with multiple constraints and team-specific requirements.
+```bash
+curl -s https://api.getmaintainx.com/v1/users?limit=1 \
+  -H "Authorization: Bearer $MAINTAINX_API_KEY" | jq .
+```
+
+**Multi-org setup** (for contractors managing multiple facilities):
+
+```typescript
+const clients = {
+  plantA: new MaintainXClient(process.env.MAINTAINX_KEY_PLANT_A, 'org-plant-a'),
+  plantB: new MaintainXClient(process.env.MAINTAINX_KEY_PLANT_B, 'org-plant-b'),
+};
+const orders = await clients.plantA.getWorkOrders({ status: 'OPEN' });
+```
