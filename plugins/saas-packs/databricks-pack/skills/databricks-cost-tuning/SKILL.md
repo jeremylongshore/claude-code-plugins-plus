@@ -102,18 +102,53 @@ databricks clusters list --output JSON | \
 
 ## Examples
 
-**Basic usage**: Apply databricks cost tuning to a standard project setup with default configuration options.
+### Monthly Cost Report by Team
+```sql
+SELECT cluster_tags.Team AS team,
+       sku_name,
+       ROUND(SUM(usage_quantity), 1) AS total_dbus,
+       ROUND(SUM(usage_quantity * list_price), 2) AS cost_usd
+FROM system.billing.usage
+WHERE usage_date >= date_trunc('month', current_date())
+GROUP BY cluster_tags.Team, sku_name
+ORDER BY cost_usd DESC;
+```
 
-**Advanced scenario**: Customize databricks cost tuning for production environments with multiple constraints and team-specific requirements.
+### Migrate Interactive Workloads to Serverless
+```python
+# Compare serverless vs classic SQL warehouse costs
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient()
+for wh in w.warehouses.list():
+    print(f"{wh.name}: type={wh.warehouse_type}, size={wh.cluster_size}, "
+          f"auto_stop={wh.auto_stop_mins}min, running={wh.state}")
+    # Serverless warehouses (~$0.07/DBU) cost 3-5x less than classic (~$0.22/DBU)
+    # for bursty workloads due to instant start and per-second billing
+```
+
+### Find Idle Clusters Wasting Money
+```python
+from datetime import datetime, timedelta
+w = WorkspaceClient()
+
+for c in w.clusters.list():
+    if c.state.value == "RUNNING":
+        idle_mins = (datetime.now() - c.last_activity_time).total_seconds() / 60
+        if idle_mins > 60:
+            print(f"IDLE {idle_mins:.0f}min: {c.cluster_name} ({c.cluster_id}) "
+                  f"— {c.num_workers} x {c.node_type_id}")
+```
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Cost breakdown query identifying top-spending clusters and jobs
+- Cluster policies enforcing auto-termination and instance type limits
+- Spot instance configuration for batch job savings (60-90% reduction)
+- SQL warehouse utilization report for right-sizing decisions
+- Auto-stop scripts for forgotten development clusters
 
 ## Resources
-
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Cluster Policies](https://docs.databricks.com/administration-guide/clusters/policies.html)
+- [Spot Instances on Databricks](https://docs.databricks.com/clusters/configure.html#spot-instances)
+- [Billing Usage Tables](https://docs.databricks.com/administration-guide/system-tables/billing.html)
+- [Serverless SQL Warehouses](https://docs.databricks.com/sql/admin/serverless.html)

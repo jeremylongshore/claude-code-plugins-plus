@@ -202,7 +202,8 @@ for layer in ["bronze", "silver", "gold"]:
 - [Medallion Architecture](https://www.databricks.com/glossary/medallion-architecture)
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Unity Catalog hierarchy with catalogs per environment and schemas per medallion layer
+- Asset Bundle (`databricks.yml`) defining jobs, clusters, and multi-target deployment
+- Medallion pipeline code (bronze ingestion, silver transformation, gold aggregation)
+- RBAC grants separating engineer write access from analyst read-only access
+- Project directory structure ready for CI/CD and team collaboration

@@ -149,21 +149,58 @@ databricks runs get-output --run-id $RUN_ID
 
 ## Examples
 
+### Parameterize Bundles per Environment
+```yaml
+# databricks.yml — use variables for environment-specific values
+variables:
+  warehouse_size:
+    default: "2X-Small"
+  alert_email:
+    default: "dev@company.com"
 
-**Basic usage**: Apply databricks deploy integration to a standard project setup with default configuration options.
+environments:
+  production:
+    variables:
+      warehouse_size: "Medium"
+      alert_email: "oncall@company.com"
+```
 
-**Advanced scenario**: Customize databricks deploy integration for production environments with multiple constraints and team-specific requirements.
+### Promote a Bundle from Staging to Production
+```bash
+# Validate staging is clean
+databricks bundle validate -e staging
+
+# Deploy to staging, run smoke test
+databricks bundle deploy -e staging
+databricks bundle run daily_etl -e staging
+
+# After staging passes, deploy to production
+databricks bundle deploy -e production
+
+# Verify production deployment
+databricks bundle validate -e production
+databricks jobs list --output json | jq '.[] | select(.settings.name | contains("daily-etl-production"))'
+```
+
+### Destroy and Redeploy (Dev Only)
+```bash
+# Tear down dev resources for clean slate
+databricks bundle destroy -e development --auto-approve
+
+# Redeploy from scratch
+databricks bundle deploy -e development
+```
+
+## Output
+- `databricks.yml` Asset Bundle with multi-environment targets
+- CI/CD pipeline deploying staging on merge, production on release
+- Job resources created/updated in target workspace
+- Verification commands confirming successful deployment
 
 ## Resources
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles)
-- [Databricks CLI](https://docs.databricks.com/dev-tools/cli)
+- [Bundle Configuration Reference](https://docs.databricks.com/dev-tools/bundles/settings.html)
 - [CI/CD with Bundles](https://docs.databricks.com/dev-tools/bundles/ci-cd.html)
 
 ## Next Steps
 For multi-environment setup, see `databricks-multi-env-setup`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

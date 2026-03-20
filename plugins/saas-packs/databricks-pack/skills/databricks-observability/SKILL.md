@@ -99,18 +99,43 @@ for cluster in w.clusters.list():
 
 ## Examples
 
-**Basic usage**: Apply databricks observability to a standard project setup with default configuration options.
+### Daily Health Dashboard Query
+```sql
+-- Single-pane health summary for daily standups
+SELECT
+    COUNT(CASE WHEN result_state = 'SUCCESS' THEN 1 END) AS succeeded,
+    COUNT(CASE WHEN result_state = 'FAILED' THEN 1 END) AS failed,
+    COUNT(CASE WHEN result_state = 'TIMED_OUT' THEN 1 END) AS timed_out,
+    ROUND(100.0 * COUNT(CASE WHEN result_state = 'SUCCESS' THEN 1 END) / COUNT(*), 1) AS success_rate_pct,
+    ROUND(AVG(TIMESTAMPDIFF(MINUTE, start_time, end_time)), 1) AS avg_duration_min
+FROM system.lakeflow.job_run_timeline
+WHERE start_time > current_timestamp() - INTERVAL 24 HOURS;
+```
 
-**Advanced scenario**: Customize databricks observability for production environments with multiple constraints and team-specific requirements.
+### Cost-per-Job Breakdown
+```sql
+SELECT j.name AS job_name,
+       COUNT(*) AS run_count,
+       ROUND(SUM(b.usage_quantity), 1) AS total_dbus,
+       ROUND(SUM(b.usage_quantity * b.list_price), 2) AS total_cost_usd
+FROM system.lakeflow.job_run_timeline r
+JOIN system.lakeflow.jobs j ON r.job_id = j.job_id
+LEFT JOIN system.billing.usage b ON r.cluster_id = b.cluster_id
+WHERE r.start_time > current_timestamp() - INTERVAL 7 DAYS
+GROUP BY j.name
+ORDER BY total_cost_usd DESC
+LIMIT 15;
+```
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Job health dashboard showing success/failure rates over time
+- Top cost drivers ranked by DBU consumption
+- Slow query report identifying warehouses needing right-sizing
+- SQL alerts for automated failure notifications
+- External metric export pipeline for Prometheus/Grafana integration
 
 ## Resources
-
-- Official CI/CD documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [System Tables Reference](https://docs.databricks.com/administration-guide/system-tables/index.html)
+- [Billing Usage Tables](https://docs.databricks.com/administration-guide/system-tables/billing.html)
+- [Query History Tables](https://docs.databricks.com/administration-guide/system-tables/query-history.html)
+- [SQL Alerts](https://docs.databricks.com/sql/admin/alerts.html)

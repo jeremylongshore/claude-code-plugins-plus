@@ -91,18 +91,45 @@ ORDER BY event_time DESC;
 
 ## Examples
 
-**Basic usage**: Apply databricks enterprise rbac to a standard project setup with default configuration options.
+### Verify Current Permissions
+```sql
+-- Check what a specific group can access
+SHOW GRANTS ON CATALOG analytics;
+SHOW GRANTS `data-analysts` ON SCHEMA analytics.gold;
 
-**Advanced scenario**: Customize databricks enterprise rbac for production environments with multiple constraints and team-specific requirements.
+-- List all groups and their entitlements
+SELECT * FROM system.access.audit
+WHERE action_name = 'grantPermission'
+  AND event_date > current_date() - INTERVAL 7 DAYS;
+```
+
+### Row-Level Security
+```sql
+-- Restrict analysts to their own department's data
+CREATE OR REPLACE FUNCTION analytics.gold.dept_filter(dept STRING)
+  RETURN IF(IS_ACCOUNT_GROUP_MEMBER('data-admins'), true, dept = current_user_department());
+
+ALTER TABLE analytics.gold.sales SET ROW FILTER analytics.gold.dept_filter ON (department);
+```
+
+### Column Masking for PII
+```sql
+-- Mask email for non-privileged groups
+CREATE OR REPLACE FUNCTION analytics.gold.mask_email(email STRING)
+  RETURN IF(IS_ACCOUNT_GROUP_MEMBER('data-engineers'), email, REGEXP_REPLACE(email, '(.).*@', '$1***@'));
+
+ALTER TABLE analytics.gold.customers ALTER COLUMN email SET MASK analytics.gold.mask_email;
+```
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Account-level groups provisioned via SCIM matching IdP teams
+- Unity Catalog grants enforcing least-privilege across medallion layers
+- Cluster policies restricting compute by role
+- SQL warehouse permissions assigned per group
+- Audit trail query for ongoing compliance monitoring
 
 ## Resources
-
-- Official logging documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Unity Catalog Privileges](https://docs.databricks.com/data-governance/unity-catalog/manage-privileges/index.html)
+- [SCIM Provisioning](https://docs.databricks.com/administration-guide/users-groups/scim/index.html)
+- [Cluster Policies](https://docs.databricks.com/administration-guide/clusters/policies.html)
+- [Row-Level Security](https://docs.databricks.com/data-governance/unity-catalog/row-and-column-filters.html)
