@@ -1,17 +1,17 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-20T19:42:32.386Z",
+    "generated": "2026-03-21T17:48:33.283Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 350,
-    "totalSkills": 1436,
+    "totalPlugins": 351,
+    "totalSkills": 1438,
     "totalCommands": 73,
-    "pluginsWithSkills": 323,
+    "pluginsWithSkills": 324,
     "byCategory": {
-      "productivity": 31,
+      "productivity": 32,
       "security": 28,
       "testing": 25,
       "ai-ml": 53,
@@ -39,12 +39,12 @@
       "saas-packs": 1
     },
     "byStatus": {
-      "active": 331,
+      "active": 332,
       "maintained": 19
     },
-    "featured": 6,
-    "new": 329,
-    "generatedAt": "2026-03-20T19:42:32.386Z"
+    "featured": 7,
+    "new": 330,
+    "generatedAt": "2026-03-21T17:48:33.283Z"
   },
   "plugins": [
     {
@@ -11957,6 +11957,40 @@
       "sourcePath": "./plugins/mcp/pr-to-spec",
       "lastUpdatedEpoch": 1773981970,
       "lastUpdatedDate": "2026-03-20T04:46:10.859Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": true,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "slack-channel",
+      "name": "slack-channel",
+      "displayName": "slack channel",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "slack",
+        "channel",
+        "mcp",
+        "socket-mode",
+        "chatops",
+        "claude-code"
+      ],
+      "hasSkills": true,
+      "skillCount": 2,
+      "commandCount": 0,
+      "installCommand": "/plugin install slack-channel",
+      "sourcePath": "./plugins/mcp/slack-channel",
+      "lastUpdatedEpoch": 1774058598,
+      "lastUpdatedDate": "2026-03-21T02:03:18.659Z",
       "status": "active",
       "badges": [
         "new"

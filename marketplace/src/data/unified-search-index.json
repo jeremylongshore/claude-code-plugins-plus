@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-20T19:42:32.626Z",
+    "generated": "2026-03-21T17:48:33.477Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 350,
-    "totalSkills": 1423,
-    "totalItems": 1773,
+    "totalPlugins": 351,
+    "totalSkills": 1425,
+    "totalItems": 1776,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -31,6 +31,7 @@
       "fullstack",
       "jeremy-google-adk",
       "jeremy-vertex-ai",
+      "mcp",
       "packages",
       "performance",
       "productivity",
@@ -40,6 +41,7 @@
       "testing"
     ],
     "skillTools": [
+      "\"Bash(cmd:chmod)\"]",
       "\"Read",
       "AskUserQuestion",
       "AskUserQuestion\"",
@@ -231,6 +233,7 @@
       "Bash(webpack:*)",
       "Bash(yarn:*)",
       "Edit",
+      "Edit]",
       "Glob",
       "Glob\"",
       "Grep",
@@ -239,7 +242,8 @@
       "Task",
       "WebFetch",
       "WebSearch",
-      "Write"
+      "Write",
+      "[Read"
     ],
     "allKeywords": [
       "CLAUDE.md",
@@ -415,9 +419,11 @@
       "cdn",
       "chains",
       "changelog",
+      "channel",
       "chaos-engineering",
       "charts",
       "chasm",
+      "chatops",
       "chris-voss",
       "christensen",
       "chromatic",
@@ -1240,6 +1246,7 @@
       "social",
       "social-currency",
       "social-proof",
+      "socket-mode",
       "socket.io",
       "software-engineer",
       "sop",
@@ -1460,7 +1467,7 @@
     "totalHooks": 13,
     "pluginsWithAgents": 38,
     "pluginsWithHooks": 10,
-    "officialPlugins": 306,
+    "officialPlugins": 307,
     "communityPlugins": 44,
     "communityContributors": 17
   },
@@ -12915,6 +12922,36 @@
       "searchText": "pr to spec the flight envelope for agentic coding — convert prs and local diffs into structured, agent-consumable specs with intent drift detection code-quality mcp pr-analysis intent-drift code-review agent-protocol"
     },
     {
+      "type": "plugin",
+      "id": "slack-channel",
+      "slug": "slack-channel",
+      "name": "slack-channel",
+      "displayName": "slack channel",
+      "description": "Two-way Slack channel for Claude Code — chat from Slack DMs and channels via Socket Mode",
+      "category": "productivity",
+      "keywords": [
+        "slack",
+        "channel",
+        "mcp",
+        "socket-mode",
+        "chatops",
+        "claude-code"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "authorType": "official",
+      "version": "0.1.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 2,
+      "searchText": "slack channel two-way slack channel for claude code — chat from slack dms and channels via socket mode productivity slack channel mcp socket-mode chatops claude-code"
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -14472,6 +14509,26 @@
         "category": "productivity"
       },
       "searchText": "000-jeremy-content-consistency-validator validate messaging consistency across website, github repos, and local documentation generating read-only discrepancy reports. use when checking content alignment or finding mixed messaging. trigger with phrases like \"check consistency\", \"validate documentation\", or \"audit messaging\". productivity read webfetch websearch grep bash(diff:*) bash(grep:*) claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "access",
+      "slug": "access",
+      "name": "access",
+      "description": "Manage Slack channel access control — pairing, allowlist, channel opt-in",
+      "category": "mcp",
+      "allowedTools": [
+        "[Read",
+        "Write",
+        "Edit]"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "slack-channel",
+        "category": "mcp"
+      },
+      "searchText": "access manage slack channel access control — pairing, allowlist, channel opt-in mcp [read write edit] "
     },
     {
       "type": "skill",
@@ -18699,6 +18756,26 @@
         "category": "productivity"
       },
       "searchText": "competitor-analyst competitive analysis and market positioning partner for product managers. use when the user needs to analyze competitors, map market positioning, identify feature gaps, or prepare for competitive conversations. triggers include \"competitor\", \"competitive analysis\", \"market map\", \"feature comparison\", \"how does x compare\", \"positioning\", or when evaluating the competitive landscape. productivity read glob grep "
+    },
+    {
+      "type": "skill",
+      "id": "configure",
+      "slug": "configure",
+      "name": "configure",
+      "description": "Configure Slack channel tokens (bot token + app-level token)",
+      "category": "mcp",
+      "allowedTools": [
+        "[Read",
+        "Write",
+        "\"Bash(cmd:chmod)\"]"
+      ],
+      "compatibleWith": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "slack-channel",
+        "category": "mcp"
+      },
+      "searchText": "configure configure slack channel tokens (bot token + app-level token) mcp [read write \"bash(cmd:chmod)\"] "
     },
     {
       "type": "skill",
