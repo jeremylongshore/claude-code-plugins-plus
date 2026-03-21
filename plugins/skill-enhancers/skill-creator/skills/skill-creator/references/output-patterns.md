@@ -1,137 +1,193 @@
-# Output Patterns
+# Skill Output Patterns
 
-Reference guide for structuring skill output. Choose based on how strictly the output format matters.
+Reference for structuring skill output. Source: Anthropic best practices.
 
 ---
 
-## Strict Template
+## Template Pattern
 
-Exact output format — every field, every line defined. Zero creative freedom.
+Generate output from predefined templates with variable substitution.
 
-**When to use:** API responses, config files, compliance documents, machine-parseable output.
+### Strict Template (Low Degrees of Freedom)
 
-**Implementation:** Provide the exact template in SKILL.md with all fields labeled.
+Use when output format must be exact (API payloads, config files, compliance docs).
 
 ```markdown
-## Output
+## Instructions
 
-Generate output in EXACTLY this format:
+Generate output using this exact template:
 
-\```
-REPORT: {title}
-Date: {YYYY-MM-DD}
-Status: {PASS|FAIL|WARN}
-Findings: {count}
+```json
+{
+  "name": "{project_name}",
+  "version": "{version}",
+  "scripts": {
+    "build": "{build_command}",
+    "test": "{test_command}"
+  }
+}
+```
 
-{findings table}
-\```
+Replace placeholders with gathered values. Do not add extra fields.
+```
+
+### Flexible Template (Medium Degrees of Freedom)
+
+Use when structure is defined but content is creative.
+
+```markdown
+## Instructions
+
+Generate a report following this structure:
+
+# {Title}
+
+## Summary
+{2-3 sentence executive summary}
+
+## Findings
+{Detailed findings - use tables, lists, or prose as appropriate}
+
+## Recommendations
+{Prioritized list of action items}
+
+Adapt section depth to the complexity of findings.
 ```
 
 ---
 
-## Flexible Template
+## Examples Pattern
 
-Defined structure with creative content. Sections are fixed, content within is free-form.
+Provide input/output pairs that demonstrate expected behavior.
 
-**When to use:** Documentation, READMEs, blog posts, analysis reports.
-
-**Implementation:** Specify required sections and constraints, let Claude fill content.
-
-```markdown
-## Output
-
-Include these sections in order:
-1. **Summary** (2-3 sentences)
-2. **Key Findings** (bulleted list)
-3. **Recommendations** (numbered, prioritized)
-4. **Next Steps** (actionable items)
-```
-
----
-
-## Examples-Driven
-
-Define behavior through input/output pairs. Claude infers the pattern.
-
-**When to use:** Transformations, formatting, code generation where showing is clearer than telling.
-
-**Implementation:** Provide 3+ diverse examples covering normal and edge cases.
+### Inline Examples
 
 ```markdown
 ## Examples
 
-**Input:** `getUserById(123)`
-**Output:** `SELECT * FROM users WHERE id = $1` with params `[123]`
-
-**Input:** `findUsersByName("Alice")`
-**Output:** `SELECT * FROM users WHERE name ILIKE $1` with params `['%Alice%']`
+### Simple case
+**Input**: `/skill-name auth.py`
+**Output**:
 ```
+auth.py: 3 issues found
+  Line 15: SQL injection risk in query builder
+  Line 42: Hardcoded credential detected
+  Line 89: Missing input validation
+```
+
+### Complex case
+**Input**: `/skill-name --deep src/`
+**Output**:
+```
+Deep scan: 12 files, 7 issues
+  CRITICAL (2): sql-injection, hardcoded-secret
+  WARNING (3): missing-validation, weak-hash, cors-wildcard
+  INFO (2): deprecated-api, unused-import
+```
+```
+
+### When to Use
+
+- Always include at least 1 example
+- Show both simple and complex cases
+- Show edge cases (empty input, errors)
+- Examples teach Claude the expected output format better than rules
 
 ---
 
-## Visual (HTML Generation)
+## Visual Output Pattern
 
-Generate self-contained HTML pages for rich visual output.
-
-**When to use:** Dashboards, comparison tables, diagrams, interactive reports.
-
-**Implementation:** Specify the visual layout, styling approach, and data structure.
+Generate HTML artifacts for rich visual output.
 
 ```markdown
-## Output
+## Instructions
 
-Generate a self-contained HTML file with:
+### Step 1: Gather Data
+Collect the metrics and data points needed.
+
+### Step 2: Generate HTML Report
+Create a self-contained HTML file with:
 - Inline CSS (no external dependencies)
-- Data table with sortable columns
-- Color-coded severity indicators
-- Print-friendly layout
+- Responsive layout
+- Data tables with sorting
+- Charts if applicable (use inline SVG)
+
+### Step 3: Write Output
+Save to `{output_path}/report.html`
+
+Example HTML structure:
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: system-ui; max-width: 900px; margin: 0 auto; padding: 2rem; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+    .critical { color: #dc3545; }
+    .warning { color: #ffc107; }
+    .pass { color: #28a745; }
+  </style>
+</head>
+<body>
+  <h1>{Report Title}</h1>
+  <!-- Content here -->
+</body>
+</html>
 ```
+```
+
+### When to Use
+
+- Dashboards and reports
+- Documentation previews
+- Visual diffs or comparisons
+- Any output that benefits from formatting beyond plain text
 
 ---
 
-## Structured Data
+## Structured Data Pattern
 
-Output as JSON, YAML, or other machine-readable format.
-
-**When to use:** API integrations, config generation, data export, pipeline inputs.
-
-**Implementation:** Provide the exact schema with field types and constraints.
+Output structured data (JSON, YAML, CSV) for programmatic consumption.
 
 ```markdown
-## Output
+## Output Format
 
-Generate JSON matching this schema:
+Results are written as JSON to `{output_path}/results.json`:
 
-\```json
+```json
 {
-  "version": "1.0",
-  "results": [
+  "scan_date": "2025-01-15",
+  "files_scanned": 42,
+  "issues": [
     {
-      "file": "string",
-      "line": "number",
-      "severity": "error|warning|info",
-      "message": "string"
+      "file": "auth.py",
+      "line": 15,
+      "severity": "critical",
+      "rule": "sql-injection",
+      "message": "Unsanitized input in SQL query"
     }
   ],
   "summary": {
-    "total": "number",
-    "errors": "number",
-    "warnings": "number"
+    "critical": 2,
+    "warning": 5,
+    "info": 3
   }
 }
-\```
+```
+
+Additionally, a human-readable summary is printed to the conversation.
 ```
 
 ---
 
-## Choosing a Pattern
+## Choosing Output Patterns
 
-| Need | Pattern | Degrees of Freedom |
-|------|---------|-------------------|
-| Machine-parseable | Strict Template | None |
-| Consistent structure | Flexible Template | Medium |
-| Pattern inference | Examples-Driven | Medium |
-| Rich presentation | Visual (HTML) | High |
-| Pipeline integration | Structured Data | None |
-
-**Tip:** Combine patterns when needed. A skill might use Structured Data for the primary output and Visual for a human-readable report.
+| If the output is... | Use |
+|---------------------|-----|
+| Exact format required | Strict Template |
+| Structured but flexible | Flexible Template |
+| Best shown by example | Examples Pattern |
+| Rich/visual | Visual Output (HTML) |
+| Machine-readable | Structured Data (JSON/YAML) |
+| Multiple audiences | Combine: JSON file + conversation summary |

@@ -1,128 +1,323 @@
-# Frontmatter Specification
+# Frontmatter Field Specification
 
-Complete reference for SKILL.md YAML frontmatter fields.
-
----
-
-## Required Fields
-
-### `name`
-- **Type:** string
-- **Format:** kebab-case (`a-z`, `0-9`, hyphens)
-- **Max length:** 64 characters
-- **Convention:** Must match directory name. Gerund form preferred (`processing-pdfs` not `pdf-processor`).
-- **Validation:** Error if missing, warning if not kebab-case or mismatches folder name.
-
-### `description`
-- **Type:** string (multiline with `|`)
-- **Min length:** 20 characters
-- **Max length:** 1024 characters
-- **Requirements:**
-  - Third person voice (no "I can" or "You should")
-  - Must include "Use when ..." phrase (+3 marketplace pts)
-  - Must include "Trigger with ..." phrase (+3 marketplace pts)
-  - Action verb near start (analyze, create, deploy, etc.)
-  - No reserved words in isolation (anthropic, claude)
-- **Best practice:** Front-load distinctive keywords. Add "Make sure to use whenever..." for aggressive activation.
+Complete reference for SKILL.md frontmatter fields aligned with:
+- AgentSkills.io open standard (required/optional fields)
+- Claude Code platform extensions (runtime features)
 
 ---
 
-## Identity Fields (Top-Level)
+## Required Fields (AgentSkills.io Minimum)
 
-These MUST be top-level fields. Do NOT nest under `metadata:`.
+### name
 
-### `version`
-- **Type:** string
-- **Format:** Semver (`X.Y.Z`)
-- **Example:** `1.0.0`
-- **Validation:** Error if not semver format.
+- **Type**: string
+- **Required**: Yes
+- **Format**: kebab-case (lowercase letters, numbers, hyphens)
+- **Length**: 1-64 characters
+- **Rules**:
+  - Must start with a letter
+  - Must end with letter or number
+  - No consecutive hyphens (`my--skill`)
+  - No start/end hyphens (`-my-skill`, `my-skill-`)
+  - Must match containing directory name
+  - No reserved words in isolation (`anthropic`, `claude`)
+  - Gerund naming preferred (`processing-pdfs`, `analyzing-data`)
 
-### `author`
-- **Type:** string
-- **Format:** `Name <email>`
-- **Example:** `Jeremy Longshore <jeremy@intentsolutions.io>`
-- **Validation:** Warning if no email included.
+```yaml
+name: email-composer      # Good
+name: processing-pdfs     # Good - gerund style
+name: code-review-v2      # Good
+name: EmailComposer       # Bad - not kebab-case
+name: -my-skill           # Bad - starts with hyphen
+name: my--skill           # Bad - consecutive hyphens
+```
 
-### `license`
-- **Type:** string
-- **Format:** SPDX identifier
-- **Default:** `MIT`
+### description
 
-### `allowed-tools`
-- **Type:** string (CSV format, NOT YAML array)
-- **Valid tools:** Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, TodoWrite, NotebookEdit, AskUserQuestion, Skill
-- **Bash scoping:** Must be scoped — `Bash(git:*)`, `Bash(npm:*)`, `Bash(python3:*)`. Unscoped `Bash` is an error.
-- **MCP tools:** `ServerName:tool_name`
-- **Example:** `"Read,Write,Edit,Glob,Grep,Bash(git:*),Bash(npm:*)"`
-- **Validation:** Error if unscoped Bash, error if unknown tool name.
+- **Type**: string (multi-line with `|` supported)
+- **Required**: Yes
+- **Length**: 1-1024 characters
+- **Rules**:
+  - MUST be third person ("Generates...", "Analyzes...")
+  - MUST include what it does AND when to use it
+  - MUST include specific keywords for discovery
+  - MUST NOT use first person (I can, I will, I'm, I help)
+  - MUST NOT use second person (You can, You should, You will)
+  - SHOULD include action verbs (analyze, create, generate, build, debug, optimize, validate)
+  - SHOULD reference slash command if user-invocable
 
----
+```yaml
+# Good - clear what + when + keywords
+description: |
+  Generate PDF reports from markdown with professional styling and TOC.
+  Use when converting documentation to distributable format.
 
-## Optional Fields (Anthropic Spec)
+# Good - specific keywords, natural when-to-use
+description: |
+  Analyze Python code for security vulnerabilities, dependency risks, and
+  OWASP compliance issues. Activates during security audits or pre-deployment
+  code reviews. Trigger with "/security-scan" or "scan for vulnerabilities".
 
-### `model`
-- **Type:** string
-- **Values:** `inherit` (default), `sonnet`, `haiku`, `opus`, or `claude-*` model ID
-- **When to use:** Only override when the skill specifically needs a different model capability.
+# Bad - first person
+description: "I help you create PDFs"
 
-### `argument-hint`
-- **Type:** string
-- **Max length:** 200 characters
-- **Purpose:** Autocomplete hint shown in `/name` menu.
-- **Example:** `"<file-path>"`, `"[version-tag]"`
+# Bad - no when-to-use context
+description: "Generates PDF reports"
 
-### `context`
-- **Type:** string
-- **Values:** `fork`
-- **Purpose:** Run skill in an isolated subagent context.
-
-### `agent`
-- **Type:** string
-- **Purpose:** Specify subagent type when using `context: fork`.
-- **Values:** Any valid agent type (e.g., `general-purpose`, `Explore`)
-
-### `user-invocable`
-- **Type:** boolean
-- **Default:** `true`
-- **Purpose:** Set `false` to hide from `/` menu. Skill still activates via model matching.
-
-### `disable-model-invocation`
-- **Type:** boolean
-- **Default:** `false`
-- **Purpose:** Set `true` to prevent auto-activation. Only triggers via explicit `/name` command.
-
-### `hooks`
-- **Type:** object
-- **Purpose:** Skill-scoped lifecycle hooks (pre-tool-call, post-tool-call, etc.)
+# Bad - too vague, no keywords
+description: "A helpful tool for documents"
+```
 
 ---
 
-## Extended Fields (Marketplace)
+## Optional Fields (AgentSkills.io Spec)
 
-These are recognized by the Intent Solutions marketplace but not part of the core Anthropic spec.
+### license
 
-### `compatible-with`
-- **Type:** string (CSV) or array
-- **Values:** `claude-code`, `codex`, `openclaw`, `aider`, `continue`, `cursor`, `windsurf`
-- **Purpose:** Declare which AI coding platforms this skill works with.
+- **Type**: string
+- **Purpose**: License for the skill
+- **Format**: SPDX identifier or bundled file reference
 
-### `compatibility`
-- **Type:** string
-- **Purpose:** Environment requirements (e.g., `"Node.js >= 18"`, `"Python 3.10+"`)
+```yaml
+license: MIT
+license: Apache-2.0
+license: Complete terms in LICENSE.txt
+```
 
-### `tags`
-- **Type:** array of strings
-- **Purpose:** Discovery tags for marketplace search.
-- **Example:** `[devops, ci, deployment]`
+### compatibility
+
+- **Type**: string
+- **Length**: 1-500 characters
+- **Purpose**: Environment requirements (OS, runtime, tools, dependencies)
+- **When to use**: When skill requires specific tools, OS, or runtime
+
+```yaml
+compatibility: "Requires Python 3.10+, pdflatex, and pandoc"
+compatibility: "Linux/macOS only. Requires jq and curl"
+compatibility: "Node.js 18+ with npm"
+```
+
+### version
+
+- **Type**: string (top-level)
+- **Format**: Semver (`X.Y.Z`)
+- **Purpose**: Skill version for tracking updates
+
+```yaml
+version: 2.0.0
+```
+
+### author
+
+- **Type**: string (top-level)
+- **Format**: `Name <email>` (email recommended for Enterprise tier)
+- **Purpose**: Skill author identification
+
+```yaml
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+```
+
+### compatible-with
+
+- **Type**: string (comma-separated)
+- **Purpose**: Platforms this skill is compatible with
+- **Valid values**: `claude-code`, `codex`, `openclaw`, `aider`, `continue`, `cursor`, `windsurf`
+
+```yaml
+compatible-with: claude-code, codex, openclaw
+```
+
+### tags
+
+- **Type**: array of strings
+- **Purpose**: Discovery tags for categorization
+
+```yaml
+tags: [devops, ci, automation]
+```
+
+### metadata
+
+- **Type**: object (arbitrary key-value map)
+- **Purpose**: Custom data not covered by other top-level fields
+- **Note**: Do NOT put `author`, `version`, `license`, or `tags` here — they belong at top-level
+
+```yaml
+metadata:
+  category: development
+  maintainer: team@example.com
+```
+
+### allowed-tools
+
+- **Type**: string (comma or space-delimited)
+- **Purpose**: Pre-approved tools the skill can use without user confirmation
+- **Status**: Experimental in AgentSkills.io; widely used in Claude Code
+- **Valid tools**: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, NotebookEdit, AskUserQuestion, Skill
+- **MCP tools**: `ServerName:tool_name` format
+
+```yaml
+# Scoped Bash (best practice)
+allowed-tools: "Read,Write,Glob,Grep,Bash(git:*),Bash(npm:*)"
+
+# With MCP tool
+allowed-tools: "Read,Write,MyMCPServer:fetch_data"
+
+# Unscoped Bash (avoid - security risk)
+allowed-tools: "Read,Write,Bash"  # Warning in Standard, Error in Enterprise
+```
+
+**Bash Scoping Patterns**:
+```yaml
+Bash(git:*)       # All git commands
+Bash(npm:*)       # All npm commands
+Bash(python:*)    # All python commands
+Bash(mkdir:*)     # Directory creation
+Bash(chmod:*)     # Permission changes
+Bash(curl:*)      # HTTP requests
+```
 
 ---
 
-## Deprecated Fields
+## Claude Code Extension Fields
 
-### `when_to_use`
-- **Status:** Deprecated
-- **Migration:** Move content into the `description` field using "Use when ..." pattern.
+These fields are platform-specific to Claude Code and not part of the AgentSkills.io open standard.
 
-### `metadata` (as parent for identity fields)
-- **Status:** Anti-pattern
-- **Migration:** Move `author`, `version`, `license` to top-level.
+### argument-hint
+
+- **Type**: string
+- **Purpose**: Autocomplete hint shown after `/skill-name` in the command palette
+- **When to use**: When skill accepts arguments via `$ARGUMENTS`
+
+```yaml
+argument-hint: "[issue-number]"
+argument-hint: "[file-path]"
+argument-hint: "[search-query]"
+```
+
+### disable-model-invocation
+
+- **Type**: boolean
+- **Default**: false
+- **Purpose**: Prevent Claude from auto-activating; require explicit `/name` invocation
+
+```yaml
+disable-model-invocation: true   # Only via /skill-name
+disable-model-invocation: false  # Can activate via natural language (default)
+```
+
+### user-invocable
+
+- **Type**: boolean
+- **Default**: true
+- **Purpose**: Control visibility in `/` command menu
+- **When to use**: Set `false` for background knowledge skills that inform behavior
+
+```yaml
+user-invocable: false  # Hidden from / menu, loaded as background knowledge
+user-invocable: true   # Visible in / menu (default)
+```
+
+### model
+
+- **Type**: string
+- **Default**: inherit (uses parent/caller model)
+- **Values**: `inherit`, `sonnet`, `haiku`, `opus`, or specific model ID
+
+```yaml
+model: inherit                    # Use caller's model (recommended)
+model: opus                       # Force Opus for complex tasks
+model: haiku                      # Use Haiku for fast, simple tasks
+model: sonnet                     # Use Sonnet for balanced tasks
+```
+
+**Avoid hardcoded model IDs** like `claude-opus-4-5-20251101` - they break on deprecation.
+
+### context
+
+- **Type**: string
+- **Values**: `fork`
+- **Purpose**: Execute skill in isolated subagent context
+- **When to use**: Long-running tasks, tasks that need isolation from main conversation
+
+```yaml
+context: fork  # Run in subagent
+```
+
+### agent
+
+- **Type**: string
+- **Purpose**: Specify subagent type when `context: fork` is set
+- **Values**: `Explore`, `Plan`, `general-purpose`, or custom agent name
+
+```yaml
+context: fork
+agent: Explore          # Fast codebase exploration
+```
+
+### hooks
+
+- **Type**: object
+- **Purpose**: Skill-scoped lifecycle hooks
+- **Events**: PreToolUse, PostToolUse, Stop, SubagentStop, SessionStart, SessionEnd
+
+```yaml
+hooks:
+  PreToolUse:
+    - command: "echo 'Tool about to be used'"
+      event: PreToolUse
+```
+
+---
+
+## Deprecated / Removed Fields
+
+| Field | Status | Migration |
+|-------|--------|-----------|
+| `when_to_use` | Deprecated | Move content to `description` |
+| `mode` | Deprecated | Use `disable-model-invocation` instead |
+
+**Note**: `version`, `author`, `license`, `tags`, and `compatible-with` are valid TOP-LEVEL fields.
+The marketplace 100-point validator scores them at top-level. Do NOT nest them under `metadata:`.
+
+---
+
+## Recommended Field Order
+
+```yaml
+---
+# Required (AgentSkills.io)
+name: skill-name
+description: |
+  What it does. Use when [scenario].
+  Trigger with "/skill-name" or "[natural phrase]".
+
+# Tools (recommended)
+allowed-tools: "Read,Write,Glob,Grep"
+
+# Identity (top-level — marketplace validator scores these here)
+version: 1.0.0
+author: Name <email>
+license: MIT
+
+# Claude Code extensions (as needed)
+model: inherit
+argument-hint: "[arg]"
+context: fork
+agent: general-purpose
+disable-model-invocation: false
+user-invocable: true
+
+# Discovery (optional)
+compatible-with: claude-code, codex, openclaw
+tags: [devops, automation]
+
+# Optional spec fields
+compatibility: "Python 3.10+"
+
+# Metadata (custom data only — NOT for author/version/license)
+# metadata:
+#   category: development
+#   maintainer: team@example.com
+---
+```

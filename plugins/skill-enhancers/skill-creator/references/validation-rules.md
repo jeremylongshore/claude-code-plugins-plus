@@ -10,20 +10,19 @@ Two-tier validation aligned with AgentSkills.io spec + Enterprise extensions.
 
 The baseline. Any skill published to the ecosystem must pass this.
 
-- No required frontmatter fields per Anthropic spec. `description` is recommended.
+- `name` and `description` are the only required frontmatter fields
 - Body format is flexible ("no format restrictions" - Anthropic)
 - Under 500 lines
 - No absolute paths
-- No first/second person in description (warning, not error)
+- No first/second person in description
 
 ### Enterprise Tier (Default for Our Skills)
 
-Everything in Standard, plus scored fields (warnings, not errors):
+Everything in Standard, plus:
 
-- `author` and `version` present (WARNING if missing)
-- `license` present (WARNING if missing)
+- `metadata.author` and `metadata.version` present
 - `allowed-tools` with scoped Bash
-- Recommended sections present (title, instructions, examples) — scored as WARNINGs
+- Recommended sections present (title, instructions, examples)
 - Progressive disclosure used (references/ for heavy content)
 - Error handling documented
 - `{baseDir}` used for all internal paths
@@ -33,14 +32,12 @@ Everything in Standard, plus scored fields (warnings, not errors):
 
 ## Frontmatter Validation
 
-### Recommended Fields
+### Required Fields (Both Tiers)
 
-No frontmatter fields are strictly required per the Anthropic spec. The following are recommended for both tiers:
-
-| Field | Validation | Level |
-|-------|-----------|-------|
-| `name` | 1-64 chars, kebab-case `^[a-z][a-z0-9-]*[a-z0-9]$`, no consecutive hyphens, no reserved words, matches directory name | INFO in standard, WARNING in enterprise |
-| `description` | 1-1024 chars, non-empty, third person only, no first/second person, specific keywords | WARNING (recommended) |
+| Field | Validation |
+|-------|-----------|
+| `name` | 1-64 chars, kebab-case `^[a-z][a-z0-9-]*[a-z0-9]$`, no consecutive hyphens, no reserved words, matches directory name |
+| `description` | 1-1024 chars, non-empty, third person only, no first/second person, specific keywords |
 
 ### Enterprise-Required Fields (Top-Level)
 
@@ -86,12 +83,12 @@ The marketplace 100-point validator scores them at top-level.
 - When to use it (context/triggers)
 - Specific keywords for discovery
 
-### Should Not Include (Both Tiers — Warning)
+### Must Not Include (Both Tiers)
 
-| Pattern | Regex | Example | Level |
-|---------|-------|---------|-------|
-| First person | `\b(I can\|I will\|I'm\|I help)\b` | "I can generate..." | Warning |
-| Second person | `\b(You can\|You should\|You will)\b` | "You can use..." | Warning |
+| Pattern | Regex | Example |
+|---------|-------|---------|
+| First person | `\b(I can\|I will\|I'm\|I help)\b` | "I can generate..." |
+| Second person | `\b(You can\|You should\|You will)\b` | "You can use..." |
 
 ### Recommended (Enterprise)
 
@@ -183,8 +180,35 @@ Bash(docker:*)
 | Has `scripts/` directory | +1 |
 | Description under 200 chars | +1 |
 | Description over 500 chars | -1 |
+| Has unnecessary TOC | -1 (modifier) |
+| Uses dynamic context injection | +1 (modifier) |
 
 Score 4+: Excellent disclosure. Score 2-3: Good. Score 0-1: Needs improvement.
+
+**Navigation signals** are scored by section header density (7+ `##` headers = 5/5), not by TOC presence. TOC wastes tokens and is not part of the Anthropic spec.
+
+---
+
+## Dynamic Context Injection
+
+Skills can use `` !`command` `` syntax (Anthropic spec preprocessing) to inject dynamic content at activation time.
+
+### Scoring
+
+| Pattern | Effect |
+|---------|--------|
+| `` !`command` `` directives present | +1 modifier bonus |
+| Combined with `references/` directory | INFO note on layered structure |
+
+### When to Use
+
+| Scenario | Method |
+|----------|--------|
+| Always-needed, small references (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` |
+| Dynamic state (git log, env vars) | `` !`git log --oneline -5` `` |
+| Conditional or large references (>5KB) | Manual `Load ...` instructions |
+
+The command runs at skill activation time. Output is injected verbatim into the body before Claude processes it.
 
 ---
 
@@ -204,6 +228,8 @@ If SKILL.md body contains `$ARGUMENTS` or `$0`, `$1`, etc.:
 - `argument-hint` SHOULD be set in frontmatter
 - Instructions SHOULD handle empty `$ARGUMENTS` case
 - `$ARGUMENTS[N]` indexing should be sequential from 0
+
+Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official Anthropic substitution).
 
 ---
 
@@ -231,11 +257,33 @@ If SKILL.md body contains `$ARGUMENTS` or `$0`, `$1`, etc.:
 2. All `{baseDir}/references/*` references exist
 3. All `{baseDir}/templates/*` references exist
 4. All `{baseDir}/assets/*` references exist
-5. No path escape attempts
+5. Relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
+6. No path escape attempts
 
 ### Report
 - Errors: Must fix (blocks pass)
 - Warnings: Should fix (does not block pass)
-- Info: Optional improvements
+- Info: Optional improvements (includes structural advisor suggestions)
 - Score: Progressive disclosure score
 - Stats: Word count, line count, token estimate
+
+---
+
+## Structural Advisors (Enterprise Tier)
+
+INFO-level suggestions emitted after grading. Not scored — purely advisory.
+
+### Split to Commands
+- **Trigger**: 3+ kebab-case `## operation-name` sections without `commands/` directory
+- **Suggestion**: Split into individual `commands/*.md` files
+- **Why**: Each operation becomes a separate slash command; skill stays lean
+
+### Offload to References
+- **Trigger**: Body sections >20 lines (Output, Error Handling, Examples) without `references/`
+- **Suggestion**: Move to `references/section-name.md` with relative markdown link
+- **Why**: Reduces token footprint; Claude reads on demand
+
+### DCI Opportunities
+- **Trigger**: File existence checks, git operations, or tool version detection without DCI
+- **Suggestion**: Add `` !`command` `` directives for auto-detection at activation
+- **Why**: Eliminates discovery tool calls; Claude starts with context pre-loaded

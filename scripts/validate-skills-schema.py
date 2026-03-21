@@ -1810,6 +1810,173 @@ def detect_placeholder_text(skill_path: Path) -> Tuple[List[str], List[str]]:
     return errors, warnings
 
 
+def check_line_character_length(body: str) -> Tuple[List[str], List[str]]:
+    """
+    Check for excessively long lines in SKILL.md body (outside code fences).
+    - WARN if any line > 500 chars
+    - ERROR if any line > 2000 chars
+    Caps at 5 warnings to avoid spamming.
+    Returns (errors, warnings).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    in_fence = False
+    warning_count = 0
+
+    for lineno, line in enumerate(body.splitlines(), start=1):
+        if CODE_FENCE_PATTERN.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+
+        length = len(line)
+        if length > 2000:
+            errors.append(
+                f"[line-length] Line {lineno} is {length} chars (limit 2000): {line[:80]}..."
+            )
+        elif length > 500 and warning_count < 5:
+            warnings.append(
+                f"[line-length] Line {lineno} is {length} chars (recommended limit 500)"
+            )
+            warning_count += 1
+
+    return errors, warnings
+
+
+def detect_stub_sections(body: str) -> Tuple[List[str], List[str]]:
+    """
+    Detect stub or empty sections in SKILL.md body.
+    Splits on '## ' headings and checks each section for:
+    - Content < 3 words (essentially empty)
+    - TODO, TBD, WIP, or "Coming soon" markers
+    - Content < 15 words and only 1 sentence (stub section)
+    Returns (errors, warnings).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+
+    # Split body into sections on level-2 headings
+    section_pattern = re.compile(r'^## .+', re.MULTILINE)
+    positions = [m.start() for m in section_pattern.finditer(body)]
+
+    if not positions:
+        return errors, warnings
+
+    sections: List[Tuple[str, str]] = []
+    for i, start in enumerate(positions):
+        end = positions[i + 1] if i + 1 < len(positions) else len(body)
+        chunk = body[start:end]
+        header_end = chunk.index('\n') if '\n' in chunk else len(chunk)
+        header = chunk[:header_end].strip()
+        content = chunk[header_end:].strip()
+        sections.append((header, content))
+
+    stub_markers = re.compile(r'\b(TODO|TBD|WIP|Coming soon)\b', re.IGNORECASE)
+
+    for header, content in sections:
+        words = content.split()
+        word_count = len(words)
+
+        if word_count < 3:
+            warnings.append(
+                f"[stub-section] Section '{header}' has no meaningful content ({word_count} words)"
+            )
+            continue
+
+        if stub_markers.search(content):
+            warnings.append(
+                f"[stub-section] Section '{header}' contains stub marker (TODO/TBD/WIP/Coming soon)"
+            )
+
+        # Count sentences (rough: split on sentence-ending punctuation)
+        sentence_count = len(re.findall(r'[.!?]+', content))
+        if word_count < 15 and sentence_count <= 1:
+            warnings.append(
+                f"[stub-section] Section '{header}' appears to be a stub ({word_count} words, {sentence_count} sentence)"
+            )
+
+    return errors, warnings
+
+
+def validate_reference_file_quality(path: Path) -> Tuple[List[str], List[str]]:
+    """
+    Check quality of files in the references/ directory adjacent to SKILL.md.
+    Strips YAML frontmatter before evaluating content length.
+    - WARN if file has < 5 lines or < 100 chars after stripping frontmatter
+    Returns (errors, warnings).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    refs_dir = path.parent / "references"
+
+    if not refs_dir.is_dir():
+        return errors, warnings
+
+    for ref_file in sorted(refs_dir.glob("*.md")):
+        try:
+            raw = ref_file.read_text(encoding='utf-8')
+            # Strip YAML frontmatter if present
+            fm_match = RE_FRONTMATTER.match(raw)
+            content = fm_match.group(2) if fm_match else raw
+
+            lines = [ln for ln in content.splitlines() if ln.strip()]
+            char_count = len(content.strip())
+
+            if len(lines) < 5 or char_count < 100:
+                warnings.append(
+                    f"[reference-quality] references/{ref_file.name} is too thin "
+                    f"({len(lines)} non-blank lines, {char_count} chars after frontmatter)"
+                )
+
+        except Exception as e:
+            warnings.append(
+                f"[reference-quality] Could not read references/{ref_file.name}: {e}"
+            )
+
+    return errors, warnings
+
+
+def validate_dci_fallbacks(body: str) -> Tuple[List[str], List[str]]:
+    """
+    Check that DCI directives (!`cmd`) outside code fences include fallback patterns.
+    Fallback indicators: || echo, 2>/dev/null, || true, [ -f, command -v, which , type
+    Returns (errors, warnings).
+    """
+    errors: List[str] = []
+    warnings: List[str] = []
+    in_fence = False
+    dci_pattern = re.compile(r'^!`([^`]+)`\s*$')
+    fallback_patterns = (
+        r'\|\| echo',
+        r'2>/dev/null',
+        r'\|\| true',
+        r'\[ -f',
+        r'command -v',
+        r'which ',
+        r'\btype ',
+    )
+    fallback_re = re.compile('|'.join(fallback_patterns))
+
+    for line in body.splitlines():
+        if CODE_FENCE_PATTERN.match(line):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+
+        m = dci_pattern.match(line.rstrip())
+        if m:
+            cmd = m.group(1)
+            if not fallback_re.search(cmd):
+                warnings.append(
+                    f"[dci-fallback] DCI directive lacks fallback: `{cmd}` "
+                    f"— consider adding `|| echo 'not installed'` or `2>/dev/null`"
+                )
+
+    return errors, warnings
+
+
 def detect_boilerplate(skill_path: Path) -> Tuple[List[str], List[str]]:
     """
     Detect generic boilerplate phrases in SKILL.md:
@@ -2036,6 +2203,24 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
     boilerplate_errors, boilerplate_warnings = detect_boilerplate(path)
     errors.extend(boilerplate_errors)
     warnings.extend(boilerplate_warnings)
+
+    # Enterprise-tier quality checks (warnings only)
+    if tier == TIER_ENTERPRISE:
+        line_len_errors, line_len_warnings = check_line_character_length(body)
+        errors.extend(line_len_errors)
+        warnings.extend(line_len_warnings)
+
+        stub_errors, stub_warnings = detect_stub_sections(body)
+        errors.extend(stub_errors)
+        warnings.extend(stub_warnings)
+
+        ref_quality_errors, ref_quality_warnings = validate_reference_file_quality(path)
+        errors.extend(ref_quality_errors)
+        warnings.extend(ref_quality_warnings)
+
+        dci_errors, dci_warnings = validate_dci_fallbacks(body)
+        errors.extend(dci_errors)
+        warnings.extend(dci_warnings)
 
     # === STRUCTURAL ADVISORS (enterprise tier only) ===
     if tier == TIER_ENTERPRISE:

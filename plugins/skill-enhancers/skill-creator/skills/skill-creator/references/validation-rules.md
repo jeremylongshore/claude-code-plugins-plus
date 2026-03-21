@@ -1,154 +1,271 @@
-# Validation Rules — 100-Point Rubric
+# Skill Validation Rules
 
-Detailed sub-criteria for the Intent Solutions 100-point grading system.
-
----
-
-## Grade Scale
-
-| Grade | Score | Meaning |
-|-------|-------|---------|
-| A | 90-100 | Production-ready |
-| B | 80-89 | Good, minor improvements |
-| C | 70-79 | Adequate, has gaps |
-| D | 60-69 | Needs significant work |
-| F | <60 | Major revision required |
+Two-tier validation aligned with AgentSkills.io spec + Enterprise extensions.
 
 ---
 
-## Pillar 1: Progressive Disclosure (30 pts)
+## Validation Tiers
 
-### Token Economy (10 pts)
-- 10 pts: SKILL.md body ≤150 lines
-- 7 pts: 151-300 lines
-- 4 pts: 301-500 lines
-- 0 pts: >500 lines
+### Standard Tier (AgentSkills.io Minimum)
 
-### Layered Structure (10 pts)
-- 10 pts: Has `references/` directory with markdown files
-- 8 pts: No references needed (skill ≤100 lines)
-- 4 pts: No references but skill is 100-200 lines
-- 3 pts: `references/` exists but empty
-- 0 pts: No references and skill >200 lines
+The baseline. Any skill published to the ecosystem must pass this.
 
-### Reference Depth (5 pts)
-- 5 pts: References are flat (no nested subdirectories)
-- 2 pts: Has nested directories in `references/`
-- 5 pts: N/A (no references directory)
+- `name` and `description` are the only required frontmatter fields
+- Body format is flexible ("no format restrictions" - Anthropic)
+- Under 500 lines
+- No absolute paths
+- No first/second person in description
 
-### Navigation Signals (5 pts)
-- 5 pts: Short file (≤100 lines) OR ≥7 section headers
-- 4 pts: 4-6 section headers (>100 lines)
-- 2 pts: 2-3 section headers (>100 lines)
-- 0 pts: 0-1 section headers (>100 lines)
+### Enterprise Tier (Default for Our Skills)
+
+Everything in Standard, plus:
+
+- `metadata.author` and `metadata.version` present
+- `allowed-tools` with scoped Bash
+- Recommended sections present (title, instructions, examples)
+- Progressive disclosure used (references/ for heavy content)
+- Error handling documented
+- `{baseDir}` used for all internal paths
+- All referenced resources exist
 
 ---
 
-## Pillar 2: Ease of Use (25 pts)
+## Frontmatter Validation
 
-### Metadata Quality (10 pts)
-- +2: Has `name`
-- +3: Has `description` ≥50 chars
-- +2: Has `version`
-- +2: Has `allowed-tools`
-- +1: Has `author` with email
+### Required Fields (Both Tiers)
 
-### Discoverability (6 pts)
-- +3: Description contains "Use when"
-- +3: Description contains "Trigger with" or "Trigger phrase"
+| Field | Validation |
+|-------|-----------|
+| `name` | 1-64 chars, kebab-case `^[a-z][a-z0-9-]*[a-z0-9]$`, no consecutive hyphens, no reserved words, matches directory name |
+| `description` | 1-1024 chars, non-empty, third person only, no first/second person, specific keywords |
 
-### Terminology Consistency (4 pts)
-- -2: `name` differs from folder name
-- -1: Inconsistent casing in description (ALL CAPS words >3 chars)
+### Enterprise-Required Fields (Top-Level)
 
-### Workflow Clarity (5 pts)
-- +3: Has numbered steps in body
-- +2: Has ≥5 section headers
-- +1: Has 3-4 section headers
+| Field | Validation |
+|-------|-----------|
+| `author` | Non-empty string, email recommended (`Name <email>`) — top-level, NOT in metadata |
+| `version` | Semver format (`X.Y.Z`) — top-level, NOT in metadata |
+| `license` | Non-empty string (SPDX identifier) — top-level |
+| `allowed-tools` | Non-empty, all tools valid, Bash scoped |
 
----
+### Optional Field Validation
 
-## Pillar 3: Utility (20 pts)
+| Field | Validation |
+|-------|-----------|
+| `license` | Non-empty string if present |
+| `compatibility` | 1-500 chars if present |
+| `metadata` | Valid YAML object if present |
+| `model` | One of: `inherit`, `sonnet`, `haiku`, `opus`, or valid model ID |
+| `argument-hint` | Non-empty string if present |
+| `disable-model-invocation` | Boolean if present |
+| `user-invocable` | Boolean if present |
+| `context` | Must be `fork` if present |
+| `agent` | Non-empty string if present; requires `context: fork` |
+| `hooks` | Valid object with known event keys if present |
 
-### Problem Solving Power (8 pts)
-- +4: Has `## Overview` section with >50 chars
-- +2: Has `## Prerequisites` section
-- +2: Has `## Output` section
+### Deprecated Field Warnings
 
-### Degrees of Freedom (5 pts)
-- +2: Mentions options/configuration/parameters
-- +2: Shows alternatives/multiple approaches
-- +1: Mentions extensibility/customization
+| Field | Warning |
+|-------|---------|
+| `when_to_use` | Deprecated - move to description |
+| `mode` | Deprecated - use `disable-model-invocation` |
 
-### Feedback Loops (4 pts)
-- +2: Has `## Error Handling` section
-- +1: Mentions validation/verification
-- +1: Mentions troubleshooting/debugging
-
-### Examples & Templates (3 pts)
-- +2: Has `## Examples` section or labeled examples
-- +1: Has ≥2 code blocks
+**Note**: `version`, `author`, `license`, `tags`, and `compatible-with` are valid top-level fields.
+The marketplace 100-point validator scores them at top-level.
 
 ---
 
-## Pillar 4: Spec Compliance (15 pts)
+## Description Validation
 
-### Frontmatter Validity (5 pts)
-- 5 pts baseline, -1 per missing required field (max -4)
-- Required: name, description, allowed-tools, version, author, license
+### Must Include (Both Tiers)
 
-### Name Conventions (4 pts)
-- -2: Not kebab-case
-- -1: Name >64 characters
-- -1: Name doesn't match folder
+- What the skill does (action-oriented)
+- When to use it (context/triggers)
+- Specific keywords for discovery
 
-### Description Quality (4 pts)
-- -2: Too short (<50 chars)
-- -2: Too long (>1024 chars)
-- -1: Uses first person ("I can")
-- -1: Uses second person ("You should")
+### Must Not Include (Both Tiers)
 
-### Optional Fields (2 pts)
-- -1: Invalid `model` value
+| Pattern | Regex | Example |
+|---------|-------|---------|
+| First person | `\b(I can\|I will\|I'm\|I help)\b` | "I can generate..." |
+| Second person | `\b(You can\|You should\|You will)\b` | "You can use..." |
 
----
+### Recommended (Enterprise)
 
-## Pillar 5: Writing Style (10 pts)
-
-### Voice & Tense (4 pts)
-- -2: No imperative verbs in numbered steps
-
-### Objectivity (3 pts)
-- -1: "you should/can/will" in body
-- -1: "I can/will" in body
-
-### Conciseness (3 pts)
-- -2: >3000 words
-- -1: >2000 words
-- -1: >400 lines
+- Action verbs (analyze, create, generate, build, debug, optimize, validate)
+- Slash command reference
+- Third person throughout
 
 ---
 
-## Modifiers (+/-5 pts)
+## Body Validation
 
-### Bonuses
-- +1: Gerund-style name (ends in `-ing`)
-- +1: Grep-friendly structure (≥7 section headers)
-- +2: ≥3 labeled examples
-- +1: Resources section with ≥2 external links
+### Standard Tier
 
-### Penalties
-- -2: First/second person in description
-- -1: XML-like tags in body
-- -1: TOC wastes tokens (use clear section headers instead)
+| Check | Level | Detail |
+|-------|-------|--------|
+| Line count | Error | Must be under 500 lines |
+| Absolute paths | Error | No `/home/`, `/Users/`, `C:\` outside code blocks |
+| Has H1 title | Warning | Should have `# Title` |
 
-### Relative Markdown Links
-- Validator checks that relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
-- Links to URLs (`https://...`) are ignored
-- Broken relative links produce a warning
+### Enterprise Tier (adds)
 
-### DCI Bonus
-- +1: Uses dynamic context injection (`` !`command` `` directives)
+| Check | Level | Detail |
+|-------|-------|--------|
+| Has instructions | Warning | Should have `## Instructions` or step-by-step content |
+| Has examples | Warning | Should have `## Examples` or example content |
+| Instructions have steps | Warning | Should have numbered steps or `### Step N` headings |
+| Error handling | Warning | Should document error cases |
+| Resources section | Warning | Should list `{baseDir}/` references if resources exist |
+| All `{baseDir}/` refs exist | Error | Referenced scripts, references, templates must exist |
+| No path escapes | Error | No `{baseDir}/../` |
+| Word count | Warning | Over 5000 words suggests splitting to references |
+
+---
+
+## Tool Validation
+
+### Valid Tool Names
+
+```
+Read, Write, Edit, Bash, Glob, Grep,
+WebFetch, WebSearch, Task, NotebookEdit,
+AskUserQuestion, Skill
+```
+
+Plus MCP tools in `ServerName:tool_name` format.
+
+### Bash Scoping
+
+| Tier | Unscoped `Bash` |
+|------|-----------------|
+| Standard | Warning |
+| Enterprise | Error |
+
+Valid scoped patterns:
+```
+Bash(git:*)
+Bash(npm:*)
+Bash(python:*)
+Bash(mkdir:*)
+Bash(chmod:*)
+Bash(curl:*)
+Bash(docker:*)
+```
+
+---
+
+## Anti-Pattern Detection
+
+| Anti-Pattern | Check | Level |
+|-------------|-------|-------|
+| Windows paths | `C:\` or backslash paths | Error |
+| Nested references | `{baseDir}/references/sub/dir/file` | Warning |
+| Hardcoded model IDs | `claude-*-20\d{6}` pattern | Warning |
+| Voodoo constants | Unexplained magic numbers | Info |
+| Over-verbose | >5000 words in SKILL.md | Warning |
+| Missing progressive disclosure | >300 lines + no `references/` dir | Warning |
+
+---
+
+## Progressive Disclosure Scoring
+
+| Metric | Score |
+|--------|-------|
+| SKILL.md under 200 lines | +2 |
+| SKILL.md 200-400 lines | +1 |
+| SKILL.md 400-500 lines | 0 |
+| SKILL.md over 500 lines | -2 |
+| Has `references/` directory | +1 |
+| Has `scripts/` directory | +1 |
+| Description under 200 chars | +1 |
+| Description over 500 chars | -1 |
+| Has unnecessary TOC | -1 (modifier) |
+| Uses dynamic context injection | +1 (modifier) |
+
+Score 4+: Excellent disclosure. Score 2-3: Good. Score 0-1: Needs improvement.
+
+**Navigation signals** are scored by section header density (7+ `##` headers = 5/5), not by TOC presence. TOC wastes tokens and is not part of the Anthropic spec.
+
+---
+
+## Dynamic Context Injection
+
+Skills can use `` !`command` `` syntax (Anthropic spec preprocessing) to inject dynamic content at activation time.
+
+### Scoring
+
+| Pattern | Effect |
+|---------|--------|
+| `` !`command` `` directives present | +1 modifier bonus |
+| Combined with `references/` directory | INFO note on layered structure |
+
+### When to Use
+
+| Scenario | Method |
+|----------|--------|
+| Always-needed, small references (<5KB) | `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` `` |
+| Dynamic state (git log, env vars) | `` !`git log --oneline -5` `` |
+| Conditional or large references (>5KB) | Manual `Load ...` instructions |
+
+The command runs at skill activation time. Output is injected verbatim into the body before Claude processes it.
+
+---
+
+## Token Budget Validation
+
+| Metric | Warning | Error |
+|--------|---------|-------|
+| Single description length | >500 chars | >1024 chars |
+| SKILL.md body tokens (est.) | >4000 | >6000 |
+| Estimated: `word_count * 1.3` | | |
+
+---
+
+## String Substitution Validation
+
+If SKILL.md body contains `$ARGUMENTS` or `$0`, `$1`, etc.:
+- `argument-hint` SHOULD be set in frontmatter
+- Instructions SHOULD handle empty `$ARGUMENTS` case
+- `$ARGUMENTS[N]` indexing should be sequential from 0
+
+Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official Anthropic substitution).
+
+---
+
+## Validation Process
+
+### Pre-flight
+1. File exists and is readable
+2. YAML frontmatter parses without error
+3. Frontmatter separator (`---`) present at start and end
+
+### Field Validation
+1. Required fields present
+2. Field types correct
+3. Field constraints met
+4. No deprecated fields (or warned)
+
+### Body Validation
+1. Length within limits
+2. Required sections present (Enterprise)
+3. No absolute paths
+4. Instructions have steps (Enterprise)
+
+### Resource Validation
+1. All `{baseDir}/scripts/*` references exist
+2. All `{baseDir}/references/*` references exist
+3. All `{baseDir}/templates/*` references exist
+4. All `{baseDir}/assets/*` references exist
+5. Relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
+6. No path escape attempts
+
+### Report
+- Errors: Must fix (blocks pass)
+- Warnings: Should fix (does not block pass)
+- Info: Optional improvements (includes structural advisor suggestions)
+- Score: Progressive disclosure score
+- Stats: Word count, line count, token estimate
 
 ---
 
@@ -156,8 +273,17 @@ Detailed sub-criteria for the Intent Solutions 100-point grading system.
 
 INFO-level suggestions emitted after grading. Not scored — purely advisory.
 
-| Advisor | Trigger | Suggestion |
-|---------|---------|------------|
-| Split to Commands | 3+ kebab-case `## op-name` sections, no `commands/` | Split into individual `commands/*.md` |
-| Offload to References | Sections >20 lines (Output, Error Handling, etc.), no `references/` | Move to `references/` with relative link |
-| DCI Opportunities | File checks, git ops, or tool detection without DCI | Add `` !`command` `` directives |
+### Split to Commands
+- **Trigger**: 3+ kebab-case `## operation-name` sections without `commands/` directory
+- **Suggestion**: Split into individual `commands/*.md` files
+- **Why**: Each operation becomes a separate slash command; skill stays lean
+
+### Offload to References
+- **Trigger**: Body sections >20 lines (Output, Error Handling, Examples) without `references/`
+- **Suggestion**: Move to `references/section-name.md` with relative markdown link
+- **Why**: Reduces token footprint; Claude reads on demand
+
+### DCI Opportunities
+- **Trigger**: File existence checks, git operations, or tool version detection without DCI
+- **Suggestion**: Add `` !`command` `` directives for auto-detection at activation
+- **Why**: Eliminates discovery tool calls; Claude starts with context pre-loaded

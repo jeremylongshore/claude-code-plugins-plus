@@ -1,105 +1,193 @@
-# Workflow Patterns
+# Skill Workflow Patterns
 
-Reference guide for choosing the right workflow pattern when creating skills.
-
----
-
-## Sequential
-
-Fixed steps executed in order. Best for deterministic tasks with predictable flow.
-
-**When to use:** Data processing pipelines, file transformations, deployment scripts.
-
-```
-Step 1 -> Step 2 -> Step 3 -> Done
-```
-
-**Example:** Generate release notes — parse commits, group by type, format output, write file.
+Reference for common workflow patterns in Claude Agent Skills.
+Source: Anthropic best practices, official skill-creator patterns.
 
 ---
 
-## Conditional
+## Sequential Workflow
 
-Branch based on input or detected state. Best when different scenarios need different handling.
+Steps execute in fixed order. Simplest pattern.
 
-**When to use:** Error diagnosis, multi-format support, environment-specific logic.
+```markdown
+## Instructions
 
+### Step 1: Gather Input
+Read the target file and extract relevant data.
+
+### Step 2: Process
+Transform the data according to the rules.
+
+### Step 3: Output
+Write the result to the specified location.
 ```
-Detect input type
-  ├── Type A -> Path A steps
-  ├── Type B -> Path B steps
-  └── Unknown -> Error handling
-```
 
-**Example:** File converter — detect format (JSON/YAML/TOML), apply appropriate parser, output in target format.
+**Best for**: File conversion, data transformation, build scripts.
+**Degrees of freedom**: Low (fixed steps, predictable output).
 
 ---
 
-## Wizard
+## Conditional Workflow
 
-Interactive multi-step gathering with user input between phases. Best for configuration or personalized output.
+Branch execution based on input or context.
 
-**When to use:** Project scaffolding, skill creation, configuration generation.
+```markdown
+## Instructions
 
+### Step 1: Analyze Input
+Determine the type of input:
+- If markdown file: proceed to Step 2a
+- If HTML file: proceed to Step 2b
+- If unknown: ask user with AskUserQuestion
+
+### Step 2a: Process Markdown
+Convert markdown using pandoc conventions...
+
+### Step 2b: Process HTML
+Parse HTML and extract content...
+
+### Step 3: Output
+Write the converted result.
 ```
-Ask question 1 -> Process answer -> Ask question 2 -> ... -> Generate output
+
+**Best for**: Skills handling multiple input types, multi-purpose tools.
+**Degrees of freedom**: Medium (defined branches, flexible within each).
+
+---
+
+## Wizard-Style Workflow
+
+Interactive multi-step gathering using AskUserQuestion.
+
+```markdown
+## Instructions
+
+### Step 1: Gather Requirements
+Ask the user:
+1. What is the project name?
+2. Which framework? (React / Vue / Svelte)
+3. Include testing? (Yes / No)
+
+Use AskUserQuestion for each decision point.
+
+### Step 2: Generate Based on Choices
+Based on responses, generate the appropriate scaffold.
+
+### Step 3: Verify
+Show the user what was created and confirm.
 ```
 
-**Example:** Skill Creator Step 1 — ask name, purpose, tools, complexity, then generate.
+**Best for**: Complex setup, project scaffolding, configuration generation.
+**Degrees of freedom**: Medium (user drives decisions).
 
 ---
 
 ## Plan-Validate-Execute
 
-Generate a plan, validate feasibility, then execute. Best when operations are hard to reverse.
+Verifiable intermediates with feedback loops. Anthropic's recommended pattern for high-stakes tasks.
 
-**When to use:** Database migrations, infrastructure changes, bulk refactoring.
+```markdown
+## Instructions
 
+### Step 1: Plan
+Analyze the current state and create an execution plan.
+Show the plan to the user before proceeding.
+
+### Step 2: Validate Plan
+Check each planned step for:
+- Prerequisites met
+- No conflicts with existing state
+- Reversibility if something goes wrong
+
+### Step 3: Execute
+Execute each step, verifying success before proceeding:
+1. Execute step → verify → continue
+2. If verification fails → rollback → report
+
+### Step 4: Report
+Summarize what was done, what succeeded, and any issues.
 ```
-Analyze current state -> Generate plan -> Validate plan -> Execute -> Verify
-```
 
-**Example:** Database migration — analyze schema diff, generate migration SQL, dry-run validate, execute, verify integrity.
+**Best for**: Deployment, migration, refactoring, any destructive operation.
+**Degrees of freedom**: Low (strict verification at each stage).
 
 ---
 
-## Feedback Loop
+## Feedback Loop Workflow
 
-Iterate until quality threshold is met. Best for optimization and creative tasks.
+Iterative refinement until quality threshold met.
 
-**When to use:** Description tuning, code quality improvement, test coverage gaps.
+```markdown
+## Instructions
 
+### Step 1: Generate Initial Output
+Create the first draft/version.
+
+### Step 2: Evaluate Quality
+Check against criteria:
+- [ ] Criterion A met?
+- [ ] Criterion B met?
+- [ ] Criterion C met?
+
+### Step 3: Iterate if Needed
+If any criteria not met:
+1. Identify the gap
+2. Refine the output
+3. Return to Step 2
+
+Maximum 3 iterations. If still not passing, report issues.
+
+### Step 4: Finalize
+Output the final version with quality report.
 ```
-Generate -> Evaluate -> Score -> (below threshold?) -> Modify -> Re-evaluate
-```
 
-**Example:** Description optimization — generate description, test trigger accuracy, if <90% modify and retry.
+**Best for**: Content generation, code quality, optimization tasks.
+**Degrees of freedom**: Medium (defined criteria, flexible refinement).
 
 ---
 
 ## Search-Analyze-Report
 
-Explore a codebase or dataset, analyze findings, produce structured report. Best for audit and discovery tasks.
+Codebase exploration with structured analysis.
 
-**When to use:** Security audits, dependency analysis, code review, documentation gaps.
+```markdown
+## Instructions
 
+### Step 1: Search
+Use Glob and Grep to find relevant files:
+- Pattern: `**/*.py`
+- Search: `def.*deprecated`
+
+### Step 2: Analyze
+For each finding:
+- Context (what file, what function)
+- Severity (critical / warning / info)
+- Recommended action
+
+### Step 3: Report
+Generate structured report:
+
+| File | Line | Issue | Severity | Fix |
+|------|------|-------|----------|-----|
+| ... | ... | ... | ... | ... |
 ```
-Search (Glob/Grep) -> Collect findings -> Analyze patterns -> Generate report
-```
 
-**Example:** Security scanner — search for SQL injection patterns, analyze severity, generate prioritized report.
+**Best for**: Code review, security audit, dependency analysis, codebase understanding.
+**Degrees of freedom**: High (Claude decides what's relevant).
 
 ---
 
-## Choosing a Pattern
+## Choosing the Right Pattern
 
-| Task Type | Recommended Pattern |
-|-----------|-------------------|
-| Build/generate something | Sequential |
-| Fix/diagnose something | Conditional |
-| Configure/set up | Wizard |
-| Migrate/transform | Plan-Validate-Execute |
-| Optimize/improve | Feedback Loop |
-| Audit/review | Search-Analyze-Report |
+| If your skill... | Use this pattern |
+|-----------------|-----------------|
+| Does one thing in fixed order | Sequential |
+| Handles different input types | Conditional |
+| Needs user decisions | Wizard-Style |
+| Does something risky/irreversible | Plan-Validate-Execute |
+| Needs iterative quality | Feedback Loop |
+| Explores and reports on code | Search-Analyze-Report |
+| Combines multiple concerns | Compose patterns together |
 
-Most skills combine patterns. A skill creator uses Wizard (gather info) + Sequential (write files) + Feedback Loop (validate and iterate).
+Patterns can be composed. A deployment skill might use:
+Wizard (gather config) → Plan-Validate-Execute (deploy) → Feedback Loop (health check).

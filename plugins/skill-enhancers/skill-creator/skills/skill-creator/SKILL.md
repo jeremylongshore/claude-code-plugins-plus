@@ -28,21 +28,6 @@ packages that score well on the Intent Solutions 100-point rubric. It enforces t
 contradictions that would cost marketplace points. Supports two modes: create new skills from
 scratch with full validation, or grade/audit existing skills with actionable fix suggestions.
 
-## Table of Contents
-
-- [Instructions](#instructions) — Create mode (Steps 1-10) + Mode Detection
-- [Validation Workflow](#validation-workflow) — Grade/audit existing skills (Steps V1-V5)
-- [Examples](#examples) — Create, full package, and validate examples
-- [Edge Cases](#edge-cases) — Name conflicts, long content, legacy metadata
-- [Error Handling](#error-handling) — Common errors and solutions
-- [Resources](#resources) — Reference files and scripts
-- [Running and Evaluating Test Cases](#running-and-evaluating-test-cases) — Subagent-based eval with viewer
-- [Improving the Skill](#improving-the-skill) — Iteration loop based on feedback
-- [Description Optimization (Automated)](#description-optimization-automated) — Automated trigger accuracy tuning
-- [Advanced: Blind Comparison](#advanced-blind-comparison) — A/B testing between skill versions
-- [Packaging](#packaging) — Create distributable .skill files
-- [Platform-Specific Notes](#platform-specific-notes) — Claude.ai and Cowork adaptations
-
 ## Instructions
 
 ### Mode Detection
@@ -200,7 +185,7 @@ Additional guidelines:
 - Concise — Claude is smart, don't over-explain
 - Concrete examples over abstract descriptions
 - Reference supporting files with relative markdown links: `[details](reference.md)` or `[API](references/api.md)` — Claude reads these on demand
-- Use `${CLAUDE_SKILL_DIR}/` in DCI/bash contexts only: `` !`cat ${CLAUDE_SKILL_DIR}/references/small.md` ``
+- Use `${CLAUDE_SKILL_DIR}/` in DCI/bash contexts only: exclamation + backtick-wrapped command, e.g. `cat ${CLAUDE_SKILL_DIR}/references/file.md`
 - Sections >20 lines (Output, Error Handling, Examples) → offload to `references/` with relative links
 - If skill has 3+ distinct user operations → split into individual `commands/*.md` files
 - Add DCI for common discovery: file existence checks, git status, tool version detection
@@ -210,26 +195,12 @@ Additional guidelines:
 
 **String substitutions available:**
 - `$ARGUMENTS` / `$0`, `$1` - user-provided arguments (pair with `argument-hint` frontmatter)
-- `${CLAUDE_SESSION_ID}` - current session identifier
-
-**Dynamic Context Injection (DCI):**
-DCI runs shell commands BEFORE Claude sees the skill content, injecting output verbatim. This eliminates discovery tool calls — Claude starts with context already loaded.
-
-Syntax: `` !`command` `` on its own line (Anthropic preprocessing spec).
-
-Best practices:
-- Add a `## Current State` section with DCI directives right after the title
-- Always use fallbacks: `` !`terraform version 2>/dev/null || echo 'not installed'` ``
-- Keep injections small — summaries and version info, not full file contents
-- For skills that typically run 3+ discovery commands first, DCI saves those entire tool call rounds
-
-Example:
-```markdown
-## Current State
-!`git status --short`
-!`git log --oneline -5`
-!`node -v 2>/dev/null || echo 'N/A'`
-```
+- `${CLAUDE_SESSION_ID}` - current session ID
+- `` !`command` `` syntax — dynamic context injection (Anthropic spec feature):
+  - Runs shell command at skill activation time, injects stdout into body
+  - **Use for**: always-needed, small references (<5KB) — e.g., `!`cat ${CLAUDE_SKILL_DIR}/references/config.md``
+  - **Don't use for**: large references (>5KB), conditional content, or anything that varies by mode
+  - Conditional or large references → keep manual `Load ${CLAUDE_SKILL_DIR}/references/...` instructions
 
 ### Step 5: Create Supporting Files
 
@@ -242,12 +213,12 @@ Example:
 
 **References** (`references/`):
 - Heavy documentation that doesn't need to load at activation
-- TOC for files >100 lines
+- Use clear section headers for navigability (no TOC needed — wastes tokens)
 - One-level-deep references only (no `references/sub/dir/`)
 
 **Templates** (`templates/`):
 - Boilerplate files used for generation
-- Use clear variable syntax (`{{VARIABLE_NAME}}`)
+- Use clear placeholder syntax (`{{PLACEHOLDER}}`)
 
 **Assets** (`assets/`):
 - Static resources (images, configs, data files)
@@ -349,8 +320,8 @@ When the user wants to validate, grade, or audit an existing skill:
 ### Step V1: Locate the Skill
 
 Ask for the SKILL.md path or detect from context. Common locations:
-- `~/.claude/skills/<skill-name>/SKILL.md` (global)
-- `.claude/skills/<skill-name>/SKILL.md` (project)
+- `~/.claude/skills/{name}/SKILL.md` (global)
+- `.claude/skills/{name}/SKILL.md` (project)
 
 ### Step V2: Run Validator
 
