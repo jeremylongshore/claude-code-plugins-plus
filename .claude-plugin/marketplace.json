@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 315,
+    "totalPlugins": 316,
     "skillsEnabled": 242,
     "lastUpdated": "2026-02-22"
   },
@@ -3600,6 +3600,27 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      }
+    },
+    {
+      "name": "severity1-marketplace",
+      "source": "./plugins/security/severity1-marketplace",
+      "description": "Severity level classification and prompt improvement for marketplace plugins. Assigns severity ratings (S1-Critical through S4-Low) and enhances plugin prompts for clarity, safety, and effectiveness.",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "severity",
+        "classification",
+        "prompt-improvement",
+        "marketplace",
+        "security",
+        "quality",
+        "triage",
+        "agent-skills"
+      ],
+      "author": {
+        "name": "severity1",
+        "email": "severity1@intentsolutions.io"
       }
     },
     {
