@@ -36,7 +36,16 @@ Determine user intent from their prompt:
 - **Create mode**: "create a skill", "build a skill", "new skill" -> proceed to Step 1
 - **Validate mode**: "validate", "check", "grade", "score", "audit" -> jump to Validation Workflow
 
+### Communicating with the User
+
+Pay attention to context cues to understand the user's technical level. Skill creator is used by people across a wide range of familiarity — from first-time coders to senior engineers. In the default case:
+- "evaluation" and "benchmark" are borderline but OK
+- For "JSON" and "assertion", check for cues the user knows these terms before using them without explanation
+- Briefly explain terms if in doubt
+
 ### Step 1: Understand Requirements
+
+If the current conversation already contains a workflow the user wants to capture (e.g., "turn this into a skill"), extract answers from the conversation history first — the tools used, the sequence of steps, corrections the user made, input/output formats observed. Confirm with the user before proceeding.
 
 Ask the user with AskUserQuestion:
 
@@ -192,6 +201,7 @@ Additional guidelines:
 - Include edge cases that actually matter
 - No time-sensitive information
 - Consistent terminology throughout
+- **No surprise behavior**: Skills must not contain malware, exploit code, or content that could compromise security. A skill's behavior should not surprise the user if described honestly
 
 **String substitutions available:**
 - `$ARGUMENTS` / `$0`, `$1` - user-provided arguments (pair with `argument-hint` frontmatter)
@@ -273,9 +283,13 @@ Run parallel evaluation: Claude A with skill installed vs Claude B without. Comp
 
 Common fixes: undertriggering -> pushier description, wrong format -> explicit output examples, over-constraining -> increase degrees of freedom.
 
+**Look for repeated work across test cases**: Read transcripts from test runs. If all test cases independently wrote similar helper scripts or took the same multi-step approach, that's a signal the skill should bundle that script in `scripts/`. Write it once and tell the skill to use it.
+
 ### Step 9: Optimize Description
 
 Create 20 trigger evaluation queries (10 should-trigger, 10 should-not-trigger). Split into train (14) and test (6) sets. Iterate description until >90% accuracy on both sets.
+
+**How skill triggering works:** Skills appear in Claude's available_skills list with their name + description. Claude decides whether to consult a skill based on that description. Important: Claude only consults skills for tasks it can't easily handle on its own — simple, one-step queries may not trigger a skill even if the description matches perfectly. Complex, multi-step, or specialized queries reliably trigger skills when the description matches. Design eval queries accordingly — make them substantive enough that Claude would benefit from consulting a skill.
 
 Tips: front-load distinctive keywords, include specific file types/tools/domains, add "Use when...", "Trigger with...", "Make sure to use whenever..." patterns. Avoid generic terms that overlap with other skills.
 
@@ -448,7 +462,7 @@ Output:
 ## Resources
 
 **References:** `${CLAUDE_SKILL_DIR}/references/`
-- `source-of-truth.md` — Canonical spec | `frontmatter-spec.md` — Field reference | `validation-rules.md` — 100-point rubric
+- `source-of-truth.md` — Canonical spec ([AgentSkills.io](https://agentskills.io/specification), [Anthropic docs](https://code.claude.com/docs/en/skills), [Lee Han Chung deep dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)) | `frontmatter-spec.md` — Field reference | `validation-rules.md` — 100-point rubric
 - `workflows.md` — Workflow patterns | `output-patterns.md` — Output formats | `schemas.md` — JSON schemas (evals, grading, benchmarks)
 - `anthropic-comparison.md` — Gap analysis | `advanced-eval-workflow.md` — Eval, iteration, optimization, platform notes
 

@@ -233,6 +233,22 @@ model: sonnet                     # Use Sonnet for balanced tasks
 
 **Avoid hardcoded model IDs** like `claude-opus-4-5-20251101` - they break on deprecation.
 
+### effort
+
+- **Type**: string
+- **Default**: (inherits from caller)
+- **Values**: `low`, `medium`, `high`, `max`
+- **Purpose**: Override model reasoning effort level
+- **Note**: `max` is only available with Opus 4.6
+- **Added**: v2.1.80 (March 2026)
+
+```yaml
+effort: high                         # More reasoning for complex tasks
+effort: low                          # Fast responses for simple tasks
+```
+
+*Source: [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills)*
+
 ### context
 
 - **Type**: string
@@ -302,6 +318,7 @@ license: MIT
 
 # Claude Code extensions (as needed)
 model: inherit
+# effort: high
 argument-hint: "[arg]"
 context: fork
 agent: general-purpose

@@ -1,4 +1,5 @@
 # Skill Validation Rules
+Sources: [AgentSkills.io spec](https://agentskills.io/specification) · [Anthropic docs](https://code.claude.com/docs/en/skills) · Intent Solutions 100-point rubric
 
 Two-tier validation aligned with AgentSkills.io spec + Enterprise extensions.
 
@@ -20,12 +21,12 @@ The baseline. Any skill published to the ecosystem must pass this.
 
 Everything in Standard, plus:
 
-- `metadata.author` and `metadata.version` present
+- `author` and `version` present (top-level fields, NOT under metadata)
 - `allowed-tools` with scoped Bash
 - Recommended sections present (title, instructions, examples)
 - Progressive disclosure used (references/ for heavy content)
 - Error handling documented
-- `{baseDir}` used for all internal paths
+- `${CLAUDE_SKILL_DIR}` used for all internal paths
 - All referenced resources exist
 
 ---
@@ -56,6 +57,7 @@ Everything in Standard, plus:
 | `compatibility` | 1-500 chars if present |
 | `metadata` | Valid YAML object if present |
 | `model` | One of: `inherit`, `sonnet`, `haiku`, `opus`, or valid model ID |
+| `effort` | One of: `low`, `medium`, `high`, `max` (`max` requires Opus 4.6) |
 | `argument-hint` | Non-empty string if present |
 | `disable-model-invocation` | Boolean if present |
 | `user-invocable` | Boolean if present |
@@ -116,9 +118,9 @@ The marketplace 100-point validator scores them at top-level.
 | Has examples | Warning | Should have `## Examples` or example content |
 | Instructions have steps | Warning | Should have numbered steps or `### Step N` headings |
 | Error handling | Warning | Should document error cases |
-| Resources section | Warning | Should list `{baseDir}/` references if resources exist |
-| All `{baseDir}/` refs exist | Error | Referenced scripts, references, templates must exist |
-| No path escapes | Error | No `{baseDir}/../` |
+| Resources section | Warning | Should list `${CLAUDE_SKILL_DIR}/` references if resources exist |
+| All `${CLAUDE_SKILL_DIR}/` refs exist | Error | Referenced scripts, references, templates must exist |
+| No path escapes | Error | No `${CLAUDE_SKILL_DIR}/../` |
 | Word count | Warning | Over 5000 words suggests splitting to references |
 
 ---
@@ -160,7 +162,7 @@ Bash(docker:*)
 | Anti-Pattern | Check | Level |
 |-------------|-------|-------|
 | Windows paths | `C:\` or backslash paths | Error |
-| Nested references | `{baseDir}/references/sub/dir/file` | Warning |
+| Nested references | `${CLAUDE_SKILL_DIR}/references/sub/dir/file` | Warning |
 | Hardcoded model IDs | `claude-*-20\d{6}` pattern | Warning |
 | Voodoo constants | Unexplained magic numbers | Info |
 | Over-verbose | >5000 words in SKILL.md | Warning |
@@ -253,10 +255,10 @@ Also recognized: `${CLAUDE_SESSION_ID}` — current session identifier (official
 4. Instructions have steps (Enterprise)
 
 ### Resource Validation
-1. All `{baseDir}/scripts/*` references exist
-2. All `{baseDir}/references/*` references exist
-3. All `{baseDir}/templates/*` references exist
-4. All `{baseDir}/assets/*` references exist
+1. All `${CLAUDE_SKILL_DIR}/scripts/*` references exist
+2. All `${CLAUDE_SKILL_DIR}/references/*` references exist
+3. All `${CLAUDE_SKILL_DIR}/templates/*` references exist
+4. All `${CLAUDE_SKILL_DIR}/assets/*` references exist
 5. Relative markdown links (e.g., `[ref](reference.md)`, `[api](references/api.md)`) point to existing files
 6. No path escape attempts
 

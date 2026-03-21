@@ -1,11 +1,12 @@
 # Claude Agent Skills: Source of Truth Specification
 
 Canonical reference synthesizing all authoritative sources:
-- **AgentSkills.io** (open standard specification)
-- **Anthropic Best Practices** (platform.claude.com)
-- **Claude Code Extensions** (platform-specific fields)
-- **Anthropic Engineering Blog** (progressive disclosure, degrees of freedom)
-- **anthropics/skills** (official skill-creator reference implementation)
+- **AgentSkills.io** — [agentskills.io/specification](https://agentskills.io/specification) (open standard, Dec 2025)
+- **Anthropic Best Practices** — [code.claude.com/docs/en/skills](https://code.claude.com/docs/en/skills)
+- **Claude Code Extensions** — platform-specific fields ([changelog](https://code.claude.com/docs/en/changelog))
+- **Anthropic Engineering Blog** — progressive disclosure, degrees of freedom
+- **anthropics/skills** — [github.com/anthropics/skills](https://github.com/anthropics/skills) (official skill-creator reference implementation)
+- **Lee Han Chung Deep Dive** — [leehanchung.github.io](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) (authoritative technical reference)
 
 ---
 
@@ -40,8 +41,10 @@ Canonical reference synthesizing all authoritative sources:
 | `disable-model-invocation` | boolean | Prevent auto-loading; require explicit `/name` invocation |
 | `user-invocable` | boolean | `false` = hide from `/` menu (background knowledge only) |
 | `model` | string | Model override: `inherit`, `sonnet`, `haiku`, `opus`, or model ID |
+| `effort` | string | Model reasoning effort override: `low`, `medium`, `high`, `max` (v2.1.80+) |
 | `context` | string | `fork` = execute in subagent (isolated context) |
 | `agent` | string | Subagent type when `context: fork`: `Explore`, `Plan`, `general-purpose`, or custom agent name |
+| `skills` | array | List of skill names to preload into subagent context (v2.1.78+) |
 | `hooks` | object | Skill-scoped lifecycle hooks (PreToolUse, PostToolUse, etc.) |
 
 ### Field Relationships
@@ -51,6 +54,8 @@ Canonical reference synthesizing all authoritative sources:
 - `allowed-tools` is experimental; scoped Bash like `Bash(git:*)` is best practice but not enforced by runtime
 - `author`, `version`, `license`, `tags`, `compatible-with` are TOP-LEVEL fields (marketplace validator scores them at top-level)
 - `metadata` is for custom data not covered by the spec (category, maintainer, etc.)
+- `effort` overrides model reasoning effort (v2.1.80+, works independently of other fields)
+- `skills` field in agent definitions preloads named skills into subagent context
 
 ---
 

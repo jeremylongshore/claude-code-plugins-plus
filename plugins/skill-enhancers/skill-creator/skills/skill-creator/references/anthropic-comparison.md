@@ -1,5 +1,7 @@
 # Gap Analysis: Our Skill Creator vs Anthropic Standards
 
+Sources: [AgentSkills.io spec](https://agentskills.io/specification) · [Anthropic docs](https://code.claude.com/docs/en/skills) · [anthropics/skills repo](https://github.com/anthropics/skills)
+
 Comparison of our skill-creator implementation against:
 - AgentSkills.io specification (canonical open standard)
 - Anthropic best practices (platform.claude.com)
@@ -12,10 +14,10 @@ Comparison of our skill-creator implementation against:
 
 | Issue | Our Requirement | Anthropic Standard | Resolution |
 |-------|----------------|-------------------|------------|
-| `version` as required frontmatter | Top-level required field | Not in spec; use `metadata.version` | Moved to `metadata` (optional) |
-| `author` as required frontmatter | Top-level required field | Not in spec; use `metadata.author` | Moved to `metadata` (optional) |
+| `version` as required frontmatter | Top-level required field | Not in spec; use `metadata.version` | Kept as top-level field (marketplace validator scores at top-level); AgentSkills.io spec also allows under metadata |
+| `author` as required frontmatter | Top-level required field | Not in spec; use `metadata.author` | Kept as top-level field (marketplace validator scores at top-level); AgentSkills.io spec also allows under metadata |
 | `license` as required | Required in Enterprise tier | Optional in AgentSkills.io spec | Optional (Enterprise recommends) |
-| `tags` field | Listed as optional | Not in official spec at all | Removed from schema; use `metadata.tags` |
+| `tags` field | Listed as optional | Not in official spec at all | Kept as top-level field (used by marketplace and discovery) |
 | Mandatory "Use when" phrase | Error if missing | Natural language, no exact phrase | Recommend but don't enforce exact wording |
 | Mandatory "Trigger with" phrase | Error if missing | Not an Anthropic requirement | Removed as requirement |
 | 8 mandatory body sections | Error if any missing | "No format restrictions" | Recommended sections, not mandatory |
@@ -77,9 +79,8 @@ Existing skills that pass our old validator will mostly pass the new one because
 
 ### Breaking Changes
 
-1. `version` and `author` should move to `metadata` block (old location still accepted with warning)
-2. `tags` field is no longer recognized (use `metadata.tags`)
-3. Hardcoded model IDs trigger a warning (use `inherit` or short names)
+1. `version`, `author`, and `tags` are top-level fields (marketplace validator scores them here; AgentSkills.io spec also allows under `metadata`)
+2. Hardcoded model IDs trigger a warning (use `inherit` or short names)
 
 ### New Capabilities
 
@@ -89,3 +90,4 @@ Skills can now use:
 - `hooks` for lifecycle automation
 - `compatibility` for environment requirements
 - `argument-hint` for better autocomplete UX
+- `effort` for model reasoning override (v2.1.80)
