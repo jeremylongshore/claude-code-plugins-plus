@@ -86,6 +86,26 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         .hero-text-muted { color: var(--text); }
         .hero-text-primary { color: var(--primary); }
 
+        .hero-byline {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-3);
+            margin: -1rem 0 1.5rem;
+            letter-spacing: 0.02em;
+            animation: fadeInUp 0.7s var(--ease-out) 0.05s forwards;
+            opacity: 0;
+        }
+        .hero-byline a {
+            color: var(--text-3);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--border);
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .hero-byline a:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
         /* Spotlight eyebrow pill */
         .spotlight-badge {
             display: inline-block;
@@ -291,39 +311,6 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
             font-size: 0.8125rem;
             color: var(--brand-blue);
             margin-top: 0.5rem;
-        }
-
-        /* Stats bar */
-        .stats-bar {
-            display: flex;
-            gap: 2rem;
-            justify-content: flex-start;
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-            opacity: 0;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .stats-number {
-            font-family: 'DM Mono', monospace;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--gold);
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-family: 'DM Mono', monospace;
-            font-size: 0.75rem;
-            color: var(--text-3);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
         }
 
         /* Install box */
@@ -1070,11 +1057,6 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                 gap: 1.5rem;
             }
 
-            .stats-bar {
-                gap: 2rem;
-                flex-wrap: wrap;
-            }
-
             .install-box {
                 padding: 1.5rem;
             }
@@ -1163,6 +1145,7 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
     <section class="hero">
         <div class="hero-inner">
             <h1><span class="hero-text-muted">TONS OF</span><br/><span class="hero-text-primary">SKILLS</span></h1>
+            <p class="hero-byline">by <a href="https://jeremylongshore.com" target="_blank" rel="noopener">Jeremy Longshore</a></p>
 
             <p class="hero-subtitle">
                 Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.
@@ -1190,28 +1173,6 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
                 </div>
             </div>
 
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stats-number">{totalSkills}</div>
-                    <div class="stat-label">Searchable Skills</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stats-number">{totalPlugins}</div>
-                    <div class="stat-label">Plugins</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stats-number">{totalCategories}</div>
-                    <div class="stat-label">Categories</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stats-number">{totalAgents}</div>
-                    <div class="stat-label">Agents</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stats-number">{totalHooks}</div>
-                    <div class="stat-label">Hooks</div>
-                </div>
-            </div>
 
             <!-- Installation Instructions -->
             <div class="install-box">
@@ -1780,36 +1741,6 @@ const totalHooks = searchIndex.stats.totalHooks || 0;
         }
     </script>
 
-    <script is:inline>
-        // Animated stat counters on viewport entry
-        function animateCounter(el, target) {
-            var duration = 1200;
-            var startTime = null;
-            function step(timestamp) {
-                if (!startTime) startTime = timestamp;
-                var progress = Math.min((timestamp - startTime) / duration, 1);
-                var eased = 1 - Math.pow(1 - progress, 3);
-                el.textContent = Math.floor(eased * target).toLocaleString();
-                if (progress < 1) requestAnimationFrame(step);
-            }
-            requestAnimationFrame(step);
-        }
-
-        var statsObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    entry.target.querySelectorAll('.stats-number').forEach(function(num) {
-                        var val = parseInt(num.textContent.replace(/,/g, ''), 10);
-                        if (!isNaN(val) && val > 0) animateCounter(num, val);
-                    });
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.3 });
-
-        var statsBar = document.querySelector('.stats-bar');
-        if (statsBar) statsObserver.observe(statsBar);
-    </script>
 
     <!-- Stack Builder Component -->
     <StackBuilder />
