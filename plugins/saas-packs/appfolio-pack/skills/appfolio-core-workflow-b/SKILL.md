@@ -1,73 +1,31 @@
 ---
 name: appfolio-core-workflow-b
 description: |
-  Execute AppFolio secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "appfolio secondary workflow",
-  "secondary task with appfolio".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Automate tenant management and lease operations with AppFolio.
+  Trigger: "appfolio tenant management".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio Core Workflow B
-
-## Overview
-Secondary workflow for AppFolio. Complements the primary workflow.
-
-## Prerequisites
-- Completed `appfolio-install-auth` setup
-- Familiarity with `appfolio-core-workflow-a`
-- Valid API credentials configured
-
-## Instructions
-
-### Step 1: Setup
-```typescript
-// Step 1 implementation
-```
-
-### Step 2: Process
-```typescript
-// Step 2 implementation
-```
-
-### Step 3: Complete
-```typescript
-// Step 3 implementation
-```
-
-## Output
-- Completed Core Workflow B execution
-- Results from AppFolio API
-- Success confirmation or error details
+# AppFolio Core Workflow B — Tenant & Lease Management
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid credentials | Verify client_id/secret |
+| `404 Not Found` | Wrong endpoint | Check API version in URL |
+| `422 Unprocessable` | Invalid request body | Validate required fields |
 
 ## Resources
-- [AppFolio Documentation](https://docs.appfolio.com)
-- [AppFolio API Reference](https://docs.appfolio.com/api)
+
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
-For common errors, see `appfolio-common-errors`.
+
+Continue with the next skill in the AppFolio pack sequence.

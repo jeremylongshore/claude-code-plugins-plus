@@ -1,149 +1,178 @@
 ---
 name: anima-sdk-patterns
 description: |
-  Apply production-ready Anima SDK patterns for TypeScript and Python.
-  Use when implementing Anima integrations, refactoring SDK usage,
-  or establishing team coding standards for Anima.
-  Trigger with phrases like "anima SDK patterns", "anima best practices",
-  "anima code patterns", "idiomatic anima".
+  Apply production-ready patterns for the Anima SDK design-to-code pipeline.
+  Use when building reusable Anima client wrappers, implementing output caching,
+  or establishing team standards for design-to-code automation.
+  Trigger: "anima SDK patterns", "anima best practices", "anima code patterns".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, patterns]
 compatible-with: claude-code
 ---
 
 # Anima SDK Patterns
 
 ## Overview
-Production-ready patterns for Anima SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `anima-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for `@animaapp/anima-sdk`: singleton client, generation caching, output normalization, and configurable settings presets.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Singleton Client with Configuration
+
 ```typescript
 // src/anima/client.ts
-import { AnimaClient } from '@anima/sdk';
+import { Anima } from '@animaapp/anima-sdk';
 
-let instance: AnimaClient | null = null;
+let instance: Anima | null = null;
 
-export function getAnimaClient(): AnimaClient {
+export function getAnimaClient(): Anima {
   if (!instance) {
-    instance = new AnimaClient({
-      apiKey: process.env.ANIMA_API_KEY!,
-      // Additional options
-    });
+    if (!process.env.ANIMA_TOKEN) throw new Error('ANIMA_TOKEN not set');
+    instance = new Anima({ auth: { token: process.env.ANIMA_TOKEN } });
   }
   return instance;
 }
+
+// Preset configurations for different project needs
+export const PRESETS = {
+  nextjs: { language: 'typescript' as const, framework: 'react' as const, styling: 'tailwind' as const, uiLibrary: 'shadcn' as const },
+  vite: { language: 'typescript' as const, framework: 'react' as const, styling: 'tailwind' as const },
+  vue: { language: 'typescript' as const, framework: 'vue' as const, styling: 'tailwind' as const },
+  static: { language: 'javascript' as const, framework: 'html' as const, styling: 'css' as const },
+} as const;
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { AnimaError } from '@anima/sdk';
+### Step 2: Generation Cache
 
-async function safeAnimaCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof AnimaError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+```typescript
+// src/anima/cache.ts
+import crypto from 'crypto';
+import fs from 'fs';
+
+interface CacheEntry {
+  files: Array<{ fileName: string; content: string }>;
+  generatedAt: string;
+  settingsHash: string;
+}
+
+class AnimaCache {
+  private cacheDir: string;
+
+  constructor(cacheDir: string = '.anima-cache') {
+    this.cacheDir = cacheDir;
+    fs.mkdirSync(cacheDir, { recursive: true });
+  }
+
+  private getKey(fileKey: string, nodeId: string, settings: object): string {
+    const hash = crypto.createHash('md5')
+      .update(`${fileKey}:${nodeId}:${JSON.stringify(settings)}`)
+      .digest('hex');
+    return hash;
+  }
+
+  get(fileKey: string, nodeId: string, settings: object): CacheEntry | null {
+    const key = this.getKey(fileKey, nodeId, settings);
+    const path = `${this.cacheDir}/${key}.json`;
+    if (!fs.existsSync(path)) return null;
+    return JSON.parse(fs.readFileSync(path, 'utf8'));
+  }
+
+  set(fileKey: string, nodeId: string, settings: object, files: any[]): void {
+    const key = this.getKey(fileKey, nodeId, settings);
+    const entry: CacheEntry = {
+      files,
+      generatedAt: new Date().toISOString(),
+      settingsHash: key,
+    };
+    fs.writeFileSync(`${this.cacheDir}/${key}.json`, JSON.stringify(entry));
   }
 }
+
+export { AnimaCache };
 ```
 
-### Step 3: Implement Retry Logic
+### Step 3: Output Normalizer
+
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
+// src/anima/normalizer.ts
+// Normalize Anima output to match project conventions
+
+interface NormalizationConfig {
+  componentNameCase: 'PascalCase' | 'kebab-case';
+  addBarrelExport: boolean;
+  wrapWithCn: boolean;
+  addTypeAnnotations: boolean;
+}
+
+function normalizeOutput(
+  files: Array<{ fileName: string; content: string }>,
+  config: NormalizationConfig,
+): Array<{ fileName: string; content: string }> {
+  return files.map(file => {
+    let content = file.content;
+
+    if (config.wrapWithCn && file.fileName.endsWith('.tsx')) {
+      // Add cn() import and wrap className strings
+      if (!content.includes("import { cn }")) {
+        content = content.replace(
+          /^(import .+\n)/m,
+          "$1import { cn } from '@/lib/utils';\n"
+        );
+      }
+    }
+
+    if (config.addTypeAnnotations && file.fileName.endsWith('.tsx')) {
+      content = content.replace(
+        /export default function (\w+)\(\)/g,
+        'export default function $1(): React.ReactElement'
+      );
+    }
+
+    return { fileName: file.fileName, content };
+  });
+}
+
+export { normalizeOutput, NormalizationConfig };
+```
+
+### Step 4: Error Recovery Pattern
+
+```typescript
+// src/anima/retry.ts
+async function generateWithRetry(
+  anima: Anima,
+  params: any,
+  maxRetries: number = 3,
+): Promise<any> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (err) {
+      return await anima.generateCode(params);
+    } catch (err: any) {
       if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
+      const delay = 2000 * Math.pow(2, attempt - 1);
+      console.log(`Generation failed, retry ${attempt}/${maxRetries} in ${delay}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Unreachable');
 }
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, AnimaClient>();
-
-export function getClientForTenant(tenantId: string): AnimaClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new AnimaClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from anima import AnimaClient
-
-@asynccontextmanager
-async def get_anima_client():
-    client = AnimaClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const animaResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+- Singleton client with preset configurations
+- File-based generation cache (avoid redundant API calls)
+- Output normalizer for project convention matching
+- Retry pattern for API resilience
 
 ## Resources
-- [Anima SDK Reference](https://docs.anima.com/sdk)
-- [Anima API Types](https://docs.anima.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Anima SDK GitHub](https://github.com/AnimaApp/anima-sdk)
+- [Anima API Docs](https://docs.animaapp.com/docs/anima-api)
 
 ## Next Steps
-Apply patterns in `anima-core-workflow-a` for real-world usage.
+
+Apply patterns in `anima-core-workflow-a` for automated design pipelines.

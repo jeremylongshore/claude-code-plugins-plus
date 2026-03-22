@@ -1,119 +1,90 @@
 ---
 name: apple-notes-local-dev-loop
 description: |
-  Configure Apple Notes local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Apple Notes.
-  Trigger with phrases like "apple-notes dev setup", "apple-notes local development",
-  "apple-notes dev environment", "develop with apple-notes".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up local development workflow for Apple Notes automation with JXA hot reload.
+  Trigger: "apple notes dev loop".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Apple Notes.
-
-## Prerequisites
-- Completed `apple-notes-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Iterative development workflow for Apple Notes JXA scripts with file watching and test helpers.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-apple-notes-project/
-├── src/
-│   ├── apple-notes/
-│   │   ├── client.ts       # Apple Notes client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── apple-notes.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
+### Step 1: Project Setup
 ```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+mkdir apple-notes-automation && cd apple-notes-automation
+npm init -y
+npm install -D chokidar tsx typescript
 ```
 
-### Step 3: Setup Hot Reload
+### Step 2: JXA Runner with Hot Reload
+```typescript
+// src/dev/watch-runner.ts
+import { watch } from "chokidar";
+import { execSync } from "child_process";
+
+watch("scripts/*.js", { ignoreInitial: true }).on("change", (path) => {
+  console.log(`Changed: ${path} — running...`);
+  try {
+    const output = execSync(`osascript -l JavaScript "${path}"`, { encoding: "utf8" });
+    console.log(output);
+  } catch (err: any) {
+    console.error(err.stderr);
+  }
+});
+
+console.log("Watching scripts/*.js for changes...");
+```
+
+### Step 3: Test Helper
+```typescript
+// src/dev/test-notes.ts
+import { execSync } from "child_process";
+
+function runJxa(script: string): string {
+  return execSync(`osascript -l JavaScript -e '${script}'`, { encoding: "utf8" }).trim();
+}
+
+function getNoteCount(): number {
+  return parseInt(runJxa("Application(\"Notes\").defaultAccount.notes.length"));
+}
+
+function createTestNote(title: string): string {
+  return runJxa(`
+    const Notes = Application("Notes");
+    const note = Notes.Note({name: "${title}", body: "<p>Test</p>"});
+    Notes.defaultAccount.folders[0].notes.push(note);
+    note.id();
+  `);
+}
+
+export { runJxa, getNoteCount, createTestNote };
+```
+
+### Step 4: Dev Scripts
 ```json
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "dev": "tsx src/dev/watch-runner.ts",
+    "test:notes": "tsx src/dev/test-notes.ts"
   }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { AppleNotesClient } from '../src/apple-notes/client';
-
-describe('Apple Notes Client', () => {
-  it('should initialize with API key', () => {
-    const client = new AppleNotesClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Apple Notes development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Apple Notes Responses
-```typescript
-vi.mock('@apple-notes/sdk', () => ({
-  AppleNotesClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=APPLE-NOTES=* npm run dev
-```
+- Hot-reload JXA development with file watching
+- Test helpers for note CRUD operations
+- Iterative script development workflow
 
 ## Resources
-- [Apple Notes SDK Reference](https://docs.apple-notes.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
-## Next Steps
-See `apple-notes-sdk-patterns` for production-ready code patterns.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

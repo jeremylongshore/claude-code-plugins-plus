@@ -1,121 +1,116 @@
 ---
 name: alchemy-prod-checklist
 description: |
-  Execute Alchemy production deployment checklist and rollback procedures.
-  Use when deploying Alchemy integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "alchemy production", "deploy alchemy",
-  "alchemy go-live", "alchemy launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute production readiness checklist for Alchemy-powered dApps.
+  Use when deploying Web3 applications, preparing for mainnet launch,
+  or validating blockchain integration before go-live.
+  Trigger: "alchemy production", "alchemy go-live", "alchemy mainnet checklist",
+  "dApp production readiness".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, production]
 compatible-with: claude-code
 ---
 
 # Alchemy Production Checklist
 
-## Overview
-Complete checklist for deploying Alchemy integrations to production.
+## Pre-Launch Checklist
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### API & Infrastructure
+- [ ] API key restricted to production domains in Alchemy Dashboard
+- [ ] Separate Alchemy apps for dev/staging/prod environments
+- [ ] Rate limit headroom verified (< 70% of CU/sec budget)
+- [ ] Retry logic with exponential backoff implemented
+- [ ] Error monitoring configured (Sentry, Datadog, etc.)
+- [ ] Webhook endpoints HTTPS-only with signature verification
 
-## Instructions
+### Security
+- [ ] API key NOT in frontend code — proxied through backend
+- [ ] Private keys in secret manager (not env files)
+- [ ] All user-supplied addresses validated and checksummed
+- [ ] No `console.log` of sensitive data in production builds
+- [ ] npm audit clean — no critical vulnerabilities
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Smart Contracts (if applicable)
+- [ ] Contracts audited by reputable firm
+- [ ] Deployed and verified on Etherscan/Polygonscan
+- [ ] Admin keys secured in multi-sig wallet
+- [ ] Emergency pause function tested
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Alchemy error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Performance
+- [ ] Response caching for frequently-queried data (balances, metadata)
+- [ ] Connection pooling for provider instances
+- [ ] Batch requests where possible (NFT metadata, balances)
+- [ ] WebSocket reconnection logic for real-time subscriptions
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Alchemy connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Validation Script
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+```typescript
+// src/prod/readiness.ts
+import { Alchemy, Network } from 'alchemy-sdk';
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.alchemy.com
+async function checkReadiness(): Promise<void> {
+  const checks: Array<{ name: string; pass: boolean; detail: string }> = [];
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/alchemy-integration app=image:new --record
-kubectl rollout pause deployment/alchemy-integration
+  // 1. API connectivity
+  const alchemy = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET });
+  try {
+    const block = await alchemy.core.getBlockNumber();
+    checks.push({ name: 'API Connectivity', pass: true, detail: `Block ${block}` });
+  } catch (err: any) {
+    checks.push({ name: 'API Connectivity', pass: false, detail: err.message });
+  }
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
+  // 2. Enhanced API
+  try {
+    await alchemy.core.getTokenBalances('0x0000000000000000000000000000000000000000');
+    checks.push({ name: 'Enhanced API', pass: true, detail: 'getTokenBalances works' });
+  } catch { checks.push({ name: 'Enhanced API', pass: false, detail: 'Enhanced API unavailable' }); }
 
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/alchemy-integration
-kubectl rollout pause deployment/alchemy-integration
-sleep 300
+  // 3. NFT API
+  try {
+    await alchemy.nft.getContractMetadata('0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
+    checks.push({ name: 'NFT API', pass: true, detail: 'getContractMetadata works' });
+  } catch { checks.push({ name: 'NFT API', pass: false, detail: 'NFT API unavailable' }); }
 
-# Complete rollout to 100%
-kubectl rollout resume deployment/alchemy-integration
-kubectl rollout status deployment/alchemy-integration
+  // 4. API key not in build output
+  const fs = await import('fs');
+  const buildDir = './dist';
+  if (fs.existsSync(buildDir)) {
+    const content = fs.readdirSync(buildDir, { recursive: true })
+      .filter((f: any) => f.toString().endsWith('.js'))
+      .map((f: any) => fs.readFileSync(`${buildDir}/${f}`, 'utf8'))
+      .join('');
+    const apiKeyExposed = content.includes(process.env.ALCHEMY_API_KEY || '');
+    checks.push({ name: 'API Key Safety', pass: !apiKeyExposed, detail: apiKeyExposed ? 'CRITICAL: API key found in build!' : 'API key not in build' });
+  }
+
+  // Print results
+  console.log('\n=== Alchemy Production Readiness ===\n');
+  for (const c of checks) {
+    console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
+  }
+  const failures = checks.filter(c => !c.pass);
+  console.log(`\n${failures.length === 0 ? 'READY FOR PRODUCTION' : `${failures.length} BLOCKING ISSUES`}`);
+}
+
+checkReadiness().catch(console.error);
 ```
 
 ## Output
-- Deployed Alchemy integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
 
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; alchemy: any }> {
-  const start = Date.now();
-  try {
-    await alchemyClient.ping();
-    return { status: 'healthy', alchemy: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', alchemy: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/alchemy-integration
-kubectl rollout status deployment/alchemy-integration
-```
+- All checklist items validated
+- Readiness script with pass/fail reporting
+- API key exposure scan in build output
+- Multi-network connectivity verified
 
 ## Resources
-- [Alchemy Status](https://status.alchemy.com)
-- [Alchemy Support](https://docs.alchemy.com/support)
+
+- [Alchemy Docs](https://www.alchemy.com/docs)
+- [Alchemy Dashboard](https://dashboard.alchemy.com)
 
 ## Next Steps
+
 For version upgrades, see `alchemy-upgrade-migration`.

@@ -1,113 +1,57 @@
 ---
 name: apple-notes-common-errors
 description: |
-  Diagnose and fix Apple Notes common errors and exceptions.
-  Use when encountering Apple Notes errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "apple-notes error", "fix apple-notes",
-  "apple-notes not working", "debug apple-notes".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Diagnose and fix common Apple Notes automation errors.
+  Trigger: "apple notes error".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Common Errors
 
-## Overview
-Quick reference for the top 10 most common Apple Notes errors and their solutions.
+## Error Reference
 
-## Prerequisites
-- Apple Notes SDK installed
-- API credentials configured
-- Access to error logs
+| Error | Code | Root Cause | Fix |
+|-------|------|-----------|-----|
+| Not authorized to send Apple events | -1743 | Missing automation permission | System Preferences > Privacy > Automation |
+| AppleEvent timed out | -1712 | Notes.app busy or not running | Activate Notes first; increase timeout |
+| Notes is not running | N/A | App closed | Add `Application("Notes").activate()` |
+| Can't get folder | -1728 | Folder name mismatch | Check exact folder name including case |
+| Connection is invalid | -609 | Notes crashed during operation | Restart Notes.app |
+| User canceled | -128 | Security dialog dismissed | Re-run and click Allow |
 
-## Instructions
-
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
-
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Diagnostic Script
 ```bash
-# Verify API key is set
-echo $APPLE-NOTES_API_KEY
+#!/bin/bash
+echo "=== Apple Notes Diagnostics ==="
+echo -n "Notes.app running: "
+pgrep -x Notes > /dev/null && echo "Yes" || echo "No"
+echo -n "Note count: "
+osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.notes.length" 2>/dev/null || echo "ERROR"
+echo -n "Folder count: "
+osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.folders.length" 2>/dev/null || echo "ERROR"
+echo -n "Accounts: "
+osascript -l JavaScript -e "Application(\"Notes\").accounts().map(a => a.name()).join(\", \")" 2>/dev/null || echo "ERROR"
+echo "=== Done ==="
 ```
 
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `apple-notes-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
+## Common Fixes
 ```bash
-# Check Apple Notes status
-curl -s https://status.apple-notes.com
+# Reset TCC permissions (if automation denied)
+tccutil reset AppleEvents
 
-# Verify API connectivity
-curl -I https://api.apple-notes.com
+# Force quit and restart Notes
+killall Notes; sleep 2; open -a Notes
 
-# Check local configuration
-env | grep APPLE-NOTES
+# Check iCloud sync status
+defaults read com.apple.Notes
 ```
-
-### Escalation Path
-1. Collect evidence with `apple-notes-debug-bundle`
-2. Check Apple Notes status page
-3. Contact support with request ID
 
 ## Resources
-- [Apple Notes Status Page](https://status.apple-notes.com)
-- [Apple Notes Support](https://docs.apple-notes.com/support)
-- [Apple Notes Error Codes](https://docs.apple-notes.com/errors)
 
-## Next Steps
-For comprehensive debugging, see `apple-notes-debug-bundle`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

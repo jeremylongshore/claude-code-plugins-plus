@@ -1,205 +1,54 @@
 ---
 name: apple-notes-incident-runbook
 description: |
-  Execute Apple Notes incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Apple Notes-related outages, investigating errors,
-  or running post-incident reviews for Apple Notes integration failures.
-  Trigger with phrases like "apple-notes incident", "apple-notes outage",
-  "apple-notes down", "apple-notes on-call", "apple-notes emergency", "apple-notes broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Incident response runbook for Apple Notes automation failures.
+  Trigger: "apple notes incident".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Incident Runbook
 
-## Overview
-Rapid incident response procedures for Apple Notes-related outages.
+## Common Incidents
 
-## Prerequisites
-- Access to Apple Notes dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Apple Notes API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
-
+### Notes.app Crash During Automation
 ```bash
-# 1. Check Apple Notes status
-curl -s https://status.apple-notes.com | jq
+# 1. Check if Notes is running
+pgrep -x Notes || echo "Notes not running"
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.apple-notes'
+# 2. Restart Notes
+killall Notes 2>/dev/null; sleep 2; open -a Notes; sleep 3
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(apple-notes_errors_total[5m])
+# 3. Verify access
+osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.notes.length"
 
-# 4. Recent error logs
-kubectl logs -l app=apple-notes-integration --since=5m | grep -i error | tail -20
+# 4. Resume automation
 ```
 
-## Decision Tree
-
-```
-Apple Notes API returning errors?
-├─ YES: Is status.apple-notes.com showing incident?
-│   ├─ YES → Wait for Apple Notes to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
+### iCloud Sync Stuck
 ```bash
-# Verify API key is set
-kubectl get secret apple-notes-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Check iCloud status
+defaults read MobileMeAccounts
+# Force sync
+killall bird; sleep 5; killall cloudd; sleep 5
 
-# Check if key was rotated
-# → Verify in Apple Notes dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic apple-notes-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/apple-notes-integration
+# Verify notes are syncing
+osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.notes.length"
 ```
 
-### 429 - Rate Limited
+### Permissions Revoked
 ```bash
-# Check rate limit headers
-curl -v https://api.apple-notes.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/apple-notes-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Apple Notes for limit increase
-```
-
-### 500/503 - Apple Notes Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/apple-notes-integration APPLE-NOTES_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Apple Notes status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Apple Notes Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Apple Notes Integration Issue
-
-We're experiencing issues with our Apple Notes integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/apple-notes-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=apple-notes-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=apple-notes_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
-```markdown
-## Incident: Apple Notes [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Apple Notes-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.apple-notes.status' || echo "UNHEALTHY"
+# Reset automation permissions
+tccutil reset AppleEvents
+# Re-run script to trigger permission prompt
+osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.notes.length"
 ```
 
 ## Resources
-- [Apple Notes Status Page](https://status.apple-notes.com)
-- [Apple Notes Support](https://support.apple-notes.com)
 
-## Next Steps
-For data handling, see `apple-notes-data-handling`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

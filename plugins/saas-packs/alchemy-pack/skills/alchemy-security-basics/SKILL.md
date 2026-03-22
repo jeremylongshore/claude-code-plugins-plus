@@ -1,142 +1,166 @@
 ---
 name: alchemy-security-basics
 description: |
-  Apply Alchemy security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Alchemy security configuration.
-  Trigger with phrases like "alchemy security", "alchemy secrets",
-  "secure alchemy", "alchemy API key security".
-allowed-tools: Read, Write, Grep
+  Apply Web3 security best practices for Alchemy-powered applications.
+  Use when securing API keys, validating blockchain inputs, preventing
+  private key exposure, or hardening dApp infrastructure.
+  Trigger: "alchemy security", "web3 security", "protect private key",
+  "alchemy API key security", "dApp security".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, security]
 compatible-with: claude-code
 ---
 
 # Alchemy Security Basics
 
 ## Overview
-Security best practices for Alchemy API keys, tokens, and access control.
 
-## Prerequisites
-- Alchemy SDK installed
-- Understanding of environment variables
-- Access to Alchemy dashboard
+Web3 security practices for Alchemy-powered applications: API key protection, private key management, input validation, and smart contract interaction safety.
+
+## Security Checklist
+
+| Category | Requirement | Priority |
+|----------|------------|----------|
+| API keys | Never expose in client-side code | Critical |
+| Private keys | Use environment vars or secret manager | Critical |
+| Addresses | Validate and checksum all inputs | High |
+| RPC calls | Never pass user input directly to RPC | High |
+| Webhooks | Verify HMAC signatures | High |
+| Dependencies | Audit npm packages for supply chain | Medium |
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-ALCHEMY_API_KEY=sk_live_***
-ALCHEMY_SECRET=***
+### Step 1: API Key Protection
 
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Alchemy dashboard
-# 2. Update environment variable
-export ALCHEMY_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${ALCHEMY_API_KEY}" \
-  https://api.alchemy.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new AlchemyClient({
-    apiKey: process.env.ALCHEMY_READ_KEY,
-  }),
-  writer: new AlchemyClient({
-    apiKey: process.env.ALCHEMY_WRITE_KEY,
-  }),
-};
+// WRONG — API key in frontend code
+// const alchemy = new Alchemy({ apiKey: 'demo123' }); // NEVER DO THIS
+
+// RIGHT — API key in backend proxy
+// src/api/proxy.ts
+import express from 'express';
+import { Alchemy, Network } from 'alchemy-sdk';
+
+const app = express();
+const alchemy = new Alchemy({
+  apiKey: process.env.ALCHEMY_API_KEY, // Server-side only
+  network: Network.ETH_MAINNET,
+});
+
+// Proxy endpoint — frontend calls this instead of Alchemy directly
+app.get('/api/balance/:address', async (req, res) => {
+  const { address } = req.params;
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return res.status(400).json({ error: 'Invalid address format' });
+  }
+  const balance = await alchemy.core.getBalance(address);
+  res.json({ balance: balance.toString() });
+});
+
+// Alchemy Dashboard: restrict API key to specific domains/IPs
+// Dashboard > App > Settings > Allowed Domains
 ```
 
-### Webhook Signature Verification
+### Step 2: Input Validation for Blockchain Queries
+
 ```typescript
+// src/security/validators.ts
+import { ethers } from 'ethers';
+
+function validateAddress(input: string): string {
+  if (!ethers.isAddress(input)) throw new Error(`Invalid address: ${input}`);
+  return ethers.getAddress(input); // Returns checksummed address
+}
+
+function validateBlockNumber(input: string | number): string {
+  if (input === 'latest' || input === 'pending' || input === 'earliest') return input;
+  const num = typeof input === 'string' ? parseInt(input) : input;
+  if (isNaN(num) || num < 0) throw new Error(`Invalid block number: ${input}`);
+  return `0x${num.toString(16)}`;
+}
+
+function validateTokenId(input: string): string {
+  if (!/^\d+$/.test(input) && !input.startsWith('0x')) {
+    throw new Error(`Invalid token ID: ${input}`);
+  }
+  return input;
+}
+
+export { validateAddress, validateBlockNumber, validateTokenId };
+```
+
+### Step 3: Private Key Safety
+
+```typescript
+// src/security/wallet-safety.ts
+// NEVER:
+// - Hardcode private keys in source code
+// - Log private keys or mnemonic phrases
+// - Store private keys in .env files committed to git
+// - Accept private keys from user input in a web app
+
+// Safe wallet setup for server-side operations
+import { ethers } from 'ethers';
+import { Alchemy, Network } from 'alchemy-sdk';
+
+async function createSafeWallet() {
+  const alchemy = new Alchemy({
+    apiKey: process.env.ALCHEMY_API_KEY,
+    network: Network.ETH_SEPOLIA,
+  });
+
+  const provider = await alchemy.config.getProvider();
+
+  // Load private key from secret manager (GCP example)
+  const { SecretManagerServiceClient } = await import('@google-cloud/secret-manager');
+  const client = new SecretManagerServiceClient();
+  const [version] = await client.accessSecretVersion({
+    name: `projects/${process.env.GCP_PROJECT}/secrets/deployer-private-key/versions/latest`,
+  });
+  const privateKey = version.payload?.data?.toString() || '';
+
+  const wallet = new ethers.Wallet(privateKey, provider);
+  return wallet;
+}
+```
+
+### Step 4: Webhook Signature Verification
+
+```typescript
+// src/security/webhook-verify.ts
 import crypto from 'crypto';
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
+function verifyAlchemyWebhookSignature(
+  body: string,
+  signature: string,
+  signingKey: string,
 ): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+  const hmac = crypto.createHmac('sha256', signingKey);
+  hmac.update(body, 'utf8');
+  const expectedSig = hmac.digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSig),
+  );
 }
 ```
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
+## Output
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Alchemy analytics
-  await alchemyClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'alchemy.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- API key proxy pattern (never expose to client)
+- Input validation for addresses, blocks, and token IDs
+- Private key loaded from secret manager
+- Webhook HMAC signature verification
 
 ## Resources
-- [Alchemy Security Guide](https://docs.alchemy.com/security)
-- [Alchemy API Scopes](https://docs.alchemy.com/scopes)
+
+- [Alchemy Security Best Practices](https://www.alchemy.com/docs)
+- [Ethers.js Security](https://docs.ethers.org/v6/)
+- [Web3 Security Checklist](https://www.alchemy.com/docs/reference/security)
 
 ## Next Steps
+
 For production deployment, see `alchemy-prod-checklist`.

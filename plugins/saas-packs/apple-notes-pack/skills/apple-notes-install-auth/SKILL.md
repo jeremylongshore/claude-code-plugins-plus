@@ -1,92 +1,132 @@
 ---
 name: apple-notes-install-auth
 description: |
-  Install and configure Apple Notes SDK/CLI authentication.
-  Use when setting up a new Apple Notes integration, configuring API keys,
-  or initializing Apple Notes in your project.
-  Trigger with phrases like "install apple-notes", "setup apple-notes",
-  "apple-notes auth", "configure apple-notes API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Set up macOS automation access for Apple Notes via AppleScript, JXA, and Shortcuts.
+  Use when configuring accessibility permissions, setting up osascript access,
+  or initializing Apple Notes automation on macOS.
+  Trigger: "setup apple notes", "apple notes automation", "apple notes permissions".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Bash(defaults:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation, applescript]
 compatible-with: claude-code
 ---
 
 # Apple Notes Install & Auth
 
 ## Overview
-Set up Apple Notes SDK/CLI and configure authentication credentials.
+
+Apple Notes has no REST API. Automation uses macOS scripting technologies: AppleScript, JavaScript for Automation (JXA), Shortcuts, and the `osascript` command-line tool. No SDK to install — but you need macOS accessibility permissions.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Apple Notes account with API access
-- API key from Apple Notes dashboard
+
+- macOS 13+ (Ventura or later recommended)
+- Terminal app or iTerm2
+- System Preferences > Privacy & Security > Automation permissions
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Grant Automation Permissions
+
 ```bash
-# Node.js
-npm install @apple-notes/sdk
+# macOS requires explicit permission for scripts to control Notes.app
+# The first time you run an osascript command targeting Notes, macOS will prompt.
+# You can also pre-grant in: System Preferences > Privacy & Security > Automation
 
-# Python
-pip install apple-notes
+# Test basic Notes access (will trigger permission prompt)
+osascript -e 'tell application "Notes" to get name of every note in default account'
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Verify JXA (JavaScript for Automation) Access
+
 ```bash
-# Set environment variable
-export APPLE-NOTES_API_KEY="your-api-key"
+# JXA is the modern alternative to AppleScript
+# Run JavaScript via osascript with -l JavaScript flag
 
-# Or create .env file
-echo 'APPLE-NOTES_API_KEY=your-api-key' >> .env
+osascript -l JavaScript -e '
+  const Notes = Application("Notes");
+  Notes.includeStandardAdditions = true;
+  const noteCount = Notes.defaultAccount.notes.length;
+  `Apple Notes accessible: ${noteCount} notes found`;
+'
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Create a Wrapper Script
+
+```bash
+#!/bin/bash
+# scripts/notes-cli.sh — Wrapper for common Apple Notes operations
+
+case "$1" in
+  count)
+    osascript -l JavaScript -e '
+      const Notes = Application("Notes");
+      Notes.defaultAccount.notes.length;
+    '
+    ;;
+  list)
+    osascript -l JavaScript -e '
+      const Notes = Application("Notes");
+      const notes = Notes.defaultAccount.notes();
+      notes.slice(0, 20).map(n => `${n.id()} | ${n.name()}`).join("\n");
+    '
+    ;;
+  folders)
+    osascript -l JavaScript -e '
+      const Notes = Application("Notes");
+      Notes.defaultAccount.folders().map(f => f.name()).join("\n");
+    '
+    ;;
+  *)
+    echo "Usage: notes-cli.sh {count|list|folders}"
+    ;;
+esac
 ```
+
+### Step 4: Verify Shortcuts Integration
+
+```bash
+# Apple Shortcuts can also interact with Notes
+# Check available shortcuts
+shortcuts list | grep -i note
+
+# Run a shortcut that creates a note
+shortcuts run "Create Note" --input-path /dev/stdin <<< "Test content"
+```
+
+## Automation Technologies
+
+| Technology | Language | Best For | Docs |
+|-----------|----------|----------|------|
+| AppleScript | AppleScript | Simple operations | Apple Scripting Guide |
+| JXA | JavaScript | Complex logic, JSON handling | Apple JXA Reference |
+| osascript | CLI wrapper | Scripts, CI/CD | `man osascript` |
+| Shortcuts | Visual | Non-developer workflows | Shortcuts app |
+| PyXA | Python | Python automation | pyxa.dev |
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- macOS automation permissions granted for Notes.app
+- JXA access verified with note count
+- CLI wrapper script for common operations
+- Shortcuts integration confirmed
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Apple Notes dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.apple-notes.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { AppleNotesClient } from '@apple-notes/sdk';
-
-const client = new AppleNotesClient({
-  apiKey: process.env.APPLE-NOTES_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from apple-notes import AppleNotesClient
-
-client = AppleNotesClient(
-    api_key=os.environ.get('APPLE-NOTES_API_KEY')
-)
-```
+| `Not authorized to send Apple events` | Missing automation permission | Grant in System Preferences > Privacy > Automation |
+| `Notes got an error: AppleEvent timed out` | Notes.app not running | Launch Notes first or add `activate` |
+| `-1743 errAEAppNotAllowed` | Denied by TCC | Reset TCC: `tccutil reset AppleEvents` |
+| `execution error: Notes is not running` | Notes.app closed | Add `tell app "Notes" to activate` |
 
 ## Resources
-- [Apple Notes Documentation](https://docs.apple-notes.com)
-- [Apple Notes Dashboard](https://api.apple-notes.com)
-- [Apple Notes Status](https://status.apple-notes.com)
+
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Reference](https://developer.apple.com/library/archive/releasenotes/InterapplicationCommunication/RN-JavaScriptForAutomation/)
+- [AppleScript Notes Dictionary](https://www.macosxautomation.com/applescript/notes/)
 
 ## Next Steps
-After successful auth, proceed to `apple-notes-hello-world` for your first API call.
+
+Proceed to `apple-notes-hello-world` for your first note creation.

@@ -1,121 +1,88 @@
 ---
 name: anima-prod-checklist
 description: |
-  Execute Anima production deployment checklist and rollback procedures.
-  Use when deploying Anima integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "anima production", "deploy anima",
-  "anima go-live", "anima launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for Anima design-to-code pipelines.
+  Use when deploying automated design-to-code services, preparing CI/CD
+  Figma-to-code automation, or validating output quality before production.
+  Trigger: "anima production", "anima go-live", "anima prod checklist".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, production]
 compatible-with: claude-code
 ---
 
 # Anima Production Checklist
 
-## Overview
-Complete checklist for deploying Anima integrations to production.
+## Pre-Launch Checklist
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### Credentials & Access
+- [ ] Anima API token stored in secret manager
+- [ ] Figma PAT has read-only scope with expiration
+- [ ] Separate tokens for dev/staging/prod environments
+- [ ] Token rotation schedule documented
 
-## Instructions
+### Code Quality
+- [ ] Generated code passes ESLint/Prettier
+- [ ] Generated components render correctly in target framework
+- [ ] Design tokens mapped to project design system
+- [ ] Output normalization rules configured and tested
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Pipeline
+- [ ] Rate limiting configured (10 gen/min standard tier)
+- [ ] Error handling with retry for transient failures
+- [ ] Generation cache to avoid redundant API calls
+- [ ] Figma change detection working (version polling)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Anima error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Validation Script
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Anima connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+```typescript
+// scripts/anima-readiness.ts
+async function checkReadiness() {
+  const checks = [];
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+  // Figma access
+  try {
+    const res = await fetch('https://api.figma.com/v1/me', {
+      headers: { 'X-Figma-Token': process.env.FIGMA_TOKEN! },
+    });
+    checks.push({ name: 'Figma Access', pass: res.ok, detail: res.ok ? 'Authenticated' : `HTTP ${res.status}` });
+  } catch (e: any) { checks.push({ name: 'Figma Access', pass: false, detail: e.message }); }
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.anima.com
+  // Anima SDK
+  try {
+    const { Anima } = await import('@animaapp/anima-sdk');
+    new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
+    checks.push({ name: 'Anima SDK', pass: true, detail: 'Initialized' });
+  } catch (e: any) { checks.push({ name: 'Anima SDK', pass: false, detail: e.message }); }
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/anima-integration app=image:new --record
-kubectl rollout pause deployment/anima-integration
+  // Token not in build
+  const buildFiles = require('fs').existsSync('./dist');
+  if (buildFiles) {
+    const content = require('fs').readFileSync('./dist', 'utf8');
+    const leaked = content.includes(process.env.ANIMA_TOKEN || '');
+    checks.push({ name: 'Token Safety', pass: !leaked, detail: leaked ? 'TOKEN IN BUILD!' : 'Safe' });
+  }
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
+  for (const c of checks) {
+    console.log(`[${c.pass ? 'PASS' : 'FAIL'}] ${c.name}: ${c.detail}`);
+  }
+}
 
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/anima-integration
-kubectl rollout pause deployment/anima-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/anima-integration
-kubectl rollout status deployment/anima-integration
+checkReadiness();
 ```
 
 ## Output
-- Deployed Anima integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
 
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; anima: any }> {
-  const start = Date.now();
-  try {
-    await animaClient.ping();
-    return { status: 'healthy', anima: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', anima: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/anima-integration
-kubectl rollout status deployment/anima-integration
-```
+- Readiness validation script
+- All checklist items verified
+- Token safety confirmed
 
 ## Resources
-- [Anima Status](https://status.anima.com)
-- [Anima Support](https://docs.anima.com/support)
+
+- [Anima API](https://docs.animaapp.com/docs/anima-api)
 
 ## Next Steps
+
 For version upgrades, see `anima-upgrade-migration`.

@@ -1,6 +1,8 @@
 # Alchemy Skill Pack
 
-> Claude Code skill pack for Alchemy integration (18 skills)
+> Claude Code skills for Alchemy Web3 blockchain development — NFTs, DeFi, multi-chain APIs (18 skills)
+
+Alchemy is the leading Web3 development platform, providing blockchain infrastructure across Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana. These skills use the real `alchemy-sdk` npm package with actual API methods: `getBalance`, `getTokenBalances`, `getNftsForOwner`, `getAssetTransfers`, Notify webhooks, and more.
 
 ## Installation
 
@@ -11,38 +13,39 @@
 ## Skills Included
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `alchemy-install-auth` | Install Auth |
-| `alchemy-hello-world` | Hello World |
-| `alchemy-local-dev-loop` | Local Dev Loop |
-| `alchemy-sdk-patterns` | Sdk Patterns |
-| `alchemy-core-workflow-a` | Core Workflow A |
-| `alchemy-core-workflow-b` | Core Workflow B |
-| `alchemy-common-errors` | Common Errors |
-| `alchemy-debug-bundle` | Debug Bundle |
-| `alchemy-rate-limits` | Rate Limits |
-| `alchemy-security-basics` | Security Basics |
-| `alchemy-prod-checklist` | Prod Checklist |
-| `alchemy-upgrade-migration` | Upgrade Migration |
+| `alchemy-install-auth` | Install `alchemy-sdk`, configure API key, multi-chain setup |
+| `alchemy-hello-world` | Get ETH balance, fetch NFTs, read token balances, get block info |
+| `alchemy-local-dev-loop` | Hardhat + Alchemy mainnet fork, Sepolia testnet, watch mode |
+| `alchemy-sdk-patterns` | Multi-chain factory, response caching, NFT query builder |
+| `alchemy-core-workflow-a` | Wallet portfolio tracker: tokens + NFTs + transaction history |
+| `alchemy-core-workflow-b` | NFT collection explorer, smart contract reads, ownership verification |
+| `alchemy-common-errors` | Diagnose 429s, RPC errors, NFT API issues, Enhanced API failures |
+| `alchemy-debug-bundle` | Diagnostic bundle: connectivity, SDK version, multi-network status |
+| `alchemy-rate-limits` | CU-aware Bottleneck throttler, batch optimizer, 429 retry handler |
+| `alchemy-security-basics` | API key proxy, input validation, private key safety, webhook HMAC |
+| `alchemy-prod-checklist` | Production readiness: API key exposure scan, connectivity checks |
+| `alchemy-upgrade-migration` | Migrate from alchemy-web3 to alchemy-sdk, namespace changes |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `alchemy-ci-integration` | Ci Integration |
-| `alchemy-deploy-integration` | Deploy Integration |
-| `alchemy-webhooks-events` | Webhooks Events |
-| `alchemy-performance-tuning` | Performance Tuning |
-| `alchemy-cost-tuning` | Cost Tuning |
-| `alchemy-reference-architecture` | Reference Architecture |
+| `alchemy-ci-integration` | GitHub Actions with Hardhat fork tests and API key exposure scanning |
+| `alchemy-deploy-integration` | Deploy to Vercel/Cloud Run with server-side API key security |
+| `alchemy-webhooks-events` | Alchemy Notify: address activity, mined/dropped tx, NFT events |
+| `alchemy-performance-tuning` | TTL caching, parallel multi-chain fetching, batch NFT metadata |
+| `alchemy-cost-tuning` | CU usage monitoring, plan recommendations, batch optimization |
+| `alchemy-reference-architecture` | Full dApp architecture with multi-chain client factory pattern |
 
-## Usage
+## Key Concepts
 
-Skills trigger automatically when you discuss Alchemy topics. For example:
-
-- "Help me set up Alchemy" → triggers `alchemy-install-auth`
-- "Debug this Alchemy error" → triggers `alchemy-common-errors`
-- "Deploy my Alchemy integration" → triggers `alchemy-deploy-integration`
+- **Real SDK** — All code uses `alchemy-sdk` npm package (`import { Alchemy, Network } from 'alchemy-sdk'`)
+- **Compute Units** — Alchemy bills by CU; skills include CU cost tables and optimization patterns
+- **Multi-chain** — Factory pattern supporting ETH, Polygon, Arbitrum, Optimism, Base
+- **Never expose API key** — All skills enforce server-side API key via proxy pattern
 
 ## License
 

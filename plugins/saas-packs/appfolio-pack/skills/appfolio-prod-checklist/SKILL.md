@@ -1,121 +1,39 @@
 ---
 name: appfolio-prod-checklist
 description: |
-  Execute AppFolio production deployment checklist and rollback procedures.
-  Use when deploying AppFolio integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "appfolio production", "deploy appfolio",
-  "appfolio go-live", "appfolio launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for AppFolio integrations.
+  Trigger: "appfolio production checklist".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio Production Checklist
+# appfolio prod checklist | sed 's/\b\(.\)/\u\1/g'
 
-## Overview
-Complete checklist for deploying AppFolio integrations to production.
+## Pre-Launch Checklist
+- [ ] API credentials stored in secret manager
+- [ ] Rate limiting configured
+- [ ] Error handling with retry logic
+- [ ] Monitoring and alerting configured
+- [ ] Data validation on all API responses
+- [ ] Tenant PII handling CCPA compliant
+- [ ] Backup strategy for synced data
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
-
-## Instructions
-
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all AppFolio error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes AppFolio connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
+## Validation Script
 ```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.appfolio.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/appfolio-integration app=image:new --record
-kubectl rollout pause deployment/appfolio-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/appfolio-integration
-kubectl rollout pause deployment/appfolio-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/appfolio-integration
-kubectl rollout status deployment/appfolio-integration
-```
-
-## Output
-- Deployed AppFolio integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; appfolio: any }> {
-  const start = Date.now();
-  try {
-    await appfolioClient.ping();
-    return { status: 'healthy', appfolio: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', appfolio: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/appfolio-integration
-kubectl rollout status deployment/appfolio-integration
+#!/bin/bash
+echo "=== AppFolio Production Readiness ==="
+echo -n "[$(curl -s -o /dev/null -w "%{http_code}" -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" "${APPFOLIO_BASE_URL}/properties" | grep -q 200 && echo PASS || echo FAIL)] API Connectivity"
+echo ""
+echo -n "[$([ -n "$APPFOLIO_CLIENT_SECRET" ] && echo PASS || echo FAIL)] Credentials Set"
+echo ""
+echo "=== Done ==="
 ```
 
 ## Resources
-- [AppFolio Status](https://status.appfolio.com)
-- [AppFolio Support](https://docs.appfolio.com/support)
 
-## Next Steps
-For version upgrades, see `appfolio-upgrade-migration`.
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)

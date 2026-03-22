@@ -1,119 +1,115 @@
 ---
 name: anima-local-dev-loop
 description: |
-  Configure Anima local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Anima.
-  Trigger with phrases like "anima dev setup", "anima local development",
-  "anima dev environment", "develop with anima".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up iterative design-to-code development loop with Anima SDK.
+  Use when rapidly iterating on Figma-to-code output, comparing framework outputs,
+  or building a local preview server for generated components.
+  Trigger: "anima local dev", "anima dev loop", "anima preview", "anima iteration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, development]
 compatible-with: claude-code
 ---
 
 # Anima Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Anima.
 
-## Prerequisites
-- Completed `anima-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Iterative development workflow for Anima design-to-code: generate from Figma, preview in browser, tweak settings, regenerate. Includes side-by-side comparison of React vs Vue vs HTML output.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-anima-project/
-├── src/
-│   ├── anima/
-│   │   ├── client.ts       # Anima client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── anima.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: Project Setup
 
-### Step 2: Configure Environment
 ```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+mkdir anima-dev && cd anima-dev
+npm init -y
+npm install @animaapp/anima-sdk dotenv
+npm install -D vite @vitejs/plugin-react typescript
 ```
 
-### Step 3: Setup Hot Reload
+### Step 2: Generate and Preview Script
+
+```typescript
+// scripts/generate-preview.ts
+import { Anima } from '@animaapp/anima-sdk';
+import fs from 'fs';
+import 'dotenv/config';
+
+const anima = new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
+
+const SETTINGS_PRESETS = {
+  'react-tailwind': { language: 'typescript' as const, framework: 'react' as const, styling: 'tailwind' as const },
+  'react-shadcn': { language: 'typescript' as const, framework: 'react' as const, styling: 'tailwind' as const, uiLibrary: 'shadcn' as const },
+  'vue-tailwind': { language: 'typescript' as const, framework: 'vue' as const, styling: 'tailwind' as const },
+  'html-css': { language: 'javascript' as const, framework: 'html' as const, styling: 'css' as const },
+};
+
+async function generateWithPreset(preset: keyof typeof SETTINGS_PRESETS, nodeId: string) {
+  const settings = SETTINGS_PRESETS[preset];
+  const outputDir = `./generated/${preset}`;
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  const { files } = await anima.generateCode({
+    fileKey: process.env.FIGMA_FILE_KEY!,
+    figmaToken: process.env.FIGMA_TOKEN!,
+    nodesId: [nodeId],
+    settings,
+  });
+
+  for (const file of files) {
+    fs.writeFileSync(`${outputDir}/${file.fileName}`, file.content);
+  }
+  console.log(`${preset}: ${files.length} files generated`);
+}
+
+// Compare all presets
+async function compareOutputs(nodeId: string) {
+  for (const preset of Object.keys(SETTINGS_PRESETS) as Array<keyof typeof SETTINGS_PRESETS>) {
+    await generateWithPreset(preset, nodeId);
+    await new Promise(r => setTimeout(r, 2000)); // Rate limit
+  }
+  console.log('\nAll presets generated in ./generated/');
+}
+
+const nodeId = process.argv[2] || '1:2';
+compareOutputs(nodeId).catch(console.error);
+```
+
+### Step 3: Development Scripts
+
 ```json
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "generate": "tsx scripts/generate-preview.ts",
+    "generate:node": "tsx scripts/generate-preview.ts",
+    "preview": "vite",
+    "dev": "npm run generate && npm run preview"
   }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { AnimaClient } from '../src/anima/client';
-
-describe('Anima Client', () => {
-  it('should initialize with API key', () => {
-    const client = new AnimaClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Anima development
+
+- Multi-preset code generation comparison
+- Side-by-side React/Vue/HTML output for same design
+- Vite preview server for instant component viewing
+- Iterative generate-preview-tweak loop
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Anima Responses
-```typescript
-vi.mock('@anima/sdk', () => ({
-  AnimaClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=ANIMA=* npm run dev
-```
+| Rate limited | Too many generations | Add 2s delay between calls |
+| Different outputs each run | Anima AI variation | Pin settings; use consistent node IDs |
 
 ## Resources
-- [Anima SDK Reference](https://docs.anima.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Anima SDK GitHub](https://github.com/AnimaApp/anima-sdk)
+- [Vite](https://vitejs.dev/)
 
 ## Next Steps
-See `anima-sdk-patterns` for production-ready code patterns.
+
+For SDK patterns and best practices, see `anima-sdk-patterns`.

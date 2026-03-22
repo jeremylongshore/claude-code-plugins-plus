@@ -1,113 +1,32 @@
 ---
 name: apple-notes-debug-bundle
 description: |
-  Collect Apple Notes debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Apple Notes problems.
-  Trigger with phrases like "apple-notes debug", "apple-notes support bundle",
-  "collect apple-notes logs", "apple-notes diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect Apple Notes automation debug evidence for troubleshooting.
+  Trigger: "apple notes debug".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for Apple Notes support tickets.
-
-## Prerequisites
-- Apple Notes SDK installed
-- Access to application logs
-- Permission to collect environment info
-
-## Instructions
-
-### Step 1: Create Debug Bundle Script
+## Diagnostic Script
 ```bash
 #!/bin/bash
-# apple-notes-debug-bundle.sh
-
-BUNDLE_DIR="apple-notes-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Apple Notes Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+echo "=== Apple Notes Debug Bundle $(date -Iseconds) ==="
+echo "macOS: $(sw_vers -productVersion)"
+echo "Notes.app running: $(pgrep -x Notes > /dev/null && echo Yes || echo No)"
+echo "Accounts: $(osascript -l JavaScript -e "Application(\"Notes\").accounts().map(a => a.name()).join(\", \")" 2>/dev/null || echo "ERROR")"
+echo "Note count: $(osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.notes.length" 2>/dev/null || echo "ERROR")"
+echo "Folder count: $(osascript -l JavaScript -e "Application(\"Notes\").defaultAccount.folders.length" 2>/dev/null || echo "ERROR")"
+echo "TCC status: $(sqlite3 ~/Library/Application\ Support/com.apple.TCC/TCC.db "SELECT client,allowed FROM access WHERE service='kTCCServiceAppleEvents'" 2>/dev/null || echo "Cannot read TCC")"
+echo "=== Done ==="
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "APPLE-NOTES_API_KEY: ${APPLE-NOTES_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @apple-notes/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "apple-notes" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.apple-notes.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `apple-notes-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash apple-notes-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Apple Notes support portal
 
 ## Resources
-- [Apple Notes Support](https://docs.apple-notes.com/support)
-- [Apple Notes Status](https://status.apple-notes.com)
 
-## Next Steps
-For rate limit issues, see `apple-notes-rate-limits`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

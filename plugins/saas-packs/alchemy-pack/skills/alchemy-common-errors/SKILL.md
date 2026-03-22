@@ -1,113 +1,156 @@
 ---
 name: alchemy-common-errors
 description: |
-  Diagnose and fix Alchemy common errors and exceptions.
-  Use when encountering Alchemy errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "alchemy error", "fix alchemy",
-  "alchemy not working", "debug alchemy".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Diagnose and fix common Alchemy SDK and Web3 API errors.
+  Use when encountering rate limits, RPC failures, invalid parameters,
+  or blockchain query errors with the Alchemy SDK.
+  Trigger: "alchemy error", "alchemy not working", "alchemy 429",
+  "alchemy debug", "fix alchemy issue".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, troubleshooting]
 compatible-with: claude-code
 ---
 
 # Alchemy Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Alchemy errors and their solutions.
 
-## Prerequisites
-- Alchemy SDK installed
-- API credentials configured
-- Access to error logs
+Troubleshooting guide for Alchemy SDK errors covering rate limits, RPC failures, invalid parameters, and network-specific issues.
 
-## Instructions
+## Error Reference
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Authentication & Rate Limits
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+| HTTP Code | Error | Root Cause | Fix |
+|-----------|-------|-----------|-----|
+| `401` | Unauthorized | Invalid or missing API key | Verify key in Alchemy Dashboard |
+| `403` | Forbidden | API key disabled or app deleted | Create new app in Dashboard |
+| `429` | Too Many Requests | Rate limit exceeded | Implement backoff; upgrade plan |
+| `429` | Compute Units exceeded | CU quota depleted | Check CU usage in Dashboard |
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Alchemy Rate Limits by Plan
+
+| Plan | Compute Units/sec | Throughput |
+|------|-------------------|------------|
+| Free | 330 CU/s | ~25 requests/s |
+| Growth | 660 CU/s | ~50 requests/s |
+| Scale | Custom | Custom |
+
+### RPC & Query Errors
+
+```typescript
+// Common RPC error handler
+import { Alchemy, Network } from 'alchemy-sdk';
+
+async function safeAlchemyCall<T>(
+  operation: () => Promise<T>,
+  context: string
+): Promise<T | null> {
+  try {
+    return await operation();
+  } catch (error: any) {
+    const code = error.code || error.response?.status;
+
+    switch (code) {
+      case -32602: // Invalid params
+        console.error(`[${context}] Invalid parameters: ${error.message}`);
+        console.error('Common causes: wrong address format, invalid block number, missing 0x prefix');
+        break;
+
+      case -32600: // Invalid request
+        console.error(`[${context}] Malformed JSON-RPC request`);
+        break;
+
+      case -32601: // Method not found
+        console.error(`[${context}] RPC method not available on this network`);
+        console.error('Some Enhanced APIs are Ethereum-only');
+        break;
+
+      case -32000: // Server error
+        console.error(`[${context}] Node server error — usually transient, retry`);
+        break;
+
+      case 429:
+        const retryAfter = error.response?.headers?.['retry-after'] || 1;
+        console.error(`[${context}] Rate limited — retry after ${retryAfter}s`);
+        break;
+
+      default:
+        console.error(`[${context}] Unknown error: ${code} — ${error.message}`);
+    }
+    return null;
+  }
+}
+```
+
+### NFT API Errors
+
+| Error | Root Cause | Fix |
+|-------|-----------|-----|
+| Empty `ownedNfts` | Address has no NFTs on this chain | Check correct network |
+| Missing `image.cachedUrl` | IPFS/Arweave gateway timeout | Use `image.originalUrl` fallback |
+| `getNftsForContract` empty | Contract not indexed | Wait for indexing; try `refreshContract` |
+| Spam NFTs in results | No spam filter | Add `excludeFilters: ['SPAM']` option |
+| `getNftMetadataBatch` fails | Batch too large | Limit to 100 tokens per batch |
+
+### Enhanced API Errors
+
+| Error | Root Cause | Fix |
+|-------|-----------|-----|
+| `getAssetTransfers` empty | Wrong category | Include all: EXTERNAL, ERC20, ERC721, ERC1155 |
+| `getTokenBalances` timeout | Too many tokens | Paginate or use specific contract addresses |
+| `getTokenMetadata` null fields | Token not verified | Handle null `name`/`symbol` gracefully |
+| WebSocket disconnect | Idle timeout (5 min) | Implement auto-reconnect logic |
+
+### Network-Specific Issues
+
+```typescript
+// Diagnostic function
+async function diagnoseAlchemyIssue(alchemy: Alchemy): Promise<string[]> {
+  const issues: string[] = [];
+
+  try {
+    const blockNumber = await alchemy.core.getBlockNumber();
+    console.log(`Connected: block #${blockNumber}`);
+  } catch (err: any) {
+    if (err.message?.includes('apiKey')) issues.push('API key invalid or missing');
+    else if (err.code === 'ECONNREFUSED') issues.push('Cannot reach Alchemy servers — check network');
+    else issues.push(`Connection error: ${err.message}`);
+  }
+
+  return issues;
+}
+```
+
+## Quick Diagnostic
+
+```bash
+# Test Alchemy API directly
+curl -s "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":0}' | jq .
+
+# Check CU usage (requires auth token)
+curl -s "https://dashboard.alchemy.com/api/stats" \
+  -H "Authorization: Bearer ${ALCHEMY_AUTH_TOKEN}" | jq .
+```
 
 ## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
 
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $ALCHEMY_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `alchemy-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Alchemy status
-curl -s https://status.alchemy.com
-
-# Verify API connectivity
-curl -I https://api.alchemy.com
-
-# Check local configuration
-env | grep ALCHEMY
-```
-
-### Escalation Path
-1. Collect evidence with `alchemy-debug-bundle`
-2. Check Alchemy status page
-3. Contact support with request ID
+- Error classified by type (auth, rate limit, RPC, network)
+- Root cause identified with specific fix
+- Diagnostic function for automated troubleshooting
 
 ## Resources
-- [Alchemy Status Page](https://status.alchemy.com)
-- [Alchemy Support](https://docs.alchemy.com/support)
-- [Alchemy Error Codes](https://docs.alchemy.com/errors)
+
+- [Alchemy Error Codes](https://www.alchemy.com/docs/reference/error-reference)
+- [Alchemy Rate Limits](https://www.alchemy.com/docs/reference/rate-limits)
+- [JSON-RPC Error Codes](https://www.jsonrpc.org/specification#error_object)
 
 ## Next Steps
-For comprehensive debugging, see `alchemy-debug-bundle`.
+
+For collecting debug bundles, see `alchemy-debug-bundle`.

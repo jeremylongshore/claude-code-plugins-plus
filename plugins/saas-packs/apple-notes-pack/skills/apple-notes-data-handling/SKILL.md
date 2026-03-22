@@ -1,222 +1,85 @@
 ---
 name: apple-notes-data-handling
 description: |
-  Implement Apple Notes PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Apple Notes integrations.
-  Trigger with phrases like "apple-notes data", "apple-notes PII",
-  "apple-notes GDPR", "apple-notes data retention", "apple-notes privacy", "apple-notes CCPA".
-allowed-tools: Read, Write, Edit
+  Handle Apple Notes data formats: HTML body, attachments, and rich content.
+  Trigger: "apple notes data handling".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Apple Notes.
+Apple Notes stores content as HTML internally. Understanding the data format is essential for import/export operations.
 
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Apple Notes SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+## Note Body HTML Format
+```html
+<!-- Apple Notes uses a subset of HTML -->
+<div><h1>Title</h1></div>
+<div><br></div>
+<div>Paragraph text here.</div>
+<div><br></div>
+<div><b>Bold text</b> and <i>italic text</i></div>
+<div><br></div>
+<div><ul><li>List item 1</li><li>List item 2</li></ul></div>
 
-## Data Classification
+<!-- Checklists use a custom attribute -->
+<div><ul class="com-apple-note-checklist">
+  <li class="done">Completed item</li>
+  <li>Incomplete item</li>
+</ul></div>
+```
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
+## HTML to Markdown Converter
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
+// src/data/html-to-markdown.ts
+function notesHtmlToMarkdown(html: string): string {
+  return html
+    .replace(/<h1>(.*?)<\/h1>/g, "# $1")
+    .replace(/<h2>(.*?)<\/h2>/g, "## $1")
+    .replace(/<h3>(.*?)<\/h3>/g, "### $1")
+    .replace(/<b>(.*?)<\/b>/g, "**$1**")
+    .replace(/<strong>(.*?)<\/strong>/g, "**$1**")
+    .replace(/<i>(.*?)<\/i>/g, "*$1*")
+    .replace(/<em>(.*?)<\/em>/g, "*$1*")
+    .replace(/<li class="done">(.*?)<\/li>/g, "- [x] $1")
+    .replace(/<li>(.*?)<\/li>/g, "- $1")
+    .replace(/<br\s*\/?>/g, "\n")
+    .replace(/<div>/g, "").replace(/<\/div>/g, "\n")
+    .replace(/<[^>]*>/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
+function markdownToNotesHtml(md: string): string {
+  return md
+    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
+    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+    .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
+    .replace(/\*(.+?)\*/g, "<i>$1</i>")
+    .replace(/^- \[x\] (.+)$/gm, "<li class=\"done\">$1</li>")
+    .replace(/^- (.+)$/gm, "<li>$1</li>")
+    .replace(/\n/g, "<br>");
 }
 ```
 
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Apple Notes request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupApple NotesData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.apple-notesLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupApple NotesData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const apple-notesData = await apple-notesClient.getUserData(userId);
-
-  return {
-    source: 'Apple Notes',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: apple-notesData.profile,
-      activities: apple-notesData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Apple Notes
-  await apple-notesClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.apple-notesUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'apple-notes',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await apple-notesClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Apple Notes data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Apple Notes response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+## Attachment Handling
+```bash
+# List notes with attachments
+osascript -l JavaScript -e "
+  const Notes = Application(\"Notes\");
+  Notes.defaultAccount.notes()
+    .filter(n => n.attachments().length > 0)
+    .map(n => \`\${n.name()}: \${n.attachments().length} attachments\`)
+    .join(\"\\n\");
+"
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Apple Notes Privacy Guide](https://docs.apple-notes.com/privacy)
 
-## Next Steps
-For enterprise access control, see `apple-notes-enterprise-rbac`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

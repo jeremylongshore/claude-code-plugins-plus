@@ -1,216 +1,250 @@
 ---
 name: abridge-performance-tuning
 description: |
-  Optimize Abridge API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Abridge integrations.
-  Trigger with phrases like "abridge performance", "optimize abridge",
-  "abridge latency", "abridge caching", "abridge slow", "abridge batch".
-allowed-tools: Read, Write, Edit
+  Optimize Abridge clinical AI integration performance for high-volume deployments.
+  Use when reducing note generation latency, optimizing audio streaming throughput,
+  improving FHIR push performance, or scaling for multi-site health systems.
+  Trigger: "abridge performance", "abridge latency", "abridge optimization",
+  "abridge slow", "abridge scale".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge]
+tags: [saas, healthcare, ai, abridge, performance]
 compatible-with: claude-code
 ---
 
 # Abridge Performance Tuning
 
 ## Overview
-Optimize Abridge API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Abridge SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Performance optimization for high-volume Abridge deployments. Large health systems process thousands of encounters daily — latency in note generation directly impacts clinical workflow throughput.
 
-## Latency Benchmarks
+## Performance Targets
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedAbridgeRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const abridgeLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Abridge
-    const results = await abridgeClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  abridgeLoader.load('id-1'),
-  abridgeLoader.load('id-2'),
-  abridgeLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AbridgeClient({
-  apiKey: process.env.ABRIDGE_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedAbridgeList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAbridgeList(cursor =>
-  abridgeClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredAbridgeCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+| Metric | Target | Critical Threshold |
+|--------|--------|--------------------|
+| Audio stream → first transcript | < 2s | > 5s |
+| Encounter → completed note | < 30s | > 60s |
+| Note → EHR push | < 3s | > 10s |
+| Patient summary generation | < 10s | > 30s |
+| Concurrent sessions per org | 100+ | < 50 |
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Abridge operations.
+### Step 1: Audio Streaming Optimization
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAbridgeCall(name, () =>
-    cachedAbridgeRequest(`cache:${name}`, fn)
-  );
+// src/performance/audio-optimizer.ts
+// Optimize audio chunk size and streaming for lowest latency
+
+interface AudioStreamMetrics {
+  chunkSize: number;
+  sendInterval: number;
+  bufferUtilization: number;
+  latencyP50: number;
+  latencyP99: number;
+}
+
+class OptimizedAudioStream {
+  private buffer: Buffer[] = [];
+  private metrics: AudioStreamMetrics = {
+    chunkSize: 3200,       // 100ms at 16kHz 16-bit mono = 3200 bytes
+    sendInterval: 100,     // Send every 100ms
+    bufferUtilization: 0,
+    latencyP50: 0,
+    latencyP99: 0,
+  };
+
+  constructor(
+    private ws: WebSocket,
+    private sampleRate: number = 16000,
+  ) {}
+
+  // Optimal chunk size: 100ms for low latency, 500ms for bandwidth efficiency
+  processAudioChunk(chunk: Buffer): void {
+    this.buffer.push(chunk);
+
+    const totalSize = this.buffer.reduce((sum, b) => sum + b.length, 0);
+    if (totalSize >= this.metrics.chunkSize) {
+      const combined = Buffer.concat(this.buffer);
+      this.buffer = [];
+
+      if (this.ws.readyState === WebSocket.OPEN) {
+        const start = performance.now();
+        this.ws.send(combined);
+        this.recordLatency(performance.now() - start);
+      }
+    }
+  }
+
+  private recordLatency(ms: number): void {
+    // Track P50/P99 for monitoring
+    this.metrics.latencyP50 = ms; // Simplified — use histogram in production
+  }
+
+  getMetrics(): AudioStreamMetrics {
+    return { ...this.metrics };
+  }
+}
 ```
 
+### Step 2: Note Generation Pipeline Optimization
+
+```typescript
+// src/performance/note-pipeline.ts
+// Pre-warm note generation and parallelize post-processing
+
+interface PipelineStage {
+  name: string;
+  durationMs: number;
+  parallel: boolean;
+}
+
+async function optimizedNotePipeline(
+  api: any,
+  sessionId: string,
+): Promise<{ note: any; metrics: PipelineStage[] }> {
+  const stages: PipelineStage[] = [];
+
+  // Stage 1: Finalize session (triggers AI processing)
+  const t1 = performance.now();
+  await api.post(`/encounters/sessions/${sessionId}/finalize`);
+  stages.push({ name: 'finalize', durationMs: performance.now() - t1, parallel: false });
+
+  // Stage 2: Poll with exponential backoff (adaptive polling)
+  const t2 = performance.now();
+  let pollInterval = 500;  // Start fast
+  let note = null;
+
+  for (let i = 0; i < 30; i++) {
+    const { data } = await api.get(`/encounters/sessions/${sessionId}/note`);
+    if (data.status === 'completed') {
+      note = data.note;
+      break;
+    }
+    await new Promise(r => setTimeout(r, pollInterval));
+    pollInterval = Math.min(pollInterval * 1.5, 3000); // Back off gradually
+  }
+  stages.push({ name: 'note_generation', durationMs: performance.now() - t2, parallel: false });
+
+  if (!note) throw new Error('Note generation timed out');
+
+  // Stage 3: Parallel post-processing
+  const t3 = performance.now();
+  const [patientSummary, ehrResult] = await Promise.allSettled([
+    api.post(`/encounters/sessions/${sessionId}/patient-summary`, { language: 'en' }),
+    pushNoteToEhr(note),
+  ]);
+  stages.push({ name: 'post_processing', durationMs: performance.now() - t3, parallel: true });
+
+  return { note, metrics: stages };
+}
+```
+
+### Step 3: Connection Pooling for FHIR Push
+
+```typescript
+// src/performance/connection-pool.ts
+import axios from 'axios';
+import https from 'https';
+
+// Reuse TCP connections for FHIR endpoint
+const fhirAgent = new https.Agent({
+  keepAlive: true,
+  keepAliveMsecs: 30000,
+  maxSockets: 20,          // Max concurrent FHIR connections
+  maxFreeSockets: 5,
+  minVersion: 'TLSv1.3',
+});
+
+const fhirClient = axios.create({
+  baseURL: process.env.EPIC_FHIR_BASE_URL,
+  httpsAgent: fhirAgent,
+  timeout: 10000,
+});
+
+// Batch FHIR pushes for multi-encounter processing
+async function batchFhirPush(notes: Array<{ docRef: any }>): Promise<void> {
+  // FHIR Bundle for batch operations
+  const bundle = {
+    resourceType: 'Bundle',
+    type: 'batch',
+    entry: notes.map(n => ({
+      resource: n.docRef,
+      request: { method: 'POST', url: 'DocumentReference' },
+    })),
+  };
+
+  await fhirClient.post('/', bundle, {
+    headers: { 'Content-Type': 'application/fhir+json' },
+  });
+}
+```
+
+### Step 4: Performance Monitoring Dashboard
+
+```typescript
+// src/performance/monitor.ts
+interface PerformanceSnapshot {
+  timestamp: string;
+  activeSessions: number;
+  avgNoteLatencyMs: number;
+  p99NoteLatencyMs: number;
+  fhirPushSuccessRate: number;
+  audioStreamDropRate: number;
+}
+
+class PerformanceMonitor {
+  private noteLatencies: number[] = [];
+  private fhirPushResults: boolean[] = [];
+
+  recordNoteLatency(ms: number): void {
+    this.noteLatencies.push(ms);
+    if (this.noteLatencies.length > 1000) this.noteLatencies.shift();
+  }
+
+  recordFhirPush(success: boolean): void {
+    this.fhirPushResults.push(success);
+    if (this.fhirPushResults.length > 1000) this.fhirPushResults.shift();
+  }
+
+  getSnapshot(activeSessions: number): PerformanceSnapshot {
+    const sorted = [...this.noteLatencies].sort((a, b) => a - b);
+    return {
+      timestamp: new Date().toISOString(),
+      activeSessions,
+      avgNoteLatencyMs: sorted.length ? sorted.reduce((a, b) => a + b, 0) / sorted.length : 0,
+      p99NoteLatencyMs: sorted.length ? sorted[Math.floor(sorted.length * 0.99)] : 0,
+      fhirPushSuccessRate: this.fhirPushResults.length
+        ? this.fhirPushResults.filter(Boolean).length / this.fhirPushResults.length
+        : 1,
+      audioStreamDropRate: 0, // Populated by audio stream metrics
+    };
+  }
+}
+```
+
+## Output
+
+- Optimized audio streaming with 100ms chunking
+- Adaptive polling for note generation (500ms → 3s backoff)
+- Connection-pooled FHIR batch pushes
+- Real-time performance monitoring with P50/P99 latency tracking
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| High note latency | Complex encounter | Pre-segment long encounters |
+| FHIR push timeout | EHR server overloaded | Use connection pool; batch pushes |
+| Audio drops | Network jitter | Buffer 500ms; reconnect on drop |
+
 ## Resources
-- [Abridge Performance Guide](https://docs.abridge.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Abridge Platform](https://www.abridge.com/product)
+- [Node.js HTTPS Agent](https://nodejs.org/api/https.html#class-httpsagent)
 
 ## Next Steps
+
 For cost optimization, see `abridge-cost-tuning`.

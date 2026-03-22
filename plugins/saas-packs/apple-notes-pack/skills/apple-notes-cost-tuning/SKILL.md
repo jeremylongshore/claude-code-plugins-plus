@@ -1,203 +1,51 @@
 ---
 name: apple-notes-cost-tuning
 description: |
-  Optimize Apple Notes costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Apple Notes billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "apple-notes cost", "apple-notes billing",
-  "reduce apple-notes costs", "apple-notes pricing", "apple-notes expensive", "apple-notes budget".
-allowed-tools: Read, Grep
+  Apple Notes cost optimization — it is free, focus on iCloud storage management.
+  Trigger: "apple notes cost".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Cost Tuning
 
 ## Overview
-Optimize Apple Notes costs through smart tier selection, sampling, and usage monitoring.
+Apple Notes is free. The only cost is iCloud storage, which is shared across all Apple services.
 
-## Prerequisites
-- Access to Apple Notes billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+## iCloud Storage Tiers
+| Plan | Storage | Price/mo | Notes Capacity |
+|------|---------|----------|----------------|
+| Free | 5 GB | $0 | ~50,000 text notes |
+| iCloud+ 50GB | 50 GB | $0.99 | Effectively unlimited |
+| iCloud+ 200GB | 200 GB | $2.99 | Effectively unlimited |
+| iCloud+ 2TB | 2 TB | $9.99 | Effectively unlimited |
 
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateApple NotesCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class Apple NotesUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Apple Notes budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateApple NotesCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await apple-notesClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => apple-notesClient.get(id)));
-
-// Use batch endpoint (1 call)
-await apple-notesClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new AppleNotesClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
+## Storage Optimization
 ```bash
-# Set up billing alerts in Apple Notes dashboard
-# Or use API if available:
-# Check Apple Notes documentation for billing APIs
-```
+# Check Notes storage usage
+osascript -l JavaScript -e "
+  const Notes = Application(\"Notes\");
+  const notes = Notes.defaultAccount.notes();
+  let totalChars = 0;
+  notes.forEach(n => { totalChars += n.body().length; });
+  \`${notes.length} notes, ~${Math.round(totalChars / 1024)}KB of text content\`;
+"
 
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM apple-notes_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Apple Notes dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateApple NotesCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+# Large notes (>100KB body — usually have embedded images)
+osascript -l JavaScript -e "
+  const Notes = Application(\"Notes\");
+  Notes.defaultAccount.notes()
+    .filter(n => n.body().length > 100000)
+    .map(n => \`\${n.name()} (${Math.round(n.body().length/1024)}KB)\`)
+    .join(\"\\n\");
+"
 ```
 
 ## Resources
-- [Apple Notes Pricing](https://apple-notes.com/pricing)
-- [Apple Notes Billing Dashboard](https://dashboard.apple-notes.com/billing)
 
-## Next Steps
-For architecture patterns, see `apple-notes-reference-architecture`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

@@ -1,151 +1,101 @@
 ---
 name: anima-rate-limits
 description: |
-  Implement Anima rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Anima.
-  Trigger with phrases like "anima rate limit", "anima throttling",
-  "anima 429", "anima retry", "anima backoff".
-allowed-tools: Read, Write, Edit
+  Implement rate limiting for Anima API code generation requests.
+  Use when batching component generation, handling rate limit errors,
+  or optimizing API throughput for large design systems.
+  Trigger: "anima rate limit", "anima throttling", "anima batch generation".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, rate-limiting]
 compatible-with: claude-code
 ---
 
 # Anima Rate Limits
 
 ## Overview
-Handle Anima rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Anima SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+Anima API has per-minute rate limits on code generation. Each `generateCode` call processes one Figma node through AI — it's compute-intensive and rate-limited accordingly.
+
+## Rate Limit Tiers
+
+| Tier | Generations/min | Concurrent | Notes |
+|------|----------------|------------|-------|
+| Partner (standard) | 10 | 2 | Most common |
+| Enterprise | 30 | 5 | Custom agreement |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Throttled Generator with Bottleneck
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+// src/anima/throttled-generator.ts
+import Bottleneck from 'bottleneck';
+import { Anima } from '@animaapp/anima-sdk';
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+const limiter = new Bottleneck({
+  maxConcurrent: 2,
+  minTime: 6000,          // 10 per minute = 1 every 6 seconds
+  reservoir: 10,
+  reservoirRefreshInterval: 60000,
+  reservoirRefreshAmount: 10,
+});
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
+const anima = new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
+
+async function throttledGenerate(params: any) {
+  return limiter.schedule(() => anima.generateCode(params));
 }
+
+// Batch generate with automatic throttling
+async function batchGenerate(nodeIds: string[], settings: any) {
+  const results = [];
+  for (const nodeId of nodeIds) {
+    const result = await throttledGenerate({
+      fileKey: process.env.FIGMA_FILE_KEY!,
+      figmaToken: process.env.FIGMA_TOKEN!,
+      nodesId: [nodeId],
+      settings,
+    });
+    results.push({ nodeId, files: result.files });
+    console.log(`Generated ${nodeId}: ${result.files.length} files`);
+  }
+  return results;
+}
+
+export { throttledGenerate, batchGenerate };
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: 429 Retry Handler
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: AnimaClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+async function generateWithRetry(anima: Anima, params: any, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await anima.generateCode(params);
+    } catch (err: any) {
+      if (err.response?.status !== 429 || attempt === maxRetries) throw err;
+      const wait = Math.min(60000, 10000 * attempt); // Wait up to 60s
+      console.log(`Rate limited — waiting ${wait / 1000}s`);
+      await new Promise(r => setTimeout(r, wait));
+    }
+  }
 }
 ```
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
 
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+- Bottleneck-throttled code generation matching API limits
+- Batch generator for design system-scale operations
+- 429 retry handler with progressive backoff
 
 ## Resources
-- [Anima Rate Limits](https://docs.anima.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Anima API Docs](https://docs.animaapp.com/docs/anima-api)
+- [Bottleneck npm](https://www.npmjs.com/package/bottleneck)
 
 ## Next Steps
-For security configuration, see `anima-security-basics`.
+
+For security practices, see `anima-security-basics`.

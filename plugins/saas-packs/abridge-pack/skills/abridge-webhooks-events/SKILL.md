@@ -1,201 +1,221 @@
 ---
 name: abridge-webhooks-events
 description: |
-  Implement Abridge webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Abridge event notifications securely.
-  Trigger with phrases like "abridge webhook", "abridge events",
-  "abridge webhook signature", "handle abridge events", "abridge notifications".
+  Implement Abridge webhook handling for clinical documentation events.
+  Use when receiving note completion notifications, encounter status changes,
+  provider enrollment events, or quality alert callbacks from Abridge.
+  Trigger: "abridge webhook", "abridge events", "abridge notifications",
+  "abridge note completed event", "abridge encounter event".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge]
+tags: [saas, healthcare, ai, abridge, webhooks]
 compatible-with: claude-code
 ---
 
 # Abridge Webhooks & Events
 
 ## Overview
-Securely handle Abridge webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Abridge webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+Handle Abridge webhook events for clinical documentation lifecycle: note completion, encounter status changes, quality alerts, and provider enrollment notifications. All webhook payloads are HIPAA-scoped (contain session IDs but no PHI).
 
-## Webhook Endpoint Setup
+## Abridge Event Types
 
-### Express.js
+| Event | Trigger | Use Case |
+|-------|---------|----------|
+| `encounter.session.completed` | Note generation finished | Push note to EHR |
+| `encounter.session.failed` | Note generation failed | Alert clinical team |
+| `encounter.note.reviewed` | Clinician reviewed/edited note | Update EHR with final version |
+| `encounter.note.signed` | Clinician signed the note | Lock note in EHR |
+| `patient.summary.ready` | Patient summary generated | Push to patient portal |
+| `provider.enrolled` | Provider onboarded | Update provider roster |
+| `quality.alert` | Low confidence or missing content | Flag for clinical review |
+
+## Instructions
+
+### Step 1: Webhook Endpoint with Signature Verification
+
 ```typescript
+// src/webhooks/abridge-webhook-handler.ts
 import express from 'express';
 import crypto from 'crypto';
 
-const app = express();
+const router = express.Router();
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/abridge',
+// CRITICAL: Use raw body for signature verification
+router.post('/webhooks/abridge',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
     const signature = req.headers['x-abridge-signature'] as string;
     const timestamp = req.headers['x-abridge-timestamp'] as string;
 
-    if (!verifyAbridgeSignature(req.body, signature, timestamp)) {
+    if (!verifySignature(req.body, signature, timestamp)) {
       return res.status(401).json({ error: 'Invalid signature' });
     }
 
     const event = JSON.parse(req.body.toString());
-    await handleAbridgeEvent(event);
+
+    // Idempotency check
+    if (await isProcessed(event.event_id)) {
+      return res.status(200).json({ status: 'already_processed' });
+    }
+
+    // Process asynchronously — respond immediately
+    processEvent(event).catch(err =>
+      console.error(`Event processing failed: ${event.event_id}`, err)
+    );
 
     res.status(200).json({ received: true });
   }
 );
-```
 
-## Signature Verification
-
-```typescript
-function verifyAbridgeSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
+function verifySignature(payload: Buffer, signature: string, timestamp: string): boolean {
   const secret = process.env.ABRIDGE_WEBHOOK_SECRET!;
+  const maxAge = 300000; // 5 minutes
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
+  if (Date.now() - parseInt(timestamp) * 1000 > maxAge) {
+    console.error('Webhook timestamp expired');
     return false;
   }
 
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
+  const expected = crypto
     .createHmac('sha256', secret)
-    .update(signedPayload)
+    .update(`${timestamp}.${payload.toString()}`)
     .digest('hex');
 
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
 
-## Event Handler Pattern
+### Step 2: Event Router
 
 ```typescript
-type AbridgeEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
+// src/webhooks/event-router.ts
 interface AbridgeEvent {
-  id: string;
-  type: AbridgeEventType;
-  data: Record<string, any>;
-  created: string;
+  event_id: string;
+  type: string;
+  timestamp: string;
+  data: {
+    session_id?: string;
+    note_id?: string;
+    provider_id?: string;
+    status?: string;
+    quality_score?: number;
+  };
 }
 
-const eventHandlers: Record<AbridgeEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
+type EventHandler = (data: AbridgeEvent['data']) => Promise<void>;
+
+const handlers: Record<string, EventHandler> = {
+  'encounter.session.completed': async (data) => {
+    console.log(`Note ready for session ${data.session_id}`);
+    // Fetch note and push to EHR
+    await fetchAndPushNote(data.session_id!);
+  },
+
+  'encounter.session.failed': async (data) => {
+    console.error(`Note generation failed: ${data.session_id} — ${data.status}`);
+    // Alert clinical operations team
+    await sendClinicalAlert(data.session_id!, 'Note generation failed');
+  },
+
+  'encounter.note.signed': async (data) => {
+    console.log(`Note signed: ${data.note_id}`);
+    // Lock note in EHR — no further edits
+    await lockNoteInEhr(data.note_id!);
+  },
+
+  'patient.summary.ready': async (data) => {
+    console.log(`Patient summary ready: ${data.session_id}`);
+    // Push to patient portal
+    await pushSummaryToPortal(data.session_id!);
+  },
+
+  'quality.alert': async (data) => {
+    console.warn(`Quality alert: session ${data.session_id}, score ${data.quality_score}`);
+    // Flag for clinical review if score < 0.7
+    if ((data.quality_score || 0) < 0.7) {
+      await flagForReview(data.session_id!);
+    }
+  },
 };
 
-async function handleAbridgeEvent(event: AbridgeEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
+async function processEvent(event: AbridgeEvent): Promise<void> {
+  const handler = handlers[event.type];
   if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
+    console.log(`Unhandled event: ${event.type}`);
     return;
   }
+  await handler(event.data);
+  await markProcessed(event.event_id);
+}
+```
 
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
+### Step 3: Idempotency Store
+
+```typescript
+// src/webhooks/idempotency.ts
+// Use Redis or database for production — in-memory for dev
+
+const processedEvents = new Map<string, number>();
+
+async function isProcessed(eventId: string): Promise<boolean> {
+  return processedEvents.has(eventId);
+}
+
+async function markProcessed(eventId: string): Promise<void> {
+  processedEvents.set(eventId, Date.now());
+  // Clean up events older than 7 days
+  const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  for (const [id, ts] of processedEvents) {
+    if (ts < cutoff) processedEvents.delete(id);
   }
 }
 ```
 
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `abridge:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `abridge:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
+### Step 4: Webhook Registration
 
 ```bash
-# Use Abridge CLI to send test events
-abridge webhooks trigger resource.created --url http://localhost:3000/webhooks/abridge
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
+# Register webhook endpoint with Abridge
+curl -X POST "${ABRIDGE_BASE_URL}/webhooks" \
+  -H "Authorization: Bearer ${ABRIDGE_CLIENT_SECRET}" \
+  -H "X-Org-Id: ${ABRIDGE_ORG_ID}" \
   -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
+  -d '{
+    "url": "https://your-service.run.app/webhooks/abridge",
+    "events": [
+      "encounter.session.completed",
+      "encounter.session.failed",
+      "encounter.note.signed",
+      "patient.summary.ready",
+      "quality.alert"
+    ],
+    "secret": "your-webhook-secret"
+  }'
 ```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Abridge dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+
+- Secure webhook endpoint with HMAC signature verification
+- Event router with handlers for all clinical documentation events
+- Idempotency store preventing duplicate processing
+- Webhook registration via Abridge API
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/abridge \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Invalid signature | Wrong webhook secret | Verify secret matches Abridge config |
+| Timestamp expired | Clock drift > 5 min | Sync server clock via NTP |
+| Duplicate processing | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow EHR push | Process async; respond 200 immediately |
 
 ## Resources
-- [Abridge Webhooks Guide](https://docs.abridge.com/webhooks)
-- [Webhook Security Best Practices](https://docs.abridge.com/webhooks/security)
+
+- [Abridge Platform](https://www.abridge.com/product)
+- [HMAC Signature Verification](https://nodejs.org/api/crypto.html#cryptocreatehmacsignedalgorithm-key-options)
 
 ## Next Steps
+
 For performance optimization, see `abridge-performance-tuning`.

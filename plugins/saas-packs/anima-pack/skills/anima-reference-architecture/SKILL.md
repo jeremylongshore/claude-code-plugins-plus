@@ -1,240 +1,100 @@
 ---
 name: anima-reference-architecture
 description: |
-  Implement Anima reference architecture with best-practice project layout.
-  Use when designing new Anima integrations, reviewing project structure,
-  or establishing architecture standards for Anima applications.
-  Trigger with phrases like "anima architecture", "anima best practices",
-  "anima project structure", "how to organize anima", "anima layout".
-allowed-tools: Read, Grep
+  Implement reference architecture for Anima design-to-code automation.
+  Use when designing a design system automation pipeline, structuring
+  a Figma-to-React project, or planning team-scale design handoff.
+  Trigger: "anima architecture", "design-to-code architecture",
+  "anima project structure", "figma automation architecture".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, architecture]
 compatible-with: claude-code
 ---
 
 # Anima Reference Architecture
 
-## Overview
-Production-ready architecture patterns for Anima integrations.
+## System Architecture
 
-## Prerequisites
-- Understanding of layered architecture
-- Anima SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+```
+┌────────────────┐     ┌──────────────┐     ┌─────────────────┐
+│  Figma Design  │────▶│ Figma API    │────▶│ Anima SDK       │
+│  (Components)  │     │ (Webhooks)   │     │ (Code Gen)      │
+└────────────────┘     └──────────────┘     └────────┬────────┘
+                                                      │
+                                            ┌─────────▼────────┐
+                                            │ Post-Processing   │
+                                            │ - Token mapping   │
+                                            │ - Normalization   │
+                                            │ - Lint/format     │
+                                            └─────────┬────────┘
+                                                      │
+                                            ┌─────────▼────────┐
+                                            │ Output            │
+                                            │ - React/Vue/HTML  │
+                                            │ - PR creation     │
+                                            │ - Storybook sync  │
+                                            └──────────────────┘
+```
 
 ## Project Structure
 
 ```
-my-anima-project/
+design-to-code/
 ├── src/
 │   ├── anima/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── anima/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── anima/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── anima/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── anima/
-│   └── integration/
-│       └── anima/
-├── config/
-│   ├── anima.development.json
-│   ├── anima.staging.json
-│   └── anima.production.json
-└── docs/
-    └── anima/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   │   ├── client.ts              # Singleton SDK client
+│   │   ├── cache.ts               # Generation cache
+│   │   ├── retry.ts               # Error recovery
+│   │   └── presets.ts             # Framework/styling presets
+│   ├── pipeline/
+│   │   ├── scanner.ts             # Figma component discovery
+│   │   ├── generator.ts           # Batch code generation
+│   │   ├── change-detector.ts     # Figma version tracking
+│   │   └── runner.ts              # Pipeline orchestrator
+│   ├── post-process/
+│   │   ├── normalizer.ts          # Output normalization
+│   │   ├── token-mapper.ts        # Design token mapping
+│   │   └── organizer.ts           # File organization + barrel exports
+│   ├── webhooks/
+│   │   └── figma-handler.ts       # Figma webhook receiver
+│   └── server.ts                  # Express API (optional)
+├── scripts/
+│   ├── generate-components.ts     # CLI generation script
+│   └── compare-presets.ts         # Side-by-side preset comparison
+├── fixtures/
+│   └── component-map.json         # Figma node ID → component name mapping
+├── generated/                     # Output directory (gitignored or committed)
+├── .anima-cache/                  # Generation cache (gitignored)
+└── package.json
 ```
 
-## Layer Architecture
+## Key Design Decisions
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Anima Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/anima/client.ts
-export class AnimaService {
-  private client: AnimaClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: AnimaConfig) {
-    this.client = new AnimaClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('anima');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/anima/errors.ts
-export class AnimaServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AnimaServiceError';
-  }
-}
-
-export function wrapAnimaError(error: unknown): AnimaServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/anima/health.ts
-export async function checkAnimaHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await animaClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Anima    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Anima    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/anima.ts
-export interface AnimaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadAnimaConfig(): AnimaConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./anima.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Anima operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Anima connectivity.
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| SDK | `@animaapp/anima-sdk` | Official, server-side, typed |
+| Change detection | Figma Webhooks v2 | Event-driven, no polling waste |
+| Caching | File-based with MD5 keys | Simple, no external dependencies |
+| Post-processing | Custom normalizer | Match project conventions |
+| CI integration | GitHub Actions scheduled | Avoid real-time generation costs |
+| Output framework | React + Tailwind + shadcn | Most production-ready output |
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Anima types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/anima/{handlers} src/services/anima src/api/anima
-touch src/anima/{client,config,types,errors}.ts
-touch src/services/anima/{index,sync,cache}.ts
-```
+- Complete design-to-code pipeline architecture
+- Project structure with all components
+- Design decision rationale documented
 
 ## Resources
-- [Anima SDK Documentation](https://docs.anima.com/sdk)
-- [Anima Best Practices](https://docs.anima.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `anima-multi-env-setup`.
+- [Anima API](https://docs.animaapp.com/docs/anima-api)
+- [Anima SDK GitHub](https://github.com/AnimaApp/anima-sdk)
+- [Figma Webhooks](https://www.figma.com/developers/api#webhooks-v2)
+- [Anima Figma Plugin](https://www.figma.com/community/plugin/857346721138427857)
+
+## Next Steps
+
+Start with `anima-install-auth`, then follow skills through production deployment.

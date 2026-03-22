@@ -1,113 +1,147 @@
 ---
 name: alchemy-debug-bundle
 description: |
-  Collect Alchemy debug evidence for support tickets and troubleshooting.
+  Collect Alchemy SDK debug evidence for troubleshooting and support tickets.
   Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Alchemy problems.
-  Trigger with phrases like "alchemy debug", "alchemy support bundle",
-  "collect alchemy logs", "alchemy diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  or debugging blockchain query failures.
+  Trigger: "alchemy debug bundle", "alchemy support ticket", "alchemy diagnostics".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, debugging]
 compatible-with: claude-code
 ---
 
 # Alchemy Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Alchemy support tickets.
 
-## Prerequisites
-- Alchemy SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect diagnostic data for Alchemy support tickets: connectivity tests, SDK version, network status, CU usage, and recent error logs.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Debug Bundle Generator
+
+```typescript
+// src/debug/alchemy-debug.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+interface DebugBundle {
+  timestamp: string;
+  sdkVersion: string;
+  environment: Record<string, string>;
+  connectivity: Record<string, any>;
+  networkStatus: Record<string, any>;
+}
+
+async function generateDebugBundle(): Promise<DebugBundle> {
+  const alchemy = new Alchemy({
+    apiKey: process.env.ALCHEMY_API_KEY,
+    network: Network.ETH_MAINNET,
+  });
+
+  const bundle: DebugBundle = {
+    timestamp: new Date().toISOString(),
+    sdkVersion: require('alchemy-sdk/package.json').version,
+    environment: {
+      nodeVersion: process.version,
+      platform: process.platform,
+      apiKeySet: process.env.ALCHEMY_API_KEY ? 'yes (redacted)' : 'NO — missing',
+      network: process.env.ALCHEMY_NETWORK || 'ETH_MAINNET',
+    },
+    connectivity: {},
+    networkStatus: {},
+  };
+
+  // Test core connectivity
+  try {
+    const start = Date.now();
+    const blockNumber = await alchemy.core.getBlockNumber();
+    bundle.connectivity.core = {
+      status: 'ok',
+      latencyMs: Date.now() - start,
+      latestBlock: blockNumber,
+    };
+  } catch (err: any) {
+    bundle.connectivity.core = { status: 'failed', error: err.message };
+  }
+
+  // Test Enhanced API
+  try {
+    const start = Date.now();
+    await alchemy.core.getTokenBalances('0x0000000000000000000000000000000000000000');
+    bundle.connectivity.enhancedApi = { status: 'ok', latencyMs: Date.now() - start };
+  } catch (err: any) {
+    bundle.connectivity.enhancedApi = { status: 'failed', error: err.message };
+  }
+
+  // Test NFT API
+  try {
+    const start = Date.now();
+    await alchemy.nft.getContractMetadata('0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D');
+    bundle.connectivity.nftApi = { status: 'ok', latencyMs: Date.now() - start };
+  } catch (err: any) {
+    bundle.connectivity.nftApi = { status: 'failed', error: err.message };
+  }
+
+  // Multi-network status
+  for (const [name, network] of Object.entries({
+    ethereum: Network.ETH_MAINNET,
+    polygon: Network.MATIC_MAINNET,
+    arbitrum: Network.ARB_MAINNET,
+  })) {
+    try {
+      const client = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network });
+      const block = await client.core.getBlockNumber();
+      bundle.networkStatus[name] = { status: 'ok', block };
+    } catch (err: any) {
+      bundle.networkStatus[name] = { status: 'failed', error: err.message };
+    }
+  }
+
+  const filename = `alchemy-debug-${Date.now()}.json`;
+  require('fs').writeFileSync(filename, JSON.stringify(bundle, null, 2));
+  console.log(`Debug bundle saved: ${filename}`);
+  return bundle;
+}
+
+generateDebugBundle().catch(console.error);
+```
+
+### Step 2: Bash Quick Diagnostic
+
 ```bash
 #!/bin/bash
-# alchemy-debug-bundle.sh
+echo "=== Alchemy Quick Diagnostics ==="
+echo "API Key: ${ALCHEMY_API_KEY:+SET (redacted)}"
 
-BUNDLE_DIR="alchemy-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+echo -n "ETH Mainnet: "
+curl -s "https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":0}' \
+  | jq -r '.result // .error.message'
 
-echo "=== Alchemy Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+echo -n "Polygon: "
+curl -s "https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_API_KEY}" \
+  -X POST -H "Content-Type: application/json" \
+  -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":0}' \
+  | jq -r '.result // .error.message'
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "ALCHEMY_API_KEY: ${ALCHEMY_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @alchemy/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "alchemy" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.alchemy.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+echo "=== Done ==="
 ```
 
 ## Output
-- `alchemy-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
 
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash alchemy-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Alchemy support portal
+- JSON debug bundle with connectivity, latency, and network status
+- SDK version and environment configuration
+- Multi-network health check results
 
 ## Resources
-- [Alchemy Support](https://docs.alchemy.com/support)
-- [Alchemy Status](https://status.alchemy.com)
+
+- [Alchemy Status Page](https://status.alchemy.com)
+- [Alchemy Support](https://www.alchemy.com/support)
 
 ## Next Steps
-For rate limit issues, see `alchemy-rate-limits`.
+
+For rate limit handling, see `alchemy-rate-limits`.

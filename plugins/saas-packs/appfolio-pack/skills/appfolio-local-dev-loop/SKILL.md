@@ -1,119 +1,65 @@
 ---
 name: appfolio-local-dev-loop
 description: |
-  Configure AppFolio local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with AppFolio.
-  Trigger with phrases like "appfolio dev setup", "appfolio local development",
-  "appfolio dev environment", "develop with appfolio".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up local development for AppFolio property management API integration.
+  Trigger: "appfolio local dev".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio Local Dev Loop
+# appfolio local dev loop | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Set up a fast, reproducible local development workflow for AppFolio.
-
-## Prerequisites
-- Completed `appfolio-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Local development workflow for AppFolio API integration with mock data and sandbox testing.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-appfolio-project/
-├── src/
-│   ├── appfolio/
-│   │   ├── client.ts       # AppFolio client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── appfolio.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
+### Step 1: Project Setup
 ```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+mkdir appfolio-integration && cd appfolio-integration
+npm init -y
+npm install axios dotenv typescript @types/node
+npm install -D vitest msw  # For API mocking
 ```
 
-### Step 3: Setup Hot Reload
+### Step 2: Mock Server for Development
+```typescript
+// src/dev/mock-server.ts
+import express from "express";
+const app = express();
+app.use(express.json());
+
+const mockProperties = [
+  { id: "1", name: "Sunset Apartments", address: { street: "123 Sunset Blvd", city: "Los Angeles", state: "CA" }, property_type: "residential", unit_count: 24 },
+  { id: "2", name: "Downtown Office", address: { street: "456 Main St", city: "San Francisco", state: "CA" }, property_type: "commercial", unit_count: 8 },
+];
+
+app.get("/api/v1/properties", (req, res) => res.json(mockProperties));
+app.get("/api/v1/tenants", (req, res) => res.json([
+  { id: "t1", first_name: "Jane", last_name: "Smith", email: "jane@example.com", unit_id: "u1" },
+]));
+app.get("/api/v1/leases", (req, res) => res.json([
+  { id: "l1", unit_id: "u1", start_date: "2025-01-01", end_date: "2026-01-01", rent_amount: 2500, status: "active" },
+]));
+
+app.listen(3001, () => console.log("Mock AppFolio API on :3001"));
+```
+
+### Step 3: Dev Scripts
 ```json
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+    "dev:mock": "tsx src/dev/mock-server.ts",
+    "dev:test": "APPFOLIO_BASE_URL=http://localhost:3001/api/v1 tsx src/hello-world.ts"
   }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { AppFolioClient } from '../src/appfolio/client';
-
-describe('AppFolio Client', () => {
-  it('should initialize with API key', () => {
-    const client = new AppFolioClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for AppFolio development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock AppFolio Responses
-```typescript
-vi.mock('@appfolio/sdk', () => ({
-  AppFolioClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=APPFOLIO=* npm run dev
-```
-
 ## Resources
-- [AppFolio SDK Reference](https://docs.appfolio.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
-## Next Steps
-See `appfolio-sdk-patterns` for production-ready code patterns.
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)

@@ -1,201 +1,55 @@
 ---
 name: apple-notes-webhooks-events
 description: |
-  Implement Apple Notes webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Apple Notes event notifications securely.
-  Trigger with phrases like "apple-notes webhook", "apple-notes events",
-  "apple-notes webhook signature", "handle apple-notes events", "apple-notes notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Monitor Apple Notes changes using file system events and Shortcuts triggers.
+  Trigger: "apple notes events".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Webhooks & Events
 
 ## Overview
-Securely handle Apple Notes webhooks with signature validation and replay protection.
+Apple Notes has no webhook API. Monitor changes using: (1) File system watching on the Notes database, (2) Apple Shortcuts automation triggers, or (3) Periodic polling via JXA.
 
-## Prerequisites
-- Apple Notes webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
+## Polling-Based Change Detection
 ```typescript
-import express from 'express';
-import crypto from 'crypto';
+// src/events/notes-watcher.ts
+import { execSync } from "child_process";
 
-const app = express();
+interface NoteSnapshot { id: string; title: string; modified: string; }
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/apple-notes',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-apple-notes-signature'] as string;
-    const timestamp = req.headers['x-apple-notes-timestamp'] as string;
+let lastSnapshot: Map<string, string> = new Map();
 
-    if (!verifyApple NotesSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
+function detectChanges(): { added: string[]; modified: string[]; deleted: string[] } {
+  const current = JSON.parse(execSync(
+    `osascript -l JavaScript -e 'JSON.stringify(Application("Notes").defaultAccount.notes().map(n => ({id: n.id(), title: n.name(), modified: n.modificationDate().toISOString()})))'`,
+    { encoding: "utf8" }
+  )) as NoteSnapshot[];
 
-    const event = JSON.parse(req.body.toString());
-    await handleApple NotesEvent(event);
+  const currentMap = new Map(current.map(n => [n.id, n.modified]));
+  const added = current.filter(n => !lastSnapshot.has(n.id)).map(n => n.title);
+  const modified = current.filter(n => lastSnapshot.has(n.id) && lastSnapshot.get(n.id) !== n.modified).map(n => n.title);
+  const deleted = [...lastSnapshot.keys()].filter(id => !currentMap.has(id));
 
-    res.status(200).json({ received: true });
+  lastSnapshot = currentMap;
+  return { added, modified, deleted };
+}
+
+// Poll every 60 seconds
+setInterval(() => {
+  const changes = detectChanges();
+  if (changes.added.length || changes.modified.length || changes.deleted.length) {
+    console.log("Changes detected:", changes);
   }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyApple NotesSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.APPLE-NOTES_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type Apple NotesEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface Apple NotesEvent {
-  id: string;
-  type: Apple NotesEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<Apple NotesEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleApple NotesEvent(event: Apple NotesEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `apple-notes:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `apple-notes:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Apple Notes CLI to send test events
-apple-notes webhooks trigger resource.created --url http://localhost:3000/webhooks/apple-notes
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Apple Notes dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/apple-notes \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+}, 60000);
 ```
 
 ## Resources
-- [Apple Notes Webhooks Guide](https://docs.apple-notes.com/webhooks)
-- [Webhook Security Best Practices](https://docs.apple-notes.com/webhooks/security)
 
-## Next Steps
-For performance optimization, see `apple-notes-performance-tuning`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

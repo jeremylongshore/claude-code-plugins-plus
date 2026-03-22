@@ -1,92 +1,133 @@
 ---
 name: anima-install-auth
 description: |
-  Install and configure Anima SDK/CLI authentication.
-  Use when setting up a new Anima integration, configuring API keys,
-  or initializing Anima in your project.
-  Trigger with phrases like "install anima", "setup anima",
-  "anima auth", "configure anima API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install the Anima SDK and configure authentication for Figma-to-code generation.
+  Use when setting up design-to-code automation, configuring Figma token access,
+  or initializing the @animaapp/anima-sdk for server-side code generation.
+  Trigger: "install anima", "setup anima", "anima auth", "anima figma token".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, code-generation]
 compatible-with: claude-code
 ---
 
 # Anima Install & Auth
 
 ## Overview
-Set up Anima SDK/CLI and configure authentication credentials.
+
+Install `@animaapp/anima-sdk` and configure authentication tokens. Anima converts Figma designs into production-ready React, Vue, or HTML code with Tailwind, MUI, AntD, or shadcn styling. The SDK runs server-side only.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Anima account with API access
-- API key from Anima dashboard
+
+- Node.js 18+ (SDK is server-side only)
+- Figma account with API access
+- Anima API token (request at [animaapp.com](https://www.animaapp.com))
+- Figma Personal Access Token
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @anima/sdk
+### Step 1: Install the Anima SDK
 
-# Python
-pip install anima
+```bash
+npm install @animaapp/anima-sdk
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export ANIMA_API_KEY="your-api-key"
+### Step 2: Get Your Tokens
 
-# Or create .env file
-echo 'ANIMA_API_KEY=your-api-key' >> .env
+```bash
+# 1. Figma Personal Access Token:
+#    Figma > Settings > Account > Personal Access Tokens > Generate
+
+# 2. Anima API Token:
+#    Request from Anima team (currently limited partner access)
+#    https://docs.animaapp.com/docs/anima-api
+
+# Store securely
+cat > .env << 'EOF'
+ANIMA_TOKEN=your-anima-api-token
+FIGMA_TOKEN=your-figma-personal-access-token
+EOF
+
+echo ".env" >> .gitignore
+chmod 600 .env
 ```
 
-### Step 3: Verify Connection
+### Step 3: Initialize and Verify
+
 ```typescript
-// Test connection code here
+// src/anima-client.ts
+import { Anima } from '@animaapp/anima-sdk';
+
+const anima = new Anima({
+  auth: {
+    token: process.env.ANIMA_TOKEN!,
+  },
+});
+
+// Verify connection by generating code from a known Figma file
+async function verifySetup() {
+  try {
+    const { files } = await anima.generateCode({
+      fileKey: 'your-figma-file-key',     // From Figma URL: figma.com/file/{fileKey}/...
+      figmaToken: process.env.FIGMA_TOKEN!,
+      nodesId: ['1:2'],                    // Specific node to convert
+      settings: {
+        language: 'typescript',
+        framework: 'react',
+        styling: 'tailwind',
+      },
+    });
+
+    console.log(`Generated ${files.length} files`);
+    for (const file of files) {
+      console.log(`  ${file.fileName} (${file.content.length} chars)`);
+    }
+    return true;
+  } catch (error) {
+    console.error('Setup verification failed:', error);
+    return false;
+  }
+}
+
+verifySetup();
+```
+
+### Step 4: Get Your Figma File Key
+
+```
+Figma URL format:
+https://www.figma.com/file/ABC123xyz/My-Design?node-id=1:2
+
+File Key: ABC123xyz
+Node ID: 1:2 (from the URL query parameter)
 ```
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- `@animaapp/anima-sdk` installed
+- Anima token and Figma token configured in `.env`
+- Verified code generation from a Figma design
+- Understanding of file key and node ID extraction
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Anima dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.anima.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { AnimaClient } from '@anima/sdk';
-
-const client = new AnimaClient({
-  apiKey: process.env.ANIMA_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from anima import AnimaClient
-
-client = AnimaClient(
-    api_key=os.environ.get('ANIMA_API_KEY')
-)
-```
+| `Invalid Anima token` | Token not provisioned | Request token from Anima team |
+| `Invalid Figma token` | PAT expired or wrong | Generate new PAT in Figma Settings |
+| `File not found` | Wrong file key | Extract key from Figma URL correctly |
+| `Node not found` | Invalid node ID | Use Figma Dev Mode to get node IDs |
+| `SDK not for browser` | Used in client-side code | SDK is server-side only |
 
 ## Resources
-- [Anima Documentation](https://docs.anima.com)
-- [Anima Dashboard](https://api.anima.com)
-- [Anima Status](https://status.anima.com)
+
+- [Anima API Docs](https://docs.animaapp.com/docs/anima-api)
+- [Anima SDK GitHub](https://github.com/AnimaApp/anima-sdk)
+- [Figma API Auth](https://www.figma.com/developers/api#access-tokens)
+- [Anima npm](https://www.npmjs.com/package/@animaapp/anima-sdk)
 
 ## Next Steps
-After successful auth, proceed to `anima-hello-world` for your first API call.
+
+Proceed to `anima-hello-world` for your first design-to-code conversion.

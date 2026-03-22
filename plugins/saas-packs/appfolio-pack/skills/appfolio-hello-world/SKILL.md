@@ -1,98 +1,31 @@
 ---
 name: appfolio-hello-world
 description: |
-  Create a minimal working AppFolio example.
-  Use when starting a new AppFolio integration, testing your setup,
-  or learning basic AppFolio API patterns.
-  Trigger with phrases like "appfolio hello world", "appfolio example",
-  "appfolio quick start", "simple appfolio code".
-allowed-tools: Read, Write, Edit
+  Query AppFolio properties, units, and tenants via REST API.
+  Trigger: "appfolio hello world".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
 # AppFolio Hello World
 
-## Overview
-Minimal working example demonstrating core AppFolio functionality.
-
-## Prerequisites
-- Completed `appfolio-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
-
-## Instructions
-
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
-```typescript
-import { AppFolioClient } from '@appfolio/sdk';
-
-const client = new AppFolioClient({
-  apiKey: process.env.APPFOLIO_API_KEY,
-});
-```
-
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-## Output
-- Working code file with AppFolio client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your AppFolio connection is working.
-```
-
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { AppFolioClient } from '@appfolio/sdk';
-
-const client = new AppFolioClient({
-  apiKey: process.env.APPFOLIO_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from appfolio import AppFolioClient
-
-client = AppFolioClient()
-
-# Your first API call here
-```
+| `401 Unauthorized` | Invalid credentials | Verify client_id/secret |
+| `404 Not Found` | Wrong endpoint | Check API version in URL |
+| `422 Unprocessable` | Invalid request body | Validate required fields |
 
 ## Resources
-- [AppFolio Getting Started](https://docs.appfolio.com/getting-started)
-- [AppFolio API Reference](https://docs.appfolio.com/api)
-- [AppFolio Examples](https://docs.appfolio.com/examples)
+
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
-Proceed to `appfolio-local-dev-loop` for development workflow setup.
+
+Continue with the next skill in the AppFolio pack sequence.

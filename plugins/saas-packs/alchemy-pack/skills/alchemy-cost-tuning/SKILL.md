@@ -1,203 +1,154 @@
 ---
 name: alchemy-cost-tuning
 description: |
-  Optimize Alchemy costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Alchemy billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "alchemy cost", "alchemy billing",
-  "reduce alchemy costs", "alchemy pricing", "alchemy expensive", "alchemy budget".
-allowed-tools: Read, Grep
+  Optimize Alchemy API costs through CU budgeting, caching, and plan selection.
+  Use when analyzing Alchemy billing, reducing Compute Unit consumption,
+  or choosing the right plan for your dApp traffic.
+  Trigger: "alchemy cost", "alchemy pricing", "alchemy CU budget",
+  "alchemy billing optimization", "alchemy free tier limits".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, cost-optimization]
 compatible-with: claude-code
 ---
 
 # Alchemy Cost Tuning
 
 ## Overview
-Optimize Alchemy costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Alchemy billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+Alchemy pricing is based on Compute Units (CU). Different API methods have different CU costs. Optimize by caching, batching, choosing cheaper methods, and right-sizing your plan.
 
-## Pricing Tiers
+## Plan Comparison
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+| Plan | CU/sec | Monthly CU | Price | Best For |
+|------|--------|------------|-------|----------|
+| Free | 330 | 300M | $0 | Dev/prototyping |
+| Growth | 660 | 1.2B | $49/mo | Small dApps |
+| Scale | Custom | Custom | Custom | High-traffic apps |
 
-## Cost Estimation
+## CU Cost Reference (Top Methods)
 
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateAlchemyCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class AlchemyUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Alchemy budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateAlchemyCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await alchemyClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => alchemyClient.get(id)));
-
-// Use batch endpoint (1 call)
-await alchemyClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new AlchemyClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Alchemy dashboard
-# Or use API if available:
-# Check Alchemy documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM alchemy_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+| Method | CU | Optimization |
+|--------|-----|-------------|
+| `eth_blockNumber` | 10 | Cache 12s (1 block) |
+| `eth_getBalance` | 19 | Cache 30s |
+| `eth_call` | 26 | Cache based on use case |
+| `getTokenBalances` | 50 | Cache 60s; batch addresses |
+| `getNftsForOwner` | 50 | Cache 5 min |
+| `getTokenMetadata` | 50 | Cache 24h (rarely changes) |
+| `getAssetTransfers` | 150 | Cache aggressively; paginate |
+| `getNftMetadataBatch` | 50 | Use batch over individual calls |
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Alchemy dashboard for usage patterns and costs.
+### Step 1: CU Usage Monitor
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateAlchemyCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
+// src/cost/cu-monitor.ts
+const CU_COSTS: Record<string, number> = {
+  'eth_blockNumber': 10, 'eth_getBalance': 19, 'eth_call': 26,
+  'getTokenBalances': 50, 'getNftsForOwner': 50, 'getTokenMetadata': 50,
+  'getAssetTransfers': 150, 'getNftMetadataBatch': 50,
+};
+
+class CuMonitor {
+  private usage: Array<{ method: string; cu: number; timestamp: number }> = [];
+
+  record(method: string): void {
+    this.usage.push({ method, cu: CU_COSTS[method] || 26, timestamp: Date.now() });
+  }
+
+  getHourlyReport(): { totalCu: number; byMethod: Record<string, number> } {
+    const cutoff = Date.now() - 3600000;
+    const recent = this.usage.filter(u => u.timestamp > cutoff);
+    const byMethod: Record<string, number> = {};
+    let totalCu = 0;
+
+    for (const u of recent) {
+      byMethod[u.method] = (byMethod[u.method] || 0) + u.cu;
+      totalCu += u.cu;
+    }
+
+    return { totalCu, byMethod };
+  }
+
+  getMonthlyProjection(): { projectedMonthly: number; planRecommendation: string } {
+    const hourly = this.getHourlyReport();
+    const projectedMonthly = hourly.totalCu * 24 * 30;
+
+    let recommendation = 'Free';
+    if (projectedMonthly > 300_000_000) recommendation = 'Growth';
+    if (projectedMonthly > 1_200_000_000) recommendation = 'Scale';
+
+    return { projectedMonthly, planRecommendation: recommendation };
+  }
+}
+
+export { CuMonitor };
+```
+
+### Step 2: Cost-Optimized Client Wrapper
+
+```typescript
+// src/cost/optimized-client.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+const cache = new Map<string, { data: any; expiry: number }>();
+
+// Cache token metadata aggressively (rarely changes)
+async function getTokenMetadataCached(alchemy: Alchemy, contract: string) {
+  const key = `metadata:${contract}`;
+  const cached = cache.get(key);
+  if (cached && cached.expiry > Date.now()) return cached.data;
+
+  const data = await alchemy.core.getTokenMetadata(contract);
+  cache.set(key, { data, expiry: Date.now() + 86400000 }); // 24h cache
+  return data;
+}
+
+// Use batch instead of individual NFT metadata calls
+// 1 batch call (50 CU) vs 100 individual calls (5000 CU)
+async function getNftMetadataOptimized(
+  alchemy: Alchemy,
+  tokens: Array<{ contractAddress: string; tokenId: string }>
+) {
+  const BATCH_SIZE = 100;
+  const results = [];
+  for (let i = 0; i < tokens.length; i += BATCH_SIZE) {
+    const batch = tokens.slice(i, i + BATCH_SIZE);
+    const batchResults = await alchemy.nft.getNftMetadataBatch(batch);
+    results.push(...batchResults);
+  }
+  return results;
 }
 ```
 
+### Step 3: Free Tier Optimization Checklist
+
+```typescript
+// For staying within Free tier (330 CU/sec, 300M CU/month):
+// 1. Cache eth_blockNumber (saves 10 CU per redundant call)
+// 2. Cache token metadata (saves 50 CU per redundant call)
+// 3. Use getNftMetadataBatch instead of getNftMetadata (100x savings)
+// 4. Avoid getAssetTransfers loops (150 CU each — cache results)
+// 5. Use WebSockets instead of polling (one connection vs repeated calls)
+// 6. Rate-limit user-facing endpoints to prevent CU bursts
+```
+
+## Output
+
+- CU usage monitor with hourly reports and plan projections
+- Cost-optimized client with aggressive caching
+- Batch operations reducing CU consumption by 100x
+- Free tier optimization checklist
+
 ## Resources
-- [Alchemy Pricing](https://alchemy.com/pricing)
-- [Alchemy Billing Dashboard](https://dashboard.alchemy.com/billing)
+
+- [Alchemy Pricing](https://www.alchemy.com/pricing)
+- [Alchemy Compute Units](https://www.alchemy.com/docs/reference/compute-unit-costs)
 
 ## Next Steps
-For architecture patterns, see `alchemy-reference-architecture`.
+
+For architecture design, see `alchemy-reference-architecture`.

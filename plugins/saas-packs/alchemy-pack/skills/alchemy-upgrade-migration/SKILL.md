@@ -1,114 +1,147 @@
 ---
 name: alchemy-upgrade-migration
 description: |
-  Analyze, plan, and execute Alchemy SDK upgrades with breaking change detection.
-  Use when upgrading Alchemy SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade alchemy", "alchemy migration",
-  "alchemy breaking changes", "update alchemy SDK", "analyze alchemy version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Migrate from alchemy-sdk v2 to v3 and handle breaking changes.
+  Use when upgrading Alchemy SDK versions, migrating from deprecated
+  alchemy-web3, or adapting to new API patterns.
+  Trigger: "alchemy upgrade", "alchemy migration", "alchemy-sdk v3",
+  "migrate alchemy-web3", "alchemy breaking changes".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, migration]
 compatible-with: claude-code
 ---
 
 # Alchemy Upgrade & Migration
 
 ## Overview
-Guide for upgrading Alchemy SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Alchemy SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Migration guide for Alchemy SDK upgrades and deprecated package transitions. The `alchemy-web3` package is deprecated — migrate to `alchemy-sdk`.
+
+## Migration Paths
+
+| From | To | Complexity |
+|------|----|-----------|
+| `alchemy-web3` | `alchemy-sdk` | High (different API surface) |
+| `alchemy-sdk` v2 → v3 | `alchemy-sdk` v3 | Medium (some breaking changes) |
+| Direct JSON-RPC | `alchemy-sdk` | Low (SDK wraps same methods) |
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @alchemy/sdk
-npm view @alchemy/sdk version
-```
+### Step 1: Migrate from alchemy-web3 to alchemy-sdk
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/alchemy/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/alchemy-sdk-vX.Y.Z
-npm install @alchemy/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
 ```typescript
-// Before (v1.x)
-import { Client } from '@alchemy/sdk';
+// BEFORE: alchemy-web3 (DEPRECATED)
+// import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+// const web3 = createAlchemyWeb3(`https://eth-mainnet.g.alchemy.com/v2/${apiKey}`);
+// const balance = await web3.eth.getBalance(address);
+// const nfts = await web3.alchemy.getNfts({ owner });
 
-// After (v2.x)
-import { AlchemyClient } from '@alchemy/sdk';
-```
+// AFTER: alchemy-sdk
+import { Alchemy, Network } from 'alchemy-sdk';
 
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
+const alchemy = new Alchemy({
+  apiKey: process.env.ALCHEMY_API_KEY,
+  network: Network.ETH_MAINNET,
+});
 
-// After (v2.x)
-const client = new AlchemyClient({
-  apiKey: 'xxx',
+// Core methods — same JSON-RPC, different API
+const balance = await alchemy.core.getBalance(address);
+
+// Enhanced APIs — reorganized under namespaces
+const nfts = await alchemy.nft.getNftsForOwner(owner);
+
+// WebSockets — now under alchemy.ws
+alchemy.ws.on({ method: 'eth_subscribe', params: ['newHeads'] }, (block) => {
+  console.log('New block:', block);
 });
 ```
 
-### Rollback Procedure
-```bash
-npm install @alchemy/sdk@1.x.x --save-exact
-```
+### Step 2: API Surface Changes
 
-### Deprecation Handling
 ```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Alchemy]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
+// Key namespace changes in alchemy-sdk:
 
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+// Core (JSON-RPC wrapper)
+alchemy.core.getBlockNumber();
+alchemy.core.getBalance(address);
+alchemy.core.getTokenBalances(address);
+alchemy.core.getTokenMetadata(contractAddress);
+alchemy.core.getAssetTransfers({ fromAddress, category });
+
+// NFT (dedicated namespace)
+alchemy.nft.getNftsForOwner(owner);
+alchemy.nft.getNftsForContract(contract);
+alchemy.nft.getContractMetadata(contract);
+alchemy.nft.getNftMetadataBatch(tokens);
+alchemy.nft.getOwnersForNft(contract, tokenId);
+
+// WebSocket (real-time)
+alchemy.ws.on(filter, callback);
+alchemy.ws.once(filter, callback);
+alchemy.ws.removeAllListeners();
+
+// Notify (webhooks — requires authToken)
+alchemy.notify.getAllWebhooks();
+alchemy.notify.createWebhook(config);
 ```
+
+### Step 3: Dependency Cleanup
+
+```bash
+# Remove deprecated packages
+npm uninstall @alch/alchemy-web3 alchemy-web3
+
+# Install current SDK
+npm install alchemy-sdk
+
+# Check for leftover imports
+grep -rn "alchemy-web3\|@alch/alchemy" src/ --include='*.ts' --include='*.js'
+
+# Update ethers if needed (alchemy-sdk works with ethers v5 and v6)
+npm install ethers@6
+```
+
+### Step 4: Test Migration
+
+```typescript
+// tests/migration.test.ts
+import { describe, it, expect } from 'vitest';
+import { Alchemy, Network } from 'alchemy-sdk';
+
+describe('Alchemy SDK Migration', () => {
+  const alchemy = new Alchemy({
+    apiKey: process.env.ALCHEMY_API_KEY,
+    network: Network.ETH_SEPOLIA,
+  });
+
+  it('should get block number via core namespace', async () => {
+    const block = await alchemy.core.getBlockNumber();
+    expect(block).toBeGreaterThan(0);
+  });
+
+  it('should get NFTs via nft namespace', async () => {
+    const nfts = await alchemy.nft.getNftsForOwner('0x0000000000000000000000000000000000000000');
+    expect(nfts.totalCount).toBeDefined();
+  });
+});
+```
+
+## Output
+
+- Migrated from `alchemy-web3` to `alchemy-sdk`
+- All namespace changes applied (core, nft, ws, notify)
+- Deprecated packages removed
+- Migration tests passing
 
 ## Resources
-- [Alchemy Changelog](https://github.com/alchemy/sdk/releases)
-- [Alchemy Migration Guide](https://docs.alchemy.com/migration)
+
+- [Alchemy SDK Migration Guide](https://www.alchemy.com/docs)
+- [alchemy-sdk npm](https://www.npmjs.com/package/alchemy-sdk)
+- [alchemy-sdk GitHub](https://github.com/alchemyplatform/alchemy-sdk-js)
 
 ## Next Steps
-For CI integration during upgrades, see `alchemy-ci-integration`.
+
+For CI/CD setup, see `alchemy-ci-integration`.

@@ -1,149 +1,77 @@
 ---
 name: appfolio-sdk-patterns
 description: |
-  Apply production-ready AppFolio SDK patterns for TypeScript and Python.
-  Use when implementing AppFolio integrations, refactoring SDK usage,
-  or establishing team coding standards for AppFolio.
-  Trigger with phrases like "appfolio SDK patterns", "appfolio best practices",
-  "appfolio code patterns", "idiomatic appfolio".
-allowed-tools: Read, Write, Edit
+  Apply production-ready patterns for AppFolio REST API integration.
+  Trigger: "appfolio patterns".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio SDK Patterns
+# appfolio sdk patterns | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Production-ready patterns for AppFolio SDK usage in TypeScript and Python.
-
-## Prerequisites
-- Completed `appfolio-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for AppFolio API: typed client, pagination, response caching, and error handling.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed API Client
 ```typescript
-// src/appfolio/client.ts
-import { AppFolioClient } from '@appfolio/sdk';
+// src/appfolio/typed-client.ts
+import axios, { AxiosInstance } from "axios";
 
-let instance: AppFolioClient | null = null;
+interface Property {
+  id: string; name: string; property_type: string;
+  address: { street: string; city: string; state: string; zip: string };
+  unit_count: number;
+}
 
-export function getAppFolioClient(): AppFolioClient {
-  if (!instance) {
-    instance = new AppFolioClient({
-      apiKey: process.env.APPFOLIO_API_KEY!,
-      // Additional options
+interface Tenant {
+  id: string; first_name: string; last_name: string;
+  email: string; phone: string; unit_id: string;
+}
+
+interface Lease {
+  id: string; unit_id: string; tenant_name: string;
+  start_date: string; end_date: string; rent_amount: number; status: string;
+}
+
+class AppFolioTypedClient {
+  private api: AxiosInstance;
+
+  constructor() {
+    this.api = axios.create({
+      baseURL: process.env.APPFOLIO_BASE_URL,
+      auth: { username: process.env.APPFOLIO_CLIENT_ID!, password: process.env.APPFOLIO_CLIENT_SECRET! },
+      timeout: 30000,
     });
   }
-  return instance;
+
+  async getProperties(): Promise<Property[]> { return (await this.api.get("/properties")).data; }
+  async getTenants(): Promise<Tenant[]> { return (await this.api.get("/tenants")).data; }
+  async getLeases(): Promise<Lease[]> { return (await this.api.get("/leases")).data; }
 }
+
+export { AppFolioTypedClient, Property, Tenant, Lease };
 ```
 
-### Step 2: Add Error Handling Wrapper
+### Step 2: Response Cache
 ```typescript
-import { AppFolioError } from '@appfolio/sdk';
+const cache = new Map<string, { data: any; expiry: number }>();
 
-async function safeAppFolioCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof AppFolioError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
+async function cachedGet<T>(client: AxiosInstance, path: string, ttlMs = 60000): Promise<T> {
+  const cached = cache.get(path);
+  if (cached && cached.expiry > Date.now()) return cached.data;
+  const { data } = await client.get(path);
+  cache.set(path, { data, expiry: Date.now() + ttlMs });
+  return data;
 }
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, AppFolioClient>();
-
-export function getClientForTenant(tenantId: string): AppFolioClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new AppFolioClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from appfolio import AppFolioClient
-
-@asynccontextmanager
-async def get_appfolio_client():
-    client = AppFolioClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const appfolioResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
 ```
 
 ## Resources
-- [AppFolio SDK Reference](https://docs.appfolio.com/sdk)
-- [AppFolio API Types](https://docs.appfolio.com/types)
-- [Zod Documentation](https://zod.dev/)
 
-## Next Steps
-Apply patterns in `appfolio-core-workflow-a` for real-world usage.
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)

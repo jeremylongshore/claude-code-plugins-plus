@@ -1,224 +1,58 @@
 ---
 name: apple-notes-multi-env-setup
 description: |
-  Configure Apple Notes across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Apple Notes configurations.
-  Trigger with phrases like "apple-notes environments", "apple-notes staging",
-  "apple-notes dev prod", "apple-notes environment setup", "apple-notes config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  Configure Apple Notes automation for multiple accounts and environments.
+  Trigger: "apple notes multi account".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Multi-Environment Setup
 
-## Overview
-Configure Apple Notes across development, staging, and production environments.
+## Multiple Account Configuration
+```javascript
+// Apple Notes supports multiple accounts simultaneously
+const Notes = Application("Notes");
+const accounts = Notes.accounts();
 
-## Prerequisites
-- Separate Apple Notes accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+// iCloud account (default)
+const iCloud = accounts.find(a => a.name() === "iCloud");
+// Gmail account
+const gmail = accounts.find(a => a.name() === "Gmail");
+// On My Mac (local only)
+const local = accounts.find(a => a.name() === "On My Mac");
 
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── apple-notes/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
+// Target specific account
+function createNoteInAccount(accountName, title, body) {
+  const account = Notes.accounts().find(a => a.name() === accountName);
+  if (!account) throw new Error(`Account ${accountName} not found`);
+  const note = Notes.Note({ name: title, body: body });
+  account.folders[0].notes.push(note);
+  return note.id();
 }
 ```
 
-### development.json
-```json
-{
-  "apiKey": "${APPLE-NOTES_API_KEY}",
-  "baseUrl": "https://api-sandbox.apple-notes.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${APPLE-NOTES_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.apple-notes.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${APPLE-NOTES_API_KEY_PROD}",
-  "baseUrl": "https://api.apple-notes.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
+## Environment-Based Configuration
 ```typescript
-// src/apple-notes/config.ts
-import baseConfig from '../../config/apple-notes/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
+// src/config/environments.ts
+interface NotesEnvConfig {
+  accountName: string;
+  defaultFolder: string;
+  autoSync: boolean;
 }
 
-export function getApple NotesConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/apple-notes/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-APPLE-NOTES_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  APPLE-NOTES_API_KEY: ${{ secrets.APPLE-NOTES_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id apple-notes/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=apple-notes-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/apple-notes/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getApple NotesConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[apple-notes] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
+const ENVIRONMENTS: Record<string, NotesEnvConfig> = {
+  personal: { accountName: "iCloud", defaultFolder: "Personal", autoSync: true },
+  work: { accountName: "Gmail", defaultFolder: "Work", autoSync: true },
+  local: { accountName: "On My Mac", defaultFolder: "Notes", autoSync: false },
 };
 ```
 
-## Instructions
-
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
-
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
-
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getApple NotesConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
-
 ## Resources
-- [Apple Notes Environments Guide](https://docs.apple-notes.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
 
-## Next Steps
-For observability setup, see `apple-notes-observability`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

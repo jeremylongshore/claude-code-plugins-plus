@@ -1,211 +1,104 @@
 ---
 name: alchemy-deploy-integration
 description: |
-  Deploy Alchemy integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Alchemy-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy alchemy", "alchemy Vercel",
-  "alchemy production deploy", "alchemy Cloud Run", "alchemy Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Alchemy-powered Web3 applications to Vercel, Cloud Run, and AWS.
+  Use when deploying dApps with server-side Alchemy SDK access,
+  configuring API key secrets, or setting up RPC proxy endpoints.
+  Trigger: "deploy alchemy", "alchemy Vercel", "alchemy Cloud Run",
+  "alchemy production deploy", "dApp deploy".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, deployment]
 compatible-with: claude-code
 ---
 
 # Alchemy Deploy Integration
 
 ## Overview
-Deploy Alchemy-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Alchemy API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Deploy Alchemy-powered dApps with proper API key security. The API key must stay server-side — never ship it to the browser.
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Vercel Deployment
+
 ```bash
-# Add Alchemy secrets to Vercel
-vercel secrets add alchemy_api_key sk_live_***
-vercel secrets add alchemy_webhook_secret whsec_***
-
-# Link to project
+# Add Alchemy API key as Vercel secret
+vercel secrets add alchemy_api_key "your-api-key"
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
-### vercel.json Configuration
 ```json
+// vercel.json
 {
-  "env": {
-    "ALCHEMY_API_KEY": "@alchemy_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+  "env": { "ALCHEMY_API_KEY": "@alchemy_api_key" },
+  "functions": { "api/**/*.ts": { "maxDuration": 30 } }
+}
+```
+
+```typescript
+// api/balance/[address].ts — Vercel serverless function
+import { Alchemy, Network } from 'alchemy-sdk';
+
+const alchemy = new Alchemy({
+  apiKey: process.env.ALCHEMY_API_KEY,
+  network: Network.ETH_MAINNET,
+});
+
+export default async function handler(req: any, res: any) {
+  const { address } = req.query;
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return res.status(400).json({ error: 'Invalid address' });
+  }
+  const balance = await alchemy.core.getBalance(address);
+  res.json({ balance: balance.toString() });
+}
+```
+
+### Step 2: Cloud Run Deployment
+
+```bash
+# Build and deploy
+gcloud builds submit --tag gcr.io/${PROJECT_ID}/alchemy-dapp
+gcloud run deploy alchemy-dapp \
+  --image gcr.io/${PROJECT_ID}/alchemy-dapp \
+  --region us-central1 \
+  --set-secrets=ALCHEMY_API_KEY=alchemy-api-key:latest \
+  --allow-unauthenticated
+```
+
+### Step 3: Health Check
+
+```typescript
+// api/health.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+export default async function handler(_req: any, res: any) {
+  try {
+    const alchemy = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET });
+    const block = await alchemy.core.getBlockNumber();
+    res.json({ status: 'healthy', latestBlock: block });
+  } catch {
+    res.status(503).json({ status: 'unhealthy' });
   }
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-alchemy-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Alchemy secrets
-fly secrets set ALCHEMY_API_KEY=sk_live_***
-fly secrets set ALCHEMY_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="alchemy-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ALCHEMY_API_KEY=alchemy-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/alchemy.ts
-interface AlchemyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getAlchemyConfig(): AlchemyConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ALCHEMY_API_KEY!,
-    environment: env as AlchemyConfig['environment'],
-    webhookSecret: process.env.ALCHEMY_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const alchemyStatus = await checkAlchemyConnection();
-
-  return Response.json({
-    status: alchemyStatus ? 'healthy' : 'degraded',
-    services: {
-      alchemy: alchemyStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Alchemy API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Alchemy integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Alchemy connectivity.
-
 ## Output
-- Application deployed to production
-- Alchemy secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add alchemy_api_key "$ALCHEMY_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ALCHEMY_API_KEY="$ALCHEMY_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+- Vercel deployment with API key in server-side functions
+- Cloud Run with GCP Secret Manager
+- Health check endpoint verifying Alchemy connectivity
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Alchemy Deploy Guide](https://docs.alchemy.com/deploy)
+
+- [Vercel Secrets](https://vercel.com/docs/concepts/projects/environment-variables)
+- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
+- [Alchemy Docs](https://www.alchemy.com/docs)
 
 ## Next Steps
+
 For webhook handling, see `alchemy-webhooks-events`.

@@ -1,216 +1,162 @@
 ---
 name: alchemy-performance-tuning
 description: |
-  Optimize Alchemy API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Alchemy integrations.
-  Trigger with phrases like "alchemy performance", "optimize alchemy",
-  "alchemy latency", "alchemy caching", "alchemy slow", "alchemy batch".
-allowed-tools: Read, Write, Edit
+  Optimize Alchemy SDK performance with caching, batching, and multi-chain parallelism.
+  Use when reducing latency for blockchain queries, optimizing CU consumption,
+  or scaling dApps for high request volumes.
+  Trigger: "alchemy performance", "alchemy slow", "alchemy optimization",
+  "alchemy caching", "alchemy batch requests".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, performance]
 compatible-with: claude-code
 ---
 
 # Alchemy Performance Tuning
 
-## Overview
-Optimize Alchemy API performance with caching, batching, and connection pooling.
+## Performance Targets
 
-## Prerequisites
-- Alchemy SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedAlchemyRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const alchemyLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Alchemy
-    const results = await alchemyClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  alchemyLoader.load('id-1'),
-  alchemyLoader.load('id-2'),
-  alchemyLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AlchemyClient({
-  apiKey: process.env.ALCHEMY_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedAlchemyList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAlchemyList(cursor =>
-  alchemyClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredAlchemyCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+| Operation | Target Latency | CU Cost |
+|-----------|---------------|---------|
+| `getBlockNumber` | < 50ms | 10 |
+| `getBalance` | < 100ms | 19 |
+| `getTokenBalances` | < 200ms | 50 |
+| `getNftsForOwner` | < 300ms | 50 |
+| `getAssetTransfers` | < 500ms | 150 |
+| Multi-chain portfolio | < 2s | ~400 |
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Alchemy operations.
+### Step 1: Response Caching with TTL
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAlchemyCall(name, () =>
-    cachedAlchemyRequest(`cache:${name}`, fn)
-  );
+// src/performance/cache.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+class BlockchainCache {
+  private store = new Map<string, { data: any; expiry: number }>();
+
+  // Different TTLs for different data freshness needs
+  private TTL: Record<string, number> = {
+    blockNumber: 12000,     // 12s (~1 block)
+    balance: 30000,         // 30s
+    tokenBalances: 60000,   // 60s
+    nftOwnership: 300000,   // 5 min (NFTs transfer less frequently)
+    contractMetadata: 3600000, // 1 hour (rarely changes)
+    tokenMetadata: 86400000,   // 24 hours (almost never changes)
+  };
+
+  async cached<T>(category: string, key: string, fetcher: () => Promise<T>): Promise<T> {
+    const cacheKey = `${category}:${key}`;
+    const entry = this.store.get(cacheKey);
+    if (entry && entry.expiry > Date.now()) return entry.data;
+
+    const data = await fetcher();
+    this.store.set(cacheKey, { data, expiry: Date.now() + (this.TTL[category] || 30000) });
+    return data;
+  }
+
+  invalidate(category: string): void {
+    for (const key of this.store.keys()) {
+      if (key.startsWith(`${category}:`)) this.store.delete(key);
+    }
+  }
+}
+
+const cache = new BlockchainCache();
+export { cache };
 ```
 
+### Step 2: Parallel Multi-Chain Fetching
+
+```typescript
+// src/performance/parallel-fetch.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+import { cache } from './cache';
+
+const CHAINS = [
+  { name: 'ethereum', network: Network.ETH_MAINNET },
+  { name: 'polygon', network: Network.MATIC_MAINNET },
+  { name: 'arbitrum', network: Network.ARB_MAINNET },
+  { name: 'base', network: Network.BASE_MAINNET },
+];
+
+async function multiChainBalance(address: string) {
+  const results = await Promise.allSettled(
+    CHAINS.map(chain =>
+      cache.cached('balance', `${chain.name}:${address}`, async () => {
+        const client = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: chain.network });
+        const bal = await client.core.getBalance(address);
+        return { chain: chain.name, balance: (parseInt(bal.toString()) / 1e18).toFixed(6) };
+      })
+    )
+  );
+
+  return results
+    .filter((r): r is PromiseFulfilledResult<any> => r.status === 'fulfilled')
+    .map(r => r.value);
+}
+```
+
+### Step 3: Batch NFT Metadata (Reduce CU)
+
+```typescript
+// src/performance/batch-nft.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+const alchemy = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET });
+
+// SLOW: Individual calls = 50 CU each
+// async function slowGetMetadata(tokens) {
+//   return Promise.all(tokens.map(t => alchemy.nft.getNftMetadata(t.contract, t.tokenId)));
+// }
+
+// FAST: Batch call = 50 CU total for up to 100 tokens
+async function fastGetMetadata(tokens: Array<{ contractAddress: string; tokenId: string }>) {
+  return alchemy.nft.getNftMetadataBatch(tokens);
+}
+```
+
+### Step 4: WebSocket for Real-Time Data
+
+```typescript
+// src/performance/realtime.ts
+import { Alchemy, AlchemySubscription, Network } from 'alchemy-sdk';
+
+const alchemy = new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET });
+
+// Use WebSocket subscriptions instead of polling
+function watchAddress(address: string, onActivity: (tx: any) => void) {
+  alchemy.ws.on(
+    {
+      method: AlchemySubscription.PENDING_TRANSACTIONS,
+      toAddress: address,
+    },
+    (tx) => onActivity(tx)
+  );
+}
+
+// Auto-reconnect on disconnect
+alchemy.ws.on('close', () => {
+  console.log('WebSocket disconnected — reconnecting in 5s');
+  setTimeout(() => alchemy.ws.connect(), 5000);
+});
+```
+
+## Output
+
+- TTL-based response cache matching data freshness requirements
+- Parallel multi-chain fetching (4 chains in < 2s)
+- Batch NFT metadata (100x CU reduction)
+- WebSocket subscriptions replacing polling
+
 ## Resources
-- [Alchemy Performance Guide](https://docs.alchemy.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Alchemy Compute Units](https://www.alchemy.com/docs/reference/compute-unit-costs)
+- [Alchemy WebSockets](https://www.alchemy.com/docs/reference/sdk-websockets)
 
 ## Next Steps
+
 For cost optimization, see `alchemy-cost-tuning`.

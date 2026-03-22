@@ -1,126 +1,120 @@
 ---
 name: anima-ci-integration
 description: |
-  Configure Anima CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Anima tests into your build process.
-  Trigger with phrases like "anima CI", "anima GitHub Actions",
-  "anima automated tests", "CI anima".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Configure CI/CD pipeline for automated Figma-to-code generation with Anima.
+  Use when automating design-to-code in GitHub Actions, setting up PR-based
+  component generation, or integrating Anima into design handoff workflows.
+  Trigger: "anima CI", "anima GitHub Actions", "anima automated generation".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, anima]
+tags: [saas, design, figma, anima, ci-cd]
 compatible-with: claude-code
 ---
 
 # Anima CI Integration
 
-## Overview
-Set up CI/CD pipelines for Anima integrations with automated testing.
-
-## Prerequisites
-- GitHub repository with Actions enabled
-- Anima test API key
-- npm/pnpm project configured
-
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/anima-integration.yml`:
+### Step 1: GitHub Actions Workflow
 
 ```yaml
-name: Anima Integration Tests
+# .github/workflows/design-sync.yml
+name: Design-to-Code Sync
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  ANIMA_API_KEY: ${{ secrets.ANIMA_API_KEY }}
+  schedule:
+    - cron: '0 9 * * 1-5'  # Weekdays at 9am
+  workflow_dispatch:         # Manual trigger
 
 jobs:
-  test:
+  generate:
     runs-on: ubuntu-latest
-    env:
-      ANIMA_API_KEY: ${{ secrets.ANIMA_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: '20' }
       - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+      - name: Generate components from Figma
+        env:
+          ANIMA_TOKEN: ${{ secrets.ANIMA_TOKEN }}
+          FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+          FIGMA_FILE_KEY: ${{ secrets.FIGMA_FILE_KEY }}
+        run: npx tsx scripts/generate-components.ts
+      - name: Lint generated code
+        run: npx eslint src/components/generated/ --fix
+      - name: Check for changes
+        id: changes
+        run: |
+          if git diff --quiet src/components/generated/; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Create PR with generated components
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git checkout -b design-sync/$(date +%Y%m%d)
+          git add src/components/generated/
+          git commit -m "chore: sync generated components from Figma"
+          git push -u origin HEAD
+          gh pr create --title "Design sync: updated generated components" \
+            --body "Auto-generated from Figma via Anima SDK"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Step 2: Configure Secrets
-```bash
-gh secret set ANIMA_API_KEY --body "sk_test_***"
-```
+### Step 2: Generation Script for CI
 
-### Step 3: Add Integration Tests
 ```typescript
-describe('Anima Integration', () => {
-  it.skipIf(!process.env.ANIMA_API_KEY)('should connect', async () => {
-    const client = getAnimaClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
+// scripts/generate-components.ts
+import { Anima } from '@animaapp/anima-sdk';
+import fs from 'fs';
+
+const anima = new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
+
+const COMPONENTS = [
+  { nodeId: '1:2', name: 'Hero' },
+  { nodeId: '3:4', name: 'Card' },
+  { nodeId: '5:6', name: 'Navigation' },
+];
+
+async function main() {
+  const outputDir = 'src/components/generated';
+  fs.mkdirSync(outputDir, { recursive: true });
+
+  for (const comp of COMPONENTS) {
+    const { files } = await anima.generateCode({
+      fileKey: process.env.FIGMA_FILE_KEY!,
+      figmaToken: process.env.FIGMA_TOKEN!,
+      nodesId: [comp.nodeId],
+      settings: { language: 'typescript', framework: 'react', styling: 'tailwind', uiLibrary: 'shadcn' },
+    });
+
+    for (const file of files) {
+      fs.writeFileSync(`${outputDir}/${file.fileName}`, file.content);
+    }
+    console.log(`Generated: ${comp.name}`);
+    await new Promise(r => setTimeout(r, 6000)); // Rate limit
+  }
+}
+
+main().catch(err => { console.error(err); process.exit(1); });
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      ANIMA_API_KEY: ${{ secrets.ANIMA_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Anima production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "anima-integration"
-```
+- Scheduled GitHub Actions workflow for design-to-code sync
+- Auto-PR creation when generated code changes
+- ESLint auto-fix on generated output
+- Rate-limited generation script for CI
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Anima CI Guide](https://docs.anima.com/ci)
+
+- [Anima API](https://docs.animaapp.com/docs/anima-api)
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 
 ## Next Steps
-For deployment patterns, see `anima-deploy-integration`.
+
+For deployment, see `anima-deploy-integration`.

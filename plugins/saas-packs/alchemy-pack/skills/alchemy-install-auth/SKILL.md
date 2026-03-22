@@ -1,11 +1,10 @@
 ---
 name: alchemy-install-auth
 description: |
-  Install and configure Alchemy SDK/CLI authentication.
-  Use when setting up a new Alchemy integration, configuring API keys,
-  or initializing Alchemy in your project.
-  Trigger with phrases like "install alchemy", "setup alchemy",
-  "alchemy auth", "configure alchemy API key".
+  Install the Alchemy SDK and configure API key authentication for Web3 development.
+  Use when setting up blockchain API access, creating an Alchemy app,
+  or configuring multi-chain RPC endpoints.
+  Trigger: "install alchemy", "setup alchemy", "alchemy auth", "alchemy API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,76 +16,122 @@ compatible-with: claude-code
 # Alchemy Install & Auth
 
 ## Overview
-Set up Alchemy SDK/CLI and configure authentication credentials.
+
+Install the `alchemy-sdk` npm package and configure API authentication. Alchemy provides blockchain infrastructure (RPC nodes, Enhanced APIs, NFT APIs, webhooks) across Ethereum, Polygon, Arbitrum, Optimism, Base, and Solana.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Alchemy account with API access
-- API key from Alchemy dashboard
+
+- Node.js 18+ (or Python 3.10+ for alchemy-sdk Python)
+- Free Alchemy account at [alchemy.com](https://www.alchemy.com)
+- API key from Alchemy Dashboard
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @alchemy/sdk
+### Step 1: Install the Alchemy SDK
 
-# Python
-pip install alchemy
+```bash
+# JavaScript/TypeScript (official SDK)
+npm install alchemy-sdk
+
+# Python (community SDK)
+pip install alchemy-sdk
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Create an Alchemy App
+
+1. Go to [dashboard.alchemy.com](https://dashboard.alchemy.com)
+2. Click "Create new app"
+3. Select chain: Ethereum, Polygon, Arbitrum, Optimism, Base, or Solana
+4. Select network: Mainnet, Sepolia (testnet), or Mumbai
+5. Copy the API key
+
+### Step 3: Configure Environment
+
 ```bash
 # Set environment variable
-export ALCHEMY_API_KEY="your-api-key"
+export ALCHEMY_API_KEY="your-api-key-here"
 
 # Or create .env file
-echo 'ALCHEMY_API_KEY=your-api-key' >> .env
+cat > .env << 'EOF'
+ALCHEMY_API_KEY=your-api-key-here
+ALCHEMY_NETWORK=ETH_MAINNET
+EOF
+
+echo ".env" >> .gitignore
 ```
 
-### Step 3: Verify Connection
+### Step 4: Initialize and Verify
+
 ```typescript
-// Test connection code here
+// src/alchemy-client.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+const alchemy = new Alchemy({
+  apiKey: process.env.ALCHEMY_API_KEY,
+  network: Network.ETH_MAINNET,
+});
+
+// Verify connection
+async function verifyConnection() {
+  const blockNumber = await alchemy.core.getBlockNumber();
+  console.log(`Connected! Latest block: ${blockNumber}`);
+  return blockNumber;
+}
+
+verifyConnection().catch(console.error);
 ```
+
+### Step 5: Multi-Chain Configuration
+
+```typescript
+// src/config/chains.ts
+import { Alchemy, Network } from 'alchemy-sdk';
+
+// Create clients for multiple chains
+const chains = {
+  ethereum: new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ETH_MAINNET }),
+  polygon: new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.MATIC_MAINNET }),
+  arbitrum: new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.ARB_MAINNET }),
+  optimism: new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.OPT_MAINNET }),
+  base: new Alchemy({ apiKey: process.env.ALCHEMY_API_KEY, network: Network.BASE_MAINNET }),
+};
+
+export default chains;
+```
+
+## Supported Networks
+
+| Chain | Network Enum | Mainnet | Testnet |
+|-------|-------------|---------|---------|
+| Ethereum | `ETH_MAINNET` | Yes | Sepolia |
+| Polygon | `MATIC_MAINNET` | Yes | Amoy |
+| Arbitrum | `ARB_MAINNET` | Yes | Sepolia |
+| Optimism | `OPT_MAINNET` | Yes | Sepolia |
+| Base | `BASE_MAINNET` | Yes | Sepolia |
+| Solana | `SOL_MAINNET` | Yes | Devnet |
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- `alchemy-sdk` installed in node_modules
+- API key configured in environment
+- Verified connection with latest block number
+- Multi-chain client configuration ready
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Alchemy dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.alchemy.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { AlchemyClient } from '@alchemy/sdk';
-
-const client = new AlchemyClient({
-  apiKey: process.env.ALCHEMY_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from alchemy import AlchemyClient
-
-client = AlchemyClient(
-    api_key=os.environ.get('ALCHEMY_API_KEY')
-)
-```
+| `Must provide apiKey` | Missing env var | Set `ALCHEMY_API_KEY` in environment |
+| `401 Unauthorized` | Invalid API key | Verify key in Alchemy Dashboard |
+| `429 Rate Limit` | Free tier exceeded | Upgrade plan or reduce request rate |
+| `ECONNREFUSED` | Network blocked | Ensure HTTPS to *.g.alchemy.com allowed |
 
 ## Resources
-- [Alchemy Documentation](https://docs.alchemy.com)
-- [Alchemy Dashboard](https://api.alchemy.com)
-- [Alchemy Status](https://status.alchemy.com)
+
+- [Alchemy Docs](https://www.alchemy.com/docs)
+- [Alchemy SDK GitHub](https://github.com/alchemyplatform/alchemy-sdk-js)
+- [Alchemy Dashboard](https://dashboard.alchemy.com)
 
 ## Next Steps
-After successful auth, proceed to `alchemy-hello-world` for your first API call.
+
+Proceed to `alchemy-hello-world` for your first blockchain query.

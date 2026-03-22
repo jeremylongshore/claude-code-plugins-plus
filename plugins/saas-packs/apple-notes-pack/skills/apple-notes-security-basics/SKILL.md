@@ -1,142 +1,44 @@
 ---
 name: apple-notes-security-basics
 description: |
-  Apply Apple Notes security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Apple Notes security configuration.
-  Trigger with phrases like "apple-notes security", "apple-notes secrets",
-  "secure apple-notes", "apple-notes API key security".
-allowed-tools: Read, Write, Grep
+  Apply security best practices for Apple Notes automation scripts.
+  Trigger: "apple notes security".
+allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notes, apple-notes]
+tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
 ---
 
 # Apple Notes Security Basics
 
-## Overview
-Security best practices for Apple Notes API keys, tokens, and access control.
+## Security Checklist
+- [ ] Scripts run only locally (never expose osascript to network)
+- [ ] No note content logged to files (may contain sensitive data)
+- [ ] TCC permissions scoped to specific apps only
+- [ ] Exported notes stored with appropriate file permissions
+- [ ] iCloud account uses 2FA
+- [ ] Automation scripts do not hardcode note content
 
-## Prerequisites
-- Apple Notes SDK installed
-- Understanding of environment variables
-- Access to Apple Notes dashboard
-
-## Instructions
-
-### Step 1: Configure Environment Variables
+## AppleScript Sandbox Restrictions
 ```bash
-# .env (NEVER commit to git)
-APPLE-NOTES_API_KEY=sk_live_***
-APPLE-NOTES_SECRET=***
-
-# .gitignore
-.env
-.env.local
-.env.*.local
+# Apple Notes runs inside the macOS sandbox
+# Scripts can only access Notes via Apple Events (not direct file access)
+# The Notes database is at ~/Library/Group Containers/group.com.apple.notes/
+# Direct database access is NOT recommended (encrypted, undocumented schema)
 ```
 
-### Step 2: Implement Secret Rotation
+## Safe Export Pattern
 ```bash
-# 1. Generate new key in Apple Notes dashboard
-# 2. Update environment variable
-export APPLE-NOTES_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${APPLE-NOTES_API_KEY}" \
-  https://api.apple-notes.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new AppleNotesClient({
-    apiKey: process.env.APPLE-NOTES_READ_KEY,
-  }),
-  writer: new AppleNotesClient({
-    apiKey: process.env.APPLE-NOTES_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Apple Notes analytics
-  await apple-notesClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'apple-notes.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
+# Export with restricted permissions
+osascript -l JavaScript -e "..." > /tmp/notes-export.json
+chmod 600 /tmp/notes-export.json
+# Process then delete
+rm /tmp/notes-export.json
 ```
 
 ## Resources
-- [Apple Notes Security Guide](https://docs.apple-notes.com/security)
-- [Apple Notes API Scopes](https://docs.apple-notes.com/scopes)
 
-## Next Steps
-For production deployment, see `apple-notes-prod-checklist`.
+- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
+- [JXA Examples](https://jxa-examples.akjems.com/)

@@ -1,92 +1,130 @@
 ---
 name: appfolio-install-auth
 description: |
-  Install and configure AppFolio SDK/CLI authentication.
-  Use when setting up a new AppFolio integration, configuring API keys,
-  or initializing AppFolio in your project.
-  Trigger with phrases like "install appfolio", "setup appfolio",
-  "appfolio auth", "configure appfolio API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Configure AppFolio Stack API authentication with OAuth 2.0.
+  Use when setting up property management API access, registering as an
+  AppFolio Stack partner, or configuring client credentials for API calls.
+  Trigger: "install appfolio", "setup appfolio", "appfolio auth", "appfolio API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
 # AppFolio Install & Auth
 
 ## Overview
-Set up AppFolio SDK/CLI and configure authentication credentials.
+
+Configure AppFolio Stack API authentication. AppFolio uses HTTP Basic Auth with a client ID and client secret, provided through their Stack partner program. No public npm SDK exists — use direct REST API calls.
 
 ## Prerequisites
+
+- AppFolio Stack partner account ([appfolio.com/stack](https://www.appfolio.com/stack/become-a-partner))
+- Client ID and Client Secret from AppFolio
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- AppFolio account with API access
-- API key from AppFolio dashboard
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @appfolio/sdk
+### Step 1: Obtain API Credentials
 
-# Python
-pip install appfolio
+```bash
+# AppFolio Stack API credentials come from the partner program
+# 1. Apply at appfolio.com/stack/become-a-partner
+# 2. Complete integration review
+# 3. Receive client_id and client_secret
+
+cat > .env << 'ENVFILE'
+APPFOLIO_CLIENT_ID=your-client-id
+APPFOLIO_CLIENT_SECRET=your-client-secret
+APPFOLIO_BASE_URL=https://your-company.appfolio.com/api/v1
+ENVFILE
+
+chmod 600 .env
+echo ".env" >> .gitignore
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export APPFOLIO_API_KEY="your-api-key"
+### Step 2: Create API Client
 
-# Or create .env file
-echo 'APPFOLIO_API_KEY=your-api-key' >> .env
+```typescript
+// src/appfolio-client.ts
+import axios, { AxiosInstance } from 'axios';
+
+class AppFolioClient {
+  private api: AxiosInstance;
+
+  constructor() {
+    this.api = axios.create({
+      baseURL: process.env.APPFOLIO_BASE_URL,
+      auth: {
+        username: process.env.APPFOLIO_CLIENT_ID!,
+        password: process.env.APPFOLIO_CLIENT_SECRET!,
+      },
+      headers: { 'Content-Type': 'application/json' },
+      timeout: 30000,
+    });
+  }
+
+  async verifyConnection(): Promise<boolean> {
+    try {
+      const response = await this.api.get('/properties');
+      console.log(`Connected! Found ${response.data.length} properties`);
+      return true;
+    } catch (error: any) {
+      console.error(`Connection failed: ${error.response?.status} ${error.message}`);
+      return false;
+    }
+  }
+
+  get http(): AxiosInstance { return this.api; }
+}
+
+export { AppFolioClient };
 ```
 
 ### Step 3: Verify Connection
-```typescript
-// Test connection code here
+
+```bash
+# Quick curl test
+curl -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" \
+  "${APPFOLIO_BASE_URL}/properties" | jq '.[0]'
 ```
+
+## API Endpoints
+
+| Resource | Endpoint | Methods |
+|----------|----------|---------|
+| Properties | `/api/v1/properties` | GET |
+| Units | `/api/v1/units` | GET |
+| Tenants | `/api/v1/tenants` | GET |
+| Leases | `/api/v1/leases` | GET, POST |
+| Bills | `/api/v1/bills` | GET, POST |
+| Vendors | `/api/v1/vendors` | GET |
+| Owners | `/api/v1/owners` | GET |
+| Reports | `/api/v1/reports` | GET |
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- API credentials configured in `.env`
+- TypeScript REST client with Basic Auth
+- Verified connectivity to AppFolio API
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in AppFolio dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.appfolio.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { AppFolioClient } from '@appfolio/sdk';
-
-const client = new AppFolioClient({
-  apiKey: process.env.APPFOLIO_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from appfolio import AppFolioClient
-
-client = AppFolioClient(
-    api_key=os.environ.get('APPFOLIO_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid credentials | Verify client_id/secret from AppFolio |
+| `403 Forbidden` | Not a Stack partner | Complete partner application |
+| `404 Not Found` | Wrong base URL | Use `your-company.appfolio.com` format |
+| Timeout | Network issue | Check firewall allows HTTPS to appfolio.com |
 
 ## Resources
-- [AppFolio Documentation](https://docs.appfolio.com)
-- [AppFolio Dashboard](https://api.appfolio.com)
-- [AppFolio Status](https://status.appfolio.com)
+
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Partner Program](https://www.appfolio.com/stack/become-a-partner)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)
 
 ## Next Steps
-After successful auth, proceed to `appfolio-hello-world` for your first API call.
+
+Proceed to `appfolio-hello-world` for your first property query.

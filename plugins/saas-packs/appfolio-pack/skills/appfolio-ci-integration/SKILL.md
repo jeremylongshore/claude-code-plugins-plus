@@ -1,126 +1,45 @@
 ---
 name: appfolio-ci-integration
 description: |
-  Configure AppFolio CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating AppFolio tests into your build process.
-  Trigger with phrases like "appfolio CI", "appfolio GitHub Actions",
-  "appfolio automated tests", "CI appfolio".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Configure CI/CD pipeline for AppFolio property management integrations.
+  Trigger: "appfolio CI".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio CI Integration
+# appfolio ci integration | sed 's/\b\(.\)/\u\1/g'
 
-## Overview
-Set up CI/CD pipelines for AppFolio integrations with automated testing.
-
-## Prerequisites
-- GitHub repository with Actions enabled
-- AppFolio test API key
-- npm/pnpm project configured
-
-## Instructions
-
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/appfolio-integration.yml`:
-
+## GitHub Actions Workflow
 ```yaml
-name: AppFolio Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  APPFOLIO_API_KEY: ${{ secrets.APPFOLIO_API_KEY }}
+name: AppFolio Integration CI
+on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      APPFOLIO_API_KEY: ${{ secrets.APPFOLIO_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: "20" }
       - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set APPFOLIO_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('AppFolio Integration', () => {
-  it.skipIf(!process.env.APPFOLIO_API_KEY)('should connect', async () => {
-    const client = getAppFolioClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      APPFOLIO_API_KEY: ${{ secrets.APPFOLIO_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify AppFolio production readiness
+      - run: npm run lint
+      - run: npm run typecheck
+      - name: Run tests with mock API
+        run: npm test
+      - name: Integration test (sandbox)
+        if: github.ref == 'refs/heads/main'
+        env:
+          APPFOLIO_CLIENT_ID: ${{ secrets.APPFOLIO_CLIENT_ID }}
+          APPFOLIO_CLIENT_SECRET: ${{ secrets.APPFOLIO_CLIENT_SECRET }}
+          APPFOLIO_BASE_URL: ${{ secrets.APPFOLIO_SANDBOX_URL }}
         run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "appfolio-integration"
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [AppFolio CI Guide](https://docs.appfolio.com/ci)
 
-## Next Steps
-For deployment patterns, see `appfolio-deploy-integration`.
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)

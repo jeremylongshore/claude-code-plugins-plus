@@ -1,240 +1,112 @@
 ---
 name: alchemy-reference-architecture
 description: |
-  Implement Alchemy reference architecture with best-practice project layout.
-  Use when designing new Alchemy integrations, reviewing project structure,
-  or establishing architecture standards for Alchemy applications.
-  Trigger with phrases like "alchemy architecture", "alchemy best practices",
-  "alchemy project structure", "how to organize alchemy", "alchemy layout".
-allowed-tools: Read, Grep
+  Implement reference architecture for Alchemy-powered Web3 applications.
+  Use when designing dApp infrastructure, planning multi-chain deployments,
+  or structuring a production blockchain application.
+  Trigger: "alchemy architecture", "dApp architecture", "alchemy project structure",
+  "web3 system design", "alchemy multi-chain design".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, alchemy]
+tags: [saas, blockchain, web3, alchemy, architecture]
 compatible-with: claude-code
 ---
 
 # Alchemy Reference Architecture
 
-## Overview
-Production-ready architecture patterns for Alchemy integrations.
+## System Architecture
 
-## Prerequisites
-- Understanding of layered architecture
-- Alchemy SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+```
+┌─────────────────────────────────────────────────────────┐
+│                     Frontend (React/Next.js)              │
+│  - Wallet connection (MetaMask, WalletConnect)           │
+│  - Portfolio dashboard                                    │
+│  - NFT gallery                                           │
+│  - Transaction history                                    │
+└────────────────────────┬────────────────────────────────┘
+                         │ HTTPS (no API key exposed)
+┌────────────────────────▼────────────────────────────────┐
+│                     API Layer (Next.js/Express)           │
+│  - /api/balance/:address                                 │
+│  - /api/nfts/:owner                                      │
+│  - /api/tokens/:address                                  │
+│  - /api/transactions/:address                            │
+│  - /webhooks/alchemy          (webhook receiver)         │
+└───────┬──────────┬──────────┬───────────────────────────┘
+        │          │          │
+   ┌────▼───┐ ┌───▼────┐ ┌──▼──────┐
+   │Alchemy │ │Alchemy │ │Alchemy  │
+   │Core API│ │NFT API │ │Notify   │
+   │(RPC)   │ │        │ │(Webhooks│
+   └────────┘ └────────┘ └─────────┘
+   ETH/Polygon/ARB/OP/Base
+```
 
 ## Project Structure
 
 ```
-my-alchemy-project/
+web3-dapp/
 ├── src/
 │   ├── alchemy/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── alchemy/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── alchemy/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── alchemy/
-│           └── sync.ts         # Background sync job
+│   │   ├── client-factory.ts    # Multi-chain Alchemy client factory
+│   │   ├── cache.ts             # Response caching with TTL
+│   │   ├── throttler.ts         # CU-aware rate limiter
+│   │   └── errors.ts            # Error classification
+│   ├── portfolio/
+│   │   ├── fetcher.ts           # Wallet portfolio aggregator
+│   │   ├── transactions.ts      # Transaction history analyzer
+│   │   └── multi-chain.ts       # Cross-chain balance aggregator
+│   ├── nft/
+│   │   ├── collection.ts        # NFT collection explorer
+│   │   ├── batch-metadata.ts    # Batch metadata fetcher
+│   │   └── verify-ownership.ts  # NFT ownership verification
+│   ├── contracts/
+│   │   ├── read-contract.ts     # Smart contract read operations
+│   │   └── abis/                # Contract ABI files
+│   ├── webhooks/
+│   │   ├── handler.ts           # Webhook endpoint
+│   │   ├── verify.ts            # HMAC signature verification
+│   │   └── event-router.ts      # Event type routing
+│   ├── security/
+│   │   ├── validators.ts        # Input validation (addresses, blocks)
+│   │   └── proxy.ts             # API key proxy for frontend
+│   └── api/                     # API route handlers
 ├── tests/
-│   ├── unit/
-│   │   └── alchemy/
-│   └── integration/
-│       └── alchemy/
-├── config/
-│   ├── alchemy.development.json
-│   ├── alchemy.staging.json
-│   └── alchemy.production.json
-└── docs/
-    └── alchemy/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── unit/                    # Unit tests (mocked Alchemy)
+│   ├── fork/                    # Mainnet fork tests (Hardhat)
+│   └── integration/             # Sepolia integration tests
+├── contracts/                   # Solidity contracts (if applicable)
+├── hardhat.config.ts            # Hardhat + Alchemy fork config
+└── package.json
 ```
 
-## Layer Architecture
+## Key Design Decisions
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Alchemy Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/alchemy/client.ts
-export class AlchemyService {
-  private client: AlchemyClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: AlchemyConfig) {
-    this.client = new AlchemyClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('alchemy');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/alchemy/errors.ts
-export class AlchemyServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AlchemyServiceError';
-  }
-}
-
-export function wrapAlchemyError(error: unknown): AlchemyServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/alchemy/health.ts
-export async function checkAlchemyHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await alchemyClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Alchemy    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Alchemy    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/alchemy.ts
-export interface AlchemyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadAlchemyConfig(): AlchemyConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./alchemy.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Alchemy operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Alchemy connectivity.
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| SDK | `alchemy-sdk` | Official, typed, Enhanced + NFT APIs included |
+| Multi-chain | Client factory pattern | Lazy initialization, shared API key |
+| Caching | In-memory with TTL tiers | Block data = 12s, metadata = 24h |
+| Rate limiting | Bottleneck with CU weights | Matches Alchemy CU budget model |
+| Frontend access | API proxy | Never expose API key to browser |
+| Real-time | WebSocket subscriptions | Lower cost than polling |
+| Testing | Hardhat mainnet fork | Reproducible tests with real data |
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Alchemy types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/alchemy/{handlers} src/services/alchemy src/api/alchemy
-touch src/alchemy/{client,config,types,errors}.ts
-touch src/services/alchemy/{index,sync,cache}.ts
-```
+- Complete project structure for Alchemy-powered dApp
+- Multi-chain architecture with client factory
+- API proxy pattern keeping API key server-side
+- Webhook integration for real-time event processing
 
 ## Resources
-- [Alchemy SDK Documentation](https://docs.alchemy.com/sdk)
-- [Alchemy Best Practices](https://docs.alchemy.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `alchemy-multi-env-setup`.
+- [Alchemy Docs](https://www.alchemy.com/docs)
+- [Alchemy SDK GitHub](https://github.com/alchemyplatform/alchemy-sdk-js)
+- [Alchemy Dashboard](https://dashboard.alchemy.com)
+
+## Next Steps
+
+Start with `alchemy-install-auth`, then follow skills through production deployment.

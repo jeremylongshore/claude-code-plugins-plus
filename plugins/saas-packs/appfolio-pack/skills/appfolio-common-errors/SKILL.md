@@ -1,113 +1,43 @@
 ---
 name: appfolio-common-errors
 description: |
-  Diagnose and fix AppFolio common errors and exceptions.
-  Use when encountering AppFolio errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "appfolio error", "fix appfolio",
-  "appfolio not working", "debug appfolio".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Diagnose and fix common AppFolio API integration errors.
+  Trigger: "appfolio error".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, real-estate, appfolio]
+tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
 ---
 
-# AppFolio Common Errors
+# appfolio common errors | sed 's/\b\(.\)/\u\1/g'
 
-## Overview
-Quick reference for the top 10 most common AppFolio errors and their solutions.
+## Error Reference
 
-## Prerequisites
-- AppFolio SDK installed
-- API credentials configured
-- Access to error logs
+| Code | Error | Root Cause | Fix |
+|------|-------|-----------|-----|
+| `401` | Unauthorized | Invalid client_id/secret | Verify credentials from AppFolio |
+| `403` | Forbidden | Not an approved partner | Complete Stack partner application |
+| `404` | Not Found | Wrong base URL or endpoint | Use `your-company.appfolio.com/api/v1` |
+| `422` | Unprocessable Entity | Missing required fields | Check required fields in API docs |
+| `429` | Too Many Requests | Rate limit exceeded | Implement backoff; reduce request rate |
+| `500` | Internal Server Error | AppFolio server issue | Retry after delay; check status page |
 
-## Instructions
-
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
-
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Diagnostic Script
 ```bash
-# Verify API key is set
-echo $APPFOLIO_API_KEY
+#!/bin/bash
+echo "=== AppFolio API Diagnostics ==="
+echo -n "Connectivity: "
+curl -s -o /dev/null -w "%{http_code}" -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" "${APPFOLIO_BASE_URL}/properties"
+echo ""
+echo -n "Tenants endpoint: "
+curl -s -o /dev/null -w "%{http_code}" -u "${APPFOLIO_CLIENT_ID}:${APPFOLIO_CLIENT_SECRET}" "${APPFOLIO_BASE_URL}/tenants"
+echo ""
+echo "=== Done ==="
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `appfolio-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check AppFolio status
-curl -s https://status.appfolio.com
-
-# Verify API connectivity
-curl -I https://api.appfolio.com
-
-# Check local configuration
-env | grep APPFOLIO
-```
-
-### Escalation Path
-1. Collect evidence with `appfolio-debug-bundle`
-2. Check AppFolio status page
-3. Contact support with request ID
 
 ## Resources
-- [AppFolio Status Page](https://status.appfolio.com)
-- [AppFolio Support](https://docs.appfolio.com/support)
-- [AppFolio Error Codes](https://docs.appfolio.com/errors)
 
-## Next Steps
-For comprehensive debugging, see `appfolio-debug-bundle`.
+- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
+- [AppFolio Engineering Blog](https://engineering.appfolio.com)
