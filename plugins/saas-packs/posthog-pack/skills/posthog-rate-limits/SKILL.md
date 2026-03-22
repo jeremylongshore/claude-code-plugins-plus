@@ -1,151 +1,222 @@
 ---
 name: posthog-rate-limits
 description: |
-  Implement PostHog rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for PostHog.
-  Trigger with phrases like "posthog rate limit", "posthog throttling",
-  "posthog 429", "posthog retry", "posthog backoff".
+  Handle PostHog API rate limits with exponential backoff, request queuing,
+  and understanding PostHog's actual limit tiers (240/min analytics, 600/min flags).
+  Trigger: "posthog rate limit", "posthog throttling", "posthog 429",
+  "posthog retry", "posthog backoff", "posthog too many requests".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, api]
-
 ---
+
 # PostHog Rate Limits
 
 ## Overview
-Handle PostHog rate limits gracefully with exponential backoff and idempotency.
+
+PostHog rate limits apply to private API endpoints authenticated with a personal API key (`phx_...`). Public capture endpoints (`/capture/`, `/batch/`, `/decide/`) are **not** rate limited. Understanding which endpoints have limits is critical to avoiding 429 errors.
 
 ## Prerequisites
-- PostHog SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+
+- PostHog personal API key (`phx_...`) for admin endpoints
+- Understanding of which endpoints you call and how often
+- `posthog-node` or direct API usage
+
+## PostHog Rate Limit Tiers
+
+| Endpoint Category | Rate Limit | Examples |
+|-------------------|-----------|----------|
+| Event capture (`/capture/`, `/batch/`) | **No limit** | `posthog.capture()`, batch ingestion |
+| Feature flag decide (`/decide/`) | **No limit** | Client-side flag evaluation |
+| Analytics API (insights, persons, recordings) | **240/min, 1200/hour** | Trend queries, person lookup |
+| HogQL query API (`/api/projects/:id/query/`) | **1200/hour** | Custom SQL queries |
+| Feature flag local evaluation polling | **600/min** | Server SDK flag definition fetch |
+| All other private endpoints | **240/min, 1200/hour** | Feature flag CRUD, cohorts, annotations |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Implement Exponential Backoff with Retry-After
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
+async function postHogApiCall<T>(
+  url: string,
+  options: RequestInit,
+  maxRetries = 5
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.POSTHOG_PERSONAL_API_KEY}`,
+        ...options.headers,
+      },
+    });
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+    if (response.ok) {
+      return response.json();
     }
+
+    if (response.status === 429) {
+      // Honor the Retry-After header from PostHog
+      const retryAfter = parseInt(response.headers.get('Retry-After') || '0');
+      const backoffMs = retryAfter > 0
+        ? retryAfter * 1000
+        : Math.min(1000 * Math.pow(2, attempt) + Math.random() * 500, 32000);
+
+      console.warn(`PostHog 429: retrying in ${Math.round(backoffMs)}ms (attempt ${attempt + 1}/${maxRetries})`);
+      await new Promise(r => setTimeout(r, backoffMs));
+      continue;
+    }
+
+    // Don't retry client errors (except 429)
+    if (response.status >= 400 && response.status < 500) {
+      const body = await response.text();
+      throw new Error(`PostHog API ${response.status}: ${body}`);
+    }
+
+    // Retry server errors (500+)
+    if (attempt < maxRetries) {
+      const delay = 1000 * Math.pow(2, attempt);
+      await new Promise(r => setTimeout(r, delay));
+      continue;
+    }
+
+    throw new Error(`PostHog API failed after ${maxRetries} retries: ${response.status}`);
   }
+
   throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Request Queue for Burst Protection
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: PostHogClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,  # 1000: 1 second in ms
-  intervalCap: 10,
+// Enforce 240 requests/minute = 4 requests/second
+const posthogQueue = new PQueue({
+  concurrency: 2,       // Max parallel requests
+  interval: 1000,       // Per second
+  intervalCap: 4,       // Max 4 requests per second
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function queuedPostHogCall<T>(
+  url: string,
+  options: RequestInit
+): Promise<T> {
+  return posthogQueue.add(() => postHogApiCall<T>(url, options));
 }
+
+// Usage: all calls are automatically throttled
+const insights = await queuedPostHogCall(
+  `https://app.posthog.com/api/projects/${PROJECT_ID}/insights/trend/`,
+  { method: 'GET' }
+);
 ```
 
-### Monitor Rate Limit Usage
+### Step 3: Cache Frequently Accessed Data
+
+```typescript
+// Cache insight results to reduce API calls
+class PostHogCache {
+  private cache = new Map<string, { data: any; expiry: number }>();
+
+  async get<T>(key: string, fetcher: () => Promise<T>, ttlMs = 300000): Promise<T> {
+    const cached = this.cache.get(key);
+    if (cached && Date.now() < cached.expiry) {
+      return cached.data as T;
+    }
+
+    const data = await fetcher();
+    this.cache.set(key, { data, expiry: Date.now() + ttlMs });
+    return data;
+  }
+
+  invalidate(key: string) {
+    this.cache.delete(key);
+  }
+}
+
+const phCache = new PostHogCache();
+
+// Cache trend data for 5 minutes
+const trends = await phCache.get('weekly-pageviews', () =>
+  queuedPostHogCall(`https://app.posthog.com/api/projects/${PROJECT_ID}/insights/trend/?events=[{"id":"$pageview"}]&date_from=-7d`, { method: 'GET' })
+);
+```
+
+### Step 4: Monitor Rate Limit Headers
+
 ```typescript
 class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+  private remaining = Infinity;
+  private resetAt = 0;
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
-    }
+  update(headers: Headers) {
+    const remaining = headers.get('X-RateLimit-Remaining');
+    const reset = headers.get('X-RateLimit-Reset');
+
+    if (remaining) this.remaining = parseInt(remaining);
+    if (reset) this.resetAt = parseInt(reset) * 1000;
   }
 
   shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
+    return this.remaining < 10 && Date.now() < this.resetAt;
   }
 
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
+  waitTime(): number {
+    return Math.max(0, this.resetAt - Date.now());
   }
+
+  log() {
+    console.log(`PostHog rate limit: ${this.remaining} remaining, resets in ${Math.round(this.waitTime() / 1000)}s`);
+  }
+}
+
+const rateLimits = new RateLimitMonitor();
+
+// After each API call, update the monitor
+const response = await fetch(url, options);
+rateLimits.update(response.headers);
+if (rateLimits.shouldThrottle()) {
+  console.warn(`Approaching PostHog rate limit — waiting ${rateLimits.waitTime()}ms`);
+  await new Promise(r => setTimeout(r, rateLimits.waitTime()));
 }
 ```
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| HTTP 429 on insights | >240 req/min on analytics | Queue requests, cache results |
+| 429 on flag polling | >600 req/min local eval fetch | Increase `featureFlagsPollingInterval` |
+| 429 on HogQL | >1200 req/hour | Cache query results, reduce frequency |
+| Thundering herd on retry | All clients retry simultaneously | Add random jitter to backoff |
+
+## Key Points
+
+- **Capture endpoints are NOT rate limited** — `posthog.capture()` calls will never 429
+- **Only private API calls are limited** — endpoints requiring `Authorization: Bearer phx_...`
+- **Cache aggressively** — insight data rarely needs real-time refresh
+- **Honor Retry-After** — PostHog tells you exactly how long to wait
+
+## Output
+
+- Exponential backoff with Retry-After header support
+- Request queue enforcing 4 req/sec
+- In-memory cache for API responses
+- Rate limit header monitoring
+
 ## Resources
-- [PostHog Rate Limits](https://docs.posthog.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [PostHog API Overview (rate limits)](https://posthog.com/docs/api)
+- [PostHog Feature Flag Local Evaluation](https://posthog.com/docs/feature-flags/local-evaluation)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `posthog-security-basics`.

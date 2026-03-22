@@ -1,211 +1,224 @@
 ---
 name: posthog-incident-runbook
 description: |
-  Execute PostHog incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to PostHog-related outages, investigating errors,
-  or running post-incident reviews for PostHog integration failures.
-  Trigger with phrases like "posthog incident", "posthog outage",
-  "posthog down", "posthog on-call", "posthog emergency", "posthog broken".
+  PostHog incident response: triage decision tree, immediate actions for
+  401/429/500 errors, graceful degradation, evidence collection, and postmortem.
+  Trigger: "posthog incident", "posthog outage", "posthog down",
+  "posthog on-call", "posthog emergency", "posthog broken production".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, incident-response]
-
 ---
+
 # PostHog Incident Runbook
 
 ## Overview
-Rapid incident response procedures for PostHog-related outages.
 
-## Prerequisites
-- Access to PostHog dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response for PostHog integration failures. PostHog Cloud has its own status page (status.posthog.com) — the first step is always determining whether the issue is PostHog-side or your integration.
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | PostHog API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| P1 | Analytics completely down | < 15 min | All capture calls failing, feature flags returning defaults |
+| P2 | Degraded analytics | < 1 hour | High latency, partial event loss, slow flag eval |
+| P3 | Minor impact | < 4 hours | Webhook delays, specific event type missing |
+| P4 | No user impact | Next day | Monitoring gaps, dashboard stale data |
 
-## Quick Triage
+## Quick Triage (Run First)
 
 ```bash
 set -euo pipefail
-# 1. Check PostHog status
-curl -s https://status.posthog.com | jq
+echo "=== PostHog Triage ==="
+echo ""
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.posthog'
+# 1. Is PostHog Cloud up?
+echo -n "PostHog US Cloud: "
+curl -sf -o /dev/null -w "%{http_code}" https://us.i.posthog.com/healthz || echo "UNREACHABLE"
+echo ""
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(posthog_errors_total[5m])  # 9090: Prometheus port
+# 2. Can we capture events?
+echo -n "Event capture: "
+curl -sf -o /dev/null -w "%{http_code}" -X POST 'https://us.i.posthog.com/capture/' \
+  -H 'Content-Type: application/json' \
+  -d "{\"api_key\":\"${NEXT_PUBLIC_POSTHOG_KEY}\",\"event\":\"triage_test\",\"distinct_id\":\"triage\"}" || echo "FAILED"
+echo ""
 
-# 4. Recent error logs
-kubectl logs -l app=posthog-integration --since=5m | grep -i error | tail -20
+# 3. Can we evaluate flags?
+echo -n "Flag evaluation: "
+curl -sf -o /dev/null -w "%{http_code}" -X POST 'https://us.i.posthog.com/decide/?v=3' \
+  -H 'Content-Type: application/json' \
+  -d "{\"api_key\":\"${NEXT_PUBLIC_POSTHOG_KEY}\",\"distinct_id\":\"triage\"}" || echo "FAILED"
+echo ""
+
+# 4. Can we access admin API?
+if [ -n "${POSTHOG_PERSONAL_API_KEY:-}" ]; then
+  echo -n "Admin API: "
+  curl -sf -o /dev/null -w "%{http_code}" "https://app.posthog.com/api/projects/" \
+    -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" || echo "FAILED"
+  echo ""
+fi
+
+# 5. Check our integration health
+echo -n "Our health endpoint: "
+curl -sf -o /dev/null -w "%{http_code}" "https://your-app.com/api/health" || echo "UNREACHABLE"
+echo ""
 ```
 
 ## Decision Tree
 
 ```
-PostHog API returning errors?
-├─ YES: Is status.posthog.com showing incident?
-│   ├─ YES → Wait for PostHog to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Is PostHog Cloud healthy (status.posthog.com)?
+├── NO → PostHog outage
+│   ├── Enable graceful degradation (feature flags return defaults)
+│   ├── Monitor status.posthog.com for resolution
+│   └── Events will be lost during outage (capture is fire-and-forget)
+│
+└── YES → Our integration issue
+    ├── Are we getting 401? → API key issue (see Error 401 below)
+    ├── Are we getting 429? → Rate limited (see Error 429 below)
+    ├── Are events just not appearing? → Check flush/shutdown (see below)
+    └── Are flags returning defaults? → Check personalApiKey (see below)
 ```
 
 ## Immediate Actions by Error Type
 
-### 401/403 - Authentication
+### 401/403 — Authentication Failed
+
 ```bash
 set -euo pipefail
-# Verify API key is set
-kubectl get secret posthog-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Verify API key type and validity
+echo "Project key prefix: $(echo "$NEXT_PUBLIC_POSTHOG_KEY" | head -c 4)"
+echo "Personal key prefix: $(echo "$POSTHOG_PERSONAL_API_KEY" | head -c 4)"
 
-# Check if key was rotated
-# → Verify in PostHog dashboard
+# Test project key (should return HTTP 200)
+curl -s -o /dev/null -w "Capture: %{http_code}\n" -X POST 'https://us.i.posthog.com/capture/' \
+  -H 'Content-Type: application/json' \
+  -d "{\"api_key\":\"$NEXT_PUBLIC_POSTHOG_KEY\",\"event\":\"test\",\"distinct_id\":\"test\"}"
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic posthog-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/posthog-integration
+# Test personal key (should return project list)
+curl -s -o /dev/null -w "Admin: %{http_code}\n" "https://app.posthog.com/api/projects/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY"
+
+# Fix: If key is invalid, rotate in PostHog dashboard and update secrets
 ```
 
-### 429 - Rate Limited
+### 429 — Rate Limited
+
 ```bash
 set -euo pipefail
-# Check rate limit headers
-curl -v https://api.posthog.com 2>&1 | grep -i rate
+# PostHog rate limits (private API only):
+# - Analytics endpoints: 240/min, 1200/hour
+# - HogQL query: 1200/hour
+# - Local flag eval polling: 600/min
+# - Capture endpoints: NO LIMIT
 
-# Enable request queuing
-kubectl set env deployment/posthog-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact PostHog for limit increase
+# Immediate: Cache API responses, reduce polling frequency
+# Long-term: See posthog-rate-limits skill
 ```
 
-### 500/503 - PostHog Errors
+### Events Not Appearing
+
 ```bash
 set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/posthog-integration POSTHOG_FALLBACK=true
+# Most common cause: not calling flush/shutdown in serverless
 
-# Notify users of degraded service
-# Update status page
+# Check 1: Is capture endpoint reachable?
+curl -s -X POST 'https://us.i.posthog.com/capture/' \
+  -H 'Content-Type: application/json' \
+  -d "{\"api_key\":\"$NEXT_PUBLIC_POSTHOG_KEY\",\"event\":\"debug_test\",\"distinct_id\":\"debug-$(date +%s)\"}" | jq .
+# Expected: {"status": 1}
 
-# Monitor PostHog status for resolution
+# Check 2: Verify API host is correct (common mistake)
+# WRONG: https://app.posthog.com (this is the UI)
+# RIGHT: https://us.i.posthog.com (this is the ingest endpoint)
 ```
 
-## Communication Templates
+### Feature Flags Returning Defaults
 
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: PostHog Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
+```typescript
+// Most common causes:
+// 1. No personalApiKey → falls back to remote eval which may fail
+// 2. Flags not loaded yet → check timing
+// 3. Wrong project key → flags from different project
 
-### External (Status Page)
-```
-PostHog Integration Issue
+// Fix 1: Add personalApiKey
+const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+  personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY, // Required for local eval
+});
 
-We're experiencing issues with our PostHog integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
+// Fix 2: Wait for flags in browser
+posthog.onFeatureFlags(() => {
+  // Now flags are loaded
+  const value = posthog.isFeatureEnabled('my-flag');
+});
 ```
 
-## Post-Incident
+## Graceful Degradation Pattern
 
-### Evidence Collection
+```typescript
+// PostHog should NEVER crash your app
+function safeCapture(distinctId: string, event: string, props?: Record<string, any>) {
+  try {
+    posthog.capture({ distinctId, event, properties: props });
+  } catch {
+    // Swallow error — analytics failure should never impact users
+  }
+}
+
+async function safeFlag(key: string, userId: string, fallback: boolean = false): Promise<boolean> {
+  try {
+    const result = await posthog.isFeatureEnabled(key, userId);
+    return result ?? fallback;
+  } catch {
+    return fallback; // Return safe default
+  }
+}
+```
+
+## Post-Incident Evidence Collection
+
 ```bash
 set -euo pipefail
-# Generate debug bundle
-./scripts/posthog-debug-bundle.sh
+INCIDENT_DIR="posthog-incident-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$INCIDENT_DIR"
 
-# Export relevant logs
-kubectl logs -l app=posthog-integration --since=1h > incident-logs.txt
+# Collect diagnostics
+echo "Incident: $(date -u)" > "$INCIDENT_DIR/timeline.txt"
+curl -s https://us.i.posthog.com/healthz > "$INCIDENT_DIR/healthz.json" 2>&1
+env | grep -i posthog | sed 's/=.*/=***/' > "$INCIDENT_DIR/env-redacted.txt"
+npm list posthog-js posthog-node 2>/dev/null > "$INCIDENT_DIR/versions.txt"
 
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=posthog_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
+tar -czf "$INCIDENT_DIR.tar.gz" "$INCIDENT_DIR"
+echo "Evidence collected: $INCIDENT_DIR.tar.gz"
 ```
-
-### Postmortem Template
-```markdown
-## Incident: PostHog [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is PostHog-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
+| Complete analytics outage | PostHog Cloud down | Enable graceful degradation, monitor status page |
+| Partial event loss | Serverless not flushing | Add `await posthog.shutdown()` |
+| All flags return false | `personalApiKey` missing or expired | Add/rotate personal API key |
+| Admin API 401 | Personal key revoked | Generate new key in PostHog settings |
+| High latency | Network path to PostHog | Check reverse proxy, try direct connection |
 
-## Examples
+## Output
 
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.posthog.status' || echo "UNHEALTHY"
-```
+- Triage commands identifying issue source
+- Immediate remediation for each error type
+- Graceful degradation wrappers
+- Post-incident evidence bundle
 
 ## Resources
+
 - [PostHog Status Page](https://status.posthog.com)
-- [PostHog Support](https://support.posthog.com)
+- [PostHog Support](https://posthog.com/docs/support)
+- [PostHog API Overview](https://posthog.com/docs/api)
 
 ## Next Steps
+
 For data handling, see `posthog-data-handling`.

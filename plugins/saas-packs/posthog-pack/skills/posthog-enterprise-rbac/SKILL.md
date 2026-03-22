@@ -1,114 +1,213 @@
 ---
 name: posthog-enterprise-rbac
 description: |
-  Configure PostHog enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for PostHog.
-  Trigger with phrases like "posthog SSO", "posthog RBAC",
-  "posthog enterprise", "posthog roles", "posthog permissions", "posthog SAML".
+  PostHog enterprise access control: organization/project hierarchy, member roles,
+  scoped API keys, SSO/SAML configuration, and activity audit logging.
+  Trigger: "posthog SSO", "posthog RBAC", "posthog enterprise",
+  "posthog roles", "posthog permissions", "posthog SAML", "posthog access".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, rbac]
-
 ---
+
 # PostHog Enterprise RBAC
 
 ## Overview
-Control access to PostHog analytics data, feature flags, and experiments using its organization and project-level permission model. PostHog has three hierarchy levels: Organization > Project > Resource.
+
+PostHog access control uses a three-level hierarchy: Organization > Project > Resource. Organizations contain multiple projects (e.g., production, staging), and each project has its own data, feature flags, and dashboards. Members are assigned roles at the organization level and can be restricted to specific projects.
 
 ## Prerequisites
-- PostHog Cloud or self-hosted with Enterprise license
+
+- PostHog Cloud or self-hosted with enterprise license
 - Organization admin role
-- Multiple projects configured for environment separation (prod, staging)
+- Multiple projects configured (one per environment)
+
+## Access Control Model
+
+| Level | Scope | Controls |
+|-------|-------|----------|
+| Organization | All projects | Member management, billing, SSO enforcement |
+| Project | Single project | Feature flags, insights, dashboards, session recordings |
+| API Key | Scoped operations | Personal API key with specific scopes |
+
+**Member Roles:**
+
+| Role | Level | Permissions |
+|------|-------|------------|
+| Owner | 15 | Full admin, billing, delete org |
+| Admin | 8 | Manage members, all project settings |
+| Member | 1 | View/create insights, flags, recordings |
 
 ## Instructions
 
 ### Step 1: Set Up Project-Level Access
+
 ```bash
 set -euo pipefail
-# Create separate projects for prod and staging environments
-curl -X POST https://app.posthog.com/api/organizations/ORG_ID/projects/ \
+# Create a production project with access control
+curl -X POST "https://app.posthog.com/api/organizations/$ORG_ID/projects/" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -H "Content-Type: application/json" \
   -d '{"name": "Production", "access_control": true}'
 
-# Restrict team members to specific projects
-curl -X POST https://app.posthog.com/api/projects/PROJECT_ID/members/ \
+# Add a member to a specific project (level 1 = Member, 8 = Admin)
+curl -X POST "https://app.posthog.com/api/projects/$PROD_PROJECT_ID/members/" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -d '{"user_id": "USER_ID", "level": 1}'
-# Levels: 1=Member, 8=Admin
-```
+  -H "Content-Type: application/json" \
+  -d '{"user_id": "USER_UUID", "level": 1}'
 
-### Step 2: Configure Feature Flag Permissions
-```yaml
-# Feature flag access matrix
-feature_flags:
-  production_project:
-    who_can_create: [admin, senior_engineer]
-    who_can_edit: [admin, senior_engineer, engineer]
-    who_can_delete: [admin]
-    require_description: true
-    require_rollout_review: true  # Two-person rule for >50% rollout
-  staging_project:
-    who_can_create: [admin, member]
-    who_can_edit: [admin, member]
-    who_can_delete: [admin, member]
-```
-
-### Step 3: Set Up SSO (Enterprise Only)
-In PostHog Organization Settings > Authentication:
-- Enable SAML 2.0 with your IdP
-- Set "Enforce SSO" to require all members to authenticate via IdP
-- Map IdP groups to PostHog organization roles
-- Configure automatic provisioning for new IdP users
-
-### Step 4: Create Scoped API Keys
-```bash
-set -euo pipefail
-# Read-only key for the BI dashboard (no write access)
-curl -X POST https://app.posthog.com/api/personal_api_keys/ \
-  -H "Authorization: Bearer $POSTHOG_ADMIN_KEY" \
-  -d '{"label": "bi-dashboard-readonly", "scopes": ["event:read", "insight:read", "dashboard:read"]}'
-
-# Key for the feature flag service (flags only)
-curl -X POST https://app.posthog.com/api/personal_api_keys/ \
-  -H "Authorization: Bearer $POSTHOG_ADMIN_KEY" \
-  -d '{"label": "feature-flag-service", "scopes": ["feature_flag:read", "feature_flag:write"]}'
-```
-
-### Step 5: Audit Access and Changes
-```bash
-set -euo pipefail
-# Query the activity log for permission changes
-curl "https://app.posthog.com/api/projects/PROJECT_ID/activity_log/?scope=Organization" \
+# List current project members
+curl "https://app.posthog.com/api/projects/$PROD_PROJECT_ID/members/" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '.results[] | select(.activity | contains("member")) | {user: .user.email, activity, created_at}'
+  jq '.results[] | {email: .user.email, level, joined_at}'
+```
+
+### Step 2: Create Scoped API Keys
+
+```bash
+set -euo pipefail
+# Read-only key for BI dashboard integration
+curl -X POST "https://app.posthog.com/api/personal_api_keys/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "bi-dashboard-readonly",
+    "scopes": ["insight:read", "dashboard:read", "query:read"]
+  }'
+
+# Feature flag service key (read + write flags only)
+curl -X POST "https://app.posthog.com/api/personal_api_keys/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "flag-service",
+    "scopes": ["feature_flag:read", "feature_flag:write"]
+  }'
+
+# Event export key (read events only)
+curl -X POST "https://app.posthog.com/api/personal_api_keys/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "label": "data-export-readonly",
+    "scopes": ["event:read", "query:read"]
+  }'
+
+# List all personal API keys
+curl "https://app.posthog.com/api/personal_api_keys/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.[] | {id, label, scopes, created_at}'
+```
+
+### Step 3: Configure SSO (Enterprise)
+
+PostHog enterprise supports SAML 2.0 SSO. Configuration is in Organization Settings > Authentication:
+
+1. **Enable SAML**: Add your IdP metadata URL (e.g., Okta, Azure AD, Google Workspace)
+2. **Enforce SSO**: Toggle "Enforce SSO" to require all members to authenticate via IdP
+3. **Auto-provisioning**: New IdP users are automatically created in PostHog with Member role
+4. **Group mapping**: Map IdP groups to PostHog organization roles
+
+```bash
+set -euo pipefail
+# Check SSO configuration status
+curl "https://app.posthog.com/api/organizations/$ORG_ID/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '{
+    enforce_sso: .enforce_sso,
+    saml_configured: (.saml_enforcement != null),
+    member_count: .membership_count
+  }'
+```
+
+### Step 4: Audit Access and Changes
+
+```bash
+set -euo pipefail
+# View recent activity log for permission changes
+curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/activity_log/?scope=Organization" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '[.results[] | select(.activity | contains("member") or contains("role") or contains("api_key")) | {
+    user: .user.email,
+    activity,
+    detail: .detail,
+    created_at
+  }] | .[:10]'
+
+# View feature flag changes (who changed what)
+curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/activity_log/?scope=FeatureFlag" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '[.results[:10][] | {
+    user: .user.email,
+    activity,
+    item_id: .item_id,
+    created_at
+  }]'
+```
+
+### Step 5: Access Matrix
+
+```yaml
+# Recommended access matrix
+access_matrix:
+  engineering:
+    staging_project:
+      role: admin           # Full control in staging
+      can_create_flags: true
+      can_delete_flags: true
+    production_project:
+      role: member           # Read + create, no delete in prod
+      can_create_flags: true
+      can_delete_flags: false  # Require admin approval for flag deletion
+
+  product:
+    staging_project:
+      role: member
+      can_view_recordings: true
+      can_create_insights: true
+    production_project:
+      role: member
+      can_view_recordings: true
+      can_create_insights: true
+
+  bi_service_account:
+    production_project:
+      api_key_scopes: [insight:read, dashboard:read, query:read]
+      # No write access
+
+  flag_service_account:
+    production_project:
+      api_key_scopes: [feature_flag:read, feature_flag:write]
+      # Only flag operations
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `403` on feature flag endpoint | Key missing `feature_flag` scope | Create key with appropriate scopes |
-| Member can see prod data | Project access not restricted | Remove from prod project, add to staging only |
+| 403 on feature flag endpoint | Key missing required scope | Create key with `feature_flag:read` scope |
+| Member sees prod data | Project access not restricted | Remove from prod project, add to staging only |
 | SSO bypass possible | SSO not enforced | Enable "Enforce SSO" in org settings |
-| Activity log gaps | Self-hosted log rotation | Increase retention in `posthog-config` |
-
-## Examples
-
-**Basic usage**: Apply posthog enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize posthog enterprise rbac for production environments with multiple constraints and team-specific requirements.
+| Can't create scoped key | Not org admin | Only admins can create API keys |
+| Activity log gaps | Self-hosted log rotation | Increase log retention in PostHog config |
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Project-level member access configured
+- Scoped API keys for services (BI, flag service, export)
+- SSO/SAML enforcement enabled
+- Activity audit log queries
+- Access matrix documented
 
 ## Resources
 
-- Official PostHog documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [PostHog API Overview](https://posthog.com/docs/api)
+- [PostHog Projects API](https://posthog.com/docs/api/projects)
+- [PostHog Members API](https://posthog.com/docs/api/members)
+
+## Next Steps
+
+For migration strategies, see `posthog-migration-deep-dive`.

@@ -1,121 +1,232 @@
 ---
 name: posthog-local-dev-loop
 description: |
-  Configure PostHog local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with PostHog.
-  Trigger with phrases like "posthog dev setup", "posthog local development",
-  "posthog dev environment", "develop with posthog".
+  Configure PostHog local development with mocking, debug mode, and testing.
+  Use when setting up a development environment, mocking PostHog for tests,
+  or establishing a fast iteration cycle with posthog-js or posthog-node.
+  Trigger: "posthog dev setup", "posthog local development",
+  "posthog dev environment", "mock posthog", "test posthog".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, testing, workflow]
-
 ---
+
 # PostHog Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for PostHog.
+
+Set up a fast local development workflow for PostHog integrations. Covers debug mode for event inspection, mocking posthog-node for unit tests, and a dev/test PostHog project to avoid polluting production data.
 
 ## Prerequisites
+
 - Completed `posthog-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- Node.js 20+ with npm/pnpm
+- Vitest or Jest for testing
+- Separate PostHog project for development (recommended)
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-posthog-project/
+my-posthog-app/
 ├── src/
-│   ├── posthog/
-│   │   ├── client.ts       # PostHog client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
+│   ├── analytics/
+│   │   ├── posthog.ts         # Singleton client
+│   │   ├── events.ts          # Event taxonomy (typed constants)
+│   │   └── flags.ts           # Feature flag keys
 │   └── index.ts
 ├── tests/
-│   └── posthog.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── analytics.test.ts      # Unit tests with mocked PostHog
+│   └── integration.test.ts    # Integration tests (real PostHog dev project)
+├── .env.local                 # Dev keys (git-ignored)
+├── .env.example               # Template: NEXT_PUBLIC_POSTHOG_KEY=phc_...
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-set -euo pipefail
-# Copy environment template
-cp .env.example .env.local
+### Step 2: PostHog Client with Dev Mode
 
-# Install dependencies
-npm install
+```typescript
+// src/analytics/posthog.ts
+import { PostHog } from 'posthog-node';
 
-# Start development server
-npm run dev
-```
+let client: PostHog | null = null;
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+export function getPostHog(): PostHog {
+  if (!client) {
+    client = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+      host: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+      flushAt: process.env.NODE_ENV === 'development' ? 1 : 20,
+      flushInterval: process.env.NODE_ENV === 'development' ? 0 : 10000,
+      // In dev, flush immediately so events appear instantly in dashboard
+    });
+  }
+  return client;
+}
+
+export async function shutdown() {
+  if (client) {
+    await client.shutdown();
+    client = null;
   }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { PostHogClient } from '../src/posthog/client';
+### Step 3: Browser Debug Mode
 
-describe('PostHog Client', () => {
-  it('should initialize with API key', () => {
-    const client = new PostHogClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+```typescript
+// Enable PostHog debug mode in development
+import posthog from 'posthog-js';
+
+posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+  api_host: 'https://us.i.posthog.com',
+  loaded: (ph) => {
+    if (process.env.NODE_ENV === 'development') {
+      ph.debug();
+      // All events logged to browser console:
+      // [PostHog.js] Sending event: {"event":"$pageview","properties":{...}}
+    }
+  },
+});
+
+// Disable capture entirely in test environments
+if (process.env.NODE_ENV === 'test') {
+  posthog.opt_out_capturing();
+}
+```
+
+### Step 4: Mock PostHog for Unit Tests
+
+```typescript
+// tests/analytics.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+// Mock posthog-node
+vi.mock('posthog-node', () => {
+  const mockCapture = vi.fn();
+  const mockIdentify = vi.fn();
+  const mockGetFeatureFlag = vi.fn().mockResolvedValue(true);
+  const mockShutdown = vi.fn().mockResolvedValue(undefined);
+  const mockFlush = vi.fn().mockResolvedValue(undefined);
+
+  return {
+    PostHog: vi.fn().mockImplementation(() => ({
+      capture: mockCapture,
+      identify: mockIdentify,
+      getFeatureFlag: mockGetFeatureFlag,
+      getAllFlags: vi.fn().mockResolvedValue({ 'new-feature': true }),
+      shutdown: mockShutdown,
+      flush: mockFlush,
+    })),
+  };
+});
+
+import { PostHog } from 'posthog-node';
+
+describe('Analytics', () => {
+  let ph: InstanceType<typeof PostHog>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    ph = new PostHog('phc_test_key');
+  });
+
+  it('captures events with correct properties', () => {
+    ph.capture({
+      distinctId: 'user-1',
+      event: 'button_clicked',
+      properties: { button: 'signup' },
+    });
+
+    expect(ph.capture).toHaveBeenCalledWith({
+      distinctId: 'user-1',
+      event: 'button_clicked',
+      properties: { button: 'signup' },
+    });
+  });
+
+  it('evaluates feature flags', async () => {
+    const result = await ph.getFeatureFlag('new-feature', 'user-1');
+    expect(result).toBe(true);
   });
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for PostHog development
+### Step 5: Integration Test with Real Dev Project
+
+```typescript
+// tests/integration.test.ts
+import { describe, it, expect, afterAll } from 'vitest';
+import { PostHog } from 'posthog-node';
+
+const POSTHOG_KEY = process.env.POSTHOG_TEST_KEY;
+
+describe.skipIf(!POSTHOG_KEY)('PostHog Integration', () => {
+  const ph = new PostHog(POSTHOG_KEY!, {
+    host: 'https://us.i.posthog.com',
+    flushAt: 1,
+    flushInterval: 0,
+  });
+
+  afterAll(async () => {
+    await ph.shutdown();
+  });
+
+  it('should capture and flush an event', async () => {
+    ph.capture({
+      distinctId: `test-${Date.now()}`,
+      event: 'integration_test',
+      properties: { test: true },
+    });
+    // Flush returns successfully if network is reachable
+    await expect(ph.flush()).resolves.not.toThrow();
+  });
+
+  it('should evaluate feature flags', async () => {
+    const flags = await ph.getAllFlags(`test-${Date.now()}`);
+    expect(typeof flags).toBe('object');
+  });
+});
+```
+
+### Step 6: Package Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:integration": "POSTHOG_TEST_KEY=$NEXT_PUBLIC_POSTHOG_KEY vitest run tests/integration"
+  }
+}
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
+| Events not in dev dashboard | Wrong project key | Verify `.env.local` has dev project `phc_` key |
+| Mock not intercepting | Wrong import path | Ensure `vi.mock` path matches actual import |
+| Integration test timeout | PostHog unreachable | Check network, increase vitest timeout |
+| Debug mode too noisy | `ph.debug()` in prod | Guard with `NODE_ENV === 'development'` |
 
-## Examples
+## Output
 
-### Mock PostHog Responses
-```typescript
-vi.mock('@posthog/sdk', () => ({
-  PostHogClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-set -euo pipefail
-# Enable verbose logging
-DEBUG=POSTHOG=* npm run dev
-```
+- Development PostHog client with instant flush
+- Browser debug mode for event inspection
+- Mocked posthog-node for unit tests
+- Integration test suite for real PostHog connectivity
 
 ## Resources
-- [PostHog SDK Reference](https://docs.posthog.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [posthog-node Documentation](https://posthog.com/docs/libraries/node)
+- [posthog-js Debug Mode](https://posthog.com/docs/libraries/js)
+- [Vitest Mocking](https://vitest.dev/guide/mocking)
 
 ## Next Steps
+
 See `posthog-sdk-patterns` for production-ready code patterns.

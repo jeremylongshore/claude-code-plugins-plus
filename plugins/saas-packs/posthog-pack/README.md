@@ -1,6 +1,12 @@
 # PostHog Skill Pack
 
-> Claude Code skill pack for PostHog integration (24 skills)
+> Claude Code skill pack for PostHog product analytics — event capture, feature flags, experiments, session recordings, and HogQL queries (24 skills)
+
+## What This Covers
+
+PostHog is an open-source product analytics platform. This pack provides production-ready patterns for `posthog-js` (browser), `posthog-node` (server), and the PostHog REST/HogQL API. Every skill uses real PostHog endpoints, actual SDK methods, and working code — not placeholders.
+
+**Key PostHog concepts covered:** event capture (`posthog.capture`), user identification (`posthog.identify`), group analytics (`posthog.group`), feature flags (`getFeatureFlag`, `isFeatureEnabled`, `getAllFlags`), A/B experiments, cohorts, session recordings, autocapture configuration, HogQL queries, CDP webhook destinations, and the `/capture/`, `/batch/`, `/decide/` API endpoints.
 
 ## Installation
 
@@ -8,51 +14,70 @@
 /plugin install posthog-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
-### Standard Skills (S01-S12)
-| Skill | Description |
+### Getting Started (S01-S04)
+| Skill | What It Does |
 |-------|-------------|
-| `posthog-install-auth` | Install Auth |
-| `posthog-hello-world` | Hello World |
-| `posthog-local-dev-loop` | Local Dev Loop |
-| `posthog-sdk-patterns` | Sdk Patterns |
-| `posthog-core-workflow-a` | Core Workflow A |
-| `posthog-core-workflow-b` | Core Workflow B |
-| `posthog-common-errors` | Common Errors |
-| `posthog-debug-bundle` | Debug Bundle |
-| `posthog-rate-limits` | Rate Limits |
-| `posthog-security-basics` | Security Basics |
-| `posthog-prod-checklist` | Prod Checklist |
-| `posthog-upgrade-migration` | Upgrade Migration |
+| `posthog-install-auth` | Install posthog-js/posthog-node, configure `phc_` and `phx_` API keys |
+| `posthog-hello-world` | First event capture, identify, and feature flag check (Node + browser + Python + curl) |
+| `posthog-local-dev-loop` | Debug mode, mocked PostHog for vitest, integration tests against dev project |
+| `posthog-sdk-patterns` | Singleton client, typed events, React hooks, Next.js App Router provider, reverse proxy |
+
+### Core Workflows (S05-S08)
+| Skill | What It Does |
+|-------|-------------|
+| `posthog-core-workflow-a` | Event taxonomy design, `posthog.capture`, `identify`, `group`, server-side capture, annotations API |
+| `posthog-core-workflow-b` | Feature flags (boolean + multivariate), `getAllFlags`, experiments, cohorts API |
+| `posthog-common-errors` | Fix events not appearing, flags returning undefined, 401/429 errors, identity fragmentation |
+| `posthog-debug-bundle` | Diagnostic script: SDK versions, API connectivity, event capture test, flag evaluation test |
+
+### Operations (S09-S12)
+| Skill | What It Does |
+|-------|-------------|
+| `posthog-rate-limits` | PostHog rate limit tiers (240/min analytics, unlimited capture), backoff, request queue |
+| `posthog-security-basics` | `phc_` vs `phx_` key security, scoped API keys, rotation procedure, git leak prevention |
+| `posthog-prod-checklist` | Production SDK config, graceful degradation wrappers, health check endpoint, serverless pattern |
+| `posthog-upgrade-migration` | posthog-node v5 breaking changes (sendFeatureFlags), before_send, upgrade procedure |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
+| Skill | What It Does |
 |-------|-------------|
-| `posthog-ci-integration` | Ci Integration |
-| `posthog-deploy-integration` | Deploy Integration |
-| `posthog-webhooks-events` | Webhooks Events |
-| `posthog-performance-tuning` | Performance Tuning |
-| `posthog-cost-tuning` | Cost Tuning |
-| `posthog-reference-architecture` | Reference Architecture |
+| `posthog-ci-integration` | GitHub Actions with mocked unit tests, integration tests, deployment annotations |
+| `posthog-deploy-integration` | Next.js + Vercel reverse proxy, edge function capture, self-hosted Docker, Cloud Run |
+| `posthog-webhooks-events` | CDP webhook destinations, event handler routing, Events API, HogQL queries |
+| `posthog-performance-tuning` | Local flag evaluation (<1ms), batching config, event sampling, efficient HogQL |
+| `posthog-cost-tuning` | Autocapture tuning, `before_send` sampling, bot filtering, session recording sampling, billing monitoring |
+| `posthog-reference-architecture` | File structure, event taxonomy, flag constants, analytics module, data pipeline integration |
 
 ### Flagship Skills (F19-F24)
-| Skill | Description |
+| Skill | What It Does |
 |-------|-------------|
-| `posthog-multi-env-setup` | Multi Env Setup |
-| `posthog-observability` | Observability |
-| `posthog-incident-runbook` | Incident Runbook |
-| `posthog-data-handling` | Data Handling |
-| `posthog-enterprise-rbac` | Enterprise Rbac |
-| `posthog-migration-deep-dive` | Migration Deep Dive |
+| `posthog-multi-env-setup` | Separate projects per env, environment-aware SDK config, flag rollout per env |
+| `posthog-observability` | Flag evaluation latency instrumentation, event volume monitoring, Prometheus alerts, HogQL dashboards |
+| `posthog-incident-runbook` | Triage decision tree, immediate actions for 401/429/500, graceful degradation, evidence collection |
+| `posthog-data-handling` | GDPR `sanitize_properties`, consent opt-in/opt-out, data deletion API, PII-safe exports |
+| `posthog-enterprise-rbac` | Org/project hierarchy, member roles, scoped API keys, SSO/SAML, activity audit log |
+| `posthog-migration-deep-dive` | Migrate from GA/Mixpanel/Amplitude, dual-write adapter, historical import, flag-controlled cutover |
 
-## Usage
+## Quick Reference
 
-Skills trigger automatically when you discuss PostHog topics. For example:
+| Operation | SDK Method |
+|-----------|-----------|
+| Capture event | `posthog.capture({ distinctId, event, properties })` |
+| Identify user | `posthog.identify({ distinctId, properties })` |
+| Group analytics | `posthog.group('company', 'id', { name: '...' })` |
+| Check boolean flag | `posthog.isFeatureEnabled('flag-key', userId)` |
+| Get multivariate flag | `posthog.getFeatureFlag('flag-key', userId)` |
+| Get all flags | `posthog.getAllFlags(userId)` |
+| Flush events | `await posthog.flush()` or `await posthog.shutdown()` |
 
-- "Help me set up PostHog" → triggers `posthog-install-auth`
-- "Debug this PostHog error" → triggers `posthog-common-errors`
-- "Deploy my PostHog integration" → triggers `posthog-deploy-integration`
+## API Key Types
+
+| Key | Prefix | Purpose | Client-safe? |
+|-----|--------|---------|-------------|
+| Project API Key | `phc_` | Event capture, flag evaluation | Yes |
+| Personal API Key | `phx_` | Admin API, local flag eval, HogQL | Never |
 
 ## License
 

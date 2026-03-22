@@ -2,116 +2,147 @@
 name: posthog-multi-env-setup
 description: |
   Configure PostHog across development, staging, and production environments.
-  Use when setting up multi-environment event capture, managing separate PostHog
-  projects per environment, or configuring feature flags and recordings by env.
-  Trigger with phrases like "posthog environments", "posthog staging",
-  "posthog dev prod", "posthog environment setup", "posthog project per env".
+  Separate PostHog projects per environment, environment-specific SDK config,
+  feature flag rollout per env, and session recording controls.
+  Trigger: "posthog environments", "posthog staging", "posthog dev prod",
+  "posthog environment setup", "posthog project per env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, posthog-multi]
-
 ---
+
 # PostHog Multi-Environment Setup
 
 ## Overview
-Separate PostHog projects per environment is strongly recommended over using one project with event filtering. Each environment gets its own Project API Key (starts with `phc_`) and Project ID.
+
+Use separate PostHog projects for each environment (dev, staging, production). This prevents dev/test events from polluting production analytics, allows different feature flag rollout percentages per environment, and lets you disable session recordings in non-production.
 
 ## Prerequisites
+
 - PostHog Cloud account or self-hosted instance
-- Separate PostHog projects for dev, staging, and production
-- Project API keys (`phc_...`) and Project IDs for each environment
-- Personal API key for admin operations (optional)
+- Admin access to create multiple projects
+- Deployment platform with environment variable support
 
 ## Environment Strategy
 
-| Environment | PostHog Project | Session Recording | Autocapture | Key Source |
-|-------------|----------------|-------------------|-------------|------------|
-| Development | `myapp-dev` | Disabled | Enabled | `.env.local` |
-| Staging | `myapp-staging` | Disabled | Enabled | CI/CD secrets |
-| Production | `myapp-production` | Enabled (sampled) | Enabled | Secret manager |
+| Environment | PostHog Project | Session Recording | Autocapture | Feature Flags |
+|-------------|----------------|-------------------|-------------|---------------|
+| Development | `myapp-dev` | Disabled | Enabled | 100% rollout (test all) |
+| Staging | `myapp-staging` | Disabled | Enabled | 100% rollout (QA all) |
+| Production | `myapp-prod` | 10% sampled | Tuned | Gradual rollout |
 
 ## Instructions
 
 ### Step 1: Create Separate PostHog Projects
-```
-PostHog Cloud: app.posthog.com > New Project
-- "myapp-development" -> copy phc_... API key
-- "myapp-staging"     -> copy phc_... API key
-- "myapp-production"  -> copy phc_... API key
+
+In PostHog Cloud (app.posthog.com), create three projects:
+1. `myapp-development` — copy the `phc_...` project API key
+2. `myapp-staging` — copy the `phc_...` project API key
+3. `myapp-production` — copy the `phc_...` project API key
+
+### Step 2: Environment Variables
+
+```bash
+# .env.local (development — git-ignored)
+NEXT_PUBLIC_POSTHOG_KEY=phc_dev_key_here
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+POSTHOG_PERSONAL_API_KEY=phx_your_key
+POSTHOG_PROJECT_ID=11111
+
+# .env.staging (CI/CD secrets or secret manager)
+NEXT_PUBLIC_POSTHOG_KEY=phc_staging_key_here
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+POSTHOG_PERSONAL_API_KEY=phx_your_key
+POSTHOG_PROJECT_ID=22222
+
+# Production (secret manager — never in files)
+# NEXT_PUBLIC_POSTHOG_KEY=phc_prod_key_here
+# POSTHOG_PROJECT_ID=33333
 ```
 
-### Step 2: Environment-Specific PostHog Configuration
+### Step 3: Environment-Aware SDK Configuration
+
 ```typescript
 // config/posthog.ts
-type Env = "development" | "staging" | "production";
+type Env = 'development' | 'staging' | 'production';
 
-interface PostHogConfig {
-  apiKey: string;                   // phc_... project key
-  host: string;                     // app.posthog.com or self-hosted URL
+interface PostHogEnvConfig {
+  apiKey: string;
+  host: string;
   sessionRecording: boolean;
-  samplingRate: number;             // 0-1 for session recording
+  recordingSampleRate: number;
+  autocapture: boolean | object;
+  debug: boolean;
 }
 
-const configs: Record<Env, PostHogConfig> = {
-  development: {
-    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_DEV!,
-    host: "https://app.posthog.com",
-    sessionRecording: false,         // never record in dev
-    samplingRate: 0,
-  },
-  staging: {
-    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_STAGING!,
-    host: "https://app.posthog.com",
-    sessionRecording: false,         // no recordings in staging
-    samplingRate: 0,
-  },
-  production: {
-    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_PROD!,
-    host: "https://app.posthog.com",
-    sessionRecording: true,
-    samplingRate: 0.25,              // record 25% of sessions
-  },
-};
+function getConfig(): PostHogEnvConfig {
+  const env = (process.env.NODE_ENV || 'development') as Env;
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com';
 
-export function getPostHogConfig(): PostHogConfig {
-  const env = (process.env.NODE_ENV || "development") as Env;
-  const config = configs[env] || configs.development;
-  if (!config.apiKey) {
-    console.warn(`PostHog API key not set for ${env} -- analytics disabled`);
+  if (!key) {
+    console.warn(`[PostHog] No API key for ${env} — analytics disabled`);
   }
-  return config;
+
+  const configs: Record<Env, Omit<PostHogEnvConfig, 'apiKey' | 'host'>> = {
+    development: {
+      sessionRecording: false,
+      recordingSampleRate: 0,
+      autocapture: true,
+      debug: true,
+    },
+    staging: {
+      sessionRecording: false,
+      recordingSampleRate: 0,
+      autocapture: true,
+      debug: false,
+    },
+    production: {
+      sessionRecording: true,
+      recordingSampleRate: 0.1,  // Record 10% of sessions
+      autocapture: {
+        dom_event_allowlist: ['click', 'submit'],
+        element_allowlist: ['a', 'button', 'form'],
+        css_selector_allowlist: ['.track-click'],
+      },
+      debug: false,
+    },
+  };
+
+  return { apiKey: key || '', host, ...configs[env] };
 }
+
+export const posthogConfig = getConfig();
 ```
 
-### Step 3: Next.js PostHog Provider
+### Step 4: Browser SDK with Environment Config
+
 ```typescript
 // app/providers.tsx
-"use client";
-import posthog from "posthog-js";
-import { PostHogProvider } from "posthog-js/react";
-import { useEffect } from "react";
-import { getPostHogConfig } from "../config/posthog";
+'use client';
+import posthog from 'posthog-js';
+import { PostHogProvider } from 'posthog-js/react';
+import { useEffect } from 'react';
+import { posthogConfig } from '../config/posthog';
 
 export function PHProvider({ children }: { children: React.ReactNode }) {
-  const config = getPostHogConfig();
-
   useEffect(() => {
-    if (!config.apiKey) return;
+    if (!posthogConfig.apiKey) return; // Skip if no key configured
 
-    posthog.init(config.apiKey, {
-      api_host: config.host,
-      disable_session_recording: !config.sessionRecording,
-      session_recording: config.sessionRecording
-        ? { sampleRate: config.samplingRate }
+    posthog.init(posthogConfig.apiKey, {
+      api_host: posthogConfig.host,
+      autocapture: posthogConfig.autocapture,
+      capture_pageview: false,  // Manual in App Router
+      capture_pageleave: true,
+      disable_session_recording: !posthogConfig.sessionRecording,
+      session_recording: posthogConfig.sessionRecording
+        ? { sampleRate: posthogConfig.recordingSampleRate }
         : undefined,
-      capture_pageview: false,     // use usePathname in Next.js App Router
       loaded: (ph) => {
-        if (process.env.NODE_ENV === "development") {
-          ph.debug();
-        }
+        if (posthogConfig.debug) ph.debug();
       },
     });
   }, []);
@@ -120,80 +151,84 @@ export function PHProvider({ children }: { children: React.ReactNode }) {
 }
 ```
 
-### Step 4: Server-Side Node.js Setup
+### Step 5: Server SDK with Environment Config
+
 ```typescript
 // lib/posthog-server.ts
-import { PostHog } from "posthog-node";
+import { PostHog } from 'posthog-node';
+import { posthogConfig } from '../config/posthog';
 
-let _client: PostHog | null = null;
+let client: PostHog | null = null;
 
 export function getPostHogServer(): PostHog {
-  if (_client) return _client;
+  if (client) return client;
 
-  const config = getPostHogConfig();
-  if (!config.apiKey) return { capture: () => {} } as any; // no-op if unconfigured
+  if (!posthogConfig.apiKey) {
+    // Return no-op client when unconfigured
+    return { capture: () => {}, identify: () => {}, shutdown: async () => {} } as any;
+  }
 
-  _client = new PostHog(config.apiKey, {
-    host: config.host,
+  client = new PostHog(posthogConfig.apiKey, {
+    host: posthogConfig.host,
+    personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
     flushAt: 20,
-    flushInterval: 10000,  # 10000: 10 seconds in ms
+    flushInterval: 10000,
   });
 
-  return _client;
+  return client;
 }
 ```
 
-### Step 5: Environment Variable Setup
+### Step 6: Feature Flag Rollout Per Environment
+
+```typescript
+// In your staging PostHog project: set all flags to 100% rollout for QA
+// In your production PostHog project: gradual rollout (10% → 25% → 50% → 100%)
+
+// Server-side flag check works the same regardless of environment
+const ph = getPostHogServer();
+const enabled = await ph.isFeatureEnabled('new-checkout', userId);
+// Staging project: always true (100% rollout)
+// Production project: depends on rollout percentage
+```
+
 ```bash
-# .env.local
-NEXT_PUBLIC_POSTHOG_KEY_DEV=phc_dev_abc123
-POSTHOG_PROJECT_ID_DEV=12345  # port 12345 - example/test
-
-# .env.staging
-NEXT_PUBLIC_POSTHOG_KEY_STAGING=phc_staging_def456
-POSTHOG_PROJECT_ID_STAGING=12346  # 12346 = configured value
-
-# Production (GitHub Actions / cloud secret manager)
-# NEXT_PUBLIC_POSTHOG_KEY_PROD=phc_prod_xyz789
-# POSTHOG_PROJECT_ID_PROD=12347
+set -euo pipefail
+# Set all flags to 100% in staging project (for QA)
+curl "https://app.posthog.com/api/projects/$POSTHOG_STAGING_PROJECT_ID/feature_flags/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq -r '.results[].id' | while read FLAG_ID; do
+    curl -X PATCH "https://app.posthog.com/api/projects/$POSTHOG_STAGING_PROJECT_ID/feature_flags/$FLAG_ID/" \
+      -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"filters": {"groups": [{"rollout_percentage": 100}]}}'
+  done
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Dev events in prod project | Same API key across envs | Use separate projects per env |
-| No events captured | `apiKey` not set in env vars | Check `NEXT_PUBLIC_` prefix for client-side keys |
-| Session recordings in staging | `sessionRecording: true` in staging | Set `sessionRecording: false` for non-prod |
-| `401` from server-side | Wrong key type | Project key (`phc_...`) is for capture; personal key for admin API |
+| Dev events in prod | Same API key across envs | Use separate projects per env |
+| No events in staging | `apiKey` not set | Check CI/CD secret is configured |
+| Session recordings in dev | Wrong config | Verify `sessionRecording: false` in dev config |
+| Flags different across envs | Separate projects | Expected behavior — set rollout per project |
+| 401 from server API | Wrong personal key | Personal key works across projects in same org |
 
-## Examples
+## Output
 
-### Verify Environment Routing
-```typescript
-import { getPostHogConfig } from "./config/posthog";
-
-const cfg = getPostHogConfig();
-console.log(`PostHog key: ${cfg.apiKey.slice(0, 10)}...`);
-console.log(`Session recording: ${cfg.sessionRecording ? "ON" : "OFF"}`);
-```
-
-### Feature Flag Rollout Per Environment
-```typescript
-// Staging project: 100% rollout for QA
-// Production project: 10% initial rollout
-const flagValue = await posthogServer.getFeatureFlag("new-checkout", userId);
-```
+- Separate PostHog projects for dev, staging, production
+- Environment-aware SDK configuration
+- Session recording disabled in non-production
+- Feature flags at 100% in staging, gradual in production
+- Server SDK with no-op fallback when unconfigured
 
 ## Resources
-- [PostHog Multi-Environment Guide](https://posthog.com/docs/feature-flags/multi-environment-feature-flags)
+
+- [PostHog Multi-Environment Feature Flags](https://posthog.com/docs/feature-flags/multi-environment-feature-flags)
 - [PostHog Next.js Integration](https://posthog.com/docs/libraries/next-js)
 - [PostHog Node.js SDK](https://posthog.com/docs/libraries/node)
 
 ## Next Steps
+
 For webhook setup, see `posthog-webhooks-events`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

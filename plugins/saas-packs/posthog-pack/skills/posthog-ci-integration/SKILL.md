@@ -1,36 +1,52 @@
 ---
 name: posthog-ci-integration
 description: |
-  Configure PostHog CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating PostHog tests into your build process.
-  Trigger with phrases like "posthog CI", "posthog GitHub Actions",
-  "posthog automated tests", "CI posthog".
+  Configure PostHog CI/CD with GitHub Actions: unit tests with mocked PostHog,
+  integration tests against a dev project, and deployment annotations.
+  Trigger: "posthog CI", "posthog GitHub Actions", "posthog automated tests",
+  "CI posthog", "posthog pipeline".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, testing, ci-cd]
-
 ---
+
 # PostHog CI Integration
 
 ## Overview
-Set up CI/CD pipelines for PostHog integrations with automated testing.
+
+Set up CI/CD pipelines for PostHog integrations. Covers mocked unit tests (no API key needed), integration tests against a PostHog dev project, and deployment annotations that mark releases in your PostHog timeline.
 
 ## Prerequisites
+
 - GitHub repository with Actions enabled
-- PostHog test API key
-- npm/pnpm project configured
+- PostHog dev project API key for integration tests
+- PostHog personal API key for deployment annotations
+- npm/pnpm project with vitest or jest
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/posthog-integration.yml`:
+### Step 1: Configure GitHub Secrets
+
+```bash
+set -euo pipefail
+# Project key for integration tests (phc_... from dev project)
+gh secret set POSTHOG_TEST_KEY --body "phc_dev_project_key"
+
+# Personal key for deployment annotations (phx_...)
+gh secret set POSTHOG_PERSONAL_API_KEY --body "phx_your_personal_key"
+
+# Project ID for annotations
+gh secret set POSTHOG_PROJECT_ID --body "12345"
+```
+
+### Step 2: GitHub Actions Workflow
 
 ```yaml
-name: PostHog Integration Tests
+# .github/workflows/posthog-tests.yml
+name: PostHog Tests
 
 on:
   push:
@@ -38,14 +54,9 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
-
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
-    env:
-      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -54,73 +65,182 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test -- --coverage
-      - run: npm run test:integration
-```
+        # Unit tests use mocked PostHog — no API key needed
 
-### Step 2: Configure Secrets
-```bash
-gh secret set POSTHOG_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('PostHog Integration', () => {
-  it.skipIf(!process.env.POSTHOG_API_KEY)('should connect', async () => {
-    const client = getPostHogClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
+  integration-tests:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: unit-tests
     env:
-      POSTHOG_API_KEY: ${{ secrets.POSTHOG_API_KEY_PROD }}
+      NEXT_PUBLIC_POSTHOG_KEY: ${{ secrets.POSTHOG_TEST_KEY }}
+      POSTHOG_HOST: https://us.i.posthog.com
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
       - run: npm ci
-      - name: Verify PostHog production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
+      - run: npm run test:integration
+        timeout-minutes: 5
+
+  annotate-deploy:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: integration-tests
+    steps:
+      - name: Create PostHog annotation
+        env:
+          POSTHOG_PERSONAL_API_KEY: ${{ secrets.POSTHOG_PERSONAL_API_KEY }}
+          POSTHOG_PROJECT_ID: ${{ secrets.POSTHOG_PROJECT_ID }}
+        run: |
+          curl -X POST "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/annotations/" \
+            -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "{
+              \"content\": \"Deploy: ${GITHUB_SHA::8} — ${GITHUB_EVENT_HEAD_COMMIT_MESSAGE:-$(git log -1 --pretty=%s)}\",
+              \"date_marker\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\",
+              \"scope\": \"project\"
+            }"
 ```
 
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "posthog-integration"
+### Step 3: Unit Tests with Mocked PostHog
+
+```typescript
+// tests/analytics.test.ts — runs in CI without any API keys
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('posthog-node', () => ({
+  PostHog: vi.fn().mockImplementation(() => ({
+    capture: vi.fn(),
+    identify: vi.fn(),
+    getFeatureFlag: vi.fn().mockResolvedValue('control'),
+    isFeatureEnabled: vi.fn().mockResolvedValue(true),
+    getAllFlags: vi.fn().mockResolvedValue({ 'new-feature': true }),
+    flush: vi.fn().mockResolvedValue(undefined),
+    shutdown: vi.fn().mockResolvedValue(undefined),
+  })),
+}));
+
+import { PostHog } from 'posthog-node';
+
+describe('PostHog Analytics', () => {
+  let ph: InstanceType<typeof PostHog>;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    ph = new PostHog('phc_test');
+  });
+
+  it('captures events with required properties', () => {
+    ph.capture({
+      distinctId: 'user-1',
+      event: 'subscription_started',
+      properties: { plan: 'pro', interval: 'annual' },
+    });
+
+    expect(ph.capture).toHaveBeenCalledWith(
+      expect.objectContaining({
+        event: 'subscription_started',
+        properties: expect.objectContaining({ plan: 'pro' }),
+      })
+    );
+  });
+
+  it('evaluates feature flags with default fallback', async () => {
+    const enabled = await ph.isFeatureEnabled('new-feature', 'user-1');
+    expect(enabled).toBe(true);
+  });
+
+  it('gets multivariate flag variant', async () => {
+    const variant = await ph.getFeatureFlag('experiment', 'user-1');
+    expect(variant).toBe('control');
+  });
+});
 ```
+
+### Step 4: Integration Tests (Real PostHog Project)
+
+```typescript
+// tests/integration/posthog.test.ts
+import { describe, it, expect, afterAll } from 'vitest';
+import { PostHog } from 'posthog-node';
+
+const KEY = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+
+describe.skipIf(!KEY)('PostHog Integration', () => {
+  const ph = new PostHog(KEY!, {
+    host: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+    flushAt: 1,
+    flushInterval: 0,
+  });
+
+  afterAll(async () => await ph.shutdown());
+
+  it('captures and flushes an event', async () => {
+    ph.capture({
+      distinctId: `ci-${Date.now()}`,
+      event: 'ci_integration_test',
+      properties: {
+        ci: true,
+        run_id: process.env.GITHUB_RUN_ID || 'local',
+      },
+    });
+    await expect(ph.flush()).resolves.not.toThrow();
+  });
+
+  it('evaluates feature flags', async () => {
+    const flags = await ph.getAllFlags(`ci-${Date.now()}`);
+    expect(typeof flags).toBe('object');
+  });
+
+  it('resolves decide endpoint', async () => {
+    const response = await fetch('https://us.i.posthog.com/decide/?v=3', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ api_key: KEY, distinct_id: 'ci-test' }),
+    });
+    expect(response.status).toBe(200);
+    const data = await response.json();
+    expect(data).toHaveProperty('featureFlags');
+  });
+});
+```
+
+### Step 5: Package Scripts
+
+```json
+{
+  "scripts": {
+    "test": "vitest run",
+    "test:integration": "vitest run tests/integration/",
+    "test:coverage": "vitest run --coverage"
+  }
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Integration tests fail in CI | Secret not configured | Run `gh secret set POSTHOG_TEST_KEY` |
+| Tests timeout | PostHog unreachable from CI runner | Increase timeout, add retry |
+| Annotation fails | Wrong personal key | Verify `phx_` key, check project ID |
+| Mock type mismatch | PostHog SDK updated | Update mock to match new SDK exports |
+
+## Output
+
+- Unit test suite with mocked PostHog (runs everywhere, no keys needed)
+- Integration test suite against PostHog dev project (runs on main only)
+- Deployment annotations marking each release in PostHog timeline
+- GitHub Actions workflow with proper secret management
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [PostHog CI Guide](https://docs.posthog.com/ci)
+
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+- [PostHog Annotations API](https://posthog.com/docs/api/annotations)
+- [Vitest Documentation](https://vitest.dev/)
 
 ## Next Steps
+
 For deployment patterns, see `posthog-deploy-integration`.

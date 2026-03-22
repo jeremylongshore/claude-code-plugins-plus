@@ -1,194 +1,264 @@
 ---
 name: posthog-reference-architecture
 description: |
-  Implement PostHog reference architecture with best-practice project layout.
-  Use when designing new PostHog integrations, reviewing project structure,
-  or establishing architecture standards for PostHog applications.
-  Trigger with phrases like "posthog architecture", "posthog best practices",
-  "posthog project structure", "how to organize posthog", "posthog layout".
+  Production PostHog architecture: event taxonomy, SDK layering, feature flag
+  strategy, analytics module layout, and data pipeline integration patterns.
+  Trigger: "posthog architecture", "posthog best practices", "posthog project
+  structure", "how to organize posthog", "posthog design".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 tags: [saas, posthog, posthog-reference]
-
 ---
+
 # PostHog Reference Architecture
 
 ## Overview
-Production architecture for product analytics with PostHog. Covers event tracking design, feature flag management, experimentation framework, and integration patterns for web and backend applications.
+
+Production-grade architecture for PostHog analytics in a web application. Covers file structure, event taxonomy design, SDK initialization layers, feature flag management, group analytics for B2B, and data pipeline integration.
 
 ## Prerequisites
-- PostHog project (Cloud or self-hosted)
-- `posthog-js` and `posthog-node` SDKs
-- Understanding of event-driven analytics
-- Feature flag strategy planned
 
-## Architecture Diagram
+- PostHog Cloud or self-hosted instance
+- `posthog-js` and `posthog-node` SDKs
+- Next.js or React application (patterns adapt to other frameworks)
+
+## Architecture
 
 ```
-set -euo pipefail
-┌──────────────────────────────────────────────────────┐
-│              Client Applications                      │
-│  Web (posthog-js) │ Mobile (posthog-react-native)    │
-└──────────┬────────────────────────────┬──────────────┘
-           │                            │
-           ▼                            ▼
-┌──────────────────────────────────────────────────────┐
-│              PostHog Platform                         │
-│  ┌───────────┐  ┌───────────┐  ┌─────────────────┐   │
-│  │ Events    │  │ Feature   │  │ Experiments     │   │
-│  │ & Props   │  │ Flags     │  │ (A/B tests)     │   │
-│  └─────┬─────┘  └─────┬─────┘  └───────┬─────────┘   │
-│        │              │                 │             │
-│  ┌─────┴──────────────┴─────────────────┴───────┐     │
-│  │         Analytics Engine                      │     │
-│  │  Trends │ Funnels │ Retention │ Paths │ SQL  │     │
-│  └──────────────────────────────────────────────┘     │
-├──────────────────────────────────────────────────────┤
-│  Backend (posthog-node)                               │
-│  Server Events │ Flag Evaluation │ Group Analytics   │
-└──────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│  Browser (posthog-js)                                │
+│  $pageview, $autocapture, custom events, identify   │
+│  Feature flag evaluation, session recordings         │
+└────────────┬────────────────────────────────────────┘
+             │ HTTPS (direct or reverse proxy)
+             ▼
+┌─────────────────────────────────────────────────────┐
+│  PostHog Cloud (us.i.posthog.com)                    │
+│  ┌──────────┐  ┌──────────┐  ┌───────────────────┐  │
+│  │ Events   │  │ Feature  │  │ Session Replay    │  │
+│  │ Pipeline │  │ Flags    │  │ & Recordings      │  │
+│  └────┬─────┘  └────┬─────┘  └───────────────────┘  │
+│       │              │                                │
+│  ┌────┴──────────────┴────────────────────────────┐  │
+│  │  Analytics: Trends, Funnels, Retention, Paths  │  │
+│  │  HogQL (SQL), Dashboards, Cohorts              │  │
+│  └────────────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────────────┐  │
+│  │  CDP: Destinations (Webhook, Slack, S3, etc.)  │  │
+│  └────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
+             ▲
+             │ posthog-node (server events, local flag eval)
+┌────────────┴────────────────────────────────────────┐
+│  Backend (API routes, webhooks, crons)               │
+│  Server-side capture, group identify, flag eval      │
+└─────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Event Taxonomy Design
+### Step 1: Project File Structure
+
+```
+src/
+├── analytics/
+│   ├── posthog.ts           # Browser SDK init (singleton)
+│   ├── posthog-server.ts    # Server SDK init (singleton)
+│   ├── events.ts            # Typed event constants
+│   ├── flags.ts             # Feature flag key constants
+│   └── hooks/
+│       ├── useFeatureFlag.ts    # React hook for boolean flags
+│       └── useExperiment.ts     # React hook for A/B variants
+├── app/
+│   ├── providers.tsx        # PostHogProvider wrapper
+│   └── layout.tsx           # Root layout with provider
+└── lib/
+    └── analytics.ts         # High-level tracking functions
+```
+
+### Step 2: Event Taxonomy
+
 ```typescript
-// events.ts - Define your event taxonomy
+// analytics/events.ts
+// Naming convention: object_action (noun_verb)
 export const EVENTS = {
-  // User lifecycle
+  // User lifecycle (track conversion funnel)
   USER_SIGNED_UP: 'user_signed_up',
   USER_LOGGED_IN: 'user_logged_in',
   USER_ONBOARDING_COMPLETED: 'user_onboarding_completed',
+  USER_INVITED_TEAMMATE: 'user_invited_teammate',
 
-  // Core product actions
-  FEATURE_USED: 'feature_used',
+  // Core product (track feature adoption)
+  FEATURE_USED: 'feature_used',           // with feature_name property
   ITEM_CREATED: 'item_created',
-  ITEM_SHARED: 'item_shared',
+  ITEM_UPDATED: 'item_updated',
+  ITEM_DELETED: 'item_deleted',
+  SEARCH_PERFORMED: 'search_performed',
   EXPORT_COMPLETED: 'export_completed',
 
-  // Revenue
+  // Revenue (track MRR and churn)
   SUBSCRIPTION_STARTED: 'subscription_started',
   SUBSCRIPTION_UPGRADED: 'subscription_upgraded',
+  SUBSCRIPTION_DOWNGRADED: 'subscription_downgraded',
   SUBSCRIPTION_CANCELED: 'subscription_canceled',
+  PAYMENT_COMPLETED: 'payment_completed',
+
+  // Engagement (track stickiness)
+  NOTIFICATION_CLICKED: 'notification_clicked',
+  FEEDBACK_SUBMITTED: 'feedback_submitted',
 } as const;
 
-// Standard properties for consistency
-interface EventProperties {
-  feature_name?: string;
+// Standard property schema
+interface BaseProps {
   source?: 'web' | 'mobile' | 'api';
-  plan_tier?: 'free' | 'pro' | 'enterprise';
-  duration_ms?: number;
+  plan?: 'free' | 'pro' | 'enterprise';
+}
+
+// Type-safe capture
+type EventMap = {
+  [EVENTS.USER_SIGNED_UP]: BaseProps & { method: 'email' | 'google' | 'github' };
+  [EVENTS.FEATURE_USED]: BaseProps & { feature_name: string; duration_ms?: number };
+  [EVENTS.SUBSCRIPTION_STARTED]: BaseProps & { plan: string; interval: 'monthly' | 'annual'; mrr: number };
+};
+```
+
+### Step 3: Feature Flag Constants
+
+```typescript
+// analytics/flags.ts
+export const FLAGS = {
+  // Feature rollouts
+  NEW_DASHBOARD: 'new-dashboard-v2',
+  AI_SUMMARIZE: 'ai-summarize-beta',
+  BULK_EXPORT: 'bulk-export',
+
+  // Experiments
+  PRICING_PAGE: 'pricing-page-experiment',
+  ONBOARDING_FLOW: 'onboarding-flow-v3',
+  CHECKOUT_LAYOUT: 'checkout-layout-test',
+} as const;
+
+// Flag → default value mapping (used when flags fail to load)
+export const FLAG_DEFAULTS: Record<string, boolean | string> = {
+  [FLAGS.NEW_DASHBOARD]: false,
+  [FLAGS.AI_SUMMARIZE]: false,
+  [FLAGS.PRICING_PAGE]: 'control',
+  [FLAGS.ONBOARDING_FLOW]: 'control',
+};
+```
+
+### Step 4: High-Level Analytics Module
+
+```typescript
+// lib/analytics.ts
+import posthog from 'posthog-js';
+import { getPostHogServer } from '../analytics/posthog-server';
+import { EVENTS } from '../analytics/events';
+
+// Client-side tracking
+export function trackFeatureUsed(featureName: string, duration?: number) {
+  posthog.capture(EVENTS.FEATURE_USED, {
+    feature_name: featureName,
+    duration_ms: duration,
+    source: 'web',
+  });
+}
+
+export function trackSignup(method: 'email' | 'google' | 'github') {
+  posthog.capture(EVENTS.USER_SIGNED_UP, { method, source: 'web' });
+}
+
+export function identifyUser(userId: string, properties: {
+  email: string;
+  name: string;
+  plan: string;
+  companyId?: string;
+  companyName?: string;
+}) {
+  posthog.identify(userId, {
+    email: properties.email,
+    name: properties.name,
+    plan: properties.plan,
+  });
+
+  if (properties.companyId) {
+    posthog.group('company', properties.companyId, {
+      name: properties.companyName,
+      plan: properties.plan,
+    });
+  }
+}
+
+// Server-side tracking
+export function trackServerEvent(
+  userId: string,
+  event: string,
+  properties?: Record<string, any>
+) {
+  const ph = getPostHogServer();
+  ph.capture({
+    distinctId: userId,
+    event,
+    properties: { ...properties, source: 'api' },
+  });
 }
 ```
 
-### Step 2: Client-Side Integration
+### Step 5: Data Pipeline Integration
+
 ```typescript
-import posthog from 'posthog-js';
+// PostHog → External Systems via CDP Destinations
+//
+// PostHog Cloud Data Pipeline:
+// 1. Events captured → PostHog stores in ClickHouse
+// 2. CDP Destinations fire webhooks to your endpoints
+// 3. HogQL queries available for custom analysis
+//
+// Common destination patterns:
+// - PostHog → Webhook → Your API → CRM sync
+// - PostHog → S3 export → Data warehouse
+// - PostHog → Slack → Team notifications
+// - PostHog → Webhook → Billing system (revenue events)
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: 'https://us.i.posthog.com',
-  capture_pageview: true,
-  capture_pageleave: true,
-  autocapture: true,
-  persistence: 'localStorage+cookie',
-  loaded: (ph) => {
-    if (process.env.NODE_ENV === 'development') {
-      ph.opt_out_capturing(); // Disable in dev
-    }
-  },
-});
-
-// Identify users
-function identifyUser(userId: string, traits: Record<string, any>) {
-  posthog.identify(userId, {
-    email: traits.email,
-    plan: traits.plan,
-    company: traits.company,
-  });
-
-  // Set group for company-level analytics
-  if (traits.companyId) {
-    posthog.group('company', traits.companyId, {
-      name: traits.company,
-      plan: traits.plan,
-    });
+// Server route to receive PostHog CDP webhooks
+export async function handlePostHogWebhook(event: string, payload: any) {
+  switch (event) {
+    case EVENTS.SUBSCRIPTION_STARTED:
+      await syncToStripe(payload);
+      break;
+    case EVENTS.USER_SIGNED_UP:
+      await syncToCRM(payload);
+      await notifySlack(payload);
+      break;
   }
 }
 ```
 
-### Step 3: Feature Flag Architecture
-```typescript
-// flags.ts - Feature flag definitions
-export const FLAGS = {
-  NEW_DASHBOARD: 'new-dashboard-v2',
-  AI_FEATURES: 'ai-features-beta',
-  PRICING_EXPERIMENT: 'pricing-page-experiment',
-} as const;
-
-// React hook for feature flags
-function useFeatureFlag(flagKey: string) {
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    posthog.onFeatureFlags(() => {
-      setEnabled(posthog.isFeatureEnabled(flagKey) ?? false);
-    });
-  }, [flagKey]);
-
-  return enabled;
-}
-
-// Server-side flag evaluation
-import { PostHog } from 'posthog-node';
-const serverPosthog = new PostHog(process.env.POSTHOG_API_KEY!);
-
-async function getServerFlags(userId: string) {
-  return serverPosthog.getAllFlags(userId);
-}
-```
-
-### Step 4: Experiment Tracking
-```typescript
-function trackExperiment(experimentKey: string, userId: string) {
-  const variant = posthog.getFeatureFlag(experimentKey);
-
-  posthog.capture('$experiment_started', {
-    $experiment_name: experimentKey,
-    $experiment_variant: variant,
-  });
-
-  return variant;
-}
-```
-
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Events not appearing | SDK not initialized | Check init call and API key |
-| Flag always false | Not loaded yet | Use `onFeatureFlags` callback |
-| Missing user properties | Not identified | Call `identify` before capture |
-| High event volume | Autocapture too broad | Configure autocapture selectively |
-
-## Examples
-
-### Funnel Tracking Setup
-```typescript
-// Track a conversion funnel
-posthog.capture(EVENTS.ITEM_CREATED, { source: 'web' });
-posthog.capture(EVENTS.ITEM_SHARED, { share_method: 'link' });
-posthog.capture(EVENTS.EXPORT_COMPLETED, { format: 'pdf' });
-```
-
-## Resources
-- [PostHog Documentation](https://posthog.com/docs)
-- [PostHog Feature Flags](https://posthog.com/docs/feature-flags)
-- [PostHog Experiments](https://posthog.com/docs/experiments)
+| Events not appearing | SDK not initialized | Verify `posthog.init()` runs before capture |
+| Flag always returns default | Flags not loaded | Use `posthog.onFeatureFlags()` callback |
+| Identity fragmentation | Inconsistent `distinct_id` | Use same user ID from auth system everywhere |
+| Group analytics empty | `posthog.group()` not called | Call `group()` before capture |
+| Server events lost | No `flush()` in serverless | Always `await posthog.shutdown()` |
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Organized analytics module with typed events and flags
+- Client and server SDK initialization (singleton pattern)
+- Event taxonomy following `object_action` naming convention
+- Feature flag constants with safe defaults
+- Data pipeline integration via CDP webhooks
+
+## Resources
+
+- [PostHog Documentation](https://posthog.com/docs)
+- [PostHog JavaScript Web SDK](https://posthog.com/docs/libraries/js)
+- [PostHog Node.js SDK](https://posthog.com/docs/libraries/node)
+- [PostHog CDP Destinations](https://posthog.com/docs/cdp/destinations)
+- [PostHog Experiments Best Practices](https://posthog.com/docs/experiments/best-practices)
