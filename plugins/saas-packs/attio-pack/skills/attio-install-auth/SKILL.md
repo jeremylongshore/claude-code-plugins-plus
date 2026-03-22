@@ -23,7 +23,9 @@ Set up Attio SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Attio account with API access
-- API key from Attio dashboard
+
+- OAuth2 access token or personal API token from Attio settings
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install attio
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export ATTIO_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export ATTIO_API_KEY="your-api-key"
 echo 'ATTIO_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const me = await client.users.me();
+console.log(`Authenticated: ${me.name} — ${me.organization.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Attio dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.attio.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'ATTIO_API_KEY=your-api-key' >> .env
 import { AttioClient } from '@attio/sdk';
 
 const client = new AttioClient({
+
   apiKey: process.env.ATTIO_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new AttioClient({
 from attio import AttioClient
 
 client = AttioClient(
+
     api_key=os.environ.get('ATTIO_API_KEY')
+
 )
 ```
 

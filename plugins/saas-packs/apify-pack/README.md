@@ -17,8 +17,8 @@
 | `apify-hello-world` | Hello World |
 | `apify-local-dev-loop` | Local Dev Loop |
 | `apify-sdk-patterns` | Sdk Patterns |
-| `apify-core-workflow-a` | Core Workflow A |
-| `apify-core-workflow-b` | Core Workflow B |
+| `apify-deploy-preview` | Deploy Preview |
+| `apify-build-configure` | Build Configure |
 | `apify-common-errors` | Common Errors |
 | `apify-debug-bundle` | Debug Bundle |
 | `apify-rate-limits` | Rate Limits |

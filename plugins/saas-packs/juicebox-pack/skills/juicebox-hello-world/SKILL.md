@@ -17,7 +17,9 @@ tags: [saas, juicebox]
 # Juicebox Hello World
 
 ## Overview
-Minimal working example demonstrating core Juicebox functionality.
+
+Pull your first contacts from Juicebox and display them.
+
 
 ## Prerequisites
 - Completed `juicebox-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { JuiceboxClient } from '@juicebox/sdk';
 
 const client = new JuiceboxClient({
+
   apiKey: process.env.JUICEBOX_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Juicebox connection is working.
 import { JuiceboxClient } from '@juicebox/sdk';
 
 const client = new JuiceboxClient({
+
   apiKey: process.env.JUICEBOX_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from juicebox import JuiceboxClient
 
 client = JuiceboxClient()
 
-# Your first API call here
+contacts = client.contacts.list(limit=5)
+print(f"Found {contacts.total} contacts. First 5:")
+for c in contacts.data:
+    print(f"  - {c.name} <{c.email}> ({c.company})")
+
 ```
 
 ## Resources

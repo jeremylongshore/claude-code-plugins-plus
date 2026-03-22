@@ -17,7 +17,9 @@ tags: [saas, mistral]
 # Mistral AI Hello World
 
 ## Overview
-Minimal working example demonstrating core Mistral AI functionality.
+
+Send your first prompt to the Mistral AI API and get a model response back.
+
 
 ## Prerequisites
 - Completed `mistral-install-auth` setup
@@ -34,14 +36,22 @@ Create a new file for your hello world example.
 import { MistralAIClient } from '@mistral/sdk';
 
 const client = new MistralAIClient({
+
   apiKey: process.env.MISTRAL_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -70,11 +80,19 @@ Success! Your Mistral AI connection is working.
 import { MistralAIClient } from '@mistral/sdk';
 
 const client = new MistralAIClient({
+
   apiKey: process.env.MISTRAL_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -86,7 +104,13 @@ from mistral import MistralAIClient
 
 client = MistralAIClient()
 
-# Your first API call here
+response = client.chat.completions.create(
+    model="default",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+    max_tokens=64,
+)
+print(response.choices[0].message.content)
+
 ```
 
 ## Resources

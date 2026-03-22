@@ -17,8 +17,8 @@
 | `techsmith-hello-world` | Hello World |
 | `techsmith-local-dev-loop` | Local Dev Loop |
 | `techsmith-sdk-patterns` | Sdk Patterns |
-| `techsmith-core-workflow-a` | Core Workflow A |
-| `techsmith-core-workflow-b` | Core Workflow B |
+| `techsmith-export-assets` | Export Assets |
+| `techsmith-design-token-sync` | Design Token Sync |
 | `techsmith-common-errors` | Common Errors |
 | `techsmith-debug-bundle` | Debug Bundle |
 | `techsmith-rate-limits` | Rate Limits |

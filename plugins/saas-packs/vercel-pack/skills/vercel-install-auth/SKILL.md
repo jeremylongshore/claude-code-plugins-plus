@@ -23,7 +23,9 @@ Set up Vercel SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Vercel account with API access
+
 - API key from Vercel dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install None
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export VERCEL_API_KEY="your-api-key"
@@ -45,6 +48,7 @@ export VERCEL_API_KEY="your-api-key"
 echo 'VERCEL_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
 const teams = await vercel.teams.list(); console.log(teams.length > 0 ? 'OK' : 'No teams');
@@ -52,14 +56,18 @@ const teams = await vercel.teams.list(); console.log(teams.length > 0 ? 'OK' : '
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Vercel dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://vercel.com/docs |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +78,9 @@ const teams = await vercel.teams.list(); console.log(teams.length > 0 ? 'OK' : '
 import { VercelClient } from 'vercel';
 
 const client = new VercelClient({
+
   apiKey: process.env.VERCEL_API_KEY,
+
 });
 ```
 
@@ -79,7 +89,9 @@ const client = new VercelClient({
 from None import VercelClient
 
 client = VercelClient(
+
     api_key=os.environ.get('VERCEL_API_KEY')
+
 )
 ```
 

@@ -17,8 +17,8 @@
 | `serpapi-hello-world` | Hello World |
 | `serpapi-local-dev-loop` | Local Dev Loop |
 | `serpapi-sdk-patterns` | Sdk Patterns |
-| `serpapi-core-workflow-a` | Core Workflow A |
-| `serpapi-core-workflow-b` | Core Workflow B |
+| `serpapi-deploy-preview` | Deploy Preview |
+| `serpapi-build-configure` | Build Configure |
 | `serpapi-common-errors` | Common Errors |
 | `serpapi-debug-bundle` | Debug Bundle |
 | `serpapi-rate-limits` | Rate Limits |

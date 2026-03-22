@@ -17,8 +17,8 @@
 | `openrouter-hello-world` | Hello World |
 | `openrouter-local-dev-loop` | Local Dev Loop |
 | `openrouter-sdk-patterns` | Sdk Patterns |
-| `openrouter-core-workflow-a` | Core Workflow A |
-| `openrouter-core-workflow-b` | Core Workflow B |
+| `openrouter-model-inference` | Model Inference |
+| `openrouter-embeddings-search` | Embeddings Search |
 | `openrouter-common-errors` | Common Errors |
 | `openrouter-debug-bundle` | Debug Bundle |
 | `openrouter-rate-limits` | Rate Limits |

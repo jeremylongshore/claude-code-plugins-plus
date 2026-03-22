@@ -17,8 +17,8 @@
 | `cohere-hello-world` | Hello World |
 | `cohere-local-dev-loop` | Local Dev Loop |
 | `cohere-sdk-patterns` | Sdk Patterns |
-| `cohere-core-workflow-a` | Core Workflow A |
-| `cohere-core-workflow-b` | Core Workflow B |
+| `cohere-model-inference` | Model Inference |
+| `cohere-embeddings-search` | Embeddings Search |
 | `cohere-common-errors` | Common Errors |
 | `cohere-debug-bundle` | Debug Bundle |
 | `cohere-rate-limits` | Rate Limits |

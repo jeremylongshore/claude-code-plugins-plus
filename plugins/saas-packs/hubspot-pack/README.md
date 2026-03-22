@@ -17,8 +17,8 @@
 | `hubspot-hello-world` | Hello World |
 | `hubspot-local-dev-loop` | Local Dev Loop |
 | `hubspot-sdk-patterns` | Sdk Patterns |
-| `hubspot-core-workflow-a` | Core Workflow A |
-| `hubspot-core-workflow-b` | Core Workflow B |
+| `hubspot-contact-sync` | Contact Sync |
+| `hubspot-deal-pipeline` | Deal Pipeline |
 | `hubspot-common-errors` | Common Errors |
 | `hubspot-debug-bundle` | Debug Bundle |
 | `hubspot-rate-limits` | Rate Limits |

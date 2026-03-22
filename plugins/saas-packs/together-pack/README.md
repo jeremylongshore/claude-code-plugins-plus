@@ -17,8 +17,8 @@
 | `together-hello-world` | Hello World |
 | `together-local-dev-loop` | Local Dev Loop |
 | `together-sdk-patterns` | Sdk Patterns |
-| `together-core-workflow-a` | Core Workflow A |
-| `together-core-workflow-b` | Core Workflow B |
+| `together-model-inference` | Model Inference |
+| `together-embeddings-search` | Embeddings Search |
 | `together-common-errors` | Common Errors |
 | `together-debug-bundle` | Debug Bundle |
 | `together-rate-limits` | Rate Limits |

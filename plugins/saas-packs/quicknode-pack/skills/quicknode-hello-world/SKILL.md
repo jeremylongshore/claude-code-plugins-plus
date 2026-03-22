@@ -17,7 +17,9 @@ tags: [saas, quicknode]
 # QuickNode Hello World
 
 ## Overview
-Minimal working example demonstrating core QuickNode functionality.
+
+Check your account balance and list recent transactions via QuickNode.
+
 
 ## Prerequisites
 - Completed `quicknode-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { QuickNodeClient } from '@quicknode/sdk';
 
 const client = new QuickNodeClient({
+
   apiKey: process.env.QUICKNODE_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const account = await client.accounts.get();
+console.log(`Account: ${account.name}`);
+console.log(`Balance: $${(account.balance / 100).toFixed(2)} ${account.currency}`);
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your QuickNode connection is working.
 import { QuickNodeClient } from '@quicknode/sdk';
 
 const client = new QuickNodeClient({
+
   apiKey: process.env.QUICKNODE_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const account = await client.accounts.get();
+console.log(`Account: ${account.name}`);
+console.log(`Balance: $${(account.balance / 100).toFixed(2)} ${account.currency}`);
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,10 @@ from quicknode import QuickNodeClient
 
 client = QuickNodeClient()
 
-# Your first API call here
+account = client.accounts.get()
+print(f"Account: {account.name}")
+print(f"Balance: ${account.balance / 100:.2f} {account.currency}")
+
 ```
 
 ## Resources

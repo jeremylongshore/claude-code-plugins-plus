@@ -17,8 +17,8 @@
 | `quicknode-hello-world` | Hello World |
 | `quicknode-local-dev-loop` | Local Dev Loop |
 | `quicknode-sdk-patterns` | Sdk Patterns |
-| `quicknode-core-workflow-a` | Core Workflow A |
-| `quicknode-core-workflow-b` | Core Workflow B |
+| `quicknode-transaction-processing` | Transaction Processing |
+| `quicknode-reporting-compliance` | Reporting Compliance |
 | `quicknode-common-errors` | Common Errors |
 | `quicknode-debug-bundle` | Debug Bundle |
 | `quicknode-rate-limits` | Rate Limits |

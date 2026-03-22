@@ -17,7 +17,9 @@ tags: [saas, figma]
 # Figma Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common Figma errors and their solutions.
+
 
 ## Prerequisites
 - Figma SDK installed
@@ -42,48 +44,58 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### OAuth Token Expired
 **Error Message:**
 ```
-Authentication error: Invalid API key
+403 Forbidden: Access token expired
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** OAuth access token has expired (typically 1-24h lifetime).
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $FIGMA_API_KEY
+# Refresh the token using your refresh_token
+curl -X POST https://api.vendor.com/oauth/token \
+  -d "grant_type=refresh_token&refresh_token=$REFRESH_TOKEN"
+# Store new access_token and update env var
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### File Not Found
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+404 Not Found: File not found or you don't have access
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** File ID is wrong, file was deleted, or API token doesn't have access.
 
 **Solution:**
-Implement exponential backoff. See `figma-rate-limits` skill.
+# Verify file ID from the URL (e.g., figma.com/file/FILE_ID/...)
+# Check file permissions — must be shared with the API token's user
+# Use team/project listing to find correct file ID
+
 
 ---
 
-### Network Timeout
+### Rate Limited (File Exports)
 **Error Message:**
 ```
-Request timeout after 30000ms
+429 Too Many Requests: Export rate limit exceeded
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Too many export requests in a short window (design APIs have tight export limits).
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Batch export requests — request multiple node IDs in one call
+# Cache exported assets locally with content-hash filenames
+# Implement backoff: wait 60s after hitting 429
+
 ```
+
+
 
 ## Examples
 

@@ -30,9 +30,9 @@ Handle ElevenLabs rate limits gracefully with exponential backoff and idempotenc
 
 | Tier | Requests/min | Requests/day | Burst |
 |------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Free / Developer | 60 | 1,000 | 10 |
+| Pro / Growth | 600 | 50,000 | 50 |
+| Enterprise | 6,000 | Unlimited | 200 |
 
 ### Step 2: Implement Exponential Backoff with Jitter
 

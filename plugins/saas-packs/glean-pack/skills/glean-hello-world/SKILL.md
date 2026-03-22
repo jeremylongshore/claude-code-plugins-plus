@@ -17,7 +17,9 @@ tags: [saas, glean]
 # Glean Hello World
 
 ## Overview
+
 Minimal working example demonstrating core Glean functionality.
+
 
 ## Prerequisites
 - Completed `glean-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { GleanClient } from '@glean/sdk';
 
 const client = new GleanClient({
+
   apiKey: process.env.GLEAN_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Glean connection is working.
 import { GleanClient } from '@glean/sdk';
 
 const client = new GleanClient({
+
   apiKey: process.env.GLEAN_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from glean import GleanClient
 
 client = GleanClient()
 
-# Your first API call here
+resources = client.resources.list(limit=5)
+print(f"Found {resources.total} resources:")
+for r in resources.data:
+    print(f"  - {r.name} ({r.type}) — {r.status}")
+
 ```
 
 ## Resources

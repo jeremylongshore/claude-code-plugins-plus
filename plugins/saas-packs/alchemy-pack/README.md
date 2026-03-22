@@ -17,8 +17,8 @@
 | `alchemy-hello-world` | Hello World |
 | `alchemy-local-dev-loop` | Local Dev Loop |
 | `alchemy-sdk-patterns` | Sdk Patterns |
-| `alchemy-core-workflow-a` | Core Workflow A |
-| `alchemy-core-workflow-b` | Core Workflow B |
+| `alchemy-transaction-processing` | Transaction Processing |
+| `alchemy-reporting-compliance` | Reporting Compliance |
 | `alchemy-common-errors` | Common Errors |
 | `alchemy-debug-bundle` | Debug Bundle |
 | `alchemy-rate-limits` | Rate Limits |

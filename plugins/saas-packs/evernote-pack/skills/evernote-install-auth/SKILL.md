@@ -23,7 +23,9 @@ Set up Evernote SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Evernote account with API access
+
 - API key from Evernote dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install evernote
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export EVERNOTE_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export EVERNOTE_API_KEY="your-api-key"
 echo 'EVERNOTE_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const workspace = await client.workspace.get();
+console.log(`Connected to workspace: ${workspace.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Evernote dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.evernote.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'EVERNOTE_API_KEY=your-api-key' >> .env
 import { EvernoteClient } from '@evernote/sdk';
 
 const client = new EvernoteClient({
+
   apiKey: process.env.EVERNOTE_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new EvernoteClient({
 from evernote import EvernoteClient
 
 client = EvernoteClient(
+
     api_key=os.environ.get('EVERNOTE_API_KEY')
+
 )
 ```
 

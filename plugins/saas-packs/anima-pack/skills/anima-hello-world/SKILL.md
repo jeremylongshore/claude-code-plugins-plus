@@ -17,7 +17,9 @@ tags: [saas, anima]
 # Anima Hello World
 
 ## Overview
-Minimal working example demonstrating core Anima functionality.
+
+Connect to Anima and list your design files via the API.
+
 
 ## Prerequisites
 - Completed `anima-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { AnimaClient } from '@anima/sdk';
 
 const client = new AnimaClient({
-  apiKey: process.env.ANIMA_API_KEY,
+
+  accessToken: process.env.ANIMA_ACCESS_TOKEN,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Anima connection is working.
 import { AnimaClient } from '@anima/sdk';
 
 const client = new AnimaClient({
-  apiKey: process.env.ANIMA_API_KEY,
+
+  accessToken: process.env.ANIMA_ACCESS_TOKEN,
+
 });
 
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from anima import AnimaClient
 
 client = AnimaClient()
 
-# Your first API call here
+files = client.files.list()
+print(f"Found {len(files)} design files:")
+for f in files[:5]:
+    print(f"  - {f.name} (modified: {f.last_modified})")
+
 ```
 
 ## Resources

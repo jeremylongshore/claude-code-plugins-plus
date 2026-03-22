@@ -17,7 +17,9 @@ tags: [saas, hex]
 # Hex Hello World
 
 ## Overview
-Minimal working example demonstrating core Hex functionality.
+
+Run your first query against Hex and read actual data back.
+
 
 ## Prerequisites
 - Completed `hex-install-auth` setup
@@ -34,14 +36,18 @@ Create a new file for your hello world example.
 import { HexClient } from '@hex/sdk';
 
 const client = new HexClient({
-  apiKey: process.env.HEX_API_KEY,
+
+  connectionString: process.env.HEX_DATABASE_URL,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -70,11 +76,15 @@ Success! Your Hex connection is working.
 import { HexClient } from '@hex/sdk';
 
 const client = new HexClient({
-  apiKey: process.env.HEX_API_KEY,
+
+  connectionString: process.env.HEX_DATABASE_URL,
+
 });
 
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -86,7 +96,9 @@ from hex import HexClient
 
 client = HexClient()
 
-# Your first API call here
+result = client.query("SELECT 1 AS health_check")
+print("Connected:", "OK" if result[0]["health_check"] == 1 else "FAIL")
+
 ```
 
 ## Resources

@@ -17,8 +17,8 @@
 | `apollo-hello-world` | Hello World |
 | `apollo-local-dev-loop` | Local Dev Loop |
 | `apollo-sdk-patterns` | Sdk Patterns |
-| `apollo-core-workflow-a` | Core Workflow A |
-| `apollo-core-workflow-b` | Core Workflow B |
+| `apollo-contact-sync` | Contact Sync |
+| `apollo-deal-pipeline` | Deal Pipeline |
 | `apollo-common-errors` | Common Errors |
 | `apollo-debug-bundle` | Debug Bundle |
 | `apollo-rate-limits` | Rate Limits |

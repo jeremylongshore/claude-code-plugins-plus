@@ -17,8 +17,8 @@
 | `klingai-hello-world` | Hello World |
 | `klingai-local-dev-loop` | Local Dev Loop |
 | `klingai-sdk-patterns` | Sdk Patterns |
-| `klingai-core-workflow-a` | Core Workflow A |
-| `klingai-core-workflow-b` | Core Workflow B |
+| `klingai-model-inference` | Model Inference |
+| `klingai-embeddings-search` | Embeddings Search |
 | `klingai-common-errors` | Common Errors |
 | `klingai-debug-bundle` | Debug Bundle |
 | `klingai-rate-limits` | Rate Limits |

@@ -23,7 +23,9 @@ Set up Ramp SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Ramp account with API access
+
 - API key from Ramp dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install ramp
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export RAMP_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export RAMP_API_KEY="your-api-key"
 echo 'RAMP_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const status = await client.health.check();
+console.log(`API status: ${status.operational ? 'OK' : 'Degraded'}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Ramp dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.ramp.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'RAMP_API_KEY=your-api-key' >> .env
 import { RampClient } from '@ramp/sdk';
 
 const client = new RampClient({
+
   apiKey: process.env.RAMP_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new RampClient({
 from ramp import RampClient
 
 client = RampClient(
+
     api_key=os.environ.get('RAMP_API_KEY')
+
 )
 ```
 

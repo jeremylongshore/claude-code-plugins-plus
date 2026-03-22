@@ -30,9 +30,9 @@ Handle Mindtickle rate limits gracefully with exponential backoff and idempotenc
 
 | Tier | Requests/min | Requests/day | Burst |
 |------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Starter | 100 | 10,000 | 10 |
+| Professional | 500 | 100,000 | 50 |
+| Enterprise | 2,000 | Unlimited | 200 |
 
 ### Step 2: Implement Exponential Backoff with Jitter
 

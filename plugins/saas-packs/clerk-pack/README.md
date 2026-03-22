@@ -17,8 +17,8 @@
 | `clerk-hello-world` | Hello World |
 | `clerk-local-dev-loop` | Local Dev Loop |
 | `clerk-sdk-patterns` | Sdk Patterns |
-| `clerk-core-workflow-a` | Core Workflow A |
-| `clerk-core-workflow-b` | Core Workflow B |
+| `clerk-deploy-preview` | Deploy Preview |
+| `clerk-build-configure` | Build Configure |
 | `clerk-common-errors` | Common Errors |
 | `clerk-debug-bundle` | Debug Bundle |
 | `clerk-rate-limits` | Rate Limits |

@@ -17,8 +17,8 @@
 | `procore-hello-world` | Hello World |
 | `procore-local-dev-loop` | Local Dev Loop |
 | `procore-sdk-patterns` | Sdk Patterns |
-| `procore-core-workflow-a` | Core Workflow A |
-| `procore-core-workflow-b` | Core Workflow B |
+| `procore-entity-management` | Entity Management |
+| `procore-data-sync` | Data Sync |
 | `procore-common-errors` | Common Errors |
 | `procore-debug-bundle` | Debug Bundle |
 | `procore-rate-limits` | Rate Limits |

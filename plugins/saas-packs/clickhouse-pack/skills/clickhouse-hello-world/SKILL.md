@@ -17,7 +17,9 @@ tags: [saas, clickhouse]
 # ClickHouse Hello World
 
 ## Overview
-Minimal working example demonstrating core ClickHouse functionality.
+
+Run your first query against ClickHouse and read actual data back.
+
 
 ## Prerequisites
 - Completed `clickhouse-install-auth` setup
@@ -34,14 +36,18 @@ Create a new file for your hello world example.
 import { ClickHouseClient } from '@clickhouse/sdk';
 
 const client = new ClickHouseClient({
-  apiKey: process.env.CLICKHOUSE_API_KEY,
+
+  connectionString: process.env.CLICKHOUSE_DATABASE_URL,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -70,11 +76,15 @@ Success! Your ClickHouse connection is working.
 import { ClickHouseClient } from '@clickhouse/sdk';
 
 const client = new ClickHouseClient({
-  apiKey: process.env.CLICKHOUSE_API_KEY,
+
+  connectionString: process.env.CLICKHOUSE_DATABASE_URL,
+
 });
 
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -86,7 +96,9 @@ from clickhouse import ClickHouseClient
 
 client = ClickHouseClient()
 
-# Your first API call here
+result = client.query("SELECT 1 AS health_check")
+print("Connected:", "OK" if result[0]["health_check"] == 1 else "FAIL")
+
 ```
 
 ## Resources

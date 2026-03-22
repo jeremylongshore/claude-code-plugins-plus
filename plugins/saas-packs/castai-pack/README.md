@@ -17,8 +17,8 @@
 | `castai-hello-world` | Hello World |
 | `castai-local-dev-loop` | Local Dev Loop |
 | `castai-sdk-patterns` | Sdk Patterns |
-| `castai-core-workflow-a` | Core Workflow A |
-| `castai-core-workflow-b` | Core Workflow B |
+| `castai-monitor-alert` | Monitor Alert |
+| `castai-resource-management` | Resource Management |
 | `castai-common-errors` | Common Errors |
 | `castai-debug-bundle` | Debug Bundle |
 | `castai-rate-limits` | Rate Limits |

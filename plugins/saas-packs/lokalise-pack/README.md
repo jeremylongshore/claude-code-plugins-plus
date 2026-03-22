@@ -17,8 +17,8 @@
 | `lokalise-hello-world` | Hello World |
 | `lokalise-local-dev-loop` | Local Dev Loop |
 | `lokalise-sdk-patterns` | Sdk Patterns |
-| `lokalise-core-workflow-a` | Core Workflow A |
-| `lokalise-core-workflow-b` | Core Workflow B |
+| `lokalise-deploy-preview` | Deploy Preview |
+| `lokalise-build-configure` | Build Configure |
 | `lokalise-common-errors` | Common Errors |
 | `lokalise-debug-bundle` | Debug Bundle |
 | `lokalise-rate-limits` | Rate Limits |

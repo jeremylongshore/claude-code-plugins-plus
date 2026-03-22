@@ -17,8 +17,8 @@
 | `openevidence-hello-world` | Hello World |
 | `openevidence-local-dev-loop` | Local Dev Loop |
 | `openevidence-sdk-patterns` | Sdk Patterns |
-| `openevidence-core-workflow-a` | Core Workflow A |
-| `openevidence-core-workflow-b` | Core Workflow B |
+| `openevidence-model-inference` | Model Inference |
+| `openevidence-embeddings-search` | Embeddings Search |
 | `openevidence-common-errors` | Common Errors |
 | `openevidence-debug-bundle` | Debug Bundle |
 | `openevidence-rate-limits` | Rate Limits |

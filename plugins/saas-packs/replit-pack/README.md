@@ -17,8 +17,8 @@
 | `replit-hello-world` | Hello World |
 | `replit-local-dev-loop` | Local Dev Loop |
 | `replit-sdk-patterns` | Sdk Patterns |
-| `replit-core-workflow-a` | Core Workflow A |
-| `replit-core-workflow-b` | Core Workflow B |
+| `replit-deploy-preview` | Deploy Preview |
+| `replit-build-configure` | Build Configure |
 | `replit-common-errors` | Common Errors |
 | `replit-debug-bundle` | Debug Bundle |
 | `replit-rate-limits` | Rate Limits |

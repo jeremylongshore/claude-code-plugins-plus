@@ -17,7 +17,9 @@ tags: [saas, fondo]
 # Fondo Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common Fondo errors and their solutions.
+
 
 ## Prerequisites
 - Fondo SDK installed
@@ -42,48 +44,62 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Transaction Declined
 **Error Message:**
 ```
-Authentication error: Invalid API key
+402 Payment Required: Transaction declined — insufficient_funds
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Account balance or card limit insufficient for the transaction amount.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $FONDO_API_KEY
+# Check available balance before initiating
+const balance = await client.accounts.balance();
+# Set up auto-reload thresholds
+# For card transactions — check card limit, not just account balance
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Idempotency Conflict
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+409 Conflict: Idempotency key already used with different parameters
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Same idempotency key sent with different request body (retry with changed params).
 
 **Solution:**
-Implement exponential backoff. See `fondo-rate-limits` skill.
+# Generate unique idempotency key per transaction attempt
+const idempotencyKey = `txn-${orderId}-${Date.now()}`;
+# For retries, use the SAME key with the SAME parameters
+# Different amounts/recipients need different keys
+
 
 ---
 
-### Network Timeout
+### Webhook Signature Invalid
 **Error Message:**
 ```
-Request timeout after 30000ms
+401 Unauthorized: Webhook signature verification failed
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** HMAC signature doesn't match — wrong webhook secret or tampered payload.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Verify you're using the webhook signing secret (not API key)
+const isValid = crypto.timingSafeEqual(
+  Buffer.from(computedSignature),
+  Buffer.from(headerSignature)
+);
+# Use raw request body for signature verification (not parsed JSON)
+
 ```
+
+
 
 ## Examples
 

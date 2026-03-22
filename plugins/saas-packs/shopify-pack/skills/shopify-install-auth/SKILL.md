@@ -23,7 +23,9 @@ Set up Shopify SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Shopify account with API access
-- API key from Shopify dashboard
+
+- OAuth2 access token or personal API token from Shopify settings
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install shopify
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export SHOPIFY_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export SHOPIFY_API_KEY="your-api-key"
 echo 'SHOPIFY_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const org = await client.organization.get();
+console.log(`Connected: ${org.name} (${org.plan} plan)`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Shopify dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.shopify.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'SHOPIFY_API_KEY=your-api-key' >> .env
 import { ShopifyClient } from '@shopify/sdk';
 
 const client = new ShopifyClient({
+
   apiKey: process.env.SHOPIFY_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new ShopifyClient({
 from shopify import ShopifyClient
 
 client = ShopifyClient(
+
     api_key=os.environ.get('SHOPIFY_API_KEY')
+
 )
 ```
 

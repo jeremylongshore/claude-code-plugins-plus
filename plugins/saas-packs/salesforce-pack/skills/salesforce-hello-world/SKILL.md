@@ -17,7 +17,9 @@ tags: [saas, salesforce]
 # Salesforce Hello World
 
 ## Overview
-Minimal working example demonstrating core Salesforce functionality.
+
+Pull your first contacts from Salesforce and display them.
+
 
 ## Prerequisites
 - Completed `salesforce-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { SalesforceClient } from '@salesforce/sdk';
 
 const client = new SalesforceClient({
+
   apiKey: process.env.SALESFORCE_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Salesforce connection is working.
 import { SalesforceClient } from '@salesforce/sdk';
 
 const client = new SalesforceClient({
+
   apiKey: process.env.SALESFORCE_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from salesforce import SalesforceClient
 
 client = SalesforceClient()
 
-# Your first API call here
+contacts = client.contacts.list(limit=5)
+print(f"Found {contacts.total} contacts. First 5:")
+for c in contacts.data:
+    print(f"  - {c.name} <{c.email}> ({c.company})")
+
 ```
 
 ## Resources

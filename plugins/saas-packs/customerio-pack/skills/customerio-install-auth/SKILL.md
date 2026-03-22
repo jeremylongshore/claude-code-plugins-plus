@@ -23,7 +23,9 @@ Set up Customer.io SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Customer.io account with API access
+
 - API key from Customer.io dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install customerio
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export CUSTOMERIO_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export CUSTOMERIO_API_KEY="your-api-key"
 echo 'CUSTOMERIO_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const account = await client.account.get();
+console.log(`Connected: ${account.name} — ${account.plan} plan`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Customer.io dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.customerio.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'CUSTOMERIO_API_KEY=your-api-key' >> .env
 import { Customer.ioClient } from '@customerio/sdk';
 
 const client = new Customer.ioClient({
+
   apiKey: process.env.CUSTOMERIO_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new Customer.ioClient({
 from customerio import Customer.ioClient
 
 client = Customer.ioClient(
+
     api_key=os.environ.get('CUSTOMERIO_API_KEY')
+
 )
 ```
 

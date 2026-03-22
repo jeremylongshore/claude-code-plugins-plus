@@ -17,8 +17,8 @@
 | `bamboohr-hello-world` | Hello World |
 | `bamboohr-local-dev-loop` | Local Dev Loop |
 | `bamboohr-sdk-patterns` | Sdk Patterns |
-| `bamboohr-core-workflow-a` | Core Workflow A |
-| `bamboohr-core-workflow-b` | Core Workflow B |
+| `bamboohr-entity-management` | Entity Management |
+| `bamboohr-data-sync` | Data Sync |
 | `bamboohr-common-errors` | Common Errors |
 | `bamboohr-debug-bundle` | Debug Bundle |
 | `bamboohr-rate-limits` | Rate Limits |

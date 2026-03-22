@@ -17,8 +17,8 @@
 | `fireflies-hello-world` | Hello World |
 | `fireflies-local-dev-loop` | Local Dev Loop |
 | `fireflies-sdk-patterns` | Sdk Patterns |
-| `fireflies-core-workflow-a` | Core Workflow A |
-| `fireflies-core-workflow-b` | Core Workflow B |
+| `fireflies-model-inference` | Model Inference |
+| `fireflies-embeddings-search` | Embeddings Search |
 | `fireflies-common-errors` | Common Errors |
 | `fireflies-debug-bundle` | Debug Bundle |
 | `fireflies-rate-limits` | Rate Limits |

@@ -17,8 +17,8 @@
 | `framer-hello-world` | Hello World |
 | `framer-local-dev-loop` | Local Dev Loop |
 | `framer-sdk-patterns` | Sdk Patterns |
-| `framer-core-workflow-a` | Core Workflow A |
-| `framer-core-workflow-b` | Core Workflow B |
+| `framer-export-assets` | Export Assets |
+| `framer-design-token-sync` | Design Token Sync |
 | `framer-common-errors` | Common Errors |
 | `framer-debug-bundle` | Debug Bundle |
 | `framer-rate-limits` | Rate Limits |

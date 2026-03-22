@@ -17,8 +17,8 @@
 | `perplexity-hello-world` | Hello World |
 | `perplexity-local-dev-loop` | Local Dev Loop |
 | `perplexity-sdk-patterns` | Sdk Patterns |
-| `perplexity-core-workflow-a` | Core Workflow A |
-| `perplexity-core-workflow-b` | Core Workflow B |
+| `perplexity-model-inference` | Model Inference |
+| `perplexity-embeddings-search` | Embeddings Search |
 | `perplexity-common-errors` | Common Errors |
 | `perplexity-debug-bundle` | Debug Bundle |
 | `perplexity-rate-limits` | Rate Limits |

@@ -29,9 +29,9 @@ Optimize Retell AI API performance with caching, batching, and connection poolin
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Chat Completion (streaming first token) | 200ms | 800ms | 2000ms |
+| Embedding Generation | 50ms | 150ms | 400ms |
+| Batch Inference (100 items) | 15s | 45s | 120s |
 
 ## Caching Strategy
 

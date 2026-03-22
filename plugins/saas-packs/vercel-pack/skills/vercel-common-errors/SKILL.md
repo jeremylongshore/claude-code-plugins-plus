@@ -17,7 +17,9 @@ tags: [saas, vercel]
 # Vercel Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common Vercel errors and their solutions.
+
 
 ## Prerequisites
 - Vercel SDK installed
@@ -82,6 +84,8 @@ Domain verification failed
 ```typescript
 Add required CNAME or A records. Wait for DNS propagation (up to 48h).
 ```
+
+
 
 ## Examples
 

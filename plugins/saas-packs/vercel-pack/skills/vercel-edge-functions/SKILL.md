@@ -3,7 +3,7 @@ name: vercel-edge-functions
 description: |
   Execute Vercel secondary workflow: Edge Functions.
   Use when API routes with minimal latency,
-  or complementing primary workflow.
+  or configuring build commands and output directories.
   Trigger with phrases like "vercel edge function",
   "deploy edge function with vercel".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
@@ -28,24 +28,40 @@ Serverless functions that run close to users worldwide.
 
 ## Instructions
 
-### Step 1: Setup
+### Step 1: Set Environment Variables
 ```typescript
-// Step 1 implementation
+await client.env.create(projectId, [
+  { key: 'DATABASE_URL', value: dbUrl, target: ['production'] },
+  { key: 'API_SECRET', value: secret, target: ['production', 'preview'] },
+]);
+
 ```
 
-### Step 2: Process
+### Step 2: Configure Build Settings
 ```typescript
-// Step 2 implementation
+await client.projects.update(projectId, {
+  buildCommand: 'npm run build',
+  outputDirectory: 'dist',
+  installCommand: 'npm ci',
+  framework: 'astro',
+});
+
 ```
 
-### Step 3: Complete
+### Step 3: Verify Configuration
 ```typescript
-// Step 3 implementation
+const config = await client.projects.get(projectId);
+console.log('Build:', config.buildCommand);
+console.log('Output:', config.outputDirectory);
+console.log('Env vars:', (await client.env.list(projectId)).length);
+
 ```
 
 ## Output
 - Completed Edge Functions execution
+
 - Results from Vercel API
+
 - Success confirmation or error details
 
 ## Error Handling
@@ -59,12 +75,28 @@ Serverless functions that run close to users worldwide.
 
 ### Complete Workflow
 ```typescript
-// Complete workflow example
+// Full project setup from scratch
+async function setupProject(name: string) {
+  const project = await client.projects.create({ name, framework: 'nextjs' });
+  await client.env.create(project.id, envVars);
+  await client.domains.add(project.id, `${name}.example.com`);
+  return project;
+}
+
 ```
 
 ### Error Recovery
 ```typescript
-// Error handling code
+try {
+  await client.env.create(projectId, envVars);
+} catch (err) {
+  if (err.code === 'env_already_exists') {
+    await client.env.update(projectId, envVars); // update instead
+  } else {
+    throw err;
+  }
+}
+
 ```
 
 ## Resources

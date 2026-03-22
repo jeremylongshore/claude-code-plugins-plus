@@ -17,8 +17,8 @@
 | `appfolio-hello-world` | Hello World |
 | `appfolio-local-dev-loop` | Local Dev Loop |
 | `appfolio-sdk-patterns` | Sdk Patterns |
-| `appfolio-core-workflow-a` | Core Workflow A |
-| `appfolio-core-workflow-b` | Core Workflow B |
+| `appfolio-entity-management` | Entity Management |
+| `appfolio-data-sync` | Data Sync |
 | `appfolio-common-errors` | Common Errors |
 | `appfolio-debug-bundle` | Debug Bundle |
 | `appfolio-rate-limits` | Rate Limits |

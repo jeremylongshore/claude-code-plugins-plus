@@ -17,8 +17,8 @@
 | `posthog-hello-world` | Hello World |
 | `posthog-local-dev-loop` | Local Dev Loop |
 | `posthog-sdk-patterns` | Sdk Patterns |
-| `posthog-core-workflow-a` | Core Workflow A |
-| `posthog-core-workflow-b` | Core Workflow B |
+| `posthog-query-transform` | Query Transform |
+| `posthog-schema-migration` | Schema Migration |
 | `posthog-common-errors` | Common Errors |
 | `posthog-debug-bundle` | Debug Bundle |
 | `posthog-rate-limits` | Rate Limits |

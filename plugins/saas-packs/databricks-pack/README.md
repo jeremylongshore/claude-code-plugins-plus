@@ -17,8 +17,8 @@
 | `databricks-hello-world` | Hello World |
 | `databricks-local-dev-loop` | Local Dev Loop |
 | `databricks-sdk-patterns` | Sdk Patterns |
-| `databricks-core-workflow-a` | Core Workflow A |
-| `databricks-core-workflow-b` | Core Workflow B |
+| `databricks-query-transform` | Query Transform |
+| `databricks-schema-migration` | Schema Migration |
 | `databricks-common-errors` | Common Errors |
 | `databricks-debug-bundle` | Debug Bundle |
 | `databricks-rate-limits` | Rate Limits |

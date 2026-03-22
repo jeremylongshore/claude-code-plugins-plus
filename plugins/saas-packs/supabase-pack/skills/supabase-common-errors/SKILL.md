@@ -17,7 +17,9 @@ tags: [saas, supabase]
 # Supabase Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Supabase errors and their solutions.
+
+Quick reference for the most common Supabase errors: connection failures, query timeouts, permission issues, and schema problems.
+
 
 ## Prerequisites
 - Supabase SDK installed
@@ -82,6 +84,21 @@ too many clients already
 ```typescript
 Use connection pooling mode in Supabase dashboard. Switch to Session mode or pgBouncer.
 ```
+
+
+---
+
+### Deadlock Detected
+**Error Message:**
+```
+ERROR: deadlock detected — Process 12345 waits for ShareLock on transaction 67890
+```
+
+**Cause:** Two concurrent transactions waiting on each other's locks. Common with concurrent UPDATEs on same rows.
+
+**Solution:**
+Ensure consistent lock ordering across transactions. Use `SELECT ... FOR UPDATE SKIP LOCKED` for queue patterns. Reduce transaction scope and duration.
+
 
 ## Examples
 

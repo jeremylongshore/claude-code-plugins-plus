@@ -23,7 +23,9 @@ Set up Obsidian SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Obsidian account with API access
+
 - API key from Obsidian dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install obsidian
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export OBSIDIAN_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export OBSIDIAN_API_KEY="your-api-key"
 echo 'OBSIDIAN_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const workspace = await client.workspace.get();
+console.log(`Connected to workspace: ${workspace.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Obsidian dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.obsidian.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'OBSIDIAN_API_KEY=your-api-key' >> .env
 import { ObsidianClient } from '@obsidian/sdk';
 
 const client = new ObsidianClient({
+
   apiKey: process.env.OBSIDIAN_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new ObsidianClient({
 from obsidian import ObsidianClient
 
 client = ObsidianClient(
+
     api_key=os.environ.get('OBSIDIAN_API_KEY')
+
 )
 ```
 

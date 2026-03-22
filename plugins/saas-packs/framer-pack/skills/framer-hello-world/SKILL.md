@@ -17,7 +17,9 @@ tags: [saas, framer]
 # Framer Hello World
 
 ## Overview
-Minimal working example demonstrating core Framer functionality.
+
+Connect to Framer and list your design files via the API.
+
 
 ## Prerequisites
 - Completed `framer-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { FramerClient } from '@framer/sdk';
 
 const client = new FramerClient({
-  apiKey: process.env.FRAMER_API_KEY,
+
+  accessToken: process.env.FRAMER_ACCESS_TOKEN,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Framer connection is working.
 import { FramerClient } from '@framer/sdk';
 
 const client = new FramerClient({
-  apiKey: process.env.FRAMER_API_KEY,
+
+  accessToken: process.env.FRAMER_ACCESS_TOKEN,
+
 });
 
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from framer import FramerClient
 
 client = FramerClient()
 
-# Your first API call here
+files = client.files.list()
+print(f"Found {len(files)} design files:")
+for f in files[:5]:
+    print(f"  - {f.name} (modified: {f.last_modified})")
+
 ```
 
 ## Resources

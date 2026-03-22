@@ -17,8 +17,8 @@
 | `linktree-hello-world` | Hello World |
 | `linktree-local-dev-loop` | Local Dev Loop |
 | `linktree-sdk-patterns` | Sdk Patterns |
-| `linktree-core-workflow-a` | Core Workflow A |
-| `linktree-core-workflow-b` | Core Workflow B |
+| `linktree-campaign-delivery` | Campaign Delivery |
+| `linktree-event-tracking` | Event Tracking |
 | `linktree-common-errors` | Common Errors |
 | `linktree-debug-bundle` | Debug Bundle |
 | `linktree-rate-limits` | Rate Limits |

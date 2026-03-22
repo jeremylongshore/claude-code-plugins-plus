@@ -17,8 +17,8 @@
 | `salesloft-hello-world` | Hello World |
 | `salesloft-local-dev-loop` | Local Dev Loop |
 | `salesloft-sdk-patterns` | Sdk Patterns |
-| `salesloft-core-workflow-a` | Core Workflow A |
-| `salesloft-core-workflow-b` | Core Workflow B |
+| `salesloft-contact-sync` | Contact Sync |
+| `salesloft-deal-pipeline` | Deal Pipeline |
 | `salesloft-common-errors` | Common Errors |
 | `salesloft-debug-bundle` | Debug Bundle |
 | `salesloft-rate-limits` | Rate Limits |

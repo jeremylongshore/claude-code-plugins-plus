@@ -17,8 +17,8 @@
 | `vastai-hello-world` | Hello World |
 | `vastai-local-dev-loop` | Local Dev Loop |
 | `vastai-sdk-patterns` | Sdk Patterns |
-| `vastai-core-workflow-a` | Core Workflow A |
-| `vastai-core-workflow-b` | Core Workflow B |
+| `vastai-monitor-alert` | Monitor Alert |
+| `vastai-resource-management` | Resource Management |
 | `vastai-common-errors` | Common Errors |
 | `vastai-debug-bundle` | Debug Bundle |
 | `vastai-rate-limits` | Rate Limits |

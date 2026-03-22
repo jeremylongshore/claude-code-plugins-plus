@@ -1,11 +1,11 @@
 ---
 name: figma-deploy-integration
 description: |
-  Deploy Figma integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Figma integrations to production platforms.
   Use when deploying Figma-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy figma", "figma Vercel",
-  "figma production deploy", "figma Cloud Run", "figma Fly.io".
+  Trigger with phrases like "deploy figma", "figma production",
+  "figma production deploy", "figma CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,10 @@ tags: [saas, figma]
 # Figma Deploy Integration
 
 ## Overview
-Deploy Figma-powered applications to popular platforms with proper secrets management.
+
+Deploy Figma integration as a CI/CD pipeline step that exports assets,
+syncs design tokens, or generates code from design files during the build.
+
 
 ## Prerequisites
 - Figma API keys for production environment
@@ -25,21 +28,14 @@ Deploy Figma-powered applications to popular platforms with proper secrets manag
 - Application code ready for deployment
 - Environment variables documented
 
+
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add Figma secrets to Vercel
 vercel secrets add figma_api_key sk_live_***
 vercel secrets add figma_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,67 +72,10 @@ primary_region = "iad"
 
 ### Secrets
 ```bash
-# Set Figma secrets
 fly secrets set FIGMA_API_KEY=sk_live_***
-fly secrets set FIGMA_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="figma-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=FIGMA_API_KEY=figma-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/figma.ts
-interface FigmaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getFigmaConfig(): FigmaConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.FIGMA_API_KEY!,
-    environment: env as FigmaConfig['environment'],
-    webhookSecret: process.env.FIGMA_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
@@ -158,7 +97,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store Figma API keys securely using the platform's secrets management.
@@ -182,24 +121,6 @@ Test the health check endpoint to confirm Figma connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add figma_api_key "$FIGMA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set FIGMA_API_KEY="$FIGMA_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

@@ -17,8 +17,8 @@
 | `hootsuite-hello-world` | Hello World |
 | `hootsuite-local-dev-loop` | Local Dev Loop |
 | `hootsuite-sdk-patterns` | Sdk Patterns |
-| `hootsuite-core-workflow-a` | Core Workflow A |
-| `hootsuite-core-workflow-b` | Core Workflow B |
+| `hootsuite-campaign-delivery` | Campaign Delivery |
+| `hootsuite-event-tracking` | Event Tracking |
 | `hootsuite-common-errors` | Common Errors |
 | `hootsuite-debug-bundle` | Debug Bundle |
 | `hootsuite-rate-limits` | Rate Limits |

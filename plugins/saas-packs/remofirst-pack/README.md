@@ -17,8 +17,8 @@
 | `remofirst-hello-world` | Hello World |
 | `remofirst-local-dev-loop` | Local Dev Loop |
 | `remofirst-sdk-patterns` | Sdk Patterns |
-| `remofirst-core-workflow-a` | Core Workflow A |
-| `remofirst-core-workflow-b` | Core Workflow B |
+| `remofirst-entity-management` | Entity Management |
+| `remofirst-data-sync` | Data Sync |
 | `remofirst-common-errors` | Common Errors |
 | `remofirst-debug-bundle` | Debug Bundle |
 | `remofirst-rate-limits` | Rate Limits |

@@ -23,7 +23,9 @@ Set up Exa SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Exa account with API access
-- API key from Exa dashboard
+
+- API key from Exa dashboard (starts with `sk-` or similar prefix)
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install exa
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export EXA_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export EXA_API_KEY="your-api-key"
 echo 'EXA_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const models = await client.models.list();
+console.log(`Connected — ${models.data.length} models available`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Exa dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.exa.com |
+
+| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in Exa dashboard. Check for trailing newlines |
+| Rate Limited | Exceeded requests/tokens per minute | Check usage at https://docs.exa.com/usage |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'EXA_API_KEY=your-api-key' >> .env
 import { ExaClient } from '@exa/sdk';
 
 const client = new ExaClient({
+
   apiKey: process.env.EXA_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new ExaClient({
 from exa import ExaClient
 
 client = ExaClient(
+
     api_key=os.environ.get('EXA_API_KEY')
+
 )
 ```
 

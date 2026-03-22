@@ -17,7 +17,9 @@ tags: [saas, vercel]
 # Vercel Hello World
 
 ## Overview
-Minimal working example demonstrating core Vercel functionality.
+
+List your projects and trigger your first action via the Vercel API.
+
 
 ## Prerequisites
 - Completed `vercel-install-auth` setup
@@ -34,7 +36,9 @@ Create a new file for your hello world example.
 import { VercelClient } from 'vercel';
 
 const client = new VercelClient({
+
   apiKey: process.env.VERCEL_API_KEY,
+
 });
 ```
 
@@ -70,7 +74,9 @@ Success! Your Vercel connection is working.
 import { VercelClient } from 'vercel';
 
 const client = new VercelClient({
+
   apiKey: process.env.VERCEL_API_KEY,
+
 });
 
 async function main() {

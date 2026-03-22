@@ -17,8 +17,8 @@
 | `workhuman-hello-world` | Hello World |
 | `workhuman-local-dev-loop` | Local Dev Loop |
 | `workhuman-sdk-patterns` | Sdk Patterns |
-| `workhuman-core-workflow-a` | Core Workflow A |
-| `workhuman-core-workflow-b` | Core Workflow B |
+| `workhuman-entity-management` | Entity Management |
+| `workhuman-data-sync` | Data Sync |
 | `workhuman-common-errors` | Common Errors |
 | `workhuman-debug-bundle` | Debug Bundle |
 | `workhuman-rate-limits` | Rate Limits |

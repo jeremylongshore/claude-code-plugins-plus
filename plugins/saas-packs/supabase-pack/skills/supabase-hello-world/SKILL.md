@@ -17,7 +17,9 @@ tags: [saas, supabase]
 # Supabase Hello World
 
 ## Overview
-Minimal working example demonstrating core Supabase functionality.
+
+Run your first query against Supabase and read actual data back.
+
 
 ## Prerequisites
 - Completed `supabase-install-auth` setup
@@ -34,7 +36,9 @@ Create a new file for your hello world example.
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const client = new SupabaseClient({
-  apiKey: process.env.SUPABASE_API_KEY,
+
+  connectionString: process.env.SUPABASE_DATABASE_URL,
+
 });
 ```
 
@@ -70,7 +74,9 @@ Success! Your Supabase connection is working.
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const client = new SupabaseClient({
-  apiKey: process.env.SUPABASE_API_KEY,
+
+  connectionString: process.env.SUPABASE_DATABASE_URL,
+
 });
 
 async function main() {

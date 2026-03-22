@@ -17,8 +17,8 @@
 | `ramp-hello-world` | Hello World |
 | `ramp-local-dev-loop` | Local Dev Loop |
 | `ramp-sdk-patterns` | Sdk Patterns |
-| `ramp-core-workflow-a` | Core Workflow A |
-| `ramp-core-workflow-b` | Core Workflow B |
+| `ramp-transaction-processing` | Transaction Processing |
+| `ramp-reporting-compliance` | Reporting Compliance |
 | `ramp-common-errors` | Common Errors |
 | `ramp-debug-bundle` | Debug Bundle |
 | `ramp-rate-limits` | Rate Limits |

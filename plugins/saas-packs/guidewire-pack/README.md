@@ -17,8 +17,8 @@
 | `guidewire-hello-world` | Hello World |
 | `guidewire-local-dev-loop` | Local Dev Loop |
 | `guidewire-sdk-patterns` | Sdk Patterns |
-| `guidewire-core-workflow-a` | Core Workflow A |
-| `guidewire-core-workflow-b` | Core Workflow B |
+| `guidewire-entity-management` | Entity Management |
+| `guidewire-data-sync` | Data Sync |
 | `guidewire-common-errors` | Common Errors |
 | `guidewire-debug-bundle` | Debug Bundle |
 | `guidewire-rate-limits` | Rate Limits |

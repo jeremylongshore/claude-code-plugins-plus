@@ -17,7 +17,9 @@ tags: [saas, obsidian]
 # Obsidian Hello World
 
 ## Overview
-Minimal working example demonstrating core Obsidian functionality.
+
+List your workspace pages and read content from Obsidian.
+
 
 ## Prerequisites
 - Completed `obsidian-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { ObsidianClient } from '@obsidian/sdk';
 
 const client = new ObsidianClient({
+
   apiKey: process.env.OBSIDIAN_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Obsidian connection is working.
 import { ObsidianClient } from '@obsidian/sdk';
 
 const client = new ObsidianClient({
+
   apiKey: process.env.OBSIDIAN_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from obsidian import ObsidianClient
 
 client = ObsidianClient()
 
-# Your first API call here
+pages = client.pages.list(limit=5)
+print(f"Found {pages.total} pages. Recent:")
+for p in pages.results:
+    print(f"  - {p.title} (edited: {p.last_edited})")
+
 ```
 
 ## Resources

@@ -17,8 +17,8 @@
 | `clari-hello-world` | Hello World |
 | `clari-local-dev-loop` | Local Dev Loop |
 | `clari-sdk-patterns` | Sdk Patterns |
-| `clari-core-workflow-a` | Core Workflow A |
-| `clari-core-workflow-b` | Core Workflow B |
+| `clari-contact-sync` | Contact Sync |
+| `clari-deal-pipeline` | Deal Pipeline |
 | `clari-common-errors` | Common Errors |
 | `clari-debug-bundle` | Debug Bundle |
 | `clari-rate-limits` | Rate Limits |

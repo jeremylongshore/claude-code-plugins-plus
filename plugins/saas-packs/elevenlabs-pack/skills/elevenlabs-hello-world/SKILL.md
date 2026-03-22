@@ -17,7 +17,9 @@ tags: [saas, elevenlabs]
 # ElevenLabs Hello World
 
 ## Overview
-Minimal working example demonstrating core ElevenLabs functionality.
+
+Send your first prompt to the ElevenLabs API and get a model response back.
+
 
 ## Prerequisites
 - Completed `elevenlabs-install-auth` setup
@@ -34,14 +36,22 @@ Create a new file for your hello world example.
 import { ElevenLabsClient } from '@elevenlabs/sdk';
 
 const client = new ElevenLabsClient({
+
   apiKey: process.env.ELEVENLABS_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -70,11 +80,19 @@ Success! Your ElevenLabs connection is working.
 import { ElevenLabsClient } from '@elevenlabs/sdk';
 
 const client = new ElevenLabsClient({
+
   apiKey: process.env.ELEVENLABS_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -86,7 +104,13 @@ from elevenlabs import ElevenLabsClient
 
 client = ElevenLabsClient()
 
-# Your first API call here
+response = client.chat.completions.create(
+    model="default",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+    max_tokens=64,
+)
+print(response.choices[0].message.content)
+
 ```
 
 ## Resources

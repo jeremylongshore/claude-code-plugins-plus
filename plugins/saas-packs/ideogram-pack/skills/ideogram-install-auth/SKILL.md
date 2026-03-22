@@ -23,7 +23,9 @@ Set up Ideogram SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Ideogram account with API access
-- API key from Ideogram dashboard
+
+- API key from Ideogram dashboard (starts with `sk-` or similar prefix)
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install ideogram
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export IDEOGRAM_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export IDEOGRAM_API_KEY="your-api-key"
 echo 'IDEOGRAM_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const models = await client.models.list();
+console.log(`Connected — ${models.data.length} models available`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Ideogram dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.ideogram.com |
+
+| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in Ideogram dashboard. Check for trailing newlines |
+| Rate Limited | Exceeded requests/tokens per minute | Check usage at https://docs.ideogram.com/usage |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'IDEOGRAM_API_KEY=your-api-key' >> .env
 import { IdeogramClient } from '@ideogram/sdk';
 
 const client = new IdeogramClient({
+
   apiKey: process.env.IDEOGRAM_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new IdeogramClient({
 from ideogram import IdeogramClient
 
 client = IdeogramClient(
+
     api_key=os.environ.get('IDEOGRAM_API_KEY')
+
 )
 ```
 

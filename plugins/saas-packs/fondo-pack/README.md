@@ -17,8 +17,8 @@
 | `fondo-hello-world` | Hello World |
 | `fondo-local-dev-loop` | Local Dev Loop |
 | `fondo-sdk-patterns` | Sdk Patterns |
-| `fondo-core-workflow-a` | Core Workflow A |
-| `fondo-core-workflow-b` | Core Workflow B |
+| `fondo-transaction-processing` | Transaction Processing |
+| `fondo-reporting-compliance` | Reporting Compliance |
 | `fondo-common-errors` | Common Errors |
 | `fondo-debug-bundle` | Debug Bundle |
 | `fondo-rate-limits` | Rate Limits |

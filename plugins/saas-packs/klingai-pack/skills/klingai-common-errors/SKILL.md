@@ -17,7 +17,9 @@ tags: [saas, klingai]
 # Kling AI Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Kling AI errors and their solutions.
+
+Quick reference for the most common Kling AI API errors: authentication failures, rate limits, context length issues, and model availability.
+
 
 ## Prerequisites
 - Kling AI SDK installed
@@ -42,48 +44,74 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Rate Limit / Token Quota Exceeded
 **Error Message:**
 ```
-Authentication error: Invalid API key
+429 Too Many Requests: rate_limit_exceeded
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Exceeded requests-per-minute or tokens-per-minute quota for your plan.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $KLINGAI_API_KEY
+# Check current usage
+curl -H "Authorization: Bearer $API_KEY" https://api.vendor.com/usage
+# Implement exponential backoff with jitter
+# Upgrade plan if consistently hitting limits
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Context Length Exceeded
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+400 Bad Request: This model's maximum context length is 128000 tokens. You requested 135421 tokens.
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Combined prompt + max_tokens exceeds the model's context window.
 
 **Solution:**
-Implement exponential backoff. See `klingai-rate-limits` skill.
+# Count tokens before sending
+const tokenCount = encode(prompt).length;
+if (tokenCount > MODEL_CONTEXT - MAX_RESPONSE) {
+  prompt = truncateToFit(prompt, MODEL_CONTEXT - MAX_RESPONSE);
+}
+
 
 ---
 
-### Network Timeout
+### Invalid API Key
 **Error Message:**
 ```
-Request timeout after 30000ms
+401 Unauthorized: Invalid API key provided
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** API key is missing, expired, revoked, or copied with extra whitespace.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Verify key format (should start with sk- or similar prefix)
+echo $API_KEY | head -c 8
+# Regenerate from dashboard if expired
+# Check for trailing newlines: echo -n "$API_KEY" | wc -c
+
 ```
+
+
+---
+
+### Content Moderation / Safety Filter
+**Error Message:**
+```
+400 Bad Request: Content policy violation — output blocked by safety filter
+```
+
+**Cause:** Model output triggered content policy filters or input contained restricted content.
+
+**Solution:**
+Review your system prompt for policy-compliant framing. Use moderation endpoint to pre-check inputs. Adjust temperature/prompts to reduce edge-case outputs.
+
 
 ## Examples
 

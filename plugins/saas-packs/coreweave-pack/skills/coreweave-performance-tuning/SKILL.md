@@ -29,9 +29,9 @@ Optimize CoreWeave API performance with caching, batching, and connection poolin
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Event Ingest | 50ms | 150ms | 500ms |
+| Issue Query | 200ms | 800ms | 2000ms |
+| Instance Provision | 30s | 120s | 300s |
 
 ## Caching Strategy
 

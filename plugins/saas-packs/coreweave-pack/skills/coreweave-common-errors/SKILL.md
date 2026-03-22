@@ -17,7 +17,9 @@ tags: [saas, coreweave]
 # CoreWeave Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common CoreWeave errors and their solutions.
+
 
 ## Prerequisites
 - CoreWeave SDK installed
@@ -42,48 +44,62 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Event Quota Exceeded
 **Error Message:**
 ```
-Authentication error: Invalid API key
+429 Event Dropped: Monthly quota of 100,000 events exceeded
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Exceeded monthly event ingestion limit. Events are silently dropped.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $COREWEAVE_API_KEY
+# Check current usage in billing dashboard
+# Reduce sample rate for high-volume events
+# Set up spike protection: client.init({ maxBreadcrumbs: 50 })
+# Upgrade plan or purchase additional quota
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Instance Capacity Unavailable
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+503 Service Unavailable: No capacity for gpu.a100 in us-east-1
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Requested GPU/compute type is fully allocated in the target region.
 
 **Solution:**
-Implement exponential backoff. See `coreweave-rate-limits` skill.
+# Try alternative regions or instance types
+# Use spot/preemptible instances if workload tolerates interruption
+# Set up capacity reservation for guaranteed availability
+# Enable multi-region fallback in provisioning logic
+
 
 ---
 
-### Network Timeout
+### Agent Connection Lost
 **Error Message:**
 ```
-Request timeout after 30000ms
+Warning: Agent heartbeat missed for host web-prod-3 (last seen 5m ago)
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Monitoring agent on the host stopped reporting. Host may be down or network issue.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# SSH into host and check agent status
+systemctl status monitoring-agent
+# Check agent logs for errors
+journalctl -u monitoring-agent --since "10 minutes ago"
+# Restart agent if process died
+systemctl restart monitoring-agent
+
 ```
+
+
 
 ## Examples
 

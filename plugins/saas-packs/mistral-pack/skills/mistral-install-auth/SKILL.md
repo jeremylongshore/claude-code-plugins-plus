@@ -23,7 +23,9 @@ Set up Mistral AI SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Mistral AI account with API access
-- API key from Mistral AI dashboard
+
+- API key from Mistral AI dashboard (starts with `sk-` or similar prefix)
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install mistral
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export MISTRAL_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export MISTRAL_API_KEY="your-api-key"
 echo 'MISTRAL_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const models = await client.models.list();
+console.log(`Connected — ${models.data.length} models available`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Mistral AI dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.mistral.com |
+
+| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in Mistral AI dashboard. Check for trailing newlines |
+| Rate Limited | Exceeded requests/tokens per minute | Check usage at https://docs.mistral.com/usage |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'MISTRAL_API_KEY=your-api-key' >> .env
 import { MistralAIClient } from '@mistral/sdk';
 
 const client = new MistralAIClient({
+
   apiKey: process.env.MISTRAL_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new MistralAIClient({
 from mistral import MistralAIClient
 
 client = MistralAIClient(
+
     api_key=os.environ.get('MISTRAL_API_KEY')
+
 )
 ```
 

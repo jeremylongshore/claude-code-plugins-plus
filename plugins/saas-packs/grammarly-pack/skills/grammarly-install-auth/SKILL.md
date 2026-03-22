@@ -23,7 +23,9 @@ Set up Grammarly SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Grammarly account with API access
-- API key from Grammarly dashboard
+
+- API key from Grammarly dashboard (starts with `sk-` or similar prefix)
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install grammarly
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export GRAMMARLY_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export GRAMMARLY_API_KEY="your-api-key"
 echo 'GRAMMARLY_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const models = await client.models.list();
+console.log(`Connected — ${models.data.length} models available`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Grammarly dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.grammarly.com |
+
+| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in Grammarly dashboard. Check for trailing newlines |
+| Rate Limited | Exceeded requests/tokens per minute | Check usage at https://docs.grammarly.com/usage |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'GRAMMARLY_API_KEY=your-api-key' >> .env
 import { GrammarlyClient } from '@grammarly/sdk';
 
 const client = new GrammarlyClient({
+
   apiKey: process.env.GRAMMARLY_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new GrammarlyClient({
 from grammarly import GrammarlyClient
 
 client = GrammarlyClient(
+
     api_key=os.environ.get('GRAMMARLY_API_KEY')
+
 )
 ```
 

@@ -17,8 +17,8 @@
 | `coderabbit-hello-world` | Hello World |
 | `coderabbit-local-dev-loop` | Local Dev Loop |
 | `coderabbit-sdk-patterns` | Sdk Patterns |
-| `coderabbit-core-workflow-a` | Core Workflow A |
-| `coderabbit-core-workflow-b` | Core Workflow B |
+| `coderabbit-deploy-preview` | Deploy Preview |
+| `coderabbit-build-configure` | Build Configure |
 | `coderabbit-common-errors` | Common Errors |
 | `coderabbit-debug-bundle` | Debug Bundle |
 | `coderabbit-rate-limits` | Rate Limits |

@@ -23,7 +23,9 @@ Set up Navan SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Navan account with API access
-- API key from Navan dashboard
+
+- OAuth2 access token or personal API token from Navan settings
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install navan
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export NAVAN_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export NAVAN_API_KEY="your-api-key"
 echo 'NAVAN_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const org = await client.organization.get();
+console.log(`Connected: ${org.name} (${org.plan} plan)`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Navan dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.navan.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'NAVAN_API_KEY=your-api-key' >> .env
 import { NavanClient } from '@navan/sdk';
 
 const client = new NavanClient({
+
   apiKey: process.env.NAVAN_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new NavanClient({
 from navan import NavanClient
 
 client = NavanClient(
+
     api_key=os.environ.get('NAVAN_API_KEY')
+
 )
 ```
 

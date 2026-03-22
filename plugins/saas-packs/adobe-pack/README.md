@@ -17,8 +17,8 @@
 | `adobe-hello-world` | Hello World |
 | `adobe-local-dev-loop` | Local Dev Loop |
 | `adobe-sdk-patterns` | Sdk Patterns |
-| `adobe-core-workflow-a` | Core Workflow A |
-| `adobe-core-workflow-b` | Core Workflow B |
+| `adobe-export-assets` | Export Assets |
+| `adobe-design-token-sync` | Design Token Sync |
 | `adobe-common-errors` | Common Errors |
 | `adobe-debug-bundle` | Debug Bundle |
 | `adobe-rate-limits` | Rate Limits |

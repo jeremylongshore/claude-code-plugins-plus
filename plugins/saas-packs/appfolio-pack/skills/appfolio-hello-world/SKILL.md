@@ -17,7 +17,9 @@ tags: [saas, appfolio]
 # AppFolio Hello World
 
 ## Overview
+
 Minimal working example demonstrating core AppFolio functionality.
+
 
 ## Prerequisites
 - Completed `appfolio-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { AppFolioClient } from '@appfolio/sdk';
 
 const client = new AppFolioClient({
+
   apiKey: process.env.APPFOLIO_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your AppFolio connection is working.
 import { AppFolioClient } from '@appfolio/sdk';
 
 const client = new AppFolioClient({
+
   apiKey: process.env.APPFOLIO_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from appfolio import AppFolioClient
 
 client = AppFolioClient()
 
-# Your first API call here
+resources = client.resources.list(limit=5)
+print(f"Found {resources.total} resources:")
+for r in resources.data:
+    print(f"  - {r.name} ({r.type}) — {r.status}")
+
 ```
 
 ## Resources

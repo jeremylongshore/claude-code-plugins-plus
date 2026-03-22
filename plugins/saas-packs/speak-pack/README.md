@@ -17,8 +17,8 @@
 | `speak-hello-world` | Hello World |
 | `speak-local-dev-loop` | Local Dev Loop |
 | `speak-sdk-patterns` | Sdk Patterns |
-| `speak-core-workflow-a` | Core Workflow A |
-| `speak-core-workflow-b` | Core Workflow B |
+| `speak-model-inference` | Model Inference |
+| `speak-embeddings-search` | Embeddings Search |
 | `speak-common-errors` | Common Errors |
 | `speak-debug-bundle` | Debug Bundle |
 | `speak-rate-limits` | Rate Limits |

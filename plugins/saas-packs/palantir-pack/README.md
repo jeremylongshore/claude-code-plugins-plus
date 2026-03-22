@@ -17,8 +17,8 @@
 | `palantir-hello-world` | Hello World |
 | `palantir-local-dev-loop` | Local Dev Loop |
 | `palantir-sdk-patterns` | Sdk Patterns |
-| `palantir-core-workflow-a` | Core Workflow A |
-| `palantir-core-workflow-b` | Core Workflow B |
+| `palantir-query-transform` | Query Transform |
+| `palantir-schema-migration` | Schema Migration |
 | `palantir-common-errors` | Common Errors |
 | `palantir-debug-bundle` | Debug Bundle |
 | `palantir-rate-limits` | Rate Limits |

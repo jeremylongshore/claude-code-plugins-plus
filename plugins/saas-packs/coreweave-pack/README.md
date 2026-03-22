@@ -17,8 +17,8 @@
 | `coreweave-hello-world` | Hello World |
 | `coreweave-local-dev-loop` | Local Dev Loop |
 | `coreweave-sdk-patterns` | Sdk Patterns |
-| `coreweave-core-workflow-a` | Core Workflow A |
-| `coreweave-core-workflow-b` | Core Workflow B |
+| `coreweave-monitor-alert` | Monitor Alert |
+| `coreweave-resource-management` | Resource Management |
 | `coreweave-common-errors` | Common Errors |
 | `coreweave-debug-bundle` | Debug Bundle |
 | `coreweave-rate-limits` | Rate Limits |

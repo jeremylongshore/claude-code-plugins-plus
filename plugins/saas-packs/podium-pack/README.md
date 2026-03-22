@@ -17,8 +17,8 @@
 | `podium-hello-world` | Hello World |
 | `podium-local-dev-loop` | Local Dev Loop |
 | `podium-sdk-patterns` | Sdk Patterns |
-| `podium-core-workflow-a` | Core Workflow A |
-| `podium-core-workflow-b` | Core Workflow B |
+| `podium-campaign-delivery` | Campaign Delivery |
+| `podium-event-tracking` | Event Tracking |
 | `podium-common-errors` | Common Errors |
 | `podium-debug-bundle` | Debug Bundle |
 | `podium-rate-limits` | Rate Limits |

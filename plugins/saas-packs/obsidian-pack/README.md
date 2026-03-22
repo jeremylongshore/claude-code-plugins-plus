@@ -17,8 +17,8 @@
 | `obsidian-hello-world` | Hello World |
 | `obsidian-local-dev-loop` | Local Dev Loop |
 | `obsidian-sdk-patterns` | Sdk Patterns |
-| `obsidian-core-workflow-a` | Core Workflow A |
-| `obsidian-core-workflow-b` | Core Workflow B |
+| `obsidian-content-management` | Content Management |
+| `obsidian-search-retrieve` | Search Retrieve |
 | `obsidian-common-errors` | Common Errors |
 | `obsidian-debug-bundle` | Debug Bundle |
 | `obsidian-rate-limits` | Rate Limits |

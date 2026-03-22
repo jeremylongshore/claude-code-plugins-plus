@@ -17,8 +17,8 @@
 | `assemblyai-hello-world` | Hello World |
 | `assemblyai-local-dev-loop` | Local Dev Loop |
 | `assemblyai-sdk-patterns` | Sdk Patterns |
-| `assemblyai-core-workflow-a` | Core Workflow A |
-| `assemblyai-core-workflow-b` | Core Workflow B |
+| `assemblyai-model-inference` | Model Inference |
+| `assemblyai-embeddings-search` | Embeddings Search |
 | `assemblyai-common-errors` | Common Errors |
 | `assemblyai-debug-bundle` | Debug Bundle |
 | `assemblyai-rate-limits` | Rate Limits |

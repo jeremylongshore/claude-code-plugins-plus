@@ -17,8 +17,8 @@
 | `instantly-hello-world` | Hello World |
 | `instantly-local-dev-loop` | Local Dev Loop |
 | `instantly-sdk-patterns` | Sdk Patterns |
-| `instantly-core-workflow-a` | Core Workflow A |
-| `instantly-core-workflow-b` | Core Workflow B |
+| `instantly-contact-sync` | Contact Sync |
+| `instantly-deal-pipeline` | Deal Pipeline |
 | `instantly-common-errors` | Common Errors |
 | `instantly-debug-bundle` | Debug Bundle |
 | `instantly-rate-limits` | Rate Limits |

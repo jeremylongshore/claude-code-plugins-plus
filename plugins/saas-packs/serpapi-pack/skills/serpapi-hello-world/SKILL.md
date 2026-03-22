@@ -17,7 +17,9 @@ tags: [saas, serpapi]
 # SerpApi Hello World
 
 ## Overview
-Minimal working example demonstrating core SerpApi functionality.
+
+List your projects and trigger your first action via the SerpApi API.
+
 
 ## Prerequisites
 - Completed `serpapi-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { SerpApiClient } from '@serpapi/sdk';
 
 const client = new SerpApiClient({
+
   apiKey: process.env.SERPAPI_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Found ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name} (${p.status})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your SerpApi connection is working.
 import { SerpApiClient } from '@serpapi/sdk';
 
 const client = new SerpApiClient({
+
   apiKey: process.env.SERPAPI_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Found ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name} (${p.status})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from serpapi import SerpApiClient
 
 client = SerpApiClient()
 
-# Your first API call here
+projects = client.projects.list()
+print(f"Found {len(projects)} projects:")
+for p in projects:
+    print(f"  - {p.name} ({p.status})")
+
 ```
 
 ## Resources

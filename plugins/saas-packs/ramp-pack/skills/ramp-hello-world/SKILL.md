@@ -17,7 +17,9 @@ tags: [saas, ramp]
 # Ramp Hello World
 
 ## Overview
-Minimal working example demonstrating core Ramp functionality.
+
+Check your account balance and list recent transactions via Ramp.
+
 
 ## Prerequisites
 - Completed `ramp-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { RampClient } from '@ramp/sdk';
 
 const client = new RampClient({
+
   apiKey: process.env.RAMP_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const account = await client.accounts.get();
+console.log(`Account: ${account.name}`);
+console.log(`Balance: $${(account.balance / 100).toFixed(2)} ${account.currency}`);
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Ramp connection is working.
 import { RampClient } from '@ramp/sdk';
 
 const client = new RampClient({
+
   apiKey: process.env.RAMP_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const account = await client.accounts.get();
+console.log(`Account: ${account.name}`);
+console.log(`Balance: $${(account.balance / 100).toFixed(2)} ${account.currency}`);
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,10 @@ from ramp import RampClient
 
 client = RampClient()
 
-# Your first API call here
+account = client.accounts.get()
+print(f"Account: {account.name}")
+print(f"Balance: ${account.balance / 100:.2f} {account.currency}")
+
 ```
 
 ## Resources

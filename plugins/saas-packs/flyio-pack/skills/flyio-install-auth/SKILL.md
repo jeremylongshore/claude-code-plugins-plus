@@ -23,7 +23,9 @@ Set up Fly.io SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Fly.io account with API access
+
 - API key from Fly.io dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install flyio
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export FLYIO_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export FLYIO_API_KEY="your-api-key"
 echo 'FLYIO_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const user = await client.user.get();
+console.log(`Authenticated as ${user.name} (${user.email})`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Fly.io dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.flyio.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'FLYIO_API_KEY=your-api-key' >> .env
 import { Fly.ioClient } from '@flyio/sdk';
 
 const client = new Fly.ioClient({
+
   apiKey: process.env.FLYIO_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new Fly.ioClient({
 from flyio import Fly.ioClient
 
 client = Fly.ioClient(
+
     api_key=os.environ.get('FLYIO_API_KEY')
+
 )
 ```
 

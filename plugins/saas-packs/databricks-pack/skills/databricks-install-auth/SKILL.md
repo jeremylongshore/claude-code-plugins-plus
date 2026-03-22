@@ -23,7 +23,10 @@ Set up Databricks SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Databricks account with API access
-- API key from Databricks dashboard
+
+- Database connection string or API key from Databricks dashboard
+- Network access to database host (check firewall/VPC rules)
+
 
 ## Instructions
 
@@ -37,29 +40,43 @@ pip install databricks
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
-# Set environment variable
+# Set connection string (preferred for database platforms)
+export DATABRICKS_DATABASE_URL="postgresql://user:pass@host:5432/db"
+
+# Or use API key
 export DATABRICKS_API_KEY="your-api-key"
 
 # Or create .env file
-echo 'DATABRICKS_API_KEY=your-api-key' >> .env
+cat >> .env << 'EOF'
+DATABRICKS_DATABASE_URL=postgresql://user:pass@host:5432/db
+DATABRICKS_API_KEY=your-api-key
+EOF
 ```
+
 
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const tables = await client.query("SELECT table_name FROM information_schema.tables LIMIT 5");
+console.log(`Connected — ${tables.rows.length} tables found`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- Connection string or API key configured in environment
+- Successful query execution confirming database connectivity
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Databricks dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.databricks.com |
+
+| Connection Refused | Wrong host/port or firewall blocking | Check connection string, verify network access |
+| Authentication Failed | Wrong password or expired credentials | Reset credentials in Databricks dashboard |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +87,9 @@ echo 'DATABRICKS_API_KEY=your-api-key' >> .env
 import { DatabricksClient } from '@databricks/sdk';
 
 const client = new DatabricksClient({
-  apiKey: process.env.DATABRICKS_API_KEY,
+
+  connectionString: process.env.DATABRICKS_DATABASE_URL,
+
 });
 ```
 
@@ -79,7 +98,9 @@ const client = new DatabricksClient({
 from databricks import DatabricksClient
 
 client = DatabricksClient(
-    api_key=os.environ.get('DATABRICKS_API_KEY')
+
+    connection_string=os.environ.get('DATABRICKS_DATABASE_URL')
+
 )
 ```
 

@@ -17,8 +17,8 @@
 | `flyio-hello-world` | Hello World |
 | `flyio-local-dev-loop` | Local Dev Loop |
 | `flyio-sdk-patterns` | Sdk Patterns |
-| `flyio-core-workflow-a` | Core Workflow A |
-| `flyio-core-workflow-b` | Core Workflow B |
+| `flyio-deploy-preview` | Deploy Preview |
+| `flyio-build-configure` | Build Configure |
 | `flyio-common-errors` | Common Errors |
 | `flyio-debug-bundle` | Debug Bundle |
 | `flyio-rate-limits` | Rate Limits |

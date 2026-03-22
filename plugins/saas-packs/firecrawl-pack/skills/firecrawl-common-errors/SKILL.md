@@ -17,7 +17,9 @@ tags: [saas, firecrawl]
 # FireCrawl Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common FireCrawl errors and their solutions.
+
 
 ## Prerequisites
 - FireCrawl SDK installed
@@ -42,48 +44,60 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Build Failed
 **Error Message:**
 ```
-Authentication error: Invalid API key
+Error: Command 'npm run build' exited with code 1
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Compilation error, missing dependency, or misconfigured build command.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $FIRECRAWL_API_KEY
+# Reproduce locally
+npm run build
+# Check for missing env vars that build depends on
+# Verify Node.js version matches platform runtime
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Function Timeout
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+FUNCTION_INVOCATION_TIMEOUT: Task timed out after 30s
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Serverless function exceeded execution time limit.
 
 **Solution:**
-Implement exponential backoff. See `firecrawl-rate-limits` skill.
+# Profile function execution time locally
+# Move heavy computation to background jobs
+# Use Edge Runtime for faster cold starts
+# Upgrade plan for longer timeouts (60s Pro, 300s Enterprise)
+
 
 ---
 
-### Network Timeout
+### Domain Verification Failed
 **Error Message:**
 ```
-Request timeout after 30000ms
+Error: Domain verification failed — DNS records not found
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Required DNS records (CNAME or A record) not configured at registrar.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Add the required DNS record at your registrar
+# CNAME for subdomains: app.example.com → cname.provider.com
+# A record for apex: example.com → 76.76.21.21
+# Allow up to 48h for DNS propagation
+
 ```
+
+
 
 ## Examples
 

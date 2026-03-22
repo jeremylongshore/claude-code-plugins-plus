@@ -17,8 +17,8 @@
 | `mistral-hello-world` | Hello World |
 | `mistral-local-dev-loop` | Local Dev Loop |
 | `mistral-sdk-patterns` | Sdk Patterns |
-| `mistral-core-workflow-a` | Core Workflow A |
-| `mistral-core-workflow-b` | Core Workflow B |
+| `mistral-model-inference` | Model Inference |
+| `mistral-embeddings-search` | Embeddings Search |
 | `mistral-common-errors` | Common Errors |
 | `mistral-debug-bundle` | Debug Bundle |
 | `mistral-rate-limits` | Rate Limits |

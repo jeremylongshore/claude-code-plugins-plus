@@ -17,8 +17,8 @@
 | `lindy-hello-world` | Hello World |
 | `lindy-local-dev-loop` | Local Dev Loop |
 | `lindy-sdk-patterns` | Sdk Patterns |
-| `lindy-core-workflow-a` | Core Workflow A |
-| `lindy-core-workflow-b` | Core Workflow B |
+| `lindy-model-inference` | Model Inference |
+| `lindy-embeddings-search` | Embeddings Search |
 | `lindy-common-errors` | Common Errors |
 | `lindy-debug-bundle` | Debug Bundle |
 | `lindy-rate-limits` | Rate Limits |

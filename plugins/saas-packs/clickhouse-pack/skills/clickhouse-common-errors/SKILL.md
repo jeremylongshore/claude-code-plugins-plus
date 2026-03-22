@@ -17,7 +17,9 @@ tags: [saas, clickhouse]
 # ClickHouse Common Errors
 
 ## Overview
-Quick reference for the top 10 most common ClickHouse errors and their solutions.
+
+Quick reference for the most common ClickHouse errors: connection failures, query timeouts, permission issues, and schema problems.
+
 
 ## Prerequisites
 - ClickHouse SDK installed
@@ -42,48 +44,73 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Connection Pool Exhausted
 **Error Message:**
 ```
-Authentication error: Invalid API key
+Error: too many clients already / connection pool timeout
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** All connections in the pool are in use. Common with serverless functions creating new pools on each invocation.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $CLICKHOUSE_API_KEY
+# Use connection pooling (PgBouncer, built-in pooler)
+# Set pool max to match your plan's connection limit
+# Ensure connections are released after queries (finally blocks)
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Query Timeout
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+Error: canceling statement due to statement timeout (30000ms)
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Query execution exceeded the statement_timeout setting. Usually a missing index or full table scan.
 
 **Solution:**
-Implement exponential backoff. See `clickhouse-rate-limits` skill.
+# Analyze the query plan
+EXPLAIN ANALYZE SELECT ...;
+# Add covering index for common filter columns
+CREATE INDEX CONCURRENTLY idx_name ON table(column);
+# Increase timeout for one-off analytical queries only
+
 
 ---
 
-### Network Timeout
+### Relation Does Not Exist
 **Error Message:**
 ```
-Request timeout after 30000ms
+ERROR: relation "events" does not exist
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Table not created yet, wrong schema search path, or typo in table name.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Check available tables
+SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
+# Set search_path if using custom schemas
+SET search_path TO myschema, public;
+
 ```
+
+
+---
+
+### Deadlock Detected
+**Error Message:**
+```
+ERROR: deadlock detected — Process 12345 waits for ShareLock on transaction 67890
+```
+
+**Cause:** Two concurrent transactions waiting on each other's locks. Common with concurrent UPDATEs on same rows.
+
+**Solution:**
+Ensure consistent lock ordering across transactions. Use `SELECT ... FOR UPDATE SKIP LOCKED` for queue patterns. Reduce transaction scope and duration.
+
 
 ## Examples
 

@@ -23,7 +23,9 @@ Set up Apple Notes SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Apple Notes account with API access
+
 - API key from Apple Notes dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install apple-notes
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export APPLE-NOTES_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export APPLE-NOTES_API_KEY="your-api-key"
 echo 'APPLE-NOTES_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const workspace = await client.workspace.get();
+console.log(`Connected to workspace: ${workspace.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Apple Notes dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.apple-notes.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'APPLE-NOTES_API_KEY=your-api-key' >> .env
 import { AppleNotesClient } from '@apple-notes/sdk';
 
 const client = new AppleNotesClient({
+
   apiKey: process.env.APPLE-NOTES_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new AppleNotesClient({
 from apple-notes import AppleNotesClient
 
 client = AppleNotesClient(
+
     api_key=os.environ.get('APPLE-NOTES_API_KEY')
+
 )
 ```
 

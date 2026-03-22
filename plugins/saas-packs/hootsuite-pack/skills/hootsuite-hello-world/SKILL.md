@@ -17,7 +17,9 @@ tags: [saas, hootsuite]
 # Hootsuite Hello World
 
 ## Overview
-Minimal working example demonstrating core Hootsuite functionality.
+
+Send your first test message through the Hootsuite API.
+
 
 ## Prerequisites
 - Completed `hootsuite-install-auth` setup
@@ -34,14 +36,22 @@ Create a new file for your hello world example.
 import { HootsuiteClient } from '@hootsuite/sdk';
 
 const client = new HootsuiteClient({
+
   apiKey: process.env.HOOTSUITE_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const result = await client.messages.send({
+  to: 'test@example.com',
+  subject: 'Hello from SDK',
+  body: 'This is a test message sent via the API.',
+});
+console.log(`Message sent: ${result.messageId} (status: ${result.status})`);
+
 }
 
 main().catch(console.error);
@@ -70,11 +80,19 @@ Success! Your Hootsuite connection is working.
 import { HootsuiteClient } from '@hootsuite/sdk';
 
 const client = new HootsuiteClient({
+
   apiKey: process.env.HOOTSUITE_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const result = await client.messages.send({
+  to: 'test@example.com',
+  subject: 'Hello from SDK',
+  body: 'This is a test message sent via the API.',
+});
+console.log(`Message sent: ${result.messageId} (status: ${result.status})`);
+
 }
 
 main().catch(console.error);
@@ -86,7 +104,13 @@ from hootsuite import HootsuiteClient
 
 client = HootsuiteClient()
 
-# Your first API call here
+result = client.messages.send(
+    to="test@example.com",
+    subject="Hello from SDK",
+    body="This is a test message sent via the API.",
+)
+print(f"Message sent: {result.message_id} (status: {result.status})")
+
 ```
 
 ## Resources

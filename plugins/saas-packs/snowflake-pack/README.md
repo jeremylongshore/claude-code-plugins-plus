@@ -17,8 +17,8 @@
 | `snowflake-hello-world` | Hello World |
 | `snowflake-local-dev-loop` | Local Dev Loop |
 | `snowflake-sdk-patterns` | Sdk Patterns |
-| `snowflake-core-workflow-a` | Core Workflow A |
-| `snowflake-core-workflow-b` | Core Workflow B |
+| `snowflake-query-transform` | Query Transform |
+| `snowflake-schema-migration` | Schema Migration |
 | `snowflake-common-errors` | Common Errors |
 | `snowflake-debug-bundle` | Debug Bundle |
 | `snowflake-rate-limits` | Rate Limits |

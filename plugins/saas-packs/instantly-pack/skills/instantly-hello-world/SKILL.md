@@ -17,7 +17,9 @@ tags: [saas, instantly]
 # Instantly Hello World
 
 ## Overview
-Minimal working example demonstrating core Instantly functionality.
+
+Pull your first contacts from Instantly and display them.
+
 
 ## Prerequisites
 - Completed `instantly-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { InstantlyClient } from '@instantly/sdk';
 
 const client = new InstantlyClient({
+
   apiKey: process.env.INSTANTLY_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Instantly connection is working.
 import { InstantlyClient } from '@instantly/sdk';
 
 const client = new InstantlyClient({
+
   apiKey: process.env.INSTANTLY_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const contacts = await client.contacts.list({ limit: 5 });
+console.log(`Found ${contacts.total} contacts. First 5:`);
+contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from instantly import InstantlyClient
 
 client = InstantlyClient()
 
-# Your first API call here
+contacts = client.contacts.list(limit=5)
+print(f"Found {contacts.total} contacts. First 5:")
+for c in contacts.data:
+    print(f"  - {c.name} <{c.email}> ({c.company})")
+
 ```
 
 ## Resources

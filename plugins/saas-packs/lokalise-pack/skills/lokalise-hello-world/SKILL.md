@@ -17,7 +17,9 @@ tags: [saas, lokalise]
 # Lokalise Hello World
 
 ## Overview
-Minimal working example demonstrating core Lokalise functionality.
+
+List your projects and trigger your first action via the Lokalise API.
+
 
 ## Prerequisites
 - Completed `lokalise-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { LokaliseClient } from '@lokalise/sdk';
 
 const client = new LokaliseClient({
+
   apiKey: process.env.LOKALISE_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Found ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name} (${p.status})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Lokalise connection is working.
 import { LokaliseClient } from '@lokalise/sdk';
 
 const client = new LokaliseClient({
+
   apiKey: process.env.LOKALISE_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Found ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name} (${p.status})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from lokalise import LokaliseClient
 
 client = LokaliseClient()
 
-# Your first API call here
+projects = client.projects.list()
+print(f"Found {len(projects)} projects:")
+for p in projects:
+    print(f"  - {p.name} ({p.status})")
+
 ```
 
 ## Resources

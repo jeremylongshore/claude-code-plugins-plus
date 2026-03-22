@@ -17,8 +17,8 @@
 | `linear-hello-world` | Hello World |
 | `linear-local-dev-loop` | Local Dev Loop |
 | `linear-sdk-patterns` | Sdk Patterns |
-| `linear-core-workflow-a` | Core Workflow A |
-| `linear-core-workflow-b` | Core Workflow B |
+| `linear-content-management` | Content Management |
+| `linear-search-retrieve` | Search Retrieve |
 | `linear-common-errors` | Common Errors |
 | `linear-debug-bundle` | Debug Bundle |
 | `linear-rate-limits` | Rate Limits |

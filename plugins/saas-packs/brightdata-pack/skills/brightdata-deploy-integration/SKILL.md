@@ -1,11 +1,11 @@
 ---
 name: brightdata-deploy-integration
 description: |
-  Deploy Bright Data integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Bright Data integrations to production platforms.
   Use when deploying Bright Data-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy brightdata", "brightdata Vercel",
-  "brightdata production deploy", "brightdata Cloud Run", "brightdata Fly.io".
+  Trigger with phrases like "deploy brightdata", "brightdata production",
+  "brightdata production deploy", "brightdata CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,10 @@ tags: [saas, brightdata]
 # Bright Data Deploy Integration
 
 ## Overview
-Deploy Bright Data-powered applications to popular platforms with proper secrets management.
+
+Deploy Bright Data as a sidecar agent alongside your application, plus webhook
+endpoints for alert routing and incident response automation.
+
 
 ## Prerequisites
 - Bright Data API keys for production environment
@@ -25,21 +28,14 @@ Deploy Bright Data-powered applications to popular platforms with proper secrets
 - Application code ready for deployment
 - Environment variables documented
 
+
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add Bright Data secrets to Vercel
 vercel secrets add brightdata_api_key sk_live_***
 vercel secrets add brightdata_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,74 +72,17 @@ primary_region = "iad"
 
 ### Secrets
 ```bash
-# Set Bright Data secrets
 fly secrets set BRIGHTDATA_API_KEY=sk_live_***
-fly secrets set BRIGHTDATA_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="brightdata-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=BRIGHTDATA_API_KEY=brightdata-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/brightdata.ts
-interface Bright DataConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getBright DataConfig(): Bright DataConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.BRIGHTDATA_API_KEY!,
-    environment: env as Bright DataConfig['environment'],
-    webhookSecret: process.env.BRIGHTDATA_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
 ```typescript
 // api/health.ts
 export async function GET() {
-  const brightdataStatus = await checkBright DataConnection();
+  const brightdataStatus = await checkBrightDataConnection();
 
   return Response.json({
     status: brightdataStatus ? 'healthy' : 'degraded',
@@ -158,7 +97,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store Bright Data API keys securely using the platform's secrets management.
@@ -182,24 +121,6 @@ Test the health check endpoint to confirm Bright Data connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add brightdata_api_key "$BRIGHTDATA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set BRIGHTDATA_API_KEY="$BRIGHTDATA_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

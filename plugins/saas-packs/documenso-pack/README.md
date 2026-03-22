@@ -17,8 +17,8 @@
 | `documenso-hello-world` | Hello World |
 | `documenso-local-dev-loop` | Local Dev Loop |
 | `documenso-sdk-patterns` | Sdk Patterns |
-| `documenso-core-workflow-a` | Core Workflow A |
-| `documenso-core-workflow-b` | Core Workflow B |
+| `documenso-entity-management` | Entity Management |
+| `documenso-data-sync` | Data Sync |
 | `documenso-common-errors` | Common Errors |
 | `documenso-debug-bundle` | Debug Bundle |
 | `documenso-rate-limits` | Rate Limits |

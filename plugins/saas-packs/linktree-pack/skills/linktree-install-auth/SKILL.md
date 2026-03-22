@@ -23,7 +23,9 @@ Set up Linktree SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Linktree account with API access
+
 - API key from Linktree dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install linktree
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export LINKTREE_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export LINKTREE_API_KEY="your-api-key"
 echo 'LINKTREE_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const account = await client.account.get();
+console.log(`Connected: ${account.name} — ${account.plan} plan`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Linktree dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.linktree.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'LINKTREE_API_KEY=your-api-key' >> .env
 import { LinktreeClient } from '@linktree/sdk';
 
 const client = new LinktreeClient({
+
   apiKey: process.env.LINKTREE_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new LinktreeClient({
 from linktree import LinktreeClient
 
 client = LinktreeClient(
+
     api_key=os.environ.get('LINKTREE_API_KEY')
+
 )
 ```
 

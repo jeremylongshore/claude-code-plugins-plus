@@ -17,7 +17,9 @@ tags: [saas, notion]
 # Notion Hello World
 
 ## Overview
-Minimal working example demonstrating core Notion functionality.
+
+List your workspace pages and read content from Notion.
+
 
 ## Prerequisites
 - Completed `notion-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { NotionClient } from '@notion/sdk';
 
 const client = new NotionClient({
+
   apiKey: process.env.NOTION_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Notion connection is working.
 import { NotionClient } from '@notion/sdk';
 
 const client = new NotionClient({
+
   apiKey: process.env.NOTION_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from notion import NotionClient
 
 client = NotionClient()
 
-# Your first API call here
+pages = client.pages.list(limit=5)
+print(f"Found {pages.total} pages. Recent:")
+for p in pages.results:
+    print(f"  - {p.title} (edited: {p.last_edited})")
+
 ```
 
 ## Resources

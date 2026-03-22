@@ -17,8 +17,8 @@
 | `wispr-hello-world` | Hello World |
 | `wispr-local-dev-loop` | Local Dev Loop |
 | `wispr-sdk-patterns` | Sdk Patterns |
-| `wispr-core-workflow-a` | Core Workflow A |
-| `wispr-core-workflow-b` | Core Workflow B |
+| `wispr-model-inference` | Model Inference |
+| `wispr-embeddings-search` | Embeddings Search |
 | `wispr-common-errors` | Common Errors |
 | `wispr-debug-bundle` | Debug Bundle |
 | `wispr-rate-limits` | Rate Limits |

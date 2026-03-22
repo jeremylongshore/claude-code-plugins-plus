@@ -17,8 +17,8 @@
 | `lucidchart-hello-world` | Hello World |
 | `lucidchart-local-dev-loop` | Local Dev Loop |
 | `lucidchart-sdk-patterns` | Sdk Patterns |
-| `lucidchart-core-workflow-a` | Core Workflow A |
-| `lucidchart-core-workflow-b` | Core Workflow B |
+| `lucidchart-export-assets` | Export Assets |
+| `lucidchart-design-token-sync` | Design Token Sync |
 | `lucidchart-common-errors` | Common Errors |
 | `lucidchart-debug-bundle` | Debug Bundle |
 | `lucidchart-rate-limits` | Rate Limits |

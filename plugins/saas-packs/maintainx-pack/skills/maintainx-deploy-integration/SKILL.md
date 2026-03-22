@@ -1,11 +1,11 @@
 ---
 name: maintainx-deploy-integration
 description: |
-  Deploy MaintainX integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy MaintainX integrations to production platforms.
   Use when deploying MaintainX-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy maintainx", "maintainx Vercel",
-  "maintainx production deploy", "maintainx Cloud Run", "maintainx Fly.io".
+  Trigger with phrases like "deploy maintainx", "maintainx production",
+  "maintainx production deploy", "maintainx CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,9 @@ tags: [saas, maintainx]
 # MaintainX Deploy Integration
 
 ## Overview
+
 Deploy MaintainX-powered applications to popular platforms with proper secrets management.
+
 
 ## Prerequisites
 - MaintainX API keys for production environment
@@ -25,21 +27,14 @@ Deploy MaintainX-powered applications to popular platforms with proper secrets m
 - Application code ready for deployment
 - Environment variables documented
 
+
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add MaintainX secrets to Vercel
 vercel secrets add maintainx_api_key sk_live_***
 vercel secrets add maintainx_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,67 +71,10 @@ primary_region = "iad"
 
 ### Secrets
 ```bash
-# Set MaintainX secrets
 fly secrets set MAINTAINX_API_KEY=sk_live_***
-fly secrets set MAINTAINX_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="maintainx-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=MAINTAINX_API_KEY=maintainx-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/maintainx.ts
-interface MaintainXConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getMaintainXConfig(): MaintainXConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.MAINTAINX_API_KEY!,
-    environment: env as MaintainXConfig['environment'],
-    webhookSecret: process.env.MAINTAINX_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
@@ -158,7 +96,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store MaintainX API keys securely using the platform's secrets management.
@@ -182,24 +120,6 @@ Test the health check endpoint to confirm MaintainX connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add maintainx_api_key "$MAINTAINX_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set MAINTAINX_API_KEY="$MAINTAINX_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

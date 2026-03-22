@@ -17,8 +17,8 @@
 | `shopify-hello-world` | Hello World |
 | `shopify-local-dev-loop` | Local Dev Loop |
 | `shopify-sdk-patterns` | Sdk Patterns |
-| `shopify-core-workflow-a` | Core Workflow A |
-| `shopify-core-workflow-b` | Core Workflow B |
+| `shopify-entity-management` | Entity Management |
+| `shopify-data-sync` | Data Sync |
 | `shopify-common-errors` | Common Errors |
 | `shopify-debug-bundle` | Debug Bundle |
 | `shopify-rate-limits` | Rate Limits |

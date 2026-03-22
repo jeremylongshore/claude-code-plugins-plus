@@ -17,7 +17,9 @@ tags: [saas, salesloft]
 # Salesloft Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Salesloft errors and their solutions.
+
+Quick reference for the most common Salesloft errors: duplicate records, rate limits, validation failures, and sync conflicts.
+
 
 ## Prerequisites
 - Salesloft SDK installed
@@ -42,48 +44,70 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Duplicate Record
 **Error Message:**
 ```
-Authentication error: Invalid API key
+409 Conflict: A contact with email user@example.com already exists
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Attempting to create a record that matches an existing unique field (email, phone).
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $SALESLOFT_API_KEY
+# Use upsert endpoint instead of create
+await client.contacts.upsert({ email: 'user@example.com', ...data });
+# Or search first: client.contacts.search({ email: 'user@example.com' })
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### API Rate Limit (Burst)
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+429 Too Many Requests: Retry after 10 seconds
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Exceeded per-second or per-minute API rate limit. CRM APIs have tight burst limits.
 
 **Solution:**
-Implement exponential backoff. See `salesloft-rate-limits` skill.
+# Use batch endpoints for bulk operations (100 records per call)
+# Implement retry with Retry-After header value
+# Space requests: max 10 req/s for most CRM APIs
+
 
 ---
 
-### Network Timeout
+### Required Field Missing
 **Error Message:**
 ```
-Request timeout after 30000ms
+422 Unprocessable Entity: 'email' is required for contact creation
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Missing a mandatory field defined in CRM configuration.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Check required fields: client.schema.get('contact')
+# Required fields vary by CRM configuration — check admin settings
+# Map incoming data to all required fields before batch import
+
 ```
+
+
+---
+
+### Duplicate Record on Import
+**Error Message:**
+```
+409 Conflict: Contact with email user@example.com already exists (id: abc-123)
+```
+
+**Cause:** Attempting to create a record with an email/phone that matches an existing contact.
+
+**Solution:**
+Use the upsert endpoint instead of create: `client.contacts.upsert({ email, ...data })`. Or search first and merge if found.
+
 
 ## Examples
 

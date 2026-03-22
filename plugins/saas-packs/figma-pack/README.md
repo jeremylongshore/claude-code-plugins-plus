@@ -17,8 +17,8 @@
 | `figma-hello-world` | Hello World |
 | `figma-local-dev-loop` | Local Dev Loop |
 | `figma-sdk-patterns` | Sdk Patterns |
-| `figma-core-workflow-a` | Core Workflow A |
-| `figma-core-workflow-b` | Core Workflow B |
+| `figma-export-assets` | Export Assets |
+| `figma-design-token-sync` | Design Token Sync |
 | `figma-common-errors` | Common Errors |
 | `figma-debug-bundle` | Debug Bundle |
 | `figma-rate-limits` | Rate Limits |

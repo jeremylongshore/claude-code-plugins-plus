@@ -17,8 +17,8 @@
 | `oraclecloud-hello-world` | Hello World |
 | `oraclecloud-local-dev-loop` | Local Dev Loop |
 | `oraclecloud-sdk-patterns` | Sdk Patterns |
-| `oraclecloud-core-workflow-a` | Core Workflow A |
-| `oraclecloud-core-workflow-b` | Core Workflow B |
+| `oraclecloud-query-transform` | Query Transform |
+| `oraclecloud-schema-migration` | Schema Migration |
 | `oraclecloud-common-errors` | Common Errors |
 | `oraclecloud-debug-bundle` | Debug Bundle |
 | `oraclecloud-rate-limits` | Rate Limits |

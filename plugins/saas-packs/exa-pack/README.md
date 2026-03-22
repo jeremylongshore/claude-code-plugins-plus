@@ -17,8 +17,8 @@
 | `exa-hello-world` | Hello World |
 | `exa-local-dev-loop` | Local Dev Loop |
 | `exa-sdk-patterns` | Sdk Patterns |
-| `exa-core-workflow-a` | Core Workflow A |
-| `exa-core-workflow-b` | Core Workflow B |
+| `exa-model-inference` | Model Inference |
+| `exa-embeddings-search` | Embeddings Search |
 | `exa-common-errors` | Common Errors |
 | `exa-debug-bundle` | Debug Bundle |
 | `exa-rate-limits` | Rate Limits |

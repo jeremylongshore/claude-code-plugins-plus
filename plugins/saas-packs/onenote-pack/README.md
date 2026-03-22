@@ -17,8 +17,8 @@
 | `onenote-hello-world` | Hello World |
 | `onenote-local-dev-loop` | Local Dev Loop |
 | `onenote-sdk-patterns` | Sdk Patterns |
-| `onenote-core-workflow-a` | Core Workflow A |
-| `onenote-core-workflow-b` | Core Workflow B |
+| `onenote-content-management` | Content Management |
+| `onenote-search-retrieve` | Search Retrieve |
 | `onenote-common-errors` | Common Errors |
 | `onenote-debug-bundle` | Debug Bundle |
 | `onenote-rate-limits` | Rate Limits |

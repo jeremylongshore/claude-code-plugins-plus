@@ -17,8 +17,8 @@
 | `abridge-hello-world` | Hello World |
 | `abridge-local-dev-loop` | Local Dev Loop |
 | `abridge-sdk-patterns` | Sdk Patterns |
-| `abridge-core-workflow-a` | Core Workflow A |
-| `abridge-core-workflow-b` | Core Workflow B |
+| `abridge-model-inference` | Model Inference |
+| `abridge-embeddings-search` | Embeddings Search |
 | `abridge-common-errors` | Common Errors |
 | `abridge-debug-bundle` | Debug Bundle |
 | `abridge-rate-limits` | Rate Limits |

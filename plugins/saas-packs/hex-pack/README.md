@@ -17,8 +17,8 @@
 | `hex-hello-world` | Hello World |
 | `hex-local-dev-loop` | Local Dev Loop |
 | `hex-sdk-patterns` | Sdk Patterns |
-| `hex-core-workflow-a` | Core Workflow A |
-| `hex-core-workflow-b` | Core Workflow B |
+| `hex-query-transform` | Query Transform |
+| `hex-schema-migration` | Schema Migration |
 | `hex-common-errors` | Common Errors |
 | `hex-debug-bundle` | Debug Bundle |
 | `hex-rate-limits` | Rate Limits |

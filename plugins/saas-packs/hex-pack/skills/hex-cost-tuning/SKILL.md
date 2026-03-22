@@ -29,7 +29,7 @@ Optimize Hex costs through smart tier selection, sampling, and usage monitoring.
 
 | Tier | Monthly Cost | Included | Overage |
 |------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
+| Free / Developer | $0 | 1,000 requests | N/A |
 | Pro | $99 | 100,000 requests | $0.001/request |
 | Enterprise | Custom | Unlimited | Volume discounts |
 

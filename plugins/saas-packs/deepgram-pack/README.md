@@ -17,8 +17,8 @@
 | `deepgram-hello-world` | Hello World |
 | `deepgram-local-dev-loop` | Local Dev Loop |
 | `deepgram-sdk-patterns` | Sdk Patterns |
-| `deepgram-core-workflow-a` | Core Workflow A |
-| `deepgram-core-workflow-b` | Core Workflow B |
+| `deepgram-model-inference` | Model Inference |
+| `deepgram-embeddings-search` | Embeddings Search |
 | `deepgram-common-errors` | Common Errors |
 | `deepgram-debug-bundle` | Debug Bundle |
 | `deepgram-rate-limits` | Rate Limits |

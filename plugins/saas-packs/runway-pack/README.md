@@ -17,8 +17,8 @@
 | `runway-hello-world` | Hello World |
 | `runway-local-dev-loop` | Local Dev Loop |
 | `runway-sdk-patterns` | Sdk Patterns |
-| `runway-core-workflow-a` | Core Workflow A |
-| `runway-core-workflow-b` | Core Workflow B |
+| `runway-model-inference` | Model Inference |
+| `runway-embeddings-search` | Embeddings Search |
 | `runway-common-errors` | Common Errors |
 | `runway-debug-bundle` | Debug Bundle |
 | `runway-rate-limits` | Rate Limits |

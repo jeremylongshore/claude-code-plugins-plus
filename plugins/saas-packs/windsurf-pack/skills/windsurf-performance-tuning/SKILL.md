@@ -29,9 +29,9 @@ Optimize Windsurf API performance with caching, batching, and connection pooling
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Deploy (cold start to live) | 30s | 120s | 300s |
+| API Call (CRUD) | 100ms | 300ms | 800ms |
+| Edge Function Cold Start | 5ms | 25ms | 100ms |
 
 ## Caching Strategy
 

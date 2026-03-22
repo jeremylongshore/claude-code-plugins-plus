@@ -23,7 +23,9 @@ Set up Miro SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Miro account with API access
-- API key from Miro dashboard
+
+- OAuth2 access token or personal API token from Miro settings
+
 
 ## Instructions
 
@@ -37,29 +39,40 @@ pip install miro
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
-# Set environment variable
-export MIRO_API_KEY="your-api-key"
+# OAuth2: Set access token (get from OAuth flow or personal tokens page)
+export MIRO_ACCESS_TOKEN="your-access-token"
 
 # Or create .env file
-echo 'MIRO_API_KEY=your-api-key' >> .env
+echo 'MIRO_ACCESS_TOKEN=your-access-token' >> .env
 ```
+
+> **Note:** OAuth tokens expire. For production, implement the refresh token flow.
+> Personal access tokens (if available) are simpler for development.
+
 
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const me = await client.users.me();
+console.log(`Authenticated as ${me.name} — ${me.email}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- OAuth access token configured in environment
+- Successful API call confirming file/project access
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Miro dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.miro.com |
+
+| Token Expired | OAuth access token past lifetime | Refresh token or generate new personal access token |
+| Insufficient Scope | Token missing required permissions | Re-authorize with correct OAuth scopes |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +83,9 @@ echo 'MIRO_API_KEY=your-api-key' >> .env
 import { MiroClient } from '@miro/sdk';
 
 const client = new MiroClient({
-  apiKey: process.env.MIRO_API_KEY,
+
+  accessToken: process.env.MIRO_ACCESS_TOKEN,
+
 });
 ```
 
@@ -79,7 +94,9 @@ const client = new MiroClient({
 from miro import MiroClient
 
 client = MiroClient(
-    api_key=os.environ.get('MIRO_API_KEY')
+
+    access_token=os.environ.get('MIRO_ACCESS_TOKEN')
+
 )
 ```
 

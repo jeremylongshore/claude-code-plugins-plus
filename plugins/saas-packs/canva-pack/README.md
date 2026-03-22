@@ -17,8 +17,8 @@
 | `canva-hello-world` | Hello World |
 | `canva-local-dev-loop` | Local Dev Loop |
 | `canva-sdk-patterns` | Sdk Patterns |
-| `canva-core-workflow-a` | Core Workflow A |
-| `canva-core-workflow-b` | Core Workflow B |
+| `canva-export-assets` | Export Assets |
+| `canva-design-token-sync` | Design Token Sync |
 | `canva-common-errors` | Common Errors |
 | `canva-debug-bundle` | Debug Bundle |
 | `canva-rate-limits` | Rate Limits |

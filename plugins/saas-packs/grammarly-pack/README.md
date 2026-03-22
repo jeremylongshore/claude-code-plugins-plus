@@ -17,8 +17,8 @@
 | `grammarly-hello-world` | Hello World |
 | `grammarly-local-dev-loop` | Local Dev Loop |
 | `grammarly-sdk-patterns` | Sdk Patterns |
-| `grammarly-core-workflow-a` | Core Workflow A |
-| `grammarly-core-workflow-b` | Core Workflow B |
+| `grammarly-model-inference` | Model Inference |
+| `grammarly-embeddings-search` | Embeddings Search |
 | `grammarly-common-errors` | Common Errors |
 | `grammarly-debug-bundle` | Debug Bundle |
 | `grammarly-rate-limits` | Rate Limits |

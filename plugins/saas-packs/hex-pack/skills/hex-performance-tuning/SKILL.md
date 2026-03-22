@@ -29,9 +29,9 @@ Optimize Hex API performance with caching, batching, and connection pooling.
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Simple SELECT (indexed) | 5ms | 25ms | 100ms |
+| Analytical Aggregation | 200ms | 2000ms | 10000ms |
+| Bulk INSERT (1000 rows) | 50ms | 200ms | 500ms |
 
 ## Caching Strategy
 

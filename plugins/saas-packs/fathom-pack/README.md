@@ -17,8 +17,8 @@
 | `fathom-hello-world` | Hello World |
 | `fathom-local-dev-loop` | Local Dev Loop |
 | `fathom-sdk-patterns` | Sdk Patterns |
-| `fathom-core-workflow-a` | Core Workflow A |
-| `fathom-core-workflow-b` | Core Workflow B |
+| `fathom-model-inference` | Model Inference |
+| `fathom-embeddings-search` | Embeddings Search |
 | `fathom-common-errors` | Common Errors |
 | `fathom-debug-bundle` | Debug Bundle |
 | `fathom-rate-limits` | Rate Limits |

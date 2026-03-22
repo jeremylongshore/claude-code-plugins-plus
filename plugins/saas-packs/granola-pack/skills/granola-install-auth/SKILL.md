@@ -23,7 +23,9 @@ Set up Granola SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Granola account with API access
+
 - API key from Granola dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install granola
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export GRANOLA_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export GRANOLA_API_KEY="your-api-key"
 echo 'GRANOLA_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const workspace = await client.workspace.get();
+console.log(`Connected to workspace: ${workspace.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Granola dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.granola.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'GRANOLA_API_KEY=your-api-key' >> .env
 import { GranolaClient } from '@granola/sdk';
 
 const client = new GranolaClient({
+
   apiKey: process.env.GRANOLA_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new GranolaClient({
 from granola import GranolaClient
 
 client = GranolaClient(
+
     api_key=os.environ.get('GRANOLA_API_KEY')
+
 )
 ```
 

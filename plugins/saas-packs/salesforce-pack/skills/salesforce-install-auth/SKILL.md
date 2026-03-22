@@ -23,7 +23,9 @@ Set up Salesforce SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Salesforce account with API access
-- API key from Salesforce dashboard
+
+- OAuth2 access token or personal API token from Salesforce settings
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install salesforce
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export SALESFORCE_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export SALESFORCE_API_KEY="your-api-key"
 echo 'SALESFORCE_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const me = await client.users.me();
+console.log(`Authenticated: ${me.name} — ${me.organization.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Salesforce dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.salesforce.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'SALESFORCE_API_KEY=your-api-key' >> .env
 import { SalesforceClient } from '@salesforce/sdk';
 
 const client = new SalesforceClient({
+
   apiKey: process.env.SALESFORCE_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new SalesforceClient({
 from salesforce import SalesforceClient
 
 client = SalesforceClient(
+
     api_key=os.environ.get('SALESFORCE_API_KEY')
+
 )
 ```
 

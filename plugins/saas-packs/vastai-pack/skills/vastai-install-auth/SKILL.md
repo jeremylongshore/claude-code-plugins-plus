@@ -23,7 +23,9 @@ Set up Vast.ai SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Vast.ai account with API access
+
 - API key from Vast.ai dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install vastai
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export VASTAI_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export VASTAI_API_KEY="your-api-key"
 echo 'VASTAI_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const org = await client.organization.get();
+console.log(`Connected: ${org.name} — ${org.projects.length} projects`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Vast.ai dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.vastai.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'VASTAI_API_KEY=your-api-key' >> .env
 import { Vast.aiClient } from '@vastai/sdk';
 
 const client = new Vast.aiClient({
+
   apiKey: process.env.VASTAI_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new Vast.aiClient({
 from vastai import Vast.aiClient
 
 client = Vast.aiClient(
+
     api_key=os.environ.get('VASTAI_API_KEY')
+
 )
 ```
 

@@ -1,11 +1,11 @@
 ---
 name: clerk-deploy-integration
 description: |
-  Deploy Clerk integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Clerk integrations to production platforms.
   Use when deploying Clerk-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy clerk", "clerk Vercel",
-  "clerk production deploy", "clerk Cloud Run", "clerk Fly.io".
+  Trigger with phrases like "deploy clerk", "clerk production",
+  "clerk production deploy", "clerk CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,10 @@ tags: [saas, clerk]
 # Clerk Deploy Integration
 
 ## Overview
-Deploy Clerk-powered applications to popular platforms with proper secrets management.
+
+Deploy using Clerk's native deployment tools. Configuration lives in the
+project repo and deploys trigger via git push or CLI commands.
+
 
 ## Prerequisites
 - Clerk API keys for production environment
@@ -25,21 +28,14 @@ Deploy Clerk-powered applications to popular platforms with proper secrets manag
 - Application code ready for deployment
 - Environment variables documented
 
+
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add Clerk secrets to Vercel
 vercel secrets add clerk_api_key sk_live_***
 vercel secrets add clerk_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,67 +72,10 @@ primary_region = "iad"
 
 ### Secrets
 ```bash
-# Set Clerk secrets
 fly secrets set CLERK_API_KEY=sk_live_***
-fly secrets set CLERK_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="clerk-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=CLERK_API_KEY=clerk-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/clerk.ts
-interface ClerkConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getClerkConfig(): ClerkConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CLERK_API_KEY!,
-    environment: env as ClerkConfig['environment'],
-    webhookSecret: process.env.CLERK_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
@@ -158,7 +97,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store Clerk API keys securely using the platform's secrets management.
@@ -182,24 +121,6 @@ Test the health check endpoint to confirm Clerk connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add clerk_api_key "$CLERK_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CLERK_API_KEY="$CLERK_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

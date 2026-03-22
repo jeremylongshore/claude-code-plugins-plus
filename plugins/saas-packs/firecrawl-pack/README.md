@@ -17,8 +17,8 @@
 | `firecrawl-hello-world` | Hello World |
 | `firecrawl-local-dev-loop` | Local Dev Loop |
 | `firecrawl-sdk-patterns` | Sdk Patterns |
-| `firecrawl-core-workflow-a` | Core Workflow A |
-| `firecrawl-core-workflow-b` | Core Workflow B |
+| `firecrawl-deploy-preview` | Deploy Preview |
+| `firecrawl-build-configure` | Build Configure |
 | `firecrawl-common-errors` | Common Errors |
 | `firecrawl-debug-bundle` | Debug Bundle |
 | `firecrawl-rate-limits` | Rate Limits |

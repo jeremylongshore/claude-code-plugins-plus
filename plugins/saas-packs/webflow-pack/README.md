@@ -17,8 +17,8 @@
 | `webflow-hello-world` | Hello World |
 | `webflow-local-dev-loop` | Local Dev Loop |
 | `webflow-sdk-patterns` | Sdk Patterns |
-| `webflow-core-workflow-a` | Core Workflow A |
-| `webflow-core-workflow-b` | Core Workflow B |
+| `webflow-export-assets` | Export Assets |
+| `webflow-design-token-sync` | Design Token Sync |
 | `webflow-common-errors` | Common Errors |
 | `webflow-debug-bundle` | Debug Bundle |
 | `webflow-rate-limits` | Rate Limits |

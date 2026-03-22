@@ -17,8 +17,8 @@
 | `clickup-hello-world` | Hello World |
 | `clickup-local-dev-loop` | Local Dev Loop |
 | `clickup-sdk-patterns` | Sdk Patterns |
-| `clickup-core-workflow-a` | Core Workflow A |
-| `clickup-core-workflow-b` | Core Workflow B |
+| `clickup-content-management` | Content Management |
+| `clickup-search-retrieve` | Search Retrieve |
 | `clickup-common-errors` | Common Errors |
 | `clickup-debug-bundle` | Debug Bundle |
 | `clickup-rate-limits` | Rate Limits |

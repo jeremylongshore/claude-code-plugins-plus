@@ -17,8 +17,8 @@
 | `persona-hello-world` | Hello World |
 | `persona-local-dev-loop` | Local Dev Loop |
 | `persona-sdk-patterns` | Sdk Patterns |
-| `persona-core-workflow-a` | Core Workflow A |
-| `persona-core-workflow-b` | Core Workflow B |
+| `persona-entity-management` | Entity Management |
+| `persona-data-sync` | Data Sync |
 | `persona-common-errors` | Common Errors |
 | `persona-debug-bundle` | Debug Bundle |
 | `persona-rate-limits` | Rate Limits |

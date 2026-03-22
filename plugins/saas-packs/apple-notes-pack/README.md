@@ -17,8 +17,8 @@
 | `apple-notes-hello-world` | Hello World |
 | `apple-notes-local-dev-loop` | Local Dev Loop |
 | `apple-notes-sdk-patterns` | Sdk Patterns |
-| `apple-notes-core-workflow-a` | Core Workflow A |
-| `apple-notes-core-workflow-b` | Core Workflow B |
+| `apple-notes-content-management` | Content Management |
+| `apple-notes-search-retrieve` | Search Retrieve |
 | `apple-notes-common-errors` | Common Errors |
 | `apple-notes-debug-bundle` | Debug Bundle |
 | `apple-notes-rate-limits` | Rate Limits |

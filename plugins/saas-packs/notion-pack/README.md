@@ -17,8 +17,8 @@
 | `notion-hello-world` | Hello World |
 | `notion-local-dev-loop` | Local Dev Loop |
 | `notion-sdk-patterns` | Sdk Patterns |
-| `notion-core-workflow-a` | Core Workflow A |
-| `notion-core-workflow-b` | Core Workflow B |
+| `notion-content-management` | Content Management |
+| `notion-search-retrieve` | Search Retrieve |
 | `notion-common-errors` | Common Errors |
 | `notion-debug-bundle` | Debug Bundle |
 | `notion-rate-limits` | Rate Limits |

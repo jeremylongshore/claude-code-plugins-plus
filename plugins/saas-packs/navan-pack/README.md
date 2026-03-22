@@ -17,8 +17,8 @@
 | `navan-hello-world` | Hello World |
 | `navan-local-dev-loop` | Local Dev Loop |
 | `navan-sdk-patterns` | Sdk Patterns |
-| `navan-core-workflow-a` | Core Workflow A |
-| `navan-core-workflow-b` | Core Workflow B |
+| `navan-entity-management` | Entity Management |
+| `navan-data-sync` | Data Sync |
 | `navan-common-errors` | Common Errors |
 | `navan-debug-bundle` | Debug Bundle |
 | `navan-rate-limits` | Rate Limits |

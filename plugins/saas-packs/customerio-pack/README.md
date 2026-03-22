@@ -17,8 +17,8 @@
 | `customerio-hello-world` | Hello World |
 | `customerio-local-dev-loop` | Local Dev Loop |
 | `customerio-sdk-patterns` | Sdk Patterns |
-| `customerio-core-workflow-a` | Core Workflow A |
-| `customerio-core-workflow-b` | Core Workflow B |
+| `customerio-campaign-delivery` | Campaign Delivery |
+| `customerio-event-tracking` | Event Tracking |
 | `customerio-common-errors` | Common Errors |
 | `customerio-debug-bundle` | Debug Bundle |
 | `customerio-rate-limits` | Rate Limits |

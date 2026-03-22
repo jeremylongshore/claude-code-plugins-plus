@@ -1,11 +1,11 @@
 ---
 name: posthog-deploy-integration
 description: |
-  Deploy PostHog integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy PostHog integrations to production platforms.
   Use when deploying PostHog-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy posthog", "posthog Vercel",
-  "posthog production deploy", "posthog Cloud Run", "posthog Fly.io".
+  Trigger with phrases like "deploy posthog", "posthog production",
+  "posthog production deploy", "posthog CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,10 @@ tags: [saas, posthog]
 # PostHog Deploy Integration
 
 ## Overview
-Deploy PostHog-powered applications to popular platforms with proper secrets management.
+
+Deploy PostHog integrations as data pipeline workers — persistent services that
+maintain database connections, run scheduled queries, and process data continuously.
+
 
 ## Prerequisites
 - PostHog API keys for production environment
@@ -25,118 +28,48 @@ Deploy PostHog-powered applications to popular platforms with proper secrets man
 - Application code ready for deployment
 - Environment variables documented
 
-## Vercel Deployment
 
-### Environment Setup
-```bash
-# Add PostHog secrets to Vercel
-vercel secrets add posthog_api_key sk_live_***
-vercel secrets add posthog_webhook_secret whsec_***
+## Data Pipeline Worker (Recommended for Data Platforms)
 
-# Link to project
-vercel link
+### Why Persistent Worker?
+Data platform integrations need persistent database connections and often run
+scheduled jobs — ETL pipelines, materialized view refreshes, data syncs.
 
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "POSTHOG_API_KEY": "@posthog_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-posthog-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set PostHog secrets
-fly secrets set POSTHOG_API_KEY=sk_live_***
-fly secrets set POSTHOG_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+### Docker Worker
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+# Long-running worker with connection pooling
+CMD ["node", "worker.js"]
 ```
 
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="posthog-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=POSTHOG_API_KEY=posthog-api-key:latest
-```
-
-## Environment Configuration Pattern
-
+### Connection Pooling
 ```typescript
-// config/posthog.ts
-interface PostHogConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// worker.ts — maintains connection pool across requests
+import { Pool } from '@posthog/sdk';
 
-export function getPostHogConfig(): PostHogConfig {
-  const env = process.env.NODE_ENV || 'development';
+const pool = new Pool({
+  connectionString: process.env.POSTHOG_DATABASE_URL,
+  max: 20,
+  min: 5,
+  idleTimeoutMillis: 30000,
+});
 
-  return {
-    apiKey: process.env.POSTHOG_API_KEY!,
-    environment: env as PostHogConfig['environment'],
-    webhookSecret: process.env.POSTHOG_WEBHOOK_SECRET,
-  };
-}
+// Graceful shutdown
+process.on('SIGTERM', () => pool.end());
 ```
+
+### Deploy to Cloud Run
+```bash
+gcloud run deploy posthog-worker \
+  --image gcr.io/$PROJECT_ID/posthog-worker \
+  --min-instances=1 \
+  --set-secrets=POSTHOG_DATABASE_URL=posthog-db-url:latest
+```
+
 
 ## Health Check Endpoint
 
@@ -158,7 +91,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store PostHog API keys securely using the platform's secrets management.
@@ -182,24 +115,6 @@ Test the health check endpoint to confirm PostHog connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add posthog_api_key "$POSTHOG_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set POSTHOG_API_KEY="$POSTHOG_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

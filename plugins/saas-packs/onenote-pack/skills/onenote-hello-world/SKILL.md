@@ -17,7 +17,9 @@ tags: [saas, onenote]
 # OneNote Hello World
 
 ## Overview
-Minimal working example demonstrating core OneNote functionality.
+
+List your workspace pages and read content from OneNote.
+
 
 ## Prerequisites
 - Completed `onenote-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { OneNoteClient } from '@onenote/sdk';
 
 const client = new OneNoteClient({
+
   apiKey: process.env.ONENOTE_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your OneNote connection is working.
 import { OneNoteClient } from '@onenote/sdk';
 
 const client = new OneNoteClient({
+
   apiKey: process.env.ONENOTE_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from onenote import OneNoteClient
 
 client = OneNoteClient()
 
-# Your first API call here
+pages = client.pages.list(limit=5)
+print(f"Found {pages.total} pages. Recent:")
+for p in pages.results:
+    print(f"  - {p.title} (edited: {p.last_edited})")
+
 ```
 
 ## Resources

@@ -17,8 +17,8 @@
 | `flexport-hello-world` | Hello World |
 | `flexport-local-dev-loop` | Local Dev Loop |
 | `flexport-sdk-patterns` | Sdk Patterns |
-| `flexport-core-workflow-a` | Core Workflow A |
-| `flexport-core-workflow-b` | Core Workflow B |
+| `flexport-entity-management` | Entity Management |
+| `flexport-data-sync` | Data Sync |
 | `flexport-common-errors` | Common Errors |
 | `flexport-debug-bundle` | Debug Bundle |
 | `flexport-rate-limits` | Rate Limits |

@@ -17,7 +17,9 @@ tags: [saas, castai]
 # Cast AI Hello World
 
 ## Overview
-Minimal working example demonstrating core Cast AI functionality.
+
+List your monitored projects and check system status via Cast AI.
+
 
 ## Prerequisites
 - Completed `castai-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { CastAIClient } from '@castai/sdk';
 
 const client = new CastAIClient({
+
   apiKey: process.env.CASTAI_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Monitoring ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name}: ${p.status} (${p.eventCount} events/24h)`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Cast AI connection is working.
 import { CastAIClient } from '@castai/sdk';
 
 const client = new CastAIClient({
+
   apiKey: process.env.CASTAI_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const projects = await client.projects.list();
+console.log(`Monitoring ${projects.length} projects:`);
+projects.forEach(p => console.log(`  - ${p.name}: ${p.status} (${p.eventCount} events/24h)`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from castai import CastAIClient
 
 client = CastAIClient()
 
-# Your first API call here
+projects = client.projects.list()
+print(f"Monitoring {len(projects)} projects:")
+for p in projects:
+    print(f"  - {p.name}: {p.status} ({p.event_count} events/24h)")
+
 ```
 
 ## Resources

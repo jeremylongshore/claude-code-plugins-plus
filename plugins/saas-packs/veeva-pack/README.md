@@ -17,8 +17,8 @@
 | `veeva-hello-world` | Hello World |
 | `veeva-local-dev-loop` | Local Dev Loop |
 | `veeva-sdk-patterns` | Sdk Patterns |
-| `veeva-core-workflow-a` | Core Workflow A |
-| `veeva-core-workflow-b` | Core Workflow B |
+| `veeva-entity-management` | Entity Management |
+| `veeva-data-sync` | Data Sync |
 | `veeva-common-errors` | Common Errors |
 | `veeva-debug-bundle` | Debug Bundle |
 | `veeva-rate-limits` | Rate Limits |

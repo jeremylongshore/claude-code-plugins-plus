@@ -23,7 +23,9 @@ Set up Finta SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Finta account with API access
+
 - API key from Finta dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install finta
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export FINTA_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export FINTA_API_KEY="your-api-key"
 echo 'FINTA_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const status = await client.health.check();
+console.log(`API status: ${status.operational ? 'OK' : 'Degraded'}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Finta dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.finta.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'FINTA_API_KEY=your-api-key' >> .env
 import { FintaClient } from '@finta/sdk';
 
 const client = new FintaClient({
+
   apiKey: process.env.FINTA_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new FintaClient({
 from finta import FintaClient
 
 client = FintaClient(
+
     api_key=os.environ.get('FINTA_API_KEY')
+
 )
 ```
 

@@ -17,8 +17,8 @@
 | `attio-hello-world` | Hello World |
 | `attio-local-dev-loop` | Local Dev Loop |
 | `attio-sdk-patterns` | Sdk Patterns |
-| `attio-core-workflow-a` | Core Workflow A |
-| `attio-core-workflow-b` | Core Workflow B |
+| `attio-contact-sync` | Contact Sync |
+| `attio-deal-pipeline` | Deal Pipeline |
 | `attio-common-errors` | Common Errors |
 | `attio-debug-bundle` | Debug Bundle |
 | `attio-rate-limits` | Rate Limits |

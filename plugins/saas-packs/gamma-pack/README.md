@@ -17,8 +17,8 @@
 | `gamma-hello-world` | Hello World |
 | `gamma-local-dev-loop` | Local Dev Loop |
 | `gamma-sdk-patterns` | Sdk Patterns |
-| `gamma-core-workflow-a` | Core Workflow A |
-| `gamma-core-workflow-b` | Core Workflow B |
+| `gamma-export-assets` | Export Assets |
+| `gamma-design-token-sync` | Design Token Sync |
 | `gamma-common-errors` | Common Errors |
 | `gamma-debug-bundle` | Debug Bundle |
 | `gamma-rate-limits` | Rate Limits |

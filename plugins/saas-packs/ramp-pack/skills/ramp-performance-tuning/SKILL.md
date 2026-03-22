@@ -29,9 +29,9 @@ Optimize Ramp API performance with caching, batching, and connection pooling.
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Transaction List | 150ms | 500ms | 1200ms |
+| Transaction Create | 500ms | 1500ms | 5000ms |
+| Report Generation | 5s | 30s | 120s |
 
 ## Caching Strategy
 

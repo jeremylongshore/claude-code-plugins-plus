@@ -17,7 +17,9 @@ tags: [saas, groq]
 # Groq Hello World
 
 ## Overview
-Minimal working example demonstrating core Groq functionality.
+
+Send your first prompt to the Groq API and get a model response back.
+
 
 ## Prerequisites
 - Completed `groq-install-auth` setup
@@ -34,14 +36,22 @@ Create a new file for your hello world example.
 import { GroqClient } from '@groq/sdk';
 
 const client = new GroqClient({
+
   apiKey: process.env.GROQ_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -70,11 +80,19 @@ Success! Your Groq connection is working.
 import { GroqClient } from '@groq/sdk';
 
 const client = new GroqClient({
+
   apiKey: process.env.GROQ_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -86,7 +104,13 @@ from groq import GroqClient
 
 client = GroqClient()
 
-# Your first API call here
+response = client.chat.completions.create(
+    model="default",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+    max_tokens=64,
+)
+print(response.choices[0].message.content)
+
 ```
 
 ## Resources

@@ -17,8 +17,8 @@
 | `retellai-hello-world` | Hello World |
 | `retellai-local-dev-loop` | Local Dev Loop |
 | `retellai-sdk-patterns` | Sdk Patterns |
-| `retellai-core-workflow-a` | Core Workflow A |
-| `retellai-core-workflow-b` | Core Workflow B |
+| `retellai-model-inference` | Model Inference |
+| `retellai-embeddings-search` | Embeddings Search |
 | `retellai-common-errors` | Common Errors |
 | `retellai-debug-bundle` | Debug Bundle |
 | `retellai-rate-limits` | Rate Limits |

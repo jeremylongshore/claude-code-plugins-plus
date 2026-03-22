@@ -17,7 +17,9 @@ tags: [saas, maintainx]
 # MaintainX Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common MaintainX errors and their solutions.
+
 
 ## Prerequisites
 - MaintainX SDK installed
@@ -42,48 +44,59 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Insufficient Permissions
 **Error Message:**
 ```
-Authentication error: Invalid API key
+403 Forbidden: API key lacks 'entities.write' scope
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** API token doesn't have the required OAuth scope or RBAC role.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $MAINTAINX_API_KEY
+# Check required scopes in API docs
+# Re-create token with correct scopes
+# Enterprise platforms often require admin to approve API access
+# Some operations need org-level admin, not just workspace-level
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Entity Validation Failed
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+422 Unprocessable Entity: Field 'industry_code' must match pattern ^[A-Z]{2}\d{4}$
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Domain-specific validation rules on entity fields (industry codes, formats, ranges).
 
 **Solution:**
-Implement exponential backoff. See `maintainx-rate-limits` skill.
+# Fetch field validation rules: client.schema.get('entity_type')
+# Enterprise platforms have strict domain-specific validations
+# Pre-validate data against schema before API submission
+
 
 ---
 
-### Network Timeout
+### Concurrent Modification
 **Error Message:**
 ```
-Request timeout after 30000ms
+409 Conflict: Entity was modified by another process (version mismatch)
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Optimistic locking — another user or integration updated the entity since you read it.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Read latest version before update (optimistic concurrency)
+const latest = await client.entities.get(id);
+await client.entities.update(id, { ...changes, version: latest.version });
+# Implement retry with re-read on 409
+
 ```
+
+
 
 ## Examples
 

@@ -17,8 +17,8 @@
 | `intercom-hello-world` | Hello World |
 | `intercom-local-dev-loop` | Local Dev Loop |
 | `intercom-sdk-patterns` | Sdk Patterns |
-| `intercom-core-workflow-a` | Core Workflow A |
-| `intercom-core-workflow-b` | Core Workflow B |
+| `intercom-campaign-delivery` | Campaign Delivery |
+| `intercom-event-tracking` | Event Tracking |
 | `intercom-common-errors` | Common Errors |
 | `intercom-debug-bundle` | Debug Bundle |
 | `intercom-rate-limits` | Rate Limits |

@@ -17,7 +17,9 @@ tags: [saas, apple-notes]
 # Apple Notes Common Errors
 
 ## Overview
+
 Quick reference for the top 10 most common Apple Notes errors and their solutions.
+
 
 ## Prerequisites
 - Apple Notes SDK installed
@@ -42,48 +44,57 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Integration Not Connected
 **Error Message:**
 ```
-Authentication error: Invalid API key
+401 Unauthorized: Integration token is not connected to this workspace
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** API integration hasn't been added to the workspace, or token lacks page access.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $APPLE-NOTES_API_KEY
+# Add integration in workspace settings → Connections
+# Share specific pages/databases with the integration
+# Use "internal integration" for full workspace access
+
 ```
+
+---
+
+### Page Not Found
+**Error Message:**
+```
+404 Not Found: Could not find page with ID abc-123
+```
+
+**Cause:** Page was deleted, archived, or integration lacks access to it.
+
+**Solution:**
+# Check if page was moved to trash (search with in_trash filter)
+# Verify integration has access (page must be shared with integration)
+# Use search API instead of direct ID access
+
 
 ---
 
 ### Rate Limit Exceeded
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+429 Too Many Requests: Rate limit exceeded. Retry after 1 second.
 ```
 
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `apple-notes-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Exceeded 3 requests/second (typical for productivity APIs).
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Productivity APIs have strict per-second limits (3-10 req/s)
+# Use batch endpoints where available
+# Implement request queue with 334ms minimum spacing
+
 ```
+
+
 
 ## Examples
 

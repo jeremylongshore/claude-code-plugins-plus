@@ -17,8 +17,8 @@
 | `brightdata-hello-world` | Hello World |
 | `brightdata-local-dev-loop` | Local Dev Loop |
 | `brightdata-sdk-patterns` | Sdk Patterns |
-| `brightdata-core-workflow-a` | Core Workflow A |
-| `brightdata-core-workflow-b` | Core Workflow B |
+| `brightdata-monitor-alert` | Monitor Alert |
+| `brightdata-resource-management` | Resource Management |
 | `brightdata-common-errors` | Common Errors |
 | `brightdata-debug-bundle` | Debug Bundle |
 | `brightdata-rate-limits` | Rate Limits |

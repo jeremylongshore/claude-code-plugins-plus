@@ -1,11 +1,11 @@
 ---
 name: alchemy-deploy-integration
 description: |
-  Deploy Alchemy integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Alchemy integrations to production platforms.
   Use when deploying Alchemy-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy alchemy", "alchemy Vercel",
-  "alchemy production deploy", "alchemy Cloud Run", "alchemy Fly.io".
+  Trigger with phrases like "deploy alchemy", "alchemy production",
+  "alchemy production deploy", "alchemy CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,10 @@ tags: [saas, alchemy]
 # Alchemy Deploy Integration
 
 ## Overview
-Deploy Alchemy-powered applications to popular platforms with proper secrets management.
+
+Deploy Alchemy integrations as secure webhook workers with HMAC signature
+verification, idempotent processing, and dead-letter queues for reliability.
+
 
 ## Prerequisites
 - Alchemy API keys for production environment
@@ -25,118 +28,52 @@ Deploy Alchemy-powered applications to popular platforms with proper secrets man
 - Application code ready for deployment
 - Environment variables documented
 
-## Vercel Deployment
 
-### Environment Setup
-```bash
-# Add Alchemy secrets to Vercel
-vercel secrets add alchemy_api_key sk_live_***
-vercel secrets add alchemy_webhook_secret whsec_***
+## Webhook Worker (Recommended for Fintech)
 
-# Link to project
-vercel link
+### Why Webhooks?
+Alchemy sends events (transaction completed, card authorized)
+to your endpoint. Your worker processes these events and triggers downstream actions.
 
-# Deploy preview
-vercel
+### Webhook Endpoint
+```typescript
+// api/webhooks/alchemy.ts
+export default async function handler(req: Request) {
 
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "ALCHEMY_API_KEY": "@alchemy_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+  // CRITICAL: Verify HMAC signature before processing
+  const signature = req.headers.get('x-alchemy-signature');
+  const body = await req.text();
+  const expected = crypto.createHmac('sha256', process.env.ALCHEMY_WEBHOOK_SECRET!)
+    .update(body).digest('hex');
+  if (!crypto.timingSafeEqual(Buffer.from(signature!), Buffer.from(expected))) {
+    return new Response('Invalid signature', { status: 401 });
   }
+  const event = JSON.parse(body);
+
+
+  switch (event.type) {
+
+    case 'transaction.completed':
+      await syncToAccounting(event.data.transaction);
+      break;
+    case 'card.declined':
+      await alertTeam(event.data);
+      break;
+
+  }
+
+  return new Response('OK', { status: 200 });
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-alchemy-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
+### Deploy
 ```bash
-# Set Alchemy secrets
-fly secrets set ALCHEMY_API_KEY=sk_live_***
-fly secrets set ALCHEMY_WEBHOOK_SECRET=whsec_***
-
-# Deploy
+# Fly.io — always-on, auto-TLS, persistent
+fly secrets set ALCHEMY_API_KEY="$ALCHEMY_API_KEY"
+fly secrets set ALCHEMY_WEBHOOK_SECRET="$ALCHEMY_WEBHOOK_SECRET"
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="alchemy-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ALCHEMY_API_KEY=alchemy-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/alchemy.ts
-interface AlchemyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getAlchemyConfig(): AlchemyConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ALCHEMY_API_KEY!,
-    environment: env as AlchemyConfig['environment'],
-    webhookSecret: process.env.ALCHEMY_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
@@ -158,7 +95,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store Alchemy API keys securely using the platform's secrets management.
@@ -182,24 +119,6 @@ Test the health check endpoint to confirm Alchemy connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add alchemy_api_key "$ALCHEMY_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ALCHEMY_API_KEY="$ALCHEMY_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

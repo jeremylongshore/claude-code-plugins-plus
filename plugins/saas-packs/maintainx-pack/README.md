@@ -17,8 +17,8 @@
 | `maintainx-hello-world` | Hello World |
 | `maintainx-local-dev-loop` | Local Dev Loop |
 | `maintainx-sdk-patterns` | Sdk Patterns |
-| `maintainx-core-workflow-a` | Core Workflow A |
-| `maintainx-core-workflow-b` | Core Workflow B |
+| `maintainx-entity-management` | Entity Management |
+| `maintainx-data-sync` | Data Sync |
 | `maintainx-common-errors` | Common Errors |
 | `maintainx-debug-bundle` | Debug Bundle |
 | `maintainx-rate-limits` | Rate Limits |

@@ -17,8 +17,8 @@
 | `langchain-hello-world` | Hello World |
 | `langchain-local-dev-loop` | Local Dev Loop |
 | `langchain-sdk-patterns` | Sdk Patterns |
-| `langchain-core-workflow-a` | Core Workflow A |
-| `langchain-core-workflow-b` | Core Workflow B |
+| `langchain-model-inference` | Model Inference |
+| `langchain-embeddings-search` | Embeddings Search |
 | `langchain-common-errors` | Common Errors |
 | `langchain-debug-bundle` | Debug Bundle |
 | `langchain-rate-limits` | Rate Limits |

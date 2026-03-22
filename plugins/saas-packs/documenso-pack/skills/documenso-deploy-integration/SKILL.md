@@ -1,11 +1,11 @@
 ---
 name: documenso-deploy-integration
 description: |
-  Deploy Documenso integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Documenso integrations to production platforms.
   Use when deploying Documenso-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy documenso", "documenso Vercel",
-  "documenso production deploy", "documenso Cloud Run", "documenso Fly.io".
+  Trigger with phrases like "deploy documenso", "documenso production",
+  "documenso production deploy", "documenso CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,9 @@ tags: [saas, documenso]
 # Documenso Deploy Integration
 
 ## Overview
+
 Deploy Documenso-powered applications to popular platforms with proper secrets management.
+
 
 ## Prerequisites
 - Documenso API keys for production environment
@@ -25,21 +27,14 @@ Deploy Documenso-powered applications to popular platforms with proper secrets m
 - Application code ready for deployment
 - Environment variables documented
 
+
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add Documenso secrets to Vercel
 vercel secrets add documenso_api_key sk_live_***
 vercel secrets add documenso_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,67 +71,10 @@ primary_region = "iad"
 
 ### Secrets
 ```bash
-# Set Documenso secrets
 fly secrets set DOCUMENSO_API_KEY=sk_live_***
-fly secrets set DOCUMENSO_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="documenso-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=DOCUMENSO_API_KEY=documenso-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/documenso.ts
-interface DocumensoConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getDocumensoConfig(): DocumensoConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.DOCUMENSO_API_KEY!,
-    environment: env as DocumensoConfig['environment'],
-    webhookSecret: process.env.DOCUMENSO_WEBHOOK_SECRET,
-  };
-}
-```
 
 ## Health Check Endpoint
 
@@ -158,7 +96,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store Documenso API keys securely using the platform's secrets management.
@@ -182,24 +120,6 @@ Test the health check endpoint to confirm Documenso connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add documenso_api_key "$DOCUMENSO_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set DOCUMENSO_API_KEY="$DOCUMENSO_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

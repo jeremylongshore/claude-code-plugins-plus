@@ -17,8 +17,8 @@
 | `twinmind-hello-world` | Hello World |
 | `twinmind-local-dev-loop` | Local Dev Loop |
 | `twinmind-sdk-patterns` | Sdk Patterns |
-| `twinmind-core-workflow-a` | Core Workflow A |
-| `twinmind-core-workflow-b` | Core Workflow B |
+| `twinmind-model-inference` | Model Inference |
+| `twinmind-embeddings-search` | Embeddings Search |
 | `twinmind-common-errors` | Common Errors |
 | `twinmind-debug-bundle` | Debug Bundle |
 | `twinmind-rate-limits` | Rate Limits |

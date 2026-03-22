@@ -17,8 +17,8 @@
 | `windsurf-hello-world` | Hello World |
 | `windsurf-local-dev-loop` | Local Dev Loop |
 | `windsurf-sdk-patterns` | Sdk Patterns |
-| `windsurf-core-workflow-a` | Core Workflow A |
-| `windsurf-core-workflow-b` | Core Workflow B |
+| `windsurf-deploy-preview` | Deploy Preview |
+| `windsurf-build-configure` | Build Configure |
 | `windsurf-common-errors` | Common Errors |
 | `windsurf-debug-bundle` | Debug Bundle |
 | `windsurf-rate-limits` | Rate Limits |

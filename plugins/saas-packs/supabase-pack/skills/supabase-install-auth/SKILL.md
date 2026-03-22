@@ -23,7 +23,10 @@ Set up Supabase SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Supabase account with API access
-- API key from Supabase dashboard
+
+- Database connection string or API key from Supabase dashboard
+- Network access to database host (check firewall/VPC rules)
+
 
 ## Instructions
 
@@ -37,13 +40,21 @@ pip install supabase
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
-# Set environment variable
+# Set connection string (preferred for database platforms)
+export SUPABASE_DATABASE_URL="postgresql://user:pass@host:5432/db"
+
+# Or use API key
 export SUPABASE_API_KEY="your-api-key"
 
 # Or create .env file
-echo 'SUPABASE_API_KEY=your-api-key' >> .env
+cat >> .env << 'EOF'
+SUPABASE_DATABASE_URL=postgresql://user:pass@host:5432/db
+SUPABASE_API_KEY=your-api-key
+EOF
 ```
+
 
 ### Step 3: Verify Connection
 ```typescript
@@ -52,14 +63,18 @@ const result = await supabase.from('_test').select('*').limit(1); console.log(re
 
 ## Output
 - Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- Connection string or API key configured in environment
+- Successful query execution confirming database connectivity
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Supabase dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://supabase.com/docs |
+
+| Connection Refused | Wrong host/port or firewall blocking | Check connection string, verify network access |
+| Authentication Failed | Wrong password or expired credentials | Reset credentials in Supabase dashboard |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +85,9 @@ const result = await supabase.from('_test').select('*').limit(1); console.log(re
 import { SupabaseClient } from '@supabase/supabase-js';
 
 const client = new SupabaseClient({
-  apiKey: process.env.SUPABASE_API_KEY,
+
+  connectionString: process.env.SUPABASE_DATABASE_URL,
+
 });
 ```
 
@@ -79,7 +96,9 @@ const client = new SupabaseClient({
 from supabase import SupabaseClient
 
 client = SupabaseClient(
-    api_key=os.environ.get('SUPABASE_API_KEY')
+
+    connection_string=os.environ.get('SUPABASE_DATABASE_URL')
+
 )
 ```
 

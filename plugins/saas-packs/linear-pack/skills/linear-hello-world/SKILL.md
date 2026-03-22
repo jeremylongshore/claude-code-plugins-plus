@@ -17,7 +17,9 @@ tags: [saas, linear]
 # Linear Hello World
 
 ## Overview
-Minimal working example demonstrating core Linear functionality.
+
+List your workspace pages and read content from Linear.
+
 
 ## Prerequisites
 - Completed `linear-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { LinearClient } from '@linear/sdk';
 
 const client = new LinearClient({
+
   apiKey: process.env.LINEAR_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Linear connection is working.
 import { LinearClient } from '@linear/sdk';
 
 const client = new LinearClient({
+
   apiKey: process.env.LINEAR_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const pages = await client.pages.list({ limit: 5 });
+console.log(`Found ${pages.total} pages. Recent:`);
+pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from linear import LinearClient
 
 client = LinearClient()
 
-# Your first API call here
+pages = client.pages.list(limit=5)
+print(f"Found {pages.total} pages. Recent:")
+for p in pages.results:
+    print(f"  - {p.title} (edited: {p.last_edited})")
+
 ```
 
 ## Resources

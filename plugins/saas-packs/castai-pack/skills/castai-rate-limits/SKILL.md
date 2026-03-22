@@ -30,9 +30,9 @@ Handle Cast AI rate limits gracefully with exponential backoff and idempotency.
 
 | Tier | Requests/min | Requests/day | Burst |
 |------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Developer | 100 | 10,000 | 10 |
+| Team | 1,000 | 100,000 | 50 |
+| Business / Enterprise | 10,000 | Unlimited | 200 |
 
 ### Step 2: Implement Exponential Backoff with Jitter
 

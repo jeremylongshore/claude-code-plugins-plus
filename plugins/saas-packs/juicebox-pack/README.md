@@ -17,8 +17,8 @@
 | `juicebox-hello-world` | Hello World |
 | `juicebox-local-dev-loop` | Local Dev Loop |
 | `juicebox-sdk-patterns` | Sdk Patterns |
-| `juicebox-core-workflow-a` | Core Workflow A |
-| `juicebox-core-workflow-b` | Core Workflow B |
+| `juicebox-contact-sync` | Contact Sync |
+| `juicebox-deal-pipeline` | Deal Pipeline |
 | `juicebox-common-errors` | Common Errors |
 | `juicebox-debug-bundle` | Debug Bundle |
 | `juicebox-rate-limits` | Rate Limits |

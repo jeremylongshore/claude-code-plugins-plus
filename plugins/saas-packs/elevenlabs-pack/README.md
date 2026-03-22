@@ -17,8 +17,8 @@
 | `elevenlabs-hello-world` | Hello World |
 | `elevenlabs-local-dev-loop` | Local Dev Loop |
 | `elevenlabs-sdk-patterns` | Sdk Patterns |
-| `elevenlabs-core-workflow-a` | Core Workflow A |
-| `elevenlabs-core-workflow-b` | Core Workflow B |
+| `elevenlabs-model-inference` | Model Inference |
+| `elevenlabs-embeddings-search` | Embeddings Search |
 | `elevenlabs-common-errors` | Common Errors |
 | `elevenlabs-debug-bundle` | Debug Bundle |
 | `elevenlabs-rate-limits` | Rate Limits |

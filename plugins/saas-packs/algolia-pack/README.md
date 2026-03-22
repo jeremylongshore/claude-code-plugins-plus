@@ -17,8 +17,8 @@
 | `algolia-hello-world` | Hello World |
 | `algolia-local-dev-loop` | Local Dev Loop |
 | `algolia-sdk-patterns` | Sdk Patterns |
-| `algolia-core-workflow-a` | Core Workflow A |
-| `algolia-core-workflow-b` | Core Workflow B |
+| `algolia-query-transform` | Query Transform |
+| `algolia-schema-migration` | Schema Migration |
 | `algolia-common-errors` | Common Errors |
 | `algolia-debug-bundle` | Debug Bundle |
 | `algolia-rate-limits` | Rate Limits |

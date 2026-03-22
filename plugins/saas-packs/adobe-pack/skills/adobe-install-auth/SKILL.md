@@ -23,7 +23,9 @@ Set up Adobe SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Adobe account with API access
-- API key from Adobe dashboard
+
+- OAuth2 access token or personal API token from Adobe settings
+
 
 ## Instructions
 
@@ -37,29 +39,40 @@ pip install adobe
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
-# Set environment variable
-export ADOBE_API_KEY="your-api-key"
+# OAuth2: Set access token (get from OAuth flow or personal tokens page)
+export ADOBE_ACCESS_TOKEN="your-access-token"
 
 # Or create .env file
-echo 'ADOBE_API_KEY=your-api-key' >> .env
+echo 'ADOBE_ACCESS_TOKEN=your-access-token' >> .env
 ```
+
+> **Note:** OAuth tokens expire. For production, implement the refresh token flow.
+> Personal access tokens (if available) are simpler for development.
+
 
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const me = await client.users.me();
+console.log(`Authenticated as ${me.name} — ${me.email}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+
+- OAuth access token configured in environment
+- Successful API call confirming file/project access
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Adobe dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.adobe.com |
+
+| Token Expired | OAuth access token past lifetime | Refresh token or generate new personal access token |
+| Insufficient Scope | Token missing required permissions | Re-authorize with correct OAuth scopes |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +83,9 @@ echo 'ADOBE_API_KEY=your-api-key' >> .env
 import { AdobeClient } from '@adobe/sdk';
 
 const client = new AdobeClient({
-  apiKey: process.env.ADOBE_API_KEY,
+
+  accessToken: process.env.ADOBE_ACCESS_TOKEN,
+
 });
 ```
 
@@ -79,7 +94,9 @@ const client = new AdobeClient({
 from adobe import AdobeClient
 
 client = AdobeClient(
-    api_key=os.environ.get('ADOBE_API_KEY')
+
+    access_token=os.environ.get('ADOBE_ACCESS_TOKEN')
+
 )
 ```
 

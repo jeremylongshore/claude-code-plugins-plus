@@ -29,9 +29,9 @@ Optimize HubSpot API performance with caching, batching, and connection pooling.
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Contact CRUD | 150ms | 400ms | 1000ms |
+| Search / Filter | 300ms | 800ms | 2000ms |
+| Batch Import (100 records) | 2s | 5s | 15s |
 
 ## Caching Strategy
 

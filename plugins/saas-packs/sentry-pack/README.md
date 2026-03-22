@@ -17,8 +17,8 @@
 | `sentry-hello-world` | Hello World |
 | `sentry-local-dev-loop` | Local Dev Loop |
 | `sentry-sdk-patterns` | Sdk Patterns |
-| `sentry-core-workflow-a` | Core Workflow A |
-| `sentry-core-workflow-b` | Core Workflow B |
+| `sentry-monitor-alert` | Monitor Alert |
+| `sentry-resource-management` | Resource Management |
 | `sentry-common-errors` | Common Errors |
 | `sentry-debug-bundle` | Debug Bundle |
 | `sentry-rate-limits` | Rate Limits |

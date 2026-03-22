@@ -17,7 +17,9 @@ tags: [saas, algolia]
 # Algolia Hello World
 
 ## Overview
-Minimal working example demonstrating core Algolia functionality.
+
+Run your first query against Algolia and read actual data back.
+
 
 ## Prerequisites
 - Completed `algolia-install-auth` setup
@@ -34,14 +36,18 @@ Create a new file for your hello world example.
 import { AlgoliaClient } from '@algolia/sdk';
 
 const client = new AlgoliaClient({
-  apiKey: process.env.ALGOLIA_API_KEY,
+
+  connectionString: process.env.ALGOLIA_DATABASE_URL,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -70,11 +76,15 @@ Success! Your Algolia connection is working.
 import { AlgoliaClient } from '@algolia/sdk';
 
 const client = new AlgoliaClient({
-  apiKey: process.env.ALGOLIA_API_KEY,
+
+  connectionString: process.env.ALGOLIA_DATABASE_URL,
+
 });
 
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -86,7 +96,9 @@ from algolia import AlgoliaClient
 
 client = AlgoliaClient()
 
-# Your first API call here
+result = client.query("SELECT 1 AS health_check")
+print("Connected:", "OK" if result[0]["health_check"] == 1 else "FAIL")
+
 ```
 
 ## Resources

@@ -17,8 +17,8 @@
 | `anima-hello-world` | Hello World |
 | `anima-local-dev-loop` | Local Dev Loop |
 | `anima-sdk-patterns` | Sdk Patterns |
-| `anima-core-workflow-a` | Core Workflow A |
-| `anima-core-workflow-b` | Core Workflow B |
+| `anima-export-assets` | Export Assets |
+| `anima-design-token-sync` | Design Token Sync |
 | `anima-common-errors` | Common Errors |
 | `anima-debug-bundle` | Debug Bundle |
 | `anima-rate-limits` | Rate Limits |

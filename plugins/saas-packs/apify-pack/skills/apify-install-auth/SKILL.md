@@ -23,7 +23,9 @@ Set up Apify SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Apify account with API access
+
 - API key from Apify dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install apify
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export APIFY_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export APIFY_API_KEY="your-api-key"
 echo 'APIFY_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const user = await client.user.get();
+console.log(`Authenticated as ${user.name} (${user.email})`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Apify dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.apify.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'APIFY_API_KEY=your-api-key' >> .env
 import { ApifyClient } from '@apify/sdk';
 
 const client = new ApifyClient({
+
   apiKey: process.env.APIFY_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new ApifyClient({
 from apify import ApifyClient
 
 client = ApifyClient(
+
     api_key=os.environ.get('APIFY_API_KEY')
+
 )
 ```
 

@@ -23,7 +23,9 @@ Set up Klaviyo SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Klaviyo account with API access
+
 - API key from Klaviyo dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install klaviyo
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export KLAVIYO_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export KLAVIYO_API_KEY="your-api-key"
 echo 'KLAVIYO_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const account = await client.account.get();
+console.log(`Connected: ${account.name} — ${account.plan} plan`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Klaviyo dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.klaviyo.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'KLAVIYO_API_KEY=your-api-key' >> .env
 import { KlaviyoClient } from '@klaviyo/sdk';
 
 const client = new KlaviyoClient({
+
   apiKey: process.env.KLAVIYO_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new KlaviyoClient({
 from klaviyo import KlaviyoClient
 
 client = KlaviyoClient(
+
     api_key=os.environ.get('KLAVIYO_API_KEY')
+
 )
 ```
 

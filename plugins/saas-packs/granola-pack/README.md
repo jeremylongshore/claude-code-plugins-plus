@@ -17,8 +17,8 @@
 | `granola-hello-world` | Hello World |
 | `granola-local-dev-loop` | Local Dev Loop |
 | `granola-sdk-patterns` | Sdk Patterns |
-| `granola-core-workflow-a` | Core Workflow A |
-| `granola-core-workflow-b` | Core Workflow B |
+| `granola-content-management` | Content Management |
+| `granola-search-retrieve` | Search Retrieve |
 | `granola-common-errors` | Common Errors |
 | `granola-debug-bundle` | Debug Bundle |
 | `granola-rate-limits` | Rate Limits |

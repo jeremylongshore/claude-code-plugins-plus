@@ -17,8 +17,8 @@
 | `finta-hello-world` | Hello World |
 | `finta-local-dev-loop` | Local Dev Loop |
 | `finta-sdk-patterns` | Sdk Patterns |
-| `finta-core-workflow-a` | Core Workflow A |
-| `finta-core-workflow-b` | Core Workflow B |
+| `finta-transaction-processing` | Transaction Processing |
+| `finta-reporting-compliance` | Reporting Compliance |
 | `finta-common-errors` | Common Errors |
 | `finta-debug-bundle` | Debug Bundle |
 | `finta-rate-limits` | Rate Limits |

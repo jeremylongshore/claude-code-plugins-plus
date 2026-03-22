@@ -17,8 +17,8 @@
 | `anthropic-hello-world` | Hello World |
 | `anthropic-local-dev-loop` | Local Dev Loop |
 | `anthropic-sdk-patterns` | Sdk Patterns |
-| `anthropic-core-workflow-a` | Core Workflow A |
-| `anthropic-core-workflow-b` | Core Workflow B |
+| `anthropic-model-inference` | Model Inference |
+| `anthropic-embeddings-search` | Embeddings Search |
 | `anthropic-common-errors` | Common Errors |
 | `anthropic-debug-bundle` | Debug Bundle |
 | `anthropic-rate-limits` | Rate Limits |

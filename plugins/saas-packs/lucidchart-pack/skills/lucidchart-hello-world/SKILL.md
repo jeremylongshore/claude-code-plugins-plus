@@ -17,7 +17,9 @@ tags: [saas, lucidchart]
 # Lucidchart Hello World
 
 ## Overview
-Minimal working example demonstrating core Lucidchart functionality.
+
+Connect to Lucidchart and list your design files via the API.
+
 
 ## Prerequisites
 - Completed `lucidchart-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { LucidchartClient } from '@lucidchart/sdk';
 
 const client = new LucidchartClient({
-  apiKey: process.env.LUCIDCHART_API_KEY,
+
+  accessToken: process.env.LUCIDCHART_ACCESS_TOKEN,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Lucidchart connection is working.
 import { LucidchartClient } from '@lucidchart/sdk';
 
 const client = new LucidchartClient({
-  apiKey: process.env.LUCIDCHART_API_KEY,
+
+  accessToken: process.env.LUCIDCHART_ACCESS_TOKEN,
+
 });
 
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from lucidchart import LucidchartClient
 
 client = LucidchartClient()
 
-# Your first API call here
+files = client.files.list()
+print(f"Found {len(files)} design files:")
+for f in files[:5]:
+    print(f"  - {f.name} (modified: {f.last_modified})")
+
 ```
 
 ## Resources

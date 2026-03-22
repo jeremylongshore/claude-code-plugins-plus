@@ -17,8 +17,8 @@
 | `clickhouse-hello-world` | Hello World |
 | `clickhouse-local-dev-loop` | Local Dev Loop |
 | `clickhouse-sdk-patterns` | Sdk Patterns |
-| `clickhouse-core-workflow-a` | Core Workflow A |
-| `clickhouse-core-workflow-b` | Core Workflow B |
+| `clickhouse-query-transform` | Query Transform |
+| `clickhouse-schema-migration` | Schema Migration |
 | `clickhouse-common-errors` | Common Errors |
 | `clickhouse-debug-bundle` | Debug Bundle |
 | `clickhouse-rate-limits` | Rate Limits |

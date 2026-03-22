@@ -17,8 +17,8 @@
 | `cursor-hello-world` | Hello World |
 | `cursor-local-dev-loop` | Local Dev Loop |
 | `cursor-sdk-patterns` | Sdk Patterns |
-| `cursor-core-workflow-a` | Core Workflow A |
-| `cursor-core-workflow-b` | Core Workflow B |
+| `cursor-deploy-preview` | Deploy Preview |
+| `cursor-build-configure` | Build Configure |
 | `cursor-common-errors` | Common Errors |
 | `cursor-debug-bundle` | Debug Bundle |
 | `cursor-rate-limits` | Rate Limits |

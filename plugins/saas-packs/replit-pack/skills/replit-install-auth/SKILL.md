@@ -23,7 +23,9 @@ Set up Replit SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Replit account with API access
+
 - API key from Replit dashboard
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install replit
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export REPLIT_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export REPLIT_API_KEY="your-api-key"
 echo 'REPLIT_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const user = await client.user.get();
+console.log(`Authenticated as ${user.name} (${user.email})`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Replit dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.replit.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'REPLIT_API_KEY=your-api-key' >> .env
 import { ReplitClient } from '@replit/sdk';
 
 const client = new ReplitClient({
+
   apiKey: process.env.REPLIT_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new ReplitClient({
 from replit import ReplitClient
 
 client = ReplitClient(
+
     api_key=os.environ.get('REPLIT_API_KEY')
+
 )
 ```
 

@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-22T05:30:32.728Z",
+    "generated": "2026-03-22T21:08:00.260Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
     "totalPlugins": 415,
-    "totalSkills": 2789,
+    "totalSkills": 3098,
     "totalCommands": 75,
     "pluginsWithSkills": 388,
     "byCategory": {
@@ -44,7 +44,7 @@
     },
     "featured": 7,
     "new": 394,
-    "generatedAt": "2026-03-22T05:30:32.728Z"
+    "generatedAt": "2026-03-22T21:08:00.260Z"
   },
   "plugins": [
     {
@@ -9121,7 +9121,7 @@
         "lead-generation"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install apollo-pack",
       "sourcePath": "./plugins/saas-packs/apollo-pack",
@@ -9158,7 +9158,7 @@
         "user-management"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install clerk-pack",
       "sourcePath": "./plugins/saas-packs/clerk-pack",
@@ -9195,7 +9195,7 @@
         "push-notifications"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 33,
       "commandCount": 0,
       "installCommand": "/plugin install customerio-pack",
       "sourcePath": "./plugins/saas-packs/customerio-pack",
@@ -9232,7 +9232,7 @@
         "voice-ai"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install deepgram-pack",
       "sourcePath": "./plugins/saas-packs/deepgram-pack",
@@ -9268,7 +9268,7 @@
         "visual-content"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install gamma-pack",
       "sourcePath": "./plugins/saas-packs/gamma-pack",
@@ -9304,7 +9304,7 @@
         "meeting-intelligence"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install granola-pack",
       "sourcePath": "./plugins/saas-packs/granola-pack",
@@ -9340,7 +9340,7 @@
         "lead-enrichment"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install juicebox-pack",
       "sourcePath": "./plugins/saas-packs/juicebox-pack",
@@ -9377,7 +9377,7 @@
         "langsmith"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install langchain-pack",
       "sourcePath": "./plugins/saas-packs/langchain-pack",
@@ -9412,7 +9412,7 @@
         "intelligent-automation"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install lindy-pack",
       "sourcePath": "./plugins/saas-packs/lindy-pack",
@@ -9448,7 +9448,7 @@
         "team-collaboration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install linear-pack",
       "sourcePath": "./plugins/saas-packs/linear-pack",
@@ -9592,7 +9592,7 @@
         "lakehouse"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install databricks-pack",
       "sourcePath": "./plugins/saas-packs/databricks-pack",
@@ -9628,7 +9628,7 @@
         "open-source"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install documenso-pack",
       "sourcePath": "./plugins/saas-packs/documenso-pack",
@@ -9664,7 +9664,7 @@
         "organization"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install evernote-pack",
       "sourcePath": "./plugins/saas-packs/evernote-pack",
@@ -9700,7 +9700,7 @@
         "enterprise"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install guidewire-pack",
       "sourcePath": "./plugins/saas-packs/guidewire-pack",
@@ -9736,7 +9736,7 @@
         "monitoring"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install langfuse-pack",
       "sourcePath": "./plugins/saas-packs/langfuse-pack",
@@ -9772,7 +9772,7 @@
         "internationalization"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install lokalise-pack",
       "sourcePath": "./plugins/saas-packs/lokalise-pack",
@@ -9808,7 +9808,7 @@
         "operations"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install maintainx-pack",
       "sourcePath": "./plugins/saas-packs/maintainx-pack",
@@ -9844,7 +9844,7 @@
         "machine-learning"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install mistral-pack",
       "sourcePath": "./plugins/saas-packs/mistral-pack",
@@ -9880,7 +9880,7 @@
         "pkm"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install obsidian-pack",
       "sourcePath": "./plugins/saas-packs/obsidian-pack",
@@ -9916,7 +9916,7 @@
         "medicine"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install openevidence-pack",
       "sourcePath": "./plugins/saas-packs/openevidence-pack",
@@ -9952,7 +9952,7 @@
         "edtech"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install speak-pack",
       "sourcePath": "./plugins/saas-packs/speak-pack",
@@ -9988,7 +9988,7 @@
         "automation"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install twinmind-pack",
       "sourcePath": "./plugins/saas-packs/twinmind-pack",
@@ -10024,7 +10024,7 @@
         "ai-agents"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install clay-pack",
       "sourcePath": "./plugins/saas-packs/clay-pack",
@@ -10059,7 +10059,7 @@
         "github-integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install coderabbit-pack",
       "sourcePath": "./plugins/saas-packs/coderabbit-pack",
@@ -10095,7 +10095,7 @@
         "copilot-alternative"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 52,
       "commandCount": 0,
       "installCommand": "/plugin install cursor-pack",
       "sourcePath": "./plugins/saas-packs/cursor-pack",
@@ -10131,7 +10131,7 @@
         "embeddings"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install exa-pack",
       "sourcePath": "./plugins/saas-packs/exa-pack",
@@ -10167,7 +10167,7 @@
         "scraper"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install firecrawl-pack",
       "sourcePath": "./plugins/saas-packs/firecrawl-pack",
@@ -10201,7 +10201,7 @@
         "summaries"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install fireflies-pack",
       "sourcePath": "./plugins/saas-packs/fireflies-pack",
@@ -10237,7 +10237,7 @@
         "ai-acceleration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install groq-pack",
       "sourcePath": "./plugins/saas-packs/groq-pack",
@@ -10273,7 +10273,7 @@
         "design"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install ideogram-pack",
       "sourcePath": "./plugins/saas-packs/ideogram-pack",
@@ -10308,7 +10308,7 @@
         "sales"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install instantly-pack",
       "sourcePath": "./plugins/saas-packs/instantly-pack",
@@ -10344,7 +10344,7 @@
         "creative"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 50,
       "commandCount": 0,
       "installCommand": "/plugin install klingai-pack",
       "sourcePath": "./plugins/saas-packs/klingai-pack",
@@ -10379,7 +10379,7 @@
         "cost-optimization"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 51,
       "commandCount": 0,
       "installCommand": "/plugin install openrouter-pack",
       "sourcePath": "./plugins/saas-packs/openrouter-pack",
@@ -10415,7 +10415,7 @@
         "answers"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install perplexity-pack",
       "sourcePath": "./plugins/saas-packs/perplexity-pack",
@@ -10450,7 +10450,7 @@
         "experimentation"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install posthog-pack",
       "sourcePath": "./plugins/saas-packs/posthog-pack",
@@ -10486,7 +10486,7 @@
         "hosting"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install replit-pack",
       "sourcePath": "./plugins/saas-packs/replit-pack",
@@ -10522,7 +10522,7 @@
         "ivr"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install retellai-pack",
       "sourcePath": "./plugins/saas-packs/retellai-pack",
@@ -10558,7 +10558,7 @@
         "apm"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 35,
       "commandCount": 0,
       "installCommand": "/plugin install sentry-pack",
       "sourcePath": "./plugins/saas-packs/sentry-pack",
@@ -10594,7 +10594,7 @@
         "training"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install vastai-pack",
       "sourcePath": "./plugins/saas-packs/vastai-pack",
@@ -10630,7 +10630,7 @@
         "refactoring"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install windsurf-pack",
       "sourcePath": "./plugins/saas-packs/windsurf-pack",
@@ -12017,7 +12017,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install abridge-pack",
       "sourcePath": "./plugins/saas-packs/abridge-pack",
@@ -12050,7 +12050,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install adobe-pack",
       "sourcePath": "./plugins/saas-packs/adobe-pack",
@@ -12083,7 +12083,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install alchemy-pack",
       "sourcePath": "./plugins/saas-packs/alchemy-pack",
@@ -12116,7 +12116,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install algolia-pack",
       "sourcePath": "./plugins/saas-packs/algolia-pack",
@@ -12149,7 +12149,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install anima-pack",
       "sourcePath": "./plugins/saas-packs/anima-pack",
@@ -12182,7 +12182,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 62,
       "commandCount": 0,
       "installCommand": "/plugin install anthropic-pack",
       "sourcePath": "./plugins/saas-packs/anthropic-pack",
@@ -12215,7 +12215,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install apify-pack",
       "sourcePath": "./plugins/saas-packs/apify-pack",
@@ -12248,7 +12248,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install appfolio-pack",
       "sourcePath": "./plugins/saas-packs/appfolio-pack",
@@ -12282,7 +12282,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install apple-notes-pack",
       "sourcePath": "./plugins/saas-packs/apple-notes-pack",
@@ -12315,7 +12315,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install assemblyai-pack",
       "sourcePath": "./plugins/saas-packs/assemblyai-pack",
@@ -12348,7 +12348,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install attio-pack",
       "sourcePath": "./plugins/saas-packs/attio-pack",
@@ -12381,7 +12381,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install bamboohr-pack",
       "sourcePath": "./plugins/saas-packs/bamboohr-pack",
@@ -12415,7 +12415,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install brightdata-pack",
       "sourcePath": "./plugins/saas-packs/brightdata-pack",
@@ -12448,7 +12448,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install canva-pack",
       "sourcePath": "./plugins/saas-packs/canva-pack",
@@ -12482,7 +12482,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install castai-pack",
       "sourcePath": "./plugins/saas-packs/castai-pack",
@@ -12515,7 +12515,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install clari-pack",
       "sourcePath": "./plugins/saas-packs/clari-pack",
@@ -12548,7 +12548,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install clickhouse-pack",
       "sourcePath": "./plugins/saas-packs/clickhouse-pack",
@@ -12581,7 +12581,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install clickup-pack",
       "sourcePath": "./plugins/saas-packs/clickup-pack",
@@ -12614,7 +12614,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install cohere-pack",
       "sourcePath": "./plugins/saas-packs/cohere-pack",
@@ -12647,7 +12647,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install coreweave-pack",
       "sourcePath": "./plugins/saas-packs/coreweave-pack",
@@ -12680,7 +12680,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install elevenlabs-pack",
       "sourcePath": "./plugins/saas-packs/elevenlabs-pack",
@@ -12713,7 +12713,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install fathom-pack",
       "sourcePath": "./plugins/saas-packs/fathom-pack",
@@ -12746,7 +12746,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install figma-pack",
       "sourcePath": "./plugins/saas-packs/figma-pack",
@@ -12779,7 +12779,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install finta-pack",
       "sourcePath": "./plugins/saas-packs/finta-pack",
@@ -12812,7 +12812,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install flexport-pack",
       "sourcePath": "./plugins/saas-packs/flexport-pack",
@@ -12846,7 +12846,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install flyio-pack",
       "sourcePath": "./plugins/saas-packs/flyio-pack",
@@ -12879,7 +12879,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install fondo-pack",
       "sourcePath": "./plugins/saas-packs/fondo-pack",
@@ -12912,7 +12912,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install framer-pack",
       "sourcePath": "./plugins/saas-packs/framer-pack",
@@ -12945,7 +12945,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install glean-pack",
       "sourcePath": "./plugins/saas-packs/glean-pack",
@@ -12978,7 +12978,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install grammarly-pack",
       "sourcePath": "./plugins/saas-packs/grammarly-pack",
@@ -13011,7 +13011,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install hex-pack",
       "sourcePath": "./plugins/saas-packs/hex-pack",
@@ -13044,7 +13044,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install hootsuite-pack",
       "sourcePath": "./plugins/saas-packs/hootsuite-pack",
@@ -13077,7 +13077,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install hubspot-pack",
       "sourcePath": "./plugins/saas-packs/hubspot-pack",
@@ -13110,7 +13110,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install intercom-pack",
       "sourcePath": "./plugins/saas-packs/intercom-pack",
@@ -13143,7 +13143,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install klaviyo-pack",
       "sourcePath": "./plugins/saas-packs/klaviyo-pack",
@@ -13176,7 +13176,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install linktree-pack",
       "sourcePath": "./plugins/saas-packs/linktree-pack",
@@ -13209,7 +13209,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install lucidchart-pack",
       "sourcePath": "./plugins/saas-packs/lucidchart-pack",
@@ -13242,7 +13242,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install mindtickle-pack",
       "sourcePath": "./plugins/saas-packs/mindtickle-pack",
@@ -13275,7 +13275,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install miro-pack",
       "sourcePath": "./plugins/saas-packs/miro-pack",
@@ -13308,7 +13308,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install navan-pack",
       "sourcePath": "./plugins/saas-packs/navan-pack",
@@ -13341,7 +13341,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install notion-pack",
       "sourcePath": "./plugins/saas-packs/notion-pack",
@@ -13374,7 +13374,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install onenote-pack",
       "sourcePath": "./plugins/saas-packs/onenote-pack",
@@ -13408,7 +13408,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install oraclecloud-pack",
       "sourcePath": "./plugins/saas-packs/oraclecloud-pack",
@@ -13441,7 +13441,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install palantir-pack",
       "sourcePath": "./plugins/saas-packs/palantir-pack",
@@ -13474,7 +13474,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install persona-pack",
       "sourcePath": "./plugins/saas-packs/persona-pack",
@@ -13507,7 +13507,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install podium-pack",
       "sourcePath": "./plugins/saas-packs/podium-pack",
@@ -13540,7 +13540,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install procore-pack",
       "sourcePath": "./plugins/saas-packs/procore-pack",
@@ -13573,7 +13573,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install quicknode-pack",
       "sourcePath": "./plugins/saas-packs/quicknode-pack",
@@ -13606,7 +13606,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install ramp-pack",
       "sourcePath": "./plugins/saas-packs/ramp-pack",
@@ -13639,7 +13639,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 12,
+      "skillCount": 14,
       "commandCount": 0,
       "installCommand": "/plugin install remofirst-pack",
       "sourcePath": "./plugins/saas-packs/remofirst-pack",
@@ -13672,7 +13672,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install runway-pack",
       "sourcePath": "./plugins/saas-packs/runway-pack",
@@ -13705,7 +13705,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install salesforce-pack",
       "sourcePath": "./plugins/saas-packs/salesforce-pack",
@@ -13738,7 +13738,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install salesloft-pack",
       "sourcePath": "./plugins/saas-packs/salesloft-pack",
@@ -13771,7 +13771,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install serpapi-pack",
       "sourcePath": "./plugins/saas-packs/serpapi-pack",
@@ -13804,7 +13804,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install shopify-pack",
       "sourcePath": "./plugins/saas-packs/shopify-pack",
@@ -13837,7 +13837,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 30,
+      "skillCount": 32,
       "commandCount": 0,
       "installCommand": "/plugin install snowflake-pack",
       "sourcePath": "./plugins/saas-packs/snowflake-pack",
@@ -13870,7 +13870,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install stackblitz-pack",
       "sourcePath": "./plugins/saas-packs/stackblitz-pack",
@@ -13903,7 +13903,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install techsmith-pack",
       "sourcePath": "./plugins/saas-packs/techsmith-pack",
@@ -13937,7 +13937,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install together-pack",
       "sourcePath": "./plugins/saas-packs/together-pack",
@@ -13970,7 +13970,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install veeva-pack",
       "sourcePath": "./plugins/saas-packs/veeva-pack",
@@ -14003,7 +14003,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 24,
+      "skillCount": 26,
       "commandCount": 0,
       "installCommand": "/plugin install webflow-pack",
       "sourcePath": "./plugins/saas-packs/webflow-pack",
@@ -14036,7 +14036,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install wispr-pack",
       "sourcePath": "./plugins/saas-packs/wispr-pack",
@@ -14069,7 +14069,7 @@
         "integration"
       ],
       "hasSkills": true,
-      "skillCount": 18,
+      "skillCount": 20,
       "commandCount": 0,
       "installCommand": "/plugin install workhuman-pack",
       "sourcePath": "./plugins/saas-packs/workhuman-pack",

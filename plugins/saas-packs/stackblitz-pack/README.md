@@ -17,8 +17,8 @@
 | `stackblitz-hello-world` | Hello World |
 | `stackblitz-local-dev-loop` | Local Dev Loop |
 | `stackblitz-sdk-patterns` | Sdk Patterns |
-| `stackblitz-core-workflow-a` | Core Workflow A |
-| `stackblitz-core-workflow-b` | Core Workflow B |
+| `stackblitz-deploy-preview` | Deploy Preview |
+| `stackblitz-build-configure` | Build Configure |
 | `stackblitz-common-errors` | Common Errors |
 | `stackblitz-debug-bundle` | Debug Bundle |
 | `stackblitz-rate-limits` | Rate Limits |

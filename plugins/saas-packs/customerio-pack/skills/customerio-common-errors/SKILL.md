@@ -17,7 +17,9 @@ tags: [saas, customerio]
 # Customer.io Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Customer.io errors and their solutions.
+
+Quick reference for the most common Customer.io errors: delivery failures, suppressed recipients, domain verification, and template issues.
+
 
 ## Prerequisites
 - Customer.io SDK installed
@@ -42,48 +44,60 @@ Follow the solution steps for your specific error.
 
 ## Error Handling
 
-### Authentication Failed
+### Suppressed Recipient
 **Error Message:**
 ```
-Authentication error: Invalid API key
+422 Unprocessable: Recipient is on suppression list (hard bounce)
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Recipient previously hard-bounced, unsubscribed, or marked message as spam.
 
 **Solution:**
 ```bash
-# Verify API key is set
-echo $CUSTOMERIO_API_KEY
+# Check suppression status before sending
+const status = await client.suppression.check('user@example.com');
+# Remove from suppression only if they re-opted in
+# Never send to hard-bounced addresses — damages sender reputation
+
 ```
 
 ---
 
-### Rate Limit Exceeded
+### Sender Domain Not Verified
 **Error Message:**
 ```
-Rate limit exceeded. Please retry after X seconds.
+403 Forbidden: Sending domain not verified — add DKIM/SPF records
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Email sending domain lacks required DNS authentication records.
 
 **Solution:**
-Implement exponential backoff. See `customerio-rate-limits` skill.
+# Add DNS records at your registrar:
+# SPF: TXT "v=spf1 include:vendor.com ~all"
+# DKIM: CNAME selector._domainkey.example.com → dkim.vendor.com
+# DMARC: TXT "v=DMARC1; p=quarantine"
+# Verify in dashboard after DNS propagation
+
 
 ---
 
-### Network Timeout
+### Template Variable Missing
 **Error Message:**
 ```
-Request timeout after 30000ms
+400 Bad Request: Template variable {{first_name}} has no value
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Email template references a variable not provided in the send payload.
 
 **Solution:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+# Use default values in templates: {{first_name | default: "there"}}
+# Validate payload against template variables before sending
+# Check for typos in variable names
+
 ```
+
+
 
 ## Examples
 

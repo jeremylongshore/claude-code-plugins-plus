@@ -17,8 +17,8 @@
 | `evernote-hello-world` | Hello World |
 | `evernote-local-dev-loop` | Local Dev Loop |
 | `evernote-sdk-patterns` | Sdk Patterns |
-| `evernote-core-workflow-a` | Core Workflow A |
-| `evernote-core-workflow-b` | Core Workflow B |
+| `evernote-content-management` | Content Management |
+| `evernote-search-retrieve` | Search Retrieve |
 | `evernote-common-errors` | Common Errors |
 | `evernote-debug-bundle` | Debug Bundle |
 | `evernote-rate-limits` | Rate Limits |

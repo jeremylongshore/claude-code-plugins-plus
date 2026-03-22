@@ -17,7 +17,9 @@ tags: [saas, gamma]
 # Gamma Hello World
 
 ## Overview
-Minimal working example demonstrating core Gamma functionality.
+
+Connect to Gamma and list your design files via the API.
+
 
 ## Prerequisites
 - Completed `gamma-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { GammaClient } from '@gamma/sdk';
 
 const client = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY,
+
+  accessToken: process.env.GAMMA_ACCESS_TOKEN,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Gamma connection is working.
 import { GammaClient } from '@gamma/sdk';
 
 const client = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY,
+
+  accessToken: process.env.GAMMA_ACCESS_TOKEN,
+
 });
 
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from gamma import GammaClient
 
 client = GammaClient()
 
-# Your first API call here
+files = client.files.list()
+print(f"Found {len(files)} design files:")
+for f in files[:5]:
+    print(f"  - {f.name} (modified: {f.last_modified})")
+
 ```
 
 ## Resources

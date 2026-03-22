@@ -17,7 +17,9 @@ tags: [saas, ideogram]
 # Ideogram Hello World
 
 ## Overview
-Minimal working example demonstrating core Ideogram functionality.
+
+Send your first prompt to the Ideogram API and get a model response back.
+
 
 ## Prerequisites
 - Completed `ideogram-install-auth` setup
@@ -34,14 +36,22 @@ Create a new file for your hello world example.
 import { IdeogramClient } from '@ideogram/sdk';
 
 const client = new IdeogramClient({
+
   apiKey: process.env.IDEOGRAM_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -70,11 +80,19 @@ Success! Your Ideogram connection is working.
 import { IdeogramClient } from '@ideogram/sdk';
 
 const client = new IdeogramClient({
+
   apiKey: process.env.IDEOGRAM_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const response = await client.chat.completions.create({
+  model: 'default',
+  messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+  max_tokens: 64,
+});
+console.log(response.choices[0].message.content);
+
 }
 
 main().catch(console.error);
@@ -86,7 +104,13 @@ from ideogram import IdeogramClient
 
 client = IdeogramClient()
 
-# Your first API call here
+response = client.chat.completions.create(
+    model="default",
+    messages=[{"role": "user", "content": "Say hello in one sentence."}],
+    max_tokens=64,
+)
+print(response.choices[0].message.content)
+
 ```
 
 ## Resources

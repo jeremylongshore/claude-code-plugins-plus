@@ -17,8 +17,8 @@
 | `miro-hello-world` | Hello World |
 | `miro-local-dev-loop` | Local Dev Loop |
 | `miro-sdk-patterns` | Sdk Patterns |
-| `miro-core-workflow-a` | Core Workflow A |
-| `miro-core-workflow-b` | Core Workflow B |
+| `miro-export-assets` | Export Assets |
+| `miro-design-token-sync` | Design Token Sync |
 | `miro-common-errors` | Common Errors |
 | `miro-debug-bundle` | Debug Bundle |
 | `miro-rate-limits` | Rate Limits |

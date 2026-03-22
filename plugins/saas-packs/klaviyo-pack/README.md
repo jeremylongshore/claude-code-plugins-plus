@@ -17,8 +17,8 @@
 | `klaviyo-hello-world` | Hello World |
 | `klaviyo-local-dev-loop` | Local Dev Loop |
 | `klaviyo-sdk-patterns` | Sdk Patterns |
-| `klaviyo-core-workflow-a` | Core Workflow A |
-| `klaviyo-core-workflow-b` | Core Workflow B |
+| `klaviyo-campaign-delivery` | Campaign Delivery |
+| `klaviyo-event-tracking` | Event Tracking |
 | `klaviyo-common-errors` | Common Errors |
 | `klaviyo-debug-bundle` | Debug Bundle |
 | `klaviyo-rate-limits` | Rate Limits |

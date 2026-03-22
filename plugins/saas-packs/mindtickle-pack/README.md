@@ -17,8 +17,8 @@
 | `mindtickle-hello-world` | Hello World |
 | `mindtickle-local-dev-loop` | Local Dev Loop |
 | `mindtickle-sdk-patterns` | Sdk Patterns |
-| `mindtickle-core-workflow-a` | Core Workflow A |
-| `mindtickle-core-workflow-b` | Core Workflow B |
+| `mindtickle-contact-sync` | Contact Sync |
+| `mindtickle-deal-pipeline` | Deal Pipeline |
 | `mindtickle-common-errors` | Common Errors |
 | `mindtickle-debug-bundle` | Debug Bundle |
 | `mindtickle-rate-limits` | Rate Limits |

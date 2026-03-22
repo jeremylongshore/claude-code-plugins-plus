@@ -23,7 +23,9 @@ Set up Juicebox SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - Juicebox account with API access
-- API key from Juicebox dashboard
+
+- OAuth2 access token or personal API token from Juicebox settings
+
 
 ## Instructions
 
@@ -37,6 +39,7 @@ pip install juicebox
 ```
 
 ### Step 2: Configure Authentication
+
 ```bash
 # Set environment variable
 export JUICEBOX_API_KEY="your-api-key"
@@ -45,21 +48,28 @@ export JUICEBOX_API_KEY="your-api-key"
 echo 'JUICEBOX_API_KEY=your-api-key' >> .env
 ```
 
+
 ### Step 3: Verify Connection
 ```typescript
-// Test connection code here
+const me = await client.users.me();
+console.log(`Authenticated: ${me.name} — ${me.organization.name}`);
+
 ```
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+
 - Environment variable or .env file with API key
 - Successful connection verification output
+
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+
 | Invalid API Key | Incorrect or expired key | Verify key in Juicebox dashboard |
 | Rate Limited | Exceeded quota | Check quota at https://docs.juicebox.com |
+
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +80,9 @@ echo 'JUICEBOX_API_KEY=your-api-key' >> .env
 import { JuiceboxClient } from '@juicebox/sdk';
 
 const client = new JuiceboxClient({
+
   apiKey: process.env.JUICEBOX_API_KEY,
+
 });
 ```
 
@@ -79,7 +91,9 @@ const client = new JuiceboxClient({
 from juicebox import JuiceboxClient
 
 client = JuiceboxClient(
+
     api_key=os.environ.get('JUICEBOX_API_KEY')
+
 )
 ```
 

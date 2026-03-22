@@ -17,7 +17,9 @@ tags: [saas, flexport]
 # Flexport Hello World
 
 ## Overview
+
 Minimal working example demonstrating core Flexport functionality.
+
 
 ## Prerequisites
 - Completed `flexport-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { FlexportClient } from '@flexport/sdk';
 
 const client = new FlexportClient({
+
   apiKey: process.env.FLEXPORT_API_KEY,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Flexport connection is working.
 import { FlexportClient } from '@flexport/sdk';
 
 const client = new FlexportClient({
+
   apiKey: process.env.FLEXPORT_API_KEY,
+
 });
 
 async function main() {
-  // Your first API call here
+  const resources = await client.resources.list({ limit: 5 });
+console.log(`Found ${resources.total} resources:`);
+resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from flexport import FlexportClient
 
 client = FlexportClient()
 
-# Your first API call here
+resources = client.resources.list(limit=5)
+print(f"Found {resources.total} resources:")
+for r in resources.data:
+    print(f"  - {r.name} ({r.type}) — {r.status}")
+
 ```
 
 ## Resources

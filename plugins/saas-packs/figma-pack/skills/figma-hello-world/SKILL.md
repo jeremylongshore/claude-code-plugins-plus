@@ -17,7 +17,9 @@ tags: [saas, figma]
 # Figma Hello World
 
 ## Overview
-Minimal working example demonstrating core Figma functionality.
+
+Connect to Figma and list your design files via the API.
+
 
 ## Prerequisites
 - Completed `figma-install-auth` setup
@@ -34,14 +36,19 @@ Create a new file for your hello world example.
 import { FigmaClient } from '@figma/sdk';
 
 const client = new FigmaClient({
-  apiKey: process.env.FIGMA_API_KEY,
+
+  accessToken: process.env.FIGMA_ACCESS_TOKEN,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -70,11 +77,16 @@ Success! Your Figma connection is working.
 import { FigmaClient } from '@figma/sdk';
 
 const client = new FigmaClient({
-  apiKey: process.env.FIGMA_API_KEY,
+
+  accessToken: process.env.FIGMA_ACCESS_TOKEN,
+
 });
 
 async function main() {
-  // Your first API call here
+  const files = await client.files.list();
+console.log(`Found ${files.length} design files:`);
+files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+
 }
 
 main().catch(console.error);
@@ -86,7 +98,11 @@ from figma import FigmaClient
 
 client = FigmaClient()
 
-# Your first API call here
+files = client.files.list()
+print(f"Found {len(files)} design files:")
+for f in files[:5]:
+    print(f"  - {f.name} (modified: {f.last_modified})")
+
 ```
 
 ## Resources

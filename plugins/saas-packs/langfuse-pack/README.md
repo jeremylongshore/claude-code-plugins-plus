@@ -17,8 +17,8 @@
 | `langfuse-hello-world` | Hello World |
 | `langfuse-local-dev-loop` | Local Dev Loop |
 | `langfuse-sdk-patterns` | Sdk Patterns |
-| `langfuse-core-workflow-a` | Core Workflow A |
-| `langfuse-core-workflow-b` | Core Workflow B |
+| `langfuse-model-inference` | Model Inference |
+| `langfuse-embeddings-search` | Embeddings Search |
 | `langfuse-common-errors` | Common Errors |
 | `langfuse-debug-bundle` | Debug Bundle |
 | `langfuse-rate-limits` | Rate Limits |

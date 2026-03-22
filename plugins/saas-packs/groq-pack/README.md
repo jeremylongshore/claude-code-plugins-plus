@@ -17,8 +17,8 @@
 | `groq-hello-world` | Hello World |
 | `groq-local-dev-loop` | Local Dev Loop |
 | `groq-sdk-patterns` | Sdk Patterns |
-| `groq-core-workflow-a` | Core Workflow A |
-| `groq-core-workflow-b` | Core Workflow B |
+| `groq-model-inference` | Model Inference |
+| `groq-embeddings-search` | Embeddings Search |
 | `groq-common-errors` | Common Errors |
 | `groq-debug-bundle` | Debug Bundle |
 | `groq-rate-limits` | Rate Limits |

@@ -17,8 +17,8 @@
 | `glean-hello-world` | Hello World |
 | `glean-local-dev-loop` | Local Dev Loop |
 | `glean-sdk-patterns` | Sdk Patterns |
-| `glean-core-workflow-a` | Core Workflow A |
-| `glean-core-workflow-b` | Core Workflow B |
+| `glean-entity-management` | Entity Management |
+| `glean-data-sync` | Data Sync |
 | `glean-common-errors` | Common Errors |
 | `glean-debug-bundle` | Debug Bundle |
 | `glean-rate-limits` | Rate Limits |

@@ -17,7 +17,9 @@ tags: [saas, palantir]
 # Palantir Hello World
 
 ## Overview
-Minimal working example demonstrating core Palantir functionality.
+
+Run your first query against Palantir and read actual data back.
+
 
 ## Prerequisites
 - Completed `palantir-install-auth` setup
@@ -34,14 +36,18 @@ Create a new file for your hello world example.
 import { PalantirClient } from '@palantir/sdk';
 
 const client = new PalantirClient({
-  apiKey: process.env.PALANTIR_API_KEY,
+
+  connectionString: process.env.PALANTIR_DATABASE_URL,
+
 });
 ```
 
 ### Step 3: Make Your First API Call
 ```typescript
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -70,11 +76,15 @@ Success! Your Palantir connection is working.
 import { PalantirClient } from '@palantir/sdk';
 
 const client = new PalantirClient({
-  apiKey: process.env.PALANTIR_API_KEY,
+
+  connectionString: process.env.PALANTIR_DATABASE_URL,
+
 });
 
 async function main() {
-  // Your first API call here
+  const result = await client.query('SELECT 1 AS health_check');
+console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+
 }
 
 main().catch(console.error);
@@ -86,7 +96,9 @@ from palantir import PalantirClient
 
 client = PalantirClient()
 
-# Your first API call here
+result = client.query("SELECT 1 AS health_check")
+print("Connected:", "OK" if result[0]["health_check"] == 1 else "FAIL")
+
 ```
 
 ## Resources

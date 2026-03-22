@@ -17,8 +17,8 @@
 | `salesforce-hello-world` | Hello World |
 | `salesforce-local-dev-loop` | Local Dev Loop |
 | `salesforce-sdk-patterns` | Sdk Patterns |
-| `salesforce-core-workflow-a` | Core Workflow A |
-| `salesforce-core-workflow-b` | Core Workflow B |
+| `salesforce-contact-sync` | Contact Sync |
+| `salesforce-deal-pipeline` | Deal Pipeline |
 | `salesforce-common-errors` | Common Errors |
 | `salesforce-debug-bundle` | Debug Bundle |
 | `salesforce-rate-limits` | Rate Limits |

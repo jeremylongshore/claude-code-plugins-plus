@@ -29,9 +29,9 @@ Optimize Navan API performance with caching, batching, and connection pooling.
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Entity CRUD | 200ms | 600ms | 1500ms |
+| Search / Filter | 400ms | 1200ms | 3000ms |
+| Batch Import (100 records) | 3s | 10s | 30s |
 
 ## Caching Strategy
 

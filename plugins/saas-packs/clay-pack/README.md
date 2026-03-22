@@ -17,8 +17,8 @@
 | `clay-hello-world` | Hello World |
 | `clay-local-dev-loop` | Local Dev Loop |
 | `clay-sdk-patterns` | Sdk Patterns |
-| `clay-core-workflow-a` | Core Workflow A |
-| `clay-core-workflow-b` | Core Workflow B |
+| `clay-contact-sync` | Contact Sync |
+| `clay-deal-pipeline` | Deal Pipeline |
 | `clay-common-errors` | Common Errors |
 | `clay-debug-bundle` | Debug Bundle |
 | `clay-rate-limits` | Rate Limits |

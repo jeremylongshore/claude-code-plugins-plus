@@ -17,8 +17,8 @@
 | `ideogram-hello-world` | Hello World |
 | `ideogram-local-dev-loop` | Local Dev Loop |
 | `ideogram-sdk-patterns` | Sdk Patterns |
-| `ideogram-core-workflow-a` | Core Workflow A |
-| `ideogram-core-workflow-b` | Core Workflow B |
+| `ideogram-model-inference` | Model Inference |
+| `ideogram-embeddings-search` | Embeddings Search |
 | `ideogram-common-errors` | Common Errors |
 | `ideogram-debug-bundle` | Debug Bundle |
 | `ideogram-rate-limits` | Rate Limits |

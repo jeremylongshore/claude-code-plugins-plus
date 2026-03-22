@@ -29,9 +29,9 @@ Optimize Miro API performance with caching, batching, and connection pooling.
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| File Read (metadata) | 200ms | 800ms | 2000ms |
+| Asset Export (single node) | 1s | 5s | 15s |
+| Style/Token Extraction | 300ms | 1000ms | 3000ms |
 
 ## Caching Strategy
 
