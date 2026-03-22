@@ -1,9 +1,9 @@
 ---
 name: intercom-observability
 description: |
-  Set up comprehensive observability for Intercom integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Intercom operations, setting up dashboards,
-  or configuring alerting for Intercom integration health.
+  Set up observability for Intercom integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Intercom API operations, setting up dashboards,
+  or configuring alerting for integration health.
   Trigger with phrases like "intercom monitoring", "intercom metrics",
   "intercom observability", "monitor intercom", "intercom alerts", "intercom tracing".
 allowed-tools: Read, Write, Edit
@@ -17,236 +17,308 @@ compatible-with: claude-code
 # Intercom Observability
 
 ## Overview
-Set up comprehensive observability for Intercom integrations.
+
+Comprehensive observability for Intercom integrations covering Prometheus metrics, OpenTelemetry traces, structured logging, and alert rules for error rates, latency, and rate limit usage.
 
 ## Prerequisites
+
 - Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- OpenTelemetry SDK (optional, for tracing)
+- Pino or similar structured logger
+- Grafana or alerting system
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `intercom_requests_total` | Counter | Total API requests |
-| `intercom_request_duration_seconds` | Histogram | Request latency |
-| `intercom_errors_total` | Counter | Error count by type |
-| `intercom_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
+### Step 1: Prometheus Metrics for Intercom API Calls
 
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import { Registry, Counter, Histogram, Gauge } from "prom-client";
 
 const registry = new Registry();
 
-const requestCounter = new Counter({
-  name: 'intercom_requests_total',
-  help: 'Total Intercom API requests',
-  labelNames: ['method', 'status'],
+// Total API requests by endpoint and status
+const intercomRequests = new Counter({
+  name: "intercom_api_requests_total",
+  help: "Total Intercom API requests",
+  labelNames: ["endpoint", "method", "status"] as const,
   registers: [registry],
 });
 
-const requestDuration = new Histogram({
-  name: 'intercom_request_duration_seconds',
-  help: 'Intercom request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+// Request duration by endpoint
+const intercomDuration = new Histogram({
+  name: "intercom_api_request_duration_seconds",
+  help: "Intercom API request duration in seconds",
+  labelNames: ["endpoint", "method"] as const,
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
   registers: [registry],
 });
 
-const errorCounter = new Counter({
-  name: 'intercom_errors_total',
-  help: 'Intercom errors by type',
-  labelNames: ['error_type'],
+// Error counter by type
+const intercomErrors = new Counter({
+  name: "intercom_api_errors_total",
+  help: "Intercom API errors by type",
+  labelNames: ["endpoint", "error_code", "status_code"] as const,
+  registers: [registry],
+});
+
+// Rate limit remaining gauge
+const intercomRateLimit = new Gauge({
+  name: "intercom_rate_limit_remaining",
+  help: "Intercom API rate limit remaining requests",
+  registers: [registry],
+});
+
+// Webhook processing metrics
+const webhookProcessed = new Counter({
+  name: "intercom_webhooks_processed_total",
+  help: "Intercom webhooks processed by topic",
+  labelNames: ["topic", "status"] as const,
   registers: [registry],
 });
 ```
 
-### Instrumented Client
+### Step 2: Instrumented API Client Wrapper
 
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+import { IntercomClient, IntercomError } from "intercom-client";
 
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
-  }
+function instrumentedClient(client: IntercomClient): IntercomClient {
+  return new Proxy(client, {
+    get(target, prop) {
+      const value = (target as any)[prop];
+      if (typeof value === "object" && value !== null) {
+        // Wrap service objects (contacts, conversations, etc.)
+        return new Proxy(value, {
+          get(serviceTarget, methodName) {
+            const method = (serviceTarget as any)[methodName];
+            if (typeof method !== "function") return method;
+
+            return async (...args: any[]) => {
+              const endpoint = `${String(prop)}.${String(methodName)}`;
+              const timer = intercomDuration.startTimer({ endpoint, method: "API" });
+
+              try {
+                const result = await method.apply(serviceTarget, args);
+                intercomRequests.inc({ endpoint, method: "API", status: "success" });
+                return result;
+              } catch (err) {
+                if (err instanceof IntercomError) {
+                  const statusCode = String(err.statusCode ?? "unknown");
+                  const errorCode = err.body?.errors?.[0]?.code ?? "unknown";
+                  intercomRequests.inc({ endpoint, method: "API", status: "error" });
+                  intercomErrors.inc({ endpoint, error_code: errorCode, status_code: statusCode });
+
+                  // Track rate limit from error response
+                  if (err.statusCode === 429) {
+                    intercomRateLimit.set(0);
+                  }
+                }
+                throw err;
+              } finally {
+                timer();
+              }
+            };
+          },
+        });
+      }
+      return value;
+    },
+  });
+}
+
+// Usage
+const rawClient = new IntercomClient({ token: process.env.INTERCOM_ACCESS_TOKEN! });
+const client = instrumentedClient(rawClient);
+```
+
+### Step 3: Structured Logging
+
+```typescript
+import pino from "pino";
+
+const logger = pino({
+  name: "intercom",
+  level: process.env.LOG_LEVEL || "info",
+  serializers: {
+    // Redact PII from logs
+    contact: (contact: any) => ({
+      id: contact.id,
+      role: contact.role,
+      // Never log email, name, phone
+    }),
+    err: pino.stdSerializers.err,
+  },
+});
+
+// Intercom operation logger
+function logIntercomOp(
+  operation: string,
+  details: Record<string, any>,
+  durationMs: number
+): void {
+  logger.info({
+    service: "intercom",
+    operation,
+    duration_ms: Math.round(durationMs),
+    ...details,
+  });
+}
+
+// Webhook logger
+function logWebhook(
+  topic: string,
+  notificationId: string,
+  status: "processed" | "failed" | "skipped",
+  durationMs?: number
+): void {
+  logger.info({
+    service: "intercom",
+    type: "webhook",
+    topic,
+    notification_id: notificationId,
+    status,
+    duration_ms: durationMs ? Math.round(durationMs) : undefined,
+  });
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
+### Step 4: OpenTelemetry Tracing
 
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
+import { trace, SpanStatusCode, Span } from "@opentelemetry/api";
 
-const tracer = trace.getTracer('intercom-client');
+const tracer = trace.getTracer("intercom-integration");
 
 async function tracedIntercomCall<T>(
   operationName: string,
+  attributes: Record<string, string>,
   operation: () => Promise<T>
 ): Promise<T> {
-  return tracer.startActiveSpan(`intercom.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
+  return tracer.startActiveSpan(
+    `intercom.${operationName}`,
+    { attributes },
+    async (span: Span) => {
+      try {
+        const result = await operation();
+        span.setStatus({ code: SpanStatusCode.OK });
+        return result;
+      } catch (err: any) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
+        span.recordException(err);
+
+        if (err instanceof IntercomError) {
+          span.setAttribute("intercom.status_code", err.statusCode ?? 0);
+          span.setAttribute("intercom.error_code", err.body?.errors?.[0]?.code ?? "unknown");
+          span.setAttribute("intercom.request_id", err.body?.request_id ?? "");
+        }
+
+        throw err;
+      } finally {
+        span.end();
+      }
     }
-  });
+  );
 }
+
+// Usage
+const contact = await tracedIntercomCall(
+  "contacts.find",
+  { "intercom.contact_id": contactId },
+  () => client.contacts.find({ contactId })
+);
 ```
 
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'intercom',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logIntercomOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'intercom',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
+### Step 5: Alert Rules
 
 ```yaml
-# intercom_alerts.yaml
+# prometheus/intercom-alerts.yml
 groups:
-  - name: intercom_alerts
+  - name: intercom_integration
     rules:
       - alert: IntercomHighErrorRate
         expr: |
-          rate(intercom_errors_total[5m]) /
-          rate(intercom_requests_total[5m]) > 0.05
+          rate(intercom_api_errors_total[5m]) /
+          rate(intercom_api_requests_total[5m]) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
           summary: "Intercom error rate > 5%"
+          description: "{{ $value | humanizePercentage }} of requests failing"
 
       - alert: IntercomHighLatency
         expr: |
           histogram_quantile(0.95,
-            rate(intercom_request_duration_seconds_bucket[5m])
-          ) > 2
+            rate(intercom_api_request_duration_seconds_bucket[5m])
+          ) > 3
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Intercom P95 latency > 2s"
+          summary: "Intercom P95 latency > 3s"
 
-      - alert: IntercomDown
-        expr: up{job="intercom"} == 0
+      - alert: IntercomRateLimitLow
+        expr: intercom_rate_limit_remaining < 1000
         for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "Intercom integration is down"
+          summary: "Intercom rate limit < 1000 remaining"
+          description: "Only {{ $value }} requests remaining before rate limit"
+
+      - alert: IntercomAuthFailures
+        expr: rate(intercom_api_errors_total{status_code="401"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Intercom authentication failures detected"
+
+      - alert: IntercomWebhookFailures
+        expr: |
+          rate(intercom_webhooks_processed_total{status="failed"}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Intercom webhook processing failures"
 ```
 
-## Dashboard
+### Step 6: Metrics Endpoint
 
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Intercom Request Rate",
-      "targets": [{
-        "expr": "rate(intercom_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Intercom Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(intercom_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
 ```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
+// Expose Prometheus metrics
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", registry.contentType);
   res.send(await registry.metrics());
 });
 ```
 
+## Key Metrics Summary
+
+| Metric | Type | Alert Threshold |
+|--------|------|----------------|
+| `intercom_api_requests_total` | Counter | N/A (baseline) |
+| `intercom_api_request_duration_seconds` | Histogram | P95 > 3s |
+| `intercom_api_errors_total` | Counter | > 5% error rate |
+| `intercom_rate_limit_remaining` | Gauge | < 1000 |
+| `intercom_webhooks_processed_total` | Counter | Failed > 10% |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| High cardinality | Too many unique labels | Use endpoint groups, not IDs |
+| Missing metrics | Uninstrumented calls | Wrap client with proxy |
+| Alert storms | Wrong thresholds | Tune based on baseline data |
+| Log volume too high | Debug logging in prod | Set LOG_LEVEL=info |
+
 ## Resources
+
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Intercom Observability Guide](https://docs.intercom.com/observability)
+- [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
+- [Pino Logger](https://getpino.io/)
 
 ## Next Steps
+
 For incident response, see `intercom-incident-runbook`.

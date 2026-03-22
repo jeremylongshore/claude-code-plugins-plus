@@ -1,12 +1,12 @@
 ---
 name: intercom-install-auth
 description: |
-  Install and configure Intercom SDK/CLI authentication.
-  Use when setting up a new Intercom integration, configuring API keys,
-  or initializing Intercom in your project.
+  Install and configure Intercom API authentication with access tokens or OAuth.
+  Use when setting up a new Intercom integration, configuring API credentials,
+  or initializing the intercom-client SDK in your project.
   Trigger with phrases like "install intercom", "setup intercom",
-  "intercom auth", "configure intercom API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  "intercom auth", "configure intercom API key", "intercom access token".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,76 +17,157 @@ compatible-with: claude-code
 # Intercom Install & Auth
 
 ## Overview
-Set up Intercom SDK/CLI and configure authentication credentials.
+
+Set up the official `intercom-client` TypeScript SDK and configure authentication via access tokens (private apps) or OAuth (public apps).
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Intercom account with API access
-- API key from Intercom dashboard
+
+- Node.js 18+
+- npm, pnpm, or yarn
+- Intercom workspace with Developer Hub access
+- Access token from Configure > Authentication in your app settings
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Install the SDK
+
 ```bash
-# Node.js
-npm install @intercom/sdk
-
-# Python
-pip install intercom
+npm install intercom-client
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export INTERCOM_API_KEY="your-api-key"
+The package exports `IntercomClient` and all TypeScript types under the `Intercom` namespace.
 
-# Or create .env file
-echo 'INTERCOM_API_KEY=your-api-key' >> .env
-```
+### Step 2: Configure Access Token Authentication
 
-### Step 3: Verify Connection
+Access tokens authenticate private apps that access your own Intercom workspace.
+
 ```typescript
-// Test connection code here
-```
-
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Intercom dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.intercom.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { IntercomClient } from '@intercom/sdk';
+import { IntercomClient } from "intercom-client";
 
 const client = new IntercomClient({
-  apiKey: process.env.INTERCOM_API_KEY,
+  token: process.env.INTERCOM_ACCESS_TOKEN!,
 });
 ```
 
-### Python Setup
-```python
-from intercom import IntercomClient
+Store the token securely:
 
-client = IntercomClient(
-    api_key=os.environ.get('INTERCOM_API_KEY')
-)
+```bash
+# .env (add to .gitignore)
+INTERCOM_ACCESS_TOKEN=dG9rOmFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6
+
+# Verify .gitignore includes .env
+echo '.env' >> .gitignore
+```
+
+### Step 3: Verify Connection
+
+```typescript
+async function verifyConnection() {
+  try {
+    // List admins to verify the token works
+    const admins = await client.admins.list();
+    console.log("Connected! Admins:", admins.admins.length);
+    for (const admin of admins.admins) {
+      console.log(`  - ${admin.name} (${admin.email})`);
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("Connection failed:", error.message);
+    }
+  }
+}
+
+verifyConnection();
+```
+
+### Step 4: OAuth Setup (Public Apps)
+
+For apps that access other workspaces, configure OAuth:
+
+```typescript
+// Step 1: Redirect user to Intercom authorization
+const authUrl = `https://app.intercom.com/oauth?client_id=${CLIENT_ID}&state=${STATE}`;
+
+// Step 2: Exchange code for token at your callback endpoint
+async function handleOAuthCallback(code: string): Promise<string> {
+  const response = await fetch("https://api.intercom.io/auth/eagle/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: process.env.INTERCOM_CLIENT_ID,
+      client_secret: process.env.INTERCOM_CLIENT_SECRET,
+      code,
+    }),
+  });
+
+  const data = await response.json();
+  return data.token; // Use this token for API calls
+}
+
+// Step 3: Initialize client with OAuth token
+const client = new IntercomClient({ token: oauthToken });
+```
+
+## API Versioning
+
+Specify the API version header to pin behavior:
+
+```typescript
+const client = new IntercomClient({
+  token: process.env.INTERCOM_ACCESS_TOKEN!,
+});
+
+// All requests use Bearer token in Authorization header:
+// Authorization: Bearer <token>
+// Intercom-Version: 2.11
+```
+
+The current stable API version is **2.11**. The SDK handles this automatically.
+
+## OAuth Scopes Reference
+
+| Scope | Access Granted |
+|-------|---------------|
+| Read admins | List workspace admins |
+| Read/write contacts | Create, update, search contacts |
+| Read/write conversations | Manage conversations and replies |
+| Read/write messages | Send outbound messages |
+| Read/write articles | Manage Help Center content |
+| Read/write tags | Tag contacts, companies, conversations |
+| Read/write events | Submit and read data events |
+| Read/write companies | Manage company records |
+
+## Error Handling
+
+| Error | HTTP Code | Cause | Solution |
+|-------|-----------|-------|----------|
+| `unauthorized` | 401 | Invalid or expired token | Regenerate in Developer Hub |
+| `forbidden` | 403 | Missing OAuth scope | Add required scope in app config |
+| `token_revoked` | 401 | Token was revoked | Generate new access token |
+| `invalid_grant` | 400 | OAuth code expired | Restart OAuth flow |
+
+```typescript
+import { IntercomError } from "intercom-client";
+
+try {
+  await client.contacts.list();
+} catch (error) {
+  if (error instanceof IntercomError) {
+    console.error(`Intercom error: ${error.statusCode} - ${error.message}`);
+    if (error.statusCode === 401) {
+      console.error("Token invalid. Regenerate at app.intercom.com > Developer Hub");
+    }
+  }
+}
 ```
 
 ## Resources
-- [Intercom Documentation](https://docs.intercom.com)
-- [Intercom Dashboard](https://api.intercom.com)
-- [Intercom Status](https://status.intercom.com)
+
+- [Authentication Guide](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication)
+- [OAuth Scopes](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/oauth-scopes)
+- [Setting up OAuth](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/setting-up-oauth)
+- [intercom-client npm](https://www.npmjs.com/package/intercom-client)
 
 ## Next Steps
+
 After successful auth, proceed to `intercom-hello-world` for your first API call.

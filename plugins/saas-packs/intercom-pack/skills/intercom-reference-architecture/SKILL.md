@@ -1,11 +1,11 @@
 ---
 name: intercom-reference-architecture
 description: |
-  Implement Intercom reference architecture with best-practice project layout.
+  Implement Intercom reference architecture with layered project structure.
   Use when designing new Intercom integrations, reviewing project structure,
   or establishing architecture standards for Intercom applications.
-  Trigger with phrases like "intercom architecture", "intercom best practices",
-  "intercom project structure", "how to organize intercom", "intercom layout".
+  Trigger with phrases like "intercom architecture", "intercom project structure",
+  "how to organize intercom", "intercom layout", "intercom design patterns".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +17,333 @@ compatible-with: claude-code
 # Intercom Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Intercom integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Intercom SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Production-ready architecture for Intercom integrations with layered separation, type-safe SDK usage, webhook processing, contact sync, and Help Center management.
 
 ## Project Structure
 
 ```
-my-intercom-project/
+my-intercom-app/
 ├── src/
 │   ├── intercom/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
+│   │   ├── client.ts              # Singleton IntercomClient wrapper
+│   │   ├── types.ts               # Extended Intercom types
+│   │   └── errors.ts              # Custom error classes
 │   ├── services/
-│   │   └── intercom/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
+│   │   ├── contacts.service.ts    # Contact CRUD + search + merge
+│   │   ├── conversations.service.ts  # Conversation lifecycle
+│   │   ├── articles.service.ts    # Help Center article management
+│   │   └── events.service.ts      # Data event tracking
+│   ├── webhooks/
+│   │   ├── router.ts              # Topic-based event routing
+│   │   ├── signature.ts           # X-Hub-Signature verification
+│   │   └── handlers/
+│   │       ├── conversation.handler.ts
+│   │       └── contact.handler.ts
+│   ├── sync/
+│   │   ├── contact-sync.ts        # CRM <-> Intercom contact sync
+│   │   └── company-sync.ts        # Company data sync
 │   ├── api/
-│   │   └── intercom/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── intercom/
-│           └── sync.ts         # Background sync job
+│   │   ├── health.ts              # Health check endpoint
+│   │   └── webhooks.ts            # Webhook endpoint
+│   └── cache/
+│       └── intercom-cache.ts      # LRU + Redis caching layer
 ├── tests/
 │   ├── unit/
-│   │   └── intercom/
+│   │   ├── contacts.test.ts
+│   │   └── webhooks.test.ts
 │   └── integration/
-│       └── intercom/
+│       └── intercom.integration.test.ts
 ├── config/
-│   ├── intercom.development.json
-│   ├── intercom.staging.json
-│   └── intercom.production.json
-└── docs/
-    └── intercom/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── development.json
+│   ├── staging.json
+│   └── production.json
+└── package.json
 ```
 
 ## Layer Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Intercom Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│              API / Webhook Layer             │
+│   Express routes, webhook endpoints         │
+├─────────────────────────────────────────────┤
+│              Service Layer                   │
+│   contacts.service, conversations.service   │
+│   Business logic, orchestration             │
+├─────────────────────────────────────────────┤
+│              Intercom Client Layer           │
+│   intercom-client SDK, error handling       │
+│   Caching, rate limit management            │
+├─────────────────────────────────────────────┤
+│              Infrastructure                  │
+│   Redis cache, job queue, monitoring        │
+└─────────────────────────────────────────────┘
 ```
 
-## Key Components
+## Instructions
 
-### Step 1: Client Wrapper
+### Step 1: Client Layer
+
 ```typescript
 // src/intercom/client.ts
-export class IntercomService {
-  private client: IntercomClient;
-  private cache: Cache;
-  private monitor: Monitor;
+import { IntercomClient, IntercomError } from "intercom-client";
 
-  constructor(config: IntercomConfig) {
-    this.client = new IntercomClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('intercom');
+let instance: IntercomClient | null = null;
+
+export function getClient(): IntercomClient {
+  if (!instance) {
+    const token = process.env.INTERCOM_ACCESS_TOKEN;
+    if (!token) throw new Error("INTERCOM_ACCESS_TOKEN required");
+    instance = new IntercomClient({ token });
+  }
+  return instance;
+}
+
+// Typed error wrapper
+export class IntercomServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly statusCode: number,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly requestId?: string
+  ) {
+    super(message);
+    this.name = "IntercomServiceError";
   }
 
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
+  static from(err: unknown): IntercomServiceError {
+    if (err instanceof IntercomError) {
+      const retryable = err.statusCode === 429 || (err.statusCode ?? 0) >= 500;
+      return new IntercomServiceError(
+        err.message,
+        err.statusCode ?? 500,
+        err.body?.errors?.[0]?.code ?? "unknown",
+        retryable,
+        err.body?.request_id
+      );
+    }
+    return new IntercomServiceError(
+      (err as Error).message, 500, "internal", false
     );
   }
 }
 ```
 
-### Step 2: Error Boundary
+### Step 2: Contacts Service
+
 ```typescript
-// src/intercom/errors.ts
-export class IntercomServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'IntercomServiceError';
+// src/services/contacts.service.ts
+import { getClient, IntercomServiceError } from "../intercom/client";
+import { Intercom } from "intercom-client";
+
+export class ContactsService {
+  private client = getClient();
+
+  async findOrCreate(params: {
+    email: string;
+    externalId: string;
+    name?: string;
+    customAttributes?: Record<string, any>;
+  }): Promise<Intercom.Contact> {
+    // Search first to avoid 409 conflicts
+    const existing = await this.client.contacts.search({
+      query: { field: "external_id", operator: "=", value: params.externalId },
+    });
+
+    if (existing.data.length > 0) {
+      return existing.data[0];
+    }
+
+    return this.client.contacts.create({
+      role: "user",
+      externalId: params.externalId,
+      email: params.email,
+      name: params.name,
+      customAttributes: params.customAttributes,
+    });
+  }
+
+  async syncFromCRM(crmUser: {
+    id: string;
+    email: string;
+    name: string;
+    plan: string;
+    company: string;
+  }): Promise<Intercom.Contact> {
+    const contact = await this.findOrCreate({
+      email: crmUser.email,
+      externalId: crmUser.id,
+      name: crmUser.name,
+      customAttributes: {
+        plan: crmUser.plan,
+        company_name: crmUser.company,
+        last_synced_at: Math.floor(Date.now() / 1000),
+      },
+    });
+
+    return contact;
+  }
+
+  async mergeLead(leadId: string, userId: string): Promise<Intercom.Contact> {
+    return this.client.contacts.merge({ from: leadId, into: userId });
+  }
+
+  async *searchAll(
+    query: Intercom.SearchRequest["query"]
+  ): AsyncGenerator<Intercom.Contact> {
+    let startingAfter: string | undefined;
+    do {
+      const page = await this.client.contacts.search({
+        query,
+        pagination: { per_page: 50, starting_after: startingAfter },
+      });
+      for (const contact of page.data) yield contact;
+      startingAfter = page.pages?.next?.startingAfter ?? undefined;
+    } while (startingAfter);
   }
 }
-
-export function wrapIntercomError(error: unknown): IntercomServiceError {
-  // Transform SDK errors to application errors
-}
 ```
 
-### Step 3: Health Check
+### Step 3: Conversations Service
+
 ```typescript
-// src/intercom/health.ts
-export async function checkIntercomHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await intercomClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
+// src/services/conversations.service.ts
+import { getClient } from "../intercom/client";
+
+export class ConversationsService {
+  private client = getClient();
+
+  async replyAsAdmin(
+    conversationId: string,
+    adminId: string,
+    body: string
+  ): Promise<void> {
+    await this.client.conversations.reply({
+      conversationId,
+      type: "admin",
+      adminId,
+      body,
+    });
+  }
+
+  async addNote(
+    conversationId: string,
+    adminId: string,
+    note: string
+  ): Promise<void> {
+    await this.client.conversations.reply({
+      conversationId,
+      type: "note",
+      adminId,
+      body: note,
+    });
+  }
+
+  async closeWithMessage(
+    conversationId: string,
+    adminId: string,
+    message?: string
+  ): Promise<void> {
+    await this.client.conversations.close({
+      conversationId,
+      adminId,
+      body: message,
+    });
+  }
+
+  async getOpenConversationsForAdmin(adminId: string) {
+    return this.client.conversations.search({
+      query: {
+        operator: "AND",
+        value: [
+          { field: "state", operator: "=", value: "open" },
+          { field: "admin_assignee_id", operator: "=", value: adminId },
+        ],
+      },
+      sort: { field: "updated_at", order: "descending" },
+    });
   }
 }
 ```
 
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Intercom    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Intercom    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
+### Step 4: Articles Service (Help Center)
 
 ```typescript
-// config/intercom.ts
-export interface IntercomConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
+// src/services/articles.service.ts
+import { getClient } from "../intercom/client";
 
-export function loadIntercomConfig(): IntercomConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./intercom.${env}.json`);
+export class ArticlesService {
+  private client = getClient();
+
+  async createArticle(params: {
+    title: string;
+    body: string;
+    authorId: string;
+    parentId?: string; // Collection ID
+    state?: "published" | "draft";
+  }) {
+    return this.client.articles.create({
+      title: params.title,
+      body: params.body,
+      authorId: params.authorId,
+      parentId: params.parentId,
+      state: params.state || "draft",
+    });
+  }
+
+  async *listAll() {
+    const response = await this.client.articles.list();
+    for await (const article of response) {
+      yield article;
+    }
+  }
+
+  async listCollections() {
+    return this.client.helpCenter.listCollections();
+  }
 }
 ```
 
-## Instructions
+### Step 5: Data Flow
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Intercom operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Intercom connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+```
+┌──────────────┐   Webhook POST     ┌───────────────┐
+│   Intercom   │ ─────────────────▶  │  Webhook      │
+│   Platform   │                     │  Router       │
+│              │ ◀── API calls ──── │               │
+└──────────────┘                     └───────┬───────┘
+                                             │
+                                    ┌────────▼────────┐
+                                    │   Service Layer  │
+                                    │  - Contacts      │
+                                    │  - Conversations │
+                                    │  - Articles      │
+                                    └────────┬────────┘
+                                             │
+                                    ┌────────▼────────┐
+                                    │   Your Database  │
+                                    │   + Cache (Redis)│
+                                    └─────────────────┘
+```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Intercom types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/intercom/{handlers} src/services/intercom src/api/intercom
-touch src/intercom/{client,config,types,errors}.ts
-touch src/services/intercom/{index,sync,cache}.ts
-```
+| Circular dependencies | Service A imports B imports A | Use dependency injection |
+| Client initialization race | Async token fetch | Lazy singleton pattern |
+| Cache inconsistency | Stale data after update | Webhook-driven invalidation |
+| Test isolation | Shared SDK state | `resetClient()` in beforeEach |
 
 ## Resources
-- [Intercom SDK Documentation](https://docs.intercom.com/sdk)
-- [Intercom Best Practices](https://docs.intercom.com/best-practices)
 
-## Flagship Skills
+- [Intercom API Reference](https://developers.intercom.com/docs/references/rest-api/api.intercom.io)
+- [Articles API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/articles)
+- [Help Center API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/help-center)
+- [intercom-client npm](https://www.npmjs.com/package/intercom-client)
+
+## Next Steps
+
 For multi-environment setup, see `intercom-multi-env-setup`.

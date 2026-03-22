@@ -1,11 +1,11 @@
 ---
 name: intercom-enterprise-rbac
 description: |
-  Configure Intercom enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
+  Configure Intercom enterprise OAuth, admin roles, and app-level access control.
+  Use when implementing OAuth integration, managing admin permissions,
   or setting up organization-level controls for Intercom.
-  Trigger with phrases like "intercom SSO", "intercom RBAC",
-  "intercom enterprise", "intercom roles", "intercom permissions", "intercom SAML".
+  Trigger with phrases like "intercom OAuth", "intercom RBAC",
+  "intercom enterprise", "intercom roles", "intercom permissions", "intercom admin access".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,208 +17,285 @@ compatible-with: claude-code
 # Intercom Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Intercom integrations.
+
+Configure enterprise-grade access control for Intercom integrations using OAuth scopes, admin role management, and app-level permission enforcement.
 
 ## Prerequisites
-- Intercom Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
 
-## Role Definitions
+- Intercom workspace with admin access
+- Understanding of OAuth 2.0 flows
+- For public apps: OAuth configured in Developer Hub
 
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
+## Intercom Admin Roles
 
-## Role Implementation
+Intercom has built-in admin roles that control workspace access:
 
-```typescript
-enum IntercomRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
+| Role | API Access | Capabilities |
+|------|-----------|-------------|
+| Owner | Full | All operations, billing, workspace settings |
+| Admin | Full | Manage contacts, conversations, content |
+| Agent | Limited | Reply to conversations, view contacts |
+| Custom roles | Configurable | Enterprise plan feature |
 
-interface IntercomPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<IntercomRole, IntercomPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: IntercomRole,
-  action: keyof IntercomPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
+### Step 1: List Admins and Roles
 
 ```typescript
-// Intercom SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://intercom.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/intercom/callback',
-};
+import { IntercomClient } from "intercom-client";
 
-// Map IdP groups to Intercom roles
-const groupRoleMapping: Record<string, IntercomRole> = {
-  'Engineering': IntercomRole.Developer,
-  'Platform-Admins': IntercomRole.Admin,
-  'Data-Team': IntercomRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@intercom/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.INTERCOM_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.INTERCOM_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/intercom/callback',
-  scopes: ['read', 'write'],
+const client = new IntercomClient({
+  token: process.env.INTERCOM_ACCESS_TOKEN!,
 });
-```
 
-## Organization Management
-
-```typescript
-interface IntercomOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: IntercomRole;
+// List all admins in the workspace
+const adminList = await client.admins.list();
+for (const admin of adminList.admins) {
+  console.log(`${admin.name} (${admin.email})`);
+  console.log(`  ID: ${admin.id}`);
+  console.log(`  Type: ${admin.type}`);      // "admin" or "team"
+  console.log(`  Active: ${admin.awayModeEnabled ? "Away" : "Available"}`);
 }
 
-async function createOrganization(
-  config: IntercomOrganization
-): Promise<void> {
-  await intercomClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
+// Find a specific admin by ID
+const admin = await client.admins.find({ adminId: "12345" });
+console.log(`Admin: ${admin.name} - ${admin.email}`);
+```
+
+## Instructions
+
+### Step 2: OAuth Scope-Based Access Control
+
+For public apps (OAuth), scopes control what your app can access in a customer's workspace.
+
+```typescript
+// OAuth configuration
+const OAUTH_CONFIG = {
+  clientId: process.env.INTERCOM_CLIENT_ID!,
+  clientSecret: process.env.INTERCOM_CLIENT_SECRET!,
+  redirectUri: "https://your-app.com/auth/intercom/callback",
+};
+
+// Step 1: Build authorization URL with minimal scopes
+function getAuthUrl(state: string): string {
+  return `https://app.intercom.com/oauth?` +
+    `client_id=${OAUTH_CONFIG.clientId}&` +
+    `state=${state}&` +
+    `redirect_uri=${encodeURIComponent(OAUTH_CONFIG.redirectUri)}`;
+}
+
+// Step 2: Exchange authorization code for token
+async function exchangeCode(code: string): Promise<{
+  token: string;
+  tokenType: string;
+}> {
+  const response = await fetch("https://api.intercom.io/auth/eagle/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      client_id: OAUTH_CONFIG.clientId,
+      client_secret: OAUTH_CONFIG.clientSecret,
+      code,
+    }),
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`OAuth token exchange failed: ${error.message}`);
+  }
+
+  const data = await response.json();
+  return { token: data.token, tokenType: data.token_type };
 }
+
+// Step 3: Store token per workspace for multi-tenant
+interface WorkspaceAuth {
+  workspaceId: string;
+  token: string;
+  installedAt: Date;
+  installedBy: string; // admin email
+}
+
+// Usage
+const authUrl = getAuthUrl(crypto.randomUUID());
+// Redirect user to authUrl
+// On callback, exchange code for token
 ```
 
-## Access Control Middleware
+### Step 3: App-Level Permission Enforcement
+
+Enforce permissions at the application layer based on the current admin.
 
 ```typescript
-function requireIntercomPermission(
-  requiredPermission: keyof IntercomPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { intercomRole: IntercomRole };
+// Define permission levels for your app's operations
+type IntercomPermission =
+  | "contacts:read"
+  | "contacts:write"
+  | "contacts:delete"
+  | "conversations:read"
+  | "conversations:reply"
+  | "conversations:assign"
+  | "conversations:close"
+  | "articles:read"
+  | "articles:write"
+  | "settings:manage";
 
-    if (!checkPermission(user.intercomRole, requiredPermission)) {
+// Map admin types to permissions
+const ROLE_PERMISSIONS: Record<string, Set<IntercomPermission>> = {
+  owner: new Set([
+    "contacts:read", "contacts:write", "contacts:delete",
+    "conversations:read", "conversations:reply", "conversations:assign", "conversations:close",
+    "articles:read", "articles:write", "settings:manage",
+  ]),
+  admin: new Set([
+    "contacts:read", "contacts:write",
+    "conversations:read", "conversations:reply", "conversations:assign", "conversations:close",
+    "articles:read", "articles:write",
+  ]),
+  agent: new Set([
+    "contacts:read",
+    "conversations:read", "conversations:reply",
+  ]),
+};
+
+function checkPermission(adminRole: string, permission: IntercomPermission): boolean {
+  return ROLE_PERMISSIONS[adminRole]?.has(permission) ?? false;
+}
+
+// Express middleware
+function requirePermission(permission: IntercomPermission) {
+  return (req: any, res: any, next: any) => {
+    const adminRole = req.user?.intercomRole || "agent";
+    if (!checkPermission(adminRole, permission)) {
       return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
+        error: "Forbidden",
+        message: `Missing permission: ${permission}`,
+        required: permission,
+        currentRole: adminRole,
       });
     }
-
     next();
   };
 }
 
 // Usage
-app.delete('/intercom/resource/:id',
-  requireIntercomPermission('delete'),
-  deleteResourceHandler
+app.delete(
+  "/api/contacts/:id",
+  requirePermission("contacts:delete"),
+  deleteContactHandler
+);
+
+app.post(
+  "/api/conversations/:id/assign",
+  requirePermission("conversations:assign"),
+  assignConversationHandler
 );
 ```
 
-## Audit Trail
+### Step 4: Team-Based Conversation Assignment
 
 ```typescript
-interface IntercomAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: IntercomRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
+// List teams in workspace
+const admins = await client.admins.list();
+const teams = admins.admins.filter(a => a.type === "team");
+console.log("Teams:", teams.map(t => `${t.name} (${t.id})`));
 
-async function logIntercomAccess(entry: IntercomAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
+// Assign conversation to team based on topic
+async function routeConversation(
+  conversationId: string,
+  adminId: string,
+  topic: string
+): Promise<void> {
+  const teamRouting: Record<string, string> = {
+    billing: "team-billing-123",
+    technical: "team-engineering-456",
+    sales: "team-sales-789",
+  };
 
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
+  const teamId = teamRouting[topic];
+  if (teamId) {
+    await client.conversations.assign({
+      conversationId,
+      type: "team",
+      adminId,
+      assigneeId: teamId,
+      body: `Routed to ${topic} team`,
+    });
   }
 }
 ```
 
-## Instructions
+### Step 5: Audit Logging for Admin Actions
 
-### Step 1: Define Roles
-Map organizational roles to Intercom permissions.
-
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
-
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
 ```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
+interface AdminAuditEntry {
+  timestamp: string;
+  adminId: string;
+  adminEmail: string;
+  action: string;
+  resource: string;
+  resourceId: string;
+  success: boolean;
+  ipAddress?: string;
+}
+
+async function auditAdminAction(entry: AdminAuditEntry): Promise<void> {
+  // Log to your audit database
+  await db.auditLog.insert(entry);
+
+  // Track as Intercom data event for visibility
+  await client.dataEvents.create({
+    eventName: "admin-action-logged",
+    createdAt: Math.floor(Date.now() / 1000),
+    userId: entry.adminId,
+    metadata: {
+      action: entry.action,
+      resource: entry.resource,
+      resource_id: entry.resourceId,
+      success: entry.success,
+    },
+  });
+
+  // Alert on sensitive operations
+  if (entry.action.includes("delete") || entry.action.includes("settings")) {
+    console.warn(`[AUDIT] Sensitive action: ${entry.action} by ${entry.adminEmail}`);
+  }
 }
 ```
 
+## OAuth Scope Reference
+
+| Scope | Grants |
+|-------|--------|
+| Read admins | `GET /admins` |
+| Read contacts | `GET /contacts`, `POST /contacts/search` |
+| Write contacts | `POST /contacts`, `PUT /contacts/{id}`, `DELETE /contacts/{id}` |
+| Read conversations | `GET /conversations`, `GET /conversations/{id}` |
+| Write conversations | `POST /conversations`, reply, close, assign |
+| Read messages | Read sent messages |
+| Write messages | `POST /messages` |
+| Read articles | `GET /articles`, `GET /help_center/collections` |
+| Write articles | Create, update, delete articles and collections |
+| Read tags | `GET /tags` |
+| Write tags | Create, apply, remove tags |
+| Read events | `GET /events` |
+| Write events | `POST /events` |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| OAuth callback fails | Wrong redirect URI | Match exactly in Developer Hub |
+| `forbidden` (403) | Missing OAuth scope | Add scope, user must re-authorize |
+| Token revoked | User uninstalled app | Handle gracefully, notify admin |
+| Admin not found | Admin left workspace | Remove from your system |
+| Team assignment fails | Team ID invalid | List teams first with `admins.list()` |
+
 ## Resources
-- [Intercom Enterprise Guide](https://docs.intercom.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+- [Authentication](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication)
+- [Setting up OAuth](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/setting-up-oauth)
+- [OAuth Scopes](https://developers.intercom.com/docs/build-an-integration/learn-more/authentication/oauth-scopes)
+- [Admins API](https://developers.intercom.com/docs/references/rest-api/api.intercom.io/admins)
 
 ## Next Steps
+
 For major migrations, see `intercom-migration-deep-dive`.
