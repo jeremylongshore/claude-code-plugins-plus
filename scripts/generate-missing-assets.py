@@ -118,7 +118,7 @@ class AssetGenerator:
                     plugin_data = json.load(f)
                     context["description"] = plugin_data.get("description", "")
                     context["category"] = plugin_data.get("category", "")
-                except:
+                except Exception:
                     pass
 
         # Read README.md (first 2000 chars for context)
