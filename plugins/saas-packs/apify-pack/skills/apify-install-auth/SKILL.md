@@ -1,12 +1,11 @@
 ---
 name: apify-install-auth
 description: |
-  Install and configure Apify SDK/CLI authentication.
-  Use when setting up a new Apify integration, configuring API keys,
-  or initializing Apify in your project.
-  Trigger with phrases like "install apify", "setup apify",
-  "apify auth", "configure apify API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install and configure Apify SDK, CLI, and API client authentication.
+  Use when setting up a new Apify project, configuring API tokens,
+  or initializing apify-client / Apify SDK in your codebase.
+  Trigger: "install apify", "setup apify", "apify auth", "configure apify token".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(apify:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,76 +16,137 @@ compatible-with: claude-code
 # Apify Install & Auth
 
 ## Overview
-Set up Apify SDK/CLI and configure authentication credentials.
+
+Set up the Apify ecosystem: the `apify-client` JS library (for calling Actors remotely), the `apify` SDK (for building Actors), the Apify CLI (for deploying), and Crawlee (for crawling). Each package serves a different purpose.
+
+## Package Map
+
+| Package | npm | Purpose |
+|---------|-----|---------|
+| `apify-client` | `npm i apify-client` | Call Actors, manage datasets/KV stores from external apps |
+| `apify` | `npm i apify` | Build Actors (includes `Actor.init()`, `Actor.pushData()`) |
+| `crawlee` | `npm i crawlee` | Crawler framework (Cheerio, Playwright, Puppeteer crawlers) |
+| `apify-cli` | `npm i -g apify-cli` | CLI for `apify login`, `apify run`, `apify push` |
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Apify account with API access
-- API key from Apify dashboard
+
+- Node.js 18+ (required by SDK v3+)
+- Apify account at https://console.apify.com
+- API token from Settings > Integrations in Apify Console
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @apify/sdk
+### Step 1: Install Packages
 
-# Python
-pip install apify
+```bash
+# For CALLING existing Actors from your app:
+npm install apify-client
+
+# For BUILDING your own Actors:
+npm install apify crawlee
+
+# For CLI deployment:
+npm install -g apify-cli
 ```
 
 ### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export APIFY_API_KEY="your-api-key"
 
-# Or create .env file
-echo 'APIFY_API_KEY=your-api-key' >> .env
+```bash
+# Option A: Environment variable (recommended for apps)
+export APIFY_TOKEN="apify_api_YOUR_TOKEN_HERE"
+
+# Option B: .env file (add .env to .gitignore)
+echo 'APIFY_TOKEN=apify_api_YOUR_TOKEN_HERE' >> .env
+
+# Option C: CLI login (for interactive development)
+apify login
+# Paste your token when prompted
 ```
 
 ### Step 3: Verify Connection
+
 ```typescript
-// Test connection code here
+import { ApifyClient } from 'apify-client';
+
+const client = new ApifyClient({
+  token: process.env.APIFY_TOKEN,
+});
+
+// List your Actors to confirm auth works
+const { items } = await client.actors().list();
+console.log(`Authenticated. You have ${items.length} Actors.`);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: Verify CLI (if installed)
+
+```bash
+apify login --token YOUR_TOKEN
+apify info  # Shows your account info
+```
+
+## Auth Token Details
+
+- Token format: `apify_api_` prefix followed by alphanumeric string
+- Pass via `Authorization: Bearer <token>` header (REST API)
+- Pass via `token` constructor option (JS client)
+- The `APIFY_TOKEN` env var is auto-detected by both `apify-client` and `apify` SDK
+
+## Environment Variable Reference
+
+| Variable | Purpose |
+|----------|---------|
+| `APIFY_TOKEN` | API authentication (primary) |
+| `APIFY_PROXY_PASSWORD` | Proxy access (auto-set on platform) |
+| `APIFY_IS_AT_HOME` | `true` when running on Apify platform |
+| `APIFY_DEFAULT_DATASET_ID` | Default dataset for current run |
+| `APIFY_DEFAULT_KEY_VALUE_STORE_ID` | Default KV store for current run |
+| `APIFY_DEFAULT_REQUEST_QUEUE_ID` | Default request queue for current run |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Apify dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.apify.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| `401 Unauthorized` | Invalid or expired token | Regenerate token in Console > Settings > Integrations |
+| `Cannot find module 'apify-client'` | Package not installed | `npm install apify-client` |
+| `APIFY_TOKEN is not set` | Missing env var | Export `APIFY_TOKEN` or pass `token` to constructor |
+| `apify: command not found` | CLI not installed globally | `npm install -g apify-cli` |
 
 ## Examples
 
-### TypeScript Setup
-```typescript
-import { ApifyClient } from '@apify/sdk';
+### TypeScript Project Setup
 
-const client = new ApifyClient({
-  apiKey: process.env.APIFY_API_KEY,
-});
+```typescript
+// src/apify/client.ts
+import { ApifyClient } from 'apify-client';
+import 'dotenv/config'; // npm install dotenv
+
+let client: ApifyClient | null = null;
+
+export function getClient(): ApifyClient {
+  if (!client) {
+    if (!process.env.APIFY_TOKEN) {
+      throw new Error('APIFY_TOKEN environment variable is required');
+    }
+    client = new ApifyClient({ token: process.env.APIFY_TOKEN });
+  }
+  return client;
+}
 ```
 
-### Python Setup
-```python
-from apify import ApifyClient
+### .env.example Template
 
-client = ApifyClient(
-    api_key=os.environ.get('APIFY_API_KEY')
-)
+```bash
+# Apify — get your token at https://console.apify.com/account/integrations
+APIFY_TOKEN=apify_api_REPLACE_ME
 ```
 
 ## Resources
-- [Apify Documentation](https://docs.apify.com)
-- [Apify Dashboard](https://api.apify.com)
-- [Apify Status](https://status.apify.com)
+
+- [Apify Console — API Tokens](https://console.apify.com/account/integrations)
+- [JS Client Quick Start](https://docs.apify.com/api/client/js/docs/introduction/quick-start)
+- [Apify CLI Reference](https://docs.apify.com/cli/docs/reference)
+- [SDK for JavaScript](https://docs.apify.com/sdk/js)
 
 ## Next Steps
-After successful auth, proceed to `apify-hello-world` for your first API call.
+
+Proceed to `apify-hello-world` for your first Actor call.
