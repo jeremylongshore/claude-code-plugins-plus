@@ -1,12 +1,12 @@
 ---
 name: figma-incident-runbook
 description: |
-  Execute Figma incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Figma-related outages, investigating errors,
-  or running post-incident reviews for Figma integration failures.
+  Respond to Figma API outages, auth failures, and rate limit incidents.
+  Use when Figma integration is down, experiencing errors,
+  or running post-incident reviews for Figma-related failures.
   Trigger with phrases like "figma incident", "figma outage",
-  "figma down", "figma on-call", "figma emergency", "figma broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "figma down", "figma broken", "figma emergency".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,189 +17,185 @@ compatible-with: claude-code
 # Figma Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Figma-related outages.
+Rapid incident response procedures for Figma REST API integration failures. Covers triage, mitigation, and postmortem for the most common failure modes.
 
 ## Prerequisites
-- Access to Figma dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Figma API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
-
-```bash
-# 1. Check Figma status
-curl -s https://status.figma.com | jq
-
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.figma'
-
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(figma_errors_total[5m])
-
-# 4. Recent error logs
-kubectl logs -l app=figma-integration --since=5m | grep -i error | tail -20
-```
-
-## Decision Tree
-
-```
-Figma API returning errors?
-├─ YES: Is status.figma.com showing incident?
-│   ├─ YES → Wait for Figma to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret figma-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Figma dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic figma-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/figma-integration
-```
-
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.figma.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/figma-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Figma for limit increase
-```
-
-### 500/503 - Figma Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/figma-integration FIGMA_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Figma status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Figma Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Figma Integration Issue
-
-We're experiencing issues with our Figma integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/figma-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=figma-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=figma_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
-```markdown
-## Incident: Figma [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
+- Access to application logs and metrics
+- Figma PAT for health checks
+- Communication channel (Slack, PagerDuty)
 
 ## Instructions
 
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
+### Step 1: Quick Triage (First 5 Minutes)
+```bash
+#!/bin/bash
+echo "=== Figma Incident Triage ==="
 
-### Step 2: Follow Decision Tree
-Determine if the issue is Figma-side or internal.
+# 1. Is Figma itself down?
+echo -n "Figma Status: "
+curl -s https://www.figmastatus.com/api/v2/status.json 2>/dev/null \
+  | jq -r '.status.description // "Cannot reach status page"'
 
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
+# 2. Is our token valid?
+echo -n "Auth Check: "
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "X-Figma-Token: ${FIGMA_PAT}" \
+  https://api.figma.com/v1/me)
+echo "$HTTP_CODE"
 
-### Step 4: Communicate Status
-Update internal and external stakeholders.
+# 3. Can we read a known file?
+echo -n "File Access: "
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1" \
+  | jq -r '.name // "FAILED"'
+
+# 4. Are we rate limited?
+echo "Rate Limit Headers:"
+curl -s -D - -o /dev/null \
+  -H "X-Figma-Token: ${FIGMA_PAT}" \
+  https://api.figma.com/v1/me 2>/dev/null \
+  | grep -iE "(retry-after|rate-limit|figma)" || echo "No rate limit headers"
+```
+
+### Step 2: Decision Tree
+```
+API returning errors?
+├── 403 Forbidden
+│   ├── Token expired (>90 days) → Rotate PAT immediately
+│   ├── Wrong scopes → Regenerate with correct scopes
+│   └── File not shared → Check file permissions
+│
+├── 429 Rate Limited
+│   ├── Retry-After < 60s → Wait and retry automatically
+│   ├── Retry-After > 300s → Reduce request volume
+│   └── X-Figma-Rate-Limit-Type: low → Consider upgrading plan
+│
+├── 404 Not Found
+│   ├── File deleted → Check with file owner
+│   ├── Wrong file key → Verify FIGMA_FILE_KEY
+│   └── API path wrong → Check endpoint documentation
+│
+├── 500/503 Server Error
+│   ├── status.figma.com shows incident → Wait for resolution
+│   ├── Intermittent → Retry with backoff
+│   └── Persistent → Contact Figma support
+│
+└── Network Error (ECONNREFUSED, timeout)
+    ├── DNS resolution failing → Check DNS config
+    ├── Firewall blocking → Verify outbound HTTPS to api.figma.com
+    └── TLS error → Check Node.js version (18+ required)
+```
+
+### Step 3: Immediate Mitigation
+
+**For 403 (Token Expired):**
+```bash
+# Generate new PAT in Figma Settings > Personal access tokens
+# Then update your deployment:
+
+# GitHub Actions
+gh secret set FIGMA_PAT --body "figd_new-token-here"
+
+# Cloud Run
+echo -n "figd_new-token" | gcloud secrets versions add figma-pat --data-file=-
+gcloud run services update my-service --update-secrets="FIGMA_PAT=figma-pat:latest"
+
+# Fly.io
+fly secrets set FIGMA_PAT=figd_new-token
+```
+
+**For 429 (Rate Limited):**
+```typescript
+// Emergency: disable non-critical Figma calls
+const EMERGENCY_MODE = process.env.FIGMA_EMERGENCY === 'true';
+
+async function safeFigmaCall<T>(
+  path: string,
+  critical: boolean = false
+): Promise<T | null> {
+  if (EMERGENCY_MODE && !critical) {
+    console.warn(`Figma call skipped (emergency mode): ${path}`);
+    return null;
+  }
+  return figmaFetch(path);
+}
+```
+
+**For 500/503 (Figma Down):**
+```typescript
+// Serve cached data when Figma is unavailable
+async function getTokensWithFallback() {
+  try {
+    return await extractTokensFromFigma();
+  } catch (error) {
+    console.warn('Figma unavailable, serving cached tokens');
+    // Return last-known-good tokens from cache or file
+    const cached = await readFile('output/tokens.json', 'utf-8');
+    return JSON.parse(cached);
+  }
+}
+```
+
+### Step 4: Communication
+```markdown
+## Internal Notification (Slack)
+**Figma Integration Alert**
+- Status: INVESTIGATING / MITIGATED / RESOLVED
+- Impact: [Design token sync paused / Asset export failing]
+- Cause: [403 expired token / 429 rate limit / Figma outage]
+- Action: [Rotating token / Reducing request rate / Waiting for Figma]
+- ETA: [Next update in 15 min]
+
+## External (if applicable)
+Design system updates may be delayed due to a temporary issue
+with our Figma integration. Cached data is being served.
+```
+
+### Step 5: Postmortem Template
+```markdown
+## Figma Incident Postmortem
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P1/P2/P3
+
+### Summary
+[One sentence: what happened and what was the impact]
+
+### Timeline
+- HH:MM UTC - First alert fired (describe alert)
+- HH:MM UTC - On-call acknowledged
+- HH:MM UTC - Root cause identified
+- HH:MM UTC - Mitigation applied
+- HH:MM UTC - Full resolution confirmed
+
+### Root Cause
+[Technical explanation, e.g., "PAT expired after 90 days without rotation"]
+
+### Action Items
+- [ ] Set up PAT rotation reminder at 80-day mark
+- [ ] Add 403 alert to PagerDuty
+- [ ] Implement cached fallback for token data
+```
 
 ## Output
-- Issue identified and categorized
-- Remediation applied
+- Issue identified via triage script
+- Root cause determined from decision tree
+- Mitigation applied (token rotation, fallback mode, etc.)
 - Stakeholders notified
-- Evidence collected for postmortem
+- Postmortem documented
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.figma.status' || echo "UNHEALTHY"
-```
+| Can't reach status.figma.com | Network issue | Try from different network or mobile |
+| Triage script fails | PAT not set | Set FIGMA_PAT before running |
+| Fallback data stale | Last cache too old | Set up regular cache refresh |
+| Alert not firing | Missing metrics | Verify Prometheus scrape config |
 
 ## Resources
 - [Figma Status Page](https://status.figma.com)
-- [Figma Support](https://support.figma.com)
+- [Figma Support](https://help.figma.com/hc/en-us/requests/new)
+- [Figma Developer Forum](https://forum.figma.com/)
 
 ## Next Steps
 For data handling, see `figma-data-handling`.

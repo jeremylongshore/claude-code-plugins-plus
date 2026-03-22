@@ -1,11 +1,11 @@
 ---
 name: figma-known-pitfalls
 description: |
-  Identify and avoid Figma anti-patterns and common integration mistakes.
-  Use when reviewing Figma code for issues, onboarding new developers,
-  or auditing existing Figma integrations for best practices violations.
+  Avoid the most common Figma API integration mistakes and anti-patterns.
+  Use when reviewing Figma code, onboarding new developers,
+  or auditing an existing Figma integration.
   Trigger with phrases like "figma mistakes", "figma anti-patterns",
-  "figma pitfalls", "figma what not to do", "figma code review".
+  "figma pitfalls", "figma code review", "figma what not to do".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,320 +17,190 @@ compatible-with: claude-code
 # Figma Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Figma.
+The ten most common mistakes when integrating with the Figma REST API and Plugin API, with correct alternatives for each.
 
 ## Prerequisites
-- Access to Figma codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Figma API call
-app.post('/checkout', async (req, res) => {
-  const payment = await figmaClient.processPayment(req.body);  // 2-5s latency
-  const notification = await figmaClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await figmaClient.processPayment(data);
-  await figmaClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await figmaClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => figmaClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new FigmaClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new FigmaClient({
-  apiKey: process.env.FIGMA_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await figmaClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await figmaClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await figmaClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-figma-signature'];
-    if (!verifyFigmaSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await figmaClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await figmaClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof FigmaNotFoundError) {
-    return null;
-  }
-  if (error instanceof FigmaRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new FigmaClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.figma.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new FigmaClient({
-  timeout: parseInt(process.env.FIGMA_TIMEOUT || '30000'),
-  baseUrl: process.env.FIGMA_BASE_URL || 'https://api.figma.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Figma is down, every request hangs
-for (const user of users) {
-  await figmaClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(figmaClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Figma is down
-const recommendations = await figmaClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await figmaClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('figma', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Working Figma integration to audit
+- Access to codebase
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Pitfall 1: Fetching Full File Trees
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+**Problem:** `GET /v1/files/:key` without `depth` returns the entire document tree. Large files can be 10-100 MB of JSON.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```typescript
+// BAD -- downloads entire file tree
+const file = await figmaFetch(`/v1/files/${fileKey}`);
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+// GOOD -- only get metadata and page names
+const file = await figmaFetch(`/v1/files/${fileKey}?depth=1`);
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
-
-## Examples
-
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+// GOOD -- fetch only the nodes you need
+const nodes = await figmaFetch(`/v1/files/${fileKey}/nodes?ids=${ids}`);
 ```
 
+### Pitfall 2: Ignoring Rate Limit Headers
+
+**Problem:** Blasting requests and crashing on 429 without reading `Retry-After`.
+
+```typescript
+// BAD -- no rate limit handling
+for (const id of nodeIds) {
+  await figmaFetch(`/v1/files/${fileKey}/nodes?ids=${id}`); // 429!
+}
+
+// GOOD -- batch IDs and honor Retry-After
+const ids = nodeIds.join(',');
+const res = await fetch(`https://api.figma.com/v1/files/${fileKey}/nodes?ids=${ids}`, {
+  headers: { 'X-Figma-Token': token },
+});
+if (res.status === 429) {
+  const wait = parseInt(res.headers.get('Retry-After') || '60');
+  await new Promise(r => setTimeout(r, wait * 1000));
+}
+```
+
+### Pitfall 3: Caching Image Export URLs Too Long
+
+**Problem:** Figma image URLs expire after 30 days. Storing them permanently breaks.
+
+```typescript
+// BAD -- storing image URLs in database permanently
+await db.save({ iconUrl: imageUrl }); // Will break in 30 days
+
+// GOOD -- re-export when needed, or cache with short TTL
+const imageCache = new LRUCache({ max: 1000, ttl: 24 * 60 * 60 * 1000 }); // 24h
+```
+
+### Pitfall 4: Hardcoded PATs
+
+**Problem:** Personal access tokens committed to source code.
+
+```typescript
+// BAD -- token in source code (visible forever in git history)
+const token = 'figd_actual_token_value_here';
+
+// GOOD -- environment variable
+const token = process.env.FIGMA_PAT!;
+if (!token) throw new Error('FIGMA_PAT not set');
+```
+
+### Pitfall 5: Using Deprecated `files:read` Scope
+
+**Problem:** The `files:read` scope is deprecated. New tokens should use granular scopes.
+
+```
+BAD:  files:read (deprecated, will be removed)
+GOOD: file_content:read, file_comments:read, file_versions:read (specific)
+```
+
+### Pitfall 6: Forgetting Color Format Conversion
+
+**Problem:** Figma returns colors as 0-1 floats, not 0-255 integers.
+
+```typescript
+// BAD -- using Figma values directly as RGB
+const { r, g, b } = node.fills[0].color;
+return `rgb(${r}, ${g}, ${b})`; // rgb(0.8, 0.2, 0.4) -- invalid!
+
+// GOOD -- convert to 0-255 range
+return `rgb(${Math.round(r * 255)}, ${Math.round(g * 255)}, ${Math.round(b * 255)})`;
+```
+
+### Pitfall 7: Not Handling null Image Renders
+
+**Problem:** The images endpoint returns `null` for nodes that cannot be rendered (invisible, deleted, empty).
+
+```typescript
+// BAD -- assumes all nodes render successfully
+const images = data.images;
+for (const [id, url] of Object.entries(images)) {
+  const img = await fetch(url); // TypeError: Cannot construct URL from null
+}
+
+// GOOD -- filter out null entries
+for (const [id, url] of Object.entries(images)) {
+  if (!url) {
+    console.warn(`Node ${id} could not be rendered (null)`);
+    continue;
+  }
+  const img = await fetch(url);
+}
+```
+
+### Pitfall 8: Polling Instead of Webhooks
+
+**Problem:** Polling `GET /v1/files/:key` every 30 seconds wastes rate limit quota.
+
+```typescript
+// BAD -- 2,880 API calls per file per day
+setInterval(async () => {
+  const file = await figmaFetch(`/v1/files/${fileKey}`);
+  if (file.version !== lastVersion) await sync();
+}, 30_000);
+
+// GOOD -- webhook notifies you only when file changes
+// POST /v2/webhooks with event_type: "FILE_UPDATE"
+// Result: ~10-50 calls/day instead of 2,880
+```
+
+### Pitfall 9: SVG Export with Scale Parameter
+
+**Problem:** Figma ignores the `scale` parameter for SVG exports. SVGs always export at 1x.
+
+```typescript
+// BAD -- scale has no effect on SVG
+await figmaFetch(`/v1/images/${key}?ids=${id}&format=svg&scale=2`);
+
+// GOOD -- SVG is vector; scale is meaningless. Use scale for PNG/JPG only.
+await figmaFetch(`/v1/images/${key}?ids=${id}&format=svg`);      // SVG: always 1x
+await figmaFetch(`/v1/images/${key}?ids=${id}&format=png&scale=2`); // PNG: 2x
+```
+
+### Pitfall 10: Webhook Without Passcode Verification
+
+**Problem:** Anyone can POST to your webhook endpoint if you don't verify the passcode.
+
+```typescript
+// BAD -- trusts any incoming request
+app.post('/webhooks/figma', (req, res) => {
+  processEvent(req.body); // Attacker can send fake events
+  res.sendStatus(200);
+});
+
+// GOOD -- verify passcode with timing-safe comparison
+app.post('/webhooks/figma', (req, res) => {
+  const received = req.body.passcode || '';
+  const expected = process.env.FIGMA_WEBHOOK_PASSCODE!;
+
+  if (received.length !== expected.length ||
+      !crypto.timingSafeEqual(Buffer.from(received), Buffer.from(expected))) {
+    return res.status(401).json({ error: 'Invalid passcode' });
+  }
+
+  res.status(200).json({ received: true });
+  processEvent(req.body);
+});
+```
+
+## Quick Reference
+
+| # | Pitfall | Detection | Fix |
+|---|---------|-----------|-----|
+| 1 | Full file fetch | Response > 1MB | Use `depth=1` or `/nodes` |
+| 2 | No rate limit handling | 429 errors | Read `Retry-After`, batch requests |
+| 3 | Stale image URLs | Broken images after 30 days | Re-export or short TTL cache |
+| 4 | Hardcoded PAT | `grep -r figd_` in source | Use `process.env.FIGMA_PAT` |
+| 5 | Deprecated scope | `files:read` in token config | Use `file_content:read` |
+| 6 | Wrong color format | Colors look wrong | Multiply by 255 |
+| 7 | Null image render | TypeError on null URL | Filter null entries |
+| 8 | Polling loop | High API call volume | Use Webhooks V2 |
+| 9 | SVG with scale | Scale parameter ignored | SVG is always 1x |
+| 10 | No webhook verification | Security vulnerability | Verify passcode |
+
 ## Resources
-- [Figma Security Guide](https://docs.figma.com/security)
-- [Figma Best Practices](https://docs.figma.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Figma REST API](https://developers.figma.com/docs/rest-api/)
+- [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
+- [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
+- [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)

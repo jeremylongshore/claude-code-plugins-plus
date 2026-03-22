@@ -1,11 +1,11 @@
 ---
 name: figma-architecture-variants
 description: |
-  Choose and implement Figma validated architecture blueprints for different scales.
-  Use when designing new Figma integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Figma applications.
+  Choose between Figma integration architectures: CLI script, webhook service, or plugin.
+  Use when deciding how to integrate with Figma, comparing REST API vs Plugin API,
+  or planning a Figma-connected application.
   Trigger with phrases like "figma architecture", "figma blueprint",
-  "how to structure figma", "figma project layout", "figma microservice".
+  "how to integrate figma", "figma plugin vs api", "figma project type".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,270 +17,210 @@ compatible-with: claude-code
 # Figma Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Figma integrations.
+Three proven architecture patterns for Figma integrations, based on the two primary Figma APIs: the REST API (external tools) and the Plugin API (in-editor experiences).
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── figma/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── figma.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── figma.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous Figma calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await figmaClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── figma/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── figma.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── figma-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── figma/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class FigmaService {
-  constructor(
-    private client: FigmaClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('figma.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-figma-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── figma.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── figma/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls figma-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated Figma microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class FigmaAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: FigmaCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new FigmaProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(FigmaProcessedEvent)
-class FigmaEventHandler {
-  async handle(event: FigmaProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Figma code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated figma-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
+- Clear use case requirements
+- Understanding of Figma REST API vs Plugin API differences
 
 ## Instructions
 
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
+### Step 1: Choose Your Architecture
 
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
+| Architecture | API Used | Best For | Hosting |
+|-------------|----------|----------|---------|
+| CLI/Script | REST API | Design token sync, asset export | None (runs locally or in CI) |
+| Webhook Service | REST API | Real-time automation, Slack bots | Server/serverless |
+| Figma Plugin | Plugin API | In-editor tools, design linting | Runs in Figma desktop app |
 
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
+### Variant A: CLI Script (Simplest)
 
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
+**Use case:** Extract design tokens, export icons, sync to code
+
+```
+Developer runs script
+        │
+        ▼
+  ┌─────────────┐
+  │ CLI Script   │  (Node.js)
+  │ - extract.ts │
+  └──────┬───────┘
+         │ GET /v1/files/:key
+         │ GET /v1/images/:key
+         ▼
+  ┌─────────────┐
+  │ Figma REST  │
+  │ API         │
+  └──────┬──────┘
+         │
+         ▼
+  ┌─────────────┐
+  │ Output      │
+  │ - tokens.css│
+  │ - icons/    │
+  └─────────────┘
+```
+
+```json
+{
+  "scripts": {
+    "figma:tokens": "tsx scripts/extract-tokens.ts",
+    "figma:icons": "tsx scripts/export-icons.ts",
+    "figma:sync": "npm run figma:tokens && npm run figma:icons"
+  }
+}
+```
+
+**Pros:** Zero infrastructure, runs in CI, easy to debug
+**Cons:** Not real-time, manual trigger, no webhook support
+
+---
+
+### Variant B: Webhook Service (Event-Driven)
+
+**Use case:** Auto-sync on file save, Slack notifications, build triggers
+
+```
+  ┌─────────────┐
+  │ Figma Cloud  │
+  │ FILE_UPDATE  │──── Webhook V2 ────┐
+  │ FILE_COMMENT │                    │
+  └──────────────┘                    │
+                                      ▼
+                               ┌──────────────┐
+                               │ Your Service  │
+                               │ (Vercel/Fly)  │
+                               ├──────────────┤
+                               │ /webhooks     │ ← Verify passcode
+                               │ /health       │
+                               │ /api/tokens   │
+                               └──────┬───────┘
+                                      │
+                          ┌───────────┼───────────┐
+                          ▼           ▼           ▼
+                    ┌──────────┐ ┌──────────┐ ┌──────────┐
+                    │ Token    │ │ Slack    │ │ CI       │
+                    │ Rebuild  │ │ Notify   │ │ Trigger  │
+                    └──────────┘ └──────────┘ └──────────┘
+```
+
+```typescript
+// Minimal webhook service (Express)
+const app = express();
+app.post('/webhooks/figma', express.json(), verifyPasscode, (req, res) => {
+  res.status(200).json({ received: true });
+  processEvent(req.body); // async
+});
+app.get('/health', healthCheck);
+app.listen(process.env.PORT || 3000);
+```
+
+**Pros:** Real-time, event-driven, no polling waste
+**Cons:** Requires hosting, HTTPS endpoint, webhook management
+
+---
+
+### Variant C: Figma Plugin (In-Editor)
+
+**Use case:** Design linting, component generation, data population
+
+```
+  ┌─────────────────────────────────────────┐
+  │             Figma Desktop App            │
+  │                                         │
+  │  ┌─────────────┐   ┌─────────────────┐ │
+  │  │ Plugin       │   │ Canvas          │ │
+  │  │ Sandbox     │   │ (your design)   │ │
+  │  │             │   │                 │ │
+  │  │ code.ts     │◄──│ figma.currentPage│ │
+  │  │ figma.*     │──►│ figma.createRect │ │
+  │  │             │   │                 │ │
+  │  ├─────────────┤   └─────────────────┘ │
+  │  │ UI iframe   │                        │
+  │  │ ui.html     │                        │
+  │  │ (React/HTML)│                        │
+  │  └─────────────┘                        │
+  └─────────────────────────────────────────┘
+```
+
+```json
+// manifest.json
+{
+  "name": "My Design Linter",
+  "id": "1234567890",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "permissions": ["currentuser"]
+}
+```
+
+```typescript
+// code.ts -- Plugin API (runs in Figma sandbox)
+// Access the document directly -- no REST API needed
+const page = figma.currentPage;
+const frames = page.findAll(n => n.type === 'FRAME');
+
+// Create nodes programmatically
+const rect = figma.createRectangle();
+rect.resize(200, 100);
+rect.fills = [{ type: 'SOLID', color: { r: 1, g: 0.5, b: 0 } }];
+page.appendChild(rect);
+
+// Read component properties
+const components = page.findAll(n => n.type === 'COMPONENT') as ComponentNode[];
+for (const comp of components) {
+  console.log(`${comp.name}: ${comp.width}x${comp.height}`);
+}
+```
+
+**Pros:** Direct document access, instant feedback, rich UI
+**Cons:** Only works in Figma desktop, no server-side processing, sandboxed
+
+### Step 2: Decision Matrix
+
+| Factor | CLI Script | Webhook Service | Figma Plugin |
+|--------|-----------|-----------------|--------------|
+| Real-time | No | Yes | Yes (in-editor) |
+| Infrastructure | None | Server/serverless | None |
+| CI/CD integration | Natural | Via webhook | Not applicable |
+| User interaction | No | No | Yes |
+| API used | REST API | REST API | Plugin API |
+| File modification | No (read-only) | No (read-only) | Yes (full access) |
+| Figma app required | No | No | Yes |
+| Auth | PAT | PAT + webhook passcode | None (runs in Figma) |
+
+### Step 3: Hybrid Architecture
+Many production systems combine variants:
+
+```
+CLI (CI) ← Scheduled token sync (daily at 9 AM)
+     +
+Webhook Service ← Real-time notifications (Slack, rebuild triggers)
+     +
+Figma Plugin ← In-editor design linting and data population
+```
 
 ## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+- Architecture variant selected based on use case
+- Data flow documented
+- API choice justified (REST vs Plugin)
+- Implementation skeleton provided
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| CLI too slow | Full file fetch | Use `depth=1` and `/nodes` |
+| Webhook not firing | No HTTPS | Deploy to platform with TLS |
+| Plugin sandbox limits | Heavy computation | Offload to REST API via fetch in UI iframe |
+| Wrong variant choice | Over-engineering | Start with CLI, add webhook when needed |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Figma Architecture Guide](https://docs.figma.com/architecture)
+- [Figma REST API](https://developers.figma.com/docs/rest-api/)
+- [Figma Plugin API](https://developers.figma.com/docs/plugins/)
+- [Figma Widgets API](https://developers.figma.com/docs/widgets/)
+- [Compare Figma APIs](https://www.figma.com/developers/compare-apis)
 
 ## Next Steps
 For common anti-patterns, see `figma-known-pitfalls`.

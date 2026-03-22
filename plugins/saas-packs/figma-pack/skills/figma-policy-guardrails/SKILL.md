@@ -1,11 +1,11 @@
 ---
 name: figma-policy-guardrails
 description: |
-  Implement Figma lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Figma integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Figma best practices.
+  Enforce security policies and coding standards for Figma API integrations.
+  Use when setting up linting rules for Figma tokens, preventing accidental
+  credential leaks, or enforcing API usage best practices.
   Trigger with phrases like "figma policy", "figma lint",
-  "figma guardrails", "figma best practices check", "figma eslint".
+  "figma guardrails", "figma security rules", "figma best practices check".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,35 +17,88 @@ compatible-with: claude-code
 # Figma Policy & Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Figma integrations.
+Automated guardrails for Figma API integrations: prevent token leaks, enforce scope minimization, validate webhook configurations, and catch common anti-patterns in CI.
 
 ## Prerequisites
-- ESLint configured in project
+- ESLint or similar linter
+- CI/CD pipeline (GitHub Actions)
 - Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
 
-## ESLint Rules
+## Instructions
 
-### Custom Figma Plugin
+### Step 1: Token Leak Prevention
+```bash
+# .pre-commit-config.yaml -- catch Figma tokens before commit
+repos:
+  - repo: local
+    hooks:
+      - id: no-figma-tokens
+        name: Check for Figma PAT leaks
+        entry: bash -c '
+          if git diff --cached --diff-filter=ACM -z -- . |
+             xargs -0 grep -lP "figd_[a-zA-Z0-9_-]{20,}" 2>/dev/null; then
+            echo "ERROR: Figma PAT found in staged files"
+            echo "Store tokens in .env files (which should be in .gitignore)"
+            exit 1
+          fi
+        '
+        language: system
+        pass_filenames: false
+```
+
+```yaml
+# GitHub Actions secret scanning
+# .github/workflows/figma-security.yml
+name: Figma Security Check
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for Figma tokens
+        run: |
+          if grep -rP "figd_[a-zA-Z0-9_-]{20,}" \
+            --include="*.ts" --include="*.js" --include="*.json" \
+            --exclude-dir=node_modules .; then
+            echo "::error::Figma PAT found in source code"
+            exit 1
+          fi
+
+      - name: Check .env files not committed
+        run: |
+          if git ls-files --cached | grep -E '^\.(env|env\.local|env\.production)$'; then
+            echo "::error::.env file committed to repository"
+            exit 1
+          fi
+```
+
+### Step 2: ESLint Rules for Figma
 ```javascript
-// eslint-plugin-figma/rules/no-hardcoded-keys.js
+// eslint-rules/no-figma-token-literal.js
 module.exports = {
   meta: {
     type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Figma API keys',
-    },
-    fixable: 'code',
+    docs: { description: 'Disallow hardcoded Figma PATs' },
   },
   create(context) {
     return {
       Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+        if (typeof node.value === 'string' && /^figd_[a-zA-Z0-9_-]{20,}/.test(node.value)) {
+          context.report({
+            node,
+            message: 'Hardcoded Figma PAT detected. Use process.env.FIGMA_PAT instead.',
+          });
+        }
+      },
+      TemplateLiteral(node) {
+        for (const quasi of node.quasis) {
+          if (/figd_[a-zA-Z0-9_-]{20,}/.test(quasi.value.raw)) {
             context.report({
               node,
-              message: 'Hardcoded Figma API key detected',
+              message: 'Hardcoded Figma PAT in template literal.',
             });
           }
         }
@@ -55,205 +108,146 @@ module.exports = {
 };
 ```
 
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['figma'],
-  rules: {
-    'figma/no-hardcoded-keys': 'error',
-    'figma/require-error-handling': 'warn',
-    'figma/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: figma-secrets-check
-        name: Check for Figma secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: figma-config-validate
-        name: Validate Figma configuration
-        entry: node scripts/validate-figma-config.js
-        language: node
-        files: '\.figma\.json$'
-```
-
-## TypeScript Strict Patterns
-
+### Step 3: API Usage Policies
 ```typescript
-// Enforce typed configuration
-interface FigmaStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
+// Runtime guardrails for Figma API usage
+
+// Policy 1: No full-file fetches without justification
+function validateFigmaRequest(path: string) {
+  // Block unoptimized full file fetches
+  if (path.match(/\/v1\/files\/[^/]+$/) && !path.includes('depth=')) {
+    console.warn(
+      '[figma-policy] Full file fetch without depth parameter. ' +
+      'Use ?depth=1 or /nodes endpoint for better performance.'
+    );
+  }
+
+  // Block deprecated scope indicator
+  if (path.includes('files:read')) {
+    throw new Error(
+      '[figma-policy] files:read scope is deprecated. ' +
+      'Use file_content:read instead.'
+    );
+  }
 }
 
-// Disallow any in Figma code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new FigmaClient(config satisfies FigmaStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Figma Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Figma client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: figma/use-singleton-client
-- CI check: grep for "new FigmaClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# figma-policy.rego
-package figma
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
+// Policy 2: Enforce timeout on all Figma calls
+function validateTimeout(options: RequestInit) {
+  if (!options.signal) {
+    console.warn(
+      '[figma-policy] Figma request without AbortSignal. ' +
+      'Use AbortSignal.timeout() to prevent hung requests.'
+    );
+  }
 }
 
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
+// Policy 3: Rate limit safety margin
+const MAX_REQUESTS_PER_MINUTE = 25; // Conservative limit
+let requestsThisMinute = 0;
+let minuteStart = Date.now();
 
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
+function enforceRatePolicy() {
+  if (Date.now() - minuteStart > 60_000) {
+    requestsThisMinute = 0;
+    minuteStart = Date.now();
+  }
+
+  requestsThisMinute++;
+  if (requestsThisMinute > MAX_REQUESTS_PER_MINUTE) {
+    throw new Error(
+      `[figma-policy] Rate limit safety: ${requestsThisMinute} requests/min ` +
+      `exceeds policy limit of ${MAX_REQUESTS_PER_MINUTE}`
+    );
+  }
 }
 ```
 
-## CI Policy Checks
-
-```yaml
-# .github/workflows/figma-policy.yml
-name: Figma Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Figma keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s figma-config.schema.json -d config/figma/*.json
-
-      - name: Run ESLint Figma rules
-        run: npx eslint --plugin figma --rule 'figma/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
+### Step 4: Configuration Validation
 ```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
+// Validate Figma config at startup, fail fast if misconfigured
+function validateFigmaConfig() {
+  const errors: string[] = [];
 
-function guardFigmaOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
+  // Token format
+  const pat = process.env.FIGMA_PAT;
+  if (!pat) {
+    errors.push('FIGMA_PAT is not set');
+  } else if (!pat.startsWith('figd_')) {
+    errors.push('FIGMA_PAT does not have expected figd_ prefix');
   }
+
+  // File key format
+  const fileKey = process.env.FIGMA_FILE_KEY;
+  if (!fileKey) {
+    errors.push('FIGMA_FILE_KEY is not set');
+  } else if (fileKey.length < 10) {
+    errors.push('FIGMA_FILE_KEY seems too short');
+  }
+
+  // Webhook passcode (if webhooks are configured)
+  if (process.env.FIGMA_WEBHOOK_ENABLED === 'true') {
+    if (!process.env.FIGMA_WEBHOOK_PASSCODE) {
+      errors.push('FIGMA_WEBHOOK_PASSCODE required when webhooks are enabled');
+    } else if (process.env.FIGMA_WEBHOOK_PASSCODE.length < 16) {
+      errors.push('FIGMA_WEBHOOK_PASSCODE should be at least 16 characters');
+    }
+  }
+
+  if (errors.length > 0) {
+    console.error('[figma-policy] Configuration errors:');
+    errors.forEach(e => console.error(`  - ${e}`));
+    throw new Error(`Figma configuration invalid: ${errors.length} errors`);
+  }
+
+  console.log('[figma-policy] Configuration validated');
 }
 
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.FIGMA_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Figma rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Figma rate limit exceeded - request blocked');
-  }
-}
+// Call at startup
+validateFigmaConfig();
 ```
 
-## Instructions
+### Step 5: Audit Logging
+```typescript
+// Log all Figma API operations for compliance
+interface FigmaAuditEntry {
+  timestamp: string;
+  action: string;
+  endpoint: string;
+  fileKey?: string;
+  status: number;
+  userId?: string;
+}
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Figma patterns.
+function auditFigmaCall(entry: Omit<FigmaAuditEntry, 'timestamp'>) {
+  const log: FigmaAuditEntry = {
+    ...entry,
+    timestamp: new Date().toISOString(),
+  };
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
-
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
-
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+  // Structured log for aggregation
+  console.log(JSON.stringify({ type: 'figma_audit', ...log }));
+}
+```
 
 ## Output
-- ESLint plugin with Figma rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+- Pre-commit hooks catching token leaks
+- CI pipeline scanning for hardcoded credentials
+- Runtime policies enforcing performance best practices
+- Configuration validation at startup
+- Audit logging for compliance
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
-
-## Examples
-
-### Quick ESLint Check
-```bash
-npx eslint --plugin figma --rule 'figma/no-hardcoded-keys: error' src/
-```
+| False positive on token scan | Test fixture contains figd_ | Exclude test fixtures directory |
+| Policy blocks legitimate request | Too restrictive | Add exception list for specific paths |
+| Startup validation fails | Missing env vars | Check deployment config |
+| Audit log noise | Too many entries | Filter to write operations only |
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
 - [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
+- [ESLint Custom Rules](https://eslint.org/docs/latest/extend/custom-rules)
 
 ## Next Steps
 For architecture blueprints, see `figma-architecture-variants`.

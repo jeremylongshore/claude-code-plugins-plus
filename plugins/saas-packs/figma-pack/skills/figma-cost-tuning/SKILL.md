@@ -1,11 +1,11 @@
 ---
 name: figma-cost-tuning
 description: |
-  Optimize Figma costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Figma billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "figma cost", "figma billing",
-  "reduce figma costs", "figma pricing", "figma expensive", "figma budget".
+  Optimize Figma API usage to minimize costs and stay within plan limits.
+  Use when analyzing request volumes, reducing unnecessary API calls,
+  or choosing the right Figma plan for your integration needs.
+  Trigger with phrases like "figma cost", "figma pricing",
+  "reduce figma API calls", "figma plan limits", "figma budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +17,175 @@ compatible-with: claude-code
 # Figma Cost Tuning
 
 ## Overview
-Optimize Figma costs through smart tier selection, sampling, and usage monitoring.
+Optimize Figma API usage costs. Figma's REST API rate limits are determined by plan tier and seat type. Reducing unnecessary requests keeps you within limits and avoids upgrading prematurely.
 
 ## Prerequisites
-- Access to Figma billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+- Working Figma integration with request logging
+- Understanding of your current API call volume
+- Access to Figma admin settings (for plan details)
 
-## Pricing Tiers
+## Instructions
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+### Step 1: Understand Plan-Based Rate Limits
+Figma rate limits vary by plan tier and seat type:
 
-## Cost Estimation
+| Plan | Seat Types | Rate Limit Tier | Variables API |
+|------|------------|----------------|---------------|
+| Starter (Free) | Free | Lowest | No |
+| Professional | Full, Viewer | Standard | No |
+| Organization | Full, Collab, Viewer | Higher | No |
+| Enterprise | Full, Collab, Viewer | Highest | Yes |
 
+Key facts:
+- Rate limits are per-user, per-minute
+- View and Collab seats have lower limits than Full seats
+- The Variables API (`/v1/files/:key/variables/*`) requires Enterprise
+- Endpoint tiers (1/2/3) have different quotas within each plan
+
+### Step 2: Track API Usage
 ```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
+// Instrument all Figma API calls to track volume
+class FigmaUsageTracker {
+  private calls: Array<{ endpoint: string; timestamp: number; cached: boolean }> = [];
+
+  record(endpoint: string, cached: boolean) {
+    this.calls.push({ endpoint, timestamp: Date.now(), cached });
+  }
+
+  getReport(windowMs = 24 * 60 * 60 * 1000) {
+    const cutoff = Date.now() - windowMs;
+    const recent = this.calls.filter(c => c.timestamp > cutoff);
+
+    // Group by endpoint
+    const byEndpoint = new Map<string, { total: number; cached: number }>();
+    for (const call of recent) {
+      const key = call.endpoint.replace(/[a-zA-Z0-9]{20,}/, ':key');
+      const entry = byEndpoint.get(key) || { total: 0, cached: 0 };
+      entry.total++;
+      if (call.cached) entry.cached++;
+      byEndpoint.set(key, entry);
+    }
+
+    return {
+      totalCalls: recent.length,
+      cachedCalls: recent.filter(c => c.cached).length,
+      cacheHitRate: recent.length > 0
+        ? (recent.filter(c => c.cached).length / recent.length * 100).toFixed(1) + '%'
+        : '0%',
+      byEndpoint: Object.fromEntries(byEndpoint),
+    };
+  }
 }
 
-function estimateFigmaCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+const tracker = new FigmaUsageTracker();
+```
+
+### Step 3: Reduce API Calls
+```typescript
+// 1. Use depth parameter to avoid fetching full file trees
+// Saves bandwidth and processing time
+const fileMeta = await figmaFetch(`/v1/files/${key}?depth=1`);
+
+// 2. Batch node IDs into single requests
+// Instead of 50 individual /nodes calls, make 1 call with 50 IDs
+const ids = nodeIds.join(',');
+await figmaFetch(`/v1/files/${key}/nodes?ids=${ids}`);
+
+// 3. Cache with webhooks instead of polling
+// Polling every 30s = 2,880 calls/day per file
+// Webhooks = 0 polling calls (events push to you)
+
+// 4. Cache image URLs (they're valid for 30 days)
+// Re-rendering the same nodes wastes Tier 1 quota
+
+// 5. Use GET /v1/files/:key?depth=1 to check lastModified
+// before fetching the full file (skip if unchanged)
+async function fetchFileIfChanged(
+  fileKey: string,
+  lastKnownVersion: string,
+  token: string
+) {
+  const meta = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}?depth=1`,
+    { headers: { 'X-Figma-Token': token } }
+  ).then(r => r.json());
+
+  if (meta.version === lastKnownVersion) {
+    console.log('File unchanged, skipping full fetch');
+    return null;
   }
 
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
+  // File changed -- fetch the full version
+  return fetch(
+    `https://api.figma.com/v1/files/${fileKey}`,
+    { headers: { 'X-Figma-Token': token } }
+  ).then(r => r.json());
+}
+```
 
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
+### Step 4: Cost-Saving Architecture
+```
+Polling Architecture (expensive):
+  App → GET /v1/files/:key every 30s → 2,880 calls/day/file
+
+Webhook Architecture (efficient):
+  Figma → POST /webhooks/figma (only when file changes)
+  App → GET /v1/files/:key (only after webhook) → ~10-50 calls/day/file
+
+Savings: 95%+ fewer API calls
+```
+
+### Step 5: Usage Dashboard Query
+```typescript
+// Log API calls to a database for analysis
+interface ApiCallLog {
+  timestamp: Date;
+  endpoint: string;
+  fileKey: string;
+  status: number;
+  latencyMs: number;
+  cached: boolean;
+}
+
+// Monthly usage summary
+function getMonthlyReport(logs: ApiCallLog[]) {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthLogs = logs.filter(l => l.timestamp >= monthStart);
 
   return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
+    totalRequests: monthLogs.length,
+    uniqueFiles: new Set(monthLogs.map(l => l.fileKey)).size,
+    cacheHitRate: monthLogs.filter(l => l.cached).length / monthLogs.length,
+    errorRate: monthLogs.filter(l => l.status >= 400).length / monthLogs.length,
+    topEndpoints: Object.entries(
+      monthLogs.reduce((acc, l) => {
+        acc[l.endpoint] = (acc[l.endpoint] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
+    ).sort(([,a], [,b]) => b - a).slice(0, 5),
   };
 }
 ```
 
-## Usage Monitoring
-
-```typescript
-class FigmaUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Figma budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateFigmaCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await figmaClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => figmaClient.get(id)));
-
-// Use batch endpoint (1 call)
-await figmaClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new FigmaClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Figma dashboard
-# Or use API if available:
-# Check Figma documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM figma_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Figma dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
 ## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+- API usage tracked by endpoint and file
+- Unnecessary calls eliminated with caching and webhooks
+- Bandwidth reduced with `depth` parameter
+- Monthly usage reports for capacity planning
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateFigmaCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Hitting rate limits often | No caching or batching | Implement caching + batch requests |
+| Variables API 403 | Not on Enterprise plan | Use styles API (free on all plans) |
+| High bandwidth costs | Fetching full file trees | Use `depth=1` and `/nodes` endpoint |
+| Polling waste | No webhooks configured | Set up FILE_UPDATE webhook |
 
 ## Resources
-- [Figma Pricing](https://figma.com/pricing)
-- [Figma Billing Dashboard](https://dashboard.figma.com/billing)
+- [Figma Pricing Plans](https://www.figma.com/pricing/)
+- [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
+- [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
 
 ## Next Steps
 For architecture patterns, see `figma-reference-architecture`.

@@ -1,11 +1,11 @@
 ---
 name: figma-security-basics
 description: |
-  Apply Figma security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
+  Secure Figma API tokens, configure scopes, and validate webhook signatures.
+  Use when securing API keys, implementing least-privilege scopes,
   or auditing Figma security configuration.
   Trigger with phrases like "figma security", "figma secrets",
-  "secure figma", "figma API key security".
+  "secure figma token", "figma scopes", "figma webhook verify".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,148 @@ compatible-with: claude-code
 # Figma Security Basics
 
 ## Overview
-Security best practices for Figma API keys, tokens, and access control.
+Secure your Figma API integration: store tokens safely, apply least-privilege scopes, rotate credentials, and verify webhook signatures.
 
 ## Prerequisites
-- Figma SDK installed
+- Figma PAT or OAuth app configured
 - Understanding of environment variables
-- Access to Figma dashboard
+- `.gitignore` configured for secret files
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Token Storage
 ```bash
-# .env (NEVER commit to git)
-FIGMA_API_KEY=sk_live_***
-FIGMA_SECRET=***
+# .env (NEVER commit)
+FIGMA_PAT="figd_your-personal-access-token"
+FIGMA_OAUTH_CLIENT_SECRET="your-oauth-secret"
 
 # .gitignore
 .env
 .env.local
 .env.*.local
+*.pem
 ```
 
-### Step 2: Implement Secret Rotation
+```typescript
+// Validate token exists before any API call
+function getToken(): string {
+  const token = process.env.FIGMA_PAT;
+  if (!token) throw new Error('FIGMA_PAT is not set');
+  if (!token.startsWith('figd_')) {
+    console.warn('Token does not have expected figd_ prefix');
+  }
+  return token;
+}
+```
+
+### Step 2: Least-Privilege Scopes
+Assign the minimum scopes needed for each use case:
+
+| Use Case | Required Scopes |
+|----------|----------------|
+| Read file structure | `file_content:read` |
+| Export images | `file_content:read` |
+| Post comments | `file_comments:write` |
+| Read variables (Enterprise) | `file_variables:read` |
+| Manage webhooks | `webhooks:write` |
+| Read team components | `team_library_content:read` |
+| Dev mode resources | `file_dev_resources:read` |
+
+**Deprecated scope:** `files:read` is deprecated. Use specific scopes like `file_content:read`, `file_comments:read` instead.
+
+### Step 3: Token Rotation
 ```bash
-# 1. Generate new key in Figma dashboard
-# 2. Update environment variable
-export FIGMA_API_KEY="new_key_here"
+# PATs have a maximum 90-day lifetime
+# Schedule rotation before expiry
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FIGMA_API_KEY}" \
-  https://api.figma.com/health
+# 1. Generate new token in Figma Settings > Personal access tokens
+# 2. Test new token
+curl -s -H "X-Figma-Token: ${NEW_TOKEN}" \
+  https://api.figma.com/v1/me | jq '.handle'
 
-# 4. Revoke old key in dashboard
+# 3. Update environment
+# For CI: gh secret set FIGMA_PAT --body "${NEW_TOKEN}"
+# For production: update your secret manager
+
+# 4. Verify old token is revoked in Figma Settings
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 4: Webhook Passcode Verification
+Figma webhooks use a `passcode` field (not HMAC signatures) for verification:
+
+```typescript
+// When creating a webhook, you provide a passcode:
+// POST /v2/webhooks
+// { "event_type": "FILE_UPDATE", "team_id": "...", "endpoint": "...", "passcode": "my-secret" }
+
+// Figma sends the passcode back in the webhook payload body
+interface FigmaWebhookPayload {
+  event_type: string;
+  passcode: string;      // Your secret, echoed back
+  timestamp: string;
+  file_key?: string;
+  file_name?: string;
+  webhook_id: string;
+}
+
+function verifyFigmaWebhook(
+  payload: FigmaWebhookPayload,
+  expectedPasscode: string
+): boolean {
+  // Timing-safe comparison to prevent timing attacks
+  if (payload.passcode.length !== expectedPasscode.length) return false;
+
+  const a = Buffer.from(payload.passcode);
+  const b = Buffer.from(expectedPasscode);
+  return crypto.timingSafeEqual(a, b);
+}
+
+// Express handler
+app.post('/webhooks/figma', express.json(), (req, res) => {
+  const payload: FigmaWebhookPayload = req.body;
+
+  if (!verifyFigmaWebhook(payload, process.env.FIGMA_WEBHOOK_PASSCODE!)) {
+    console.warn('Invalid webhook passcode');
+    return res.status(401).json({ error: 'Invalid passcode' });
+  }
+
+  // Process the event
+  handleFigmaEvent(payload);
+  res.status(200).json({ received: true });
+});
+```
+
+### Step 5: Security Checklist
+```markdown
+- [ ] PAT stored in environment variable, not in code
+- [ ] `.env` files listed in `.gitignore`
+- [ ] Token uses minimum required scopes
+- [ ] Token rotation scheduled before 90-day expiry
+- [ ] Webhook passcode verified on every incoming request
+- [ ] OAuth client secret stored in secret manager (not repo)
+- [ ] No tokens in frontend/client-side code
+- [ ] Git history scanned for leaked tokens (use `git log -p | grep figd_`)
+- [ ] Different tokens for dev/staging/prod environments
+```
 
 ## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- Secure token storage configured
+- Minimum-privilege scopes applied
+- Webhook passcode verification implemented
+- Rotation schedule documented
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FigmaClient({
-    apiKey: process.env.FIGMA_READ_KEY,
-  }),
-  writer: new FigmaClient({
-    apiKey: process.env.FIGMA_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Figma analytics
-  await figmaClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'figma.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Token in git history | `git log -p \| grep figd_` | Revoke immediately, rotate, use BFG Repo Cleaner |
+| Expired PAT | 403 errors in production | Set calendar reminder for 80-day mark |
+| Over-scoped token | Audit in Figma Settings | Regenerate with minimum scopes |
+| Webhook spoofing | Missing passcode check | Always verify passcode before processing |
 
 ## Resources
-- [Figma Security Guide](https://docs.figma.com/security)
-- [Figma API Scopes](https://docs.figma.com/scopes)
+- [Figma API Scopes](https://developers.figma.com/docs/rest-api/scopes/)
+- [Figma Authentication](https://developers.figma.com/docs/rest-api/authentication/)
+- [Managing PATs](https://help.figma.com/hc/en-us/articles/8085703771159)
 
 ## Next Steps
 For production deployment, see `figma-prod-checklist`.

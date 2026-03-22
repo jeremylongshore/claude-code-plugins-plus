@@ -1,12 +1,12 @@
 ---
 name: figma-migration-deep-dive
 description: |
-  Execute Figma major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Figma, performing major version upgrades,
-  or re-platforming existing integrations to Figma.
+  Migrate design systems between Figma files, or from other tools to Figma via API.
+  Use when migrating design tokens between files, syncing variables across libraries,
+  or building automated migration pipelines for Figma.
   Trigger with phrases like "migrate figma", "figma migration",
-  "switch to figma", "figma replatform", "figma upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  "move figma library", "figma file migration", "sync figma files".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,230 +17,248 @@ compatible-with: claude-code
 # Figma Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Figma, or major version upgrades.
+Automate migration of design data between Figma files, from other tools to Figma, or from Figma styles to the Variables API. Covers inventory, extraction, transformation, and validation.
 
 ## Prerequisites
-- Current system documentation
-- Figma SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
-
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "figma" > figma-files.txt
-
-# Count integration points
-wc -l figma-files.txt
-
-# Identify dependencies
-npm list | grep figma
-pip freeze | grep figma
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessFigmaMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Figma   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Figma SDK
-npm install @figma/sdk
-
-# Configure credentials
-cp .env.example .env.figma
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@figma/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/figma.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class FigmaAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const figmaData = this.transform(data);
-    return figmaClient.create(figmaData);
-  }
-
-  private transform(data: CreateInput): FigmaInput {
-    // Map from old format to Figma format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateFigmaData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await figmaClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const figmaPercentage = getFeatureFlag('figma_migration_percentage');
-
-  if (Math.random() * 100 < figmaPercentage) {
-    return new FigmaAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app FIGMA_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.figma'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateFigmaMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+- Source and destination Figma file keys
+- `FIGMA_PAT` with `file_content:read` and `file_variables:write` (Enterprise) scopes
+- Understanding of source file structure
 
 ## Instructions
 
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Figma integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Figma
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
+### Step 1: Inventory Source File
 ```typescript
-const status = await validateFigmaMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+const PAT = process.env.FIGMA_PAT!;
+
+async function inventoryFile(fileKey: string) {
+  const res = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}`,
+    { headers: { 'X-Figma-Token': PAT } }
+  );
+  const file = await res.json();
+
+  const inventory = {
+    name: file.name,
+    pages: file.document.children.map((p: any) => p.name),
+    componentCount: Object.keys(file.components).length,
+    styleCount: Object.keys(file.styles).length,
+    styles: {
+      fills: Object.values(file.styles).filter((s: any) => s.style_type === 'FILL').length,
+      text: Object.values(file.styles).filter((s: any) => s.style_type === 'TEXT').length,
+      effects: Object.values(file.styles).filter((s: any) => s.style_type === 'EFFECT').length,
+      grids: Object.values(file.styles).filter((s: any) => s.style_type === 'GRID').length,
+    },
+  };
+
+  // Count total nodes
+  let nodeCount = 0;
+  function countNodes(node: any) {
+    nodeCount++;
+    if (node.children) node.children.forEach(countNodes);
+  }
+  countNodes(file.document);
+  (inventory as any).totalNodes = nodeCount;
+
+  return inventory;
+}
+
+// Usage
+const inv = await inventoryFile(process.env.FIGMA_FILE_KEY!);
+console.log(`File: ${inv.name}`);
+console.log(`Pages: ${inv.pages.join(', ')}`);
+console.log(`Components: ${inv.componentCount}, Styles: ${inv.styleCount}`);
+console.log(`Total nodes: ${(inv as any).totalNodes}`);
 ```
 
-## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Figma Migration Guide](https://docs.figma.com/migration)
+### Step 2: Extract Styles from Source
+```typescript
+async function extractAllStyles(fileKey: string) {
+  const file = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}`,
+    { headers: { 'X-Figma-Token': PAT } }
+  ).then(r => r.json());
 
-## Flagship+ Skills
+  const styleNodeIds = Object.keys(file.styles);
+  const nodesRes = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${styleNodeIds.join(',')}`,
+    { headers: { 'X-Figma-Token': PAT } }
+  ).then(r => r.json());
+
+  const extracted = [];
+  for (const [nodeId, styleMeta] of Object.entries(file.styles) as any[]) {
+    const node = nodesRes.nodes[nodeId]?.document;
+    if (!node) continue;
+
+    extracted.push({
+      name: styleMeta.name,
+      type: styleMeta.style_type,
+      nodeId,
+      data: {
+        fills: node.fills,
+        strokes: node.strokes,
+        effects: node.effects,
+        style: node.style,       // typography
+        characters: node.characters,
+      },
+    });
+  }
+
+  return extracted;
+}
+```
+
+### Step 3: Transform and Map to Target
+```typescript
+// Map extracted styles to design tokens JSON
+interface MigrationToken {
+  name: string;
+  category: 'color' | 'typography' | 'effect';
+  source: { file: string; nodeId: string };
+  value: any;
+}
+
+function transformStyles(styles: any[], sourceFileKey: string): MigrationToken[] {
+  return styles.map(style => {
+    switch (style.type) {
+      case 'FILL':
+        const fill = style.data.fills?.[0];
+        return {
+          name: style.name,
+          category: 'color' as const,
+          source: { file: sourceFileKey, nodeId: style.nodeId },
+          value: fill?.color
+            ? {
+                r: Math.round(fill.color.r * 255),
+                g: Math.round(fill.color.g * 255),
+                b: Math.round(fill.color.b * 255),
+                a: fill.color.a ?? 1,
+              }
+            : null,
+        };
+      case 'TEXT':
+        return {
+          name: style.name,
+          category: 'typography' as const,
+          source: { file: sourceFileKey, nodeId: style.nodeId },
+          value: style.data.style
+            ? {
+                fontFamily: style.data.style.fontFamily,
+                fontSize: style.data.style.fontSize,
+                fontWeight: style.data.style.fontWeight,
+                lineHeight: style.data.style.lineHeightPx,
+              }
+            : null,
+        };
+      default:
+        return {
+          name: style.name,
+          category: 'effect' as const,
+          source: { file: sourceFileKey, nodeId: style.nodeId },
+          value: style.data.effects,
+        };
+    }
+  }).filter(t => t.value !== null);
+}
+```
+
+### Step 4: Write to Target (Variables API)
+```typescript
+// Enterprise only: create variables in the target file
+async function migrateToVariables(
+  targetFileKey: string,
+  tokens: MigrationToken[]
+) {
+  const colorTokens = tokens.filter(t => t.category === 'color');
+
+  // Create variable collection and variables
+  const payload = {
+    variableCollections: [{
+      action: 'CREATE' as const,
+      id: 'temp_collection_1',
+      name: 'Migrated Colors',
+    }],
+    variables: colorTokens.map((token, i) => ({
+      action: 'CREATE' as const,
+      id: `temp_var_${i}`,
+      name: token.name.replace(/\//g, '/'), // preserve Figma group paths
+      variableCollectionId: 'temp_collection_1',
+      resolvedType: 'COLOR' as const,
+      codeSyntax: { WEB: `--${token.name.toLowerCase().replace(/[\s/]+/g, '-')}` },
+    })),
+    variableModeValues: colorTokens.map((token, i) => ({
+      variableId: `temp_var_${i}`,
+      modeId: '', // Will use default mode
+      value: {
+        r: token.value.r / 255,
+        g: token.value.g / 255,
+        b: token.value.b / 255,
+        a: token.value.a,
+      },
+    })),
+  };
+
+  const res = await fetch(
+    `https://api.figma.com/v1/files/${targetFileKey}/variables`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Figma-Token': PAT,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+
+  if (!res.ok) throw new Error(`Variable creation failed: ${res.status} ${await res.text()}`);
+  return res.json();
+}
+```
+
+### Step 5: Validation
+```typescript
+async function validateMigration(
+  sourceFileKey: string,
+  targetFileKey: string
+): Promise<{ passed: boolean; issues: string[] }> {
+  const sourceStyles = await extractAllStyles(sourceFileKey);
+  const targetVars = await fetch(
+    `https://api.figma.com/v1/files/${targetFileKey}/variables/local`,
+    { headers: { 'X-Figma-Token': PAT } }
+  ).then(r => r.json());
+
+  const issues: string[] = [];
+  const targetNames = new Set(
+    Object.values(targetVars.meta.variables).map((v: any) => v.name)
+  );
+
+  for (const style of sourceStyles) {
+    if (style.type === 'FILL' && !targetNames.has(style.name)) {
+      issues.push(`Missing in target: ${style.name}`);
+    }
+  }
+
+  return { passed: issues.length === 0, issues };
+}
+```
+
+## Output
+- Source file inventoried (components, styles, nodes)
+- Styles extracted and transformed to tokens
+- Tokens written to target file via Variables API
+- Migration validated with comparison report
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 403 on Variables POST | Not Enterprise | Use JSON export instead of Variables API |
+| Duplicate variable names | Name collision in target | Add prefix/suffix to migrated names |
+| Missing node data | Node deleted between fetch and read | Re-fetch with error handling |
+| Large file timeout | File >100MB | Use `/nodes` endpoint for specific pages |
+
+## Resources
+- [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)
+- [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
+- [Design Tokens Format](https://design-tokens.github.io/community-group/format/)
+
+## Next Steps
 For advanced troubleshooting, see `figma-advanced-troubleshooting`.

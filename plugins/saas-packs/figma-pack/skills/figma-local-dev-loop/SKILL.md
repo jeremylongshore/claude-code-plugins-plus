@@ -1,12 +1,12 @@
 ---
 name: figma-local-dev-loop
 description: |
-  Configure Figma local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Figma.
-  Trigger with phrases like "figma dev setup", "figma local development",
-  "figma dev environment", "develop with figma".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up a local development workflow for Figma plugin and REST API projects.
+  Use when building Figma plugins, creating design-to-code pipelines,
+  or developing against the Figma API with hot reload.
+  Trigger with phrases like "figma dev setup", "figma plugin development",
+  "figma local development", "develop figma plugin".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,103 +17,167 @@ compatible-with: claude-code
 # Figma Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Figma.
+Set up fast local development for two workflows: building Figma plugins that run inside the Figma editor, and building external apps that consume the Figma REST API.
 
 ## Prerequisites
-- Completed `figma-install-auth` setup
 - Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- `FIGMA_PAT` configured (see `figma-install-auth`)
+- Figma desktop app (for plugin development)
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: REST API Project Structure
 ```
-my-figma-project/
+figma-integration/
 ├── src/
-│   ├── figma/
-│   │   ├── client.ts       # Figma client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+│   ├── figma-client.ts       # Shared fetch wrapper
+│   ├── extract-tokens.ts     # Design token extraction
+│   └── export-assets.ts      # Asset export pipeline
 ├── tests/
-│   └── figma.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── figma-client.test.ts
+│   └── fixtures/             # Saved API responses for offline testing
+│       └── sample-file.json
+├── .env.local                # FIGMA_PAT, FIGMA_FILE_KEY (git-ignored)
+├── .env.example              # Template for team
+├── tsconfig.json
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+### Step 2: Figma Plugin Project Structure
+```
+my-figma-plugin/
+├── manifest.json             # Plugin manifest (required by Figma)
+├── code.ts                   # Plugin backend (runs in sandbox)
+├── ui.html                   # Plugin UI (runs in iframe)
+├── package.json
+└── tsconfig.json
 ```
 
-### Step 3: Setup Hot Reload
+**manifest.json** (required):
+```json
+{
+  "name": "My Plugin",
+  "id": "1234567890",
+  "api": "1.0.0",
+  "main": "dist/code.js",
+  "ui": "dist/ui.html",
+  "editorType": ["figma"],
+  "permissions": ["currentuser"]
+}
+```
+
+### Step 3: Plugin Development with Watch Mode
 ```json
 {
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "build": "esbuild code.ts --bundle --outfile=dist/code.js --target=es2020",
+    "watch": "esbuild code.ts --bundle --outfile=dist/code.js --target=es2020 --watch",
+    "dev": "concurrently \"npm run watch\" \"npm run watch:ui\"",
+    "watch:ui": "esbuild ui.tsx --bundle --outfile=dist/ui.html --loader:.html=copy --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.0.0",
+    "esbuild": "^0.20.0",
+    "typescript": "^5.0.0"
+  }
+}
+```
+
+Load the plugin in Figma:
+1. Figma desktop > Plugins > Development > Import plugin from manifest
+2. Select your `manifest.json`
+3. Run with `npm run watch` -- changes auto-reload
+
+### Step 4: REST API Dev Loop with Testing
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/extract-tokens.ts",
     "test": "vitest",
     "test:watch": "vitest --watch"
   }
 }
 ```
 
-### Step 4: Configure Testing
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { FigmaClient } from '../src/figma/client';
+// tests/figma-client.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { readFileSync } from 'fs';
 
-describe('Figma Client', () => {
-  it('should initialize with API key', () => {
-    const client = new FigmaClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+// Load a saved API response for offline testing
+const sampleFile = JSON.parse(
+  readFileSync('tests/fixtures/sample-file.json', 'utf-8')
+);
+
+describe('Figma token extraction', () => {
+  beforeEach(() => {
+    // Mock fetch to return saved fixture
+    vi.spyOn(global, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify(sampleFile), { status: 200 })
+    );
+  });
+
+  it('should extract color styles from file', async () => {
+    const res = await fetch('https://api.figma.com/v1/files/test-key');
+    const file = await res.json();
+    const styles = Object.values(file.styles);
+    expect(styles.length).toBeGreaterThan(0);
   });
 });
 ```
 
+### Step 5: Save API Fixtures for Offline Dev
+```bash
+# Snapshot a Figma file for offline testing
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}" \
+  > tests/fixtures/sample-file.json
+
+# Snapshot specific nodes
+curl -s -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}/nodes?ids=0:1,0:2" \
+  > tests/fixtures/sample-nodes.json
+```
+
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Figma development
+- Working dev environment with hot reload
+- Test suite with mocked Figma API responses
+- Saved fixtures for offline development
+- Plugin manifest configured for Figma desktop loading
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
+| Plugin not appearing in Figma | Wrong manifest path | Re-import from correct `manifest.json` |
+| `figma` global undefined | Running outside Figma sandbox | Use `@figma/plugin-typings` for types only |
+| Fixture stale | File changed since snapshot | Re-run fixture download script |
+| esbuild watch crash | Syntax error in TS | Fix error; watch auto-restarts |
 
 ## Examples
 
-### Mock Figma Responses
+### Quick Plugin Skeleton
 ```typescript
-vi.mock('@figma/sdk', () => ({
-  FigmaClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
+// code.ts -- minimal Figma plugin
+figma.showUI(__html__, { width: 300, height: 200 });
 
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=FIGMA=* npm run dev
+figma.ui.onmessage = (msg: { type: string; count: number }) => {
+  if (msg.type === 'create-rectangles') {
+    for (let i = 0; i < msg.count; i++) {
+      const rect = figma.createRectangle();
+      rect.x = i * 150;
+      rect.fills = [{ type: 'SOLID', color: { r: 1, g: 0.5, b: 0 } }];
+      figma.currentPage.appendChild(rect);
+    }
+    figma.closePlugin();
+  }
+};
 ```
 
 ## Resources
-- [Figma SDK Reference](https://docs.figma.com/sdk)
+- [Figma Plugin Development Guide](https://developers.figma.com/docs/plugins/)
+- [Plugin API Reference](https://developers.figma.com/docs/plugins/api/api-reference/)
+- [@figma/plugin-typings](https://www.npmjs.com/package/@figma/plugin-typings)
 - [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
 See `figma-sdk-patterns` for production-ready code patterns.

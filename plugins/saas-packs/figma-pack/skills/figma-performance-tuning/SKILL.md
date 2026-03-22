@@ -1,11 +1,11 @@
 ---
 name: figma-performance-tuning
 description: |
-  Optimize Figma API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
+  Optimize Figma REST API performance with caching, partial fetches, and connection reuse.
+  Use when experiencing slow API responses, reducing bandwidth for large files,
   or optimizing request throughput for Figma integrations.
-  Trigger with phrases like "figma performance", "optimize figma",
-  "figma latency", "figma caching", "figma slow", "figma batch".
+  Trigger with phrases like "figma performance", "figma slow",
+  "figma caching", "figma optimize", "figma large file".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,200 +17,173 @@ compatible-with: claude-code
 # Figma Performance Tuning
 
 ## Overview
-Optimize Figma API performance with caching, batching, and connection pooling.
+Optimize Figma REST API performance. Large Figma files can return multi-megabyte JSON responses. Key strategies: fetch only what you need, cache aggressively, and batch requests.
 
 ## Prerequisites
-- Figma SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedFigmaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const figmaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Figma
-    const results = await figmaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  figmaLoader.load('id-1'),
-  figmaLoader.load('id-2'),
-  figmaLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new FigmaClient({
-  apiKey: process.env.FIGMA_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFigmaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFigmaList(cursor =>
-  figmaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFigmaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Working Figma API integration
+- Understanding of your access patterns (which endpoints, how often)
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Figma operations.
+### Step 1: Reduce Payload Size
+```typescript
+// BAD: fetches the entire file tree (can be 10+ MB for large files)
+const file = await fetch(`https://api.figma.com/v1/files/${fileKey}`, {
+  headers: { 'X-Figma-Token': token },
+}).then(r => r.json());
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+// GOOD: use depth parameter to limit tree depth
+// depth=1 returns only pages (CANVAS nodes), not their children
+const fileMeta = await fetch(
+  `https://api.figma.com/v1/files/${fileKey}?depth=1`,
+  { headers: { 'X-Figma-Token': token } }
+).then(r => r.json());
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+// GOOD: fetch only specific nodes you need
+const nodes = await fetch(
+  `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${nodeIds.join(',')}`,
+  { headers: { 'X-Figma-Token': token } }
+).then(r => r.json());
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+// GOOD: use plugin_data or branch_data params only when needed
+// By default, plugin data and branch data are NOT returned
+```
+
+### Step 2: Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+// File metadata changes rarely -- cache for 5 minutes
+const fileCache = new LRUCache<string, any>({
+  max: 100,
+  ttl: 5 * 60 * 1000, // 5 minutes
+});
+
+async function getCachedFile(fileKey: string, token: string) {
+  const cached = fileCache.get(fileKey);
+  if (cached) return cached;
+
+  const file = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}?depth=1`,
+    { headers: { 'X-Figma-Token': token } }
+  ).then(r => r.json());
+
+  fileCache.set(fileKey, file);
+  return file;
+}
+
+// Image URLs expire after 30 days -- cache them but with a shorter TTL
+const imageUrlCache = new LRUCache<string, string>({
+  max: 1000,
+  ttl: 24 * 60 * 60 * 1000, // 1 day (well within 30-day expiry)
+});
+
+async function getCachedImageUrl(
+  fileKey: string, nodeId: string, format: string, token: string
+): Promise<string | null> {
+  const cacheKey = `${fileKey}:${nodeId}:${format}`;
+  const cached = imageUrlCache.get(cacheKey);
+  if (cached) return cached;
+
+  const data = await fetch(
+    `https://api.figma.com/v1/images/${fileKey}?ids=${nodeId}&format=${format}`,
+    { headers: { 'X-Figma-Token': token } }
+  ).then(r => r.json());
+
+  const url = data.images[nodeId];
+  if (url) imageUrlCache.set(cacheKey, url);
+  return url;
+}
+```
+
+### Step 3: Webhook-Driven Cache Invalidation
+```typescript
+// Instead of polling, use webhooks to know when to re-fetch
+// See figma-webhooks-events for full webhook setup
+
+async function handleFileUpdate(fileKey: string) {
+  // Invalidate cached data for this file
+  fileCache.delete(fileKey);
+
+  // Proactively re-fetch commonly accessed data
+  const token = process.env.FIGMA_PAT!;
+  await getCachedFile(fileKey, token);
+
+  console.log(`Cache invalidated and refreshed for ${fileKey}`);
+}
+```
+
+### Step 4: Batch Node Fetches
+```typescript
+// The /nodes endpoint accepts multiple IDs -- batch them
+// Max practical batch size: ~50-100 IDs per request
+
+async function batchFetchNodes(
+  fileKey: string,
+  nodeIds: string[],
+  token: string,
+  batchSize = 50
+): Promise<Map<string, any>> {
+  const results = new Map<string, any>();
+
+  for (let i = 0; i < nodeIds.length; i += batchSize) {
+    const batch = nodeIds.slice(i, i + batchSize);
+    const ids = encodeURIComponent(batch.join(','));
+
+    const data = await fetch(
+      `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${ids}`,
+      { headers: { 'X-Figma-Token': token } }
+    ).then(r => r.json());
+
+    for (const [id, node] of Object.entries(data.nodes)) {
+      results.set(id, node);
+    }
+  }
+
+  return results;
+}
+```
+
+### Step 5: Connection Reuse
+```typescript
+import { Agent } from 'undici';
+
+// Reuse HTTP connections to api.figma.com
+const figmaAgent = new Agent({
+  keepAliveTimeout: 30_000,
+  keepAliveMaxTimeout: 60_000,
+  connections: 5,
+});
+
+// Use with Node.js 18+ built-in fetch
+async function optimizedFetch(path: string, token: string) {
+  return fetch(`https://api.figma.com${path}`, {
+    headers: { 'X-Figma-Token': token },
+    // @ts-ignore -- dispatcher is a Node.js fetch option
+    dispatcher: figmaAgent,
+  });
+}
+```
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Reduced API payload sizes with `depth` and `nodes` endpoints
+- Response caching with appropriate TTLs
+- Webhook-driven cache invalidation
+- Batched node fetches reducing request count
+- Connection reuse for lower latency
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFigmaCall(name, () =>
-    cachedFigmaRequest(`cache:${name}`, fn)
-  );
-```
+| Stale cache | No invalidation | Use webhooks to invalidate on changes |
+| Out of memory | Caching full file JSON | Use `depth=1` or `nodes` endpoint |
+| Slow image exports | Large batch, high scale | Reduce scale; batch in groups of 50 |
+| Expired image URLs | Cached URL older than 30 days | Set image cache TTL to <24h |
 
 ## Resources
-- [Figma Performance Guide](https://docs.figma.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Figma File Endpoints](https://developers.figma.com/docs/rest-api/file-endpoints/)
+- [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
+- [lru-cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `figma-cost-tuning`.

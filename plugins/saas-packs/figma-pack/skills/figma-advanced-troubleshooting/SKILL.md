@@ -1,12 +1,12 @@
 ---
 name: figma-advanced-troubleshooting
 description: |
-  Apply Figma advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Figma support escalation.
+  Deep debugging for Figma API issues: network analysis, response inspection, and support escalation.
+  Use when standard troubleshooting fails, diagnosing intermittent failures,
+  or preparing detailed evidence for Figma support.
   Trigger with phrases like "figma hard bug", "figma mystery error",
-  "figma impossible to debug", "difficult figma issue", "figma deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  "figma deep debug", "figma intermittent failure", "figma support ticket".
+allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,246 +17,202 @@ compatible-with: claude-code
 # Figma Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Figma issues that resist standard troubleshooting.
+Deep debugging techniques for complex Figma REST API issues that resist standard error handling: intermittent failures, unexpected response shapes, rate limit edge cases, and large file timeouts.
 
 ## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
-
-## Evidence Collection Framework
-
-### Comprehensive Debug Bundle
-```bash
-#!/bin/bash
-# advanced-figma-debug.sh
-
-BUNDLE="figma-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=figma-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u figma-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=figma_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=figma_errors_total > "$BUNDLE/metrics/errors.json"
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=figma > "$BUNDLE/traces/jaeger.json"
-
-# 5. Configuration state
-kubectl get cm figma-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret figma-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
-```typescript
-// Test each layer independently
-async function diagnoseFigmaIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
-
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.figma.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.figma.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
-
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new FigmaClient({
-    apiKey: process.env.FIGMA_API_KEY!,
-  });
-
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
-  }
-}
-```
-
-## Timing Analysis
-
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
-
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Figma client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
-      console.warn('Potential memory leak in figma integration');
-    }
-  }
-}, 60000);
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class FigmaConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
-
-```markdown
-## Figma Support Escalation
-
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
-
-### Issue Summary
-[One paragraph description]
-
-### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
-
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (figma-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
-```
+- Access to application logs
+- `curl` with verbose mode for network inspection
+- Figma API credentials for testing
 
 ## Instructions
 
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
-
-## Examples
-
-### Quick Layer Test
+### Step 1: Verbose Request Inspection
 ```bash
-# Test each layer in sequence
-curl -v https://api.figma.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+# Full HTTP request/response trace for a Figma API call
+curl -v -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1" 2>&1 \
+  | tee figma-debug-trace.txt
+
+# Extract key diagnostic info:
+# - TLS version and cipher
+# - Response status and headers
+# - Timing breakdown
+curl -w "
+DNS:        %{time_namelookup}s
+Connect:    %{time_connect}s
+TLS:        %{time_appconnect}s
+TTFB:       %{time_starttransfer}s
+Total:      %{time_total}s
+Size:       %{size_download} bytes
+Status:     %{http_code}
+" -s -o /dev/null \
+  -H "X-Figma-Token: ${FIGMA_PAT}" \
+  "https://api.figma.com/v1/files/${FIGMA_FILE_KEY}?depth=1"
 ```
 
+### Step 2: Response Shape Validation
+```typescript
+// Figma API responses can be unexpectedly shaped when:
+// - File is empty or newly created
+// - Nodes have been deleted between requests
+// - Plugin data is corrupted
+
+function validateFileResponse(data: any): string[] {
+  const issues: string[] = [];
+
+  if (!data.document) issues.push('Missing document root');
+  if (!data.document?.children?.length) issues.push('Document has no pages');
+  if (typeof data.name !== 'string') issues.push('Missing file name');
+  if (!data.version) issues.push('Missing version field');
+
+  // Check for null nodes (deleted between list and fetch)
+  if (data.nodes) {
+    for (const [id, node] of Object.entries(data.nodes)) {
+      if (node === null) issues.push(`Null node: ${id} (deleted or invisible)`);
+    }
+  }
+
+  // Check images response for null renders
+  if (data.images) {
+    for (const [id, url] of Object.entries(data.images)) {
+      if (url === null) issues.push(`Image render failed for node: ${id}`);
+    }
+  }
+
+  return issues;
+}
+```
+
+### Step 3: Rate Limit Edge Cases
+```typescript
+// Problem: Figma rate limits are per-user, per-minute, but the exact
+// limit is not published and varies by plan tier and seat type.
+
+// Diagnostic: measure your actual limit by counting successful requests
+async function measureRateLimit(token: string): Promise<{
+  requestsMade: number;
+  firstRateLimitAt: number | null;
+  retryAfter: number | null;
+}> {
+  let count = 0;
+  let rateLimitAt: number | null = null;
+  let retryAfter: number | null = null;
+
+  // Make requests until rate limited (use a read-only endpoint)
+  while (count < 200) {
+    const res = await fetch('https://api.figma.com/v1/me', {
+      headers: { 'X-Figma-Token': token },
+    });
+
+    if (res.status === 429) {
+      rateLimitAt = count;
+      retryAfter = parseInt(res.headers.get('Retry-After') || '0');
+      break;
+    }
+
+    count++;
+    // Small delay to avoid instant burst
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  return { requestsMade: count, firstRateLimitAt: rateLimitAt, retryAfter };
+}
+```
+
+### Step 4: Large File Debugging
+```typescript
+// Large Figma files (1000+ components) can cause:
+// - Response timeouts (>30s)
+// - Memory issues (100+ MB JSON)
+// - Rate limits from repeated retries
+
+// Strategy: chunk the file by page
+async function fetchLargeFileSafely(fileKey: string, token: string) {
+  // 1. Get file metadata with depth=1 (just pages, not children)
+  const meta = await fetch(
+    `https://api.figma.com/v1/files/${fileKey}?depth=1`,
+    { headers: { 'X-Figma-Token': token } }
+  ).then(r => r.json());
+
+  console.log(`File: ${meta.name}, Pages: ${meta.document.children.length}`);
+
+  // 2. Fetch each page's content individually
+  const results = [];
+  for (const page of meta.document.children) {
+    console.log(`Fetching page: ${page.name} (${page.id})`);
+
+    const pageData = await fetch(
+      `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${page.id}`,
+      { headers: { 'X-Figma-Token': token } }
+    ).then(r => r.json());
+
+    results.push({ pageId: page.id, pageName: page.name, data: pageData });
+
+    // Respect rate limits between page fetches
+    await new Promise(r => setTimeout(r, 500));
+  }
+
+  return results;
+}
+```
+
+### Step 5: Support Escalation Template
+```markdown
+## Figma API Support Request
+
+**Account email:** [your-email]
+**Plan tier:** [Starter/Professional/Organization/Enterprise]
+**Endpoint:** [e.g., GET /v1/files/:key]
+**File key:** [file key, not sensitive]
+
+### Issue Description
+[1-2 sentences describing the problem]
+
+### Reproduction Steps
+1. Call `GET https://api.figma.com/v1/files/FILE_KEY?depth=1`
+2. Observe: [expected vs actual behavior]
+
+### Diagnostic Data
+- HTTP status: [status code]
+- Response headers: [relevant headers, especially rate limit]
+- Response time: [from curl timing]
+- Frequency: [every time / intermittent / specific conditions]
+
+### Request/Response (redacted)
+```
+curl -v -H "X-Figma-Token: [REDACTED]" \
+  "https://api.figma.com/v1/files/FILE_KEY?depth=1"
+
+HTTP/2 [status]
+x-figma-rate-limit-type: [value]
+retry-after: [value]
+```
+
+### Environment
+- Node.js: [version]
+- OS: [os]
+- Region: [your server region]
+- Behind proxy: [yes/no]
+```
+
+## Output
+- Verbose request/response traces captured
+- Response shape issues identified
+- Rate limit behavior measured
+- Large file handled with page-level chunking
+- Support ticket prepared with diagnostic data
+
+## Error Handling
+| Issue | Diagnostic | Solution |
+|-------|-----------|----------|
+| Intermittent 500s | Track frequency and timing | Log every request; report pattern to Figma |
+| Slow responses | curl timing breakdown | Check if DNS/TLS is the bottleneck |
+| Null image renders | Validate node visibility | Check node opacity and visibility in Figma |
+| Memory crash | Large file JSON | Use `depth=1` + per-page `/nodes` calls |
+
 ## Resources
-- [Figma Support Portal](https://support.figma.com)
+- [Figma Developer Forum](https://forum.figma.com/)
+- [Figma Support](https://help.figma.com/hc/en-us/requests/new)
 - [Figma Status Page](https://status.figma.com)
 
 ## Next Steps

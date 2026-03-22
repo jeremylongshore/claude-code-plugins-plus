@@ -1,8 +1,8 @@
 ---
 name: figma-rate-limits
 description: |
-  Implement Figma rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
+  Handle Figma REST API rate limits with exponential backoff and request queuing.
+  Use when encountering 429 errors, implementing retry logic,
   or optimizing API request throughput for Figma.
   Trigger with phrases like "figma rate limit", "figma throttling",
   "figma 429", "figma retry", "figma backoff".
@@ -17,134 +17,184 @@ compatible-with: claude-code
 # Figma Rate Limits
 
 ## Overview
-Handle Figma rate limits gracefully with exponential backoff and idempotency.
+Figma uses a leaky bucket algorithm for rate limiting. When the bucket is full, the API returns 429 with a `Retry-After` header. Limits vary by plan tier, seat type, and endpoint tier.
 
 ## Prerequisites
-- Figma SDK installed
+- Figma REST API integration working
 - Understanding of async/await patterns
-- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Understand the Rate Limit Model
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+**Endpoint tiers** (limits are per-user, per-minute):
 
-### Step 2: Implement Exponential Backoff with Jitter
+| Tier | Endpoints | Typical Limit |
+|------|-----------|--------------|
+| Tier 1 | `GET /v1/files`, `GET /v1/images` | Higher quota |
+| Tier 2 | `GET /v1/files/:key/comments`, `GET /v1/files/:key/variables/local` | Moderate quota |
+| Tier 3 | `GET /v1/teams/:id/components`, `GET /v1/teams/:id/styles` | Lower quota |
 
+**429 response headers:**
+
+| Header | Type | Meaning |
+|--------|------|---------|
+| `Retry-After` | Integer (seconds) | Wait this long before retrying |
+| `X-Figma-Plan-Tier` | String | Your Figma plan level |
+| `X-Figma-Rate-Limit-Type` | String | `"low"` or `"high"` rate limit |
+| `X-Figma-Upgrade-Link` | String | URL to upgrade for higher limits |
+
+### Step 2: Implement Exponential Backoff
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+async function figmaFetchWithRetry(
+  path: string,
+  token: string,
+  maxRetries = 5
+): Promise<any> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const res = await fetch(`https://api.figma.com${path}`, {
+      headers: { 'X-Figma-Token': token },
+    });
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+    if (res.status === 429) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '60');
+      const limitType = res.headers.get('X-Figma-Rate-Limit-Type') || 'unknown';
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      if (attempt === maxRetries) {
+        throw new Error(`Rate limited after ${maxRetries} retries (${limitType})`);
+      }
+
+      // Use the Retry-After header -- Figma tells you exactly how long to wait
+      const jitter = Math.random() * 1000;
+      const delay = retryAfter * 1000 + jitter;
+      console.warn(`429 (${limitType}). Waiting ${(delay/1000).toFixed(1)}s (attempt ${attempt + 1})`);
       await new Promise(r => setTimeout(r, delay));
+      continue;
     }
+
+    if (res.status >= 500 && attempt < maxRetries) {
+      // Server errors: exponential backoff without Retry-After
+      const delay = Math.min(1000 * Math.pow(2, attempt), 30000);
+      await new Promise(r => setTimeout(r, delay));
+      continue;
+    }
+
+    if (!res.ok) {
+      throw new Error(`Figma API error: ${res.status} ${await res.text()}`);
+    }
+
+    return res.json();
   }
-  throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
+### Step 3: Request Queue with Concurrency Control
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from 'p-queue';
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+// Limit concurrent requests to avoid bursting the bucket
+const figmaQueue = new PQueue({
+  concurrency: 3,       // max 3 parallel requests
+  interval: 1000,       // per second
+  intervalCap: 5,       // max 5 requests per second
+});
+
+async function queuedFigmaRequest<T>(
+  path: string,
+  token: string
+): Promise<T> {
+  return figmaQueue.add(() => figmaFetchWithRetry(path, token));
 }
 
-async function idempotentRequest<T>(
-  client: FigmaClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+// Usage -- all requests are automatically queued and throttled
+const [file, comments, images] = await Promise.all([
+  queuedFigmaRequest(`/v1/files/${fileKey}`, token),
+  queuedFigmaRequest(`/v1/files/${fileKey}/comments`, token),
+  queuedFigmaRequest(`/v1/images/${fileKey}?ids=0:1&format=svg`, token),
+]);
+```
+
+### Step 4: Rate Limit Monitor
+```typescript
+class FigmaRateLimitMonitor {
+  private requestLog: number[] = [];
+  private windowMs = 60_000; // 1 minute window
+
+  recordRequest() {
+    this.requestLog.push(Date.now());
+    // Trim old entries
+    const cutoff = Date.now() - this.windowMs;
+    this.requestLog = this.requestLog.filter(t => t > cutoff);
+  }
+
+  getRequestsInWindow(): number {
+    const cutoff = Date.now() - this.windowMs;
+    return this.requestLog.filter(t => t > cutoff).length;
+  }
+
+  shouldThrottle(safetyMargin = 0.8): boolean {
+    // If we've used 80% of a conservative estimate, slow down
+    const estimatedLimit = 30; // Conservative estimate
+    return this.getRequestsInWindow() > estimatedLimit * safetyMargin;
+  }
+}
+
+const monitor = new FigmaRateLimitMonitor();
+
+// Wrap every request
+async function monitoredFigmaFetch(path: string, token: string) {
+  if (monitor.shouldThrottle()) {
+    console.warn('Approaching rate limit, adding delay');
+    await new Promise(r => setTimeout(r, 2000));
+  }
+  monitor.recordRequest();
+  return figmaFetchWithRetry(path, token);
+}
+```
+
+### Step 5: Batch Node Requests
+```typescript
+// Instead of N individual /v1/files/:key/nodes requests,
+// batch node IDs into fewer requests
+async function batchFetchNodes(
+  fileKey: string,
+  nodeIds: string[],
+  batchSize = 50,
+  token: string
+) {
+  const results: Record<string, any> = {};
+
+  for (let i = 0; i < nodeIds.length; i += batchSize) {
+    const batch = nodeIds.slice(i, i + batchSize);
+    const ids = encodeURIComponent(batch.join(','));
+    const data = await queuedFigmaRequest(
+      `/v1/files/${fileKey}/nodes?ids=${ids}`,
+      token
+    );
+    Object.assign(results, data.nodes);
+  }
+
+  return results;
 }
 ```
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+- Automatic retry with `Retry-After` header compliance
+- Request queue preventing burst overload
+- Rate limit monitoring with proactive throttling
+- Batch operations reducing total request count
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Detection | Response |
+|----------|-----------|----------|
+| Single 429 | `Retry-After` header | Wait exactly that duration |
+| Repeated 429s | Multiple retries exhausted | Log, alert, back off longer |
+| `low` rate limit type | `X-Figma-Rate-Limit-Type: low` | Consider upgrading Figma plan |
+| Batch too large | 400 Bad Request | Reduce batch size to 50 IDs |
 
 ## Resources
-- [Figma Rate Limits](https://docs.figma.com/rate-limits)
+- [Figma Rate Limits Documentation](https://developers.figma.com/docs/rest-api/rate-limits/)
+- [What if I'm rate-limited?](https://help.figma.com/hc/en-us/articles/34963238552855)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps

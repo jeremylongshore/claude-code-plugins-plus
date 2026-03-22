@@ -1,11 +1,11 @@
 ---
 name: figma-reliability-patterns
 description: |
-  Implement Figma reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Figma integrations, implementing retry strategies,
-  or adding resilience to production Figma services.
+  Build resilient Figma integrations with circuit breakers, fallbacks, and graceful degradation.
+  Use when implementing fault tolerance, handling Figma outages gracefully,
+  or building production-grade reliability into Figma API consumers.
   Trigger with phrases like "figma reliability", "figma circuit breaker",
-  "figma idempotent", "figma resilience", "figma fallback", "figma bulkhead".
+  "figma fallback", "figma resilience", "figma graceful degradation".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,276 +17,241 @@ compatible-with: claude-code
 # Figma Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Figma integrations.
+Production reliability patterns for Figma REST API integrations. Figma is an external dependency -- your application must handle its outages, rate limits, and slow responses without cascading failures.
 
 ## Prerequisites
+- Working Figma API integration
 - Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const figmaBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-figmaBreaker.on('open', () => {
-  console.warn('Figma circuit OPEN - requests failing fast');
-  alertOps('Figma circuit breaker opened');
-});
-
-figmaBreaker.on('halfOpen', () => {
-  console.info('Figma circuit HALF-OPEN - testing recovery');
-});
-
-figmaBreaker.on('close', () => {
-  console.info('Figma circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeFigmaCall<T>(fn: () => Promise<T>): Promise<T> {
-  return figmaBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const figmaQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedFigmaCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return figmaQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedFigmaCall('critical', () =>
-  figmaClient.processPayment(order)
-);
-
-await prioritizedFigmaCall('bulk', () =>
-  figmaClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutFigmaCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Figma ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface FigmaFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withFigmaFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Figma failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class FigmaDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await figmaClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function figmaHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: figmaBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Cache or file system for fallback data
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap Figma calls with circuit breaker.
+### Step 1: Circuit Breaker
+```typescript
+// Prevent cascading failures when Figma is down
+class FigmaCircuitBreaker {
+  private failures = 0;
+  private lastFailure = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+  constructor(
+    private threshold = 5,        // Open after 5 failures
+    private resetTimeMs = 30_000  // Try again after 30s
+  ) {}
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+  async execute<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailure > this.resetTimeMs) {
+        this.state = 'half-open';
+        console.log('[figma-circuit] State: half-open (testing recovery)');
+      } else {
+        throw new Error('Figma circuit breaker is OPEN -- failing fast');
+      }
+    }
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+    try {
+      const result = await fn();
+      if (this.state === 'half-open') {
+        this.state = 'closed';
+        this.failures = 0;
+        console.log('[figma-circuit] State: closed (recovered)');
+      }
+      return result;
+    } catch (error) {
+      this.failures++;
+      this.lastFailure = Date.now();
+
+      if (this.failures >= this.threshold) {
+        this.state = 'open';
+        console.warn(`[figma-circuit] State: OPEN after ${this.failures} failures`);
+      }
+      throw error;
+    }
+  }
+
+  getState() { return this.state; }
+}
+
+const figmaBreaker = new FigmaCircuitBreaker();
+
+// Usage
+async function safeFigmaCall<T>(fn: () => Promise<T>): Promise<T> {
+  return figmaBreaker.execute(fn);
+}
+```
+
+### Step 2: Cached Fallback
+```typescript
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+
+// Serve cached data when Figma is unavailable
+class FigmaFallbackCache {
+  constructor(private cacheDir = '.figma-cache') {}
+
+  private getPath(key: string) {
+    return `${this.cacheDir}/${key.replace(/[^a-zA-Z0-9]/g, '_')}.json`;
+  }
+
+  save(key: string, data: any) {
+    const { mkdirSync } = require('fs');
+    mkdirSync(this.cacheDir, { recursive: true });
+    writeFileSync(this.getPath(key), JSON.stringify({
+      data,
+      cachedAt: new Date().toISOString(),
+    }));
+  }
+
+  load(key: string): { data: any; cachedAt: string } | null {
+    const path = this.getPath(key);
+    if (!existsSync(path)) return null;
+    return JSON.parse(readFileSync(path, 'utf-8'));
+  }
+}
+
+const fallbackCache = new FigmaFallbackCache();
+
+async function fetchWithFallback<T>(
+  cacheKey: string,
+  fetcher: () => Promise<T>
+): Promise<{ data: T; fromCache: boolean; cachedAt?: string }> {
+  try {
+    const data = await safeFigmaCall(fetcher);
+    // Update cache with fresh data
+    fallbackCache.save(cacheKey, data);
+    return { data, fromCache: false };
+  } catch (error) {
+    console.warn(`Figma unavailable, loading cached ${cacheKey}`);
+    const cached = fallbackCache.load(cacheKey);
+    if (cached) {
+      return { data: cached.data as T, fromCache: true, cachedAt: cached.cachedAt };
+    }
+    throw new Error(`Figma unavailable and no cached data for ${cacheKey}`);
+  }
+}
+```
+
+### Step 3: Retry with Backoff (Respecting Retry-After)
+```typescript
+async function figmaRetry<T>(
+  fn: () => Promise<Response>,
+  maxRetries = 3
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const res = await fn();
+
+    if (res.ok) return res.json();
+
+    if (res.status === 429) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '60');
+      if (attempt < maxRetries) {
+        console.warn(`429 -- waiting ${retryAfter}s (attempt ${attempt + 1}/${maxRetries})`);
+        await new Promise(r => setTimeout(r, retryAfter * 1000));
+        continue;
+      }
+    }
+
+    if (res.status >= 500 && attempt < maxRetries) {
+      const delay = Math.min(1000 * Math.pow(2, attempt), 30_000);
+      const jitter = Math.random() * 1000;
+      await new Promise(r => setTimeout(r, delay + jitter));
+      continue;
+    }
+
+    throw new FigmaApiError(res.status, await res.text());
+  }
+  throw new Error('Max retries exceeded');
+}
+```
+
+### Step 4: Request Timeout
+```typescript
+// Prevent requests from hanging indefinitely
+async function figmaFetchWithTimeout(
+  path: string,
+  token: string,
+  timeoutMs = 15_000
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    return await fetch(`https://api.figma.com${path}`, {
+      headers: { 'X-Figma-Token': token },
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error(`Figma request timed out after ${timeoutMs}ms: ${path}`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+```
+
+### Step 5: Health-Aware Request Routing
+```typescript
+// Only make non-critical Figma calls when the API is healthy
+class FigmaHealthTracker {
+  private healthy = true;
+  private lastCheck = 0;
+  private checkIntervalMs = 30_000;
+
+  async isHealthy(token: string): Promise<boolean> {
+    if (Date.now() - this.lastCheck < this.checkIntervalMs) {
+      return this.healthy;
+    }
+
+    try {
+      const res = await figmaFetchWithTimeout('/v1/me', token, 5000);
+      this.healthy = res.ok;
+    } catch {
+      this.healthy = false;
+    }
+    this.lastCheck = Date.now();
+    return this.healthy;
+  }
+}
+
+const healthTracker = new FigmaHealthTracker();
+
+async function conditionalFigmaCall<T>(
+  token: string,
+  critical: boolean,
+  fn: () => Promise<T>,
+  fallback: () => Promise<T>
+): Promise<T> {
+  const healthy = await healthTracker.isHealthy(token);
+
+  if (!healthy && !critical) {
+    console.log('Figma unhealthy, using fallback for non-critical call');
+    return fallback();
+  }
+
+  return fetchWithFallback('default', fn).then(r => r.data);
+}
+```
 
 ## Output
-- Circuit breaker protecting Figma calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+- Circuit breaker preventing cascading failures
+- Cached fallback serving stale data during outages
+- Retry logic respecting Figma's `Retry-After` header
+- Request timeouts preventing hung connections
+- Health-aware routing for non-critical calls
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
-
-## Examples
-
-### Quick Circuit Check
-```typescript
-const state = figmaBreaker.stats().state;
-console.log('Figma circuit:', state);
-```
+| Circuit stays open | Threshold too low | Increase threshold or decrease reset time |
+| Stale fallback data | Cache not refreshed | Refresh cache on successful calls |
+| Retry loops | Not respecting Retry-After | Always use the header value |
+| Timeout too short | Large file responses | Increase timeout for `/v1/files` calls |
 
 ## Resources
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Figma Reliability Guide](https://docs.figma.com/reliability)
+- [Figma Rate Limits](https://developers.figma.com/docs/rest-api/rate-limits/)
+- [Figma Status Page](https://status.figma.com)
 
 ## Next Steps
 For policy enforcement, see `figma-policy-guardrails`.

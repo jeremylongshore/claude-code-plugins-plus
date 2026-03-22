@@ -1,11 +1,11 @@
 ---
 name: figma-reference-architecture
 description: |
-  Implement Figma reference architecture with best-practice project layout.
-  Use when designing new Figma integrations, reviewing project structure,
-  or establishing architecture standards for Figma applications.
-  Trigger with phrases like "figma architecture", "figma best practices",
-  "figma project structure", "how to organize figma", "figma layout".
+  Reference architecture for production Figma API integrations.
+  Use when designing a new Figma integration, planning project structure,
+  or establishing patterns for design-to-code pipelines.
+  Trigger with phrases like "figma architecture", "figma project structure",
+  "figma integration design", "figma best practices layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +17,172 @@ compatible-with: claude-code
 # Figma Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Figma integrations.
+Production-ready architecture for Figma REST API integrations. Covers the three most common use cases: design token pipelines, asset export systems, and webhook-driven automation.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Figma SDK knowledge
+- Understanding of Figma REST API endpoints
 - TypeScript project setup
-- Testing framework configured
-
-## Project Structure
-
-```
-my-figma-project/
-├── src/
-│   ├── figma/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── figma/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── figma/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── figma/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── figma/
-│   └── integration/
-│       └── figma/
-├── config/
-│   ├── figma.development.json
-│   ├── figma.staging.json
-│   └── figma.production.json
-└── docs/
-    └── figma/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
-
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Figma Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/figma/client.ts
-export class FigmaService {
-  private client: FigmaClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: FigmaConfig) {
-    this.client = new FigmaClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('figma');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/figma/errors.ts
-export class FigmaServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'FigmaServiceError';
-  }
-}
-
-export function wrapFigmaError(error: unknown): FigmaServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/figma/health.ts
-export async function checkFigmaHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await figmaClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Figma    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Figma    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/figma.ts
-export interface FigmaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadFigmaConfig(): FigmaConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./figma.${env}.json`);
-}
-```
+- Decision on deployment platform
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Figma operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Figma connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Figma types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/figma/{handlers} src/services/figma src/api/figma
-touch src/figma/{client,config,types,errors}.ts
-touch src/services/figma/{index,sync,cache}.ts
+### Step 1: Project Structure
+```
+figma-integration/
+├── src/
+│   ├── figma/
+│   │   ├── client.ts           # Typed REST API wrapper
+│   │   ├── types.ts            # Figma API response types
+│   │   ├── errors.ts           # FigmaApiError, FigmaRateLimitError
+│   │   ├── cache.ts            # LRU cache for API responses
+│   │   └── walker.ts           # Node tree traversal utilities
+│   ├── services/
+│   │   ├── token-extractor.ts  # Design token extraction
+│   │   ├── asset-exporter.ts   # Image/icon export pipeline
+│   │   ├── comment-syncer.ts   # Comment sync to Slack/Jira
+│   │   └── variable-syncer.ts  # Variables API sync (Enterprise)
+│   ├── webhooks/
+│   │   ├── handler.ts          # Webhook event router
+│   │   ├── verify.ts           # Passcode verification
+│   │   └── processors/
+│   │       ├── file-update.ts  # FILE_UPDATE handler
+│   │       ├── comment.ts      # FILE_COMMENT handler
+│   │       └── library.ts      # LIBRARY_PUBLISH handler
+│   ├── api/
+│   │   ├── health.ts           # Health check endpoint
+│   │   ├── tokens.ts           # Token API endpoint
+│   │   └── assets.ts           # Asset download endpoint
+│   └── index.ts
+├── scripts/
+│   ├── extract-tokens.mjs      # CLI: extract tokens from Figma
+│   ├── export-icons.mjs        # CLI: export icons from Figma
+│   └── setup-webhooks.mjs      # CLI: create/manage webhooks
+├── output/
+│   ├── tokens.css              # Generated CSS custom properties
+│   ├── tokens.json             # Generated JSON tokens
+│   └── icons/                  # Exported SVG/PNG icons
+├── tests/
+│   ├── fixtures/               # Saved Figma API responses
+│   └── *.test.ts
+├── .env.example
+└── package.json
 ```
 
-## Resources
-- [Figma SDK Documentation](https://docs.figma.com/sdk)
-- [Figma Best Practices](https://docs.figma.com/best-practices)
+### Step 2: Data Flow Architecture
+```
+┌────────────────────────────────────────────────┐
+│                  Figma Cloud                    │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────┐ │
+│  │ Files API │  │Images API│  │ Webhooks V2  │ │
+│  │ /v1/files │  │/v1/images│  │ /v2/webhooks │ │
+│  └─────┬─────┘  └────┬─────┘  └──────┬───────┘ │
+└────────┼──────────────┼───────────────┼─────────┘
+         │              │               │
+    ┌────▼────┐    ┌────▼────┐    ┌─────▼────┐
+    │  Token  │    │  Asset  │    │ Webhook  │
+    │Extractor│    │Exporter │    │ Handler  │
+    └────┬────┘    └────┬────┘    └─────┬────┘
+         │              │               │
+    ┌────▼────┐    ┌────▼────┐    ┌─────▼────┐
+    │  Cache  │    │  Cache  │    │  Event   │
+    │  (LRU)  │    │ (URLs)  │    │  Queue   │
+    └────┬────┘    └────┬────┘    └─────┬────┘
+         │              │               │
+    ┌────▼──────────────▼───────────────▼────┐
+    │              Output Layer               │
+    │  tokens.css  │  icons/  │  Slack/Jira   │
+    └─────────────────────────────────────────┘
+```
 
-## Flagship Skills
+### Step 3: Key Components
+
+**Figma Client** (see `figma-sdk-patterns`):
+```typescript
+// Singleton with retry, rate limit handling, and caching
+const client = new FigmaClient(process.env.FIGMA_PAT!);
+
+// All API calls go through the client
+const file = await client.getFile(fileKey);           // GET /v1/files/:key
+const nodes = await client.getFileNodes(fileKey, ids); // GET /v1/files/:key/nodes
+const images = await client.getImages(fileKey, ids);   // GET /v1/images/:key
+const comments = await client.getComments(fileKey);    // GET /v1/files/:key/comments
+const vars = await client.getLocalVariables(fileKey);  // GET /v1/files/:key/variables/local
+```
+
+**Token Extraction Pipeline** (see `figma-core-workflow-a`):
+```typescript
+// file → styles → nodes → CSS/JSON tokens
+export async function extractTokens(fileKey: string): Promise<DesignToken[]> {
+  const file = await client.getFile(fileKey);
+  const styleNodes = await client.getFileNodes(fileKey, Object.keys(file.styles));
+  return parseTokensFromNodes(file.styles, styleNodes);
+}
+```
+
+**Asset Export Pipeline** (see `figma-core-workflow-b`):
+```typescript
+// file → find components → render images → download
+export async function exportIcons(fileKey: string, frameId: string) {
+  const frame = await client.getFileNodes(fileKey, [frameId]);
+  const componentIds = findComponents(frame).map(n => n.id);
+  const imageUrls = await client.getImages(fileKey, componentIds, { format: 'svg' });
+  return downloadAll(imageUrls);
+}
+```
+
+**Webhook Handler** (see `figma-webhooks-events`):
+```typescript
+// Verify passcode → route event → process async
+export function webhookRouter(event: FigmaWebhookEvent) {
+  switch (event.event_type) {
+    case 'FILE_UPDATE': return handleFileUpdate(event);
+    case 'LIBRARY_PUBLISH': return handleLibraryPublish(event);
+    case 'FILE_COMMENT': return handleComment(event);
+  }
+}
+```
+
+### Step 4: Configuration
+```typescript
+// src/config.ts
+export const config = {
+  figma: {
+    token: process.env.FIGMA_PAT!,
+    fileKey: process.env.FIGMA_FILE_KEY!,
+    webhookPasscode: process.env.FIGMA_WEBHOOK_PASSCODE,
+  },
+  cache: {
+    fileTTL: 5 * 60 * 1000,      // 5 minutes for file metadata
+    imageTTL: 24 * 60 * 60 * 1000, // 24 hours for image URLs
+    maxEntries: 500,
+  },
+  api: {
+    maxConcurrent: 3,
+    retryAttempts: 3,
+    requestTimeout: 30_000,
+  },
+};
+```
+
+## Output
+- Structured project layout with clear separation
+- Data flow from Figma API to local artifacts
+- Reusable client, cache, and pipeline components
+- Configuration management for all environments
+
+## Error Handling
+| Layer | Error | Recovery |
+|-------|-------|----------|
+| Client | 429 Rate Limited | Retry with `Retry-After` header |
+| Client | 403 Forbidden | Alert on token expiry; fail gracefully |
+| Cache | Cache miss storm | Stale-while-revalidate pattern |
+| Webhook | Duplicate events | Idempotency via event timestamp |
+| Export | Image render null | Skip node, log warning |
+
+## Resources
+- [Figma REST API](https://developers.figma.com/docs/rest-api/)
+- [Figma REST API OpenAPI Spec](https://github.com/figma/rest-api-spec)
+- [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
+
+## Next Steps
 For multi-environment setup, see `figma-multi-env-setup`.
