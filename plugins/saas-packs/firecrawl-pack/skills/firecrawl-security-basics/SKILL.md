@@ -1,11 +1,11 @@
 ---
 name: firecrawl-security-basics
 description: |
-  Apply FireCrawl security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing FireCrawl security configuration.
+  Apply Firecrawl security best practices for API key management and webhook verification.
+  Use when securing API keys, implementing webhook signature validation,
+  or auditing Firecrawl security configuration.
   Trigger with phrases like "firecrawl security", "firecrawl secrets",
-  "secure firecrawl", "firecrawl API key security".
+  "secure firecrawl", "firecrawl API key security", "firecrawl webhook signature".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -14,130 +14,153 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, api, security, audit]
 
 ---
-# FireCrawl Security Basics
+# Firecrawl Security Basics
 
 ## Overview
-Security best practices for FireCrawl API keys, tokens, and access control.
+Security best practices for Firecrawl API keys, webhook signature verification, and scraped content handling. Firecrawl API keys start with `fc-` and grant full access to scrape, crawl, map, and extract endpoints — protecting them is critical.
 
 ## Prerequisites
-- FireCrawl SDK installed
+- Firecrawl API key
 - Understanding of environment variables
-- Access to FireCrawl dashboard
+- Webhook endpoint (if using async crawl callbacks)
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Secure API Key Storage
 ```bash
 # .env (NEVER commit to git)
-FIRECRAWL_API_KEY=sk_live_***
-FIRECRAWL_SECRET=***
+FIRECRAWL_API_KEY=fc-your-api-key-here
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+# .gitignore — add these patterns
+echo -e "\n.env\n.env.local\n.env.*.local" >> .gitignore
 ```
 
-### Step 2: Implement Secret Rotation
+```typescript
+// Validate key exists before creating client
+import FirecrawlApp from "@mendable/firecrawl-js";
+
+if (!process.env.FIRECRAWL_API_KEY?.startsWith("fc-")) {
+  throw new Error("FIRECRAWL_API_KEY must be set and start with 'fc-'");
+}
+
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY,
+});
+```
+
+### Step 2: Verify Webhook Signatures
+Firecrawl signs webhook payloads with HMAC-SHA256 via the `X-Firecrawl-Signature` header.
+
+```typescript
+import crypto from "crypto";
+
+function verifyWebhookSignature(
+  payload: string,
+  signature: string,
+  secret: string
+): boolean {
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+
+  // Timing-safe comparison prevents timing attacks
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
+}
+
+// Express webhook handler with verification
+app.post("/webhooks/firecrawl", (req, res) => {
+  const signature = req.headers["x-firecrawl-signature"] as string;
+  const rawBody = JSON.stringify(req.body);
+
+  if (!verifyWebhookSignature(rawBody, signature, process.env.FIRECRAWL_WEBHOOK_SECRET!)) {
+    console.error("Invalid webhook signature — rejecting");
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+
+  // Process verified webhook
+  const { type, data } = req.body;
+  console.log(`Verified webhook: ${type}`);
+  res.status(200).json({ received: true });
+});
+```
+
+### Step 3: Separate Keys per Environment
+```bash
+# GitHub Actions secrets
+gh secret set FIRECRAWL_API_KEY_DEV --body "fc-dev-..."
+gh secret set FIRECRAWL_API_KEY_STAGING --body "fc-staging-..."
+gh secret set FIRECRAWL_API_KEY_PROD --body "fc-prod-..."
+```
+
+```typescript
+// Load correct key based on environment
+const KEY_MAP: Record<string, string> = {
+  development: "FIRECRAWL_API_KEY_DEV",
+  staging: "FIRECRAWL_API_KEY_STAGING",
+  production: "FIRECRAWL_API_KEY_PROD",
+};
+
+const envVar = KEY_MAP[process.env.NODE_ENV || "development"];
+const apiKey = process.env[envVar] || process.env.FIRECRAWL_API_KEY;
+```
+
+### Step 4: Rotate Keys
 ```bash
 set -euo pipefail
-# 1. Generate new key in FireCrawl dashboard
-# 2. Update environment variable
-export FIRECRAWL_API_KEY="new_key_here"
-
+# 1. Generate new key at firecrawl.dev/app
+# 2. Deploy new key alongside old key
 # 3. Verify new key works
-curl -H "Authorization: Bearer ${FIRECRAWL_API_KEY}" \
-  https://api.firecrawl.com/health
+curl -s https://api.firecrawl.dev/v1/scrape \
+  -H "Authorization: Bearer $NEW_FIRECRAWL_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","formats":["markdown"]}' | jq .success
 
-# 4. Revoke old key in dashboard
+# 4. Remove old key from all environments
+# 5. Delete old key in Firecrawl dashboard
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 5: Sanitize Scraped Content
+```typescript
+// Scraped web content may contain PII, scripts, or malicious data
+function sanitizeScrapedContent(markdown: string): string {
+  return markdown
+    // Remove potential script injections
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    // Remove data URIs (potential XSS vectors)
+    .replace(/!\[.*?\]\(data:.*?\)/g, "")
+    // Remove javascript: links
+    .replace(/\[.*?\]\(javascript:.*?\)/g, "")
+    // Strip HTML comments
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .trim();
+}
+```
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+## Security Checklist
+- [ ] API key stored in environment variable, never hardcoded
+- [ ] `.env` files listed in `.gitignore`
+- [ ] Different keys for dev/staging/production
+- [ ] Webhook signatures verified before processing
+- [ ] Scraped content sanitized before storage/display
+- [ ] Key rotation scheduled quarterly
+- [ ] Git history scanned for leaked keys
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FireCrawlClient({
-    apiKey: process.env.FIRECRAWL_READ_KEY,
-  }),
-  writer: new FireCrawlClient({
-    apiKey: process.env.FIRECRAWL_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to FireCrawl analytics
-  await firecrawlClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'firecrawl.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Leaked API key in git | `git log -p \| grep "fc-"` | Rotate immediately, revoke old key |
+| Invalid webhook signature | Signature verification fails | Reject request, alert team |
+| Excessive scraping costs | Credit alerts from Firecrawl | Set credit limits per key |
+| PII in scraped content | Content scanning | Sanitize before storage |
 
 ## Resources
-- [FireCrawl Security Guide](https://docs.firecrawl.com/security)
-- [FireCrawl API Scopes](https://docs.firecrawl.com/scopes)
+- [Firecrawl Dashboard](https://firecrawl.dev/app)
+- [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
+- [GitHub Secret Scanning](https://docs.github.com/en/code-security/secret-scanning)
 
 ## Next Steps
 For production deployment, see `firecrawl-prod-checklist`.

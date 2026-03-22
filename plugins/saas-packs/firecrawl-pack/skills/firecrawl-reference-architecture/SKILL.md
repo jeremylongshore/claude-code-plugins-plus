@@ -1,11 +1,11 @@
 ---
 name: firecrawl-reference-architecture
 description: |
-  Implement FireCrawl reference architecture with best-practice project layout.
-  Use when designing new FireCrawl integrations, reviewing project structure,
-  or establishing architecture standards for FireCrawl applications.
-  Trigger with phrases like "firecrawl architecture", "firecrawl best practices",
-  "firecrawl project structure", "how to organize firecrawl", "firecrawl layout".
+  Implement Firecrawl reference architecture with scrape/crawl/map/extract pipelines.
+  Use when designing new Firecrawl integrations, reviewing project structure,
+  or building content ingestion pipelines for AI/RAG applications.
+  Trigger with phrases like "firecrawl architecture", "firecrawl project structure",
+  "firecrawl pipeline", "firecrawl RAG", "firecrawl knowledge base".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -14,190 +14,235 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, firecrawl-reference]
 
 ---
-# FireCrawl Reference Architecture
+# Firecrawl Reference Architecture
 
 ## Overview
-Production architecture for web scraping and data extraction with FireCrawl. Covers crawl job orchestration, content extraction pipelines, structured data output, and site mapping workflows.
-
-## Prerequisites
-- FireCrawl API key
-- `@mendable/firecrawl-js` SDK installed
-- Queue system for large crawl jobs (optional)
-- Storage for extracted content
+Production architecture for web scraping and content ingestion with Firecrawl. Covers three tiers: on-demand scraping, scheduled crawl pipelines, and real-time RAG ingestion. Uses all four Firecrawl endpoints: scrape, crawl, map, and extract.
 
 ## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                 Crawl Orchestrator                    │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
-│  │ Scrape   │  │ Crawl    │  │ Map              │   │
-│  │ (single) │  │ (multi)  │  │ (discovery)      │   │
-│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘   │
-│       │              │                 │             │
-│       ▼              ▼                 ▼             │
-│  ┌──────────────────────────────────────────────┐    │
-│  │         Content Processing Pipeline           │    │
-│  │  Markdown │ HTML │ Screenshots │ Structured  │    │
-│  └──────────────────────┬───────────────────────┘    │
-│                         │                            │
-│  ┌──────────────────────┴───────────────────────┐    │
-│  │         Output & Storage                      │    │
-│  │  JSON Files │ Database │ Vector Store │ S3    │    │
-│  └──────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│                   Firecrawl Pipeline                     │
+│                                                          │
+│  ┌──────────┐  ┌──────────┐  ┌──────┐  ┌───────────┐   │
+│  │ scrapeUrl│  │ crawlUrl │  │mapUrl│  │ extract   │   │
+│  │ (1 page) │  │ (N pages)│  │(URLs)│  │ (LLM+JSON)│   │
+│  └────┬─────┘  └────┬─────┘  └──┬───┘  └─────┬─────┘   │
+│       │              │            │            │          │
+│       ▼              ▼            ▼            ▼          │
+│  ┌───────────────────────────────────────────────────┐   │
+│  │            Content Processing Layer                │   │
+│  │  Clean MD │ Validate │ Deduplicate │ Chunk        │   │
+│  └─────────────────────┬─────────────────────────────┘   │
+│                         │                                 │
+│  ┌─────────────────────┴─────────────────────────────┐   │
+│  │              Storage & Output                      │   │
+│  │  Files │ Database │ Vector Store │ Search Index    │   │
+│  └───────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: FireCrawl Service Layer
+### Step 1: Firecrawl Service Layer
 ```typescript
-import FirecrawlApp from '@mendable/firecrawl-js';
+// src/firecrawl/service.ts
+import FirecrawlApp from "@mendable/firecrawl-js";
 
 const firecrawl = new FirecrawlApp({
   apiKey: process.env.FIRECRAWL_API_KEY!,
 });
 
-// Single page scrape with markdown output
-async function scrapePage(url: string) {
+// Single page scrape
+export async function scrapePage(url: string) {
   return firecrawl.scrapeUrl(url, {
-    formats: ['markdown', 'html'],
+    formats: ["markdown"],
     onlyMainContent: true,
-    waitFor: 2000, // Wait for dynamic content  # 2000: 2 seconds in ms
+    waitFor: 2000,
   });
 }
 
-// Structured data extraction with schema
-async function extractStructured(url: string, schema: any) {
-  return firecrawl.scrapeUrl(url, {
-    formats: ['extract'],
-    extract: {
-      schema,
-      systemPrompt: 'Extract data precisely according to the schema.',
-    },
-  });
-}
-```
-
-### Step 2: Multi-Page Crawl Pipeline
-```typescript
-async function crawlSite(baseUrl: string, options?: {
+// Site-wide crawl with safety limits
+export async function crawlSite(baseUrl: string, opts?: {
   maxPages?: number;
-  includePaths?: string[];
+  paths?: string[];
   excludePaths?: string[];
 }) {
-  const crawlResult = await firecrawl.crawlUrl(baseUrl, {
-    limit: options?.maxPages || 50,
-    includePaths: options?.includePaths,
-    excludePaths: options?.excludePaths || ['/blog/*', '/news/*'],
-    scrapeOptions: {
-      formats: ['markdown'],
-      onlyMainContent: true,
-    },
+  return firecrawl.crawlUrl(baseUrl, {
+    limit: opts?.maxPages || 50,
+    maxDepth: 3,
+    includePaths: opts?.paths,
+    excludePaths: opts?.excludePaths || ["/blog/*", "/news/*"],
+    scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
   });
-
-  return crawlResult;
 }
 
-// Async crawl for large sites
-async function asyncCrawl(baseUrl: string) {
-  const job = await firecrawl.asyncCrawlUrl(baseUrl, {
-    limit: 500,  # HTTP 500 Internal Server Error
-    scrapeOptions: { formats: ['markdown'] },
+// Fast URL discovery
+export async function discoverUrls(baseUrl: string) {
+  const map = await firecrawl.mapUrl(baseUrl);
+  return map.links || [];
+}
+
+// Structured data extraction
+export async function extractData(url: string, schema: object) {
+  return firecrawl.scrapeUrl(url, {
+    formats: ["extract"],
+    extract: { schema },
   });
-
-  // Poll for completion
-  let status = await firecrawl.checkCrawlStatus(job.id);
-  while (status.status === 'scraping') {
-    await new Promise(r => setTimeout(r, 5000));  # 5000: 5 seconds in ms
-    status = await firecrawl.checkCrawlStatus(job.id);
-  }
-
-  return status;
 }
 ```
 
-### Step 3: Site Map Discovery
+### Step 2: Content Processing Pipeline
 ```typescript
-async function discoverSiteStructure(url: string) {
-  const mapResult = await firecrawl.mapUrl(url);
+// src/pipeline/processor.ts
+import { createHash } from "crypto";
 
-  // Categorize discovered URLs
-  const structure = {
-    pages: mapResult.links?.filter(l => !l.includes('/api/')) || [],
-    apiDocs: mapResult.links?.filter(l => l.includes('/api/') || l.includes('/docs/')) || [],
-    blog: mapResult.links?.filter(l => l.includes('/blog/')) || [],
-    total: mapResult.links?.length || 0,
+interface ProcessedPage {
+  url: string;
+  title: string;
+  markdown: string;
+  contentHash: string;
+  wordCount: number;
+  chunks: string[];
+}
+
+export function processPage(page: any): ProcessedPage | null {
+  const markdown = cleanMarkdown(page.markdown || "");
+  if (markdown.length < 100) return null; // skip thin content
+
+  return {
+    url: page.metadata?.sourceURL || "",
+    title: page.metadata?.title || "",
+    markdown,
+    contentHash: createHash("sha256").update(markdown).digest("hex"),
+    wordCount: markdown.split(/\s+/).length,
+    chunks: chunkMarkdown(markdown, 1000),
   };
+}
 
-  return structure;
+function cleanMarkdown(md: string): string {
+  return md
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\[.*?\]\(javascript:.*?\)/g, "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .trim();
+}
+
+function chunkMarkdown(md: string, maxWords: number): string[] {
+  const sections = md.split(/\n##\s/);
+  const chunks: string[] = [];
+  let current = "";
+
+  for (const section of sections) {
+    if (current.split(/\s+/).length + section.split(/\s+/).length > maxWords) {
+      if (current) chunks.push(current.trim());
+      current = section;
+    } else {
+      current += "\n## " + section;
+    }
+  }
+  if (current) chunks.push(current.trim());
+  return chunks;
 }
 ```
 
-### Step 4: Structured Extraction Pipeline
+### Step 3: Map + Selective Scrape Pipeline
 ```typescript
-import { z } from 'zod';
+// src/pipeline/intelligent-scrape.ts
+export async function intelligentScrape(siteUrl: string, opts: {
+  pathFilter: string;
+  maxPages: number;
+}) {
+  // 1. Map site structure (1 credit)
+  const allUrls = await discoverUrls(siteUrl);
+  const relevant = allUrls.filter(url => url.includes(opts.pathFilter));
 
-const ProductSchema = z.object({
-  name: z.string(),
-  price: z.number(),
-  description: z.string(),
-  features: z.array(z.string()),
-  availability: z.enum(['in_stock', 'out_of_stock', 'preorder']),
-});
+  console.log(`Map: ${allUrls.length} total, ${relevant.length} match "${opts.pathFilter}"`);
 
-async function extractProducts(urls: string[]) {
-  const results = [];
-  for (const url of urls) {
-    const data = await extractStructured(url, {
-      type: 'object',
-      properties: {
-        name: { type: 'string' },
-        price: { type: 'number' },
-        description: { type: 'string' },
-        features: { type: 'array', items: { type: 'string' } },
-        availability: { type: 'string', enum: ['in_stock', 'out_of_stock', 'preorder'] },
-      },
-      required: ['name', 'price'],
+  // 2. Batch scrape relevant URLs (N credits)
+  const targets = relevant.slice(0, opts.maxPages);
+  const result = await firecrawl.batchScrapeUrls(targets, {
+    formats: ["markdown"],
+    onlyMainContent: true,
+  });
+
+  // 3. Process and deduplicate
+  const seen = new Set<string>();
+  const processed = (result.data || [])
+    .map(processPage)
+    .filter((p): p is ProcessedPage => {
+      if (!p || seen.has(p.contentHash)) return false;
+      seen.add(p.contentHash);
+      return true;
     });
-    results.push(data);
-  }
-  return results;
+
+  return { total: allUrls.length, scraped: targets.length, processed: processed.length, pages: processed };
+}
+```
+
+### Step 4: Async Crawl with Storage
+```typescript
+// src/pipeline/crawl-pipeline.ts
+import { writeFileSync, mkdirSync } from "fs";
+
+export async function crawlAndStore(baseUrl: string, outputDir: string) {
+  mkdirSync(outputDir, { recursive: true });
+
+  const crawl = await firecrawl.crawlUrl(baseUrl, {
+    limit: 100,
+    scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
+  });
+
+  const manifest = (crawl.data || [])
+    .map(processPage)
+    .filter((p): p is ProcessedPage => p !== null)
+    .map(page => {
+      const slug = new URL(page.url).pathname
+        .replace(/\//g, "_").replace(/^_|_$/g, "") || "index";
+      writeFileSync(`${outputDir}/${slug}.md`, page.markdown);
+      return { url: page.url, file: `${slug}.md`, words: page.wordCount, chunks: page.chunks.length };
+    });
+
+  writeFileSync(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2));
+  return manifest;
 }
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Timeout on scrape | Dynamic JS content | Increase `waitFor` timeout |
-| Empty markdown | Content behind paywall | Use authenticated scraping or different URL |
-| Crawl incomplete | Hit page limit | Increase `limit`, use `includePaths` |
-| Rate limit 429 | Too many concurrent scrapes | Add delays between requests |
+| Timeout on scrape | JS-heavy page | Increase `waitFor` or use `actions` |
+| Empty markdown | Content behind paywall | Try different URL or authenticated scrape |
+| Crawl incomplete | Hit page limit | Increase `limit` or use `includePaths` |
+| Duplicate content | URL aliases or redirects | Hash content for deduplication |
+| Map returns few URLs | Site has no sitemap | Use `crawlUrl` for thorough discovery |
 
 ## Examples
 
 ### Documentation Scraper
 ```typescript
-async function scrapeDocumentation(docsUrl: string) {
-  const sitemap = await discoverSiteStructure(docsUrl);
-  const docPages = sitemap.apiDocs.slice(0, 100);
+const docs = await intelligentScrape("https://docs.firecrawl.dev", {
+  pathFilter: "/features/",
+  maxPages: 20,
+});
+console.log(`Scraped ${docs.processed} unique pages from ${docs.total} discovered`);
+```
 
-  const crawl = await crawlSite(docsUrl, {
-    maxPages: 100,
-    includePaths: ['/docs/*', '/api/*', '/guide/*'],
-  });
-
-  return crawl;
+### RAG Knowledge Base Builder
+```typescript
+const pages = await crawlAndStore("https://docs.example.com", "./knowledge-base");
+// Feed chunks to vector store for RAG
+for (const page of pages) {
+  // Each page has pre-chunked content ready for embedding
 }
 ```
 
 ## Resources
-- [FireCrawl Documentation](https://docs.firecrawl.dev)
-- [FireCrawl Scraping Guide](https://docs.firecrawl.dev/features/scrape)
-- [FireCrawl Extraction](https://docs.firecrawl.dev/features/extract)
+- [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
+- [Scrape Endpoint](https://docs.firecrawl.dev/features/scrape)
+- [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
+- [Map Endpoint](https://docs.firecrawl.dev/features/map)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For multi-environment setup, see `firecrawl-multi-env-setup`.

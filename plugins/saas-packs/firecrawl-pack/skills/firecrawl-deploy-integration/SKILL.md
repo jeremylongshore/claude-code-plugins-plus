@@ -1,12 +1,12 @@
 ---
 name: firecrawl-deploy-integration
 description: |
-  Deploy FireCrawl integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying FireCrawl-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
+  Deploy Firecrawl integrations to Vercel, Cloud Run, and Docker platforms.
+  Use when deploying Firecrawl-powered applications to production,
+  configuring platform-specific secrets, or setting up self-hosted Firecrawl.
   Trigger with phrases like "deploy firecrawl", "firecrawl Vercel",
-  "firecrawl production deploy", "firecrawl Cloud Run", "firecrawl Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  "firecrawl production deploy", "firecrawl Cloud Run", "firecrawl Docker".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,102 +17,180 @@ tags: [saas, firecrawl, deployment]
 # Firecrawl Deploy Integration
 
 ## Overview
-Deploy applications using Firecrawl's web scraping API (`api.firecrawl.dev`) to production. Covers API key management, webhook endpoint deployment for async crawl results, and self-hosted Firecrawl deployment options using Docker.
+Deploy applications using Firecrawl's web scraping API to production. Covers Vercel serverless, Cloud Run containers, self-hosted Firecrawl via Docker, and webhook endpoint deployment for async crawl results.
 
 ## Prerequisites
-- Firecrawl API key stored in `FIRECRAWL_API_KEY` environment variable
-- Application using `@mendable/firecrawl-js` SDK
-- Platform CLI installed (vercel, docker, or gcloud)
-- Webhook endpoint for async crawl results
+- Firecrawl API key (`FIRECRAWL_API_KEY`)
+- Application using `@mendable/firecrawl-js`
+- Platform CLI (vercel, docker, or gcloud)
 
 ## Instructions
 
-### Step 1: Configure Secrets
+### Step 1: Configure Platform Secrets
 ```bash
+set -euo pipefail
 # Vercel
 vercel env add FIRECRAWL_API_KEY production
 
 # Cloud Run
-echo -n "your-key" | gcloud secrets create firecrawl-api-key --data-file=-
+echo -n "$FIRECRAWL_API_KEY" | gcloud secrets create firecrawl-api-key --data-file=-
+
+# Docker
+# Use --env-file or docker secrets
 ```
 
-### Step 2: Deploy Scraping API
+### Step 2: Vercel Serverless API Route
 ```typescript
-// api/scrape.ts
+// app/api/scrape/route.ts (Next.js App Router)
 import FirecrawlApp from "@mendable/firecrawl-js";
+import { NextRequest, NextResponse } from "next/server";
 
 const firecrawl = new FirecrawlApp({
   apiKey: process.env.FIRECRAWL_API_KEY!,
 });
 
-export async function POST(req: Request) {
-  const { url, formats } = await req.json();
+export async function POST(req: NextRequest) {
+  const { url, formats = ["markdown"] } = await req.json();
 
-  const result = await firecrawl.scrapeUrl(url, {
-    formats: formats || ["markdown"],
-  });
+  if (!url) {
+    return NextResponse.json({ error: "URL required" }, { status: 400 });
+  }
 
-  return Response.json({
-    markdown: result.markdown,
-    metadata: result.metadata,
-  });
+  try {
+    const result = await firecrawl.scrapeUrl(url, {
+      formats,
+      onlyMainContent: true,
+      waitFor: 3000,
+    });
+
+    return NextResponse.json({
+      success: result.success,
+      markdown: result.markdown,
+      title: result.metadata?.title,
+      sourceURL: result.metadata?.sourceURL,
+    });
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message, status: error.statusCode },
+      { status: error.statusCode || 500 }
+    );
+  }
 }
 ```
 
-### Step 3: Self-Hosted Firecrawl (Docker)
+### Step 3: Self-Hosted Firecrawl (Docker Compose)
 ```yaml
 # docker-compose.yml
-version: "3.8"
 services:
   firecrawl:
     image: mendableai/firecrawl:latest
     ports:
-      - "3002:3002"  # 3002 = configured value
+      - "3002:3002"
     environment:
-      - REDIS_URL=redis://redis:6379  # 6379: Redis port
-      - PLAYWRIGHT_BROWSERS_PATH=/browsers
+      - PORT=3002
+      - USE_DB_AUTHENTICATION=false
+      - REDIS_URL=redis://redis:6379
+      - REDIS_RATE_LIMIT_URL=redis://redis:6379
+      - NUM_WORKERS_PER_QUEUE=2
+      - BULL_AUTH_KEY=${BULL_AUTH_KEY:-changeme}
     depends_on:
-      - redis
+      redis:
+        condition: service_healthy
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"  # Redis port
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
 
   app:
     build: .
     ports:
-      - "3000:3000"  # 3000: 3 seconds in ms
+      - "3000:3000"
     environment:
+      - FIRECRAWL_API_KEY=fc-self-hosted
       - FIRECRAWL_API_URL=http://firecrawl:3002
     depends_on:
       - firecrawl
 ```
 
-### Step 4: Webhook Endpoint for Async Crawls
 ```typescript
-// api/webhooks/firecrawl.ts
-export async function POST(req: Request) {
-  const { type, id, data } = await req.json();
+// Point app to self-hosted Firecrawl
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
+  apiUrl: process.env.FIRECRAWL_API_URL || "https://api.firecrawl.dev",
+});
+```
 
-  if (type === "crawl.completed") {
-    await processScrapedPages(id, data.pages);
+### Step 4: Cloud Run Deployment
+```bash
+set -euo pipefail
+# Build and deploy
+gcloud run deploy firecrawl-app \
+  --source . \
+  --region us-central1 \
+  --set-secrets "FIRECRAWL_API_KEY=firecrawl-api-key:latest" \
+  --memory 512Mi \
+  --timeout 300 \
+  --allow-unauthenticated
+```
+
+### Step 5: Webhook Endpoint for Async Crawls
+```typescript
+// app/api/webhooks/firecrawl/route.ts
+import crypto from "crypto";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function POST(req: NextRequest) {
+  const body = await req.text();
+
+  // Verify webhook signature
+  const signature = req.headers.get("x-firecrawl-signature");
+  if (signature && process.env.FIRECRAWL_WEBHOOK_SECRET) {
+    const expected = crypto
+      .createHmac("sha256", process.env.FIRECRAWL_WEBHOOK_SECRET)
+      .update(body)
+      .digest("hex");
+    if (signature !== expected) {
+      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    }
   }
 
-  return Response.json({ received: true });
+  const { type, id, data } = JSON.parse(body);
+
+  switch (type) {
+    case "crawl.completed":
+      console.log(`Crawl ${id} complete: ${data.length} pages`);
+      await processPages(data);
+      break;
+    case "crawl.page":
+      console.log(`Page scraped: ${data[0]?.metadata?.sourceURL}`);
+      break;
+    case "crawl.started":
+      console.log(`Crawl ${id} started`);
+      break;
+  }
+
+  return NextResponse.json({ received: true });
 }
 ```
 
-### Step 5: Health Check
+### Step 6: Health Check
 ```typescript
 export async function GET() {
   try {
     const result = await firecrawl.scrapeUrl("https://example.com", {
       formats: ["markdown"],
     });
-    return Response.json({ status: result ? "healthy" : "degraded" });
+    return NextResponse.json({
+      status: result.success ? "healthy" : "degraded",
+    });
   } catch {
-    return Response.json({ status: "unhealthy" }, { status: 503 });  # HTTP 503 Service Unavailable
+    return NextResponse.json({ status: "unhealthy" }, { status: 503 });
   }
 }
 ```
@@ -120,27 +198,15 @@ export async function GET() {
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Rate limited | Too many scrape requests | Queue requests with delays |
-| Scrape blocked | Target site protection | Use `waitFor` and browser options |
-| API key invalid | Key expired | Regenerate at firecrawl.dev dashboard |
-| Self-hosted memory | Playwright overhead | Increase container memory to 2GB+ |
-
-## Examples
-
-
-**Basic usage**: Apply firecrawl deploy integration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize firecrawl deploy integration for production environments with multiple constraints and team-specific requirements.
+| Vercel timeout | Scrape takes > 10s | Use background functions or async crawl |
+| Self-hosted OOM | Playwright browser memory | Increase container memory to 2GB+ |
+| Cloud Run cold start | First request slow | Set min instances to 1 |
+| Webhook not received | URL not publicly accessible | Use ngrok in dev, verify HTTPS in prod |
 
 ## Resources
-- [Firecrawl Documentation](https://docs.firecrawl.dev)
-- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/self-hosting)
+- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
+- [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
+- [Firecrawl Node SDK](https://docs.firecrawl.dev/sdks/node)
 
 ## Next Steps
 For webhook handling, see `firecrawl-webhooks-events`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

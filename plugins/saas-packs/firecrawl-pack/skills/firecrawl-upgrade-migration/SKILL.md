@@ -1,11 +1,11 @@
 ---
 name: firecrawl-upgrade-migration
 description: |
-  Analyze, plan, and execute FireCrawl SDK upgrades with breaking change detection.
-  Use when upgrading FireCrawl SDK versions, detecting deprecations,
-  or migrating to new API versions.
+  Upgrade Firecrawl SDK versions and migrate between API versions (v0 to v1/v2).
+  Use when upgrading the SDK, handling breaking changes between versions,
+  or migrating from the old API to the current v2 API.
   Trigger with phrases like "upgrade firecrawl", "firecrawl migration",
-  "firecrawl breaking changes", "update firecrawl SDK", "analyze firecrawl version".
+  "firecrawl v2", "update firecrawl SDK", "firecrawl breaking changes".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
@@ -14,108 +14,163 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, api, migration]
 
 ---
-# FireCrawl Upgrade & Migration
+# Firecrawl Upgrade & Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list @mendable/firecrawl-js 2>/dev/null | grep firecrawl || echo 'Not installed'`
 
 ## Overview
-Guide for upgrading FireCrawl SDK versions and handling breaking changes.
+Guide for upgrading `@mendable/firecrawl-js` SDK versions and migrating from Firecrawl API v0/v1 to v2. Covers breaking changes in import paths, method signatures, response formats, and the new extract v2 schema format.
 
-## Prerequisites
-- Current FireCrawl SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+## Version History
+
+| SDK Version | API Version | Key Changes |
+|-------------|-------------|-------------|
+| 1.x | v1 | `asyncCrawlUrl`, `checkCrawlStatus`, `mapUrl` added |
+| 0.x | v0 | Legacy `crawlUrl` with `waitUntilDone` param |
 
 ## Instructions
 
 ### Step 1: Check Current Version
 ```bash
 set -euo pipefail
-npm list @firecrawl/sdk
-npm view @firecrawl/sdk version
+# Check installed version
+npm list @mendable/firecrawl-js
+
+# Check latest available
+npm view @mendable/firecrawl-js version
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/firecrawl/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
+### Step 2: Create Upgrade Branch
 ```bash
 set -euo pipefail
-git checkout -b upgrade/firecrawl-sdk-vX.Y.Z
-npm install @firecrawl/sdk@latest
+git checkout -b upgrade/firecrawl-sdk
+npm install @mendable/firecrawl-js@latest
 npm test
 ```
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
+### Step 3: Migration — v0 to v1/v2
 
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
+#### Import Changes
 ```typescript
-// Before (v1.x)
-import { Client } from '@firecrawl/sdk';
-
-// After (v2.x)
-import { FireCrawlClient } from '@firecrawl/sdk';
+// No change needed — import has been stable
+import FirecrawlApp from "@mendable/firecrawl-js";
 ```
 
-### Configuration Changes
+#### Crawl Method Changes (v0 -> v1)
 ```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
+// BEFORE (v0): crawlUrl with waitUntilDone
+const result = await firecrawl.crawlUrl("https://example.com", {
+  crawlerOptions: { limit: 50 },
+  pageOptions: { onlyMainContent: true },
+  waitUntilDone: true,
+});
 
-// After (v2.x)
-const client = new FireCrawlClient({
-  apiKey: 'xxx',
+// AFTER (v1+): crawlUrl returns synchronously, or use asyncCrawlUrl
+const result = await firecrawl.crawlUrl("https://example.com", {
+  limit: 50,
+  scrapeOptions: {
+    formats: ["markdown"],
+    onlyMainContent: true,
+  },
+});
+
+// For large crawls, use async with polling
+const job = await firecrawl.asyncCrawlUrl("https://example.com", {
+  limit: 500,
+  scrapeOptions: { formats: ["markdown"] },
+});
+const status = await firecrawl.checkCrawlStatus(job.id);
+```
+
+#### Scrape Options Changes (v0 -> v1)
+```typescript
+// BEFORE (v0)
+await firecrawl.scrapeUrl("https://example.com", {
+  pageOptions: { onlyMainContent: true },
+  extractorOptions: { mode: "llm-extraction", schema: mySchema },
+});
+
+// AFTER (v1+)
+await firecrawl.scrapeUrl("https://example.com", {
+  formats: ["markdown", "extract"],
+  onlyMainContent: true,
+  extract: { schema: mySchema },
 });
 ```
 
-### Rollback Procedure
+#### Extract v2 Format (v1 -> v2)
+```typescript
+// BEFORE (v1): extract as top-level option
+await firecrawl.scrapeUrl(url, {
+  formats: ["extract"],
+  extract: { schema: { type: "object", ... } },
+});
+
+// AFTER (v2): schema embedded in formats array
+// Note: SDK handles this internally, but REST API changed
+// POST /v2/extract with { urls: [...], schema: {...} }
+```
+
+#### New Methods in v1+
+```typescript
+// mapUrl — fast URL discovery (not available in v0)
+const map = await firecrawl.mapUrl("https://example.com");
+console.log(map.links);
+
+// batchScrapeUrls — scrape multiple URLs at once
+const batch = await firecrawl.batchScrapeUrls(
+  ["https://a.com", "https://b.com"],
+  { formats: ["markdown"] }
+);
+
+// asyncBatchScrapeUrls + checkBatchScrapeStatus
+const job = await firecrawl.asyncBatchScrapeUrls(urls, { formats: ["markdown"] });
+const status = await firecrawl.checkBatchScrapeStatus(job.id);
+```
+
+### Step 4: Run Tests and Verify
 ```bash
 set -euo pipefail
-npm install @firecrawl/sdk@1.x.x --save-exact
+npm test
+
+# Quick integration check
+npx tsx -e "
+import FirecrawlApp from '@mendable/firecrawl-js';
+const fc = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+const r = await fc.scrapeUrl('https://example.com', { formats: ['markdown'] });
+console.log('Success:', r.success, 'Chars:', r.markdown?.length);
+"
 ```
 
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[FireCrawl]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+### Step 5: Rollback if Needed
+```bash
+set -euo pipefail
+# Pin to previous version
+npm install @mendable/firecrawl-js@1.x.x --save-exact
+npm test
 ```
+
+## Breaking Changes Checklist
+- [ ] `crawlerOptions` / `pageOptions` → flat options + `scrapeOptions`
+- [ ] `waitUntilDone: true` → use `crawlUrl` (sync) or `asyncCrawlUrl` + polling
+- [ ] `extractorOptions` → `extract` with `schema` or `prompt`
+- [ ] Response shape: `data` array for crawl results, `markdown`/`html` for scrape
+- [ ] New methods: `mapUrl`, `batchScrapeUrls`, `asyncBatchScrapeUrls`
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `crawlerOptions is not valid` | Using v0 params on v1+ | Flatten to top-level options |
+| `waitUntilDone is not valid` | Removed in v1 | Use `asyncCrawlUrl` + `checkCrawlStatus` |
+| `pageOptions not recognized` | Renamed in v1 | Use `scrapeOptions` inside crawl |
+| Missing `mapUrl` method | SDK too old | Upgrade to latest version |
 
 ## Resources
-- [FireCrawl Changelog](https://github.com/firecrawl/sdk/releases)
-- [FireCrawl Migration Guide](https://docs.firecrawl.com/migration)
+- [Migrating from v0](https://docs.firecrawl.dev/v1-welcome)
+- [Migrating from v1 to v2](https://docs.firecrawl.dev/migrate-to-v2)
+- [Firecrawl Changelog](https://firecrawl.dev/changelog)
+- [GitHub Releases](https://github.com/mendableai/firecrawl/releases)
 
 ## Next Steps
 For CI integration during upgrades, see `firecrawl-ci-integration`.

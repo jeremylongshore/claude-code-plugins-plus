@@ -1,12 +1,12 @@
 ---
 name: firecrawl-advanced-troubleshooting
 description: |
-  Apply FireCrawl advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for FireCrawl support escalation.
+  Debug hard-to-diagnose Firecrawl issues with systematic isolation and evidence collection.
+  Use when standard troubleshooting fails, investigating why scrapes return empty content,
+  crawl jobs hang, or webhooks don't fire.
   Trigger with phrases like "firecrawl hard bug", "firecrawl mystery error",
-  "firecrawl impossible to debug", "difficult firecrawl issue", "firecrawl deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  "firecrawl impossible to debug", "firecrawl deep debug", "firecrawl not scraping".
+allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,252 +14,235 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, debugging, scaling]
 
 ---
-# FireCrawl Advanced Troubleshooting
+# Firecrawl Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex FireCrawl issues that resist standard troubleshooting.
-
-## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
-
-## Evidence Collection Framework
-
-### Comprehensive Debug Bundle
-```bash
-#!/bin/bash
-set -euo pipefail
-# advanced-firecrawl-debug.sh
-
-BUNDLE="firecrawl-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=firecrawl-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u firecrawl-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=firecrawl_requests_total > "$BUNDLE/metrics/requests.json"  # 9090: Prometheus port
-curl -s localhost:9090/api/v1/query?query=firecrawl_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # 443: HTTPS port
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=firecrawl > "$BUNDLE/traces/jaeger.json"  # 16686: Jaeger UI port
-
-# 5. Configuration state
-kubectl get cm firecrawl-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret firecrawl-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
-```typescript
-// Test each layer independently
-async function diagnoseFireCrawlIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
-
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.firecrawl.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.firecrawl.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
-
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new FireCrawlClient({
-    apiKey: process.env.FIRECRAWL_API_KEY!,
-  });
-
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
-  }
-}
-```
-
-## Timing Analysis
-
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
-
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in FireCrawl client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1024: 1 KB
-      console.warn('Potential memory leak in firecrawl integration');
-    }
-  }
-}, 60000);  # 60000: 1 minute in ms
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class FireCrawlConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
-
-```markdown
-## FireCrawl Support Escalation
-
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]  # 8601 = configured value
-
-### Issue Summary
-[One paragraph description]
-
-### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
-
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (firecrawl-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
-```
+Deep debugging techniques for complex Firecrawl issues: empty scrapes on certain domains, crawl jobs that never complete, inconsistent extraction results, and webhook delivery failures. Uses systematic layer-by-layer isolation.
 
 ## Instructions
 
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
+### Step 1: Minimal Reproduction
+```typescript
+import FirecrawlApp from "@mendable/firecrawl-js";
 
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
+// Strip everything down to the simplest failing case
+async function minimalRepro() {
+  const firecrawl = new FirecrawlApp({
+    apiKey: process.env.FIRECRAWL_API_KEY!,
+  });
 
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
+  // Test 1: Can we scrape at all?
+  console.log("Test 1: Basic scrape");
+  const basic = await firecrawl.scrapeUrl("https://example.com", {
+    formats: ["markdown"],
+  });
+  console.log(`  Success: ${basic.success}, Length: ${basic.markdown?.length}`);
 
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
+  // Test 2: Does the target URL work?
+  console.log("Test 2: Target URL");
+  const target = await firecrawl.scrapeUrl("https://YOUR-FAILING-URL.com", {
+    formats: ["markdown"],
+  });
+  console.log(`  Success: ${target.success}, Length: ${target.markdown?.length}`);
 
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
+  // Test 3: With waitFor for JS rendering
+  console.log("Test 3: With JS wait");
+  const withWait = await firecrawl.scrapeUrl("https://YOUR-FAILING-URL.com", {
+    formats: ["markdown"],
+    waitFor: 10000,
+    onlyMainContent: true,
+  });
+  console.log(`  Success: ${withWait.success}, Length: ${withWait.markdown?.length}`);
+
+  // Test 4: With actions
+  console.log("Test 4: With actions");
+  const withActions = await firecrawl.scrapeUrl("https://YOUR-FAILING-URL.com", {
+    formats: ["markdown", "screenshot"],
+    actions: [
+      { type: "wait", milliseconds: 3000 },
+      { type: "scroll", direction: "down" },
+      { type: "wait", milliseconds: 2000 },
+    ],
+  });
+  console.log(`  Success: ${withActions.success}, Length: ${withActions.markdown?.length}`);
+  // Screenshot will show what Firecrawl actually sees
+}
+```
+
+### Step 2: Layer-by-Layer Isolation
+```typescript
+async function diagnose(url: string) {
+  const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+  const results: Array<{ test: string; pass: boolean; detail: string }> = [];
+
+  // Layer 1: API connectivity
+  try {
+    await firecrawl.scrapeUrl("https://example.com", { formats: ["markdown"] });
+    results.push({ test: "API connectivity", pass: true, detail: "OK" });
+  } catch (e: any) {
+    results.push({ test: "API connectivity", pass: false, detail: `${e.statusCode}: ${e.message}` });
+    return results; // can't continue
+  }
+
+  // Layer 2: Target URL accessibility
+  try {
+    const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+    const hasContent = (result.markdown?.length || 0) > 50;
+    results.push({
+      test: "Target scrape",
+      pass: result.success && hasContent,
+      detail: `Success: ${result.success}, Chars: ${result.markdown?.length}, Status: ${result.metadata?.statusCode}`,
+    });
+  } catch (e: any) {
+    results.push({ test: "Target scrape", pass: false, detail: e.message });
+  }
+
+  // Layer 3: Content quality
+  try {
+    const result = await firecrawl.scrapeUrl(url, {
+      formats: ["markdown", "html"],
+      onlyMainContent: true,
+      waitFor: 5000,
+    });
+    const md = result.markdown || "";
+    const isErrorPage = /404|403|access denied|captcha|blocked/i.test(md);
+    results.push({
+      test: "Content quality",
+      pass: md.length > 100 && !isErrorPage,
+      detail: `Chars: ${md.length}, Error page: ${isErrorPage}, Has headings: ${/^#{1,3}\s/m.test(md)}`,
+    });
+  } catch (e: any) {
+    results.push({ test: "Content quality", pass: false, detail: e.message });
+  }
+
+  // Layer 4: Map endpoint (URL discovery)
+  try {
+    const map = await firecrawl.mapUrl(url);
+    results.push({
+      test: "Map endpoint",
+      pass: (map.links?.length || 0) > 0,
+      detail: `Found ${map.links?.length} URLs`,
+    });
+  } catch (e: any) {
+    results.push({ test: "Map endpoint", pass: false, detail: e.message });
+  }
+
+  return results;
+}
+
+// Run diagnosis
+const results = await diagnose("https://YOUR-URL.com");
+console.table(results);
+```
+
+### Step 3: Debug Empty Scrapes
+```typescript
+// When scrapeUrl returns empty or thin markdown:
+async function debugEmptyScrape(url: string) {
+  const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+
+  // Get all formats to understand what Firecrawl sees
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ["markdown", "html", "screenshot"],
+    waitFor: 10000,
+  });
+
+  console.log("=== Scrape Debug ===");
+  console.log(`URL: ${result.metadata?.sourceURL}`);
+  console.log(`Status: ${result.metadata?.statusCode}`);
+  console.log(`Markdown length: ${result.markdown?.length || 0}`);
+  console.log(`HTML length: ${result.html?.length || 0}`);
+  console.log(`Title: ${result.metadata?.title}`);
+
+  // Check if HTML has content but markdown doesn't
+  if ((result.html?.length || 0) > 1000 && (result.markdown?.length || 0) < 100) {
+    console.log("DIAGNOSIS: HTML has content but markdown extraction failed");
+    console.log("FIX: Content may be in iframes or shadow DOM. Try with actions.");
+  }
+
+  // Check for bot detection
+  if (/captcha|cloudflare|access denied|please verify/i.test(result.html || "")) {
+    console.log("DIAGNOSIS: Bot detection / CAPTCHA detected");
+    console.log("FIX: Site blocks automated scraping. Contact Firecrawl support.");
+  }
+
+  return result;
+}
+```
+
+### Step 4: Debug Stuck Crawl Jobs
+```typescript
+async function debugCrawlJob(jobId: string) {
+  const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+
+  const status = await firecrawl.checkCrawlStatus(jobId);
+  console.log("=== Crawl Job Debug ===");
+  console.log(`Status: ${status.status}`);
+  console.log(`Completed: ${status.completed}/${status.total}`);
+  console.log(`Error: ${status.error || "none"}`);
+
+  if (status.status === "scraping" && status.completed === status.total) {
+    console.log("DIAGNOSIS: All pages scraped but job not marked complete");
+    console.log("FIX: This is a Firecrawl backend issue. Wait or start a new crawl.");
+  }
+
+  if (status.completed === 0 && status.status === "scraping") {
+    console.log("DIAGNOSIS: Crawl started but no pages scraped");
+    console.log("FIX: Check if start URL returns content. Try scrapeUrl first.");
+  }
+}
+```
+
+### Step 5: Timing Analysis
+```typescript
+async function timeScrape(url: string, iterations = 5) {
+  const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+  const times: number[] = [];
+
+  for (let i = 0; i < iterations; i++) {
+    const start = Date.now();
+    await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+    times.push(Date.now() - start);
+  }
+
+  times.sort((a, b) => a - b);
+  console.log(`p50: ${times[Math.floor(times.length * 0.5)]}ms`);
+  console.log(`p95: ${times[Math.floor(times.length * 0.95)]}ms`);
+  console.log(`min: ${times[0]}ms, max: ${times[times.length - 1]}ms`);
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
+| Empty markdown, HTML exists | Shadow DOM or iframes | Use `actions` to interact with page |
+| Scrape returns CAPTCHA | Bot detection | Try with `mobile: true`, contact Firecrawl |
+| Crawl stuck at 0 pages | Start URL blocked | Verify URL loads in browser first |
+| Inconsistent results | JS rendering timing | Increase `waitFor`, use selector-based wait |
+| Webhook never fires | URL unreachable | Test with `curl` to your endpoint first |
 
-## Examples
+## Support Escalation Template
+```
+Subject: [P1/P2/P3] [Brief description]
 
-### Quick Layer Test
-```bash
-set -euo pipefail
-# Test each layer in sequence
-curl -v https://api.firecrawl.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+URL: [failing URL]
+API Key prefix: fc-xxx (first 6 chars)
+Timestamp: [ISO 8601]
+
+Expected: [what should happen]
+Actual: [what happens]
+
+Diagnostic output: [paste from diagnose() above]
+Screenshot: [if available from screenshot format]
+
+Workarounds tried:
+1. [what you tried] — result: [outcome]
 ```
 
 ## Resources
-- [FireCrawl Support Portal](https://support.firecrawl.com)
-- [FireCrawl Status Page](https://status.firecrawl.com)
+- [Firecrawl Advanced Scraping](https://docs.firecrawl.dev/advanced-scraping-guide)
+- [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
+- [Firecrawl Discord](https://discord.gg/firecrawl)
 
 ## Next Steps
 For load testing, see `firecrawl-load-scale`.

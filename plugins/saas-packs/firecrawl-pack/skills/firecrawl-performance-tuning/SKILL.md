@@ -1,9 +1,9 @@
 ---
 name: firecrawl-performance-tuning
 description: |
-  Optimize FireCrawl API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for FireCrawl integrations.
+  Optimize Firecrawl scraping performance with caching, batch scraping, and format selection.
+  Use when experiencing slow scrapes, optimizing credit usage per page,
+  or building high-throughput scraping pipelines.
   Trigger with phrases like "firecrawl performance", "optimize firecrawl",
   "firecrawl latency", "firecrawl caching", "firecrawl slow", "firecrawl batch".
 allowed-tools: Read, Write, Edit
@@ -14,203 +14,181 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, api, performance]
 
 ---
-# FireCrawl Performance Tuning
+# Firecrawl Performance Tuning
 
 ## Overview
-Optimize FireCrawl API performance with caching, batching, and connection pooling.
-
-## Prerequisites
-- FireCrawl SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize Firecrawl API performance by choosing efficient scraping modes, caching results, using batch endpoints, and minimizing unnecessary rendering. Key levers: format selection (markdown vs HTML vs screenshot), `waitFor` tuning, `onlyMainContent`, and batch vs individual scraping.
 
 ## Latency Benchmarks
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,  # 1000: 1 second in ms
-  ttl: 60000, // 1 minute  # 60000: 1 minute in ms
-  updateAgeOnGet: true,
-});
-
-async function cachedFireCrawlRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const firecrawlLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from FireCrawl
-    const results = await firecrawlClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  firecrawlLoader.load('id-1'),
-  firecrawlLoader.load('id-2'),
-  firecrawlLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,  # 30000: 30 seconds in ms
-});
-
-const client = new FireCrawlClient({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFireCrawlList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFireCrawlList(cursor =>
-  firecrawlClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFireCrawlCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+| Operation | Typical | With JS Wait | With Screenshot |
+|-----------|---------|--------------|-----------------|
+| scrapeUrl (markdown) | 2-5s | 5-10s | 8-15s |
+| scrapeUrl (extract) | 3-8s | 8-15s | N/A |
+| crawlUrl (10 pages) | 20-40s | 40-80s | N/A |
+| mapUrl | 1-3s | N/A | N/A |
+| batchScrapeUrls (10) | 10-20s | 20-40s | N/A |
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical FireCrawl operations.
+### Step 1: Minimize Formats (Biggest Win)
+```typescript
+import FirecrawlApp from "@mendable/firecrawl-js";
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
+});
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+// SLOW: requesting everything
+const slow = await firecrawl.scrapeUrl(url, {
+  formats: ["markdown", "html", "links", "screenshot"],
+  // screenshot + full HTML = 3-5x slower
+});
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+// FAST: request only what you need
+const fast = await firecrawl.scrapeUrl(url, {
+  formats: ["markdown"],   // markdown only = fastest
+  onlyMainContent: true,   // skip nav/footer/sidebar
+});
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 2: Tune waitFor for JS-Heavy Pages
+```typescript
+// Default: no JS wait (fastest, works for static sites)
+const staticResult = await firecrawl.scrapeUrl("https://docs.example.com", {
+  formats: ["markdown"],
+  // No waitFor needed — content is in initial HTML
+});
+
+// SPA/dynamic pages: add minimal wait
+const spaResult = await firecrawl.scrapeUrl("https://app.example.com", {
+  formats: ["markdown"],
+  waitFor: 3000,  // 3s — enough for most SPAs
+  onlyMainContent: true,
+});
+
+// Heavy interactive page: use actions instead of long wait
+const heavyResult = await firecrawl.scrapeUrl("https://dashboard.example.com", {
+  formats: ["markdown"],
+  actions: [
+    { type: "wait", selector: ".data-table" },  // wait for specific element
+    { type: "scroll", direction: "down" },        // trigger lazy loading
+  ],
+});
+```
+
+### Step 3: Cache Scraped Content
+```typescript
+import { LRUCache } from "lru-cache";
+import { createHash } from "crypto";
+
+const scrapeCache = new LRUCache<string, any>({
+  max: 500,          // max 500 cached pages
+  ttl: 3600000,      // 1 hour TTL
+});
+
+async function cachedScrape(url: string) {
+  const key = createHash("md5").update(url).digest("hex");
+  const cached = scrapeCache.get(key);
+  if (cached) {
+    console.log(`Cache hit: ${url}`);
+    return cached;
+  }
+
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ["markdown"],
+    onlyMainContent: true,
+  });
+
+  if (result.success) {
+    scrapeCache.set(key, result);
+  }
+  return result;
+}
+// Typical savings: 50-80% credit reduction for repeated scrapes
+```
+
+### Step 4: Use Batch Scrape for Multiple URLs
+```typescript
+// SLOW: sequential individual scrapes
+const urls = ["https://a.com", "https://b.com", "https://c.com"];
+for (const url of urls) {
+  await firecrawl.scrapeUrl(url, { formats: ["markdown"] }); // 3 API calls
+}
+
+// FAST: single batch scrape call
+const batchResult = await firecrawl.batchScrapeUrls(urls, {
+  formats: ["markdown"],
+  onlyMainContent: true,
+});
+// 1 API call, internally parallelized
+```
+
+### Step 5: Map Before Crawl (Save Credits)
+```typescript
+// EXPENSIVE: crawl everything, filter later
+await firecrawl.crawlUrl("https://docs.example.com", { limit: 1000 });
+
+// CHEAPER: map first (1 credit), then scrape only what you need
+const map = await firecrawl.mapUrl("https://docs.example.com");
+const apiDocs = (map.links || []).filter(url =>
+  url.includes("/api/") || url.includes("/reference/")
+);
+console.log(`Map: ${map.links?.length} total, ${apiDocs.length} relevant`);
+
+// Batch scrape only relevant URLs
+const result = await firecrawl.batchScrapeUrls(apiDocs.slice(0, 50), {
+  formats: ["markdown"],
+});
+```
+
+### Step 6: Measure Scrape Performance
+```typescript
+async function timedScrape(url: string) {
+  const start = Date.now();
+  const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+  const duration = Date.now() - start;
+
+  console.log({
+    url,
+    durationMs: duration,
+    contentLength: result.markdown?.length || 0,
+    success: result.success,
+    charsPerSecond: Math.round((result.markdown?.length || 0) / (duration / 1000)),
+  });
+
+  return result;
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Scrape > 10s | Screenshot or full HTML requested | Use `formats: ["markdown"]` only |
+| Empty content | `waitFor` too short for SPA | Increase or use `actions` with selector |
+| High credit burn | Scraping same URLs repeatedly | Implement URL-based caching |
+| Batch timeout | Too many URLs in one batch | Split into chunks of 50 |
+| Cache stale data | TTL too long | Reduce TTL or add cache invalidation |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Performance Comparison Script
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFireCrawlCall(name, () =>
-    cachedFireCrawlRequest(`cache:${name}`, fn)
-  );
+const url = "https://docs.firecrawl.dev";
+
+// Compare different format configurations
+for (const formats of [["markdown"], ["markdown", "html"], ["markdown", "html", "screenshot"]]) {
+  const start = Date.now();
+  await firecrawl.scrapeUrl(url, { formats: formats as any, onlyMainContent: true });
+  console.log(`${formats.join(",")}: ${Date.now() - start}ms`);
+}
 ```
 
 ## Resources
-- [FireCrawl Performance Guide](https://docs.firecrawl.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
+- [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
+- [Map Endpoint](https://docs.firecrawl.dev/features/map)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `firecrawl-cost-tuning`.

@@ -1,9 +1,9 @@
 ---
 name: firecrawl-known-pitfalls
 description: |
-  Identify and avoid FireCrawl anti-patterns and common integration mistakes.
-  Use when reviewing FireCrawl code for issues, onboarding new developers,
-  or auditing existing FireCrawl integrations for best practices violations.
+  Identify and avoid Firecrawl anti-patterns and common integration mistakes.
+  Use when reviewing Firecrawl code, onboarding new developers,
+  or auditing existing integrations for best practices violations.
   Trigger with phrases like "firecrawl mistakes", "firecrawl anti-patterns",
   "firecrawl pitfalls", "firecrawl what not to do", "firecrawl code review".
 allowed-tools: Read, Grep
@@ -17,136 +17,197 @@ tags: [saas, firecrawl, audit]
 # Firecrawl Known Pitfalls
 
 ## Overview
-Real gotchas when using Firecrawl for web scraping and crawling. Firecrawl handles JavaScript rendering and anti-bot bypassing, but its async crawl model and credit-based pricing create specific failure modes.
+Real gotchas from production Firecrawl integrations. Each pitfall includes the bad pattern, why it fails, and the correct approach. Use this as a code review checklist.
 
-## Prerequisites
-- Firecrawl API key configured
-- Understanding of async job patterns
-- Awareness of credit-based billing model
-
-## Instructions
-
-### Step 1: Handle Async Crawl Jobs Properly
-
-`crawlUrl` returns a job ID, not results. Polling too aggressively wastes credits and may trigger rate limits.
-
+## Pitfall 1: Unbounded Crawl (Credit Bomb)
 ```typescript
-import FirecrawlApp from '@mendable/firecrawl-js';
-const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+import FirecrawlApp from "@mendable/firecrawl-js";
 
-// BAD: assuming synchronous results
-const result = await firecrawl.crawlUrl('https://example.com');
-console.log(result.data); // This is a job object, not page data!
-
-// GOOD: use the async crawl with proper polling
-const crawl = await firecrawl.asyncCrawlUrl('https://example.com', {
-  limit: 50,
-  scrapeOptions: { formats: ['markdown'] }
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
 });
-// Poll with backoff
-let status;
-do {
-  await new Promise(r => setTimeout(r, 5000));  # 5000: 5 seconds in ms
-  status = await firecrawl.checkCrawlStatus(crawl.id);
-} while (status.status === 'scraping');
-```
 
-### Step 2: Avoid Credit Burn on Large Sites
+// BAD: no limit — a docs site with 50K pages burns your entire credit balance
+await firecrawl.crawlUrl("https://docs.large-project.org");
 
-Firecrawl charges per page. Crawling without limits on large sites burns credits fast.
-
-```typescript
-// BAD: no limit on a site with 100K pages
-await firecrawl.crawlUrl('https://docs.large-project.org');  // burns entire quota
-
-// GOOD: set explicit limits and use URL filters
-await firecrawl.crawlUrl('https://docs.large-project.org', {
+// GOOD: always set limit, maxDepth, and path filters
+await firecrawl.crawlUrl("https://docs.large-project.org", {
   limit: 100,
-  includePaths: ['/api/*', '/guides/*'],
-  excludePaths: ['/changelog/*', '/blog/*'],
-  maxDepth: 3
-});
-```
-
-### Step 3: Don't Assume Markdown Output by Default
-
-Firecrawl can return HTML, markdown, links, or screenshots. Not specifying format returns raw HTML.
-
-```typescript
-// BAD: getting HTML when you wanted clean text
-const result = await firecrawl.scrapeUrl('https://example.com');
-// result.html exists but result.markdown may be absent
-
-// GOOD: specify output format explicitly
-const result = await firecrawl.scrapeUrl('https://example.com', {
-  formats: ['markdown', 'links'],
-  onlyMainContent: true  // strips nav, footer, sidebars
-});
-console.log(result.markdown);
-```
-
-### Step 4: Handle JavaScript-Heavy Pages
-
-Some SPAs need extra wait time for content to render. Default timeouts may capture loading states.
-
-```typescript
-// BAD: scraping an SPA with default settings
-const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard');
-// Gets "Loading..." instead of actual content
-
-// GOOD: configure wait time for JS rendering
-const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard', {
-  waitFor: 5000,  // wait 5s for JS to render  # 5000: 5 seconds in ms
-  formats: ['markdown'],
-  onlyMainContent: true
-});
-```
-
-### Step 5: Respect robots.txt and Rate Limits
-
-Firecrawl honors robots.txt by default. Disabling it risks IP bans and legal issues.
-
-```typescript
-// BAD: aggressive crawling that ignores site limits
-await firecrawl.crawlUrl('https://example.com', {
-  limit: 10000,  # 10000: 10 seconds in ms
-  // No delay between requests = potential IP ban
-});
-
-// GOOD: respect site constraints
-await firecrawl.crawlUrl('https://example.com', {
-  limit: 200,  # HTTP 200 OK
   maxDepth: 3,
-  // Firecrawl handles rate limiting internally
+  includePaths: ["/api/*", "/guides/*"],
+  excludePaths: ["/changelog/*", "/blog/*"],
+  scrapeOptions: { formats: ["markdown"] },
 });
 ```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Empty markdown | JS not rendered | Increase `waitFor` timeout |
-| Credit depletion | No crawl limit set | Always set `limit` parameter |
-| 402 Payment Required | Out of credits | Check balance before large crawls |
-| Partial crawl results | Site blocks crawler | Use `scrapeUrl` for individual pages |
-| Stale job status | Polling stopped early | Poll until `completed` or `failed` |
-
-## Examples
-
-### Safe Batch Scraping
+## Pitfall 2: Not Specifying Output Format
 ```typescript
-const urls = ['https://a.com', 'https://b.com', 'https://c.com'];
-const results = await firecrawl.batchScrapeUrls(urls, {
-  formats: ['markdown'],
-  onlyMainContent: true
+// BAD: default format may not include markdown
+const result = await firecrawl.scrapeUrl("https://example.com");
+console.log(result.markdown); // might be undefined!
+
+// GOOD: explicitly request the format you need
+const result = await firecrawl.scrapeUrl("https://example.com", {
+  formats: ["markdown"],
+  onlyMainContent: true,
+});
+console.log(result.markdown); // guaranteed present
+```
+
+## Pitfall 3: Not Waiting for JS-Heavy Pages
+```typescript
+// BAD: SPAs show loading state, not content
+const result = await firecrawl.scrapeUrl("https://app.example.com/dashboard");
+// result.markdown === "Loading..." or empty
+
+// GOOD: wait for JS to render
+const result = await firecrawl.scrapeUrl("https://app.example.com/dashboard", {
+  formats: ["markdown"],
+  waitFor: 5000,  // wait 5s for JS rendering
+  onlyMainContent: true,
+});
+
+// BETTER: wait for a specific element
+const result = await firecrawl.scrapeUrl("https://app.example.com/dashboard", {
+  formats: ["markdown"],
+  actions: [
+    { type: "wait", selector: ".main-content" },
+  ],
 });
 ```
+
+## Pitfall 4: Wrong Package Name / Import
+```typescript
+// BAD: these packages don't exist or are wrong
+import FirecrawlApp from "firecrawl-js";       // wrong
+import { FireCrawlClient } from "@firecrawl/sdk";  // wrong
+
+// GOOD: the correct npm package
+import FirecrawlApp from "@mendable/firecrawl-js";  // correct!
+
+// Install: npm install @mendable/firecrawl-js
+```
+
+## Pitfall 5: Polling Too Aggressively
+```typescript
+// BAD: polling every 100ms wastes resources and may trigger rate limits
+let status = await firecrawl.checkCrawlStatus(jobId);
+while (status.status !== "completed") {
+  status = await firecrawl.checkCrawlStatus(jobId);
+  // No delay! Hammering the API
+}
+
+// GOOD: poll with backoff
+let status = await firecrawl.checkCrawlStatus(jobId);
+let interval = 2000;
+while (status.status === "scraping") {
+  await new Promise(r => setTimeout(r, interval));
+  status = await firecrawl.checkCrawlStatus(jobId);
+  interval = Math.min(interval * 1.5, 30000); // back off to 30s
+}
+```
+
+## Pitfall 6: No Error Handling on Scrape
+```typescript
+// BAD: assuming scrape always succeeds
+const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+processContent(result.markdown!); // crashes if scrape failed
+
+// GOOD: check result and handle failures
+const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+if (!result.success || !result.markdown || result.markdown.length < 50) {
+  console.error(`Scrape failed or empty for ${url}`);
+  return null;
+}
+processContent(result.markdown);
+```
+
+## Pitfall 7: Ignoring includePaths Start URL Match
+```typescript
+// BAD: start URL doesn't match includePaths — crawl returns 0 pages
+await firecrawl.crawlUrl("https://example.com/docs/intro", {
+  includePaths: ["/api/*"],  // start URL /docs/intro doesn't match /api/*
+  limit: 50,
+});
+
+// GOOD: start URL must match (or omit) the include pattern
+await firecrawl.crawlUrl("https://example.com", {
+  includePaths: ["/docs/*", "/api/*"],  // start from root, filter paths
+  limit: 50,
+});
+```
+
+## Pitfall 8: Requesting Screenshots Unnecessarily
+```typescript
+// BAD: screenshots are expensive (latency and bandwidth)
+await firecrawl.scrapeUrl(url, {
+  formats: ["markdown", "html", "screenshot"],
+  // screenshot adds 5-10s to every scrape
+});
+
+// GOOD: only request screenshot when you actually need visual capture
+await firecrawl.scrapeUrl(url, {
+  formats: ["markdown"],  // just what you need
+  onlyMainContent: true,
+});
+```
+
+## Pitfall 9: Not Using Batch for Multiple URLs
+```typescript
+// BAD: sequential scrapes (slow, N API calls)
+const results = [];
+for (const url of urls) {
+  results.push(await firecrawl.scrapeUrl(url, { formats: ["markdown"] }));
+}
+
+// GOOD: batch scrape (1 API call, internally parallel)
+const batchResult = await firecrawl.batchScrapeUrls(urls, {
+  formats: ["markdown"],
+  onlyMainContent: true,
+});
+```
+
+## Pitfall 10: Not Validating Extracted Content
+```typescript
+// BAD: trusting LLM extraction blindly
+const result = await firecrawl.scrapeUrl(url, {
+  formats: ["extract"],
+  extract: { schema: productSchema },
+});
+await db.insert(result.extract); // could be null, malformed, or hallucinated
+
+// GOOD: validate with Zod before persisting
+import { z } from "zod";
+
+const ProductSchema = z.object({
+  name: z.string().min(1),
+  price: z.number().positive(),
+});
+
+const parsed = ProductSchema.safeParse(result.extract);
+if (parsed.success) {
+  await db.insert(parsed.data);
+} else {
+  console.error("Extraction validation failed:", parsed.error.issues);
+}
+```
+
+## Code Review Checklist
+
+- [ ] All `crawlUrl` calls have `limit` set
+- [ ] `formats` explicitly specified (never rely on defaults)
+- [ ] `waitFor` or `actions` used for SPAs
+- [ ] Import is `@mendable/firecrawl-js`
+- [ ] Async crawl polls with backoff, not tight loop
+- [ ] Scrape result checked for success and content length
+- [ ] Batch scrape used for multiple known URLs
+- [ ] Extract results validated before persistence
+- [ ] Error handling for 429, 402, and empty content
 
 ## Resources
 - [Firecrawl Docs](https://docs.firecrawl.dev)
-- [Crawl vs Scrape](https://docs.firecrawl.dev/features/crawl)
+- [Scrape vs Crawl](https://docs.firecrawl.dev/features/crawl)
+- [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For reference architecture, see `firecrawl-reference-architecture`.

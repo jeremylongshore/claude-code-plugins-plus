@@ -1,11 +1,11 @@
 ---
 name: firecrawl-cost-tuning
 description: |
-  Optimize FireCrawl costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing FireCrawl billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
+  Optimize Firecrawl costs through crawl limits, format selection, caching, and credit monitoring.
+  Use when analyzing Firecrawl billing, reducing API costs,
+  or implementing credit budget alerts.
   Trigger with phrases like "firecrawl cost", "firecrawl billing",
-  "reduce firecrawl costs", "firecrawl pricing", "firecrawl expensive", "firecrawl budget".
+  "reduce firecrawl costs", "firecrawl pricing", "firecrawl credits", "firecrawl budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,118 +17,183 @@ tags: [saas, firecrawl, api, monitoring, cost-optimization]
 # Firecrawl Cost Tuning
 
 ## Overview
-Reduce Firecrawl web scraping costs by limiting crawl depth, caching scraped content, and choosing the right scrape mode. Firecrawl charges credits per page: 1 credit for single-page scrape, variable credits for crawl jobs (each discovered page costs credits).
+Firecrawl charges credits per operation: 1 credit per scrape, 1 per crawled page, 1 per map call, and variable credits for extract (LLM usage). An unbounded crawl on a large site can consume thousands of credits in minutes. This skill covers concrete techniques to reduce credit consumption by 50-80%.
 
-## Prerequisites
-- Firecrawl account with credit balance visibility
-- Understanding of your scraping patterns (single page vs crawl)
-- Cache infrastructure for storing scraped content
+## Credit Cost Table
+
+| Operation | Credits | Notes |
+|-----------|---------|-------|
+| `scrapeUrl` | 1 | Per page, any format |
+| `crawlUrl` | 1 per page | Each discovered page costs 1 credit |
+| `mapUrl` | 1 | Regardless of URLs returned |
+| `batchScrapeUrls` | 1 per URL | Same as individual scrape |
+| `extract` | 5+ | LLM processing adds cost |
 
 ## Instructions
 
 ### Step 1: Always Set Crawl Limits
-```bash
-set -euo pipefail
-# BAD: Unbounded crawl (could consume thousands of credits)
-curl -X POST https://api.firecrawl.dev/v1/crawl \
-  -d '{"url": "https://docs.example.com"}'
+```typescript
+import FirecrawlApp from "@mendable/firecrawl-js";
 
-# GOOD: Bounded crawl with depth and page limits
-curl -X POST https://api.firecrawl.dev/v1/crawl \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
-  -d '{
-    "url": "https://docs.example.com",
-    "maxDepth": 2,
-    "limit": 50,
-    "scrapeOptions": {"formats": ["markdown"]}
-  }'
-# Saves: potentially hundreds or thousands of credits per crawl
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
+});
+
+// BAD: no limit — could crawl 100K pages
+await firecrawl.crawlUrl("https://docs.large-project.org");
+// Cost: potentially 100,000+ credits
+
+// GOOD: bounded crawl
+await firecrawl.crawlUrl("https://docs.large-project.org", {
+  limit: 50,               // max 50 pages
+  maxDepth: 2,             // only 2 levels deep
+  includePaths: ["/api/*"], // only API docs
+  excludePaths: ["/blog/*", "/changelog/*"],
+  scrapeOptions: { formats: ["markdown"] },
+});
+// Cost: max 50 credits
 ```
 
 ### Step 2: Use Scrape for Known URLs Instead of Crawl
 ```typescript
-// If you know the specific pages you need, scrape individually instead of crawling
+// If you know which pages you need, don't crawl — scrape them directly
 const targetUrls = [
-  'https://docs.example.com/api/authentication',
-  'https://docs.example.com/api/endpoints',
-  'https://docs.example.com/api/errors',
+  "https://docs.example.com/api/auth",
+  "https://docs.example.com/api/users",
+  "https://docs.example.com/api/billing",
 ];
 
-// Scrape 3 specific pages: 3 credits
-for (const url of targetUrls) {
-  await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
-}
-// vs. Crawl entire docs site: potentially 500+ credits  # HTTP 500 Internal Server Error
+// Cost: 3 credits (one per page)
+const results = await firecrawl.batchScrapeUrls(targetUrls, {
+  formats: ["markdown"],
+});
+
+// vs crawling the whole docs site: potentially 500+ credits
 ```
 
-### Step 3: Cache Scraped Content
+### Step 3: Map First, Then Selective Scrape
 ```typescript
-import { createHash } from 'crypto';
+// Map costs 1 credit and returns up to 30K URLs
+const map = await firecrawl.mapUrl("https://docs.example.com");
+// Cost: 1 credit
 
-const scrapeCache = new Map<string, { content: string; timestamp: number }>();
-const CACHE_TTL = 24 * 3600 * 1000; // 24 hours  # 1000: 3600: timeout: 1 hour
+// Filter to only what you need
+const apiDocs = (map.links || []).filter(url => url.includes("/api/"));
+console.log(`${map.links?.length} total URLs, only ${apiDocs.length} are API docs`);
+
+// Scrape only relevant pages
+const results = await firecrawl.batchScrapeUrls(apiDocs.slice(0, 20), {
+  formats: ["markdown"],
+});
+// Cost: 1 (map) + 20 (scrape) = 21 credits
+// vs blind crawl: could be 500+ credits
+```
+
+### Step 4: Cache to Prevent Re-Scraping
+```typescript
+import { createHash } from "crypto";
+
+const cache = new Map<string, { content: string; timestamp: number }>();
+const CACHE_TTL = 24 * 3600 * 1000; // 24 hours
 
 async function cachedScrape(url: string): Promise<string> {
-  const key = createHash('md5').update(url).digest('hex');
-  const cached = scrapeCache.get(key);
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.content;
+  const key = createHash("md5").update(url).digest("hex");
+  const cached = cache.get(key);
 
-  const result = await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
-  scrapeCache.set(key, { content: result.markdown, timestamp: Date.now() });
-  return result.markdown;
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+    return cached.content; // Free — no API call
+  }
+
+  const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+  if (result.markdown) {
+    cache.set(key, { content: result.markdown, timestamp: Date.now() });
+  }
+  return result.markdown || "";
 }
-// Typical savings: 50-80% credit reduction for recurring scrape patterns
+// Typical savings: 50-80% credit reduction for recurring scrapes
 ```
 
-### Step 4: Choose Minimal Scrape Options
+### Step 5: Monitor Credit Consumption
 ```bash
 set -euo pipefail
-# Only request what you need -- each format option has cost implications
-# Minimal (cheapest): markdown only
+# Check current credit balance
+curl -s https://api.firecrawl.dev/v1/team/credits \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | jq .
+```
+
+```typescript
+// Daily credit tracker
+class CreditBudget {
+  private dailyLimit: number;
+  private usage = new Map<string, number>();
+
+  constructor(dailyLimit = 1000) {
+    this.dailyLimit = dailyLimit;
+  }
+
+  canAfford(estimatedCredits: number): boolean {
+    const today = new Date().toISOString().split("T")[0];
+    const used = this.usage.get(today) || 0;
+    return used + estimatedCredits <= this.dailyLimit;
+  }
+
+  record(credits: number) {
+    const today = new Date().toISOString().split("T")[0];
+    this.usage.set(today, (this.usage.get(today) || 0) + credits);
+  }
+
+  remaining(): number {
+    const today = new Date().toISOString().split("T")[0];
+    return this.dailyLimit - (this.usage.get(today) || 0);
+  }
+}
+
+const budget = new CreditBudget(1000);
+
+// Before each crawl
+if (!budget.canAfford(50)) {
+  throw new Error(`Daily credit budget exceeded. ${budget.remaining()} credits left`);
+}
+await firecrawl.crawlUrl(url, { limit: 50 });
+budget.record(50);
+```
+
+### Step 6: Choose Minimal Formats
+```bash
+set -euo pipefail
+# Cheapest: markdown only (1 credit, fastest)
 curl -X POST https://api.firecrawl.dev/v1/scrape \
   -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
-  -d '{"url": "https://example.com", "formats": ["markdown"]}'
+  -H "Content-Type: application/json" \
+  -d '{"url":"https://example.com","formats":["markdown"]}'
 
-# Avoid requesting screenshots, PDFs, or rawHtml unless actually needed
-# Each additional format increases processing time and may affect credit usage
-```
-
-### Step 5: Monitor Credit Efficiency
-```bash
-set -euo pipefail
-# Find which crawl jobs consumed the most credits
-curl -s https://api.firecrawl.dev/v1/usage \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
-  jq '{
-    credits_remaining: .credits_remaining,
-    credits_used_today: .credits_used_today,
-    avg_credits_per_job: (.credits_used_month / (.jobs_count + 0.01)),
-    projected_monthly: (.credits_used_today * 30)
-  }'
+# Avoid requesting screenshots, rawHtml, or extract unless needed
+# Extract uses LLM calls — significantly more credits
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Credits drained by one crawl | No `limit` or `maxDepth` set | Always set both on crawl jobs |
-| Duplicate scraping costs | Same URLs scraped daily | Implement URL-based caching |
-| High credit per page | Requesting all formats | Request only `markdown` format |
-| Budget overrun | Automated crawls without caps | Set per-job credit limits and daily caps |
+| `402 Payment Required` | Credits exhausted | Check balance, upgrade plan, or wait for reset |
+| Credits drained by one crawl | No `limit` set | Always set `limit` and `maxDepth` |
+| Duplicate scraping costs | Same URLs scraped daily | Implement URL-keyed caching |
+| High per-page cost | Requesting all formats + extract | Use `formats: ["markdown"]` only |
+| Budget overrun | No daily cap | Implement credit budget tracker |
 
-## Examples
+## Cost Optimization Summary
 
-**Basic usage**: Apply firecrawl cost tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize firecrawl cost tuning for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| Technique | Credit Savings |
+|-----------|---------------|
+| Set crawl `limit` | Prevents 100x overages |
+| Map + selective scrape | 50-90% vs blind crawl |
+| Cache repeated scrapes | 50-80% reduction |
+| Markdown-only format | Fastest, no extras |
+| Batch scrape vs individual | Same cost, less overhead |
 
 ## Resources
+- [Firecrawl Pricing](https://firecrawl.dev/pricing)
+- [Firecrawl Dashboard](https://firecrawl.dev/app)
+- [Rate Limits](https://docs.firecrawl.dev/rate-limits)
 
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For reference architecture, see `firecrawl-reference-architecture`.

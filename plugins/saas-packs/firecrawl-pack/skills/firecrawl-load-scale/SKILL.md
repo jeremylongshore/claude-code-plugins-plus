@@ -1,12 +1,12 @@
 ---
 name: firecrawl-load-scale
 description: |
-  Implement FireCrawl load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for FireCrawl integrations.
+  Load test and scale Firecrawl scraping pipelines with concurrency control and batching.
+  Use when testing scraping throughput, planning capacity for large crawl jobs,
+  or optimizing concurrent scrape performance.
   Trigger with phrases like "firecrawl load test", "firecrawl scale",
-  "firecrawl performance test", "firecrawl capacity", "firecrawl k6", "firecrawl benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  "firecrawl throughput", "firecrawl capacity", "firecrawl concurrent".
+allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,264 +14,214 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, testing, performance, scaling]
 
 ---
-# FireCrawl Load & Scale
+# Firecrawl Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for FireCrawl integrations.
+Load test and scale Firecrawl scraping pipelines. Firecrawl's rate limits are per-plan (RPM and concurrent connections), so scaling means maximizing throughput within those limits using batch scraping, async crawls, and queue-based request management.
 
-## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+## Rate Limits by Plan
 
-## Load Testing with k6
-
-### Basic Load Test
-```javascript
-// firecrawl-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-
-export const options = {
-  stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
-  ],
-  thresholds: {
-    http_req_duration: ['p(95)<500'],  # HTTP 500 Internal Server Error
-    http_req_failed: ['rate<0.01'],
-  },
-};
-
-export default function () {
-  const response = http.post(
-    'https://api.firecrawl.com/v1/resource',
-    JSON.stringify({ test: true }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.FIRECRAWL_API_KEY}`,
-      },
-    }
-  );
-
-  check(response, {
-    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
-    'latency < 500ms': (r) => r.timings.duration < 500,  # HTTP 500 Internal Server Error
-  });
-
-  sleep(1);
-}
-```
-
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env FIRECRAWL_API_KEY=${FIRECRAWL_API_KEY} firecrawl-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 firecrawl-load-test.js  # 8086 = configured value
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: firecrawl-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: firecrawl-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: firecrawl_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
-```typescript
-import { Pool } from 'generic-pool';
-
-const firecrawlPool = Pool.create({
-  create: async () => {
-    return new FireCrawlClient({
-      apiKey: process.env.FIRECRAWL_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
-});
-
-async function withFireCrawlClient<T>(
-  fn: (client: FireCrawlClient) => Promise<T>
-): Promise<T> {
-  const client = await firecrawlPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    firecrawlPool.release(client);
-  }
-}
-```
-
-## Capacity Planning
-
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
-
-### Capacity Calculation
-```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
-
-function estimateFireCrawlCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
-
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
-```
-
-## Benchmark Results Template
-
-```markdown
-## FireCrawl Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
-
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
-```
+| Plan | Scrape RPM | Concurrent Crawls | Max Batch Size |
+|------|-----------|-------------------|----------------|
+| Free | 10 | 2 | 10 |
+| Hobby | 20 | 3 | 50 |
+| Standard | 50 | 5 | 100 |
+| Growth | 100 | 10 | 100 |
+| Scale | 500+ | 50+ | 100 |
 
 ## Instructions
 
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
+### Step 1: Measure Baseline Throughput
+```typescript
+import FirecrawlApp from "@mendable/firecrawl-js";
 
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
+});
 
-### Step 3: Run Load Test
-Execute test and collect metrics.
+async function measureThroughput(urls: string[], concurrency: number) {
+  const start = Date.now();
+  const results: Array<{ url: string; durationMs: number; success: boolean; chars: number }> = [];
 
-### Step 4: Analyze and Document
-Record results in benchmark template.
+  // Process in batches of `concurrency`
+  for (let i = 0; i < urls.length; i += concurrency) {
+    const batch = urls.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(async url => {
+        const t0 = Date.now();
+        try {
+          const result = await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
+          return { url, durationMs: Date.now() - t0, success: true, chars: result.markdown?.length || 0 };
+        } catch {
+          return { url, durationMs: Date.now() - t0, success: false, chars: 0 };
+        }
+      })
+    );
+    results.push(...batchResults);
+  }
 
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+  const totalMs = Date.now() - start;
+  const succeeded = results.filter(r => r.success).length;
+
+  console.log(`=== Throughput Report ===`);
+  console.log(`URLs: ${urls.length}, Concurrency: ${concurrency}`);
+  console.log(`Total time: ${totalMs}ms`);
+  console.log(`Success: ${succeeded}/${urls.length}`);
+  console.log(`Throughput: ${(urls.length / (totalMs / 1000)).toFixed(1)} pages/sec`);
+  console.log(`Avg latency: ${(results.reduce((s, r) => s + r.durationMs, 0) / results.length).toFixed(0)}ms`);
+
+  return results;
+}
+```
+
+### Step 2: Use Batch Scrape for Maximum Efficiency
+```typescript
+// batchScrapeUrls is the most efficient way to scrape multiple known URLs
+async function scaledBatchScrape(urls: string[], batchSize = 50) {
+  const allResults: any[] = [];
+
+  for (let i = 0; i < urls.length; i += batchSize) {
+    const batch = urls.slice(i, i + batchSize);
+    console.log(`Batch ${i / batchSize + 1}: scraping ${batch.length} URLs...`);
+
+    const result = await firecrawl.batchScrapeUrls(batch, {
+      formats: ["markdown"],
+      onlyMainContent: true,
+    });
+
+    allResults.push(...(result.data || []));
+    console.log(`  Done: ${result.data?.length} pages scraped`);
+  }
+
+  return allResults;
+}
+```
+
+### Step 3: Queue-Based Scraping with p-queue
+```typescript
+import PQueue from "p-queue";
+
+function createScrapeQueue(config: {
+  concurrency: number;
+  requestsPerSecond: number;
+}) {
+  const queue = new PQueue({
+    concurrency: config.concurrency,
+    interval: 1000,
+    intervalCap: config.requestsPerSecond,
+  });
+
+  async function scrape(url: string) {
+    return queue.add(async () => {
+      const result = await firecrawl.scrapeUrl(url, {
+        formats: ["markdown"],
+        onlyMainContent: true,
+      });
+      return { url, markdown: result.markdown, title: result.metadata?.title };
+    });
+  }
+
+  return { scrape, queue };
+}
+
+// Usage: respect rate limits automatically
+const { scrape, queue } = createScrapeQueue({
+  concurrency: 5,
+  requestsPerSecond: 10,
+});
+
+const urls = ["https://a.com", "https://b.com", /* ... */];
+const results = await Promise.all(urls.map(scrape));
+console.log(`Queue: ${queue.pending} pending, ${queue.size} queued`);
+```
+
+### Step 4: Scale Async Crawls
+```typescript
+// For large-scale content ingestion, run multiple async crawls
+async function parallelCrawls(targets: Array<{ url: string; limit: number }>) {
+  // Start all crawls
+  const jobs = await Promise.all(
+    targets.map(async t => {
+      const job = await firecrawl.asyncCrawlUrl(t.url, {
+        limit: t.limit,
+        scrapeOptions: { formats: ["markdown"] },
+      });
+      return { ...t, jobId: job.id };
+    })
+  );
+
+  console.log(`Started ${jobs.length} crawl jobs`);
+
+  // Poll all jobs until complete
+  const results: any[] = [];
+  const pending = new Set(jobs.map(j => j.jobId));
+
+  while (pending.size > 0) {
+    for (const jobId of [...pending]) {
+      const status = await firecrawl.checkCrawlStatus(jobId);
+      if (status.status === "completed") {
+        results.push({ jobId, pages: status.data?.length });
+        pending.delete(jobId);
+        console.log(`Job ${jobId} complete: ${status.data?.length} pages (${pending.size} remaining)`);
+      } else if (status.status === "failed") {
+        pending.delete(jobId);
+        console.error(`Job ${jobId} failed: ${status.error}`);
+      }
+    }
+    if (pending.size > 0) {
+      await new Promise(r => setTimeout(r, 5000));
+    }
+  }
+
+  return results;
+}
+```
+
+### Step 5: Capacity Planning
+```typescript
+function estimateCapacity(plan: {
+  rpm: number;
+  concurrentCrawls: number;
+  credits: number;
+}) {
+  const pagesPerMinute = plan.rpm;
+  const pagesPerHour = pagesPerMinute * 60;
+  const pagesPerDay = pagesPerHour * 24;
+  const daysOfCredits = plan.credits / (pagesPerDay * 0.5); // assume 50% utilization
+
+  console.log(`=== Capacity Estimate ===`);
+  console.log(`Max throughput: ${pagesPerMinute} pages/min`);
+  console.log(`Daily capacity: ${pagesPerDay.toLocaleString()} pages/day`);
+  console.log(`Credit runway: ${daysOfCredits.toFixed(0)} days at 50% utilization`);
+  console.log(`Concurrent crawl jobs: ${plan.concurrentCrawls}`);
+}
+
+// Standard plan
+estimateCapacity({ rpm: 50, concurrentCrawls: 5, credits: 50000 });
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
+| 429 errors under load | Exceeding RPM limit | Reduce concurrency, use p-queue |
+| Batch scrape timeout | Too many URLs | Split into chunks of 50 |
+| Crawl jobs queued | Hit concurrent crawl limit | Stagger start times |
+| Diminishing returns | Network bottleneck | Increase plan tier, not concurrency |
 
 ## Examples
 
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s firecrawl-load-test.js
-```
-
-### Check Current Capacity
+### Quick Load Test
 ```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateFireCrawlCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-set -euo pipefail
-kubectl scale deployment firecrawl-integration --replicas=5
-kubectl get hpa firecrawl-integration-hpa
+const testUrls = Array.from({ length: 20 }, (_, i) =>
+  `https://docs.firecrawl.dev/features/${["scrape", "crawl", "map", "extract"][i % 4]}`
+);
+await measureThroughput(testUrls, 5);
 ```
 
 ## Resources
-- [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [FireCrawl Rate Limits](https://docs.firecrawl.com/rate-limits)
+- [Firecrawl Rate Limits](https://docs.firecrawl.dev/rate-limits)
+- [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For reliability patterns, see `firecrawl-reliability-patterns`.

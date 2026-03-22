@@ -1,12 +1,12 @@
 ---
 name: firecrawl-multi-env-setup
 description: |
-  Configure Firecrawl web scraping API across development, staging, and production environments.
+  Configure Firecrawl across development, staging, and production environments.
   Use when setting up multi-environment scraping pipelines, managing credit budgets per env,
-  or configuring different crawl limits and rate limits per deployment tier.
+  or configuring self-hosted Firecrawl for development.
   Trigger with phrases like "firecrawl environments", "firecrawl staging",
   "firecrawl dev prod", "firecrawl environment setup", "firecrawl config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+allowed-tools: Read, Write, Edit, Bash(docker:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,24 +17,19 @@ tags: [saas, firecrawl, deployment, api]
 # Firecrawl Multi-Environment Setup
 
 ## Overview
-Firecrawl's credit-based pricing model makes environment separation critical. Development should use conservative crawl limits to avoid burning production credits during testing.
-
-## Prerequisites
-- Firecrawl account with API key from firecrawl.dev
-- Optional: self-hosted Firecrawl instance for development
-- Understanding of credit consumption model (1 credit = 1 page scraped)
+Firecrawl's credit-based pricing makes environment separation critical. Development should use self-hosted Firecrawl or strict limits to avoid burning production credits during testing. This skill covers per-environment config, self-hosted Docker for dev, and credit budget enforcement.
 
 ## Environment Strategy
 
-| Environment | API Key | Crawl Limit | Concurrency | Credit Budget |
-|-------------|---------|-------------|-------------|---------------|
-| Development | Dev key or self-hosted | 10 pages max | 1 | Minimal |
-| Staging | Staging key | 100 pages max | 2 | Limited |
-| Production | Prod key | Configured per task | Full | Monitored |
+| Environment | API Source | Crawl Limit | Concurrency | Credits |
+|-------------|-----------|-------------|-------------|---------|
+| Development | Self-hosted Docker | 10 pages | 1 | Zero (local) |
+| Staging | Cloud API (test key) | 50 pages | 2 | Limited |
+| Production | Cloud API (prod key) | Per-task | Full plan | Monitored |
 
 ## Instructions
 
-### Step 1: Configuration Structure
+### Step 1: Environment-Aware Configuration
 ```typescript
 // config/firecrawl.ts
 import FirecrawlApp from "@mendable/firecrawl-js";
@@ -43,45 +38,45 @@ type Env = "development" | "staging" | "production";
 
 interface FirecrawlConfig {
   apiKey: string;
-  apiUrl?: string;              // override for self-hosted
-  maxPagesPerCrawl: number;     // hard limit per crawl job
+  apiUrl?: string;
+  maxPagesPerCrawl: number;
   maxDepth: number;
   concurrency: number;
-  waitFor: number;              // ms to wait for JS rendering
+  waitFor: number;
 }
 
 const configs: Record<Env, FirecrawlConfig> = {
   development: {
     apiKey: process.env.FIRECRAWL_API_KEY_DEV || "fc-localdev",
-    apiUrl: process.env.FIRECRAWL_API_URL_DEV, // point to self-hosted if available
-    maxPagesPerCrawl: 10,         // strict limit in dev to protect credits
+    apiUrl: process.env.FIRECRAWL_API_URL_DEV || "http://localhost:3002",
+    maxPagesPerCrawl: 10,
     maxDepth: 2,
     concurrency: 1,
-    waitFor: 2000,  # 2000: 2 seconds in ms
+    waitFor: 2000,
   },
   staging: {
     apiKey: process.env.FIRECRAWL_API_KEY_STAGING!,
-    maxPagesPerCrawl: 100,
+    maxPagesPerCrawl: 50,
     maxDepth: 3,
     concurrency: 2,
-    waitFor: 3000,  # 3000: 3 seconds in ms
+    waitFor: 3000,
   },
   production: {
     apiKey: process.env.FIRECRAWL_API_KEY_PROD!,
-    maxPagesPerCrawl: 500,        // per-task limit, set lower for specific jobs  # HTTP 500 Internal Server Error
+    maxPagesPerCrawl: 500,
     maxDepth: 5,
     concurrency: 5,
-    waitFor: 3000,  # 3 seconds in ms
+    waitFor: 3000,
   },
 };
 
-export function getFirecrawlConfig(): FirecrawlConfig {
+export function getConfig(): FirecrawlConfig {
   const env = (process.env.NODE_ENV || "development") as Env;
   return configs[env] || configs.development;
 }
 
-export function getFirecrawlClient(): FirecrawlApp {
-  const cfg = getFirecrawlConfig();
+export function getFirecrawl(): FirecrawlApp {
+  const cfg = getConfig();
   return new FirecrawlApp({
     apiKey: cfg.apiKey,
     ...(cfg.apiUrl ? { apiUrl: cfg.apiUrl } : {}),
@@ -91,43 +86,58 @@ export function getFirecrawlClient(): FirecrawlApp {
 
 ### Step 2: Self-Hosted Firecrawl for Development
 ```yaml
-# docker-compose.dev.yml - Run Firecrawl locally in dev
-version: "3.8"
+# docker-compose.dev.yml
 services:
   firecrawl:
     image: mendableai/firecrawl:latest
     ports:
-      - "3002:3002"  # 3002 = configured value
+      - "3002:3002"
     environment:
-      - USE_DB_AUTHENTICATION=false
       - PORT=3002
-```
-Set `FIRECRAWL_API_URL_DEV=http://localhost:3002` and any API key in `.env.local` to use local instance with no credit consumption.
+      - USE_DB_AUTHENTICATION=false
+      - REDIS_URL=redis://redis:6379
+      - NUM_WORKERS_PER_QUEUE=1
+      - BULL_AUTH_KEY=devonly
+    depends_on:
+      redis:
+        condition: service_healthy
 
-### Step 3: Credit-Aware Scraping Wrapper
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+```
+
+```bash
+set -euo pipefail
+docker compose -f docker-compose.dev.yml up -d
+# Verify: curl http://localhost:3002/health
+```
+
+### Step 3: Credit-Safe Scraping Wrapper
 ```typescript
 // lib/firecrawl-service.ts
-import { getFirecrawlClient, getFirecrawlConfig } from "../config/firecrawl";
+import { getFirecrawl, getConfig } from "../config/firecrawl";
 
 export async function safeScrape(url: string, options?: any) {
-  const firecrawl = getFirecrawlClient();
-  const cfg = getFirecrawlConfig();
-
+  const firecrawl = getFirecrawl();
   return firecrawl.scrapeUrl(url, {
     formats: ["markdown"],
     onlyMainContent: true,
-    waitFor: cfg.waitFor,
+    waitFor: getConfig().waitFor,
     ...options,
   });
 }
 
 export async function safeCrawl(url: string, customLimit?: number) {
-  const firecrawl = getFirecrawlClient();
-  const cfg = getFirecrawlConfig();
-
+  const firecrawl = getFirecrawl();
+  const cfg = getConfig();
   const limit = Math.min(customLimit ?? cfg.maxPagesPerCrawl, cfg.maxPagesPerCrawl);
 
-  return firecrawl.asyncCrawlUrl(url, {
+  return firecrawl.crawlUrl(url, {
     limit,
     maxDepth: cfg.maxDepth,
     scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
@@ -135,33 +145,36 @@ export async function safeCrawl(url: string, customLimit?: number) {
 }
 ```
 
-### Step 4: Environment Variable Setup
+### Step 4: Environment Variables
 ```bash
-# .env.local (development)
-FIRECRAWL_API_KEY_DEV=fc-dev-abc123
-FIRECRAWL_API_URL_DEV=http://localhost:3002  # 3002: optional self-hosted
+# .env.local (development — uses self-hosted, zero credits)
+FIRECRAWL_API_KEY_DEV=fc-localdev
+FIRECRAWL_API_URL_DEV=http://localhost:3002
+NODE_ENV=development
 
-# GitHub Actions - Staging environment
-FIRECRAWL_API_KEY_STAGING=fc-staging-def456
+# CI / Staging
+FIRECRAWL_API_KEY_STAGING=fc-staging-xxx
 
-# GitHub Actions - Production environment
-FIRECRAWL_API_KEY_PROD=fc-prod-xyz789
+# Production
+FIRECRAWL_API_KEY_PROD=fc-prod-xxx
 ```
 
-### Step 5: CI/CD Pipeline Integration
+### Step 5: CI/CD Pipeline
 ```yaml
 # .github/workflows/deploy.yml
 jobs:
-  test-scraping:
+  test:
     environment: staging
     env:
       FIRECRAWL_API_KEY_STAGING: ${{ secrets.FIRECRAWL_API_KEY_STAGING }}
       NODE_ENV: staging
     steps:
-      - run: node scripts/test-firecrawl.js
-        # Uses staging config: 100-page limit, staging API key
+      - run: npm ci && npm test
+      - run: npm run test:integration
+        # Uses staging config: 50-page limit, staging API key
 
   deploy:
+    needs: test
     environment: production
     env:
       FIRECRAWL_API_KEY_PROD: ${{ secrets.FIRECRAWL_API_KEY_PROD }}
@@ -171,40 +184,27 @@ jobs:
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Credits depleted in dev | No page limit in dev config | Always set `maxPagesPerCrawl: 10` for development |
-| Self-hosted not responding | Docker container not running | Check `docker-compose up firecrawl` |
-| `402 Payment Required` | Production credits exhausted | Monitor credit balance before large jobs |
-| Different results per env | `waitFor` mismatch | Standardize JS wait time or test with prod settings |
+| Dev credits drained | Using cloud API in dev | Point to self-hosted at localhost:3002 |
+| Self-hosted not responding | Docker container down | `docker compose up -d firecrawl` |
+| `402 Payment Required` | Prod credits exhausted | Monitor balance, set budget alerts |
+| Different results per env | `waitFor` mismatch | Standardize wait time across envs |
 
 ## Examples
 
 ### Check Active Configuration
 ```typescript
-import { getFirecrawlConfig } from "./config/firecrawl";
+import { getConfig } from "./config/firecrawl";
 
-const cfg = getFirecrawlConfig();
-console.log(`Max pages: ${cfg.maxPagesPerCrawl}, depth: ${cfg.maxDepth}`);
-console.log(`API URL: ${cfg.apiUrl || "https://api.firecrawl.dev"}`);
-```
-
-### Budget Check Before Large Crawl
-```bash
-set -euo pipefail
-# Check current credit balance
-curl -s "https://api.firecrawl.dev/v1/team/credits" \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY_PROD" | jq .credits_remaining
+const cfg = getConfig();
+console.log(`Env: ${process.env.NODE_ENV}`);
+console.log(`Max pages: ${cfg.maxPagesPerCrawl}`);
+console.log(`API: ${cfg.apiUrl || "https://api.firecrawl.dev"}`);
 ```
 
 ## Resources
-- [Firecrawl API Documentation](https://docs.firecrawl.dev)
-- [Firecrawl Self-Hosting Guide](https://docs.firecrawl.dev/self-hosting)
+- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
 - [Firecrawl Pricing](https://firecrawl.dev/pricing)
+- [Docker Compose](https://github.com/mendableai/firecrawl/blob/main/docker-compose.yaml)
 
 ## Next Steps
 For deployment configuration, see `firecrawl-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

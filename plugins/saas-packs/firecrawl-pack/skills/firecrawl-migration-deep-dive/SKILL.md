@@ -1,12 +1,12 @@
 ---
 name: firecrawl-migration-deep-dive
 description: |
-  Execute FireCrawl major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from FireCrawl, performing major version upgrades,
-  or re-platforming existing integrations to FireCrawl.
-  Trigger with phrases like "migrate firecrawl", "firecrawl migration",
-  "switch to firecrawl", "firecrawl replatform", "firecrawl upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate to Firecrawl from Puppeteer, Playwright, Cheerio, or other scraping tools.
+  Use when replacing custom scraping code with Firecrawl, migrating between
+  scraping APIs, or re-platforming content ingestion pipelines.
+  Trigger with phrases like "migrate to firecrawl", "replace puppeteer with firecrawl",
+  "switch to firecrawl", "firecrawl vs puppeteer", "firecrawl migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,240 +14,213 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, firecrawl, migration]
 
 ---
-# FireCrawl Migration Deep Dive
+# Firecrawl Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list puppeteer playwright cheerio 2>/dev/null | grep -E "puppeteer|playwright|cheerio" || echo 'No scraping libs found'`
 
 ## Overview
-Comprehensive guide for migrating to or from FireCrawl, or major version upgrades.
+Migrate from custom scraping (Puppeteer, Playwright, Cheerio) or competing APIs to Firecrawl. Firecrawl eliminates browser management, anti-bot handling, and JS rendering infrastructure. This skill shows equivalent code for common scraping patterns.
 
-## Prerequisites
-- Current system documentation
-- FireCrawl SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+## Migration Comparison
 
-## Migration Types
+| Feature | Puppeteer/Playwright | Cheerio | Firecrawl |
+|---------|---------------------|---------|-----------|
+| JS rendering | Manual browser | No | Automatic |
+| Anti-bot bypass | DIY (stealth plugin) | No | Built-in |
+| Output format | Raw HTML | Parsed HTML | Markdown/JSON/HTML |
+| Infrastructure | Browser instances | None | API call |
+| Concurrent scraping | Manage browser pool | Simple | Managed by Firecrawl |
+| Cost model | Compute (CPU/RAM) | Free | Credits per page |
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+## Instructions
 
-## Pre-Migration Assessment
+### Step 1: Replace Puppeteer Single-Page Scrape
 
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "firecrawl" > firecrawl-files.txt
-
-# Count integration points
-wc -l firecrawl-files.txt
-
-# Identify dependencies
-npm list | grep firecrawl
-pip freeze | grep firecrawl
-```
-
-### Step 2: Data Inventory
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+// BEFORE: Puppeteer (20+ lines, browser management)
+import puppeteer from "puppeteer";
+
+async function scrapePuppeteer(url: string) {
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url, { waitUntil: "networkidle2" });
+  const html = await page.content();
+  const title = await page.title();
+  await browser.close();
+  return { html, title };
 }
 
-async function assessFireCrawlMigration(): Promise<MigrationInventory> {
+// AFTER: Firecrawl (5 lines, no browser needed)
+import FirecrawlApp from "@mendable/firecrawl-js";
+
+const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+
+async function scrapeFirecrawl(url: string) {
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ["markdown"],
+    onlyMainContent: true,
+    waitFor: 2000,
+  });
+  return { markdown: result.markdown, title: result.metadata?.title };
+}
+```
+
+### Step 2: Replace Cheerio HTML Parsing
+
+```typescript
+// BEFORE: fetch + cheerio (manual parsing)
+import * as cheerio from "cheerio";
+
+async function scrapeCheerio(url: string) {
+  const html = await fetch(url).then(r => r.text());
+  const $ = cheerio.load(html);
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    title: $("h1").first().text(),
+    content: $("main").text(),
+    links: $("a").map((_, el) => $(el).attr("href")).get(),
+  };
+}
+
+// AFTER: Firecrawl with extract (LLM-powered, no CSS selectors)
+async function extractFirecrawl(url: string) {
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ["extract", "links"],
+    extract: {
+      schema: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          content: { type: "string" },
+        },
+      },
+    },
+  });
+  return {
+    title: result.extract?.title,
+    content: result.extract?.content,
+    links: result.links,
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
+### Step 3: Replace Crawl Pipeline
 
+```typescript
+// BEFORE: Playwright crawler (100+ lines, queue, browser pool)
+// - launch browser pool
+// - manage visited URLs set
+// - extract links, enqueue
+// - handle errors per page
+// - close browsers on exit
+
+// AFTER: Firecrawl crawl (10 lines)
+async function crawlSite(baseUrl: string) {
+  const result = await firecrawl.crawlUrl(baseUrl, {
+    limit: 100,
+    maxDepth: 3,
+    includePaths: ["/docs/*", "/api/*"],
+    excludePaths: ["/blog/*"],
+    scrapeOptions: {
+      formats: ["markdown"],
+      onlyMainContent: true,
+    },
+  });
+
+  return result.data?.map(page => ({
+    url: page.metadata?.sourceURL,
+    title: page.metadata?.title,
+    content: page.markdown,
+  }));
+}
 ```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  FireCrawl   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
 
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
+### Step 4: Gradual Migration with Adapter Pattern
 
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
+```typescript
+// Adapter interface for gradual migration
+interface ScrapeAdapter {
+  scrape(url: string): Promise<{ title: string; content: string }>;
+  crawl(url: string, maxPages: number): Promise<Array<{ url: string; content: string }>>;
+}
+
+class FirecrawlAdapter implements ScrapeAdapter {
+  private client: FirecrawlApp;
+
+  constructor() {
+    this.client = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
+  }
+
+  async scrape(url: string) {
+    const result = await this.client.scrapeUrl(url, {
+      formats: ["markdown"],
+      onlyMainContent: true,
+    });
+    return {
+      title: result.metadata?.title || "",
+      content: result.markdown || "",
+    };
+  }
+
+  async crawl(url: string, maxPages: number) {
+    const result = await this.client.crawlUrl(url, {
+      limit: maxPages,
+      scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
+    });
+    return (result.data || []).map(page => ({
+      url: page.metadata?.sourceURL || url,
+      content: page.markdown || "",
+    }));
+  }
+}
+
+// Feature flag controlled migration
+function getScrapeAdapter(): ScrapeAdapter {
+  if (process.env.USE_FIRECRAWL === "true") {
+    return new FirecrawlAdapter();
+  }
+  return new LegacyPuppeteerAdapter();
+}
 ```
 
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
+### Step 5: Remove Old Dependencies
 ```bash
 set -euo pipefail
-# Install FireCrawl SDK
-npm install @firecrawl/sdk
+# After migration is complete and verified
+npm uninstall puppeteer puppeteer-core
+npm uninstall playwright @playwright/test
+npm uninstall cheerio
 
-# Configure credentials
-cp .env.example .env.firecrawl
-# Edit with new credentials
+# Remove browser downloads
+npx playwright uninstall --all 2>/dev/null || true
 
-# Verify connectivity
-node -e "require('@firecrawl/sdk').ping()"
+# Verify no lingering references
+grep -r "puppeteer\|playwright\|cheerio" src/ --include="*.ts" || echo "Clean!"
 ```
 
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/firecrawl.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class FireCrawlAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const firecrawlData = this.transform(data);
-    return firecrawlClient.create(firecrawlData);
-  }
-
-  private transform(data: CreateInput): FireCrawlInput {
-    // Map from old format to FireCrawl format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateFireCrawlData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await firecrawlClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const firecrawlPercentage = getFeatureFlag('firecrawl_migration_percentage');
-
-  if (Math.random() * 100 < firecrawlPercentage) {
-    return new FireCrawlAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app FIRECRAWL_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.firecrawl'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateFireCrawlMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Assess current configuration
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new FireCrawl integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to FireCrawl
+## Migration Checklist
+- [ ] Install `@mendable/firecrawl-js`
+- [ ] Create adapter layer wrapping Firecrawl
+- [ ] Replace single-page scrapes with `scrapeUrl`
+- [ ] Replace crawl loops with `crawlUrl`
+- [ ] Replace HTML parsing with `extract` or markdown
+- [ ] Feature flag to switch between old and new
+- [ ] Run both in parallel, compare outputs
+- [ ] Remove old scraping dependencies
+- [ ] Delete browser management code
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateFireCrawlMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Different output format | Puppeteer returns HTML, Firecrawl markdown | Adjust downstream consumers |
+| Missing CSS selector data | Firecrawl doesn't use selectors | Use `extract` with JSON schema |
+| Higher latency for single pages | API call vs local browser | Acceptable trade-off for zero infra |
+| Content differences | Different JS wait timing | Tune `waitFor` parameter |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [FireCrawl Migration Guide](https://docs.firecrawl.com/migration)
+- [Firecrawl vs Puppeteer](https://docs.firecrawl.dev/introduction)
+- [Firecrawl Scrape Options](https://docs.firecrawl.dev/features/scrape)
+- [Advanced Scraping Guide](https://docs.firecrawl.dev/advanced-scraping-guide)
 
-## Flagship+ Skills
+## Next Steps
 For advanced troubleshooting, see `firecrawl-advanced-troubleshooting`.
