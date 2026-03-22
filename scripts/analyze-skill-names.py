@@ -65,7 +65,7 @@ def read_plugin_metadata(plugin_dir: Path) -> Dict[str, str]:
     if plugin_json.exists():
         try:
             return json.loads(plugin_json.read_text())
-        except:
+        except Exception:
             pass
     return {}
 
