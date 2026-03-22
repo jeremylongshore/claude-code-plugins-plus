@@ -2,8 +2,8 @@
 name: cohere-multi-env-setup
 description: |
   Configure Cohere across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Cohere configurations.
+  Use when setting up multi-environment deployments, configuring per-environment
+  API keys, model selection, and rate limit strategies.
   Trigger with phrases like "cohere environments", "cohere staging",
   "cohere dev prod", "cohere environment setup", "cohere config by env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
@@ -17,207 +17,239 @@ compatible-with: claude-code
 # Cohere Multi-Environment Setup
 
 ## Overview
-Configure Cohere across development, staging, and production environments.
+Configure Cohere API v2 across dev/staging/prod with environment-specific API keys, model selection, and budget controls.
 
 ## Prerequisites
-- Separate Cohere accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
+- Separate Cohere API keys per environment (trial for dev, production for staging/prod)
+- Secret management solution (Vault, AWS Secrets Manager, GCP Secret Manager)
 - Environment detection in application
 
 ## Environment Strategy
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── cohere/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${COHERE_API_KEY}",
-  "baseUrl": "https://api-sandbox.cohere.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${COHERE_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.cohere.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${COHERE_API_KEY_PROD}",
-  "baseUrl": "https://api.cohere.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/cohere/config.ts
-import baseConfig from '../../config/cohere/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getCohereConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/cohere/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-COHERE_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  COHERE_API_KEY: ${{ secrets.COHERE_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id cohere/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=cohere-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/cohere/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getCohereConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[cohere] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+| Environment | API Key Type | Model | maxTokens | Caching |
+|-------------|-------------|-------|-----------|---------|
+| Development | Trial (free) | `command-r7b-12-2024` | 200 | Disabled |
+| Staging | Production | `command-r-08-2024` | 1000 | Enabled |
+| Production | Production | `command-a-03-2025` | 4096 | Enabled |
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Step 1: Configuration Structure
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+```typescript
+// src/config/cohere.ts
+type Environment = 'development' | 'staging' | 'production';
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
+interface CohereEnvConfig {
+  chatModel: string;
+  embedModel: string;
+  rerankModel: string;
+  maxTokens: number;
+  cacheEnabled: boolean;
+  cacheTtlMs: number;
+  retries: number;
+  timeoutSeconds: number;
+}
 
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
+const configs: Record<Environment, CohereEnvConfig> = {
+  development: {
+    chatModel: 'command-r7b-12-2024',    // Fastest, cheapest
+    embedModel: 'embed-v4.0',
+    rerankModel: 'rerank-v3.5',
+    maxTokens: 200,                       // Limit for dev
+    cacheEnabled: false,                   // See real responses
+    cacheTtlMs: 0,
+    retries: 1,                            // Fail fast in dev
+    timeoutSeconds: 30,
+  },
+  staging: {
+    chatModel: 'command-r-08-2024',       // Mid-tier for testing
+    embedModel: 'embed-v4.0',
+    rerankModel: 'rerank-v3.5',
+    maxTokens: 1000,
+    cacheEnabled: true,
+    cacheTtlMs: 5 * 60 * 1000,           // 5 minutes
+    retries: 3,
+    timeoutSeconds: 60,
+  },
+  production: {
+    chatModel: 'command-a-03-2025',       // Best quality
+    embedModel: 'embed-v4.0',
+    rerankModel: 'rerank-v3.5',
+    maxTokens: 4096,
+    cacheEnabled: true,
+    cacheTtlMs: 15 * 60 * 1000,          // 15 minutes
+    retries: 5,
+    timeoutSeconds: 120,
+  },
+};
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV ?? 'development';
+  if (['development', 'staging', 'production'].includes(env)) {
+    return env as Environment;
+  }
+  return 'development';
+}
+
+export function getCohereConfig(): CohereEnvConfig & { environment: Environment } {
+  const env = detectEnvironment();
+  return { ...configs[env], environment: env };
+}
+```
+
+### Step 2: Environment-Aware Client
+
+```typescript
+// src/cohere/client.ts
+import { CohereClientV2 } from 'cohere-ai';
+import { getCohereConfig } from '../config/cohere';
+
+let instance: CohereClientV2 | null = null;
+
+export function getCohere(): CohereClientV2 {
+  if (!instance) {
+    const config = getCohereConfig();
+
+    if (!process.env.CO_API_KEY) {
+      throw new Error(`CO_API_KEY not set for ${config.environment} environment`);
+    }
+
+    instance = new CohereClientV2({
+      token: process.env.CO_API_KEY,
+      timeoutInSeconds: config.timeoutSeconds,
+    });
+
+    console.log(`[cohere] Initialized for ${config.environment} (model: ${config.chatModel})`);
+  }
+  return instance;
+}
+```
+
+### Step 3: Secret Management
+
+```bash
+# --- Local Development ---
+# .env.local (git-ignored)
+CO_API_KEY=trial-key-for-dev
+
+# --- GitHub Actions (CI) ---
+gh secret set CO_API_KEY --body "production-key-for-ci"
+
+# --- AWS Secrets Manager ---
+aws secretsmanager create-secret \
+  --name cohere/staging/api-key \
+  --secret-string "staging-production-key"
+
+aws secretsmanager create-secret \
+  --name cohere/production/api-key \
+  --secret-string "prod-production-key"
+
+# --- GCP Secret Manager ---
+echo -n "staging-key" | gcloud secrets create cohere-api-key-staging --data-file=-
+echo -n "prod-key" | gcloud secrets create cohere-api-key-prod --data-file=-
+
+# --- HashiCorp Vault ---
+vault kv put secret/cohere/staging api_key="staging-key"
+vault kv put secret/cohere/production api_key="prod-key"
+```
+
+### Step 4: Environment Guards
+
+```typescript
+// Prevent expensive operations in development
+function guardExpensiveOperation(operation: string): void {
+  const config = getCohereConfig();
+
+  if (config.environment === 'development') {
+    // In dev, warn but don't block
+    console.warn(`[cohere] ${operation} using trial key — limited to 20 calls/min`);
+  }
+}
+
+// Prevent development keys in production
+function validateKeyForEnv(): void {
+  const config = getCohereConfig();
+  const key = process.env.CO_API_KEY ?? '';
+
+  if (config.environment === 'production' && key.length < 30) {
+    throw new Error('Production requires a production API key (not trial)');
+  }
+}
+```
+
+### Step 5: Per-Environment API Calls
+
+```typescript
+import { getCohereConfig } from '../config/cohere';
+
+export async function chat(message: string): Promise<string> {
+  const config = getCohereConfig();
+  const cohere = getCohere();
+
+  const response = await cohere.chat({
+    model: config.chatModel,     // Environment-specific model
+    messages: [{ role: 'user', content: message }],
+    maxTokens: config.maxTokens, // Environment-specific limit
+  });
+
+  return response.message?.content?.[0]?.text ?? '';
+}
+
+export async function embed(texts: string[]): Promise<number[][]> {
+  const config = getCohereConfig();
+  const cohere = getCohere();
+
+  const response = await cohere.embed({
+    model: config.embedModel,
+    texts,
+    inputType: 'search_document',
+    embeddingTypes: config.environment === 'development' ? ['float'] : ['int8'], // Cheaper in prod
+  });
+
+  return response.embeddings.float ?? response.embeddings.int8;
+}
+```
+
+### Step 6: Docker Compose for Local Multi-Env Testing
+
+```yaml
+# docker-compose.yml
+services:
+  app-dev:
+    build: .
+    environment:
+      - NODE_ENV=development
+      - CO_API_KEY=${CO_API_KEY_DEV}
+    ports:
+      - "3000:3000"
+
+  app-staging:
+    build: .
+    environment:
+      - NODE_ENV=staging
+      - CO_API_KEY=${CO_API_KEY_STAGING}
+    ports:
+      - "3001:3000"
+```
 
 ## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+- Per-environment Cohere configuration (model, tokens, timeout)
+- Secret management across dev/staging/prod
+- Environment guards preventing misuse
+- Docker compose for local multi-env testing
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getCohereConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
+| Trial key in production | Wrong secret | Validate key length at startup |
+| Rate limited in dev | Trial key limits | Use 20 calls/min budget |
+| Model not found | Typo in config | Validate model IDs at startup |
+| Config merge fails | Missing environment | Default to development |
 
 ## Resources
-- [Cohere Environments Guide](https://docs.cohere.com/environments)
+- [Cohere API Keys](https://dashboard.cohere.com/api-keys)
+- [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps

@@ -1,8 +1,8 @@
 ---
 name: cohere-rate-limits
 description: |
-  Implement Cohere rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
+  Implement Cohere rate limiting, backoff, and request queuing patterns.
+  Use when handling 429 errors, implementing retry logic,
   or optimizing API request throughput for Cohere.
   Trigger with phrases like "cohere rate limit", "cohere throttling",
   "cohere 429", "cohere retry", "cohere backoff".
@@ -17,135 +17,253 @@ compatible-with: claude-code
 # Cohere Rate Limits
 
 ## Overview
-Handle Cohere rate limits gracefully with exponential backoff and idempotency.
+Handle Cohere rate limits with exponential backoff, request queuing, and proactive throttling. Real rate limits from Cohere's documentation.
 
 ## Prerequisites
-- Cohere SDK installed
+- `cohere-ai` SDK installed
 - Understanding of async/await patterns
-- Access to rate limit headers
+
+## Actual Cohere Rate Limits
+
+| Key Type | Endpoint | Rate Limit | Monthly Limit |
+|----------|----------|-----------|---------------|
+| **Trial** | Chat | 20 calls/min | 1,000 total |
+| **Trial** | Embed | 5 calls/min | 1,000 total |
+| **Trial** | Rerank | 5 calls/min | 1,000 total |
+| **Trial** | Classify | 5 calls/min | 1,000 total |
+| **Production** | All endpoints | 1,000 calls/min | Unlimited |
+
+Trial keys are free. Production keys require billing at [dashboard.cohere.com](https://dashboard.cohere.com).
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Exponential Backoff with Jitter
 
 ```typescript
-async function withExponentialBackoff<T>(
+import { CohereError, CohereTimeoutError } from 'cohere-ai';
+
+interface RetryConfig {
+  maxRetries: number;
+  baseDelayMs: number;
+  maxDelayMs: number;
+}
+
+const DEFAULT_RETRY: RetryConfig = {
+  maxRetries: 5,
+  baseDelayMs: 1000,
+  maxDelayMs: 60_000,
+};
+
+async function withBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+  config = DEFAULT_RETRY
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+    } catch (err) {
+      if (attempt === config.maxRetries) throw err;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      // Only retry on rate limits (429) and server errors (5xx)
+      let shouldRetry = false;
+      let retryAfterMs: number | undefined;
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+      if (err instanceof CohereError) {
+        if (err.statusCode === 429) {
+          shouldRetry = true;
+          // Cohere returns Retry-After header (seconds)
+          // SDK may expose this via err.headers
+        } else if (err.statusCode && err.statusCode >= 500) {
+          shouldRetry = true;
+        }
+      } else if (err instanceof CohereTimeoutError) {
+        shouldRetry = true;
+      }
+
+      if (!shouldRetry) throw err;
+
+      // Exponential delay with jitter
+      const exponential = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.baseDelayMs;
+      const delay = Math.min(exponential + jitter, config.maxDelayMs);
+
+      console.warn(`Cohere retry ${attempt + 1}/${config.maxRetries} in ${delay.toFixed(0)}ms`);
+      await new Promise(r => setTimeout(r, retryAfterMs ?? delay));
     }
   }
   throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Request Queue (Concurrency-Limited)
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from 'p-queue';
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+// Match rate limits: trial=20/min for chat, production=1000/min
+function createCohereQueue(callsPerMinute: number) {
+  return new PQueue({
+    concurrency: 5,
+    interval: 60_000,
+    intervalCap: callsPerMinute,
+  });
 }
 
-async function idempotentRequest<T>(
-  client: CohereClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+// Trial key queue
+const trialChatQueue = createCohereQueue(20);
+const trialEmbedQueue = createCohereQueue(5);
+
+// Production key queue
+const prodQueue = createCohereQueue(1000);
+
+// Usage
+async function queuedChat(params: any) {
+  return trialChatQueue.add(() =>
+    withBackoff(() => cohere.chat(params))
+  );
+}
+```
+
+### Step 3: Proactive Rate Tracking
+
+```typescript
+class RateLimitTracker {
+  private windows: Map<string, number[]> = new Map();
+
+  constructor(private limitsPerMinute: Record<string, number>) {}
+
+  canProceed(endpoint: string): boolean {
+    const limit = this.limitsPerMinute[endpoint] ?? 1000;
+    const now = Date.now();
+    const window = this.windows.get(endpoint) ?? [];
+
+    // Remove entries older than 1 minute
+    const active = window.filter(t => now - t < 60_000);
+    this.windows.set(endpoint, active);
+
+    return active.length < limit;
+  }
+
+  record(endpoint: string): void {
+    const window = this.windows.get(endpoint) ?? [];
+    window.push(Date.now());
+    this.windows.set(endpoint, window);
+  }
+
+  waitTime(endpoint: string): number {
+    const limit = this.limitsPerMinute[endpoint] ?? 1000;
+    const window = this.windows.get(endpoint) ?? [];
+    const now = Date.now();
+    const active = window.filter(t => now - t < 60_000);
+
+    if (active.length < limit) return 0;
+    return 60_000 - (now - active[0]); // Wait until oldest entry expires
+  }
+}
+
+// Trial key tracker
+const tracker = new RateLimitTracker({
+  chat: 20,
+  embed: 5,
+  rerank: 5,
+  classify: 5,
+});
+
+// Use before each call
+async function trackedEmbed(params: any) {
+  const wait = tracker.waitTime('embed');
+  if (wait > 0) {
+    console.log(`Throttling embed: waiting ${wait}ms`);
+    await new Promise(r => setTimeout(r, wait));
+  }
+  tracker.record('embed');
+  return withBackoff(() => cohere.embed(params));
+}
+```
+
+### Step 4: Batch-Aware Embedding
+
+```typescript
+// Embed supports up to 96 texts per call — maximize batch size to reduce calls
+async function efficientEmbed(
+  texts: string[],
+  inputType: 'search_document' | 'search_query' = 'search_document'
+): Promise<number[][]> {
+  const BATCH_SIZE = 96; // Cohere max per request
+  const allVectors: number[][] = [];
+
+  for (let i = 0; i < texts.length; i += BATCH_SIZE) {
+    const batch = texts.slice(i, i + BATCH_SIZE);
+
+    const response = await trackedEmbed({
+      model: 'embed-v4.0',
+      texts: batch,
+      inputType,
+      embeddingTypes: ['float'],
+    });
+
+    allVectors.push(...response.embeddings.float);
+  }
+
+  return allVectors;
+}
+
+// 960 texts = 10 API calls (not 960)
+const vectors = await efficientEmbed(largeTextArray);
+```
+
+## Cost-Aware Rate Limiting
+
+For production keys, rate limits are per-minute but costs are per-token:
+
+```typescript
+class TokenBudget {
+  private tokensUsed = 0;
+  private readonly resetInterval: NodeJS.Timer;
+
+  constructor(
+    private maxTokensPerMinute: number,
+    private alertCallback?: (used: number) => void
+  ) {
+    // Reset every minute
+    this.resetInterval = setInterval(() => { this.tokensUsed = 0; }, 60_000);
+  }
+
+  canAfford(estimatedTokens: number): boolean {
+    return this.tokensUsed + estimatedTokens <= this.maxTokensPerMinute;
+  }
+
+  record(actualTokens: number): void {
+    this.tokensUsed += actualTokens;
+    if (this.tokensUsed > this.maxTokensPerMinute * 0.8) {
+      this.alertCallback?.(this.tokensUsed);
+    }
+  }
+
+  dispose(): void {
+    clearInterval(this.resetInterval);
+  }
 }
 ```
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+- Automatic retry with exponential backoff + jitter
+- Concurrency-limited request queue matching Cohere rate limits
+- Proactive throttling before hitting limits
+- Batch-optimized embedding to minimize API calls
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Detection | Action |
+|----------|-----------|--------|
+| 429 from trial key | `CohereError.statusCode === 429` | Wait 60s, retry |
+| 429 from prod key | Same | Backoff, check concurrency |
+| Monthly limit hit (trial) | 429 with limit message | Upgrade to production key |
+| Burst of requests | Queue depth > threshold | Add backpressure |
 
 ## Resources
-- [Cohere Rate Limits](https://docs.cohere.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
+- [Cohere API Keys](https://dashboard.cohere.com/api-keys)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For security configuration, see `cohere-security-basics`.

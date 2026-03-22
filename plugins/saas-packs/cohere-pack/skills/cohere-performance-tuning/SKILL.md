@@ -1,9 +1,9 @@
 ---
 name: cohere-performance-tuning
 description: |
-  Optimize Cohere API performance with caching, batching, and connection pooling.
+  Optimize Cohere API performance with caching, batching, model selection, and streaming.
   Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Cohere integrations.
+  or optimizing request throughput for Cohere Chat, Embed, and Rerank.
   Trigger with phrases like "cohere performance", "optimize cohere",
   "cohere latency", "cohere caching", "cohere slow", "cohere batch".
 allowed-tools: Read, Write, Edit
@@ -17,200 +17,261 @@ compatible-with: claude-code
 # Cohere Performance Tuning
 
 ## Overview
-Optimize Cohere API performance with caching, batching, and connection pooling.
+Optimize Cohere API v2 performance through model selection, embedding batches, rerank pipelines, caching, and streaming for time-to-first-token.
 
 ## Prerequisites
-- Cohere SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+- `cohere-ai` SDK installed
+- Understanding of Cohere endpoints (Chat, Embed, Rerank)
+- Redis or in-memory cache (optional)
 
-## Latency Benchmarks
+## Latency Benchmarks (Typical)
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Operation | Model | P50 | P95 |
+|-----------|-------|-----|-----|
+| Chat (short) | `command-r7b-12-2024` | 500ms | 1.5s |
+| Chat (short) | `command-a-03-2025` | 800ms | 2.5s |
+| Chat (stream TTFT) | `command-a-03-2025` | 200ms | 600ms |
+| Embed (96 texts) | `embed-v4.0` | 150ms | 400ms |
+| Rerank (100 docs) | `rerank-v3.5` | 100ms | 300ms |
+| Classify (96 inputs) | `embed-english-v3.0` | 200ms | 500ms |
 
-## Caching Strategy
+## Instructions
 
-### Response Caching
+### Strategy 1: Model Selection by Latency Budget
+
+```typescript
+// Use smaller models for latency-sensitive paths
+function selectModel(latencyBudgetMs: number): string {
+  if (latencyBudgetMs < 1000) return 'command-r7b-12-2024';   // 7B, fastest
+  if (latencyBudgetMs < 3000) return 'command-r-08-2024';      // Mid-tier
+  return 'command-a-03-2025';                                    // Best quality
+}
+
+// Pair with maxTokens to control output length
+await cohere.chat({
+  model: selectModel(1500),
+  messages: [{ role: 'user', content: query }],
+  maxTokens: 200,  // Shorter output = lower latency
+});
+```
+
+### Strategy 2: Streaming for Time-to-First-Token
+
+```typescript
+// Non-streaming: user waits for entire response (800ms-5s)
+// Streaming: first token arrives in ~200ms
+
+async function streamForUI(message: string): Promise<string> {
+  const stream = await cohere.chatStream({
+    model: 'command-a-03-2025',
+    messages: [{ role: 'user', content: message }],
+  });
+
+  let fullText = '';
+  for await (const event of stream) {
+    if (event.type === 'content-delta') {
+      const text = event.delta?.message?.content?.text ?? '';
+      fullText += text;
+      // Emit to frontend immediately — perceived latency drops to ~200ms
+    }
+  }
+  return fullText;
+}
+```
+
+### Strategy 3: Batch Embeddings (96 per Call)
+
+```typescript
+// BAD: 1000 texts = 1000 API calls
+for (const text of texts) {
+  await cohere.embed({ model: 'embed-v4.0', texts: [text], ... });
+}
+
+// GOOD: 1000 texts = 11 API calls (96 per batch)
+async function batchEmbed(texts: string[]): Promise<number[][]> {
+  const BATCH = 96; // Cohere max per request
+  const results: number[][] = [];
+
+  const batches = [];
+  for (let i = 0; i < texts.length; i += BATCH) {
+    batches.push(texts.slice(i, i + BATCH));
+  }
+
+  // Parallel batches (respect rate limits)
+  const responses = await Promise.all(
+    batches.map(batch =>
+      cohere.embed({
+        model: 'embed-v4.0',
+        texts: batch,
+        inputType: 'search_document',
+        embeddingTypes: ['float'],
+      })
+    )
+  );
+
+  for (const resp of responses) {
+    results.push(...resp.embeddings.float);
+  }
+  return results;
+}
+```
+
+### Strategy 4: Compressed Embeddings
+
+```typescript
+// float: 1024 dims * 4 bytes = 4KB per vector
+// int8:  1024 dims * 1 byte  = 1KB per vector (75% smaller)
+// binary: 1024 dims / 8      = 128 bytes per vector (97% smaller)
+
+const response = await cohere.embed({
+  model: 'embed-v4.0',
+  texts: documents,
+  inputType: 'search_document',
+  embeddingTypes: ['int8'],   // or ['binary'] for maximum compression
+});
+
+// Use int8 for storage, float for final scoring
+const storageVectors = response.embeddings.int8;   // Store these
+```
+
+### Strategy 5: Rerank as a Pre-filter
+
+```typescript
+// Instead of embedding everything, use rerank as a fast pre-filter
+async function efficientSearch(query: string, corpus: string[]) {
+  // Step 1: Rerank finds top candidates in ~100ms (up to 1000 docs)
+  const reranked = await cohere.rerank({
+    model: 'rerank-v3.5',
+    query,
+    documents: corpus,
+    topN: 5,
+  });
+
+  // Step 2: Only embed the top 5 for fine-grained scoring (optional)
+  const topDocs = reranked.results.map(r => ({
+    text: corpus[r.index],
+    score: r.relevanceScore,
+  }));
+
+  return topDocs;
+}
+```
+
+### Strategy 6: Embedding Cache
+
+```typescript
+import { LRUCache } from 'lru-cache';
+import crypto from 'crypto';
+
+const embedCache = new LRUCache<string, number[]>({
+  max: 10_000,
+  ttl: 24 * 60 * 60 * 1000, // 24h — embeddings are deterministic
+});
+
+function hashText(text: string): string {
+  return crypto.createHash('sha256').update(text).digest('hex').slice(0, 16);
+}
+
+async function cachedEmbed(texts: string[]): Promise<number[][]> {
+  const results: number[][] = new Array(texts.length);
+  const uncached: { index: number; text: string }[] = [];
+
+  // Check cache first
+  for (let i = 0; i < texts.length; i++) {
+    const key = hashText(texts[i]);
+    const cached = embedCache.get(key);
+    if (cached) {
+      results[i] = cached;
+    } else {
+      uncached.push({ index: i, text: texts[i] });
+    }
+  }
+
+  // Embed only uncached texts
+  if (uncached.length > 0) {
+    const vectors = await batchEmbed(uncached.map(u => u.text));
+    for (let j = 0; j < uncached.length; j++) {
+      results[uncached[j].index] = vectors[j];
+      embedCache.set(hashText(uncached[j].text), vectors[j]);
+    }
+  }
+
+  return results;
+}
+```
+
+### Strategy 7: Response Caching for Chat
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const cache = new LRUCache<string, any>({
+// Cache chat responses for deterministic queries
+const chatCache = new LRUCache<string, string>({
   max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
+  ttl: 5 * 60 * 1000, // 5 min TTL — chat responses can vary
 });
 
-async function cachedCohereRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function cachedChat(message: string, system?: string): Promise<string> {
+  const key = `${system ?? ''}:${message}`;
+  const cached = chatCache.get(key);
+  if (cached) return cached;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
+  const response = await cohere.chat({
+    model: 'command-a-03-2025',
+    messages: [
+      ...(system ? [{ role: 'system' as const, content: system }] : []),
+      { role: 'user' as const, content: message },
+    ],
+    temperature: 0, // Deterministic for caching
+  });
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const cohereLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Cohere
-    const results = await cohereClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  cohereLoader.load('id-1'),
-  cohereLoader.load('id-2'),
-  cohereLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new CohereClient({
-  apiKey: process.env.COHERE_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedCohereList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedCohereList(cursor =>
-  cohereClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
+  const text = response.message?.content?.[0]?.text ?? '';
+  chatCache.set(key, text);
+  return text;
 }
 ```
 
 ## Performance Monitoring
 
 ```typescript
-async function measuredCohereCall<T>(
-  operation: string,
+async function timedCohereCall<T>(
+  endpoint: string,
   fn: () => Promise<T>
 ): Promise<T> {
   const start = performance.now();
   try {
     const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
+    const ms = performance.now() - start;
+    console.log(`[cohere] ${endpoint}: ${ms.toFixed(0)}ms`);
     return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
+  } catch (err) {
+    const ms = performance.now() - start;
+    console.error(`[cohere] ${endpoint} FAILED: ${ms.toFixed(0)}ms`, err);
+    throw err;
   }
 }
 ```
 
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Cohere operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Model selection by latency budget
+- Streaming for sub-200ms TTFT
+- Batch embedding (96x fewer API calls)
+- Compressed embeddings (75-97% storage savings)
+- Cache layer for deterministic queries
+- Rerank as fast pre-filter
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredCohereCall(name, () =>
-    cachedCohereRequest(`cache:${name}`, fn)
-  );
-```
+| Chat > 5s | Long output + slow model | Use streaming, reduce maxTokens |
+| Embed timeout | Too many texts | Batch to 96 per call |
+| Cache stale | Long TTL | Reduce TTL for volatile data |
+| High costs | No caching | Cache embeddings (deterministic) |
 
 ## Resources
-- [Cohere Performance Guide](https://docs.cohere.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Cohere Models & Context](https://docs.cohere.com/docs/models)
+- [Embed Best Practices](https://docs.cohere.com/docs/cohere-embed)
+- [Rerank Best Practices](https://docs.cohere.com/docs/reranking-best-practices)
 
 ## Next Steps
 For cost optimization, see `cohere-cost-tuning`.

@@ -1,11 +1,11 @@
 ---
 name: cohere-migration-deep-dive
 description: |
-  Execute Cohere major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Cohere, performing major version upgrades,
-  or re-platforming existing integrations to Cohere.
-  Trigger with phrases like "migrate cohere", "cohere migration",
-  "switch to cohere", "cohere replatform", "cohere upgrade major".
+  Migrate from OpenAI/Anthropic/other LLM providers to Cohere, or vice versa.
+  Use when switching LLM providers, migrating embeddings between models,
+  or re-platforming existing AI integrations to Cohere API v2.
+  Trigger with phrases like "migrate to cohere", "switch from openai to cohere",
+  "cohere migration", "replace openai with cohere", "cohere replatform".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,230 +17,299 @@ compatible-with: claude-code
 # Cohere Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Cohere, or major version upgrades.
+Comprehensive guide for migrating to Cohere from OpenAI, Anthropic, or other LLM providers, including embedding re-vectorization, prompt adaptation, and gradual traffic shifting.
 
 ## Prerequisites
-- Current system documentation
-- Cohere SDK installed
+- Current LLM integration documented
+- Cohere API key and SDK installed
 - Feature flag infrastructure
-- Rollback strategy tested
+- Rollback strategy
 
 ## Migration Types
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+| From | Complexity | Duration | Key Challenge |
+|------|-----------|----------|---------------|
+| OpenAI → Cohere | Medium | 1-2 weeks | Prompt adaptation, embedding migration |
+| Anthropic → Cohere | Medium | 1-2 weeks | Message format, tool definitions |
+| Custom/OSS → Cohere | Low | Days | SDK integration |
+| Embedding migration | High | 2-4 weeks | Re-vectorize entire corpus |
 
-## Pre-Migration Assessment
+## Instructions
 
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "cohere" > cohere-files.txt
+### Step 1: OpenAI to Cohere Chat Migration
 
-# Count integration points
-wc -l cohere-files.txt
-
-# Identify dependencies
-npm list | grep cohere
-pip freeze | grep cohere
-```
-
-### Step 2: Data Inventory
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
+// --- OpenAI (before) ---
+import OpenAI from 'openai';
+const openai = new OpenAI();
 
-async function assessCohereMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
+const response = await openai.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [
+    { role: 'system', content: 'You are helpful.' },
+    { role: 'user', content: 'Hello' },
+  ],
+  max_tokens: 500,
+  temperature: 0.7,
+});
+const text = response.choices[0].message.content;
+
+// --- Cohere (after) ---
+import { CohereClientV2 } from 'cohere-ai';
+const cohere = new CohereClientV2();
+
+const response = await cohere.chat({
+  model: 'command-a-03-2025',   // GPT-4o equivalent
+  messages: [
+    { role: 'system', content: 'You are helpful.' },  // Same format!
+    { role: 'user', content: 'Hello' },
+  ],
+  maxTokens: 500,               // camelCase, not snake_case
+  temperature: 0.7,
+});
+const text = response.message?.content?.[0]?.text;  // Different response shape
 ```
 
-## Migration Strategy: Strangler Fig Pattern
+### Step 2: Embedding Migration
 
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Cohere   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Cohere SDK
-npm install @cohere/sdk
-
-# Configure credentials
-cp .env.example .env.cohere
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@cohere/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
 ```typescript
-// src/adapters/cohere.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
+// OpenAI embeddings: 3072 dims (text-embedding-3-large)
+// Cohere embeddings: 1024 dims (embed-v4.0)
+// IMPORTANT: You CANNOT mix embeddings from different models in the same vector DB
 
-class CohereAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const cohereData = this.transform(data);
-    return cohereClient.create(cohereData);
-  }
+// Migration plan:
+// 1. Create new vector collection with Cohere dimensions
+// 2. Re-embed all documents with Cohere
+// 3. Switch queries to new collection
+// 4. Delete old collection
 
-  private transform(data: CreateInput): CohereInput {
-    // Map from old format to Cohere format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateCohereData(): Promise<MigrationResult> {
-  const batchSize = 100;
+async function migrateEmbeddings(
+  documents: Array<{ id: string; text: string }>,
+  batchSize = 96
+) {
+  const cohere = new CohereClientV2();
   let processed = 0;
-  let errors: MigrationError[] = [];
 
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await cohereClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
+  for (let i = 0; i < documents.length; i += batchSize) {
+    const batch = documents.slice(i, i + batchSize);
+
+    const response = await cohere.embed({
+      model: 'embed-v4.0',
+      texts: batch.map(d => d.text),
+      inputType: 'search_document',
+      embeddingTypes: ['float'],
+    });
+
+    // Upsert to new vector collection
+    for (let j = 0; j < batch.length; j++) {
+      await vectorDB.upsert({
+        collection: 'docs-cohere', // New collection
+        id: batch[j].id,
+        vector: response.embeddings.float[j],
+        metadata: { text: batch[j].text },
+      });
     }
 
-    // Progress update
-    console.log(`Migrated ${processed} records`);
+    processed += batch.length;
+    console.log(`Migrated ${processed}/${documents.length} embeddings`);
   }
-
-  return { processed, errors };
 }
 ```
 
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const coherePercentage = getFeatureFlag('cohere_migration_percentage');
+### Step 3: Tool Use Migration
 
+```typescript
+// --- OpenAI tools ---
+const openaiTools = [{
+  type: 'function',
+  function: {
+    name: 'get_weather',
+    description: 'Get weather',
+    parameters: {
+      type: 'object',
+      properties: { city: { type: 'string' } },
+      required: ['city'],
+    },
+  },
+}];
+
+// --- Cohere tools (same format in v2!) ---
+const cohereTools = [{
+  type: 'function',
+  function: {
+    name: 'get_weather',
+    description: 'Get weather',
+    parameters: {
+      type: 'object',
+      properties: { city: { type: 'string' } },
+      required: ['city'],
+    },
+  },
+}];
+// Tool definitions are identical! The difference is in response handling.
+
+// OpenAI: response.choices[0].message.tool_calls
+// Cohere: response.message?.toolCalls
+```
+
+### Step 4: Streaming Migration
+
+```typescript
+// --- OpenAI streaming ---
+const openaiStream = await openai.chat.completions.create({
+  model: 'gpt-4o',
+  messages: [...],
+  stream: true,
+});
+for await (const chunk of openaiStream) {
+  process.stdout.write(chunk.choices[0]?.delta?.content ?? '');
+}
+
+// --- Cohere streaming ---
+const cohereStream = await cohere.chatStream({
+  model: 'command-a-03-2025',
+  messages: [...],
+});
+for await (const event of cohereStream) {
+  if (event.type === 'content-delta') {
+    process.stdout.write(event.delta?.message?.content?.text ?? '');
+  }
+}
+```
+
+### Step 5: Adapter Pattern for Gradual Migration
+
+```typescript
+interface LLMAdapter {
+  chat(message: string, options?: { system?: string; maxTokens?: number }): Promise<string>;
+  embed(texts: string[]): Promise<number[][]>;
+  rerank(query: string, docs: string[], topN?: number): Promise<Array<{ index: number; score: number }>>;
+}
+
+class CohereAdapter implements LLMAdapter {
+  private client = new CohereClientV2();
+
+  async chat(message: string, options?: { system?: string; maxTokens?: number }): Promise<string> {
+    const messages: any[] = [];
+    if (options?.system) messages.push({ role: 'system', content: options.system });
+    messages.push({ role: 'user', content: message });
+
+    const response = await this.client.chat({
+      model: 'command-a-03-2025',
+      messages,
+      maxTokens: options?.maxTokens,
+    });
+    return response.message?.content?.[0]?.text ?? '';
+  }
+
+  async embed(texts: string[]): Promise<number[][]> {
+    const response = await this.client.embed({
+      model: 'embed-v4.0',
+      texts,
+      inputType: 'search_document',
+      embeddingTypes: ['float'],
+    });
+    return response.embeddings.float;
+  }
+
+  async rerank(query: string, docs: string[], topN = 5): Promise<Array<{ index: number; score: number }>> {
+    const response = await this.client.rerank({
+      model: 'rerank-v3.5',
+      query,
+      documents: docs,
+      topN,
+    });
+    return response.results.map(r => ({ index: r.index, score: r.relevanceScore }));
+  }
+}
+
+class OpenAIAdapter implements LLMAdapter {
+  // ... OpenAI implementation
+}
+
+// Traffic splitting via feature flag
+function getLLMAdapter(): LLMAdapter {
+  const coherePercentage = getFeatureFlag('cohere_migration_pct'); // 0-100
   if (Math.random() * 100 < coherePercentage) {
     return new CohereAdapter();
   }
-
-  return new LegacyAdapter();
+  return new OpenAIAdapter();
 }
 ```
+
+### Step 6: Validation and Comparison
+
+```typescript
+async function compareOutputs(message: string): Promise<{
+  openai: string;
+  cohere: string;
+  latencyMs: { openai: number; cohere: number };
+}> {
+  const startOpenAI = Date.now();
+  const openaiResult = await openaiAdapter.chat(message);
+  const openaiLatency = Date.now() - startOpenAI;
+
+  const startCohere = Date.now();
+  const cohereResult = await cohereAdapter.chat(message);
+  const cohereLatency = Date.now() - startCohere;
+
+  return {
+    openai: openaiResult,
+    cohere: cohereResult,
+    latencyMs: { openai: openaiLatency, cohere: cohereLatency },
+  };
+}
+
+// Run comparison on sample queries during migration
+const testQueries = ['Summarize this text', 'Translate to French', 'Extract key points'];
+for (const q of testQueries) {
+  const result = await compareOutputs(q);
+  console.log(`Query: ${q}`);
+  console.log(`OpenAI (${result.latencyMs.openai}ms): ${result.openai.slice(0, 100)}`);
+  console.log(`Cohere (${result.latencyMs.cohere}ms): ${result.cohere.slice(0, 100)}`);
+}
+```
+
+## Cohere-Unique Features (Not in OpenAI)
+
+| Feature | Cohere | OpenAI |
+|---------|--------|--------|
+| Built-in Rerank | `cohere.rerank()` | Not available |
+| RAG with citations | `documents` param + citations | Manual implementation |
+| Connectors (data sources) | `connectors` param | Not available |
+| Classify endpoint | `cohere.classify()` | Not available |
+| Safety modes | `safetyMode` param | Moderation API (separate) |
 
 ## Rollback Plan
 
 ```bash
-# Immediate rollback
-kubectl set env deployment/app COHERE_ENABLED=false
-kubectl rollout restart deployment/app
+# Set feature flag to 0% Cohere traffic
+curl -X POST https://flagservice/flags/cohere_migration_pct -d '{"value": 0}'
 
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.cohere'
+# Verify traffic is back on old provider
+# Monitor error rates for 15 minutes
+# If stable, migration is paused safely
 ```
-
-## Post-Migration Validation
-
-```typescript
-async function validateCohereMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Cohere integration.
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Cohere
+- Adapter layer abstracting LLM provider
+- Embedding migration with batch processing
+- A/B comparison for output quality validation
+- Feature-flag controlled traffic shifting
+- Rollback via feature flag (instant, no deploy)
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateCohereMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Embedding dimension mismatch | Mixed providers in same DB | Separate collections per provider |
+| Response shape different | Provider-specific format | Use adapter pattern |
+| Higher latency on Cohere | Different model size | Try command-r7b for speed |
+| Quality difference | Different model strengths | Tune system prompts per provider |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Cohere Migration Guide](https://docs.cohere.com/migration)
+- [Cohere OpenAI Compatibility](https://docs.cohere.com/docs/compatibility-api)
+- [Cohere Models Overview](https://docs.cohere.com/docs/models)
+- [API v2 Reference](https://docs.cohere.com/reference/about)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `cohere-advanced-troubleshooting`.
+## Next Steps
+For Cohere-specific architecture patterns, see `cohere-reference-architecture`.

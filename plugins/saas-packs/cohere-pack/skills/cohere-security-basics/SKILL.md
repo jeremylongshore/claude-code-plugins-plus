@@ -1,11 +1,11 @@
 ---
 name: cohere-security-basics
 description: |
-  Apply Cohere security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
+  Apply Cohere security best practices for API key management and access control.
+  Use when securing API keys, implementing key rotation,
   or auditing Cohere security configuration.
   Trigger with phrases like "cohere security", "cohere secrets",
-  "secure cohere", "cohere API key security".
+  "secure cohere", "cohere API key security", "cohere key rotation".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,202 @@ compatible-with: claude-code
 # Cohere Security Basics
 
 ## Overview
-Security best practices for Cohere API keys, tokens, and access control.
+Security best practices for Cohere API keys, request validation, and data protection. Cohere uses bearer token auth with trial and production key tiers.
 
 ## Prerequisites
-- Cohere SDK installed
+- Cohere account at [dashboard.cohere.com](https://dashboard.cohere.com)
 - Understanding of environment variables
-- Access to Cohere dashboard
+- Secret management solution for production
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-COHERE_API_KEY=sk_live_***
-COHERE_SECRET=***
+### Step 1: API Key Management
 
-# .gitignore
+```bash
+# NEVER hardcode keys — use environment variables
+export CO_API_KEY="your-key-here"
+
+# .env file (MUST be git-ignored)
+CO_API_KEY=your-key-here
+
+# .gitignore (mandatory entries)
 .env
 .env.local
 .env.*.local
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Cohere dashboard
-# 2. Update environment variable
-export COHERE_API_KEY="new_key_here"
+**Key types:**
+- **Trial keys** — free, rate-limited, for development only
+- **Production keys** — metered billing, for live applications
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${COHERE_API_KEY}" \
-  https://api.cohere.com/health
+### Step 2: Runtime Validation
 
-# 4. Revoke old key in dashboard
+```typescript
+import { CohereClientV2 } from 'cohere-ai';
+
+function createSecureClient(): CohereClientV2 {
+  const apiKey = process.env.CO_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('CO_API_KEY is required. Set it as an environment variable.');
+  }
+
+  // Basic key format check
+  if (apiKey.length < 20) {
+    throw new Error('CO_API_KEY appears malformed. Check dashboard.cohere.com.');
+  }
+
+  return new CohereClientV2({ token: apiKey });
+}
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 3: Key Rotation Procedure
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+```bash
+# 1. Generate new key in Cohere dashboard
+#    → dashboard.cohere.com → API Keys → Create new key
+
+# 2. Deploy new key (keep old key active)
+# Vercel:
+vercel env add CO_API_KEY production
+
+# AWS:
+aws secretsmanager update-secret --secret-id cohere/api-key --secret-string "new-key"
+
+# GCP:
+echo -n "new-key" | gcloud secrets versions add cohere-api-key --data-file=-
+
+# 3. Verify new key works
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer NEW_KEY" \
+  -H "Content-Type: application/json" \
+  https://api.cohere.com/v2/chat \
+  -d '{"model":"command-r7b-12-2024","messages":[{"role":"user","content":"test"}]}'
+# Should return 200
+
+# 4. Revoke old key in dashboard
+# 5. Monitor for 401 errors after revocation
+```
+
+### Step 4: Request Data Protection
+
+```typescript
+// Scrub PII before sending to Cohere API
+const PII_PATTERNS: [string, RegExp][] = [
+  ['email', /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g],
+  ['phone', /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g],
+  ['ssn', /\b\d{3}-\d{2}-\d{4}\b/g],
+];
+
+function scrubPII(text: string): string {
+  let scrubbed = text;
+  for (const [type, regex] of PII_PATTERNS) {
+    scrubbed = scrubbed.replace(regex, `[REDACTED_${type.toUpperCase()}]`);
+  }
+  return scrubbed;
+}
+
+// Use before API calls when handling user data
+async function safeCohereChat(userInput: string) {
+  const sanitized = scrubPII(userInput);
+
+  return cohere.chat({
+    model: 'command-a-03-2025',
+    messages: [{ role: 'user', content: sanitized }],
+    safetyMode: 'CONTEXTUAL', // CONTEXTUAL (default), STRICT, or OFF
+  });
+}
+```
+
+### Step 5: Logging Safety
+
+```typescript
+import { CohereError } from 'cohere-ai';
+
+function safeLog(message: string, data?: Record<string, unknown>) {
+  const sanitized = { ...data };
+
+  // Never log API keys
+  delete sanitized.apiKey;
+  delete sanitized.token;
+  delete sanitized.authorization;
+
+  // Truncate request/response bodies
+  if (typeof sanitized.body === 'string' && (sanitized.body as string).length > 500) {
+    sanitized.body = (sanitized.body as string).slice(0, 500) + '...[truncated]';
+  }
+
+  console.log(`[cohere] ${message}`, sanitized);
+}
+
+// Wrap error logging
+function logCohereError(err: unknown) {
+  if (err instanceof CohereError) {
+    safeLog('API error', {
+      status: err.statusCode,
+      message: err.message,
+      // Do NOT log err.body — may contain sensitive request data
+    });
+  }
+}
+```
+
+### Step 6: Safety Modes
+
+Cohere's Chat API supports safety modes that control content filtering:
+
+```typescript
+// CONTEXTUAL (default): Adapts based on context
+await cohere.chat({
+  model: 'command-a-03-2025',
+  messages: [{ role: 'user', content: prompt }],
+  safetyMode: 'CONTEXTUAL',
+});
+
+// STRICT: Maximum safety filtering
+await cohere.chat({
+  model: 'command-a-03-2025',
+  messages: [{ role: 'user', content: prompt }],
+  safetyMode: 'STRICT',
+});
+
+// Note: safetyMode not configurable with tools or documents params
+```
+
+## Security Checklist
+
+- [ ] `CO_API_KEY` stored in environment variables, never in code
+- [ ] `.env` files listed in `.gitignore`
+- [ ] Separate keys for development and production
+- [ ] Key rotation scheduled (quarterly recommended)
+- [ ] PII scrubbed from inputs sent to Cohere
+- [ ] API keys excluded from all log output
+- [ ] Production key has billing alerts configured
+- [ ] Git pre-commit hook scans for leaked keys
+
+## Git Pre-Commit Hook
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit — detect Cohere keys in staged files
+if git diff --cached --diff-filter=ACM | grep -qiE 'CO_API_KEY|cohere.*key.*=.*[a-zA-Z0-9]{20}'; then
+  echo "ERROR: Possible Cohere API key in commit. Remove before committing."
+  exit 1
+fi
+```
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new CohereClient({
-    apiKey: process.env.COHERE_READ_KEY,
-  }),
-  writer: new CohereClient({
-    apiKey: process.env.COHERE_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Cohere analytics
-  await cohereClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'cohere.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Key in git history | `git log -p \| grep CO_API_KEY` | Rotate key immediately |
+| Key in logs | Log audit | Add log scrubbing |
+| Key in error report | Error handler review | Sanitize error payloads |
+| Excessive token spend | Billing dashboard | Set budget alerts |
 
 ## Resources
-- [Cohere Security Guide](https://docs.cohere.com/security)
-- [Cohere API Scopes](https://docs.cohere.com/scopes)
+- [Cohere API Keys Dashboard](https://dashboard.cohere.com/api-keys)
+- [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)
+- [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
 
 ## Next Steps
 For production deployment, see `cohere-prod-checklist`.
