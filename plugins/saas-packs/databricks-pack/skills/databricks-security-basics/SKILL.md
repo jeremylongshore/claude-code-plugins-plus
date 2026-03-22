@@ -17,255 +17,202 @@ tags: [saas, databricks, api, security, audit]
 # Databricks Security Basics
 
 ## Overview
-Security best practices for Databricks tokens, secrets, and access control.
+Implement Databricks security: secret scopes for credential storage, token rotation, least-privilege access via Unity Catalog grants, and security auditing via system tables. Secrets API uses `PUT /api/2.0/secrets/put` and values are automatically redacted in notebook output.
 
 ## Prerequisites
-- Databricks CLI installed
-- Workspace admin access (for secrets management)
-- Understanding of Unity Catalog
+- Databricks CLI configured
+- Workspace admin access (for secret scope creation)
+- Unity Catalog enabled
 
 ## Instructions
 
-### Step 1: Configure Secret Scopes
+### Step 1: Create and Manage Secret Scopes
 ```bash
-# Create a secret scope (Databricks-backed)
+# Create a Databricks-backed secret scope
 databricks secrets create-scope my-app-secrets
 
-# Create a secret scope (Azure Key Vault-backed)
-databricks secrets create-scope azure-secrets \
+# Create Azure Key Vault-backed scope (Azure only)
+databricks secrets create-scope azure-kv \
   --scope-backend-type AZURE_KEYVAULT \
-  --resource-id "/subscriptions/.../vaults/my-vault" \
-  --dns-name "https://my-vault.vault.azure.net/"
+  --resource-id "/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.KeyVault/vaults/<vault>" \
+  --dns-name "https://<vault>.vault.azure.net/"
 
-# List scopes
+# List all scopes
 databricks secrets list-scopes
 ```
 
-### Step 2: Store Secrets
+### Step 2: Store and Access Secrets
 ```bash
-# Store a secret
+# Store a secret (prompts for value interactively)
 databricks secrets put-secret my-app-secrets db-password
 
-# Store from file (for multi-line secrets)
-databricks secrets put-secret my-app-secrets api-key --string-value "sk_live_..."
+# Store from CLI argument
+databricks secrets put-secret my-app-secrets api-key --string-value "sk_live_abc123"
 
-# List secrets in scope (values are hidden)
+# List secrets (values always hidden)
 databricks secrets list-secrets my-app-secrets
 ```
 
-### Step 3: Access Secrets in Code
 ```python
-# In notebooks and jobs
+# Access secrets in notebooks and jobs — values auto-redacted in output
 db_password = dbutils.secrets.get(scope="my-app-secrets", key="db-password")
 api_key = dbutils.secrets.get(scope="my-app-secrets", key="api-key")
 
-# Secrets are redacted in logs
-print(f"Password: {db_password}")  # Shows [REDACTED]
+# Printing shows [REDACTED] — Databricks prevents accidental exposure
+print(f"Password: {db_password}")  # Output: Password: [REDACTED]
 
-# Use in connection strings
-jdbc_url = f"jdbc:postgresql://host:5432/db?user=app&password={db_password}"  # 5432: PostgreSQL port
+# Use in JDBC connections
+jdbc_url = f"jdbc:postgresql://host:5432/db?user=app&password={db_password}"
+df = spark.read.format("jdbc").option("url", jdbc_url).load()
 ```
 
-### Step 4: Secret Scope ACLs
+### Step 3: Secret Scope Access Control
 ```bash
-# Grant read access to a user
+# Grant READ to a user
 databricks secrets put-acl my-app-secrets user@company.com READ
 
-# Grant manage access to a group
+# Grant MANAGE to a group (full control)
 databricks secrets put-acl my-app-secrets data-engineers MANAGE
 
-# List ACLs
+# List ACLs for a scope
 databricks secrets list-acls my-app-secrets
 ```
 
-### Step 5: Token Management
+### Step 4: Token Audit and Rotation
 ```python
-# src/databricks/tokens.py
 from databricks.sdk import WorkspaceClient
-from datetime import datetime, timedelta
+from datetime import datetime
 
-def audit_tokens(w: WorkspaceClient) -> list[dict]:
-    """Audit all tokens in workspace for security review."""
-    tokens = list(w.tokens.list())
+w = WorkspaceClient()
 
-    token_audit = []
-    for token in tokens:
-        created = datetime.fromtimestamp(token.creation_time / 1000)  # 1000: 1 second in ms
-        expiry = datetime.fromtimestamp(token.expiry_time / 1000) if token.expiry_time else None  # 1 second in ms
+def audit_tokens() -> list[dict]:
+    """Audit all PATs for expiration and rotation needs."""
+    findings = []
+    for token in w.tokens.list():
+        created = datetime.fromtimestamp(token.creation_time / 1000)
+        expiry = datetime.fromtimestamp(token.expiry_time / 1000) if token.expiry_time else None
 
-        token_audit.append({
+        finding = {
             "token_id": token.token_id,
             "comment": token.comment,
-            "created": created,
-            "expires": expiry,
+            "created": created.isoformat(),
+            "expires": expiry.isoformat() if expiry else "NEVER",
             "days_until_expiry": (expiry - datetime.now()).days if expiry else None,
-            "is_expired": expiry < datetime.now() if expiry else False,
-            "needs_rotation": expiry and (expiry - datetime.now()).days < 30 if expiry else True,
-        })
+        }
 
-    return token_audit
+        if not expiry:
+            finding["risk"] = "HIGH — no expiration set"
+        elif (expiry - datetime.now()).days < 30:
+            finding["risk"] = "MEDIUM — expires within 30 days"
+        else:
+            finding["risk"] = "LOW"
 
-def rotate_token(w: WorkspaceClient, old_token_id: str, lifetime_days: int = 90) -> str:
-    """Rotate a token by creating new and deleting old."""
-    # Create new token
-    new_token = w.tokens.create(
-        comment=f"Rotated token - {datetime.now().isoformat()}",
-        lifetime_seconds=lifetime_days * 24 * 60 * 60,
+        findings.append(finding)
+    return findings
+
+def rotate_token(old_token_id: str, lifetime_days: int = 90) -> str:
+    """Create new token and delete old one."""
+    new = w.tokens.create(
+        comment=f"Rotated {datetime.now().isoformat()}",
+        lifetime_seconds=lifetime_days * 86400,
     )
-
-    # Delete old token
     w.tokens.delete(token_id=old_token_id)
+    return new.token_value  # Store this immediately — shown only once
 
-    return new_token.token_value
+for finding in audit_tokens():
+    print(f"{finding['comment']}: {finding['risk']} (expires {finding['expires']})")
 ```
 
-### Step 6: Implement Least Privilege
-```python
-# Environment-specific permissions
-permission_matrix = {
-    "development": {
-        "cluster_access": "CAN_ATTACH_TO",
-        "job_access": "CAN_MANAGE_RUN",
-        "notebook_access": "CAN_EDIT",
-    },
-    "staging": {
-        "cluster_access": "CAN_RESTART",
-        "job_access": "CAN_MANAGE_RUN",
-        "notebook_access": "CAN_READ",
-    },
-    "production": {
-        "cluster_access": "CAN_ATTACH_TO",  # Read-only
-        "job_access": "CAN_VIEW",
-        "notebook_access": "CAN_READ",
-    },
-}
+### Step 5: Unity Catalog Least Privilege
+```sql
+-- Grant minimal access per role
+-- Engineers: read/write bronze+silver, read gold
+GRANT USAGE ON CATALOG analytics TO `data-engineers`;
+GRANT CREATE, MODIFY, SELECT ON SCHEMA analytics.bronze TO `data-engineers`;
+GRANT CREATE, MODIFY, SELECT ON SCHEMA analytics.silver TO `data-engineers`;
+GRANT SELECT ON SCHEMA analytics.gold TO `data-engineers`;
 
-def apply_environment_permissions(
-    w: WorkspaceClient,
-    environment: str,
-    user_email: str,
-    resource_type: str,
-    resource_id: str,
-) -> None:
-    """Apply environment-appropriate permissions."""
-    perms = permission_matrix[environment]
+-- Analysts: read-only on curated gold tables
+GRANT USAGE ON CATALOG analytics TO `data-analysts`;
+GRANT SELECT ON SCHEMA analytics.gold TO `data-analysts`;
 
-    if resource_type == "cluster":
-        w.permissions.update(
-            object_type="clusters",
-            object_id=resource_id,
-            access_control_list=[{
-                "user_name": user_email,
-                "permission_level": perms["cluster_access"],
-            }]
-        )
+-- Audit current grants
+SHOW GRANTS ON SCHEMA analytics.gold;
+SHOW GRANTS `data-analysts` ON CATALOG analytics;
+```
+
+### Step 6: Column-Level Masking and Row-Level Security
+```sql
+-- Mask email for non-privileged users
+CREATE OR REPLACE FUNCTION analytics.gold.mask_email(email STRING)
+  RETURN IF(IS_ACCOUNT_GROUP_MEMBER('data-engineers'), email,
+            REGEXP_REPLACE(email, '(.).*@', '$1***@'));
+
+ALTER TABLE analytics.gold.customers ALTER COLUMN email
+  SET MASK analytics.gold.mask_email;
+
+-- Row-level security: restrict by department
+CREATE OR REPLACE FUNCTION analytics.gold.dept_filter(dept STRING)
+  RETURN IF(IS_ACCOUNT_GROUP_MEMBER('data-admins'), true,
+            dept = session_user_department());
+
+ALTER TABLE analytics.gold.sales
+  SET ROW FILTER analytics.gold.dept_filter ON (department);
+```
+
+### Step 7: Security Audit via System Tables
+```sql
+-- Recent permission changes (last 7 days)
+SELECT event_time, user_identity.email AS actor,
+       action_name, request_params
+FROM system.access.audit
+WHERE action_name IN ('grantPermission', 'revokePermission',
+                       'changeJobPermissions', 'changeClusterPermissions')
+  AND event_date >= current_date() - 7
+ORDER BY event_time DESC;
+
+-- Failed authentication attempts
+SELECT event_time, user_identity.email, source_ip_address,
+       response.error_message
+FROM system.access.audit
+WHERE action_name = 'tokenLogin' AND response.status_code != 200
+  AND event_date >= current_date() - 7
+ORDER BY event_time DESC;
 ```
 
 ## Output
-- Secret scopes configured
-- Secrets stored securely
-- Token rotation procedures
-- Least privilege access
+- Secret scopes with ACL-based access control
+- Token audit report identifying expiring/non-expiring tokens
+- Unity Catalog grants enforcing least privilege by role
+- Column masking and row-level security on sensitive tables
+- Audit queries for ongoing security monitoring
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed token | Audit logs | Immediate rotation |
-| Excessive scopes | Permission audit | Reduce to minimum |
-| No token expiry | Token audit | Set 90-day max lifetime |
-| Shared credentials | Usage patterns | Individual service principals |
+|---------------|-----------|------------|
+| Token without expiry | `audit_tokens()` shows `NEVER` | Set 90-day max lifetime via rotation |
+| Hardcoded credentials | Code review / secret scanning | Move to Databricks Secret Scopes |
+| Over-privileged service principal | `SHOW GRANTS` audit | Reduce to minimum required privileges |
+| Shared PATs across users | Audit log `tokenLogin` events | Individual service principals per app |
 
 ## Examples
 
-### Security Audit Script
-```python
-from databricks.sdk import WorkspaceClient
-
-def security_audit(w: WorkspaceClient) -> dict:
-    """Run comprehensive security audit."""
-    audit_results = {
-        "tokens": [],
-        "secrets": [],
-        "permissions": [],
-        "findings": [],
-    }
-
-    # Audit tokens
-    for token in w.tokens.list():
-        if not token.expiry_time:
-            audit_results["findings"].append({
-                "severity": "HIGH",
-                "type": "token_no_expiry",
-                "detail": f"Token {token.comment} has no expiration",
-            })
-
-    # Audit secret scopes
-    for scope in w.secrets.list_scopes():
-        acls = list(w.secrets.list_acls(scope=scope.name))
-        if not acls:
-            audit_results["findings"].append({
-                "severity": "MEDIUM",
-                "type": "scope_no_acl",
-                "detail": f"Scope {scope.name} has no ACLs",
-            })
-
-    return audit_results
-```
-
-### Service Principal Setup (Azure)
-```bash
-# Create service principal in Azure AD
-az ad sp create-for-rbac --name databricks-cicd
-
-# Add to Databricks workspace (Admin Console or SCIM API)
-databricks service-principals create \
-  --json '{
-    "display_name": "CI/CD Pipeline",
-    "application_id": "your-azure-app-id"
-  }'
-
-# Grant permissions
-databricks permissions update jobs --job-id 123 --json '{
-  "access_control_list": [{
-    "service_principal_name": "your-azure-app-id",
-    "permission_level": "CAN_MANAGE"
-  }]
-}'
-```
-
-### Unity Catalog Security
-```sql
--- Create secure group
-CREATE GROUP IF NOT EXISTS `data-scientists`;
-
--- Grant schema access (not table-level for simplicity)
-GRANT USAGE ON CATALOG main TO `data-scientists`;
-GRANT USAGE ON SCHEMA main.analytics TO `data-scientists`;
-GRANT SELECT ON SCHEMA main.analytics TO `data-scientists`;
-
--- Audit grants
-SHOW GRANTS ON SCHEMA main.analytics;
-
--- Row-level security
-ALTER TABLE main.analytics.customers
-SET ROW FILTER customer_region_filter ON (region);
-```
-
 ### Security Checklist
-- [ ] Personal access tokens have expiration dates
-- [ ] Secrets stored in Databricks Secret Scopes
-- [ ] No hardcoded credentials in notebooks
-- [ ] Service principals for automation
-- [ ] Unity Catalog for data governance
-- [ ] Audit logging enabled
-- [ ] Network security (IP access lists)
-- [ ] Cluster policies enforced
+- [ ] All PATs have expiration dates (max 90 days)
+- [ ] Secrets stored in Databricks Secret Scopes, not env vars
+- [ ] No hardcoded credentials in notebooks or repos
+- [ ] Service principals for all automated workflows
+- [ ] Unity Catalog enforcing least privilege
+- [ ] Column masking on PII fields
+- [ ] IP access lists configured (Admin Console > Workspace Settings)
+- [ ] Cluster policies restrict instance types and auto-termination
+- [ ] Audit log queries scheduled for weekly review
 
 ## Resources
-- [Databricks Security Guide](https://docs.databricks.com/security/index.html)
-- [Secret Management](https://docs.databricks.com/security/secrets/index.html)
-- [Unity Catalog Security](https://docs.databricks.com/data-governance/unity-catalog/index.html)
-- [Token Management](https://docs.databricks.com/dev-tools/auth.html)
+- [Secret Management](https://docs.databricks.com/aws/en/security/secrets/)
+- [Unity Catalog Security](https://docs.databricks.com/aws/en/data-governance/unity-catalog/)
+- [Row and Column Filters](https://docs.databricks.com/aws/en/data-governance/unity-catalog/row-and-column-filters)
+- [Audit Logs](https://docs.databricks.com/aws/en/admin/system-tables/audit-logs)
 
 ## Next Steps
 For production deployment, see `databricks-prod-checklist`.

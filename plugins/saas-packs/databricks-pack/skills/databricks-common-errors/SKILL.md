@@ -17,122 +17,104 @@ tags: [saas, databricks, debugging]
 # Databricks Common Errors
 
 ## Overview
-Quick reference for the top Databricks errors and their solutions.
+Quick-reference diagnostic guide for the most frequent Databricks errors. Covers cluster failures, Spark OOM, Delta Lake conflicts, permissions, schema mismatches, rate limits, and job run failures with real SDK/SQL solutions.
 
 ## Prerequisites
-- Databricks CLI/SDK installed
-- API credentials configured
+- Databricks CLI configured
 - Access to cluster/job logs
+- `databricks-sdk` installed for programmatic debugging
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message in job run output, cluster logs, or notebook cells.
-
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### CLUSTER_NOT_READY
-**Error Message:**
-```
-ClusterNotReadyException: Cluster is not in a valid state
+### Step 1: Identify the Error Source
+```bash
+# Get failed run details
+databricks runs get --run-id $RUN_ID --output json | jq '{
+  state: .state.result_state,
+  message: .state.state_message,
+  tasks: [.tasks[] | {key: .task_key, state: .state.result_state, error: .state.state_message}]
+}'
 ```
 
+### Step 2: Match and Fix
+
+---
+
+### CLUSTER_NOT_READY / INVALID_STATE
+```
+ClusterNotReadyException: Cluster 0123-456789-abcde is not in a RUNNING state
+```
 **Cause:** Cluster is starting, terminating, or in error state.
 
-**Solution:**
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.compute import State
 
 w = WorkspaceClient()
-cluster = w.clusters.get("cluster-id")
+cluster = w.clusters.get(cluster_id="0123-456789-abcde")
 
-if cluster.state in [State.PENDING, State.RESTARTING]:
-    # Wait for cluster
-    w.clusters.wait_get_cluster_running("cluster-id")
+if cluster.state in (State.PENDING, State.RESTARTING):
+    w.clusters.ensure_cluster_is_running("0123-456789-abcde")
 elif cluster.state == State.TERMINATED:
-    # Start cluster
-    w.clusters.start("cluster-id")
-    w.clusters.wait_get_cluster_running("cluster-id")
+    w.clusters.start_and_wait(cluster_id="0123-456789-abcde")
 elif cluster.state == State.ERROR:
-    # Check termination reason
-    print(f"Error: {cluster.termination_reason}")
+    reason = cluster.termination_reason
+    print(f"Cluster error: {reason.code} — {reason.parameters}")
+    # Common: CLOUD_PROVIDER_LAUNCH_FAILURE, INSTANCE_POOL_CLUSTER_FAILURE
 ```
 
 ---
 
-### SPARK_DRIVER_OOM (Out of Memory)
-**Error Message:**
+### SPARK_DRIVER_OOM
 ```
 java.lang.OutOfMemoryError: Java heap space
 SparkException: Job aborted due to stage failure
 ```
-
 **Cause:** Driver or executor running out of memory.
 
-**Solution:**
 ```python
-# Increase driver memory in cluster config
-{
+# Fix 1: Increase memory via cluster Spark config
+spark_conf = {
     "spark.driver.memory": "8g",
     "spark.executor.memory": "8g",
-    "spark.sql.shuffle.partitions": "200"  # HTTP 200 OK
+    "spark.sql.shuffle.partitions": "400",  # reduce skew
 }
 
-# Or use more efficient operations
-# WRONG: collect() on large data
-all_data = df.collect()  # DON'T DO THIS
+# Fix 2: Never collect() large datasets
+# BAD:  all_data = df.collect()
+# GOOD: df.write.format("delta").saveAsTable("catalog.schema.results")
 
-# RIGHT: process in chunks or use distributed operations
-df.write.format("delta").save("/path")  # Keep data distributed
+# Fix 3: Broadcast small tables instead of shuffling
+from pyspark.sql.functions import broadcast
+result = large_df.join(broadcast(small_lookup_df), "key")
 ```
 
 ---
 
 ### DELTA_CONCURRENT_WRITE
-**Error Message:**
 ```
 ConcurrentAppendException: Files were added by a concurrent update
 ConcurrentDeleteReadException: A concurrent operation modified files
 ```
+**Cause:** Multiple jobs writing to the same Delta table simultaneously.
 
-**Cause:** Multiple jobs writing to same Delta table simultaneously.
-
-**Solution:**
 ```python
-# Option 1: Retry with isolation level
-df.write \
-    .format("delta") \
-    .option("isolationLevel", "Serializable") \
-    .mode("append") \
-    .save("/path")
-
-# Option 2: Use merge with retry logic
 from delta.tables import DeltaTable
 import time
 
-def merge_with_retry(source_df, target_path, merge_condition, retries=3):
-    for attempt in range(retries):
+def merge_with_retry(spark, source_df, target_table, merge_key, max_retries=3):
+    """MERGE with retry for concurrent write conflicts."""
+    for attempt in range(max_retries):
         try:
-            delta_table = DeltaTable.forPath(spark, target_path)
-            delta_table.alias("t").merge(
-                source_df.alias("s"),
-                merge_condition
-            ).whenMatchedUpdateAll().whenNotMatchedInsertAll().execute()
+            target = DeltaTable.forName(spark, target_table)
+            (target.alias("t")
+                .merge(source_df.alias("s"), f"t.{merge_key} = s.{merge_key}")
+                .whenMatchedUpdateAll()
+                .whenNotMatchedInsertAll()
+                .execute())
             return
         except Exception as e:
-            if "Concurrent" in str(e) and attempt < retries - 1:
+            if "Concurrent" in str(e) and attempt < max_retries - 1:
                 time.sleep(2 ** attempt)
                 continue
             raise
@@ -141,24 +123,24 @@ def merge_with_retry(source_df, target_path, merge_condition, retries=3):
 ---
 
 ### PERMISSION_DENIED
-**Error Message:**
 ```
-PermissionDeniedException: User does not have permission
-PERMISSION_DENIED: User does not have READ on table
+PERMISSION_DENIED: User does not have SELECT on TABLE catalog.schema.table
+PermissionDeniedException: User does not have permission MANAGE on cluster
 ```
+**Cause:** Missing Unity Catalog grants or workspace permissions.
 
-**Cause:** Missing Unity Catalog or workspace permissions.
-
-**Solution:**
 ```sql
--- Grant table permissions (Unity Catalog)
-GRANT SELECT ON TABLE catalog.schema.table TO `user@company.com`;
-GRANT ALL PRIVILEGES ON SCHEMA catalog.schema TO `data-team`;
+-- Fix Unity Catalog permissions (requires GRANT privilege)
+GRANT USAGE ON CATALOG analytics TO `data-team`;
+GRANT USAGE ON SCHEMA analytics.silver TO `data-team`;
+GRANT SELECT ON TABLE analytics.silver.orders TO `data-team`;
 
--- Check current permissions
-SHOW GRANTS ON TABLE catalog.schema.table;
+-- Check current grants
+SHOW GRANTS ON TABLE analytics.silver.orders;
+```
 
--- For workspace objects (Admin required)
+```bash
+# Fix workspace object permissions
 databricks permissions update jobs --job-id 123 --json '{
   "access_control_list": [{
     "user_name": "user@company.com",
@@ -170,162 +152,130 @@ databricks permissions update jobs --job-id 123 --json '{
 ---
 
 ### INVALID_PARAMETER_VALUE
-**Error Message:**
 ```
-InvalidParameterValue: Instance type not supported
-Invalid Spark version
+InvalidParameterValue: Instance type xyz not supported in region us-east-1
+Invalid spark_version: 13.x.x-scala2.12
 ```
+**Cause:** Wrong cluster config for the workspace region.
 
-**Cause:** Wrong cluster configuration for workspace/cloud.
-
-**Solution:**
 ```python
-# Get valid node types for your workspace
 w = WorkspaceClient()
-node_types = list(w.clusters.list_node_types())
-for nt in node_types[:5]:
+
+# List valid node types for this workspace
+for nt in sorted(w.clusters.list_node_types().node_types, key=lambda x: x.memory_mb)[:10]:
     print(f"{nt.node_type_id}: {nt.memory_mb}MB, {nt.num_cores} cores")
 
-# Get valid Spark versions
-versions = list(w.clusters.spark_versions())
-for v in versions[:5]:
-    print(v.key)
+# List valid Spark versions
+for v in w.clusters.spark_versions().versions:
+    if "LTS" in v.name:
+        print(f"{v.key}: {v.name}")
 ```
 
 ---
 
 ### SCHEMA_MISMATCH
-**Error Message:**
 ```
-AnalysisException: Cannot merge incompatible data types
-Delta table schema does not match
+AnalysisException: A schema mismatch detected when writing to the Delta table
 ```
+**Cause:** Source schema doesn't match target table.
 
-**Cause:** Source data schema doesn't match target table.
-
-**Solution:**
 ```python
 # Option 1: Enable schema evolution
-df.write \
-    .format("delta") \
-    .option("mergeSchema", "true") \
-    .mode("append") \
-    .save("/path")
+df.write.format("delta").option("mergeSchema", "true").mode("append").saveAsTable("target")
 
-# Option 2: Explicit schema alignment
-from pyspark.sql.types import StructType, StructField, StringType, IntegerType
-
-target_schema = spark.table("target_table").schema
-
-# Cast columns to match
-for field in target_schema:
-    if field.name in df.columns:
-        df = df.withColumn(field.name, col(field.name).cast(field.dataType))
-
-# Option 3: Check differences before write
+# Option 2: Identify differences
 source_cols = set(df.columns)
 target_cols = set(spark.table("target").columns)
 print(f"Missing in source: {target_cols - source_cols}")
 print(f"Extra in source: {source_cols - target_cols}")
-```
 
----
-
-### RATE_LIMIT_EXCEEDED
-**Error Message:**
-```
-RateLimitExceeded: Too many requests
-HTTP 429: Rate limit exceeded  # HTTP 429 Too Many Requests
-```
-
-**Cause:** Too many API calls in short period.
-
-**Solution:**
-```python
-# See databricks-rate-limits skill for full implementation
-from databricks.sdk.errors import TooManyRequests
-import time
-
-def api_call_with_backoff(operation, max_retries=5):
-    for attempt in range(max_retries):
-        try:
-            return operation()
-        except TooManyRequests:
-            delay = 2 ** attempt
-            print(f"Rate limited, waiting {delay}s...")
-            time.sleep(delay)
-    raise Exception("Max retries exceeded")
+# Option 3: Cast to match target schema
+target_schema = spark.table("target").schema
+for field in target_schema:
+    if field.name in df.columns:
+        df = df.withColumn(field.name, col(field.name).cast(field.dataType))
 ```
 
 ---
 
 ### JOB_RUN_FAILED
-**Error Message:**
 ```
-RunState: FAILED
-Run terminated with error: Task failed with error
-```
-
-**Cause:** Various - check run details for specific error.
-
-**Solution:**
-```bash
-# Get detailed run info
-databricks runs get --run-id 12345  # port 12345 - example/test
-
-# Get run output (stdout/stderr)
-databricks runs get-output --run-id 12345
-
-# Common fixes by task type:
-# - Notebook: Check cell output for exception
-# - Python: Check stderr for traceback
-# - JAR: Check cluster driver logs
-# - SQL: Check query execution details
+RunState: FAILED — Run terminated with error
 ```
 
 ```python
-# Programmatic debugging
 w = WorkspaceClient()
-run = w.jobs.get_run(run_id=12345)  # port 12345 - example/test
+run = w.jobs.get_run(run_id=12345)
 
 print(f"State: {run.state.life_cycle_state}")
 print(f"Result: {run.state.result_state}")
 print(f"Message: {run.state.state_message}")
 
+# Check each task
 for task in run.tasks:
-    print(f"Task {task.task_key}: {task.state.result_state}")
-    if task.state.result_state == "FAILED":
+    if task.state.result_state and task.state.result_state.value == "FAILED":
         output = w.jobs.get_run_output(task.run_id)
-        print(f"Error: {output.error}")
+        print(f"Task '{task.task_key}' failed: {output.error}")
+        if output.error_trace:
+            print(f"Traceback:\n{output.error_trace[:500]}")
 ```
+
+---
+
+### HTTP 429 — RATE_LIMIT_EXCEEDED
+See `databricks-rate-limits` skill for full retry patterns.
+
+```python
+from databricks.sdk.errors import TooManyRequests
+import time
+
+def call_with_backoff(operation, max_retries=5):
+    for attempt in range(max_retries):
+        try:
+            return operation()
+        except TooManyRequests as e:
+            wait = e.retry_after_secs or (2 ** attempt)
+            print(f"Rate limited, waiting {wait}s...")
+            time.sleep(wait)
+    raise RuntimeError("Max retries exceeded")
+```
+
+## Output
+- Error identified and categorized
+- Fix applied from matching error pattern
+- Resolution verified
+
+## Error Handling
+| Error Code | HTTP | Category | Quick Fix |
+|-----------|------|----------|-----------|
+| `CLUSTER_NOT_READY` | - | Compute | `ensure_cluster_is_running()` |
+| `OutOfMemoryError` | - | Spark | Increase memory, avoid `.collect()` |
+| `ConcurrentAppendException` | - | Delta | MERGE with retry, serialize writes |
+| `PERMISSION_DENIED` | 403 | Auth | `GRANT` in Unity Catalog |
+| `INVALID_PARAMETER_VALUE` | 400 | Config | Check `list_node_types()` |
+| `AnalysisException` | - | Schema | `mergeSchema=true` |
+| `FAILED` run state | - | Job | Check `get_run_output()` for traceback |
+| `Too Many Requests` | 429 | Rate Limit | Exponential backoff with `Retry-After` |
 
 ## Examples
 
 ### Quick Diagnostic Commands
 ```bash
-# Check cluster status
-databricks clusters get --cluster-id abc123
-
-# Get recent job runs
-databricks runs list --job-id 456 --limit 5  # 456 = configured value
-
-# Check workspace permissions
-databricks permissions get jobs --job-id 456
-
-# Validate cluster config
-databricks clusters create --json '{"cluster_name":"test",...}' --dry-run
+databricks clusters get --cluster-id $CID | jq '{state, termination_reason}'
+databricks runs list --job-id $JID --limit 5 | jq '.runs[] | {run_id, state: .state.result_state}'
+databricks permissions get jobs --job-id $JID
 ```
 
 ### Escalation Path
-1. Collect evidence with `databricks-debug-bundle`
-2. Check [Databricks Status](https://status.databricks.com)
-3. Search [Databricks Community](https://community.databricks.com)
-4. Contact support with workspace ID and request ID
+1. Check [Databricks Status](https://status.databricks.com)
+2. Collect evidence with `databricks-debug-bundle`
+3. Search [Community Forum](https://community.databricks.com)
+4. Contact support with workspace ID and request ID from error response
 
 ## Resources
-- [Databricks Error Messages](https://docs.databricks.com/dev-tools/api/latest/error-messages.html)
-- [Troubleshooting Guide](https://docs.databricks.com/clusters/troubleshooting.html)
-- [Delta Lake Troubleshooting](https://docs.databricks.com/delta/troubleshooting.html)
+- [Troubleshooting Guide](https://docs.databricks.com/aws/en/resources/troubleshooting)
+- [Delta Lake Troubleshooting](https://docs.databricks.com/aws/en/delta/best-practices)
+- [Resource Limits](https://docs.databricks.com/aws/en/resources/limits)
 
 ## Next Steps
 For comprehensive debugging, see `databricks-debug-bundle`.

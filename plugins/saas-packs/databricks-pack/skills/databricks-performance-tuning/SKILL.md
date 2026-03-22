@@ -17,234 +17,232 @@ tags: [saas, databricks, performance]
 # Databricks Performance Tuning
 
 ## Overview
-Optimize Databricks cluster, Spark, and Delta Lake performance.
+Optimize Databricks cluster sizing, Spark configuration, and Delta Lake query performance. Covers workload-specific Spark configs, Adaptive Query Execution (AQE), Liquid Clustering, Z-ordering, OPTIMIZE/VACUUM maintenance, query plan analysis, and caching strategies.
 
 ## Prerequisites
-- Access to cluster configuration
-- Understanding of workload characteristics
-- Query history access
+- Access to cluster configuration (admin or cluster owner)
+- Understanding of workload type (ETL batch, ML training, streaming, interactive)
+- Query history access for identifying slow queries
 
 ## Instructions
 
-### Step 1: Cluster Sizing
+### Step 1: Cluster Sizing by Workload
+
+| Workload | Instance Family | Why | Workers |
+|----------|----------------|-----|---------|
+| ETL Batch | Compute-optimized (c5/c6) | CPU-heavy transforms | 2-8, autoscale |
+| ML Training | Memory-optimized (r5/r6) | Large model fits | 4-16, fixed |
+| Streaming | Compute-optimized (c5) | Sustained throughput | 2-4, fixed |
+| Interactive / Ad-hoc | General-purpose (m5) | Balanced | Single node or 1-4 |
+| Heavy shuffle / spill | Storage-optimized (i3) | Fast local NVMe | 4-8 |
 
 ```python
-# Cluster sizing calculator
-def recommend_cluster_size(
-    data_size_gb: float,
-    complexity: str = "medium",  # low, medium, high
-    parallelism_need: str = "standard",  # standard, high
-) -> dict:
-    """
-    Recommend cluster configuration based on workload.
-
-    Args:
-        data_size_gb: Estimated data size to process
-        complexity: Query/transform complexity
-        parallelism_need: Required parallelism level
-
-    Returns:
-        Recommended cluster configuration
-    """
-    # Memory per executor (standard DS3_v2 = 14GB)
-    memory_per_worker = 14
-
-    # Base calculation
-    workers_by_data = max(1, int(data_size_gb / memory_per_worker / 2))
-
-    # Adjust for complexity
-    complexity_multiplier = {"low": 1, "medium": 1.5, "high": 2.5}
-    workers = int(workers_by_data * complexity_multiplier.get(complexity, 1.5))
-
-    # Adjust for parallelism
-    if parallelism_need == "high":
-        workers = max(workers, 8)
+def recommend_cluster(data_size_gb: float, workload: str) -> dict:
+    """Recommend cluster config based on data size and workload type."""
+    configs = {
+        "etl_batch": {"node": "c5.2xlarge", "memory_gb": 16, "multiplier": 1.5},
+        "ml_training": {"node": "r5.2xlarge", "memory_gb": 64, "multiplier": 2.0},
+        "streaming": {"node": "c5.xlarge", "memory_gb": 8, "multiplier": 1.0},
+        "interactive": {"node": "m5.xlarge", "memory_gb": 16, "multiplier": 1.0},
+    }
+    cfg = configs.get(workload, configs["etl_batch"])
+    workers = max(1, int(data_size_gb / cfg["memory_gb"] * cfg["multiplier"]))
 
     return {
-        "node_type_id": "Standard_DS3_v2",
+        "node_type_id": cfg["node"],
         "num_workers": workers,
-        "autoscale": {
-            "min_workers": max(1, workers // 2),
-            "max_workers": workers * 2,
-        },
-        "spark_conf": {
-            "spark.sql.shuffle.partitions": str(workers * 4),
-            "spark.default.parallelism": str(workers * 4),
-        }
+        "autoscale": {"min_workers": max(1, workers // 2), "max_workers": workers * 2},
     }
 ```
 
-### Step 2: Spark Configuration Optimization
-
+### Step 2: Spark Configuration by Workload
 ```python
-# Optimized Spark configurations by workload type
 spark_configs = {
     "etl_batch": {
-        # Memory and parallelism
-        "spark.sql.shuffle.partitions": "200",  # HTTP 200 OK
-        "spark.default.parallelism": "200",  # HTTP 200 OK
-        "spark.sql.files.maxPartitionBytes": "134217728",  # 134217728: 128MB
-
-        # Delta Lake optimizations
-        "spark.databricks.delta.optimizeWrite.enabled": "true",
-        "spark.databricks.delta.autoCompact.enabled": "true",
-        "spark.databricks.delta.properties.defaults.autoOptimize.optimizeWrite": "true",
-
-        # Adaptive query execution
+        "spark.sql.shuffle.partitions": "auto",  # AQE handles this in DBR 14+
         "spark.sql.adaptive.enabled": "true",
         "spark.sql.adaptive.coalescePartitions.enabled": "true",
         "spark.sql.adaptive.skewJoin.enabled": "true",
+        "spark.databricks.delta.optimizeWrite.enabled": "true",
+        "spark.databricks.delta.autoCompact.enabled": "true",
+        "spark.sql.files.maxPartitionBytes": "134217728",  # 128MB
     },
-
     "ml_training": {
-        # Memory for ML workloads
         "spark.driver.memory": "16g",
         "spark.executor.memory": "16g",
         "spark.memory.fraction": "0.8",
         "spark.memory.storageFraction": "0.3",
-
-        # Serialization for ML
         "spark.serializer": "org.apache.spark.serializer.KryoSerializer",
         "spark.kryoserializer.buffer.max": "1024m",
     },
-
     "streaming": {
-        # Streaming configurations
         "spark.sql.streaming.schemaInference": "true",
-        "spark.sql.streaming.checkpointLocation": "/mnt/checkpoints",
         "spark.databricks.delta.autoCompact.minNumFiles": "10",
-
-        # Micro-batch tuning
-        "spark.sql.streaming.forEachBatch.enabled": "true",
+        "spark.sql.shuffle.partitions": "auto",
     },
-
     "interactive": {
-        # Fast startup
+        "spark.sql.inMemoryColumnarStorage.compressed": "true",
         "spark.databricks.cluster.profile": "singleNode",
         "spark.master": "local[*]",
-
-        # Caching
-        "spark.sql.inMemoryColumnarStorage.compressed": "true",
-        "spark.sql.inMemoryColumnarStorage.batchSize": "10000",  # 10000: 10 seconds in ms
-    }
+    },
 }
 ```
 
 ### Step 3: Delta Lake Optimization
 
-```python
-# delta_optimization.py
-from pyspark.sql import SparkSession
+#### OPTIMIZE with Z-Ordering
+```sql
+-- Compact small files and co-locate data by frequently filtered columns
+OPTIMIZE prod_catalog.silver.orders ZORDER BY (order_date, customer_id);
 
-def optimize_delta_table(
-    spark: SparkSession,
-    table_name: str,
-    z_order_columns: list[str] = None,
-    vacuum_hours: int = 168,  # 7 days
-) -> dict:
-    """
-    Optimize Delta table for query performance.
-
-    Args:
-        spark: SparkSession
-        table_name: Fully qualified table name
-        z_order_columns: Columns for Z-ordering (max 4)
-        vacuum_hours: Retention period for vacuum
-
-    Returns:
-        Optimization results
-    """
-    results = {}
-
-    # 1. Run OPTIMIZE with Z-ordering
-    if z_order_columns:
-        z_order_clause = ", ".join(z_order_columns[:4])  # Max 4 columns
-        spark.sql(f"OPTIMIZE {table_name} ZORDER BY ({z_order_clause})")
-        results["z_order"] = z_order_columns
-    else:
-        spark.sql(f"OPTIMIZE {table_name}")
-
-    results["optimized"] = True
-
-    # 2. Analyze table statistics
-    spark.sql(f"ANALYZE TABLE {table_name} COMPUTE STATISTICS")
-    results["statistics_computed"] = True
-
-    # 3. Vacuum old files
-    spark.sql(f"VACUUM {table_name} RETAIN {vacuum_hours} HOURS")
-    results["vacuumed"] = True
-
-    # 4. Get table metrics
-    detail = spark.sql(f"DESCRIBE DETAIL {table_name}").first()
-    results["metrics"] = {
-        "num_files": detail.numFiles,
-        "size_bytes": detail.sizeInBytes,
-        "partitions": detail.partitionColumns,
-    }
-
-    return results
-
-def enable_liquid_clustering(
-    spark: SparkSession,
-    table_name: str,
-    cluster_columns: list[str],
-) -> None:
-    """
-    Enable Liquid Clustering for automatic data layout optimization.
-
-    Liquid Clustering replaces traditional partitioning and Z-ordering
-    with automatic, incremental clustering.
-    """
-    columns = ", ".join(cluster_columns)
-    spark.sql(f"""
-        ALTER TABLE {table_name}
-        CLUSTER BY ({columns})
-    """)
-
-def enable_predictive_optimization(
-    spark: SparkSession,
-    table_name: str,
-) -> None:
-    """Enable Databricks Predictive Optimization."""
-    spark.sql(f"""
-        ALTER TABLE {table_name}
-        SET TBLPROPERTIES (
-            'delta.enableDeletionVectors' = 'true',
-            'delta.targetFileSize' = '104857600'  # 104857600 = configured value
-        )
-    """)
+-- Check file stats before and after
+DESCRIBE DETAIL prod_catalog.silver.orders;
+-- Look at: numFiles (should decrease), sizeInBytes
 ```
 
-For query analysis, caching, join optimization, and benchmarking patterns, see [Advanced Patterns](references/advanced-patterns.md).
+#### Liquid Clustering (DBR 13.3+ — Replaces Partitioning + Z-Order)
+```sql
+-- Enable Liquid Clustering — Databricks auto-optimizes data layout
+ALTER TABLE prod_catalog.silver.orders CLUSTER BY (order_date, region);
+
+-- Trigger incremental clustering
+OPTIMIZE prod_catalog.silver.orders;
+
+-- Advantages over Z-order:
+-- * Incremental (only re-clusters new data)
+-- * No need to choose between partitioning and Z-ordering
+-- * Works with Deletion Vectors for faster DELETE/UPDATE
+```
+
+#### Predictive Optimization
+```sql
+-- Let Databricks auto-schedule OPTIMIZE and VACUUM
+ALTER TABLE prod_catalog.silver.orders
+SET TBLPROPERTIES ('delta.enableDeletionVectors' = 'true');
+
+-- Enable at schema level for all tables
+ALTER SCHEMA prod_catalog.silver
+SET DBPROPERTIES ('delta.enablePredictiveOptimization' = 'true');
+```
+
+#### Compute Statistics
+```sql
+ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS;
+ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS FOR COLUMNS order_date, amount, region;
+```
+
+### Step 4: Query Performance Analysis
+```sql
+-- Find slow queries (SQL warehouse query history)
+SELECT statement_id, executed_by,
+       total_duration_ms / 1000 AS duration_sec,
+       rows_produced, bytes_scanned / 1024 / 1024 AS scanned_mb,
+       statement_text
+FROM system.query.history
+WHERE total_duration_ms > 30000  -- > 30 seconds
+  AND start_time > current_timestamp() - INTERVAL 24 HOURS
+ORDER BY total_duration_ms DESC
+LIMIT 20;
+```
+
+```python
+# Analyze a query plan for bottlenecks
+df = spark.table("prod_catalog.silver.orders").filter("region = 'US'")
+df.explain(mode="formatted")
+# Look for: BroadcastHashJoin (good), SortMergeJoin (may be slow on skewed data)
+# Look for: ColumnarToRow conversion (indicates non-Photon path)
+```
+
+### Step 5: Join Optimization
+```python
+from pyspark.sql.functions import broadcast
+
+# Rule of thumb: broadcast tables < 100MB
+# BAD: Sort-merge join on small lookup table
+result = orders.join(products, "product_id")  # triggers expensive shuffle
+
+# GOOD: Broadcast the small table
+result = orders.join(broadcast(products), "product_id")  # no shuffle
+
+# For skewed keys: use AQE skew join handling
+spark.conf.set("spark.sql.adaptive.skewJoin.enabled", "true")
+spark.conf.set("spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes", "256m")
+```
+
+### Step 6: Caching Strategy
+```python
+# Cache a frequently-accessed table
+spark.table("prod_catalog.gold.daily_metrics").cache()
+
+# Or use Delta Cache (automatic for i3/r5 instances with local SSD)
+# Enable in cluster config:
+# spark.databricks.io.cache.enabled = true
+# spark.databricks.io.cache.maxDiskUsage = 50g
+
+# NEVER cache Bronze tables — they're too large and change frequently
+# ALWAYS cache small lookup/dimension tables used in multiple queries
+```
+
+### Step 7: VACUUM and Table Maintenance Schedule
+```sql
+-- Clean up old file versions (default retention: 7 days)
+VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
+
+-- Schedule via Databricks job or DLT maintenance task
+-- Recommended: weekly OPTIMIZE, daily VACUUM for active tables
+```
 
 ## Output
-- Optimized cluster configuration with right-sized workers and autoscaling
-- Spark configs tuned per workload type (ETL, ML, streaming, interactive)
+- Cluster sized appropriately for workload type
+- Spark configs tuned per workload (ETL, ML, streaming, interactive)
 - Delta tables optimized with Z-ordering or Liquid Clustering
-- Query performance analysis queries for identifying slow operations
+- Slow queries identified via query history analysis
+- Join and caching strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| OOM errors | Insufficient memory | Increase executor memory or reduce partition size |
-| Skewed data | Uneven distribution | Use salting or AQE skew handling |
-| Slow joins | Large shuffle | Use broadcast for small tables (<100MB) |
-| Too many files | Small files problem | Run `OPTIMIZE` regularly or enable autoCompact |
+| OOM during shuffle | Skewed partition | Enable AQE skew join or salt the join key |
+| Slow joins | Large shuffle | `broadcast()` tables < 100MB |
+| Too many small files | Frequent small writes | Run `OPTIMIZE` or enable `autoCompact` |
+| VACUUM below retention | Retention < 7 days | Minimum is `168 HOURS`; set `delta.deletedFileRetentionDuration` |
+| Query plan shows `ColumnarToRow` | Non-Photon code path | Use Photon-enabled runtime (suffix `-photon-scala2.12`) |
 
 ## Examples
 
-### Quick Delta Table Tune-Up
+### Quick Table Tune-Up
+```sql
+OPTIMIZE prod_catalog.silver.orders ZORDER BY (order_date, customer_id);
+ANALYZE TABLE prod_catalog.silver.orders COMPUTE STATISTICS;
+VACUUM prod_catalog.silver.orders RETAIN 168 HOURS;
+```
+
+### Before/After Comparison
 ```python
-# One-command optimization for a table
-spark.sql("OPTIMIZE prod.silver.orders ZORDER BY (order_date, customer_id)")
-spark.sql("ANALYZE TABLE prod.silver.orders COMPUTE STATISTICS")
-spark.sql("VACUUM prod.silver.orders RETAIN 168 HOURS")
+import time
+table = "prod_catalog.silver.orders"
+query = f"SELECT region, SUM(amount) FROM {table} WHERE order_date > '2024-01-01' GROUP BY region"
+
+# Before optimization
+start = time.time()
+spark.sql(query).collect()
+before = time.time() - start
+
+spark.sql(f"OPTIMIZE {table} ZORDER BY (order_date, region)")
+
+# After optimization
+start = time.time()
+spark.sql(query).collect()
+after = time.time() - start
+
+print(f"Before: {before:.1f}s, After: {after:.1f}s, Speedup: {before/after:.1f}x")
 ```
 
 ## Resources
-- [Databricks Performance Guide](https://docs.databricks.com/optimizations/index.html)
-- [Delta Lake Optimization](https://docs.databricks.com/delta/optimizations/index.html)
-- [Spark Tuning Guide](https://spark.apache.org/docs/latest/tuning.html)
+- [Performance Guide](https://docs.databricks.com/aws/en/delta/best-practices)
+- [Liquid Clustering](https://docs.databricks.com/aws/en/delta/clustering)
+- [OPTIMIZE](https://docs.databricks.com/aws/en/sql/language-manual/delta-optimize)
+- [AQE](https://docs.databricks.com/aws/en/sql/language-manual/sql-ref-syntax-qry-select-adaptive)
 
 ## Next Steps
 For cost optimization, see `databricks-cost-tuning`.

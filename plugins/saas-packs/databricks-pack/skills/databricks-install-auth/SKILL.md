@@ -6,7 +6,7 @@ description: |
   or initializing Databricks in your project.
   Trigger with phrases like "install databricks", "setup databricks",
   "databricks auth", "configure databricks token", "databricks CLI".
-allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(databricks:*), Grep
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(databricks:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,161 +17,176 @@ tags: [saas, databricks, authentication]
 # Databricks Install & Auth
 
 ## Overview
-Set up Databricks CLI and SDK with authentication credentials.
+Set up Databricks CLI v2, Python SDK, and authentication. Covers Personal Access Tokens (legacy), OAuth U2M (interactive), and OAuth M2M (service principal for CI/CD). Databricks strongly recommends OAuth over PATs for production.
 
 ## Prerequisites
 - Python 3.8+ with pip
-- Databricks workspace URL (e.g., `https://adb-1234567890.1.azuredatabricks.net`)
-- Personal Access Token or OAuth credentials
-- Admin access for Unity Catalog setup
+- Databricks workspace URL (e.g., `https://adb-1234567890123456.7.azuredatabricks.net`)
+- For PAT: User Settings > Developer > Access Tokens in workspace UI
+- For OAuth M2M: Service principal with client ID and secret
 
 ## Instructions
 
-### Step 1: Install Databricks CLI and SDK
+### Step 1: Install Databricks CLI and Python SDK
 ```bash
 set -euo pipefail
-# Install CLI v2 (recommended)
-pip install databricks-cli
+
+# Install CLI v2 (standalone binary — recommended)
+curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+# Verify CLI
+databricks --version
 
 # Install Python SDK
 pip install databricks-sdk
 
-# Install dbx for local development
-pip install dbx
+# Install Databricks Connect for local Spark development
+pip install databricks-connect==14.3.*
 ```
 
 ### Step 2: Configure Authentication
 
-#### Option A: Personal Access Token (Simplest)
+#### Option A: Personal Access Token (Quick Start)
+Generate a PAT in workspace UI: User Settings > Developer > Access Tokens.
+
 ```bash
-# Interactive configuration
+# Interactive setup — prompts for host and token
 databricks configure --token
 
-# Enter workspace URL: https://adb-1234567890.1.azuredatabricks.net
-# Enter token: dapi1234567890abcdef...
+# Or set environment variables directly
+export DATABRICKS_HOST="https://adb-1234567890123456.7.azuredatabricks.net"
+export DATABRICKS_TOKEN="dapi_your_token_here"
 ```
 
-#### Option B: Environment Variables
+#### Option B: OAuth U2M (User-to-Machine — Interactive)
+Opens browser for OAuth consent. Token auto-refreshes (1-hour lifetime).
+
 ```bash
-# Set environment variables
-export DATABRICKS_HOST="https://adb-1234567890.1.azuredatabricks.net"
-export DATABRICKS_TOKEN="dapi1234567890abcdef..."
+# Interactive OAuth login
+databricks auth login --host https://adb-1234567890123456.7.azuredatabricks.net
 
-# Or create .env file
-cat > .env << 'EOF'
-DATABRICKS_HOST=https://adb-1234567890.1.azuredatabricks.net
-DATABRICKS_TOKEN=dapi1234567890abcdef...
-EOF
+# Verify — prints current user
+databricks current-user me
 ```
 
-#### Option C: OAuth (Recommended for Production)
+#### Option C: OAuth M2M (Service Principal — CI/CD)
+Uses client credentials flow. No browser required. Create a service principal in Account Console > Service Principals, then generate an OAuth secret.
+
 ```bash
-# Using OAuth U2M (user-to-machine)
-databricks configure --oauth
+export DATABRICKS_HOST="https://adb-1234567890123456.7.azuredatabricks.net"
+export DATABRICKS_CLIENT_ID="00000000-0000-0000-0000-000000000000"
+export DATABRICKS_CLIENT_SECRET="dose00000000000000000000000000000000"
 
-# Using OAuth M2M (service principal)
-export DATABRICKS_HOST="https://adb-1234567890.1.azuredatabricks.net"
-export DATABRICKS_CLIENT_ID="your-client-id"
-export DATABRICKS_CLIENT_SECRET="your-client-secret"
+# Verify
+databricks current-user me
 ```
 
-### Step 3: Configure Profiles (Multi-Workspace)
+### Step 3: Configure Profiles for Multi-Workspace
 ```ini
-# ~/.databrickscfg
+# ~/.databrickscfg — one section per workspace
 [DEFAULT]
-host = https://adb-dev-1234567890.1.azuredatabricks.net
-token = dapi_dev_token...
+host  = https://adb-dev-workspace.7.azuredatabricks.net
+token = dapi_dev_token_here
 
 [staging]
-host = https://adb-staging-1234567890.1.azuredatabricks.net
-token = dapi_staging_token...
+host  = https://adb-staging-workspace.7.azuredatabricks.net
+token = dapi_staging_token_here
 
 [production]
-host = https://adb-prod-1234567890.1.azuredatabricks.net
-token = dapi_prod_token...
+host       = https://adb-prod-workspace.7.azuredatabricks.net
+client_id  = 00000000-0000-0000-0000-000000000000
+client_secret = dose_prod_secret_here
 ```
 
-### Step 4: Verify Connection
 ```bash
-# Test CLI connection
-databricks workspace list /
-
-# Test with specific profile
+# Use a specific profile
 databricks workspace list / --profile staging
-
-# Test SDK connection
-python -c "
-from databricks.sdk import WorkspaceClient
-w = WorkspaceClient()
-print(f'Connected to: {w.config.host}')
-print(f'Clusters: {len(list(w.clusters.list()))}')
-"
 ```
 
-## Output
-- Databricks CLI installed and configured
-- Python SDK installed
-- Authentication credentials stored
-- Connection verified to workspace
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Invalid token` | Expired or incorrect token | Generate new PAT in User Settings |
-| `Workspace not found` | Wrong host URL | Verify workspace URL format |
-| `Permission denied` | Token lacks permissions | Request admin access or correct scopes |
-| `Connection refused` | Network/firewall issue | Check VPN, firewall rules |
-| `SSL certificate error` | Corporate proxy | Set `--insecure` or configure proxy |
-
-## Examples
-
-### Python SDK Initialization
+### Step 4: Verify SDK Connection
 ```python
 from databricks.sdk import WorkspaceClient
 
-# Auto-detect from environment/config file
+# Auto-detects from env vars or ~/.databrickscfg
 w = WorkspaceClient()
 
-# Explicit configuration
-w = WorkspaceClient(
-    host="https://adb-1234567890.1.azuredatabricks.net",
-    token="dapi1234567890abcdef..."
-)
+me = w.current_user.me()
+print(f"Authenticated as: {me.user_name}")
+print(f"Workspace: {w.config.host}")
+print(f"Auth type: {w.config.auth_type}")
 
-# With profile
-w = WorkspaceClient(profile="production")
+# Quick smoke test — list clusters
+clusters = list(w.clusters.list())
+print(f"Clusters found: {len(clusters)}")
 ```
 
-### Service Principal Authentication
+### Step 5: Service Principal Authentication (Python SDK)
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.config import Config
 
+# Explicit M2M config for CI/CD scripts
 config = Config(
-    host="https://adb-1234567890.1.azuredatabricks.net",
-    client_id="your-client-id",
-    client_secret="your-client-secret"
+    host="https://adb-1234567890123456.7.azuredatabricks.net",
+    client_id="00000000-0000-0000-0000-000000000000",
+    client_secret="dose00000000000000000000000000000000",
 )
 w = WorkspaceClient(config=config)
+
+# Or use a named profile
+w = WorkspaceClient(profile="production")
 ```
 
-### Azure AD Authentication
+## Output
+- Databricks CLI v2 installed and on PATH
+- Python SDK (`databricks-sdk`) installed
+- Authentication credentials stored in env vars or `~/.databrickscfg`
+- Connection verified with `databricks current-user me`
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `INVALID_TOKEN` | Token expired or revoked | Generate a new PAT or re-run `databricks auth login` |
+| `Could not resolve host` | Wrong workspace URL | Verify URL format: `https://adb-<id>.<region>.azuredatabricks.net` |
+| `PERMISSION_DENIED` | Token lacks required entitlements | Ensure user/SP has workspace access in Account Console |
+| `SSL: CERTIFICATE_VERIFY_FAILED` | Corporate proxy intercepts TLS | Set `REQUESTS_CA_BUNDLE=/path/to/cert.pem` |
+| `Connection refused` | VPN or firewall blocking | Check corporate firewall rules for workspace domain |
+| `No matching profile` | Profile name typo in `~/.databrickscfg` | Run `databricks auth profiles` to list available profiles |
+
+## Examples
+
+### Account-Level Client (Multi-Workspace Management)
+```python
+from databricks.sdk import AccountClient
+
+# Account-level operations (manage workspaces, users, billing)
+a = AccountClient(
+    host="https://accounts.cloud.databricks.com",
+    account_id="00000000-0000-0000-0000-000000000000",
+    client_id="sp-client-id",
+    client_secret="sp-secret",
+)
+
+for ws in a.workspaces.list():
+    print(f"{ws.workspace_name}: {ws.deployment_name}")
+```
+
+### Azure AD Managed Identity
 ```python
 from databricks.sdk import WorkspaceClient
-from azure.identity import DefaultAzureCredential
 
-# Uses Azure AD managed identity
+# Uses Azure Default Credential chain (works in Azure VMs, AKS, Functions)
 w = WorkspaceClient(
-    host="https://adb-1234567890.1.azuredatabricks.net",
-    credentials_provider=DefaultAzureCredential()
+    host="https://adb-1234567890123456.7.azuredatabricks.net",
+    azure_workspace_resource_id="/subscriptions/<sub>/resourceGroups/<rg>/providers/Microsoft.Databricks/workspaces/<ws>",
 )
 ```
 
 ## Resources
-- [Databricks CLI Documentation](https://docs.databricks.com/dev-tools/cli/index.html)
-- [Databricks SDK for Python](https://docs.databricks.com/dev-tools/sdk-python.html)
-- [Authentication Methods](https://docs.databricks.com/dev-tools/auth.html)
-- [Personal Access Tokens](https://docs.databricks.com/dev-tools/auth.html#personal-access-tokens)
+- [Databricks Authentication](https://docs.databricks.com/aws/en/dev-tools/auth/)
+- [OAuth M2M](https://docs.databricks.com/aws/en/dev-tools/auth/oauth-m2m)
+- [Databricks SDK for Python](https://docs.databricks.com/aws/en/dev-tools/sdk-python)
+- [CLI Authentication](https://docs.databricks.com/aws/en/dev-tools/cli/authentication)
 
 ## Next Steps
 After successful auth, proceed to `databricks-hello-world` for your first cluster and notebook.

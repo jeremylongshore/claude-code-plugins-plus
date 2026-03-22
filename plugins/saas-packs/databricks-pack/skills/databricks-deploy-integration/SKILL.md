@@ -1,7 +1,7 @@
 ---
 name: databricks-deploy-integration
 description: |
-  Deploy Databricks jobs and pipelines with Asset Bundles.
+  Deploy Databricks jobs and pipelines with Declarative Automation Bundles.
   Use when deploying jobs to different environments, managing deployments,
   or setting up deployment automation.
   Trigger with phrases like "databricks deploy", "asset bundles",
@@ -17,192 +17,236 @@ tags: [saas, databricks, deployment]
 # Databricks Deploy Integration
 
 ## Overview
-Deploy Databricks jobs and pipelines using Databricks Asset Bundles (DABs). Asset Bundles provide infrastructure-as-code for deploying jobs, notebooks, DLT pipelines, and ML models across workspaces with proper environment isolation and CI/CD integration.
+Deploy Databricks jobs, DLT pipelines, and ML models using Declarative Automation Bundles (DABs, formerly Asset Bundles). Bundles provide infrastructure-as-code with `databricks.yml` defining resources, targets (dev/staging/prod), variables, and permissions. The CLI handles validation, deployment, and lifecycle management.
 
 ## Prerequisites
-- Databricks CLI v0.200+ installed (`databricks` command)
-- Workspace access with appropriate permissions
-- Service principal for automated deployments
-- `databricks.yml` bundle configuration
+- Databricks CLI v0.200+ (`databricks --version`)
+- Workspace access with service principal for automated deploys
+- `databricks.yml` bundle configuration at project root
 
 ## Instructions
 
-### Step 1: Initialize Asset Bundle
+### Step 1: Initialize a Bundle
 ```bash
-# Create new bundle from template
+# Create from a template
 databricks bundle init
 
-# Or manually create databricks.yml
+# Available templates:
+# - default-python: Python notebook project
+# - default-sql: SQL project
+# - mlops-stacks: Full MLOps template with feature engineering
 ```
 
+### Step 2: Configure `databricks.yml`
 ```yaml
-# databricks.yml
+# databricks.yml — single source of truth for project deployment
 bundle:
-  name: etl-pipeline
+  name: sales-etl-pipeline
 
 workspace:
-  host: https://myworkspace.cloud.databricks.com
+  host: ${DATABRICKS_HOST}
 
+variables:
+  catalog:
+    description: Unity Catalog name
+    default: dev_catalog
+  alert_email:
+    description: Alert notification email
+    default: dev@company.com
+  warehouse_size:
+    default: "2X-Small"
+
+include:
+  - resources/*.yml
+
+targets:
+  dev:
+    default: true
+    mode: development
+    # dev mode auto-prefixes resources with [username] and enables debug
+    workspace:
+      root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
+    variables:
+      catalog: dev_catalog
+
+  staging:
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/staging
+    variables:
+      catalog: staging_catalog
+      alert_email: staging-alerts@company.com
+
+  prod:
+    mode: production
+    # production mode prevents accidental destruction
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/prod
+    variables:
+      catalog: prod_catalog
+      alert_email: oncall@company.com
+      warehouse_size: "Medium"
+```
+
+### Step 3: Define Resources
+```yaml
+# resources/jobs.yml
 resources:
   jobs:
     daily_etl:
-      name: daily-etl-${bundle.environment}
+      name: "daily-etl-${bundle.target}"
+      max_concurrent_runs: 1
+      timeout_seconds: 14400
+
       schedule:
         quartz_cron_expression: "0 0 6 * * ?"
-        timezone_id: "America/New_York"
+        timezone_id: "UTC"
+
+      email_notifications:
+        on_failure: ["${var.alert_email}"]
+
       tasks:
         - task_key: extract
           notebook_task:
             notebook_path: ./src/extract.py
+            base_parameters:
+              catalog: "${var.catalog}"
+          job_cluster_key: etl
+
+        - task_key: transform
+          depends_on: [{task_key: extract}]
+          notebook_task:
+            notebook_path: ./src/transform.py
+          job_cluster_key: etl
+
+        - task_key: load
+          depends_on: [{task_key: transform}]
+          notebook_task:
+            notebook_path: ./src/load.py
+          job_cluster_key: etl
+
+      job_clusters:
+        - job_cluster_key: etl
           new_cluster:
             spark_version: "14.3.x-scala2.12"
             node_type_id: "i3.xlarge"
-            num_workers: 2
-        - task_key: transform
-          depends_on:
-            - task_key: extract
-          notebook_task:
-            notebook_path: ./src/transform.py
-
-environments:
-  development:
-    default: true
-    workspace:
-      host: https://dev.cloud.databricks.com
-  staging:
-    workspace:
-      host: https://staging.cloud.databricks.com
-  production:
-    workspace:
-      host: https://prod.cloud.databricks.com
+            autoscale:
+              min_workers: 1
+              max_workers: 4
+            aws_attributes:
+              availability: SPOT_WITH_FALLBACK
+              first_on_demand: 1
 ```
 
-### Step 2: Deploy to Environment
-```bash
-# Validate bundle configuration
-databricks bundle validate -e production
-
-# Deploy resources (create/update jobs, notebooks)
-databricks bundle deploy -e staging
-
-# Run a specific job
-databricks bundle run daily_etl -e staging
-
-# Destroy resources in an environment
-databricks bundle destroy -e development
-```
-
-### Step 3: CI/CD Pipeline
 ```yaml
-# .github/workflows/deploy.yml
-name: Deploy Databricks Bundle
-on:
-  push:
-    branches: [main]
-
-jobs:
-  deploy-staging:
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@main
-      - run: databricks bundle validate -e staging
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      - run: databricks bundle deploy -e staging
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-
-  deploy-production:
-    needs: deploy-staging
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      - uses: databricks/setup-cli@main
-      - run: databricks bundle deploy -e production
-        env:
-          DATABRICKS_HOST: ${{ secrets.DATABRICKS_PROD_HOST }}
-          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_PROD_TOKEN }}
+# resources/pipelines.yml (DLT)
+resources:
+  pipelines:
+    dlt_pipeline:
+      name: "dlt-pipeline-${bundle.target}"
+      target: "${var.catalog}.silver"
+      catalog: "${var.catalog}"
+      libraries:
+        - notebook:
+            path: ./src/dlt_pipeline.py
+      continuous: false
+      development: ${bundle.target == "dev"}
 ```
 
-### Step 4: Verify Deployment
+### Step 4: Deploy Lifecycle Commands
 ```bash
-# List deployed jobs
-databricks jobs list --output json | jq '.[] | select(.settings.name | contains("etl"))'
+# Validate — checks YAML syntax, variable resolution, permissions
+databricks bundle validate -t staging
 
-# Check recent runs
-databricks runs list --job-id $JOB_ID --limit 5
+# Deploy — creates/updates jobs, uploads notebooks, syncs config
+databricks bundle deploy -t staging
 
-# Get run output
-databricks runs get-output --run-id $RUN_ID
+# Summary — show what's deployed
+databricks bundle summary -t staging
+
+# Run — trigger a specific job/pipeline
+databricks bundle run daily_etl -t staging
+
+# Run and wait for completion
+databricks bundle run daily_etl -t staging --restart-all-workflows
+
+# Sync — live-reload files during development
+databricks bundle sync -t dev --watch
+
+# Destroy — remove all deployed resources (dev only!)
+databricks bundle destroy -t dev --auto-approve
 ```
+
+### Step 5: Promote Staging to Production
+```bash
+# 1. Validate staging is clean
+databricks bundle validate -t staging
+
+# 2. Deploy and test on staging
+databricks bundle deploy -t staging
+RUN=$(databricks bundle run daily_etl -t staging --output json | jq -r '.run_id')
+databricks runs get --run-id $RUN | jq '.state.result_state'
+
+# 3. After staging passes, deploy to production
+databricks bundle validate -t prod
+databricks bundle deploy -t prod
+
+# 4. Verify production deployment
+databricks bundle summary -t prod
+databricks jobs list --output json | \
+  jq '.[] | select(.settings.name | contains("daily-etl-prod"))'
+```
+
+### Step 6: Permissions in Bundles
+```yaml
+# resources/jobs.yml — add permissions block
+resources:
+  jobs:
+    daily_etl:
+      name: "daily-etl-${bundle.target}"
+      permissions:
+        - group_name: data-engineers
+          level: CAN_MANAGE
+        - group_name: data-analysts
+          level: CAN_VIEW
+        - service_principal_name: cicd-service-principal
+          level: CAN_MANAGE_RUN
+```
+
+## Output
+- `databricks.yml` with multi-target deployment (dev/staging/prod)
+- Job and pipeline resources defined as code
+- Environment-specific variables (catalog, alerts, sizing)
+- Promotion workflow from staging to production
+- Permissions managed declaratively in bundle config
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Bundle validation fails | Invalid YAML | Run `databricks bundle validate` locally |
-| Permission denied | Missing workspace access | Check service principal permissions |
-| Cluster start fails | Quota exceeded | Request quota increase or use smaller nodes |
-| Job timeout | Long-running task | Set `timeout_seconds` in job config |
+| `bundle validate` fails | Invalid YAML or unresolved variable | Check variable definitions and target config |
+| `PERMISSION_DENIED` on deploy | Service principal lacks workspace access | Add SP to workspace in Account Console |
+| `RESOURCE_CONFLICT` | Resource name collision across targets | Bundle auto-prefixes in `development` mode |
+| `Cluster quota exceeded` | Too many active clusters | Use instance pools or terminate idle clusters |
+| `Cannot destroy production` | `mode: production` prevents accidental destroy | This is intentional — remove mode or use `--force` |
 
 ## Examples
 
-### Parameterize Bundles per Environment
-```yaml
-# databricks.yml — use variables for environment-specific values
-variables:
-  warehouse_size:
-    default: "2X-Small"
-  alert_email:
-    default: "dev@company.com"
-
-environments:
-  production:
-    variables:
-      warehouse_size: "Medium"
-      alert_email: "oncall@company.com"
-```
-
-### Promote a Bundle from Staging to Production
+### Override Variables per Target
 ```bash
-# Validate staging is clean
-databricks bundle validate -e staging
-
-# Deploy to staging, run smoke test
-databricks bundle deploy -e staging
-databricks bundle run daily_etl -e staging
-
-# After staging passes, deploy to production
-databricks bundle deploy -e production
-
-# Verify production deployment
-databricks bundle validate -e production
-databricks jobs list --output json | jq '.[] | select(.settings.name | contains("daily-etl-production"))'
+# Override a variable at deploy time
+databricks bundle deploy -t prod --var="warehouse_size=Large"
 ```
 
-### Destroy and Redeploy (Dev Only)
+### Clean Slate Redeploy (Dev Only)
 ```bash
-# Tear down dev resources for clean slate
-databricks bundle destroy -e development --auto-approve
-
-# Redeploy from scratch
-databricks bundle deploy -e development
+databricks bundle destroy -t dev --auto-approve
+databricks bundle deploy -t dev
 ```
-
-## Output
-- `databricks.yml` Asset Bundle with multi-environment targets
-- CI/CD pipeline deploying staging on merge, production on release
-- Job resources created/updated in target workspace
-- Verification commands confirming successful deployment
 
 ## Resources
-- [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles)
-- [Bundle Configuration Reference](https://docs.databricks.com/dev-tools/bundles/settings.html)
-- [CI/CD with Bundles](https://docs.databricks.com/dev-tools/bundles/ci-cd.html)
+- [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
+- [Bundle Configuration Reference](https://docs.databricks.com/aws/en/dev-tools/bundles/reference)
+- [Bundle Resources](https://docs.databricks.com/aws/en/dev-tools/bundles/resources)
+- [Deployment Modes](https://docs.databricks.com/aws/en/dev-tools/bundles/deployment-modes)
 
 ## Next Steps
 For multi-environment setup, see `databricks-multi-env-setup`.

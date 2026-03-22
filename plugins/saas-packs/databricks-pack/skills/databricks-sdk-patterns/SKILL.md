@@ -17,56 +17,54 @@ tags: [saas, databricks, api, python]
 # Databricks SDK Patterns
 
 ## Overview
-Production-ready patterns for the Databricks Python SDK (`databricks-sdk`). These patterns cover client initialization, error handling, resource lifecycle management, and type-safe job construction.
+Production-ready patterns for the Databricks Python SDK (`databricks-sdk`). Covers singleton client initialization, typed error handling, cluster lifecycle management, type-safe job construction, and pagination. Uses real SDK exception classes and API shapes.
 
 ## Prerequisites
-- Completed `databricks-install-auth` setup
-- `databricks-sdk` v0.20+ installed (`pip install databricks-sdk`)
-- Understanding of Python context managers and dataclasses
+- `databricks-sdk>=0.20.0` installed
+- Authentication configured (see `databricks-install-auth`)
+- Python 3.10+
 
 ## Instructions
 
-### Step 1: Implement Singleton Client
-Avoid creating multiple `WorkspaceClient` instances. Each one re-authenticates and holds its own HTTP session.
+### Step 1: Singleton Client with Profile Support
+Each `WorkspaceClient` holds an HTTP session and re-authenticates. Cache instances.
 
 ```python
-from databricks.sdk import WorkspaceClient
+from databricks.sdk import WorkspaceClient, AccountClient
 from functools import lru_cache
 
-@lru_cache(maxsize=1)
-def get_workspace_client(profile: str = "DEFAULT") -> WorkspaceClient:
-    """Return a singleton WorkspaceClient, cached per profile."""
+@lru_cache(maxsize=4)
+def get_client(profile: str = "DEFAULT") -> WorkspaceClient:
+    """Cached WorkspaceClient — one per profile."""
     return WorkspaceClient(profile=profile)
 
-# Usage throughout your codebase
-w = get_workspace_client()
-w_prod = get_workspace_client(profile="production")
+@lru_cache(maxsize=1)
+def get_account_client() -> AccountClient:
+    """Account-level client for multi-workspace operations."""
+    return AccountClient(
+        host="https://accounts.cloud.databricks.com",
+        account_id="00000000-0000-0000-0000-000000000000",
+    )
+
+# Usage
+w = get_client()
+w_prod = get_client("production")
 ```
 
-For multi-workspace scripts, use `AccountClient` at the account level:
-```python
-from databricks.sdk import AccountClient
-
-a = AccountClient(
-    host="https://accounts.cloud.databricks.com",
-    account_id="your-account-id",
-)
-for workspace in a.workspaces.list():
-    print(f"{workspace.workspace_name}: {workspace.deployment_name}")
-```
-
-### Step 2: Add Error Handling Wrapper
-Wrap API calls with structured error handling that distinguishes transient from permanent failures.
+### Step 2: Structured Error Handling
+The SDK raises typed exceptions from `databricks.sdk.errors`. Distinguish transient (retryable) from permanent failures.
 
 ```python
 from dataclasses import dataclass
-from typing import TypeVar, Generic, Optional
+from typing import TypeVar, Generic, Optional, Callable
 from databricks.sdk.errors import (
     NotFound,
     PermissionDenied,
     TooManyRequests,
     TemporarilyUnavailable,
     ResourceConflict,
+    InvalidParameterValue,
+    ResourceAlreadyExists,
 )
 
 T = TypeVar("T")
@@ -81,42 +79,46 @@ class Result(Generic[T]):
     def ok(self) -> bool:
         return self.error is None
 
-def safe_api_call(func, *args, **kwargs) -> Result:
-    """Execute a Databricks API call with structured error handling."""
+def safe_call(func: Callable, *args, **kwargs) -> Result:
+    """Execute a Databricks API call with structured error classification."""
     try:
         return Result(value=func(*args, **kwargs))
     except NotFound as e:
         return Result(error=f"Not found: {e.message}", retryable=False)
     except PermissionDenied as e:
         return Result(error=f"Permission denied: {e.message}", retryable=False)
+    except InvalidParameterValue as e:
+        return Result(error=f"Invalid parameter: {e.message}", retryable=False)
+    except ResourceAlreadyExists as e:
+        return Result(error=f"Already exists: {e.message}", retryable=False)
+    except ResourceConflict as e:
+        return Result(error=f"Conflict: {e.message}", retryable=False)
     except TooManyRequests as e:
         return Result(error=f"Rate limited (retry after {e.retry_after_secs}s)", retryable=True)
     except TemporarilyUnavailable as e:
-        return Result(error=f"Service unavailable: {e.message}", retryable=True)
-    except ResourceConflict as e:
-        return Result(error=f"Conflict: {e.message}", retryable=False)
+        return Result(error=f"Unavailable: {e.message}", retryable=True)
 
 # Usage
-result = safe_api_call(w.clusters.get, cluster_id="abc-123")
+result = safe_call(w.clusters.get, cluster_id="0123-456789-abcde")
 if result.ok:
     print(f"Cluster state: {result.value.state}")
 elif result.retryable:
-    print(f"Transient error, retry: {result.error}")
+    print(f"Retry later: {result.error}")
 else:
     print(f"Permanent failure: {result.error}")
 ```
 
-### Step 3: Context Manager for Cluster Lifecycle
-Ensure clusters are cleaned up after use, even on exceptions.
+### Step 3: Cluster Lifecycle Context Manager
+Ensure ephemeral clusters are terminated even on exceptions.
 
 ```python
 from contextlib import contextmanager
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.service.compute import ClusterDetails, State
+from databricks.sdk.service.compute import State
 
 @contextmanager
-def managed_cluster(w: WorkspaceClient, cluster_config: dict):
-    """Start a cluster, yield it, and terminate on exit."""
+def managed_cluster(w: WorkspaceClient, **cluster_config):
+    """Create a cluster, yield it, terminate on exit."""
     cluster = w.clusters.create_and_wait(**cluster_config)
     try:
         yield cluster
@@ -125,38 +127,42 @@ def managed_cluster(w: WorkspaceClient, cluster_config: dict):
             w.clusters.delete(cluster_id=cluster.cluster_id)
             print(f"Terminated cluster {cluster.cluster_id}")
 
-# Usage
-config = {
-    "cluster_name": "ephemeral-etl",
-    "spark_version": "14.3.x-scala2.12",
-    "node_type_id": "i3.xlarge",
-    "num_workers": 2,
-    "autotermination_minutes": 30,
-}
-
-with managed_cluster(w, config) as cluster:
-    print(f"Running on cluster {cluster.cluster_id}")
-    # Do work...
-    w.jobs.run_now(job_id=123)
-# Cluster is auto-terminated here
+# Usage — cluster auto-cleaned even if job fails
+with managed_cluster(w,
+    cluster_name="ephemeral-etl",
+    spark_version="14.3.x-scala2.12",
+    node_type_id="i3.xlarge",
+    num_workers=2,
+    autotermination_minutes=30,
+) as cluster:
+    run = w.jobs.submit(
+        run_name="one-off",
+        tasks=[SubmitTask(
+            task_key="task1",
+            existing_cluster_id=cluster.cluster_id,
+            notebook_task=NotebookTask(notebook_path="/Repos/team/etl/main"),
+        )],
+    ).result()
 ```
 
 ### Step 4: Type-Safe Job Builder
-Use the SDK's dataclass types instead of raw dicts for job configuration. This catches schema errors at construction time.
+Use SDK dataclasses instead of raw dicts for compile-time safety.
 
 ```python
 from databricks.sdk.service.jobs import (
-    CreateJob,
-    JobCluster,
-    Task,
-    NotebookTask,
-    CronSchedule,
-    JobEmailNotifications,
+    CreateJob, JobCluster, Task, NotebookTask,
+    CronSchedule, JobEmailNotifications, WebhookNotifications, Webhook,
 )
 from databricks.sdk.service.compute import ClusterSpec, AutoScale
 
-def build_etl_job(name: str, notebook_path: str, schedule_cron: str) -> CreateJob:
-    """Build a fully-typed ETL job configuration."""
+def build_etl_job(
+    name: str,
+    notebook_path: str,
+    cron: str,
+    alert_email: str,
+    webhook_id: str | None = None,
+) -> CreateJob:
+    """Build a fully-typed ETL job definition."""
     return CreateJob(
         name=name,
         job_clusters=[
@@ -176,38 +182,38 @@ def build_etl_job(name: str, notebook_path: str, schedule_cron: str) -> CreateJo
                 notebook_task=NotebookTask(notebook_path=notebook_path),
             )
         ],
-        schedule=CronSchedule(
-            quartz_cron_expression=schedule_cron,
-            timezone_id="UTC",
+        schedule=CronSchedule(quartz_cron_expression=cron, timezone_id="UTC"),
+        email_notifications=JobEmailNotifications(on_failure=[alert_email]),
+        webhook_notifications=WebhookNotifications(
+            on_failure=[Webhook(id=webhook_id)] if webhook_id else []
         ),
-        email_notifications=JobEmailNotifications(
-            on_failure=["oncall@company.com"],
-        ),
+        max_concurrent_runs=1,
     )
 
 # Create the job
-job_config = build_etl_job(
+job_def = build_etl_job(
     name="daily-sales-etl",
     notebook_path="/Repos/team/etl/sales_pipeline",
-    schedule_cron="0 0 6 * * ?",
+    cron="0 0 6 * * ?",
+    alert_email="oncall@company.com",
 )
-created = w.jobs.create(**job_config.as_dict())
-print(f"Created job {created.job_id}")
+created = w.jobs.create(**job_def.as_dict())
+print(f"Job created: {created.job_id}")
 ```
 
-### Step 5: Pagination Helper
-The SDK paginates list results automatically via iterators, but when you need all results at once or want progress tracking:
+### Step 5: Paginated Collection with Progress
+The SDK auto-paginates via iterators. Wrap for progress tracking and filtering.
 
 ```python
-from typing import Callable, Iterator
+from typing import Iterator
 
-def collect_with_progress(iterator: Iterator, label: str, batch_size: int = 100) -> list:
-    """Collect paginated results with progress logging."""
+def collect_with_progress(iterator: Iterator, label: str, batch_log: int = 100) -> list:
+    """Drain a paginated iterator with progress logging."""
     items = []
     for i, item in enumerate(iterator, 1):
         items.append(item)
-        if i % batch_size == 0:
-            print(f"  {label}: fetched {i} items...")
+        if i % batch_log == 0:
+            print(f"  {label}: {i} items fetched...")
     print(f"  {label}: {len(items)} total")
     return items
 
@@ -215,51 +221,54 @@ def collect_with_progress(iterator: Iterator, label: str, batch_size: int = 100)
 all_jobs = collect_with_progress(w.jobs.list(), "Jobs")
 all_clusters = collect_with_progress(w.clusters.list(), "Clusters")
 running = [c for c in all_clusters if c.state == State.RUNNING]
-print(f"Running clusters: {len(running)}/{len(all_clusters)}")
+print(f"Running: {len(running)}/{len(all_clusters)} clusters")
 ```
 
 ## Output
 - Singleton `WorkspaceClient` with profile-based caching
-- `Result` wrapper for type-safe, structured error handling
-- Context manager for auto-terminating ephemeral clusters
-- Type-safe job builder using SDK dataclasses (no raw dicts)
+- `Result[T]` wrapper for typed, structured error handling
+- Context manager for ephemeral cluster lifecycle
+- Type-safe job builder using SDK dataclasses
 - Pagination helper with progress logging
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `databricks.sdk.errors.NotFound` | Resource deleted or wrong ID | Validate IDs before use; handle gracefully in cleanup |
-| `databricks.sdk.errors.PermissionDenied` | Token lacks required scope | Use service principal with correct Unity Catalog grants |
-| `databricks.sdk.errors.InvalidParameterValue` | Wrong type in job config | Use SDK dataclasses instead of raw dicts for compile-time safety |
-| `databricks.sdk.errors.ResourceAlreadyExists` | Duplicate cluster/job name | Add unique suffix or check-before-create pattern |
-| `AttributeError` on SDK objects | SDK version mismatch | Pin `databricks-sdk>=0.20.0` in requirements.txt |
+| SDK Exception | HTTP Code | Retryable | Typical Cause |
+|--------------|-----------|-----------|---------------|
+| `NotFound` | 404 | No | Resource deleted or wrong ID |
+| `PermissionDenied` | 403 | No | Token lacks required scope |
+| `InvalidParameterValue` | 400 | No | Wrong type or value in API call |
+| `ResourceAlreadyExists` | 409 | No | Duplicate name or conflicting create |
+| `ResourceConflict` | 409 | No | Job already running |
+| `TooManyRequests` | 429 | Yes | Rate limit exceeded |
+| `TemporarilyUnavailable` | 503 | Yes | Control plane overloaded |
 
 ## Examples
 
 ### Health Check Script
 ```python
-w = get_workspace_client()
+w = get_client()
 me = w.current_user.me()
-print(f"Authenticated as: {me.user_name}")
-print(f"Workspace: {w.config.host}")
-print(f"Active clusters: {sum(1 for c in w.clusters.list() if c.state == State.RUNNING)}")
+print(f"User: {me.user_name}")
+print(f"Host: {w.config.host}")
+print(f"Auth: {w.config.auth_type}")
+print(f"Running clusters: {sum(1 for c in w.clusters.list() if c.state == State.RUNNING)}")
 print(f"Jobs defined: {sum(1 for _ in w.jobs.list())}")
 ```
 
 ### Multi-Workspace Inventory
 ```python
-a = AccountClient()
-for ws in a.workspaces.list():
-    w = WorkspaceClient(host=f"https://{ws.deployment_name}.cloud.databricks.com")
-    clusters = list(w.clusters.list())
+acct = get_account_client()
+for ws in acct.workspaces.list():
+    ws_client = WorkspaceClient(host=f"https://{ws.deployment_name}.cloud.databricks.com")
+    clusters = list(ws_client.clusters.list())
     running = [c for c in clusters if c.state == State.RUNNING]
-    print(f"{ws.workspace_name}: {len(running)} running / {len(clusters)} total clusters")
+    print(f"{ws.workspace_name}: {len(running)} running / {len(clusters)} total")
 ```
 
 ## Resources
-- [Databricks SDK for Python](https://docs.databricks.com/dev-tools/sdk-python.html)
-- [SDK API Reference](https://databricks-sdk-py.readthedocs.io/)
-- [SDK Source on GitHub](https://github.com/databricks/databricks-sdk-py)
+- [Databricks SDK for Python](https://docs.databricks.com/aws/en/dev-tools/sdk-python)
+- [SDK Error Classes](https://databricks-sdk-py.readthedocs.io/en/latest/errors.html)
+- [SDK GitHub](https://github.com/databricks/databricks-sdk-py)
 
 ## Next Steps
 Apply patterns in `databricks-core-workflow-a` for Delta Lake ETL.

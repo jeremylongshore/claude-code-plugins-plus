@@ -17,63 +17,59 @@ tags: [saas, databricks, deployment]
 # Databricks Production Checklist
 
 ## Overview
-Complete checklist for deploying Databricks jobs and pipelines to production.
+Complete checklist for deploying Databricks jobs and pipelines to production. Covers security hardening, infrastructure validation, code quality gates, job configuration, deployment commands, monitoring setup, and rollback procedures.
 
 ## Prerequisites
 - Staging environment tested and verified
-- Production workspace access
-- Unity Catalog configured
-- Monitoring and alerting ready
+- Production workspace access with service principal
+- Unity Catalog configured with prod catalogs
+- Monitoring and alerting ready (see `databricks-observability`)
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-
-#### Security
-- [ ] Service principal configured for automation
-- [ ] Secrets in Databricks Secret Scopes (not env vars)
+### Step 1: Pre-Deployment Security
+- [ ] Service principal configured for automated runs (not personal PAT)
+- [ ] Secrets in Databricks Secret Scopes (not env vars or hardcoded)
 - [ ] Token expiration set (max 90 days)
-- [ ] Unity Catalog permissions configured
-- [ ] Cluster policies enforced
-- [ ] IP access lists configured
+- [ ] Unity Catalog grants follow least privilege
+- [ ] Cluster policies enforced for cost/security guardrails
+- [ ] IP access lists configured in Admin Console
+- [ ] Audit logging verified via `system.access.audit`
 
-#### Infrastructure
-- [ ] Production cluster pool configured
-- [ ] Instance types validated for workload
-- [ ] Autoscaling configured appropriately
-- [ ] Spot instance ratio set (cost vs reliability)
-
-### Step 2: Code Quality Verification
-
-#### Testing
-- [ ] Unit tests passing
-- [ ] Integration tests on staging data
-- [ ] Data quality tests defined
-- [ ] Performance benchmarks met
+### Step 2: Infrastructure Validation
+- [ ] Instance pool created for fast cluster startup
+- [ ] Node types validated for workload (compute-optimized for streaming, memory-optimized for ML)
+- [ ] Autoscaling configured with sensible min/max workers
+- [ ] Spot instances enabled for worker nodes (on-demand for driver)
+- [ ] Auto-termination disabled for job clusters (they terminate on completion)
 
 ```bash
-# Run tests via Asset Bundles
-databricks bundle validate -t prod
-databricks bundle run -t staging test-job
-
-# Verify test results
-databricks runs get --run-id $RUN_ID | jq '.state.result_state'
+# Verify infrastructure
+databricks clusters list-node-types --output json | jq '.[0:5] | .[].node_type_id'
+databricks instance-pools list --output json | jq '.[] | {id: .instance_pool_id, name: .instance_pool_name}'
 ```
 
-#### Code Review
-- [ ] No hardcoded credentials
+### Step 3: Code Quality Gates
+- [ ] Unit tests passing locally (`pytest tests/unit/`)
+- [ ] Integration tests passing on staging data
+- [ ] No `.collect()` on large datasets
+- [ ] No hardcoded credentials or paths
 - [ ] Error handling covers all failure modes
-- [ ] Logging is production-appropriate
-- [ ] Delta Lake best practices followed
-- [ ] No `collect()` on large datasets
+- [ ] Delta Lake best practices: MERGE for upserts, OPTIMIZE scheduled
+- [ ] Logging is production-appropriate (structured, no PII)
 
-### Step 3: Job Configuration
+```bash
+# Run tests and validate bundle
+pytest tests/ -v --tb=short
+databricks bundle validate -t prod
+```
 
+### Step 4: Job Configuration
 ```yaml
-# resources/prod_job.yml
+# resources/prod_etl.yml
 resources:
   jobs:
-    etl_pipeline:
+    prod_etl_pipeline:
       name: "prod-etl-pipeline"
       tags:
         environment: production
@@ -85,199 +81,176 @@ resources:
         timezone_id: "America/New_York"
 
       email_notifications:
-        on_failure:
-          - "oncall@company.com"
-        on_success:
-          - "data-team@company.com"
+        on_failure: ["oncall@company.com"]
+        on_success: ["data-team@company.com"]
 
       webhook_notifications:
         on_failure:
-          - id: "slack-webhook-id"
+          - id: "slack-notification-destination-id"
 
       max_concurrent_runs: 1
-      timeout_seconds: 14400  # 14400: 4 hours
+      timeout_seconds: 14400  # 4 hours
 
       tasks:
         - task_key: bronze_ingest
           job_cluster_key: etl_cluster
           notebook_task:
-            notebook_path: /Repos/prod/pipelines/bronze
-          timeout_seconds: 3600  # 3600: timeout: 1 hour
+            notebook_path: src/pipelines/bronze.py
+          timeout_seconds: 3600
 
         - task_key: silver_transform
-          depends_on:
-            - task_key: bronze_ingest
+          depends_on: [{task_key: bronze_ingest}]
           job_cluster_key: etl_cluster
           notebook_task:
-            notebook_path: /Repos/prod/pipelines/silver
+            notebook_path: src/pipelines/silver.py
+
+        - task_key: gold_aggregate
+          depends_on: [{task_key: silver_transform}]
+          job_cluster_key: etl_cluster
+          notebook_task:
+            notebook_path: src/pipelines/gold.py
 
       job_clusters:
         - job_cluster_key: etl_cluster
           new_cluster:
             spark_version: "14.3.x-scala2.12"
-            node_type_id: "Standard_DS3_v2"
-            num_workers: 4
+            node_type_id: "i3.xlarge"
             autoscale:
               min_workers: 2
               max_workers: 8
             spark_conf:
-              spark.sql.shuffle.partitions: "200"  # HTTP 200 OK
+              spark.sql.shuffle.partitions: "200"
               spark.databricks.delta.optimizeWrite.enabled: "true"
-            instance_pool_id: "prod-pool-id"
+              spark.databricks.delta.autoCompact.enabled: "true"
+            aws_attributes:
+              availability: SPOT_WITH_FALLBACK
+              first_on_demand: 1
 ```
 
-### Step 4: Deployment Commands
-
+### Step 5: Deploy
 ```bash
 # Pre-flight checks
-echo "=== Pre-flight Checks ==="
-databricks workspace list /Repos/prod/  # Verify repo exists
-databricks clusters list | grep prod    # Verify pools/clusters
-databricks secrets list-scopes          # Verify secrets
+echo "=== Pre-flight ==="
+databricks bundle validate -t prod
+databricks workspace list /Shared/.bundle/ 2>/dev/null || echo "First deploy"
+databricks secrets list-scopes | grep prod
 
-# Deploy with Asset Bundles
+# Deploy
 echo "=== Deploying ==="
 databricks bundle deploy -t prod
 
 # Verify deployment
 databricks bundle summary -t prod
-databricks jobs list | grep prod-etl
 
-# Manual trigger to verify
-echo "=== Verification Run ==="
-RUN_ID=$(databricks jobs run-now --job-id $JOB_ID | jq -r '.run_id')
-echo "Run ID: $RUN_ID"
+# Trigger verification run
+echo "=== Verification ==="
+RUN_ID=$(databricks bundle run prod_etl_pipeline -t prod --output json | jq -r '.run_id')
+echo "Verification run: $RUN_ID"
 
-# Monitor run
-databricks runs get --run-id $RUN_ID --wait
+# Wait and check result
+databricks runs get --run-id $RUN_ID --output json | jq '.state'
 ```
 
-### Step 5: Monitoring Setup
-
+### Step 6: Post-Deploy Monitoring
 ```python
-# monitoring/health_check.py
 from databricks.sdk import WorkspaceClient
-from datetime import datetime, timedelta
+from datetime import datetime
 
-def check_job_health(w: WorkspaceClient, job_id: int) -> dict:
-    """Check job health metrics."""
-    # Get recent runs
-    runs = list(w.jobs.list_runs(
-        job_id=job_id,
-        completed_only=True,
-        limit=10,
-    ))
+w = WorkspaceClient()
 
+def check_job_health(job_id: int) -> dict:
+    """Post-deploy health check."""
+    runs = list(w.jobs.list_runs(job_id=job_id, completed_only=True, limit=10))
     if not runs:
         return {"status": "NO_RUNS", "healthy": False}
 
-    # Calculate success rate
-    successful = sum(1 for r in runs if r.state.result_state == "SUCCESS")
+    successful = sum(1 for r in runs if r.state.result_state.value == "SUCCESS")
     success_rate = successful / len(runs)
 
-    # Calculate average duration
     durations = [
-        (r.end_time - r.start_time) / 1000 / 60  # 1000: minutes
-        for r in runs if r.end_time
+        (r.end_time - r.start_time) / 60000
+        for r in runs if r.end_time and r.start_time
     ]
     avg_duration = sum(durations) / len(durations) if durations else 0
 
-    # Check last run
-    last_run = runs[0]
-    last_state = last_run.state.result_state
-
     return {
-        "status": "HEALTHY" if success_rate > 0.9 else "DEGRADED",
-        "healthy": success_rate > 0.9 and last_state == "SUCCESS",
-        "success_rate": success_rate,
-        "avg_duration_minutes": avg_duration,
-        "last_run_state": last_state,
-        "last_run_time": datetime.fromtimestamp(last_run.start_time / 1000),  # 1 second in ms
+        "healthy": success_rate > 0.9 and runs[0].state.result_state.value == "SUCCESS",
+        "success_rate": f"{success_rate:.0%}",
+        "avg_duration_min": f"{avg_duration:.1f}",
+        "last_run": runs[0].state.result_state.value,
+        "last_run_time": datetime.fromtimestamp(runs[0].start_time / 1000).isoformat(),
     }
 ```
 
-### Step 6: Rollback Procedure
-
+### Step 7: Rollback Procedure
 ```bash
 #!/bin/bash
-# rollback.sh - Emergency rollback procedure
+set -euo pipefail
+# rollback.sh <job_id>
 
 JOB_ID=$1
-PREVIOUS_VERSION=$2
+echo "=== ROLLBACK: Job $JOB_ID ==="
 
-echo "=== ROLLBACK INITIATED ==="
-echo "Job: $JOB_ID"
-echo "Target Version: $PREVIOUS_VERSION"
-
-# 1. Pause the job
-echo "Pausing job..."
+# 1. Pause the schedule
+echo "Pausing schedule..."
 databricks jobs update --job-id $JOB_ID --json '{"settings": {"schedule": null}}'
 
-# 2. Cancel active runs
+# 2. Cancel any active runs
 echo "Cancelling active runs..."
-databricks runs list --job-id $JOB_ID --active-only | \
-  jq -r '.runs[].run_id' | \
+databricks runs list --job-id $JOB_ID --active-only --output json | \
+  jq -r '.runs[]?.run_id' | \
   xargs -I {} databricks runs cancel --run-id {}
 
-# 3. Reset to previous version
-echo "Rolling back to version $PREVIOUS_VERSION..."
-databricks bundle deploy -t prod --force
+# 3. Redeploy previous bundle version
+echo "Redeploying previous version..."
+git checkout HEAD~1 -- resources/ src/
+databricks bundle deploy -t prod
 
-# 4. Re-enable schedule
+# 4. Restore schedule
 echo "Re-enabling schedule..."
-# (restore from backup config)
+databricks jobs reset --job-id $JOB_ID --json-file resources/prod_etl.json
 
-# 5. Trigger verification run
-echo "Triggering verification run..."
+# 5. Trigger verification
+echo "Running verification..."
 databricks jobs run-now --job-id $JOB_ID
 
 echo "=== ROLLBACK COMPLETE ==="
 ```
 
 ## Output
-- Deployed production job
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Pre-deployment checklist verified
+- Production job deployed via Asset Bundles
+- Verification run completed successfully
+- Monitoring health check operational
+- Rollback procedure documented and tested
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| Job Failed | `result_state = FAILED` | P1 |
-| Long Running | Duration > 2x average | P2 |
-| Consecutive Failures | 3+ failures in a row | P1 |
-| Data Quality | Expectations failed | P2 |
+| Alert | Condition | Severity | Action |
+|-------|-----------|----------|--------|
+| Job Failed | `result_state = FAILED` | P1 | Page oncall, check `get_run_output` |
+| Long Running | Duration > 2x average | P2 | Investigate cluster sizing |
+| 3+ Consecutive Failures | Success rate drops below 70% | P1 | Trigger rollback |
+| Data Quality Failed | DLT expectations failed | P2 | Check source data quality |
 
 ## Examples
 
-### Production Health Dashboard Query
+### Production Health Dashboard
 ```sql
--- Job health metrics (Unity Catalog system tables)
-SELECT
-  job_id,
-  job_name,
-  COUNT(*) as total_runs,
-  SUM(CASE WHEN result_state = 'SUCCESS' THEN 1 ELSE 0 END) as successes,
-  AVG(execution_duration) / 60000 as avg_minutes,  # 60000: 1 minute in ms
-  MAX(start_time) as last_run
+SELECT job_id, job_name,
+       COUNT(*) AS total_runs,
+       SUM(CASE WHEN result_state = 'SUCCESS' THEN 1 ELSE 0 END) AS successes,
+       ROUND(AVG(execution_duration) / 60000, 1) AS avg_minutes,
+       MAX(start_time) AS last_run
 FROM system.lakeflow.job_run_timeline
 WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
 GROUP BY job_id, job_name
-ORDER BY total_runs DESC
-```
-
-### Pre-Production Verification
-```bash
-# Comprehensive pre-prod check
-databricks bundle validate -t prod && \
-databricks bundle deploy -t prod --dry-run && \
-echo "Validation passed, ready to deploy"
+ORDER BY total_runs DESC;
 ```
 
 ## Resources
-- [Databricks Production Best Practices](https://docs.databricks.com/dev-tools/bundles/best-practices.html)
-- [Job Configuration](https://docs.databricks.com/workflows/jobs/jobs.html)
-- [Monitoring Guide](https://docs.databricks.com/administration-guide/workspace/monitoring.html)
+- [Deployment Modes](https://docs.databricks.com/aws/en/dev-tools/bundles/deployment-modes)
+- [Job Configuration](https://docs.databricks.com/aws/en/jobs/)
+- [Cluster Best Practices](https://docs.databricks.com/aws/en/compute/configure)
 
 ## Next Steps
 For version upgrades, see `databricks-upgrade-migration`.

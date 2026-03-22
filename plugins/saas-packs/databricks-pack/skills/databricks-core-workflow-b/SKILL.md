@@ -13,21 +13,20 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, databricks, deployment, ml, workflow]
 
 ---
-# Databricks Core Workflow B: MLflow Training
+# Databricks Core Workflow B: MLflow Training & Serving
 
 ## Overview
-Build ML pipelines with MLflow experiment tracking, model registry, and deployment on Databricks. This workflow covers the full ML lifecycle from feature engineering through production model serving.
+Full ML lifecycle on Databricks: Feature Engineering Client for discoverable features, MLflow experiment tracking with auto-logging, Unity Catalog model registry with aliases (`champion`/`challenger`), and Mosaic AI Model Serving endpoints for real-time inference via REST API.
 
 ## Prerequisites
-- Completed `databricks-install-auth` setup
-- Familiarity with `databricks-core-workflow-a` (data pipelines)
-- `databricks-sdk`, `mlflow`, `scikit-learn` installed (`pip install databricks-sdk mlflow scikit-learn`)
-- Unity Catalog enabled for model registry (recommended)
+- Completed `databricks-install-auth` and `databricks-core-workflow-a`
+- `databricks-sdk`, `mlflow`, `scikit-learn` installed
+- Unity Catalog enabled (required for model registry)
 
 ## Instructions
 
 ### Step 1: Feature Engineering with Feature Store
-Create a feature table in Unity Catalog so features are discoverable and reusable across models.
+Create a feature table in Unity Catalog so features are discoverable and reusable.
 
 ```python
 from databricks.feature_engineering import FeatureEngineeringClient
@@ -37,7 +36,7 @@ import pyspark.sql.functions as F
 spark = SparkSession.builder.getOrCreate()
 fe = FeatureEngineeringClient()
 
-# Build features from your gold layer tables
+# Build features from gold layer tables
 user_features = (
     spark.table("prod_catalog.gold.user_events")
     .groupBy("user_id")
@@ -46,6 +45,7 @@ user_features = (
         F.avg("session_duration_sec").alias("avg_session_sec"),
         F.max("event_timestamp").alias("last_active"),
         F.countDistinct("event_type").alias("unique_event_types"),
+        F.datediff(F.current_date(), F.max("event_timestamp")).alias("days_since_last_active"),
     )
 )
 
@@ -59,48 +59,51 @@ fe.create_table(
 ```
 
 ### Step 2: MLflow Experiment Tracking
-Set up an experiment and log training runs with parameters, metrics, and artifacts.
-
 ```python
 import mlflow
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 # Point MLflow to Databricks tracking server
 mlflow.set_tracking_uri("databricks")
 mlflow.set_experiment("/Users/team@company.com/churn-prediction")
 
-# Load feature table as pandas DataFrame
+# Load features
 features_df = spark.table("prod_catalog.ml_features.user_behavior").toPandas()
 X = features_df.drop(columns=["user_id", "churned"])
 y = features_df["churned"]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Train with experiment tracking
-with mlflow.start_run(run_name="gbm-baseline"):
+with mlflow.start_run(run_name="gbm-baseline") as run:
     params = {"n_estimators": 200, "max_depth": 5, "learning_rate": 0.1}
     mlflow.log_params(params)
 
     model = GradientBoostingClassifier(**params)
     model.fit(X_train, y_train)
-
     y_pred = model.predict(X_test)
-    mlflow.log_metric("accuracy", accuracy_score(y_test, y_pred))
-    mlflow.log_metric("precision", precision_score(y_test, y_pred))
-    mlflow.log_metric("recall", recall_score(y_test, y_pred))
 
-    # Log model with signature for validation
+    metrics = {
+        "accuracy": accuracy_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+        "recall": recall_score(y_test, y_pred),
+        "f1": f1_score(y_test, y_pred),
+    }
+    mlflow.log_metrics(metrics)
+
+    # Log model with signature for serving validation
     mlflow.sklearn.log_model(
         model,
         artifact_path="model",
         input_example=X_test.iloc[:5],
         registered_model_name="prod_catalog.ml_models.churn_predictor",
     )
+    print(f"Run {run.info.run_id}: accuracy={metrics['accuracy']:.3f}")
 ```
 
-### Step 3: Model Registry and Versioning
-Promote models through stages using Unity Catalog model registry.
+### Step 3: Model Registry with Aliases
+Unity Catalog model registry replaces legacy stages with aliases (`champion`, `challenger`).
 
 ```python
 from mlflow import MlflowClient
@@ -108,32 +111,31 @@ from mlflow import MlflowClient
 client = MlflowClient()
 model_name = "prod_catalog.ml_models.churn_predictor"
 
-# List all versions and their stages
+# List versions
 for mv in client.search_model_versions(f"name='{model_name}'"):
-    print(f"Version {mv.version}: status={mv.status}, stage={mv.current_stage}")
+    print(f"v{mv.version}: status={mv.status}, aliases={mv.aliases}")
 
-# Set an alias on the best version for serving
-client.set_registered_model_alias(model_name, alias="champion", version=3)
+# Promote best version to champion
+client.set_registered_model_alias(model_name, alias="champion", version="3")
 
 # Load model by alias in downstream code
 champion = mlflow.pyfunc.load_model(f"models:/{model_name}@champion")
 predictions = champion.predict(X_test)
 ```
 
-### Step 4: Model Serving and Inference
-Deploy a model to a Databricks Model Serving endpoint for real-time predictions.
+### Step 4: Deploy Model Serving Endpoint
+Mosaic AI Model Serving creates a REST API endpoint with auto-scaling.
 
 ```python
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.service.serving import (
-    EndpointCoreConfigInput,
-    ServedEntityInput,
+    EndpointCoreConfigInput, ServedEntityInput,
 )
 
 w = WorkspaceClient()
 
 # Create or update a serving endpoint
-w.serving_endpoints.create_and_wait(
+endpoint = w.serving_endpoints.create_and_wait(
     name="churn-predictor-prod",
     config=EndpointCoreConfigInput(
         served_entities=[
@@ -146,43 +148,81 @@ w.serving_endpoints.create_and_wait(
         ]
     ),
 )
+print(f"Endpoint ready: {endpoint.name} ({endpoint.state.ready})")
+```
 
-# Query the endpoint
-import requests, json
+### Step 5: Query the Serving Endpoint
+```python
+import requests
 
-endpoint_url = f"{w.config.host}/serving-endpoints/churn-predictor-prod/invocations"
-headers = {"Authorization": f"Bearer {w.config.token}", "Content-Type": "application/json"}
-
-payload = {"dataframe_records": [{"total_events": 42, "avg_session_sec": 120.5, "unique_event_types": 7}]}
-response = requests.post(endpoint_url, headers=headers, json=payload)
+# Score via REST API
+url = f"{w.config.host}/serving-endpoints/churn-predictor-prod/invocations"
+headers = {
+    "Authorization": f"Bearer {w.config.token}",
+    "Content-Type": "application/json",
+}
+payload = {
+    "dataframe_records": [
+        {"total_events": 42, "avg_session_sec": 120.5,
+         "unique_event_types": 7, "days_since_last_active": 3},
+    ]
+}
+response = requests.post(url, headers=headers, json=payload)
 print(response.json())  # {"predictions": [0]}
+
+# Or use the SDK
+result = w.serving_endpoints.query(
+    name="churn-predictor-prod",
+    dataframe_records=[
+        {"total_events": 42, "avg_session_sec": 120.5,
+         "unique_event_types": 7, "days_since_last_active": 3},
+    ],
+)
+print(result.predictions)
+```
+
+### Step 6: Batch Inference Job
+```python
+# Scheduled Databricks job for daily batch scoring
+model_name = "prod_catalog.ml_models.churn_predictor"
+champion = mlflow.pyfunc.load_model(f"models:/{model_name}@champion")
+
+# Score all active users
+active_users = spark.table("prod_catalog.gold.active_users").toPandas()
+feature_cols = ["total_events", "avg_session_sec", "unique_event_types", "days_since_last_active"]
+active_users["churn_probability"] = champion.predict_proba(active_users[feature_cols])[:, 1]
+
+# Write scores back to Delta
+(spark.createDataFrame(active_users[["user_id", "churn_probability"]])
+    .write.mode("overwrite")
+    .saveAsTable("prod_catalog.gold.churn_scores"))
 ```
 
 ## Output
-- Feature table registered at `prod_catalog.ml_features.user_behavior`
-- MLflow experiment with logged runs, metrics, and model artifacts
-- Model versions in Unity Catalog registry with aliases (`champion`, `challenger`)
-- Live serving endpoint returning predictions via REST API
+- Feature table in Unity Catalog (`prod_catalog.ml_features.user_behavior`)
+- MLflow experiment with logged runs, metrics, and artifacts
+- Model versions in registry with `champion` alias
+- Live serving endpoint at `/serving-endpoints/churn-predictor-prod/invocations`
+- Batch scoring pipeline writing to `prod_catalog.gold.churn_scores`
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `RESOURCE_DOES_NOT_EXIST` | Experiment path wrong | Verify path with `mlflow.search_experiments()` |
-| `INVALID_PARAMETER_VALUE` on log_model | Missing input_example or signature | Pass `input_example=` to `log_model()` |
+| `RESOURCE_DOES_NOT_EXIST` | Wrong experiment path | Verify with `mlflow.search_experiments()` |
+| `INVALID_PARAMETER_VALUE` on `log_model` | Missing signature | Pass `input_example=` to auto-infer signature |
 | `Model not found in registry` | Wrong three-level name | Use `catalog.schema.model_name` format |
-| `Endpoint timeout` | Cold start from scale-to-zero | Disable `scale_to_zero_enabled` for latency-critical endpoints |
-| `FEATURE_TABLE_NOT_FOUND` | Table not created or wrong catalog | Run `fe.create_table()` first, verify catalog context |
-| `Memory error during training` | Dataset too large for driver | Use distributed training with `spark-sklearn` or sample data |
+| `Endpoint FAILED` | Model loading error | Check endpoint events: `w.serving_endpoints.get("name").pending_config` |
+| `429 on serving endpoint` | Rate limit exceeded | Increase `workload_size` or add traffic splitting |
+| `FEATURE_TABLE_NOT_FOUND` | Table not created | Run `fe.create_table()` first |
 
 ## Examples
 
-### Hyperparameter Sweep with MLflow
+### Hyperparameter Sweep
 ```python
 from sklearn.model_selection import ParameterGrid
 
-param_grid = {"n_estimators": [100, 200], "max_depth": [3, 5, 7], "learning_rate": [0.05, 0.1]}
-
-for params in ParameterGrid(param_grid):
+grid = {"n_estimators": [100, 200], "max_depth": [3, 5, 7], "learning_rate": [0.05, 0.1]}
+for params in ParameterGrid(grid):
     with mlflow.start_run(run_name=f"gbm-d{params['max_depth']}-n{params['n_estimators']}"):
         mlflow.log_params(params)
         model = GradientBoostingClassifier(**params)
@@ -191,20 +231,11 @@ for params in ParameterGrid(param_grid):
         mlflow.sklearn.log_model(model, "model")
 ```
 
-### Batch Inference Job
-```python
-# Run as a scheduled Databricks job for daily scoring
-champion = mlflow.pyfunc.load_model(f"models:/{model_name}@champion")
-new_users = spark.table("prod_catalog.gold.active_users").toPandas()
-new_users["churn_score"] = champion.predict_proba(new_users[feature_cols])[:, 1]
-spark.createDataFrame(new_users).write.mode("overwrite").saveAsTable("prod_catalog.gold.churn_scores")
-```
-
 ## Resources
-- [MLflow on Databricks](https://docs.databricks.com/mlflow/index.html)
-- [Feature Engineering](https://docs.databricks.com/machine-learning/feature-store/index.html)
-- [Model Serving](https://docs.databricks.com/machine-learning/model-serving/index.html)
-- [Unity Catalog Models](https://docs.databricks.com/machine-learning/manage-model-lifecycle/index.html)
+- [MLflow on Databricks](https://docs.databricks.com/aws/en/mlflow/)
+- [Feature Engineering](https://docs.databricks.com/aws/en/machine-learning/feature-store/)
+- [Model Serving](https://docs.databricks.com/aws/en/machine-learning/model-serving/)
+- [Unity Catalog Models](https://docs.databricks.com/aws/en/mlflow/models)
 
 ## Next Steps
 For common errors, see `databricks-common-errors`.

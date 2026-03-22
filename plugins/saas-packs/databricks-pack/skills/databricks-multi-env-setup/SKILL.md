@@ -17,187 +17,261 @@ tags: [saas, databricks, deployment]
 # Databricks Multi-Environment Setup
 
 ## Overview
-Configure Databricks across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
+Configure Databricks across dev, staging, and production with isolated workspaces (or catalog-level isolation), per-environment secrets, Asset Bundle targets, and Terraform for workspace provisioning. Each environment gets its own credentials, Unity Catalog namespace, and compute policies.
 
 ## Prerequisites
-- Separate Databricks API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+- Databricks account with multiple workspaces (or Premium for catalog-level isolation)
+- Service principals per environment
+- Secret management (Databricks Secret Scopes, AWS Secrets Manager, or GCP Secret Manager)
+- CI/CD pipeline (GitHub Actions, Azure DevOps, etc.)
 
 ## Environment Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+| Environment | Workspace | Catalog | Auth | Compute |
+|-------------|-----------|---------|------|---------|
+| Development | Shared or dedicated | `dev_catalog` | Personal PAT | Single-node, 15min auto-stop |
+| Staging | Dedicated | `staging_catalog` | Service principal | Production-like, spot instances |
+| Production | Dedicated | `prod_catalog` | Service principal (OAuth M2M) | Instance pools, auto-scale |
 
 ## Instructions
 
-### Step 1: Configuration Structure
-```
-config/
-  databricks/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
+### Step 1: CLI Profiles per Environment
+```ini
+# ~/.databrickscfg
+[dev]
+host = https://adb-dev-workspace.7.azuredatabricks.net
+token = dapi_dev_token
 
-### Step 2: Base Configuration
-```typescript
-// config/databricks/base.ts
-export const baseConfig = {
-  timeout: 30000,  # 30000: 30 seconds in ms
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,  # 300: timeout: 5 minutes
-  },
-};
+[staging]
+host = https://adb-staging-workspace.7.azuredatabricks.net
+client_id = staging-sp-client-id
+client_secret = staging-sp-secret
+
+[production]
+host = https://adb-prod-workspace.7.azuredatabricks.net
+client_id = prod-sp-client-id
+client_secret = prod-sp-secret
 ```
 
-### Step 3: Environment-Specific Configs
-```typescript
-// config/databricks/development.ts
-import { baseConfig } from "./base";
-
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.DATABRICKS_TOKEN_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
-
-// config/databricks/staging.ts
-import { baseConfig } from "./base";
-
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.DATABRICKS_TOKEN_STAGING,
-  debug: false,
-};
-
-// config/databricks/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.DATABRICKS_TOKEN_PROD,
-  debug: false,
-  timeout: 60000,  # 60000: 1 minute in ms
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },  # 600: timeout: 10 minutes
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/databricks/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getDatabricksConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config.apiKey) {
-    throw new Error(`DATABRICKS_TOKEN not set for environment: ${env}`);
-  }
-
-  return { ...config, environment: env };
-}
-```
-
-### Step 5: Secret Management
 ```bash
-# Local development (.env.local - git-ignored)
-DATABRICKS_TOKEN_DEV=your-dev-key
-
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add DATABRICKS_TOKEN_STAGING and DATABRICKS_TOKEN_PROD
-
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name databricks/production/api-key \
-  --secret-string "your-prod-key"
-
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create databricks-api-key-prod --data-file=-
+# Use a specific environment
+databricks workspace list / --profile staging
+databricks clusters list --profile production
 ```
 
+### Step 2: Asset Bundle Targets
+```yaml
+# databricks.yml — single project, multiple targets
+bundle:
+  name: data-platform
+
+variables:
+  catalog:
+    description: Unity Catalog for this environment
+    default: dev_catalog
+  alert_email:
+    default: dev@company.com
+  cluster_size:
+    default: "2X-Small"
+
+targets:
+  dev:
+    default: true
+    mode: development
+    workspace:
+      host: https://adb-dev-workspace.7.azuredatabricks.net
+      root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
+    variables:
+      catalog: dev_catalog
+
+  staging:
+    workspace:
+      host: https://adb-staging-workspace.7.azuredatabricks.net
+      root_path: /Shared/.bundle/${bundle.name}/staging
+    variables:
+      catalog: staging_catalog
+      alert_email: staging-alerts@company.com
+
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-prod-workspace.7.azuredatabricks.net
+      root_path: /Shared/.bundle/${bundle.name}/prod
+    variables:
+      catalog: prod_catalog
+      alert_email: oncall@company.com
+      cluster_size: "Medium"
+```
+
+### Step 3: Per-Environment Secret Scopes
+```bash
+# Create environment-specific secret scopes in each workspace
+for env in dev staging prod; do
+    databricks secrets create-scope "${env}-secrets" --profile $env
+    databricks secrets put-secret "${env}-secrets" db-password --profile $env
+    databricks secrets put-secret "${env}-secrets" api-key --profile $env
+done
+```
+
+```python
+# Access secrets in notebooks — scope name matches environment
+import os
+
+env = os.getenv("ENVIRONMENT", "dev")
+db_password = dbutils.secrets.get(scope=f"{env}-secrets", key="db-password")
+api_key = dbutils.secrets.get(scope=f"{env}-secrets", key="api-key")
+```
+
+### Step 4: Environment-Aware Python Config
+```python
+# config/databricks_config.py
+from dataclasses import dataclass
+import os
+
+@dataclass
+class DatabricksEnvConfig:
+    host: str
+    catalog: str
+    secret_scope: str
+    debug: bool
+    max_retries: int
+    timeout_seconds: int
+
+CONFIGS = {
+    "dev": DatabricksEnvConfig(
+        host=os.getenv("DATABRICKS_HOST_DEV", ""),
+        catalog="dev_catalog",
+        secret_scope="dev-secrets",
+        debug=True,
+        max_retries=3,
+        timeout_seconds=30,
+    ),
+    "staging": DatabricksEnvConfig(
+        host=os.getenv("DATABRICKS_HOST_STAGING", ""),
+        catalog="staging_catalog",
+        secret_scope="staging-secrets",
+        debug=False,
+        max_retries=3,
+        timeout_seconds=60,
+    ),
+    "prod": DatabricksEnvConfig(
+        host=os.getenv("DATABRICKS_HOST_PROD", ""),
+        catalog="prod_catalog",
+        secret_scope="prod-secrets",
+        debug=False,
+        max_retries=5,
+        timeout_seconds=120,
+    ),
+}
+
+def get_config() -> DatabricksEnvConfig:
+    env = os.getenv("ENVIRONMENT", "dev")
+    config = CONFIGS.get(env)
+    if not config:
+        raise ValueError(f"Unknown environment: {env}")
+    if not config.host:
+        raise ValueError(f"DATABRICKS_HOST_{env.upper()} not set")
+    return config
+```
+
+### Step 5: CI/CD with Environment Secrets
 ```yaml
 # .github/workflows/deploy.yml
+name: Deploy Pipeline
+
+on:
+  push:
+    branches: [main]
+
 jobs:
   deploy-staging:
+    runs-on: ubuntu-latest
     environment: staging
-    env:
-      DATABRICKS_TOKEN_STAGING: ${{ secrets.DATABRICKS_TOKEN_STAGING }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t staging
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
 
   deploy-production:
-    environment: production
-    env:
-      DATABRICKS_TOKEN_PROD: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production  # Requires manual approval
+    steps:
+      - uses: actions/checkout@v4
+      - uses: databricks/setup-cli@main
+      - run: databricks bundle deploy -t prod
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID_PROD }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET_PROD }}
 ```
+
+### Step 6: Terraform for Workspace Provisioning (Optional)
+```hcl
+# terraform/main.tf
+resource "databricks_workspace" "staging" {
+  provider                = databricks.accounts
+  workspace_name          = "data-platform-staging"
+  aws_region             = "us-east-1"
+  pricing_tier           = "PREMIUM"
+  deployment_name        = "data-platform-staging"
+  managed_services_customer_managed_key_id = var.cmk_id
+}
+
+resource "databricks_catalog" "staging" {
+  provider = databricks.staging
+  name     = "staging_catalog"
+  comment  = "Staging environment catalog"
+}
+
+resource "databricks_schema" "staging_bronze" {
+  provider   = databricks.staging
+  catalog_name = databricks_catalog.staging.name
+  name       = "bronze"
+}
+```
+
+## Output
+- CLI profiles configured per environment (`~/.databrickscfg`)
+- Asset Bundle with dev/staging/prod targets and variable overrides
+- Per-environment secret scopes with isolated credentials
+- Python config class for environment-aware code
+- CI/CD pipeline with GitHub environment secrets and approval gates
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
-| Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
+| Wrong environment targeted | Missing `--profile` or `-t` flag | Default profile should always be dev |
+| Cross-env data leak | Shared catalog | Use separate catalogs per environment |
+| Secret not found | Wrong scope name | Verify scope exists: `databricks secrets list-scopes --profile $env` |
+| CI auth failure | Expired service principal secret | Regenerate OAuth secret or use OIDC |
 
 ## Examples
 
-### Quick Environment Check
-```typescript
-const config = getDatabricksConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
+### Quick Environment Verification
+```bash
+for profile in dev staging production; do
+    echo "=== $profile ==="
+    databricks current-user me --profile $profile 2>/dev/null && echo "OK" || echo "FAILED"
+done
 ```
 
 ### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "DATABRICKS_TOKEN is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getDatabricksConfig());
+```python
+config = get_config()
+print(f"Environment: {os.getenv('ENVIRONMENT', 'dev')}")
+print(f"Catalog: {config.catalog}")
+print(f"Debug: {config.debug}")
 ```
 
 ## Resources
-- [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles)
-- [Databricks Environments](https://docs.databricks.com/dev-tools/bundles/settings.html)
+- [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
+- [CLI Authentication](https://docs.databricks.com/aws/en/dev-tools/cli/authentication)
+- [Terraform Provider](https://docs.databricks.com/aws/en/dev-tools/terraform/)
 
 ## Next Steps
 For deployment, see `databricks-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
