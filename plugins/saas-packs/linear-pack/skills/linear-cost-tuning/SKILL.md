@@ -1,11 +1,10 @@
 ---
 name: linear-cost-tuning
 description: |
-  Optimize Linear API usage and manage costs effectively.
-  Use when reducing API calls, managing rate limits efficiently,
-  or optimizing integration costs.
-  Trigger with phrases like "linear cost", "reduce linear API calls",
-  "linear efficiency", "linear API usage", "optimize linear costs".
+  Optimize Linear API usage, reduce unnecessary calls, and maximize
+  efficiency within rate limit budgets.
+  Trigger: "linear cost", "reduce linear API calls", "linear efficiency",
+  "linear API usage", "optimize linear costs", "linear budget".
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -16,98 +15,223 @@ tags: [saas, linear, api, cost-optimization]
 ---
 # Linear Cost Tuning
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Optimize Linear API usage to maximize efficiency and minimize costs through caching, batching, and smart query patterns.
-
-## Prerequisites
-- Working Linear integration
-- Monitoring in place
-- Understanding of usage patterns
+Optimize Linear API usage to stay within rate budgets and minimize infrastructure costs. Linear's API is free (no per-request billing), but rate limits (5,000 requests/hour, 250,000 complexity/hour) constrain throughput. Efficient patterns let you do more within these limits.
 
 ## Cost Factors
 
-| Factor | Impact | Optimization Strategy |
-|--------|--------|----------------------|
-| Request count | Direct rate limit | Batch operations |
-| Query complexity | Complexity limit | Minimal field selection |
-| Payload size | Bandwidth/latency | Pagination, filtering |
-| Webhook volume | Processing costs | Event filtering |
+| Factor | Budget Impact | Optimization |
+|--------|--------------|-------------|
+| Request count | 5,000/hr limit | Batch operations, coalesce requests |
+| Query complexity | 250,000/hr limit | Flat queries, small page sizes |
+| Payload size | Bandwidth + latency | Select only needed fields |
+| Polling frequency | Wastes budget | Replace with webhooks |
+| Webhook volume | Processing costs | Filter by event type and team |
 
 ## Instructions
 
 ### Step 1: Audit Current Usage
-Track requests, complexity, and bytes transferred. Project monthly usage to identify optimization targets.
+```typescript
+import { LinearClient } from "@linear/sdk";
+
+class UsageTracker {
+  private requests = 0;
+  private totalComplexity = 0;
+  private startTime = Date.now();
+
+  track(complexity: number) {
+    this.requests++;
+    this.totalComplexity += complexity;
+  }
+
+  report() {
+    const elapsedHours = (Date.now() - this.startTime) / 3600000;
+    return {
+      requests: this.requests,
+      requestsPerHour: Math.round(this.requests / elapsedHours),
+      totalComplexity: this.totalComplexity,
+      complexityPerHour: Math.round(this.totalComplexity / elapsedHours),
+      budgetUsed: {
+        requests: `${Math.round((this.requests / elapsedHours / 5000) * 100)}%`,
+        complexity: `${Math.round((this.totalComplexity / elapsedHours / 250000) * 100)}%`,
+      },
+    };
+  }
+}
+
+const tracker = new UsageTracker();
+```
 
 ### Step 2: Replace Polling with Webhooks
-```typescript
-// BAD: Polling every minute
-setInterval(async () => {
-  const issues = await client.issues({ first: 100 });
-  await syncIssues(issues.nodes);
-}, 60000);  # 60000: 1 minute in ms
+The single biggest optimization. A polling loop checking every minute uses 1,440 requests/day. A webhook uses zero.
 
-// GOOD: Use webhooks for real-time updates
-app.post("/webhooks/linear", async (req, res) => {
-  const event = req.body;
-  await handleEvent(event);
-  res.sendStatus(200);  # HTTP 200 OK
+```typescript
+// BAD: Polling every 60 seconds (1,440 req/day, ~60 req/hr)
+setInterval(async () => {
+  const issues = await client.issues({
+    first: 100,
+    filter: { updatedAt: { gte: lastCheck } },
+  });
+  await syncIssues(issues.nodes);
+  lastCheck = new Date().toISOString();
+}, 60000);
+
+// GOOD: Webhook receives updates in real-time (0 requests for monitoring)
+app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
+  // Verify signature, process event
+  const event = JSON.parse(req.body.toString());
+  if (event.type === "Issue") {
+    syncSingleIssue(event.data);
+  }
+  res.json({ ok: true });
 });
 ```
 
-### Step 3: Optimize Query Complexity
+### Step 3: Minimize Query Complexity
 ```typescript
-// BAD: ~500 complexity - deeply nested  # HTTP 500 Internal Server Error
-const expensive = `query { issues(first: 50) { nodes { id title assignee { name } labels { nodes { name } } comments(first: 10) { nodes { body user { name } } } } } }`;
+// BAD: ~12,500 pts — deeply nested with large page
+// issues(50) * (labels(50 default) * fields + comments(50) * user)
+const expensive = `query {
+  issues(first: 50) {
+    nodes {
+      id title
+      assignee { name }
+      labels { nodes { name } }
+      comments(first: 10) { nodes { body user { name } } }
+    }
+  }
+}`;
 
-// GOOD: ~100 complexity - flat fields only
-const cheap = `query { issues(first: 50) { nodes { id identifier title priority } } }`;
+// GOOD: ~55 pts — flat fields only
+const cheap = `query {
+  issues(first: 50) {
+    nodes { id identifier title priority estimate }
+  }
+}`;
+
+// Fetch relations separately only when needed
+const issueDetail = `query($id: String!) {
+  issue(id: $id) {
+    id identifier title description priority
+    assignee { name email }
+    state { name type }
+    labels { nodes { name color } }
+  }
+}`;
 ```
 
-### Step 4: Implement Request Coalescing and Caching
-Deduplicate in-flight requests and cache responses with appropriate TTLs.
+### Step 4: Request Coalescing
+Deduplicate concurrent identical requests.
 
-### Step 5: Filter Webhook Events
-Skip bot events, trivial updates, and irrelevant teams to reduce processing load.
+```typescript
+const inflight = new Map<string, Promise<any>>();
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for full code examples of usage tracking, conditional fetching, coalescing, and lazy loading patterns.
+async function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
+  if (inflight.has(key)) return inflight.get(key)!;
+  const promise = fn().finally(() => inflight.delete(key));
+  inflight.set(key, promise);
+  return promise;
+}
 
-## Output
-- Usage audit with projected monthly costs
-- Polling replaced with webhooks
-- Query complexity reduced
-- Request coalescing and caching active
+// 10 concurrent requests for same team = 1 actual API call
+async function getTeam(teamKey: string) {
+  return coalesce(`team:${teamKey}`, async () => {
+    const result = await client.teams({ filter: { key: { eq: teamKey } } });
+    return result.nodes[0];
+  });
+}
+```
+
+### Step 5: Cache with Smart TTLs
+```typescript
+const CACHE_TTLS = {
+  teams: 600,        // 10 min — teams almost never change
+  workflowStates: 1800, // 30 min — states rarely change
+  labels: 600,       // 10 min — labels rarely change
+  issues: 60,        // 1 min — issues change frequently
+  viewer: 3600,      // 1 hr — your identity doesn't change
+};
+
+// Combined with webhook invalidation, even short TTLs
+// dramatically reduce redundant requests
+```
+
+### Step 6: Filter Webhook Events
+Skip irrelevant events to reduce processing costs.
+
+```typescript
+async function processEvent(event: any): Promise<void> {
+  // Skip bot/automation events to avoid loops
+  if (event.actor?.type === "application") return;
+
+  // Skip trivial field updates (e.g., sortOrder changes)
+  if (event.type === "Issue" && event.action === "update") {
+    const significantFields = ["stateId", "assigneeId", "priority", "title"];
+    const changedFields = Object.keys(event.updatedFrom ?? {});
+    if (!changedFields.some(f => significantFields.includes(f))) return;
+  }
+
+  // Skip specific teams if not relevant
+  const relevantTeamKeys = ["ENG", "PRODUCT"];
+  if (event.data?.team?.key && !relevantTeamKeys.includes(event.data.team.key)) return;
+
+  // Process significant event
+  await handleEvent(event);
+}
+```
+
+### Step 7: Incremental Sync Pattern
+```typescript
+// Instead of fetching ALL issues every sync:
+// Sort by updatedAt, stop when you reach already-synced data
+
+async function incrementalSync(client: LinearClient, lastSyncTime: string) {
+  let cursor: string | undefined;
+  let synced = 0;
+
+  while (true) {
+    const issues = await client.issues({
+      first: 100,
+      after: cursor,
+      filter: { updatedAt: { gte: lastSyncTime } },
+      orderBy: "updatedAt",
+    });
+
+    for (const issue of issues.nodes) {
+      await upsertLocally(issue);
+      synced++;
+    }
+
+    if (!issues.pageInfo.hasNextPage) break;
+    cursor = issues.pageInfo.endCursor;
+  }
+
+  console.log(`Synced ${synced} issues since ${lastSyncTime}`);
+  return synced;
+}
+```
+
+## Optimization Checklist
+- [ ] Replace all polling with webhooks
+- [ ] Implement request caching (static data: 10-30 min TTL)
+- [ ] Add request coalescing for concurrent identical calls
+- [ ] Filter webhook events (skip bots, trivial updates, irrelevant teams)
+- [ ] Keep query complexity under 500 pts per query
+- [ ] Use `rawRequest()` for exact field selection
+- [ ] Sort by `updatedAt` for incremental sync
+- [ ] Batch mutations (20 per GraphQL request)
+- [ ] Cache teams/states/labels with webhook invalidation
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Rate limit hit | Too many requests | Implement coalescing + caching |
-| Stale data | Cache TTL too long | Invalidate on webhook events |
-| High complexity | Nested queries | Flatten queries, fetch separately |
-| Webhook overload | Unfiltered events | Add event type/team filtering |
-
-## Examples
-
-### Cost Reduction Checklist
-- [ ] Replace polling with webhooks
-- [ ] Implement request caching (5-min TTL)
-- [ ] Use request coalescing for concurrent calls
-- [ ] Filter webhook events by team and field
-- [ ] Minimize query complexity (<250 per query)
-- [ ] Use lazy loading for static data (teams, states)
+| Rate limit hit frequently | Too many requests | Implement coalescing + caching |
+| Stale cache data | TTL too long | Use webhook-driven invalidation |
+| High complexity queries | Nested relations | Flatten with `rawRequest()`, fetch relations lazily |
+| Webhook processing overload | Unfiltered events | Add type/team/field filtering |
 
 ## Resources
-- [Linear Rate Limiting](https://developers.linear.app/docs/graphql/rate-limiting)
-- [Query Complexity Guide](https://developers.linear.app/docs/graphql/complexity)
-- [Webhook Best Practices](https://developers.linear.app/docs/graphql/webhooks)
-
-## Next Steps
-Learn production architecture with `linear-reference-architecture`.
+- [Linear Rate Limiting](https://linear.app/developers/rate-limiting)
+- [Linear Best Practices](https://linear.app/developers/graphql)
+- [Webhooks](https://linear.app/developers/webhooks)

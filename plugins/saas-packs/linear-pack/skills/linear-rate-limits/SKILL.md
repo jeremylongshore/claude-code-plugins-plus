@@ -1,11 +1,11 @@
 ---
 name: linear-rate-limits
 description: |
-  Handle Linear API rate limiting and quotas effectively.
-  Use when dealing with rate limit errors, implementing throttling,
-  or optimizing API usage patterns.
-  Trigger with phrases like "linear rate limit", "linear throttling",
-  "linear API quota", "linear 429 error", "linear request limits".
+  Handle Linear API rate limiting, complexity budgets, and quotas.
+  Use when dealing with 429 errors, implementing throttling,
+  or optimizing request patterns to stay within limits.
+  Trigger: "linear rate limit", "linear throttling", "linear 429",
+  "linear API quota", "linear complexity", "linear request limits".
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -17,41 +17,56 @@ tags: [saas, linear, api]
 # Linear Rate Limits
 
 ## Overview
-Handle Linear API rate limits for reliable integrations. Linear uses complexity-based rate limiting for its GraphQL API — each query has a complexity score based on nesting depth and page sizes. When the budget is exceeded, the API returns HTTP 429.
+Linear uses the **leaky bucket algorithm** with two rate limiting dimensions. Understanding both is critical for reliable integrations:
+
+| Budget | Limit | Refill Rate |
+|--------|-------|-------------|
+| **Requests** | 5,000/hour per API key | ~83/min constant refill |
+| **Complexity** | 250,000 points/hour | ~4,167/min constant refill |
+| **Max single query** | 10,000 points | Hard reject if exceeded |
+
+**Complexity scoring:** Each property = 0.1 pt, each object = 1 pt, connections multiply children by `first` arg (default 50), then round up.
 
 ## Prerequisites
-- Linear SDK installed (`npm install @linear/sdk`)
+- `@linear/sdk` installed
 - Understanding of HTTP response headers
 - Familiarity with async/await patterns
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Headers
-Linear returns rate limit information in response headers.
+### Step 1: Read Rate Limit Headers
+Linear returns rate limit info on every response.
 
 ```typescript
-// Check rate limit status via raw HTTP
 const response = await fetch("https://api.linear.app/graphql", {
   method: "POST",
   headers: {
-    "Authorization": process.env.LINEAR_API_KEY!,
+    Authorization: process.env.LINEAR_API_KEY!,
     "Content-Type": "application/json",
   },
   body: JSON.stringify({ query: "{ viewer { id } }" }),
 });
 
-console.log("Status:", response.status);
-console.log("X-RateLimit-Requests-Limit:", response.headers.get("x-ratelimit-requests-limit"));
-console.log("X-RateLimit-Requests-Remaining:", response.headers.get("x-ratelimit-requests-remaining"));
-console.log("X-RateLimit-Requests-Reset:", response.headers.get("x-ratelimit-requests-reset"));
-console.log("X-Complexity:", response.headers.get("x-complexity"));
+// Key headers
+const headers = {
+  requestsRemaining: response.headers.get("x-ratelimit-requests-remaining"),
+  requestsLimit: response.headers.get("x-ratelimit-requests-limit"),
+  requestsReset: response.headers.get("x-ratelimit-requests-reset"),
+  complexityRemaining: response.headers.get("x-ratelimit-complexity-remaining"),
+  complexityLimit: response.headers.get("x-ratelimit-complexity-limit"),
+  queryComplexity: response.headers.get("x-complexity"),
+};
+
+console.log(`Requests: ${headers.requestsRemaining}/${headers.requestsLimit}`);
+console.log(`Complexity: ${headers.complexityRemaining}/${headers.complexityLimit}`);
+console.log(`This query cost: ${headers.queryComplexity} points`);
 ```
 
-### Step 2: Implement Exponential Backoff
+### Step 2: Exponential Backoff with Jitter
 ```typescript
 import { LinearClient } from "@linear/sdk";
 
-class RateLimitedLinear {
+class RateLimitedClient {
   private client: LinearClient;
 
   constructor(apiKey: string) {
@@ -63,11 +78,14 @@ class RateLimitedLinear {
       try {
         return await fn();
       } catch (error: any) {
-        const isRateLimited = error.status === 429 || error.message?.includes("rate");
+        const isRateLimited = error.status === 429 ||
+          error.message?.includes("rate") ||
+          error.type === "ratelimited";
+
         if (!isRateLimited || attempt === maxRetries - 1) throw error;
 
-        const baseDelay = 1000;
-        const delay = baseDelay * Math.pow(2, attempt) + Math.random() * 500;
+        // Exponential backoff: 1s, 2s, 4s, 8s, 16s + jitter
+        const delay = 1000 * Math.pow(2, attempt) + Math.random() * 500;
         console.warn(`Rate limited (attempt ${attempt + 1}/${maxRetries}), waiting ${Math.round(delay)}ms`);
         await new Promise(r => setTimeout(r, delay));
       }
@@ -75,18 +93,12 @@ class RateLimitedLinear {
     throw new Error("Unreachable");
   }
 
-  async getIssues(filter?: any) {
-    return this.withRetry(() => this.client.issues(filter));
-  }
-
-  async createIssue(input: any) {
-    return this.withRetry(() => this.client.createIssue(input));
-  }
+  get sdk() { return this.client; }
 }
 ```
 
-### Step 3: Request Queue with Throttling
-Prevent bursts by spacing requests with a token-bucket pattern.
+### Step 3: Request Queue with Token Bucket
+Prevent bursts by spacing requests evenly.
 
 ```typescript
 class RequestQueue {
@@ -122,115 +134,132 @@ class RequestQueue {
   }
 }
 
-// Usage
-const queue = new RequestQueue(8);  // 8 requests per second
+// Usage: 8 requests/second max
+const queue = new RequestQueue(8);
 const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
 
-// These execute serially with 125ms spacing
-const results = await Promise.all(
+const teamResults = await Promise.all(
   teamIds.map(id => queue.enqueue(() => client.team(id)))
 );
 ```
 
 ### Step 4: Reduce Query Complexity
 ```typescript
-// HIGH COMPLEXITY: deep nesting + large page
-// Complexity ≈ first × nested_fields
-const heavy = await client.issues({
-  first: 250,  // Large page
-  // Plus each issue fetches assignee, project, labels...
-});
+// HIGH COMPLEXITY (~12,500 pts):
+// 250 issues * (1 issue + 50 labels * 0.1 per field) = expensive
+// const heavy = await client.issues({ first: 250 });
 
-// LOW COMPLEXITY: flat query, small page
+// LOW COMPLEXITY (~55 pts):
+// 50 issues * (5 fields * 0.1 + 1 object) = cheap
 const light = await client.issues({
   first: 50,
   filter: { team: { id: { eq: teamId } } },
-  // Access relations lazily only when needed
 });
-for (const issue of light.nodes) {
-  // Only fetch assignee for assigned issues
-  if (issue.assigneeId) {
-    const assignee = await queue.enqueue(() => issue.assignee);
+
+// Use rawRequest for minimal field selection
+const minimal = await client.client.rawRequest(`
+  query { issues(first: 50) { nodes { id identifier title priority } } }
+`);
+
+// Sort by updatedAt to get fresh data first, avoid paginating everything
+const fresh = await client.issues({
+  first: 50,
+  orderBy: "updatedAt",
+  filter: { updatedAt: { gte: lastSyncTime } },
+});
+```
+
+### Step 5: Batch Mutations
+Combine multiple mutations into one GraphQL request.
+
+```typescript
+// Instead of 100 separate issueUpdate calls (~100 requests):
+async function batchUpdatePriority(client: LinearClient, issueIds: string[], priority: number) {
+  const chunkSize = 20; // Keep each batch under complexity limit
+  for (let i = 0; i < issueIds.length; i += chunkSize) {
+    const chunk = issueIds.slice(i, i + chunkSize);
+    const mutations = chunk.map((id, j) =>
+      `u${j}: issueUpdate(id: "${id}", input: { priority: ${priority} }) { success }`
+    ).join("\n");
+
+    await queue.enqueue(() =>
+      client.client.rawRequest(`mutation BatchUpdate { ${mutations} }`)
+    );
+  }
+}
+
+// Batch archive
+async function batchArchive(client: LinearClient, issueIds: string[]) {
+  for (let i = 0; i < issueIds.length; i += 20) {
+    const chunk = issueIds.slice(i, i + 20);
+    const mutations = chunk.map((id, j) =>
+      `a${j}: issueArchive(id: "${id}") { success }`
+    ).join("\n");
+
+    await client.client.rawRequest(`mutation { ${mutations} }`);
   }
 }
 ```
 
-### Step 5: Batch Operations
-Combine multiple mutations into one request to stay within limits.
-
+### Step 6: Rate Limit Monitor
 ```typescript
-// Instead of 100 separate issueUpdate calls:
-async function batchArchive(client: LinearClient, issueIds: string[]) {
-  const chunks = [];
-  for (let i = 0; i < issueIds.length; i += 20) {
-    chunks.push(issueIds.slice(i, i + 20));
+class RateLimitMonitor {
+  private remaining = { requests: 5000, complexity: 250000 };
+
+  update(headers: Headers) {
+    const reqRemaining = headers.get("x-ratelimit-requests-remaining");
+    const cxRemaining = headers.get("x-ratelimit-complexity-remaining");
+    if (reqRemaining) this.remaining.requests = parseInt(reqRemaining);
+    if (cxRemaining) this.remaining.complexity = parseInt(cxRemaining);
   }
 
-  for (const chunk of chunks) {
-    const mutations = chunk.map((id, i) =>
-      `a${i}: issueArchive(id: "${id}") { success }`
-    ).join("\n");
+  isLow(): boolean {
+    return this.remaining.requests < 100 || this.remaining.complexity < 5000;
+  }
 
-    await queue.enqueue(() =>
-      client.client.rawRequest(`mutation { ${mutations} }`)
-    );
+  getStatus() {
+    return {
+      requests: this.remaining.requests,
+      complexity: this.remaining.complexity,
+      healthy: !this.isLow(),
+    };
   }
 }
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| HTTP `429 Too Many Requests` | Rate limit exceeded | Parse `Retry-After` header, back off exponentially |
-| `Query complexity too high` | Query exceeds complexity budget | Reduce `first` param, remove nested relations, split into multiple queries |
-| `Timeout` on SDK call | Server slow under load | Add 30s timeout, retry once |
-| Burst of `429`s on startup | Initialization fetches too much | Stagger startup queries, cache static data |
+| HTTP 429 | Request or complexity budget exceeded | Parse headers, back off exponentially |
+| `Query complexity too high` | Single query > 10,000 pts | Reduce `first` to 50, remove nested relations |
+| Burst of 429s on startup | Init fetches too much data | Stagger startup queries, cache static data |
+| Timeout on SDK call | Server under load | Add 30s timeout, retry once |
 
 ## Examples
 
-### Rate Limit Monitor
-```typescript
-async function checkRateLimitStatus(): Promise<void> {
-  const resp = await fetch("https://api.linear.app/graphql", {
-    method: "POST",
-    headers: {
-      "Authorization": process.env.LINEAR_API_KEY!,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ query: "{ viewer { id } }" }),
-  });
-
-  const remaining = resp.headers.get("x-ratelimit-requests-remaining");
-  const limit = resp.headers.get("x-ratelimit-requests-limit");
-  const reset = resp.headers.get("x-ratelimit-requests-reset");
-  console.log(`Rate limit: ${remaining}/${limit} remaining, resets at ${reset}`);
-}
+### Rate Limit Status Check
+```bash
+curl -s -I -X POST https://api.linear.app/graphql \
+  -H "Authorization: $LINEAR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ viewer { id } }"}' 2>&1 | grep -i ratelimit
 ```
 
 ### Safe Bulk Import
 ```typescript
-const rateLimited = new RateLimitedLinear(process.env.LINEAR_API_KEY!);
-const importData = [/* array of issues to import */];
+const rlClient = new RateLimitedClient(process.env.LINEAR_API_KEY!);
+const items = [/* issues to import */];
 
-let created = 0;
-for (const item of importData) {
-  await rateLimited.createIssue({ teamId: "team-uuid", title: item.title });
-  created++;
-  if (created % 50 === 0) console.log(`Created ${created}/${importData.length}`);
+for (let i = 0; i < items.length; i++) {
+  await rlClient.withRetry(() =>
+    rlClient.sdk.createIssue({ teamId: "team-uuid", title: items[i].title })
+  );
+  if ((i + 1) % 50 === 0) console.log(`Imported ${i + 1}/${items.length}`);
 }
 ```
 
-## Output
-- Rate limit header monitoring for proactive throttling
-- Retry wrapper with exponential backoff and jitter
-- Token-bucket request queue spacing API calls
-- Query complexity reduction patterns
-- Batch mutation builder for bulk operations
-
 ## Resources
-- [Linear Rate Limiting](https://developers.linear.app/docs/graphql/rate-limiting)
-- [GraphQL Complexity](https://developers.linear.app/docs/graphql/complexity)
-- [Best Practices](https://developers.linear.app/docs/graphql/best-practices)
-
-## Next Steps
-Learn security best practices with `linear-security-basics`.
+- [Linear Rate Limiting](https://linear.app/developers/rate-limiting)
+- [Query Complexity](https://linear.app/developers/rate-limiting)
+- [Best Practices](https://linear.app/developers/graphql)

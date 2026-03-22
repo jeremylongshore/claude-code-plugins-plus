@@ -1,10 +1,10 @@
 ---
 name: linear-upgrade-migration
 description: |
-  Upgrade Linear SDK versions and migrate breaking changes.
+  Upgrade Linear SDK versions and handle breaking changes safely.
   Use when updating to a new SDK version, handling deprecations,
-  or migrating between major Linear API versions.
-  Trigger with phrases like "upgrade linear SDK", "linear SDK migration",
+  or migrating between API versions.
+  Trigger: "upgrade linear SDK", "linear SDK migration",
   "update linear", "linear breaking changes", "linear deprecation".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Grep
 version: 1.0.0
@@ -16,122 +16,217 @@ tags: [saas, linear, api, migration]
 ---
 # Linear Upgrade Migration
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Safely upgrade Linear SDK versions and handle breaking changes with compatibility layers and gradual rollout.
+Safely upgrade `@linear/sdk` versions with zero downtime. The SDK is auto-generated from Linear's GraphQL schema -- major versions can rename fields, change return types, add required parameters, or remove deprecated methods. This skill covers version checking, upgrade procedure, compatibility layers, and rollback.
 
 ## Prerequisites
-- Existing Linear integration
-- Version control (Git) configured
-- Test suite for Linear operations
+- Existing Linear integration with version control (Git)
+- Test suite covering Linear SDK operations
+- Understanding of semantic versioning
 
 ## Instructions
 
-### Step 1: Check Current and Latest Versions
+### Step 1: Check Current vs Latest Version
 ```bash
 set -euo pipefail
-npm list @linear/sdk          # Current version
-npm view @linear/sdk version  # Latest available
+# Current installed version
+npm list @linear/sdk 2>/dev/null || echo "Not installed"
+
+# Latest available
+npm view @linear/sdk version
+
+# All recent versions
+npm view @linear/sdk versions --json | jq '.[-10:]'
 ```
 
-### Step 2: Review Breaking Changes
-Check GitHub releases and changelog for migration guides between your current and target versions.
-
-### Step 3: Create Upgrade Branch
+### Step 2: Review Changelog for Breaking Changes
 ```bash
 set -euo pipefail
-git checkout -b upgrade/linear-sdk-vX.Y.Z
-npm install @linear/sdk@latest
-npx tsc --noEmit  # Check for type errors
-```
-
-### Step 4: Apply Migration Patterns
-Common changes between versions: renamed fields, changed return types (direct to paginated), new required parameters, and removed methods.
-
-### Step 5: Create Compatibility Layer
-Wrap breaking changes in a compat client to normalize behavior across versions.
-
-### Step 6: Test and Deploy
-```bash
-set -euo pipefail
-npm test && npx tsc --noEmit && npm run lint
-npm run deploy:staging && npm run test:integration
-```
-
-### Step 7: Gradual Rollout
-Use feature flags to toggle between old and new SDK behavior in production.
-
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for all migration patterns, compatibility layer code, and version-specific changes.
-
-## Version Compatibility Matrix
-
-| SDK Version | Node.js | TypeScript | Key Changes |
-|-------------|---------|------------|-------------|
-| 1.x | 14+ | 4.5+ | Initial release |
-| 2.x | 16+ | 4.7+ | ESM support |
-| 3.x | 18+ | 5.0+ | Strict types |
-
-## Output
-- SDK upgraded to target version
-- Breaking changes resolved
-- Compatibility layer in place
-- Tests passing on new version
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Property does not exist` | Renamed field | Check migration guide for new name |
-| `Type not assignable` | Changed type | Update type annotations |
-| `Module not found` | ESM/CJS mismatch | Update import syntax |
-| `Runtime method missing` | Version mismatch | Verify installed SDK version |
-
-## Examples
-
-### Check for Breaking Changes Before Upgrading
-```bash
-# Compare your current version with latest
-npm list @linear/sdk
-npm view @linear/sdk versions --json | jq '.[-5:]'
-# Review changelog for breaking changes between versions
+# View SDK changelog on GitHub
 npm view @linear/sdk repository.url
+# Then check: https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md
+
+# Also review Linear's API changelog:
+# https://linear.app/changelog (filter for API/developer updates)
 ```
 
-### Compatibility Wrapper for Renamed Methods
+Common breaking changes between major versions:
+- **Renamed fields**: e.g., `issue.state` property vs lazy relation
+- **Changed return types**: direct value to paginated connection
+- **New required parameters**: mutations gaining mandatory fields
+- **Removed methods**: deprecated methods dropped
+- **ESM/CJS**: module system changes
+
+### Step 3: Create Upgrade Branch and Install
+```bash
+set -euo pipefail
+git checkout -b upgrade/linear-sdk-$(npm view @linear/sdk version)
+npm install @linear/sdk@latest
+
+# Immediately check for type errors
+npx tsc --noEmit 2>&1 | head -50
+```
+
+### Step 4: Fix Type Errors with Compatibility Layer
 ```typescript
-// Bridge pattern for gradual migration
-function getIssueState(issue: any): string {
-  // SDK v2: issue.state was a direct property
-  // SDK v3: issue.state is a lazy-loaded relation
-  if (typeof issue.state === "string") return issue.state;  // v2
-  return issue.state?.name ?? "unknown";  // v3
+// src/linear-compat.ts
+// Bridge pattern for gradual migration across SDK versions
+
+import { LinearClient } from "@linear/sdk";
+
+/**
+ * Normalize issue state access across SDK versions.
+ * SDK v2: issue.state was a direct string property
+ * SDK v3+: issue.state is a lazy-loaded WorkflowState relation
+ */
+export async function getIssueStateName(issue: any): Promise<string> {
+  if (typeof issue.state === "string") return issue.state;
+  const state = await issue.state;
+  return state?.name ?? "unknown";
+}
+
+export async function getIssueStateType(issue: any): Promise<string> {
+  if (typeof issue.stateType === "string") return issue.stateType;
+  const state = await issue.state;
+  return state?.type ?? "unknown";
+}
+
+/**
+ * Normalize team access — some versions changed from direct to paginated.
+ */
+export async function getTeamByKey(client: LinearClient, key: string) {
+  const teams = await client.teams({ filter: { key: { eq: key } } });
+  return teams.nodes[0];
+}
+
+/**
+ * Normalize issue creation return — handle both success shapes.
+ */
+export async function createIssue(
+  client: LinearClient,
+  input: { teamId: string; title: string; [key: string]: any }
+) {
+  const result = await client.createIssue(input);
+  // Some versions return { success, issue } others return directly
+  if ("success" in result) {
+    return { success: result.success, issue: await result.issue };
+  }
+  return { success: true, issue: result };
 }
 ```
 
-### Verify After Upgrade
+### Step 5: Run Tests and Fix Failures
 ```bash
-# Type-check, test, and lint after upgrading
-npx tsc --noEmit && npm test && npm run lint
-# If clean, commit the upgrade
-git add package.json package-lock.json
-git commit -m "chore: upgrade @linear/sdk to vX.Y.Z"
+set -euo pipefail
+# Type-check
+npx tsc --noEmit
+
+# Run unit tests
+npm test
+
+# Run integration tests (if API key available)
+npm run test:integration 2>&1 || true
+
+# Lint
+npm run lint 2>&1 || true
+```
+
+Common fixes:
+```typescript
+// Fix: Property 'x' does not exist
+// Old: issue.statusName
+// New: (await issue.state)?.name
+
+// Fix: Type 'X' is not assignable to type 'Y'
+// Old: const states: string[] = team.states
+// New: const states = await team.states()
+
+// Fix: Expected 2 arguments but got 1
+// Check if mutation added required parameter
+// Old: client.updateIssue(id, { title: "new" })
+// New: client.updateIssue(id, { title: "new" })  // usually same
+```
+
+### Step 6: Test in Staging Before Production
+```bash
+set -euo pipefail
+# Deploy to staging
+npm run build
+npm run deploy:staging
+
+# Run integration tests against staging
+LINEAR_API_KEY=$STAGING_LINEAR_API_KEY npm run test:integration
+
+# Check health endpoint
+curl -s https://staging.yourapp.com/health/linear | jq .
+```
+
+### Step 7: Deploy with Rollback Plan
+```bash
+set -euo pipefail
+# Commit upgrade
+git add package.json package-lock.json src/linear-compat.ts
+git commit -m "chore: upgrade @linear/sdk to $(npm list @linear/sdk --json | jq -r '.dependencies["@linear/sdk"].version')"
+git push origin upgrade/linear-sdk-*
+
+# If something breaks in production:
+git revert HEAD
+npm install  # Restores previous version
+npm run deploy
+```
+
+## Version Compatibility
+
+| SDK Range | Node.js | TypeScript | Notable Changes |
+|-----------|---------|------------|-----------------|
+| 1.x | 14+ | 4.5+ | Initial release, callback-style |
+| 2.x-16.x | 16+ | 4.7+ | ESM support, typed models |
+| 17.x-28.x | 18+ | 5.0+ | Strict types, new entity models |
+| Latest | 18+ | 5.0+ | Refresh tokens, initiatives, agents |
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Property does not exist` | Renamed field | Check changelog, update field name |
+| `Type is not assignable` | Changed return type | Update type annotations |
+| `Module not found` | ESM/CJS mismatch | Update import syntax or `tsconfig` |
+| `Cannot find name` | Removed export | Replace with new API equivalent |
+| Tests pass, prod fails | SDK version mismatch in lockfile | Delete `node_modules`, `npm ci` |
+
+## Examples
+
+### Pre-Upgrade Audit Script
+```typescript
+// scripts/audit-linear-usage.ts
+// Run before upgrading to find all SDK touchpoints
+
+import { readFileSync } from "fs";
+import { globSync } from "glob";
+
+const files = globSync("src/**/*.ts");
+const patterns = [
+  /LinearClient/g,
+  /client\.issues/g,
+  /client\.createIssue/g,
+  /client\.updateIssue/g,
+  /\.state\b/g,
+  /\.assignee\b/g,
+  /rawRequest/g,
+];
+
+for (const file of files) {
+  const content = readFileSync(file, "utf-8");
+  for (const pattern of patterns) {
+    const matches = content.match(pattern);
+    if (matches) {
+      console.log(`${file}: ${pattern.source} (${matches.length} occurrences)`);
+    }
+  }
+}
 ```
 
 ## Resources
-- [Linear SDK Changelog](https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md)
-- [Linear API Changelog](https://developers.linear.app/docs/changelog)
-- [TypeScript Migration](https://www.typescriptlang.org/docs/handbook/migrating-from-javascript.html)
-
-## Next Steps
-Set up CI/CD integration with `linear-ci-integration`.
+- [SDK Changelog](https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md)
+- [API Changelog](https://linear.app/changelog)
+- [SDK npm Page](https://www.npmjs.com/package/@linear/sdk)

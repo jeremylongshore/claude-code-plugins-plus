@@ -2,132 +2,114 @@
 name: linear-prod-checklist
 description: |
   Production readiness checklist for Linear integrations.
-  Use when preparing to deploy a Linear integration to production,
-  reviewing production requirements, or auditing existing deployments.
-  Trigger with phrases like "linear production checklist", "deploy linear",
-  "linear production ready", "linear go live", "linear launch checklist".
+  Use when preparing to deploy, reviewing production requirements,
+  or auditing existing Linear deployments.
+  Trigger: "linear production checklist", "deploy linear",
+  "linear production ready", "linear go live", "linear launch".
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, deployment, golang, audit]
+tags: [saas, linear, deployment, audit]
 
 ---
 # Linear Production Checklist
 
 ## Overview
-Comprehensive checklist for deploying Linear integrations to production.
+Comprehensive checklist and implementation patterns for deploying Linear integrations to production. Covers authentication, error handling, rate limiting, monitoring, data handling, and deployment verification.
 
 ## Prerequisites
-- Working development integration
-- Production Linear workspace
-- Deployment infrastructure ready
-
-## Instructions
+- Working development integration passing all tests
+- Production Linear workspace (or production API key)
+- Deployment infrastructure (Vercel, Cloud Run, etc.)
+- Secret management solution (not `.env` files in production)
 
 ## Pre-Production Checklist
 
 ### 1. Authentication & Security
 ```
 [ ] Production API key generated (separate from dev)
-[ ] API key stored in secure secret management (not .env files)
-[ ] OAuth credentials configured for production redirect URIs
+[ ] API key stored in secret manager (Vault, AWS SM, GCP SM)
+[ ] OAuth redirect URIs updated for production domain
 [ ] Webhook secrets are unique per environment
-[ ] All secrets rotated from development values
-[ ] HTTPS enforced for all endpoints
-[ ] Webhook signature verification implemented
+[ ] All dev secrets rotated before launch
+[ ] HTTPS enforced on all endpoints
+[ ] Webhook HMAC-SHA256 verification implemented
+[ ] Webhook timestamp validation (< 60s age)
+[ ] Token refresh flow implemented (mandatory since Oct 2025)
 ```
 
-### 2. Error Handling
+### 2. Error Handling & Resilience
 ```
-[ ] All API errors caught and handled gracefully
-[ ] Rate limiting with exponential backoff implemented
-[ ] Timeout handling for long-running operations
-[ ] Graceful degradation when Linear is unavailable
-[ ] Error logging with context (no secrets in logs)
-[ ] Alerts configured for critical errors
+[ ] All Linear API calls wrapped in try/catch
+[ ] Rate limit retry with exponential backoff (max 5 retries)
+[ ] 30s timeout on all API calls
+[ ] Graceful degradation when Linear API is down
+[ ] Error logging includes context (no secrets in logs)
+[ ] InvalidInputLinearError caught separately from network errors
+[ ] Alerts configured for auth failures and error rate spikes
 ```
 
-### 3. Performance
+### 3. Performance & Rate Limits
 ```
-[ ] Pagination implemented for all list queries
-[ ] Caching layer for frequently accessed data
-[ ] Request batching for bulk operations
-[ ] Query complexity monitored and optimized
-[ ] Connection pooling configured
-[ ] Response times monitored
+[ ] Pagination with first:50 for all list queries
+[ ] Caching for static data (teams, states, labels) — 10-30 min TTL
+[ ] Request batching for bulk operations (20 mutations per batch)
+[ ] Query complexity stays under 5,000 pts per request
+[ ] No polling — webhooks for real-time updates
+[ ] N+1 query patterns eliminated (use rawRequest for joins)
+[ ] Response times monitored with p95 alerting
 ```
 
 ### 4. Monitoring & Observability
 ```
-[ ] Health check endpoint implemented
-[ ] API latency metrics collected
-[ ] Error rate monitoring configured
-[ ] Rate limit usage tracked
-[ ] Structured logging implemented
-[ ] Distributed tracing (if applicable)
+[ ] Health check endpoint hitting Linear API
+[ ] API latency metrics collected per operation
+[ ] Error rate monitoring with alerting (>1% = alert)
+[ ] Rate limit remaining tracked (alert if < 100 requests)
+[ ] Structured JSON logging for API calls and webhooks
+[ ] Webhook delivery tracking via Linear-Delivery header
 ```
 
 ### 5. Data Handling
 ```
-[ ] No PII logged or exposed
-[ ] Data retention policies defined
-[ ] Backup strategy for synced data
-[ ] Webhook event idempotency handled
-[ ] Stale data detection and refresh
+[ ] No PII logged or stored unnecessarily
+[ ] Webhook event idempotency (deduplicate by Linear-Delivery)
+[ ] Data retention policy defined for synced data
+[ ] Stale data detection with periodic consistency checks
 ```
 
-### 6. Infrastructure
-```
-[ ] Deployment pipeline configured
-[ ] Rollback procedure documented
-[ ] Auto-scaling configured (if needed)
-[ ] Load testing completed
-[ ] Disaster recovery plan documented
-```
-
-## Production Configuration Template
+## Production Configuration
 
 ```typescript
-// config/production.ts
 import { LinearClient } from "@linear/sdk";
 
-export const config = {
+interface ProdConfig {
+  linear: { apiKey: string; webhookSecret: string };
+  rateLimit: { maxRetries: number; baseDelayMs: number; maxDelayMs: number };
+  cache: { teamsTtl: number; statesTtl: number; labelsTtl: number };
+  timeouts: { requestMs: number; webhookProcessMs: number };
+}
+
+const config: ProdConfig = {
   linear: {
-    // Use secret manager, not environment variables directly
     apiKey: await getSecret("linear-api-key-prod"),
     webhookSecret: await getSecret("linear-webhook-secret-prod"),
   },
-  rateLimit: {
-    maxRetries: 5,
-    baseDelayMs: 1000,  # 1000: 1 second in ms
-    maxDelayMs: 30000,  # 30000: 30 seconds in ms
-  },
-  cache: {
-    ttlSeconds: 300, // 5 minutes  # 300: timeout: 5 minutes
-    maxEntries: 1000,  # 1 second in ms
-  },
-  timeouts: {
-    requestMs: 30000,  # 30 seconds in ms
-    webhookProcessingMs: 5000,  # 5000: 5 seconds in ms
-  },
+  rateLimit: { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 30000 },
+  cache: { teamsTtl: 600, statesTtl: 1800, labelsTtl: 600 },
+  timeouts: { requestMs: 30000, webhookProcessMs: 5000 },
 };
 
-export function createProductionClient(): LinearClient {
-  return new LinearClient({
-    apiKey: config.linear.apiKey,
-    // Add production-specific configuration
-  });
+function createProductionClient(): LinearClient {
+  return new LinearClient({ apiKey: config.linear.apiKey });
 }
 ```
 
 ## Health Check Implementation
 
 ```typescript
-// health/linear.ts
-import { LinearClient } from "@linear/sdk";
-
 interface HealthStatus {
   status: "healthy" | "degraded" | "unhealthy";
   latencyMs: number;
@@ -139,32 +121,24 @@ interface HealthStatus {
   timestamp: string;
 }
 
-export async function checkHealth(client: LinearClient): Promise<HealthStatus> {
+async function checkHealth(client: LinearClient): Promise<HealthStatus> {
   const start = Date.now();
-  const details = {
-    authentication: false,
-    apiReachable: false,
-    rateLimitOk: true,
-  };
+  const details = { authentication: false, apiReachable: false, rateLimitOk: true };
 
   try {
-    // Test authentication
     const viewer = await client.viewer;
     details.authentication = true;
     details.apiReachable = true;
 
-    // Check if we're close to rate limits
-    // (Would need to track this from headers)
-
+    const latencyMs = Date.now() - start;
     return {
-      status: "healthy",
-      latencyMs: Date.now() - start,
+      status: latencyMs > 3000 ? "degraded" : "healthy",
+      latencyMs,
       details,
       timestamp: new Date().toISOString(),
     };
   } catch (error: any) {
-    details.apiReachable = error.type !== "NetworkError";
-
+    details.apiReachable = !error.message?.includes("ENOTFOUND");
     return {
       status: "unhealthy",
       latencyMs: Date.now() - start,
@@ -173,6 +147,12 @@ export async function checkHealth(client: LinearClient): Promise<HealthStatus> {
     };
   }
 }
+
+// Express endpoint
+app.get("/health/linear", async (req, res) => {
+  const health = await checkHealth(client);
+  res.status(health.status === "unhealthy" ? 503 : 200).json(health);
+});
 ```
 
 ## Deployment Verification Script
@@ -181,47 +161,40 @@ export async function checkHealth(client: LinearClient): Promise<HealthStatus> {
 // scripts/verify-deployment.ts
 import { LinearClient } from "@linear/sdk";
 
-async function verifyDeployment(): Promise<void> {
-  console.log("Verifying Linear integration deployment...\n");
+async function verify(): Promise<void> {
+  console.log("Verifying Linear integration...\n");
 
-  const checks: { name: string; check: () => Promise<boolean> }[] = [
+  const checks = [
     {
-      name: "Environment variables set",
-      check: async () => {
-        return !!(
-          process.env.LINEAR_API_KEY &&
-          process.env.LINEAR_WEBHOOK_SECRET
-        );
-      },
+      name: "Environment variables",
+      check: async () => !!(process.env.LINEAR_API_KEY && process.env.LINEAR_WEBHOOK_SECRET),
     },
     {
-      name: "API authentication works",
-      check: async () => {
-        const client = new LinearClient({
-          apiKey: process.env.LINEAR_API_KEY!,
-        });
-        await client.viewer;
-        return true;
-      },
+      name: "API authentication",
+      check: async () => { await new LinearClient({ apiKey: process.env.LINEAR_API_KEY! }).viewer; return true; },
     },
     {
-      name: "Can access teams",
+      name: "Team access",
       check: async () => {
-        const client = new LinearClient({
-          apiKey: process.env.LINEAR_API_KEY!,
-        });
+        const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
         const teams = await client.teams();
         return teams.nodes.length > 0;
       },
     },
     {
-      name: "Webhook endpoint reachable",
+      name: "Write capability",
       check: async () => {
-        const response = await fetch(
-          `${process.env.APP_URL}/webhooks/linear`,
-          { method: "GET" }
-        );
-        return response.status !== 404;  # HTTP 404 Not Found
+        const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
+        const teams = await client.teams();
+        const r = await client.createIssue({
+          teamId: teams.nodes[0].id,
+          title: "[DEPLOY-CHECK] Safe to delete",
+        });
+        if (r.success) {
+          const issue = await r.issue;
+          await issue?.delete();
+        }
+        return r.success;
       },
     },
   ];
@@ -231,105 +204,48 @@ async function verifyDeployment(): Promise<void> {
 
   for (const { name, check } of checks) {
     try {
-      const result = await check();
-      if (result) {
-        console.log(`✓ ${name}`);
-        passed++;
-      } else {
-        console.log(`✗ ${name}`);
-        failed++;
-      }
-    } catch (error) {
-      console.log(`✗ ${name}: ${error}`);
+      const ok = await check();
+      console.log(ok ? `  PASS: ${name}` : `  FAIL: ${name}`);
+      ok ? passed++ : failed++;
+    } catch (error: any) {
+      console.log(`  FAIL: ${name} — ${error.message}`);
       failed++;
     }
   }
 
   console.log(`\nResults: ${passed} passed, ${failed} failed`);
-
-  if (failed > 0) {
-    process.exit(1);
-  }
+  if (failed > 0) process.exit(1);
 }
 
-verifyDeployment();
+verify();
 ```
 
 ## Post-Deployment Monitoring
 
 ```typescript
-// Monitor key metrics after deployment
-const ALERTS = {
-  errorRateThreshold: 0.01, // 1% error rate
-  latencyP99Threshold: 2000, // 2 seconds  # 2000: 2 seconds in ms
-  rateLimitRemainingThreshold: 100,
+// Key metrics to track after deploy
+const ALERT_THRESHOLDS = {
+  errorRate: 0.01,        // Alert if >1% of requests fail
+  p99LatencyMs: 3000,     // Alert if p99 > 3 seconds
+  rateLimitRemaining: 100, // Alert if remaining requests < 100
 };
 
-// Set up alerts for:
-// - Error rate exceeds threshold
-// - P99 latency exceeds threshold
-// - Rate limit remaining drops below threshold
-// - Authentication failures spike
+// First 30 minutes after deploy: watch for
+// - Auth failures (key mismatch between environments)
+// - Rate limit spikes (init burst fetching too much data)
+// - Webhook signature failures (secret not updated in new env)
 ```
 
-## Rollback Procedure
+## Error Handling
 
-```markdown
-## Rollback Steps
-
-1. Identify the issue and confirm rollback is needed
-2. Switch to previous deployment version
-3. Verify Linear API connectivity with old version
-4. Monitor error rates for 15 minutes
-5. If stable, investigate root cause
-6. Document incident in post-mortem
-```
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Health check `unhealthy` | API key invalid/expired | Regenerate key, update secret manager |
+| Webhook sig fails in prod | Secret mismatch | Verify `LINEAR_WEBHOOK_SECRET` matches Linear webhook config |
+| Rate limit burst on deploy | Startup fetches too much | Add request queue, cache static data |
+| Deploy verification fails | Missing env vars | Run verification locally first |
 
 ## Resources
 - [Linear API Status](https://status.linear.app)
-- [Linear Security Practices](https://linear.app/security)
-- [API Changelog](https://developers.linear.app/docs/changelog)
-
-## Next Steps
-Learn SDK upgrade strategies with `linear-upgrade-migration`.
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Health check returns `unhealthy` | API key invalid or expired | Regenerate key in Linear Settings, update secret manager |
-| Webhook signature fails in prod | Secret mismatch between environments | Verify `LINEAR_WEBHOOK_SECRET` matches Linear webhook settings |
-| Rate limit errors after deploy | Burst of requests on startup | Add request queue with 100ms spacing, cache team/state data |
-| Deployment verification fails | Missing env vars or wrong API endpoint | Run verification script locally first: `npx ts-node scripts/verify-deployment.ts` |
-
-## Output
-- Production API keys stored in secret manager (not env files)
-- Webhook signature verification enforced
-- Rate limiting with exponential backoff configured
-- Health check endpoint returning Linear connectivity status
-- Deployment verification script passing all checks
-- Rollback procedure documented and tested
-
-## Examples
-
-### Quick Pre-Launch Audit
-```bash
-# Run the deployment verification script
-npx ts-node scripts/verify-deployment.ts
-
-# Expected output:
-# ✓ Environment variables set
-# ✓ API authentication works
-# ✓ Can access teams
-# ✓ Webhook endpoint reachable
-# Results: 4 passed, 0 failed
-```
-
-### Validate Webhook Connectivity
-```bash
-# Send a test event to verify webhook endpoint is live
-curl -X POST https://your-app.com/webhooks/linear \
-  -H "Content-Type: application/json" \
-  -H "Linear-Event: Test" \
-  -d '{"action":"test","type":"Test","data":{}}' \
-  -w "\nHTTP Status: %{http_code}\n"
-```
+- [Linear Security](https://linear.app/security)
+- [API Changelog](https://linear.app/changelog)
