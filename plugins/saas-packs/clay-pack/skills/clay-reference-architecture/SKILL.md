@@ -1,12 +1,12 @@
 ---
 name: clay-reference-architecture
 description: |
-  Implement Clay reference architecture with best-practice project layout.
-  Use when designing new Clay integrations, reviewing project structure,
-  or establishing architecture standards for Clay applications.
+  Design production Clay enrichment pipelines with table schemas, waterfall patterns, and CRM sync.
+  Use when architecting new Clay integrations, reviewing data flow design,
+  or establishing enrichment pipeline standards.
   Trigger with phrases like "clay architecture", "clay best practices",
-  "clay project structure", "how to organize clay", "clay layout".
-allowed-tools: Read, Grep
+  "clay pipeline design", "clay reference", "clay data flow".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -18,61 +18,202 @@ tags: [saas, clay, clay-reference]
 
 ## Overview
 
-Production architecture for Clay-based lead enrichment and data operations. Covers table design, enrichment pipeline patterns, webhook integration, and CRM synchronization flows.
+Production architecture for Clay-based lead enrichment and go-to-market data operations. Covers the three integration patterns (webhook-only, webhook + HTTP API, and full Enterprise API), table schema design, and CRM synchronization flows.
 
 ## Prerequisites
 
-- Clay account with API access
-- Understanding of Clay tables and enrichment columns
-- CRM integration configured (HubSpot, Salesforce)
-- Webhook endpoint for automation triggers
+- Clay account with appropriate plan tier
+- Clear understanding of data volume and enrichment needs
+- CRM integration target (HubSpot, Salesforce, etc.)
+- Defined Ideal Customer Profile (ICP)
 
 ## Instructions
 
-### Step 1: Design Table Schema
+### Step 1: Choose Your Integration Pattern
 
-Define input columns (company name, domain, contact, LinkedIn URL), enrichment columns (company size, industry, email, phone, technologies), formula columns (ICP score, lead tier), and AI columns (personalized intro, pain points).
+```
+Pattern A: Webhook-Only (All Plans)
+──────────────────────────────────────
+Your App ──POST──> Clay Webhook ──> Clay Table ──> Enrichment
+                                                      │
+                                         Manual export via CSV
+                                         or native CRM action
 
-### Step 2: Configure Enrichment Waterfall
+Pattern B: Webhook + HTTP API Callback (Growth+ Plans)
+──────────────────────────────────────────────────────
+Your App ──POST──> Clay Webhook ──> Clay Table ──> Enrichment
+                                                      │
+                                                HTTP API Column
+                                                      │
+                                               POST to your app
+                                                      │
+                                                  CRM / DB
 
-Order providers by cost: Apollo (1 credit) -> Hunter (1) -> Dropcontact (2) -> Findymail (3). Enable "stop on first result" to minimize credit usage.
+Pattern C: Full Automation with Enterprise API (Enterprise)
+──────────────────────────────────────────────────────────
+Your App ──POST──> Clay Webhook ──> Clay Table ──> Enrichment
+    │                                                  │
+    │                                           HTTP API Column
+    │                                                  │
+    └──Enterprise API──> Person/Company lookup    POST to your app
+                         (lightweight, fast)           │
+                                                   CRM / DB
+```
 
-### Step 3: Set Up Webhook Integration
+### Step 2: Design Table Schema
 
-On enrichment completion, check ICP score. Push high-value leads (score >= 80 with valid email) to CRM immediately. Add tier-A leads to outreach sequences.
+**Standard Lead Enrichment Table:**
 
-### Step 4: Implement ICP Scoring Formula
+```
+┌─────────────────────────────────────────────────────────────┐
+│ CLAY TABLE: Outbound Leads                                  │
+├─────────────┬───────────────┬──────────────────────────────┤
+│ Input Cols  │ Enrichment    │ AI + Formula + Output        │
+├─────────────┼───────────────┼──────────────────────────────┤
+│ domain      │ Company Name  │ ICP Score (formula)          │
+│ first_name  │ Employee Count│ Lead Tier (formula: A/B/C)   │
+│ last_name   │ Industry      │ Personalized Opener (AI)     │
+│ source      │ Tech Stack    │ Recent News (Claygent)       │
+│ linkedin_url│ Work Email    │ CRM Push (HTTP API)          │
+│             │ Job Title     │ Outreach Push (HTTP API)     │
+│             │ Phone Number  │                              │
+│             │ LinkedIn URL  │                              │
+└─────────────┴───────────────┴──────────────────────────────┘
 
-Weight company size (up to 50 pts), target industry match (30 pts), and technology stack matches (10 pts each, max 100 total).
+Column execution order (left to right):
+1. Company enrichment (Clearbit) ─ fast, provides context for later columns
+2. Person enrichment (Apollo/PDL) ─ medium speed
+3. Email waterfall (Apollo > Hunter) ─ conditional: requires domain + name
+4. Phone lookup (if needed) ─ conditional: ICP Score >= 80
+5. ICP Score formula ─ instant, computes from enriched data
+6. Claygent research ─ slow, conditional: ICP Score >= 60
+7. AI personalization ─ conditional: ICP Score >= 70
+8. CRM push (HTTP API) ─ conditional: ICP Score >= 70 + has email
+```
 
-For architecture diagrams, TypeScript implementations, and ICP scoring code, load the reference guide:
-`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 3: Configure Waterfall Pattern
+
+```yaml
+# Recommended waterfall configuration
+email_waterfall:
+  strategy: "cheapest-first, stop-on-match"
+  providers:
+    - name: apollo
+      credits: 2
+      coverage: ~70%
+      speed: fast
+    - name: hunter
+      credits: 2
+      coverage: ~60%
+      speed: fast
+  combined_coverage: ~83%
+  max_credits: 4
+
+company_enrichment:
+  strategy: "single provider"
+  provider: clearbit
+  credits: 2
+  coverage: ~90%
+  fallback: apollo (if Clearbit returns empty)
+
+person_enrichment:
+  strategy: "primary + fallback"
+  providers:
+    - name: apollo
+      credits: 2
+    - name: people_data_labs
+      credits: 3
+```
+
+### Step 4: Implement ICP Scoring
+
+```
+# Clay Formula Column: ICP Score (0-100)
+LET(
+  # Company size scoring (0-30)
+  size, IF(Employee Count > 1000, 30,
+       IF(Employee Count > 200, 25,
+       IF(Employee Count > 50, 15,
+       IF(Employee Count > 10, 5, 0)))),
+
+  # Industry match (0-30)
+  industry, IF(OR(
+    Industry = "Software",
+    Industry = "Technology",
+    Industry = "SaaS",
+    Industry = "Information Technology"
+  ), 30, IF(OR(
+    Industry = "Financial Services",
+    Industry = "Healthcare"
+  ), 20, 10)),
+
+  # Title seniority (0-25)
+  title, IF(OR(
+    CONTAINS(Job Title, "CEO"), CONTAINS(Job Title, "CTO"),
+    CONTAINS(Job Title, "VP"), CONTAINS(Job Title, "C-Suite")
+  ), 25, IF(OR(
+    CONTAINS(Job Title, "Director"), CONTAINS(Job Title, "Head of")
+  ), 20, IF(
+    CONTAINS(Job Title, "Manager"), 10, 5
+  ))),
+
+  # Data completeness (0-15)
+  data, IF(ISNOTEMPTY(Work Email), 10, 0) +
+        IF(ISNOTEMPTY(Phone Number), 5, 0),
+
+  size + industry + title + data
+)
+
+# Lead Tier Column
+IF(ICP Score >= 80, "A",
+IF(ICP Score >= 60, "B",
+IF(ICP Score >= 40, "C", "D")))
+```
+
+### Step 5: CRM Sync Architecture
+
+```yaml
+# HubSpot integration via HTTP API column
+crm_sync:
+  trigger: "ICP Score >= 70 AND ISNOTEMPTY(Work Email)"
+  method: POST
+  url: "https://api.hubapi.com/crm/v3/objects/contacts"
+  dedup_key: email  # Prevent duplicate contacts
+  field_mapping:
+    email: "{{Work Email}}"
+    firstname: "{{first_name}}"
+    lastname: "{{last_name}}"
+    company: "{{Company Name}}"
+    jobtitle: "{{Job Title}}"
+    hs_lead_status: "NEW"
+    clay_icp_score: "{{ICP Score}}"
+    clay_enrichment_date: "{{_clay_enriched_at}}"
+
+# Alternative: Use Clay's native HubSpot/Salesforce action columns
+# (simpler setup, fewer credits, built-in dedup)
+native_crm_action:
+  type: "HubSpot: Create/Update Contact"
+  dedup: "Match on email"
+  auto_run: true
+  condition: "ICP Score >= 70"
+```
 
 ## Error Handling
 
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Enrichment credits exhausted | Too many lookups | Use waterfall pattern, set daily limits |
-| Duplicate records | Re-importing same list | Deduplicate on domain + contact name |
-| Webhook timeout | Processing too slow | Acknowledge immediately, process async |
-| Low email find rate | Bad input data | Validate domains before enrichment |
+| Enrichment credits exhausted | Too many lookups per row | Use conditional runs, connect own API keys |
+| Duplicate CRM records | No dedup key in CRM push | Use email as unique identifier |
+| Low email coverage | Single provider waterfall | Add second provider (Apollo + Hunter) |
+| Slow table processing | Too many enrichment columns | Add conditional runs, order by speed |
+| Stale enrichment data | No re-enrichment schedule | Re-run quarterly on existing contacts |
 
 ## Resources
 
-- [Clay API Documentation](https://docs.clay.com/api)
-- [Clay Enrichment Providers](https://docs.clay.com/enrichments)
-- [Clay Formulas Guide](https://docs.clay.com/formulas)
+- [Clay University -- Sources](https://university.clay.com/docs/sources)
+- [Clay University -- Actions & Data Credits](https://university.clay.com/docs/actions-data-credits)
+- [Clay University -- HubSpot Integration](https://university.clay.com/docs/hubspot-integration-overview)
 
-## Output
+## Next Steps
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [design implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
-
-## Examples
-
-**Basic usage**: Apply clay reference architecture to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize clay reference architecture for production environments with multiple constraints and team-specific requirements.
+For multi-environment configuration, see `clay-multi-env-setup`.

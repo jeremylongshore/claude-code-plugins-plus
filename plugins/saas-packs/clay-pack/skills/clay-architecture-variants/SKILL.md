@@ -1,150 +1,221 @@
 ---
 name: clay-architecture-variants
 description: |
-  Choose and implement Clay validated architecture blueprints for different scales.
-  Use when designing new Clay integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Clay applications.
+  Choose and implement Clay integration architecture for different scales and use cases.
+  Use when designing new Clay integrations, comparing direct vs queue-based vs event-driven,
+  or planning architecture for Clay-powered data operations.
   Trigger with phrases like "clay architecture", "clay blueprint",
-  "how to structure clay", "clay project layout", "clay microservice".
-allowed-tools: Read, Grep
+  "how to structure clay", "clay integration design", "clay event-driven".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, migration, scaling, microservices]
+tags: [saas, clay, migration, scaling]
 
 ---
 # Clay Architecture Variants
 
 ## Overview
-Deployment architectures for Clay data enrichment at different scales. Clay's table-based enrichment model, credit billing, and webhook-driven workflow fit differently depending on volume, team size, and data freshness requirements.
+
+Three proven architecture patterns for Clay data enrichment at different scales. Clay is a hosted SaaS -- your architecture decisions focus on how you send data in (webhooks), how you get enriched data out (HTTP API columns, CRM sync, or CSV export), and how you orchestrate the flow.
 
 ## Prerequisites
-- Clay account with API access
-- Clear understanding of data volume and freshness needs
-- Infrastructure for chosen architecture tier
+
+- Clay account with appropriate plan tier
+- Clear understanding of data volume and latency requirements
+- Infrastructure for chosen architecture tier (if queue-based or event-driven)
 
 ## Instructions
 
-### Step 1: Direct Integration (Simple)
+### Architecture 1: Direct Integration (Simple)
 
 **Best for:** Small teams, < 1K enrichments/day, ad-hoc usage.
 
 ```
-Application -> Clay API -> Enriched Data -> Application DB
+┌──────────────┐     webhook     ┌───────────┐
+│ Your App     │───────POST─────>│ Clay Table │
+│ (or CSV)     │                 │ (enriches) │
+└──────────────┘                 └─────┬─────┘
+                                       │
+                                  CRM action
+                                  or CSV export
+                                       │
+                                       v
+                                 ┌───────────┐
+                                 │ CRM / DB  │
+                                 └───────────┘
 ```
 
-```python
-import requests
-
-def enrich_lead(email: str) -> dict:
-    response = requests.post(
-        f"{CLAY_API}/tables/{TABLE_ID}/rows",
-        json={"rows": [{"email": email}]},
-        headers={"Authorization": f"Bearer {API_KEY}"}
-    )
-    # Poll for enrichment completion
-    row_id = response.json()["row_ids"][0]
-    return poll_enrichment(TABLE_ID, row_id)
+```typescript
+// Direct: send leads synchronously, export results manually
+async function directEnrich(leads: Lead[]): Promise<void> {
+  for (const lead of leads) {
+    await fetch(process.env.CLAY_WEBHOOK_URL!, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(lead),
+    });
+    await new Promise(r => setTimeout(r, 250)); // Rate limit
+  }
+  console.log(`Sent ${leads.length} leads. Check Clay table for enriched data.`);
+  // Enriched data reaches CRM via Clay's native CRM action column
+}
 ```
 
-**Trade-offs:** Simple but synchronous. Each enrichment blocks until complete (30-60s). No retry or buffering.
+**Pros:** Zero infrastructure, 5-minute setup, works on all Clay plans.
+**Cons:** No retry logic, no programmatic access to enriched data, manual export only.
 
-### Step 2: Queue-Based Pipeline (Moderate)
+---
 
-**Best for:** Growing teams, 1K-50K enrichments/day, CRM integration.
+### Architecture 2: Webhook-in, HTTP API-out (Standard)
 
-```
-CRM Webhook -> Queue (Redis/SQS) -> Worker -> Clay API
-                                        |
-                                        v
-                                   Enriched Data -> CRM Update
-```
-
-```python
-from rq import Queue
-import redis
-
-q = Queue(connection=redis.Redis())
-
-def on_new_lead(lead: dict):
-    q.enqueue(enrich_and_update, lead, job_timeout=120)
-
-def enrich_and_update(lead: dict):
-    # Batch multiple leads for efficiency
-    enriched = clay_enrich_batch([lead])
-    crm_client.update_contact(lead["id"], enriched[0])
-```
-
-**Trade-offs:** Decouples enrichment from user flow. Handles retries and batching. Needs queue infrastructure.
-
-### Step 3: Event-Driven with Webhooks (Scale)
-
-**Best for:** Enterprise, 50K+ enrichments/day, real-time data needs.
+**Best for:** Growing teams, 1K-10K enrichments/day, CRM integration.
 
 ```
-Data Sources -> Event Bus (Kafka) -> Clay Enrichment Service
-                                            |
-                                     Clay Webhooks -> Event Bus -> Downstream Services
+┌──────────────┐     webhook     ┌───────────┐   HTTP API col   ┌──────────────┐
+│ Your App     │───────POST─────>│ Clay Table │──────POST──────>│ Your Webhook │
+│              │                 │ (enriches) │                 │ Handler      │
+└──────────────┘                 └───────────┘                 └──────┬───────┘
+                                                                      │
+                                                                 Process +
+                                                                 Route
+                                                                      │
+                                                          ┌───────────┼───────────┐
+                                                          │           │           │
+                                                          v           v           v
+                                                       ┌─────┐   ┌───────┐   ┌──────┐
+                                                       │ CRM │   │Outreach│  │ DB   │
+                                                       └─────┘   └───────┘   └──────┘
 ```
 
-```python
-# Clay enrichment microservice
-class ClayEnrichmentService:
-    def __init__(self, kafka_producer, credit_budget):
-        self.producer = kafka_producer
-        self.budget = credit_budget
+```typescript
+// Standard: send leads via webhook, receive enriched data via HTTP API column
+// Inbound: Your app -> Clay
+async function sendLeads(leads: Lead[]): Promise<void> {
+  const batchResult = await clayClient.sendBatch(leads, 200);
+  console.log(`Sent: ${batchResult.sent}, Failed: ${batchResult.failed}`);
+}
 
-    async def handle_event(self, event: dict):
-        if not self.budget.can_afford(1):
-            self.producer.send("dlq.clay", event)
-            return
-        result = await self.enrich(event)
-        self.producer.send("enriched.contacts", result)
-        self.budget.record(1)
+// Outbound: Clay HTTP API column -> Your webhook handler
+app.post('/api/clay/enriched', async (req, res) => {
+  res.json({ ok: true }); // Respond fast
 
-# Clay webhook receiver
-@app.post('/clay-webhook')
-async def clay_webhook(request):
-    payload = await request.json()
-    # Clay sends enrichment results via webhook
-    await kafka_producer.send("enriched.contacts", payload)
-    return {"status": "ok"}
+  const lead = req.body;
+  if (lead.icp_score >= 80 && lead.work_email) {
+    await pushToCRM(lead);
+    await addToOutreachSequence(lead);
+  } else if (lead.icp_score >= 50) {
+    await addToNurtureCampaign(lead);
+  }
+});
 ```
 
-**Trade-offs:** Fully async, horizontally scalable. Requires event bus, monitoring, and DLQ handling.
+**Pros:** Full automation, programmatic access to enriched data, flexible routing.
+**Cons:** Requires Growth plan (HTTP API columns), needs public HTTPS endpoint.
+
+---
+
+### Architecture 3: Queue-Based Pipeline (Scale)
+
+**Best for:** Enterprise, 10K+ enrichments/day, multiple data sources.
+
+```
+┌───────────┐
+│ Web Forms │──┐
+└───────────┘  │     ┌───────────┐     webhook     ┌───────────┐
+               ├────>│ Job Queue │───────POST─────>│ Clay Table │
+┌───────────┐  │     │ (BullMQ)  │                 │ (enriches) │
+│ CRM Events│──┘     └───────────┘                 └─────┬─────┘
+└───────────┘              │                              │
+                      DLQ on fail                   HTTP API col
+┌───────────┐              │                              │
+│ CSV Import│──────────────┘                              v
+└───────────┘                                   ┌──────────────┐
+                                                │ Your Handler │
+                                                │ (w/ circuit  │
+                                                │  breaker)    │
+                                                └──────┬───────┘
+                                                       │
+                                            ┌──────────┼──────────┐
+                                            │          │          │
+                                            v          v          v
+                                         ┌─────┐  ┌───────┐  ┌──────┐
+                                         │ CRM │  │Outreach│  │ DWH  │
+                                         └─────┘  └───────┘  └──────┘
+```
+
+```typescript
+// Scale: queue-based with DLQ, circuit breaker, and multi-source intake
+import { Queue, Worker } from 'bullmq';
+
+const enrichQueue = new Queue('clay-enrichment');
+
+// Multiple sources feed the queue
+async function onWebFormSubmit(lead: Lead) {
+  await enrichQueue.add('web-form', { ...lead, source: 'web-form' });
+}
+
+async function onCRMEvent(lead: Lead) {
+  await enrichQueue.add('crm-event', { ...lead, source: 'crm-event' });
+}
+
+async function onCSVImport(leads: Lead[]) {
+  for (const lead of leads) {
+    await enrichQueue.add('csv-import', { ...lead, source: 'csv-import' });
+  }
+}
+
+// Worker sends to Clay with rate limiting and circuit breaker
+const worker = new Worker('clay-enrichment', async (job) => {
+  const { allowed, reason } = circuitBreaker.canProcess(6);
+  if (!allowed) throw new Error(`Circuit open: ${reason}`);
+
+  const res = await fetch(process.env.CLAY_WEBHOOK_URL!, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(job.data),
+  });
+
+  if (!res.ok) throw new Error(`Clay webhook failed: ${res.status}`);
+  circuitBreaker.recordSuccess(6);
+}, {
+  concurrency: 1,
+  limiter: { max: 5, duration: 1000 }, // 5 per second max
+});
+```
+
+**Pros:** Handles any volume, automatic retries, DLQ for failures, multi-source.
+**Cons:** Requires queue infrastructure (Redis), more complex to operate.
 
 ## Decision Matrix
 
-| Factor | Direct | Queue-Based | Event-Driven |
-|--------|--------|-------------|--------------|
-| Volume | < 1K/day | 1K-50K/day | 50K+/day |
-| Latency | Sync (30-60s) | Async (minutes) | Async (seconds) |
-| Cost Control | Manual | Budget caps | Credit circuit breaker |
+| Factor | Direct | Webhook + HTTP API | Queue-Based |
+|--------|--------|-------------------|-------------|
+| Volume | < 1K/day | 1K-10K/day | 10K+/day |
+| Plan required | Any | Growth+ | Growth+ |
+| Infrastructure | None | HTTPS endpoint | Redis + HTTPS endpoint |
+| Retry logic | Manual | In-app | Automatic (BullMQ) |
+| Data access | CSV export only | Real-time callback | Real-time callback |
+| CRM sync | Clay native action | HTTP API column | HTTP API column |
 | Complexity | Low | Medium | High |
-| Team Size | 1-3 | 3-10 | 10+ |
+| Time to implement | Hours | Days | 1-2 weeks |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow enrichment in request path | Using direct integration at scale | Move to queue-based |
-| Lost enrichment results | No webhook receiver | Set up Clay webhooks |
-| Credit overspend | No budget enforcement | Add credit circuit breaker |
-| Stale data | No re-enrichment schedule | Add periodic refresh jobs |
-
-## Examples
-
-
-**Basic usage**: Apply clay architecture variants to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize clay architecture variants for production environments with multiple constraints and team-specific requirements.
+| Need real-time enriched data | Using Direct (CSV only) | Upgrade to Webhook + HTTP API |
+| Queue backing up | Webhook rate limiting | Reduce concurrency, add delay |
+| HTTP API column timeout | Callback endpoint slow | Respond 200 immediately, process async |
+| Credits exhausted mid-pipeline | No budget control | Add circuit breaker with credit limit |
 
 ## Resources
-- [Clay API Docs](https://docs.clay.com/api)
-- [Clay Webhooks](https://docs.clay.com/webhooks)
 
-## Output
+- [Clay University -- HTTP API Integration](https://university.clay.com/docs/http-api-integration-overview)
+- [Clay University -- Using Clay as an API](https://www.clay.com/university/guide/using-clay-as-an-api)
+- [BullMQ Documentation](https://docs.bullmq.io/)
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+
+For common pitfalls to avoid, see `clay-known-pitfalls`.

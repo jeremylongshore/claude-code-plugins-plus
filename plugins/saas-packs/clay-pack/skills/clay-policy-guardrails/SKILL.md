@@ -1,12 +1,12 @@
 ---
 name: clay-policy-guardrails
 description: |
-  Implement Clay lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Clay integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Clay best practices.
-  Trigger with phrases like "clay policy", "clay lint",
-  "clay guardrails", "clay best practices check", "clay eslint".
-allowed-tools: Read, Write, Edit, Bash(npx:*)
+  Implement credit spending limits, data privacy enforcement, and input validation guardrails for Clay pipelines.
+  Use when enforcing spending caps, blocking PII enrichment,
+  or adding pre-enrichment validation rules.
+  Trigger with phrases like "clay policy", "clay guardrails", "clay spending limit",
+  "clay data privacy rules", "clay validation", "clay controls".
+allowed-tools: Read, Write, Edit, Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,137 +17,321 @@ tags: [saas, clay, clay-policy]
 # Clay Policy Guardrails
 
 ## Overview
-Policy enforcement and guardrails for Clay data enrichment pipelines. Clay processes personal and business data at scale, requiring strict controls around data handling, credit spending, and compliance with data privacy regulations.
+
+Policy enforcement and guardrails for Clay data enrichment pipelines. Clay processes personal and business data at scale, requiring strict controls around credit spending, data privacy compliance, input validation, and export restrictions.
 
 ## Prerequisites
-- Clay API access with admin permissions
-- Understanding of data privacy regulations (GDPR, CCPA)
-- Credit monitoring infrastructure
+
+- Clay integration in production or pre-production
+- Understanding of GDPR/CCPA requirements
+- Credit budget defined by management
+- Data classification policy for your organization
 
 ## Instructions
 
-### Step 1: Enforce Credit Spending Limits
+### Step 1: Credit Spending Guardrails
 
-Prevent runaway enrichment costs with per-user and per-table spending caps.
+```typescript
+// src/clay/policies/credit-policy.ts
+interface CreditPolicy {
+  dailyLimit: number;
+  perTableLimit: number;
+  perBatchLimit: number;
+  alertThresholdPct: number;
+  hardStopEnabled: boolean;
+}
 
-```python
-class CreditPolicy:
-    LIMITS = {
-        "per_table_max": 10000,  # 10000: 10 seconds in ms
-        "per_user_daily": 5000,  # 5000: 5 seconds in ms
-        "per_enrichment_column": 2000,  # 2000: 2 seconds in ms
-        "alert_threshold_pct": 80
+const CREDIT_POLICIES: Record<string, CreditPolicy> = {
+  conservative: {
+    dailyLimit: 200,
+    perTableLimit: 500,
+    perBatchLimit: 100,
+    alertThresholdPct: 70,
+    hardStopEnabled: true,
+  },
+  standard: {
+    dailyLimit: 500,
+    perTableLimit: 2000,
+    perBatchLimit: 500,
+    alertThresholdPct: 80,
+    hardStopEnabled: true,
+  },
+  aggressive: {
+    dailyLimit: 2000,
+    perTableLimit: 10000,
+    perBatchLimit: 2000,
+    alertThresholdPct: 90,
+    hardStopEnabled: false, // Alert only, don't stop
+  },
+};
+
+class CreditPolicyEnforcer {
+  private dailyUsed = 0;
+  private tableUsage = new Map<string, number>();
+
+  constructor(private policy: CreditPolicy) {}
+
+  checkBatch(tableId: string, rowCount: number, creditsPerRow: number): {
+    allowed: boolean;
+    reason?: string;
+  } {
+    const estimated = rowCount * creditsPerRow;
+
+    // Batch limit
+    if (estimated > this.policy.perBatchLimit) {
+      return {
+        allowed: false,
+        reason: `Batch (${estimated} credits) exceeds per-batch limit (${this.policy.perBatchLimit}). Split into smaller batches.`,
+      };
     }
 
-    def check_table_budget(self, table_id: str, rows_to_process: int, credits_per_row: int):
-        estimated = rows_to_process * credits_per_row
-        used = self.get_table_usage(table_id)
-        if used + estimated > self.LIMITS["per_table_max"]:
-            raise PolicyViolation(
-                f"Table {table_id} would exceed credit limit: "
-                f"{used} used + {estimated} requested > {self.LIMITS['per_table_max']}"
-            )
-        if (used + estimated) / self.LIMITS["per_table_max"] > self.LIMITS["alert_threshold_pct"] / 100:
-            self.alert(f"Table {table_id} at {((used + estimated) / self.LIMITS['per_table_max']) * 100:.0f}% of budget")
-```
-
-### Step 2: Data Privacy Compliance Filters
-
-Block enrichment of personal data fields that violate privacy policies.
-
-```python
-BLOCKED_ENRICHMENT_FIELDS = [
-    "ssn", "social_security", "date_of_birth", "dob",
-    "home_address", "personal_phone", "personal_email",
-    "medical_history", "financial_records"
-]
-
-def validate_enrichment_request(columns_to_enrich: list[str]) -> list[str]:
-    violations = []
-    for col in columns_to_enrich:
-        col_lower = col.lower().replace(" ", "_")
-        if any(blocked in col_lower for blocked in BLOCKED_ENRICHMENT_FIELDS):
-            violations.append(f"Blocked field: {col} (privacy policy)")
-    if violations:
-        raise PolicyViolation(f"Data privacy violations: {violations}")
-    return columns_to_enrich
-```
-
-### Step 3: Row-Level Data Validation Before Enrichment
-
-Pre-validate input data to prevent wasting credits on invalid rows.
-
-```python
-import re
-
-def validate_rows_for_enrichment(rows: list[dict], enrichment_type: str) -> tuple[list, list]:
-    valid, rejected = [], []
-    for row in rows:
-        if enrichment_type == "email_enrichment":
-            email = row.get("email", "")
-            if not re.match(r'^[^@]+@[^@]+\.[^@]+$', email):
-                rejected.append({"row": row, "reason": "invalid email format"})
-                continue
-        elif enrichment_type == "company_enrichment":
-            domain = row.get("domain", "")
-            if not domain or len(domain) < 4:
-                rejected.append({"row": row, "reason": "missing or invalid domain"})
-                continue
-        valid.append(row)
-    return valid, rejected
-```
-
-### Step 4: Export and Retention Policies
-
-Control how enriched data can be exported and how long it is retained.
-
-```python
-class DataRetentionPolicy:
-    RETENTION_DAYS = {
-        "enrichment_results": 90,
-        "raw_input_data": 30,
-        "export_logs": 365  # 365 days = 1 year
+    // Daily limit
+    if (this.dailyUsed + estimated > this.policy.dailyLimit) {
+      if (this.policy.hardStopEnabled) {
+        return {
+          allowed: false,
+          reason: `Would exceed daily limit: ${this.dailyUsed} + ${estimated} > ${this.policy.dailyLimit}`,
+        };
+      }
+      console.warn(`WARNING: Exceeding daily limit (${this.dailyUsed + estimated}/${this.policy.dailyLimit})`);
     }
 
-    def enforce_retention(self, table_id: str):
-        for data_type, max_days in self.RETENTION_DAYS.items():
-            cutoff = datetime.now() - timedelta(days=max_days)
-            deleted = self.delete_older_than(table_id, data_type, cutoff)
-            if deleted > 0:
-                self.log_retention_action(table_id, data_type, deleted)
+    // Per-table limit
+    const tableTotal = (this.tableUsage.get(tableId) || 0) + estimated;
+    if (tableTotal > this.policy.perTableLimit) {
+      return {
+        allowed: false,
+        reason: `Table ${tableId} would exceed limit: ${tableTotal} > ${this.policy.perTableLimit}`,
+      };
+    }
 
-    def validate_export(self, table_id: str, export_format: str, destination: str):
-        allowed_formats = ["csv", "json"]
-        if export_format not in allowed_formats:
-            raise PolicyViolation(f"Export format {export_format} not allowed")
-        if "personal" in self.get_table_tags(table_id):
-            raise PolicyViolation("Tables tagged 'personal' cannot be exported")
+    // Alert threshold
+    const dailyPct = ((this.dailyUsed + estimated) / this.policy.dailyLimit) * 100;
+    if (dailyPct > this.policy.alertThresholdPct) {
+      console.warn(`Credit alert: ${dailyPct.toFixed(0)}% of daily limit used`);
+    }
+
+    return { allowed: true };
+  }
+
+  recordUsage(tableId: string, credits: number) {
+    this.dailyUsed += credits;
+    this.tableUsage.set(tableId, (this.tableUsage.get(tableId) || 0) + credits);
+  }
+}
+```
+
+### Step 2: Data Privacy Guardrails
+
+```typescript
+// src/clay/policies/privacy-policy.ts
+
+// Fields that should NEVER be enriched or stored
+const BLOCKED_ENRICHMENT_FIELDS = new Set([
+  'ssn', 'social_security', 'tax_id',
+  'date_of_birth', 'dob', 'birthday',
+  'home_address', 'home_phone',
+  'personal_phone', 'personal_mobile',
+  'bank_account', 'credit_card',
+  'medical_history', 'health_records',
+  'salary', 'compensation',
+  'political_affiliation', 'religion',
+  'ethnic_origin', 'sexual_orientation',
+]);
+
+// Fields that require explicit consent
+const CONSENT_REQUIRED_FIELDS = new Set([
+  'personal_email', 'phone_number', 'mobile_phone',
+]);
+
+interface PrivacyCheckResult {
+  allowed: boolean;
+  violations: string[];
+  warnings: string[];
+}
+
+function checkPrivacy(
+  fieldsToEnrich: string[],
+  hasExplicitConsent: boolean = false,
+): PrivacyCheckResult {
+  const violations: string[] = [];
+  const warnings: string[] = [];
+
+  for (const field of fieldsToEnrich) {
+    const normalized = field.toLowerCase().replace(/[\s-]/g, '_');
+
+    if (BLOCKED_ENRICHMENT_FIELDS.has(normalized)) {
+      violations.push(`BLOCKED: "${field}" is a restricted field (never enrich)`);
+    }
+
+    if (CONSENT_REQUIRED_FIELDS.has(normalized) && !hasExplicitConsent) {
+      warnings.push(`CONSENT: "${field}" requires explicit consent to enrich`);
+    }
+  }
+
+  return {
+    allowed: violations.length === 0,
+    violations,
+    warnings,
+  };
+}
+```
+
+### Step 3: Input Validation Guardrails
+
+```typescript
+// src/clay/policies/input-validation.ts
+
+const PERSONAL_EMAIL_DOMAINS = new Set([
+  'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com',
+  'aol.com', 'protonmail.com', 'mail.com', 'yandex.com', 'gmx.com',
+]);
+
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  'tempmail.com', 'guerrillamail.com', 'throwaway.email', 'yopmail.com',
+  'mailinator.com', '10minutemail.com', 'trashmail.com',
+]);
+
+interface ValidationResult {
+  valid: Record<string, unknown>[];
+  rejected: { row: Record<string, unknown>; reason: string }[];
+  stats: {
+    total: number;
+    valid: number;
+    invalidDomain: number;
+    personalDomain: number;
+    disposableDomain: number;
+    missingRequiredField: number;
+    duplicates: number;
+  };
+}
+
+function validateBatch(
+  rows: Record<string, unknown>[],
+  requiredFields: string[] = ['domain'],
+): ValidationResult {
+  const seen = new Set<string>();
+  const stats = {
+    total: rows.length, valid: 0, invalidDomain: 0,
+    personalDomain: 0, disposableDomain: 0, missingRequiredField: 0, duplicates: 0,
+  };
+  const valid: Record<string, unknown>[] = [];
+  const rejected: { row: Record<string, unknown>; reason: string }[] = [];
+
+  for (const row of rows) {
+    // Required fields check
+    const missing = requiredFields.filter(f => !row[f]);
+    if (missing.length > 0) {
+      rejected.push({ row, reason: `Missing required: ${missing.join(', ')}` });
+      stats.missingRequiredField++;
+      continue;
+    }
+
+    const domain = String(row.domain || '').toLowerCase().trim();
+
+    // Domain validation
+    if (!domain.includes('.') || domain.length < 4) {
+      rejected.push({ row, reason: `Invalid domain: "${domain}"` });
+      stats.invalidDomain++;
+      continue;
+    }
+
+    // Personal domain filter
+    if (PERSONAL_EMAIL_DOMAINS.has(domain)) {
+      rejected.push({ row, reason: `Personal email domain: ${domain}` });
+      stats.personalDomain++;
+      continue;
+    }
+
+    // Disposable domain filter
+    if (DISPOSABLE_EMAIL_DOMAINS.has(domain)) {
+      rejected.push({ row, reason: `Disposable email domain: ${domain}` });
+      stats.disposableDomain++;
+      continue;
+    }
+
+    // Deduplication
+    const key = `${domain}:${String(row.first_name || '').toLowerCase()}:${String(row.last_name || '').toLowerCase()}`;
+    if (seen.has(key)) {
+      stats.duplicates++;
+      continue;
+    }
+    seen.add(key);
+
+    valid.push({ ...row, domain });
+    stats.valid++;
+  }
+
+  return { valid, rejected, stats };
+}
+```
+
+### Step 4: Export Restrictions
+
+```typescript
+// src/clay/policies/export-policy.ts
+type ExportDestination = 'crm' | 'outreach' | 'analytics' | 'csv';
+
+const EXPORT_RULES: Record<ExportDestination, {
+  allowedFields: string[];
+  blockedFields: string[];
+  requiresApproval: boolean;
+}> = {
+  crm: {
+    allowedFields: ['email', 'first_name', 'last_name', 'company_name', 'job_title', 'icp_score'],
+    blockedFields: ['personal_email', 'home_address'],
+    requiresApproval: false,
+  },
+  outreach: {
+    allowedFields: ['email', 'first_name', 'company_name', 'personalized_opener'],
+    blockedFields: ['phone_number', 'linkedin_url', 'personal_email'],
+    requiresApproval: false,
+  },
+  analytics: {
+    allowedFields: ['company_name', 'industry', 'employee_count', 'icp_score'],
+    blockedFields: ['email', 'first_name', 'last_name', 'phone_number'],
+    requiresApproval: false,
+  },
+  csv: {
+    allowedFields: ['*'], // All fields
+    blockedFields: ['personal_email', 'home_address', 'ssn'],
+    requiresApproval: true, // Requires manager approval for CSV export
+  },
+};
+
+function filterForExport(
+  rows: Record<string, unknown>[],
+  destination: ExportDestination,
+): Record<string, unknown>[] {
+  const rules = EXPORT_RULES[destination];
+
+  return rows.map(row => {
+    const filtered: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(row)) {
+      if (rules.blockedFields.includes(key)) continue;
+      if (rules.allowedFields[0] !== '*' && !rules.allowedFields.includes(key)) continue;
+      filtered[key] = value;
+    }
+    return filtered;
+  });
+}
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Credit overrun | No spending limits | Implement per-table and per-user caps |
-| Privacy violation | Enriching PII fields | Block sensitive field enrichment |
-| Wasted credits | Invalid input rows | Pre-validate before enrichment |
-| Data retention breach | No cleanup policy | Automate retention enforcement |
-
-## Examples
-
-### Policy Check Before Enrichment
-```python
-policy = CreditPolicy()
-valid_rows, rejected = validate_rows_for_enrichment(rows, "email_enrichment")
-policy.check_table_budget(table_id, len(valid_rows), credits_per_row=2)
-# Proceed only after all checks pass
-```
+| Credit overrun | No spending limits enforced | Implement credit policy enforcer |
+| PII enrichment violation | No privacy checks | Add blocked field validation |
+| Wasted credits on bad data | No input validation | Pre-validate all batches |
+| Unauthorized data export | No export restrictions | Implement per-destination field filtering |
 
 ## Resources
-- [Clay Security](https://docs.clay.com/security)
-- [GDPR Compliance](https://gdpr.eu)
 
-## Output
+- [GDPR Official Text](https://gdpr.eu/what-is-gdpr/)
+- [CCPA Requirements](https://oag.ca.gov/privacy/ccpa)
+- [Clay Community](https://community.clay.com)
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+
+For architecture patterns at scale, see `clay-architecture-variants`.

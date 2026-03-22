@@ -1,12 +1,12 @@
 ---
 name: clay-prod-checklist
 description: |
-  Execute Clay production deployment checklist and rollback procedures.
-  Use when deploying Clay integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "clay production", "deploy clay",
-  "clay go-live", "clay launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute production readiness checklist for Clay integrations.
+  Use when launching Clay-powered enrichment pipelines, preparing for go-live,
+  or auditing production Clay configurations.
+  Trigger with phrases like "clay production", "clay go-live", "clay launch checklist",
+  "clay production readiness", "deploy clay pipeline".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,107 +17,140 @@ tags: [saas, clay, deployment]
 # Clay Production Checklist
 
 ## Overview
-Complete checklist for deploying Clay integrations to production.
+
+Complete checklist for launching Clay enrichment pipelines in production. Covers table configuration, credit budgeting, webhook reliability, CRM sync validation, and monitoring setup.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+
+- Clay table tested with sample data (100+ rows enriched successfully)
+- CRM integration tested in staging
+- Credit budget approved for monthly volume
+- Team trained on Clay table management
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Phase 1: Table Configuration
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Clay error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+- [ ] **Table schema finalized** -- all columns named, typed, and ordered
+- [ ] **Enrichment columns configured** -- each column has correct provider and input mapping
+- [ ] **Waterfall configured** -- providers ordered cheapest-first with "stop on first result"
+- [ ] **Auto-run settings verified** -- table-level auto-update ON, column-level auto-run ON for needed columns
+- [ ] **Conditional run rules set** -- enrichments only trigger when input data exists
+- [ ] **Formula columns tested** -- ICP scoring and lead grading formulas validated
+- [ ] **AI/Claygent columns reviewed** -- prompts produce consistent, quality output
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Clay connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Phase 2: Data Quality Gates
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+- [ ] **Input validation in place** -- scripts validate data before webhook submission
+- [ ] **Personal email filter** -- gmail.com, yahoo.com, etc. blocked from enrichment
+- [ ] **Deduplication active** -- duplicate records detected before sending to Clay
+- [ ] **Sample enrichment run completed** -- 500+ row test with >60% email find rate
+- [ ] **Credit cost per row calculated** -- know your average credits per enriched lead
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-set -euo pipefail
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.clay.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/clay-integration app=image:new --record
-kubectl rollout pause deployment/clay-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600  # 600: timeout: 10 minutes
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/clay-integration
-kubectl rollout pause deployment/clay-integration
-sleep 300  # 300: timeout: 5 minutes
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/clay-integration
-kubectl rollout status deployment/clay-integration
-```
-
-## Output
-- Deployed Clay integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
 ```typescript
-async function healthCheck(): Promise<{ status: string; clay: any }> {
-  const start = Date.now();
-  try {
-    await clayClient.ping();
-    return { status: 'healthy', clay: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', clay: { connected: false, latencyMs: Date.now() - start } };
+// Pre-submission validation (run before pushing to Clay)
+function validateForProduction(rows: any[]): { valid: any[]; rejected: any[] } {
+  const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
+  const seen = new Set<string>();
+  const valid: any[] = [];
+  const rejected: any[] = [];
+
+  for (const row of rows) {
+    const key = `${row.domain}:${row.first_name}:${row.last_name}`.toLowerCase();
+
+    if (!row.domain?.includes('.'))
+      rejected.push({ row, reason: 'invalid domain' });
+    else if (personalDomains.some(d => row.domain.endsWith(d)))
+      rejected.push({ row, reason: 'personal email domain' });
+    else if (seen.has(key))
+      rejected.push({ row, reason: 'duplicate' });
+    else {
+      seen.add(key);
+      valid.push(row);
+    }
   }
+
+  console.log(`Validation: ${valid.length} valid, ${rejected.length} rejected (${(rejected.length / rows.length * 100).toFixed(1)}% filtered)`);
+  return { valid, rejected };
 }
 ```
 
-### Immediate Rollback
+### Phase 3: Credit & Cost Controls
+
+- [ ] **Monthly credit budget set** -- know your plan's monthly credits
+- [ ] **Table row limits configured** -- max rows set to prevent runaway enrichment
+- [ ] **Provider API keys connected** -- own keys for high-volume providers (saves 70-80%)
+- [ ] **Credit burn monitoring** -- alerts when daily usage exceeds threshold
+- [ ] **Webhook submission counter** -- tracking against 50K lifetime limit
+
+| Plan | Monthly Credits | Actions | HTTP API | Webhook Limit |
+|------|----------------|---------|----------|---------------|
+| Launch | 2,500 | 15,000 | No | 50K/webhook |
+| Growth | 6,000 | 40,000 | Yes | 50K/webhook |
+| Enterprise | Custom | Custom | Yes | 50K/webhook |
+
+### Phase 4: Integration Reliability
+
+- [ ] **Webhook endpoint health check** -- Clay can reach your callback URL
+- [ ] **Retry logic implemented** -- 429 and 5xx responses handled with backoff
+- [ ] **CRM sync tested** -- enriched records correctly map to CRM objects
+- [ ] **HTTP API columns tested** -- outbound API calls return expected data
+- [ ] **Error handling for empty enrichments** -- graceful handling when providers return no data
+
 ```bash
-set -euo pipefail
-kubectl rollout undo deployment/clay-integration
-kubectl rollout status deployment/clay-integration
+# Pre-flight connectivity checks
+echo "=== Clay Production Pre-flight ==="
+
+# 1. Webhook reachable
+curl -s -o /dev/null -w "Webhook: HTTP %{http_code}\n" \
+  -X POST "$CLAY_WEBHOOK_URL" \
+  -H "Content-Type: application/json" \
+  -d '{"_preflight": true}'
+
+# 2. Enterprise API (if applicable)
+if [ -n "${CLAY_API_KEY:-}" ]; then
+  curl -s -o /dev/null -w "Enterprise API: HTTP %{http_code}\n" \
+    -X POST "https://api.clay.com/v1/people/enrich" \
+    -H "Authorization: Bearer $CLAY_API_KEY" \
+    -H "Content-Type: application/json" \
+    -d '{"email": "test@example.com"}'
+fi
+
+# 3. Callback endpoint reachable
+curl -s -o /dev/null -w "Callback endpoint: HTTP %{http_code}\n" \
+  "https://your-app.com/api/health"
 ```
 
+### Phase 5: Monitoring & Alerting
+
+- [ ] **Credit consumption tracked** -- daily/weekly credit usage logged
+- [ ] **Enrichment hit rate monitored** -- alert if email find rate drops below 40%
+- [ ] **Webhook delivery failures alerted** -- notification on 4xx/5xx from webhooks
+- [ ] **CRM sync errors tracked** -- alert on failed CRM pushes
+- [ ] **Table row count monitored** -- alert when approaching plan limits
+
+### Phase 6: Documentation & Runbooks
+
+- [ ] **Table schema documented** -- column purposes, providers, and dependencies
+- [ ] **Credit cost model documented** -- expected cost per lead at current volume
+- [ ] **Webhook rotation procedure** -- steps to replace exhausted webhook (50K limit)
+- [ ] **Provider failover plan** -- what to do when a provider is down
+- [ ] **On-call escalation path** -- who to contact for Clay issues
+
+## Error Handling
+
+| Alert | Condition | Action |
+|-------|-----------|--------|
+| Credit balance low | < 500 credits remaining | Pause enrichments, add credits or connect own keys |
+| Email find rate drop | < 40% for 2+ hours | Check input data quality, review provider status |
+| Webhook 429s | > 5 per hour | Reduce submission rate, check plan limits |
+| CRM sync failures | > 10 per batch | Check CRM field mapping, verify API key |
+
 ## Resources
-- [Clay Status](https://status.clay.com)
-- [Clay Support](https://docs.clay.com/support)
+
+- [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)
+- [Clay University -- Table Management](https://university.clay.com/docs/table-management-settings)
 
 ## Next Steps
+
 For version upgrades, see `clay-upgrade-migration`.

@@ -1,12 +1,12 @@
 ---
 name: clay-enterprise-rbac
 description: |
-  Configure Clay enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Clay.
-  Trigger with phrases like "clay SSO", "clay RBAC",
-  "clay enterprise", "clay roles", "clay permissions", "clay SAML".
-allowed-tools: Read, Write, Edit
+  Configure Clay workspace roles, team access control, and credit budget allocation.
+  Use when managing team access to Clay tables, setting per-user credit budgets,
+  or configuring workspace-level permissions for Clay.
+  Trigger with phrases like "clay SSO", "clay RBAC", "clay enterprise",
+  "clay roles", "clay permissions", "clay team access", "clay workspace".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,101 +17,176 @@ tags: [saas, clay, rbac]
 # Clay Enterprise RBAC
 
 ## Overview
-Control access to Clay data enrichment tables, credit pools, and integrations at the team level. Clay uses a workspace model where team members are assigned Admin, Member, or Viewer roles.
+
+Control access to Clay tables, enrichment credits, and integrations at the team level. Clay uses a workspace model where team members are assigned Admin, Member, or Viewer roles. This skill covers role assignment, credit budget allocation, API key isolation, and audit procedures.
 
 ## Prerequisites
-- Clay Team or Enterprise plan (credit-based pricing)
+
+- Clay Team or Enterprise plan
 - Workspace admin privileges
-- Understanding of Clay's credit consumption per enrichment provider
+- Understanding of team structure and data access needs
 
 ## Instructions
 
-### Step 1: Define Workspace Roles
+### Step 1: Define Role Matrix
+
+Clay has three built-in roles with fixed permissions:
+
+| Capability | Admin | Member | Viewer |
+|------------|-------|--------|--------|
+| Manage workspace members | Yes | No | No |
+| Manage billing and credits | Yes | No | No |
+| Create/delete tables | Yes | Yes | No |
+| Run enrichments | Yes | Yes | No |
+| Configure integrations | Yes | No | No |
+| Export data | Yes | Yes | Yes |
+| View all tables | Yes | Yes | Yes |
+
+**Recommended role assignments:**
+
 ```yaml
-# clay-role-matrix.yaml
 roles:
   admin:
-    capabilities:
-      - manage_members
-      - manage_billing_and_credits
-      - create_delete_tables
-      - run_enrichments
-      - configure_integrations (Salesforce, HubSpot, etc.)
-      - export_data
-    assign_to: Revenue ops leads
+    assign_to:
+      - Revenue Operations Lead
+      - GTM Engineering Lead
+    why: "Controls billing, integrations, and team access"
 
   member:
-    capabilities:
-      - create_tables
-      - run_enrichments (within credit budget)
-      - view_all_tables
-      - export_data
-    assign_to: SDRs, growth engineers
+    assign_to:
+      - SDRs building prospect lists
+      - Growth engineers building pipelines
+      - Marketing ops running enrichment campaigns
+    why: "Can create tables and run enrichments but can't change billing or integrations"
 
   viewer:
-    capabilities:
-      - view_tables (read-only)
-      - export_data
-    assign_to: Managers reviewing lead lists
+    assign_to:
+      - Sales managers reviewing lead quality
+      - Executives checking pipeline metrics
+      - Finance reviewing credit usage
+    why: "Read-only access to enriched data and exports"
 ```
 
-### Step 2: Invite Members with Appropriate Roles
-```bash
-set -euo pipefail
-# Invite via Clay API
-curl -X POST https://api.clay.com/v1/workspace/members \
-  -H "Authorization: Bearer $CLAY_API_KEY" \
-  -d '{"email": "sdr@company.com", "role": "member"}'
+### Step 2: Invite and Manage Team Members
 
-# List current members
-curl https://api.clay.com/v1/workspace/members \
-  -H "Authorization: Bearer $CLAY_API_KEY" | jq '.[] | {email, role}'
+In Clay UI: **Settings > Members > Invite**
+
+Best practices:
+- Use company email addresses (not personal)
+- Start new members as Viewers until they complete Clay training
+- Audit member list quarterly -- remove departed employees immediately
+
+### Step 3: Isolate API Keys by Integration
+
+Create separate API keys for each downstream system to enable independent revocation:
+
+```yaml
+api_keys:
+  crm-sync-prod:
+    purpose: "HubSpot CRM sync from Clay"
+    used_by: "HTTP API column in Outbound Leads table"
+    rotation: quarterly
+
+  outbound-instantly:
+    purpose: "Push qualified leads to Instantly.ai"
+    used_by: "HTTP API column for outreach"
+    rotation: quarterly
+
+  internal-dashboard:
+    purpose: "Pull enrichment metrics for internal dashboard"
+    used_by: "Cron job reading Clay table stats"
+    rotation: quarterly
+
+  ci-testing:
+    purpose: "Integration tests in CI pipeline"
+    used_by: "GitHub Actions workflow"
+    rotation: on-demand
 ```
 
-### Step 3: Set Credit Budgets per Table
-Since Clay charges credits per enrichment (e.g., 1 credit for email lookup, 5 credits for company data), set row limits on tables to cap spending:
-```bash
-set -euo pipefail
-# Configure a table with a 500-row enrichment cap
-curl -X PATCH https://api.clay.com/v1/tables/tbl_abc123 \
-  -H "Authorization: Bearer $CLAY_API_KEY" \
-  -d '{"max_rows": 500, "auto_enrich": false}'  # HTTP 500 Internal Server Error
+### Step 4: Set Credit Budget Controls
+
+Since Clay doesn't have per-user credit budgets natively, implement controls at the table level:
+
+```typescript
+// src/clay/budget-controls.ts
+interface TableBudget {
+  tableId: string;
+  tableName: string;
+  maxRows: number;           // Prevent over-enrichment
+  autoEnrich: boolean;       // Control automatic processing
+  owner: string;             // Team member responsible
+  monthlyCreditsEstimate: number;
+}
+
+const TABLE_BUDGETS: TableBudget[] = [
+  {
+    tableId: 'outbound-leads',
+    tableName: 'Outbound Leads',
+    maxRows: 5000,
+    autoEnrich: true,
+    owner: 'sdr-team@company.com',
+    monthlyCreditsEstimate: 3000,
+  },
+  {
+    tableId: 'event-attendees',
+    tableName: 'Event Attendees',
+    maxRows: 1000,
+    autoEnrich: false,  // Manual trigger only
+    owner: 'marketing@company.com',
+    monthlyCreditsEstimate: 600,
+  },
+  {
+    tableId: 'inbound-leads',
+    tableName: 'Inbound Leads',
+    maxRows: 2000,
+    autoEnrich: true,
+    owner: 'growth-eng@company.com',
+    monthlyCreditsEstimate: 1200,
+  },
+];
+
+function auditBudgets(budgets: TableBudget[]): void {
+  const totalEstimate = budgets.reduce((sum, b) => sum + b.monthlyCreditsEstimate, 0);
+  console.log(`=== Clay Credit Budget Audit ===`);
+  for (const b of budgets) {
+    console.log(`  ${b.tableName}: ${b.maxRows} rows, ~${b.monthlyCreditsEstimate} credits/mo (owner: ${b.owner})`);
+  }
+  console.log(`  Total monthly estimate: ${totalEstimate} credits`);
+}
 ```
 
-### Step 4: Separate API Keys by Integration
-Create distinct API keys for each downstream integration (CRM sync, outbound tool, internal dashboard) to allow revoking one without disrupting others. Label keys clearly: `crm-sync-prod`, `outbound-instantly`, `internal-dashboard`.
+### Step 5: Quarterly Access Audit
 
-### Step 5: Review Credit Usage by Member
-```bash
-set -euo pipefail
-# Pull credit consumption grouped by user
-curl "https://api.clay.com/v1/workspace/usage?group_by=user&period=last_30d" \
-  -H "Authorization: Bearer $CLAY_API_KEY" | \
-  jq '.usage[] | {user: .email, credits_used: .total_credits}'
+```markdown
+## Clay Workspace Access Audit Checklist
+
+- [ ] Review all workspace members — remove former employees
+- [ ] Verify role assignments match current job functions
+- [ ] Check API key usage — revoke unused keys
+- [ ] Review table access — archive unused tables
+- [ ] Audit credit usage by table — identify waste
+- [ ] Verify provider API key connections are current
+- [ ] Update API key rotation log
+- [ ] Review and update table row limits
+- [ ] Check webhook submission counts (approaching 50K?)
+- [ ] Document any new tables or integrations added
 ```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | `403` on table creation | User is Viewer role | Upgrade to Member role |
-| Credits exhausted mid-enrichment | No budget cap on table | Set `max_rows` to limit spend |
-| Integration key rejected | Key was revoked | Generate new key, update integration |
-| Member cannot see table | Table in another workspace | Share table or move to shared workspace |
-
-## Examples
-
-**Basic usage**: Apply clay enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize clay enterprise rbac for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| Credits exhausted mid-campaign | No budget cap on table | Set max_rows on table |
+| Integration key rejected | Key was revoked | Generate new key, update integration config |
+| Unauthorized data export | Viewer exported sensitive data | Review export audit log |
+| Former employee still has access | No offboarding process | Immediate removal on departure |
 
 ## Resources
 
-- Official Clay Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)
+- [Clay Community](https://community.clay.com)
+
+## Next Steps
+
+For migration strategies, see `clay-migration-deep-dive`.
