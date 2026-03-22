@@ -94,11 +94,11 @@ remofirst,RemoFirst,standard,12,@intentsolutionsio/remofirst-skill-md-pack,reser
 appfolio,AppFolio,pro,18,@intentsolutionsio/appfolio-skill-md-pack,reserved,ccpi-appfolio,18,0,not_started,not_added,Extended #93
 procore,Procore,flagship,24,@intentsolutionsio/procore-skill-md-pack,reserved,ccpi-procore,24,0,not_started,not_added,Extended #94
 veeva,Veeva,flagship,24,@intentsolutionsio/veeva-skill-md-pack,reserved,ccpi-veeva,24,0,not_started,not_added,Extended #95
-guidewire,Guidewire,pro,18,@intentsolutionsio/guidewire-skill-md-pack,reserved,ccpi-guidewire,18,0,not_started,not_added,Extended #96
+guidewire,Guidewire,flagship,24,@intentsolutionsio/guidewire-skill-md-pack,reserved,ccpi-guidewire,24,0,not_started,not_added,Extended #96
 langfuse,Langfuse,pro,18,@intentsolutionsio/langfuse-skill-md-pack,reserved,ccpi-langfuse,18,0,not_started,not_added,Extended #97
 twinmind,TwinMind,standard,12,@intentsolutionsio/twinmind-skill-md-pack,reserved,ccpi-twinmind,12,0,not_started,not_added,Extended #98
 speak,Speak,pro,18,@intentsolutionsio/speak-skill-md-pack,reserved,ccpi-speak,18,0,not_started,not_added,Extended #99
-openevidence,OpenEvidence,pro,18,@intentsolutionsio/openevidence-skill-md-pack,reserved,ccpi-openevidence,18,0,not_started,not_added,Extended #100
+openevidence,OpenEvidence,flagship,24,@intentsolutionsio/openevidence-skill-md-pack,reserved,ccpi-openevidence,24,0,not_started,not_added,Extended #100
 documenso,Documenso,pro,18,@intentsolutionsio/documenso-skill-md-pack,reserved,ccpi-documenso,18,0,not_started,not_added,open-source document signing - DocuSign alternative
 evernote,Evernote,flagship,24,@intentsolutionsio/evernote-skill-md-pack,reserved,ccpi-evernote,24,0,not_started,not_added,note-taking - 15.9% market share
 apple-notes,Apple Notes,flagship,24,@intentsolutionsio/apple-notes-skill-md-pack,reserved,ccpi-apple-notes,24,0,not_started,not_added,note-taking - 15.5% market share

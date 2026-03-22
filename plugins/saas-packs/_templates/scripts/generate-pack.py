@@ -200,7 +200,7 @@ MIT
     return readme
 
 
-def generate_pack(company: str, dry_run: bool = False) -> bool:
+def generate_pack(company: str, dry_run: bool = False, force: bool = False) -> bool:
     """Generate a complete pack for a vendor."""
     print(f"Generating pack for: {company}")
 
@@ -218,7 +218,7 @@ def generate_pack(company: str, dry_run: bool = False) -> bool:
     plugin_dir = pack_dir / ".claude-plugin"
 
     # Skip existing packs unless --force
-    if pack_dir.exists() and (skills_dir / f"{company}-install-auth" / "SKILL.md").exists():
+    if not force and pack_dir.exists() and (skills_dir / f"{company}-install-auth" / "SKILL.md").exists():
         print(f"  SKIP: {pack_dir} already exists (use --force to overwrite)")
         return True
 
@@ -303,13 +303,13 @@ def main():
 
         print(f"Generating {len(companies)} packs...")
         for company in companies:
-            if not generate_pack(company, args.dry_run):
+            if not generate_pack(company, args.dry_run, args.force):
                 print(f"Failed to generate {company}")
                 sys.exit(1)
 
         print(f"\n✓ All {len(companies)} packs generated successfully")
     elif args.company:
-        if not generate_pack(args.company, args.dry_run):
+        if not generate_pack(args.company, args.dry_run, args.force):
             sys.exit(1)
     else:
         parser.print_help()
