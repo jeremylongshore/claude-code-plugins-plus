@@ -1,104 +1,211 @@
 ---
 name: replit-enterprise-rbac
 description: |
-  Configure Replit enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Replit.
-  Trigger with phrases like "replit SSO", "replit RBAC",
-  "replit enterprise", "replit roles", "replit permissions", "replit SAML".
-allowed-tools: Read, Write, Edit
+  Configure Replit Teams roles, SSO/SAML, custom groups, and organization-level access control.
+  Use when setting up team permissions, configuring SSO, managing deployment access,
+  or auditing organization security on Replit.
+  Trigger with phrases like "replit SSO", "replit RBAC", "replit enterprise",
+  "replit roles", "replit permissions", "replit SAML", "replit teams admin".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, rbac]
+tags: [saas, replit, rbac, enterprise, sso]
 
 ---
 # Replit Enterprise RBAC
 
 ## Overview
-Manage team access to Replit workspaces, deployments, and AI coding features using its Teams and Organizations model. Replit uses per-seat licensing with workspace roles: Owner, Admin, and Member.
+Manage team access to Replit workspaces, deployments, and AI features. Covers the built-in role system (Admin, Manager, Editor, Viewer), custom groups (Enterprise only), SSO/SAML integration, deployment permissions, and audit logging.
 
 ## Prerequisites
-- Replit Teams for Business or Enterprise plan (per-seat pricing)
-- Organization owner or admin role
-- SSO identity provider configured (Enterprise only)
+- Replit Teams or Enterprise plan
+- Organization Owner or Admin role
+- SSO identity provider (Enterprise only): Okta, Azure AD, Google Workspace
+
+## Role Hierarchy
+
+| Role | Create Repls | Deploy | Manage Members | Billing | AI Features |
+|------|-------------|--------|----------------|---------|-------------|
+| **Owner** | Yes | All | Yes | Yes | Yes |
+| **Admin** | Yes | All | Yes | View only | Yes |
+| **Manager** | Yes | Staging | Add/remove | No | Yes |
+| **Editor** | Yes | No | No | No | Yes |
+| **Viewer** | No | No | No | No | No |
 
 ## Instructions
 
 ### Step 1: Configure Organization Roles
-```yaml
-# replit-role-matrix.yaml
-roles:
-  owner:
-    permissions: [manage_billing, manage_members, manage_deployments, create_repls, use_ai, admin_settings]
-  admin:
-    permissions: [manage_members, manage_deployments, create_repls, use_ai]
-  member:
-    permissions: [create_repls, use_ai, deploy_to_staging]
-    restrictions: [cannot_deploy_to_prod, cannot_manage_members]
+```markdown
+In Organization Settings > Members:
+
+1. Invite members:
+   - Click "Invite" > enter email
+   - Select role: Admin, Manager, Editor, or Viewer
+   - Member receives email invitation
+
+2. Bulk management (2025+):
+   - CSV export of all members
+   - Sort/filter by role, activity, last login
+   - Bulk role changes
+
+3. Role assignment strategy:
+   - Owners: 1-2 (billing + full admin)
+   - Admins: team leads (manage members + deploy)
+   - Managers: senior devs (deploy to staging)
+   - Editors: developers (create + code)
+   - Viewers: stakeholders (read-only access)
 ```
 
-### Step 2: Invite and Manage Team Members
-Navigate to Replit Teams > Members and invite users with assigned roles. For bulk management, use the Replit API:
-```bash
-set -euo pipefail
-# Invite a team member
-curl -X POST https://replit.com/api/v1/teams/TEAM_ID/members \
-  -H "Authorization: Bearer $REPLIT_API_KEY" \
-  -d '{"email": "dev@company.com", "role": "member"}'
+### Step 2: Custom Groups (Enterprise Only)
+```markdown
+Enterprise plan enables custom permission groups:
 
-# List current team members
-curl https://replit.com/api/v1/teams/TEAM_ID/members \
-  -H "Authorization: Bearer $REPLIT_API_KEY" | jq '.[] | {username, email, role}'
+1. Organization Settings > Groups
+2. Create group: e.g., "Backend Team"
+3. Assign permissions:
+   - Access to specific Repls
+   - Deployment permissions (staging only, or all)
+   - AI feature access
+4. Add members to group
+
+Example groups:
+- "Frontend Team": access to UI Repls, deploy to staging
+- "DevOps": all Repls, deploy to production, manage secrets
+- "Contractors": specific Repls only, no deployment access
+- "QA": read all, deploy to staging, no production
 ```
 
-### Step 3: Control Deployment Permissions
-Separate staging and production deployment access:
-- Members: can deploy to development/staging URLs
-- Admins: can deploy to custom domains and production
-- Owner: can configure deployment infrastructure (reserved VMs, autoscaling)
+### Step 3: SSO/SAML Configuration (Enterprise Only)
+```markdown
+Organization Settings > Security > SSO:
 
-Configure in Team Settings > Deployments > Permission Policy.
+1. Choose provider:
+   - Okta
+   - Azure Active Directory
+   - Google Workspace
+   - Any SAML 2.0 compatible IdP
 
-### Step 4: Enable SSO (Enterprise Only)
-In Organization Settings > Security > SSO:
-- Configure SAML 2.0 with your IdP (Okta, Azure AD, Google Workspace)
-- Map IdP groups to Replit roles
-- Enable "Require SSO" to block password-based login
-- Set session timeout policy (recommended: 12 hours)
+2. Configure SAML:
+   - ACS URL: provided by Replit
+   - Entity ID: provided by Replit
+   - Certificate: from your IdP
+   - Map IdP groups to Replit roles
 
-### Step 5: Audit Activity
+3. Enable enforcement:
+   - "Require SSO": blocks password-based login
+   - Session timeout: recommended 12 hours
+   - IdP-initiated logout support
+
+4. Test:
+   - Try login with SSO before enforcing
+   - Verify role mapping works correctly
+   - Test session timeout behavior
+```
+
+### Step 4: Deployment Permission Controls
+```markdown
+Control who can deploy and where:
+
+Organization Settings > Deployments > Permissions:
+
+Production deployments:
+- Restrict to Admin + Owner only
+- Require approval workflow (Enterprise)
+- Custom domain management: Admin only
+
+Staging deployments:
+- Allow Managers and above
+- Auto-deploy from staging branch
+
+Development:
+- All Editors can run in Workspace
+- Dev database access for all team members
+```
+
+### Step 5: Audit Logging
 ```bash
-set -euo pipefail
-# Review recent team activity
+# View recent team activity
 curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
-  -H "Authorization: Bearer $REPLIT_API_KEY" | \
+  -H "Authorization: Bearer $REPLIT_TOKEN" | \
   jq '.events[] | {user, action, resource, timestamp}'
+
+# Common audit events:
+# - member.invited
+# - member.removed
+# - member.role_changed
+# - repl.created
+# - repl.deleted
+# - deployment.created
+# - deployment.rolled_back
+# - secret.created
+# - secret.deleted
+```
+
+```markdown
+Enterprise audit features:
+- Exportable audit logs (CSV)
+- 90-day retention
+- Filter by user, action, resource
+- API access for SIEM integration
+```
+
+### Step 6: Quarterly Access Review
+```markdown
+## Access Review Checklist (run quarterly)
+
+1. Export member list from Organization Settings
+2. Review each member:
+   - [ ] Last active date within 30 days?
+   - [ ] Role appropriate for current responsibilities?
+   - [ ] Still on the team/project?
+3. Actions:
+   - Remove members not active in 30+ days
+   - Downgrade over-privileged members
+   - Upgrade members needing more access
+4. Document changes and rationale
+5. Verify SSO group mappings still accurate
+
+Cost impact:
+- Each removed seat saves $25-40/month
+- Quarterly review prevents seat creep
+```
+
+### Step 7: AI Feature Controls
+```markdown
+Replit AI features (Agent, Assistant, Ghostwriter):
+
+Organization Settings > AI Features:
+- Enable/disable AI for entire organization
+- Per-role AI access (Enterprise)
+- Usage tracking per member
+
+Controls:
+- Agent: can create files, install packages, deploy
+- Assistant: code suggestions, chat
+- Ghostwriter: inline completions
+
+Recommendation:
+- Enable AI for all developers (Editors+)
+- Restrict Agent deployment to Managers+
+- Monitor AI usage via dashboard
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Member can't deploy | Missing deployment permission | Promote to Admin or adjust deployment policy |
-| SSO login redirect loop | Incorrect callback URL | Verify ACS URL in IdP matches Replit config |
-| Seat limit exceeded | Too many active members | Remove inactive members or upgrade seat count |
-| AI features disabled | Ghostwriter not enabled for team | Enable AI features in Team Settings |
-
-## Examples
-
-**Basic usage**: Apply replit enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize replit enterprise rbac for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| Member can't deploy | Insufficient role | Promote to Manager or Admin |
+| SSO redirect loop | Wrong ACS URL | Verify callback URL matches Replit config |
+| Seat limit exceeded | Plan capacity reached | Remove inactive members or upgrade |
+| Custom group not working | Not on Enterprise plan | Groups require Enterprise |
+| AI features disabled | Org-level toggle off | Enable in Organization Settings > AI |
 
 ## Resources
+- [Groups and Permissions](https://docs.replit.com/teams/identity-and-access-management/groups-and-permissions)
+- [Replit Enterprise](https://replit.com/enterprise)
+- [Replit Security](https://replit.com/products/security)
+- [Replit Pro](https://replit.com/pro)
 
-- Official Replit Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For data migration patterns, see `replit-migration-deep-dive`.

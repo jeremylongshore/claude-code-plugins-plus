@@ -1,12 +1,12 @@
 ---
 name: replit-load-scale
 description: |
-  Implement Replit load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Replit integrations.
+  Load test and scale Replit deployments with Autoscale tuning, Reserved VM sizing, and capacity planning.
+  Use when load testing Replit apps, optimizing Autoscale behavior,
+  or planning capacity for production traffic.
   Trigger with phrases like "replit load test", "replit scale",
-  "replit performance test", "replit capacity", "replit k6", "replit benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  "replit capacity", "replit performance test", "replit autoscale tuning".
+allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,261 +17,234 @@ tags: [saas, replit, testing, performance, scaling]
 # Replit Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Replit integrations.
+Load testing, scaling strategies, and capacity planning for Replit deployments. Covers Autoscale behavior tuning, Reserved VM right-sizing, cold start optimization, database connection scaling, and capacity benchmarking.
 
 ## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+- Replit app deployed (Autoscale or Reserved VM)
+- Load testing tool: k6, autocannon, or curl
+- Health endpoint implemented
 
-## Load Testing with k6
+## Replit Scaling Model
 
-### Basic Load Test
+| Deployment Type | Scaling Behavior | Cold Start | Best For |
+|-----------------|-----------------|------------|----------|
+| **Autoscale** | 0 to N instances based on traffic | Yes (5-30s) | Variable traffic |
+| **Reserved VM** | Fixed resources, always-on | No | Consistent traffic |
+| **Static** | CDN-backed, infinite scale | No | Frontend assets |
+
+## Instructions
+
+### Step 1: Baseline Benchmark
+```bash
+# Quick benchmark with autocannon (built into Node.js ecosystem)
+npx autocannon -c 10 -d 30 https://your-app.replit.app/health
+# -c 10: 10 concurrent connections
+# -d 30: 30 seconds duration
+
+# Output shows:
+# - Requests/sec
+# - Latency (p50, p95, p99)
+# - Throughput (bytes/sec)
+# - Error count
+```
+
+### Step 2: Load Test with k6
 ```javascript
-// replit-load-test.js
+// load-test.js — comprehensive Replit load test
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
+
+const errorRate = new Rate('errors');
+const coldStartTrend = new Trend('cold_start_duration');
 
 export const options = {
   stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
+    { duration: '1m', target: 5 },    // Warm up
+    { duration: '3m', target: 20 },   // Normal load
+    { duration: '2m', target: 50 },   // Peak load
+    { duration: '1m', target: 0 },    // Cool down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<500'],  # HTTP 500 Internal Server Error
-    http_req_failed: ['rate<0.01'],
+    http_req_duration: ['p(95)<2000'],  // 95% of requests under 2s
+    errors: ['rate<0.05'],              // Error rate under 5%
   },
 };
 
-export default function () {
-  const response = http.post(
-    'https://api.replit.com/v1/resource',
-    JSON.stringify({ test: true }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.REPLIT_API_KEY}`,
-      },
-    }
-  );
+const BASE_URL = __ENV.DEPLOY_URL || 'https://your-app.replit.app';
 
-  check(response, {
-    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
-    'latency < 500ms': (r) => r.timings.duration < 500,  # HTTP 500 Internal Server Error
+export default function () {
+  // Health check
+  const healthRes = http.get(`${BASE_URL}/health`);
+  check(healthRes, {
+    'health returns 200': (r) => r.status === 200,
+    'health under 1s': (r) => r.timings.duration < 1000,
+  });
+  errorRate.add(healthRes.status !== 200);
+
+  // Detect cold start
+  if (healthRes.timings.duration > 5000) {
+    coldStartTrend.add(healthRes.timings.duration);
+  }
+
+  // API endpoint
+  const apiRes = http.get(`${BASE_URL}/api/status`);
+  check(apiRes, {
+    'api returns 200': (r) => r.status === 200,
   });
 
   sleep(1);
 }
 ```
 
-### Run Load Test
 ```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
+# Run k6 load test
+k6 run --env DEPLOY_URL=https://your-app.replit.app load-test.js
 
-# Run test
-k6 run --env REPLIT_API_KEY=${REPLIT_API_KEY} replit-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 replit-load-test.js  # 8086 = configured value
+# With JSON output
+k6 run --out json=results.json load-test.js
 ```
 
-## Scaling Patterns
+### Step 3: Cold Start Optimization (Autoscale)
+```markdown
+Autoscale cold starts happen when:
+- First request after period of no traffic
+- Replit needs to start a new container instance
+- Typical: 5-30 seconds depending on app size
 
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: replit-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: replit-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: replit_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
+Reduction strategies:
+1. Minimize startup imports (lazy-load heavy modules)
+2. Use smaller Nix dependency set
+3. Pre-connect database in background (don't block startup)
+4. Keep package count low
+5. Use compiled JavaScript (not tsx at runtime)
+
+Before (slow cold start):
+  run = "npx tsx src/index.ts"  → compiles TS at startup
+
+After (fast cold start):
+  build = "npm run build"  → compiles during deploy
+  run = "node dist/index.js"  → runs pre-compiled JS
 ```
 
-### Connection Pooling
+```toml
+# .replit — optimized for fast cold start
+[deployment]
+build = ["sh", "-c", "npm ci --production && npm run build"]
+run = ["sh", "-c", "node dist/index.js"]
+deploymentTarget = "autoscale"
+```
+
+### Step 4: Reserved VM Sizing
+```markdown
+Choose VM size based on load test results:
+
+If peak CPU < 30% → downsize (save money)
+If peak CPU > 70% → upsize (prevent throttling)
+If peak memory > 80% → upsize (prevent OOM)
+
+Machine sizes:
+  0.25 vCPU / 512 MB  → Simple APIs, < 50 req/s
+  0.5 vCPU / 1 GB     → Standard apps, < 200 req/s
+  1 vCPU / 2 GB       → Moderate traffic, < 500 req/s
+  2 vCPU / 4 GB       → High traffic, < 1000 req/s
+  4 vCPU / 8-16 GB    → Compute-heavy, > 1000 req/s
+
+To change:
+  Deployment Settings > Machine Size > Select new tier
+  Redeployment required to apply
+```
+
+### Step 5: Database Connection Scaling
 ```typescript
-import { Pool } from 'generic-pool';
+// Tune PostgreSQL pool for Replit container limits
+import { Pool } from 'pg';
 
-const replitPool = Pool.create({
-  create: async () => {
-    return new ReplitClient({
-      apiKey: process.env.REPLIT_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,  # 30000: 30 seconds in ms
+// Small container (0.25 vCPU / 512 MB)
+const smallPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+  max: 3,                    // Few connections
+  idleTimeoutMillis: 10000,  // Release quickly
 });
 
-async function withReplitClient<T>(
-  fn: (client: ReplitClient) => Promise<T>
-): Promise<T> {
-  const client = await replitPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    replitPool.release(client);
-  }
+// Medium container (1 vCPU / 2 GB)
+const mediumPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+  max: 10,                   // More headroom
+  idleTimeoutMillis: 30000,
+});
+
+// Large container (4 vCPU / 8 GB)
+const largePool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+  max: 20,
+  idleTimeoutMillis: 60000,
+});
+
+// Dynamic pool sizing based on container resources
+function createOptimalPool(): Pool {
+  const memMB = Math.round(process.memoryUsage().rss / 1024 / 1024);
+  const maxConns = memMB < 256 ? 3 : memMB < 1024 ? 10 : 20;
+
+  return new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+    max: maxConns,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+  });
 }
 ```
 
-## Capacity Planning
-
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
-
-### Capacity Calculation
-```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
-
-function estimateReplitCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
-
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
-```
-
-## Benchmark Results Template
-
+### Step 6: Capacity Planning Template
 ```markdown
-## Replit Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+## Capacity Assessment
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
+### Current State
+- Deployment type: [Autoscale / Reserved VM]
+- Machine size: [vCPU / RAM]
+- Peak RPS: [from load test]
+- P95 latency: [from load test]
+- Cold start time: [Autoscale only]
 
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
+### Load Test Results
+| Metric | Idle | Normal (20 VU) | Peak (50 VU) |
+|--------|------|----------------|--------------|
+| RPS | 0 | X | Y |
+| P50 latency | - | Xms | Yms |
+| P95 latency | - | Xms | Yms |
+| Error rate | - | X% | Y% |
+| Memory | XMB | XMB | XMB |
 
 ### Recommendations
-- [Scaling recommendation]
+1. [Scale action based on results]
+2. [Database pool adjustment]
+3. [Cold start mitigation]
+4. [Cost optimization]
+
+### Scaling Triggers
+- CPU > 70% sustained: upgrade VM
+- Memory > 80%: upgrade VM or fix leak
+- P95 > 2s: add caching or optimize queries
+- Error rate > 1%: investigate root cause
 ```
-
-## Instructions
-
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
-
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
-
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s replit-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateReplitCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-set -euo pipefail
-kubectl scale deployment replit-integration --replicas=5
-kubectl get hpa replit-integration-hpa
-```
+| Cold start > 15s | Heavy startup | Pre-compile, lazy imports |
+| Connection pool exhausted | Too many concurrent requests | Increase pool.max or add queueing |
+| OOM during load test | Memory leak under load | Profile with /debug/memory |
+| Inconsistent results | Autoscale scaling up | Warm up before measuring |
 
 ## Resources
+- [Autoscale Deployments](https://blog.replit.com/autoscale)
+- [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
 - [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Replit Rate Limits](https://docs.replit.com/rate-limits)
+- [autocannon](https://github.com/mcollina/autocannon)
 
 ## Next Steps
 For reliability patterns, see `replit-reliability-patterns`.

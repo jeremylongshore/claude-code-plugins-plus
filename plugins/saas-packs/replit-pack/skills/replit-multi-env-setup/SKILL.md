@@ -1,203 +1,258 @@
 ---
 name: replit-multi-env-setup
 description: |
-  Configure Replit across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  Configure Replit dev/staging/production environments with separate databases, secrets, and deployment tiers.
+  Use when setting up multi-environment deployments, managing per-environment secrets,
   or implementing environment-specific Replit configurations.
   Trigger with phrases like "replit environments", "replit staging",
-  "replit dev prod", "replit environment setup", "replit config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  "replit dev prod", "replit environment setup", "replit separate databases".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, deployment]
+tags: [saas, replit, deployment, environments]
 
 ---
 # Replit Multi-Environment Setup
 
 ## Overview
-Configure Replit across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
+Configure development, staging, and production environments on Replit. Leverages Replit's built-in dev/prod database separation, environment-specific secrets, and deployment types. Covers the Replit-native approach (single Repl, dual databases) and the multi-Repl approach (separate Repls per environment).
 
 ## Prerequisites
-- Separate Replit API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+- Replit Core or Teams plan (deployment access)
+- PostgreSQL provisioned in Database pane
+- Understanding of Replit Secrets
 
 ## Environment Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+### Approach 1: Single Repl, Dual Databases (Recommended)
+Replit natively provides separate development and production databases:
+```markdown
+Workspace "Run" button → Development database
+Deployed app (.replit.app) → Production database
+
+Both use the same DATABASE_URL env var — Replit routes automatically.
+No code changes needed between environments.
+```
+
+### Approach 2: Multi-Repl (Staging + Production)
+For teams that need a staging environment:
+```markdown
+Repl 1: my-app-staging → Autoscale deployment → staging.replit.app
+Repl 2: my-app-prod   → Reserved VM deployment → app.example.com
+
+Each Repl has its own:
+- Secrets (different API keys per environment)
+- PostgreSQL database (separate data)
+- Deployment configuration
+- GitHub branch (staging → staging, main → production)
+```
 
 ## Instructions
 
-### Step 1: Configuration Structure
-```
-config/
-  replit/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
-
-### Step 2: Base Configuration
+### Step 1: Environment Detection
 ```typescript
-// config/replit/base.ts
-export const baseConfig = {
-  timeout: 30000,  # 30000: 30 seconds in ms
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,  # 300: timeout: 5 minutes
-  },
-};
-```
-
-### Step 3: Environment-Specific Configs
-```typescript
-// config/replit/development.ts
-import { baseConfig } from "./base";
-
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.REPLIT_TOKEN_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
-
-// config/replit/staging.ts
-import { baseConfig } from "./base";
-
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.REPLIT_TOKEN_STAGING,
-  debug: false,
-};
-
-// config/replit/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.REPLIT_TOKEN_PROD,
-  debug: false,
-  timeout: 60000,  # 60000: 1 minute in ms
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },  # 600: timeout: 10 minutes
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/replit/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
+// src/config/environment.ts
+type Environment = 'development' | 'staging' | 'production';
 
 export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getReplitConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config.apiKey) {
-    throw new Error(`REPLIT_TOKEN not set for environment: ${env}`);
+  // Replit deployment context
+  if (process.env.REPL_DEPLOYMENT) {
+    // Check if this is the staging Repl
+    if (process.env.REPL_SLUG?.includes('staging')) return 'staging';
+    return 'production';
   }
 
-  return { ...config, environment: env };
+  // Workspace "Run" context
+  if (process.env.REPL_SLUG) return 'development';
+
+  // Fallback to NODE_ENV
+  const env = process.env.NODE_ENV || 'development';
+  if (env === 'production') return 'production';
+  if (env === 'staging') return 'staging';
+  return 'development';
+}
+
+export const ENV = detectEnvironment();
+export const IS_PROD = ENV === 'production';
+```
+
+### Step 2: Environment-Specific Configuration
+```typescript
+// src/config/index.ts
+import { ENV, IS_PROD } from './environment';
+
+const configs = {
+  development: {
+    logLevel: 'debug',
+    corsOrigins: ['*'],
+    rateLimit: { windowMs: 60000, max: 1000 },
+    cache: { ttlMs: 5000 },
+    features: { debugEndpoints: true },
+  },
+  staging: {
+    logLevel: 'info',
+    corsOrigins: ['https://staging.example.com'],
+    rateLimit: { windowMs: 60000, max: 200 },
+    cache: { ttlMs: 30000 },
+    features: { debugEndpoints: true },
+  },
+  production: {
+    logLevel: 'warn',
+    corsOrigins: ['https://app.example.com'],
+    rateLimit: { windowMs: 60000, max: 100 },
+    cache: { ttlMs: 300000 },
+    features: { debugEndpoints: false },
+  },
+};
+
+export const config = {
+  env: ENV,
+  port: parseInt(process.env.PORT || '3000'),
+  ...configs[ENV],
+  db: {
+    // DATABASE_URL auto-switches between dev and prod on Replit
+    url: process.env.DATABASE_URL,
+  },
+};
+
+// Validate production secrets
+if (IS_PROD) {
+  const required = ['DATABASE_URL', 'JWT_SECRET'];
+  const missing = required.filter(k => !process.env[k]);
+  if (missing.length) {
+    console.error(`FATAL: Missing production secrets: ${missing.join(', ')}`);
+    process.exit(1);
+  }
 }
 ```
 
-### Step 5: Secret Management
-```bash
-# Local development (.env.local - git-ignored)
-REPLIT_TOKEN_DEV=your-dev-key
+### Step 3: Separate Secrets Per Environment
+```markdown
+For Single Repl (dev/prod separation):
+- All secrets set once in Secrets tab
+- DATABASE_URL auto-switches (Replit manages)
+- Same JWT_SECRET for both (or use REPL_IDENTITY for dev)
 
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add REPLIT_TOKEN_STAGING and REPLIT_TOKEN_PROD
+For Multi-Repl (staging + prod):
+- Each Repl has its own Secrets tab
+- staging Repl: JWT_SECRET=staging-secret, API_KEY=test-key
+- production Repl: JWT_SECRET=prod-secret, API_KEY=live-key
 
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name replit/production/api-key \
-  --secret-string "your-prod-key"
+Account-level secrets (shared across all Repls):
+- Settings > Secrets > Account secrets
+- Useful for: monitoring tokens, shared infrastructure keys
+```
 
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create replit-api-key-prod --data-file=-
+### Step 4: GitHub Branch Strategy (Multi-Repl)
+```markdown
+Repository setup:
+- main branch → connected to production Repl
+- staging branch → connected to staging Repl
+- feature branches → PR to staging first
+
+Workflow:
+1. Feature branch → PR to staging
+2. Tests pass + review → merge to staging
+3. Staging Repl auto-deploys → verify staging
+4. Staging → PR to main
+5. Merge → production Repl auto-deploys
 ```
 
 ```yaml
 # .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      REPLIT_TOKEN_STAGING: ${{ secrets.REPLIT_TOKEN_STAGING }}
+name: Deploy Pipeline
 
-  deploy-production:
-    environment: production
-    env:
-      REPLIT_TOKEN_PROD: ${{ secrets.REPLIT_TOKEN_PROD }}
+on:
+  push:
+    branches: [staging, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm test
+
+  verify-staging:
+    if: github.ref == 'refs/heads/staging'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Replit deploy
+        run: sleep 60
+      - name: Health check staging
+        run: curl -sf ${{ secrets.STAGING_URL }}/health
+
+  verify-production:
+    if: github.ref == 'refs/heads/main'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Replit deploy
+        run: sleep 60
+      - name: Health check production
+        run: curl -sf ${{ secrets.PRODUCTION_URL }}/health
+```
+
+### Step 5: Database Migration Between Environments
+```typescript
+// scripts/promote-data.ts — Copy staging data to production (carefully!)
+import { Pool } from 'pg';
+
+const staging = new Pool({ connectionString: process.env.STAGING_DATABASE_URL });
+const production = new Pool({ connectionString: process.env.PRODUCTION_DATABASE_URL });
+
+async function promoteConfig() {
+  // Only promote configuration/reference data, never user data
+  const { rows: configs } = await staging.query('SELECT * FROM feature_flags');
+
+  for (const config of configs) {
+    await production.query(
+      `INSERT INTO feature_flags (key, value, updated_at)
+       VALUES ($1, $2, NOW())
+       ON CONFLICT (key) DO UPDATE SET value = $2, updated_at = NOW()`,
+      [config.key, config.value]
+    );
+  }
+
+  console.log(`Promoted ${configs.length} feature flags to production`);
+}
+```
+
+### Step 6: Environment Indicator in UI
+```typescript
+// Show environment badge in development/staging
+app.use((req, res, next) => {
+  if (!IS_PROD) {
+    res.setHeader('X-Environment', ENV);
+  }
+  next();
+});
+
+app.get('/api/status', (req, res) => {
+  res.json({
+    environment: ENV,
+    version: process.env.npm_package_version,
+    repl: process.env.REPL_SLUG,
+  });
+});
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
-| Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const config = getReplitConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
-```
-
-### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "REPLIT_TOKEN is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getReplitConfig());
-```
+| Wrong database in prod | Manual DATABASE_URL override | Let Replit manage DB routing |
+| Staging secrets in prod | Copied secrets incorrectly | Each Repl has independent Secrets |
+| GitHub sync conflict | Both Repls on same branch | Use separate branches per Repl |
+| Config validation fails | Missing env-specific secret | Add secret to correct Repl's Secrets tab |
 
 ## Resources
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
-- [Replit Secrets](https://docs.replit.com/programming-ide/storing-sensitive-information)
+- [Replit Secrets](https://docs.replit.com/replit-workspace/workspace-features/secrets)
+- [Deploying from GitHub](https://docs.replit.com/hosting/deployments/deploying-a-github-repository)
+- [PostgreSQL Dev/Prod Databases](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
 
 ## Next Steps
-For deployment, see `replit-deploy-integration`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+For monitoring, see `replit-observability`. For deployment, see `replit-deploy-integration`.

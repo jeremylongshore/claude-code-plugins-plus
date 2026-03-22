@@ -1,121 +1,217 @@
 ---
 name: replit-upgrade-migration
 description: |
-  Analyze, plan, and execute Replit SDK upgrades with breaking change detection.
-  Use when upgrading Replit SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade replit", "replit migration",
-  "replit breaking changes", "update replit SDK", "analyze replit version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Upgrade Replit Nix channels, migrate between database types, and update deployment targets.
+  Use when upgrading Nix channel versions, migrating from Replit DB to PostgreSQL,
+  switching deployment types, or updating system dependencies.
+  Trigger with phrases like "upgrade replit", "replit nix upgrade",
+  "migrate replit database", "replit version update", "replit channel update".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, api, migration]
+tags: [saas, replit, migration, nix, upgrade]
 
 ---
 # Replit Upgrade & Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`cat .replit 2>/dev/null | head -15 || echo 'No .replit found'`
+!`cat replit.nix 2>/dev/null || echo 'No replit.nix found'`
 
 ## Overview
-Guide for upgrading Replit SDK versions and handling breaking changes.
+Guide for upgrading Replit environments: Nix channel updates, package version bumps, database migrations (KV to PostgreSQL, dev to prod), deployment type changes, and Node.js/Python runtime upgrades.
 
 ## Prerequisites
-- Current Replit SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Existing Replit App with `.replit` and `replit.nix`
+- Git version control (recommended)
+- Backup of critical data before migration
 
 ## Instructions
 
-### Step 1: Check Current Version
+### Step 1: Upgrade Nix Channel
+Nix channels determine available package versions. Upgrade to get newer runtimes.
+
+```toml
+# .replit — before
+[nix]
+channel = "stable-23_05"
+
+# .replit — after (2024-2025 stable)
+[nix]
+channel = "stable-24_05"
+```
+
+After changing the channel, reload the shell (exit Shell tab and re-enter). Then verify:
 ```bash
-set -euo pipefail
-npm list @replit/sdk
-npm view @replit/sdk version
+node --version     # Should show newer version
+python3 --version  # Should show newer version
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/replit/sdk/releases
-```
+### Step 2: Upgrade Node.js or Python Runtime
+```nix
+# replit.nix — update runtime packages
 
-### Step 3: Create Upgrade Branch
-```bash
-set -euo pipefail
-git checkout -b upgrade/replit-sdk-vX.Y.Z
-npm install @replit/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@replit/sdk';
-
-// After (v2.x)
-import { ReplitClient } from '@replit/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new ReplitClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-set -euo pipefail
-npm install @replit/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Replit]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
+# Before (Node 18)
+{ pkgs }: {
+  deps = [
+    pkgs.nodejs-18_x
+    pkgs.nodePackages.typescript
+  ];
 }
 
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+# After (Node 20)
+{ pkgs }: {
+  deps = [
+    pkgs.nodejs-20_x
+    pkgs.nodePackages.typescript-language-server
+    pkgs.nodePackages.pnpm
+  ];
+}
 ```
 
+```toml
+# .replit — update modules to match
+modules = ["nodejs-20:v8-20230920-bd784b9"]
+```
+
+**Verify after upgrade:**
+```bash
+node --version         # v20.x.x
+npm --version          # 10.x.x
+npm test               # Run tests to catch breaking changes
+```
+
+### Step 3: Migrate from Replit KV to PostgreSQL
+When your app outgrows the 50 MiB KV database limit:
+
+```typescript
+// scripts/migrate-kv-to-postgres.ts
+import Database from '@replit/database';
+import { Pool } from 'pg';
+
+const kv = new Database();
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
+async function migrate() {
+  // Create table
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS kv_data (
+      key TEXT PRIMARY KEY,
+      value JSONB NOT NULL,
+      migrated_at TIMESTAMPTZ DEFAULT NOW()
+    )
+  `);
+
+  // Read all KV entries
+  const keys = await kv.list();
+  console.log(`Migrating ${keys.length} keys...`);
+
+  let migrated = 0;
+  let errors = 0;
+
+  for (const key of keys) {
+    try {
+      const value = await kv.get(key);
+      await pool.query(
+        'INSERT INTO kv_data (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
+        [key, JSON.stringify(value)]
+      );
+      migrated++;
+    } catch (err: any) {
+      console.error(`Failed to migrate key "${key}": ${err.message}`);
+      errors++;
+    }
+  }
+
+  console.log(`Migration complete: ${migrated} migrated, ${errors} errors`);
+}
+
+migrate().then(() => pool.end());
+```
+
+### Step 4: Switch Deployment Type
+```toml
+# .replit — change deployment target
+
+# From Autoscale (scales to zero):
+[deployment]
+deploymentTarget = "autoscale"
+run = ["sh", "-c", "npm start"]
+
+# To Reserved VM (always-on):
+[deployment]
+deploymentTarget = "cloudrun"
+run = ["sh", "-c", "npm start"]
+
+# To Static (frontend only):
+[deployment]
+deploymentTarget = "static"
+publicDir = "dist"
+```
+
+After changing: click "Deploy" to create a new deployment with the new type.
+
+### Step 5: Migrate Large Files to Object Storage
+```typescript
+// Move large values from KV to Object Storage
+import Database from '@replit/database';
+import { Client } from '@replit/object-storage';
+
+const kv = new Database();
+const storage = new Client();
+
+async function migrateToObjectStorage(prefix: string) {
+  const keys = await kv.list(prefix);
+
+  for (const key of keys) {
+    const value = await kv.get(key);
+    const content = typeof value === 'string' ? value : JSON.stringify(value);
+
+    await storage.uploadFromText(`migrated/${key}`, content);
+    await kv.delete(key);
+    console.log(`Migrated: ${key}`);
+  }
+}
+```
+
+### Step 6: Pre-Migration Checklist
+```markdown
+## Before Any Upgrade
+- [ ] Git commit current working state
+- [ ] Back up Replit KV data: export all keys to JSON file
+- [ ] Back up PostgreSQL: pg_dump or Replit snapshot
+- [ ] Note current deployment URL and settings
+- [ ] Run full test suite: npm test
+- [ ] Document current .replit and replit.nix content
+
+## After Upgrade
+- [ ] Reload shell (exit and re-enter Shell tab)
+- [ ] Verify runtime versions
+- [ ] npm install / pip install (rebuild packages for new runtime)
+- [ ] Run full test suite
+- [ ] Test in Workspace Webview
+- [ ] Deploy and verify production health check
+- [ ] Monitor for 24 hours for regressions
+```
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Package not found` after channel upgrade | Package renamed or removed | Search Nix packages: `nix-env -qaP \| grep name` |
+| `node-gyp` build failure | Native addon incompatible | Update the addon or add Nix system deps |
+| PostgreSQL connection refused | Pool not using SSL | Add `ssl: { rejectUnauthorized: false }` |
+| Old deployment still running | Didn't redeploy | Click "Deploy" to apply new config |
+
 ## Resources
-- [Replit Changelog](https://github.com/replit/sdk/releases)
-- [Replit Migration Guide](https://docs.replit.com/migration)
+- [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
+- [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
+- [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
+- [Deployment Types](https://docs.replit.com/hosting/deployments)
 
 ## Next Steps
 For CI integration during upgrades, see `replit-ci-integration`.

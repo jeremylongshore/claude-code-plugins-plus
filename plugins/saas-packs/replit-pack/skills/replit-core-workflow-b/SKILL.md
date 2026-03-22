@@ -1,80 +1,192 @@
 ---
 name: replit-core-workflow-b
 description: |
-  Execute Replit secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "replit secondary workflow",
-  "secondary task with replit".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Manage Replit Teams, member permissions, deployment promotion, and bulk Repl admin.
+  Use when managing team access, configuring deployment environments,
+  auditing Repls, or administering organization settings.
+  Trigger with phrases like "replit team management", "replit admin",
+  "replit permissions", "replit bulk operations", "manage replit members".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, workflow]
+tags: [saas, replit, workflow, admin, teams]
 
 ---
-# Replit Core Workflow B
+# Replit Core Workflow B — Teams & Admin
 
 ## Overview
-Secondary workflow for Replit. Complements the Repl creation and execution workflow by focusing on collaboration management, deployment configuration, and bulk Repl administration. Use this skill when you need to manage team member access to Repls, configure custom domains for deployed projects, migrate Repls between teams, or audit and clean up stale Repls across an organization.
+Secondary workflow for Replit: team member management, role assignment, deployment promotion (dev to production), custom domain setup, and organizational audit. Complements the app-building workflow in `replit-core-workflow-a`.
 
 ## Prerequisites
-- Completed `replit-install-auth` setup
-- Familiarity with `replit-core-workflow-a`
-- Valid API credentials configured
+- Replit Teams or Enterprise plan
+- Organization Owner or Admin role
+- Team API token stored in `REPLIT_TOKEN`
 
 ## Instructions
 
-### Step 1: Setup
-Identify the administrative task to perform: collaboration management, deployment configuration, or bulk cleanup. For collaboration changes, compile the list of team members and the permission levels (viewer, editor, owner) they should hold on each Repl. For deployment configuration, gather the custom domain, environment variables, and always-on settings required for production hosting.
-
+### Step 1: Team Member Management
 ```typescript
-// Step 1 implementation
+// src/admin/team-manager.ts
+interface TeamMember {
+  username: string;
+  email: string;
+  role: 'owner' | 'admin' | 'member';
+  lastActive: string;
+}
+
+async function listMembers(teamId: string): Promise<TeamMember[]> {
+  const res = await fetch(`https://replit.com/api/v1/teams/${teamId}/members`, {
+    headers: { Authorization: `Bearer ${process.env.REPLIT_TOKEN}` },
+  });
+  return res.json();
+}
+
+async function inviteMember(teamId: string, email: string, role: string) {
+  return fetch(`https://replit.com/api/v1/teams/${teamId}/members`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.REPLIT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, role }),
+  });
+}
+
+async function removeMember(teamId: string, username: string) {
+  return fetch(`https://replit.com/api/v1/teams/${teamId}/members/${username}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${process.env.REPLIT_TOKEN}` },
+  });
+}
 ```
 
-### Step 2: Process
-Apply the configuration changes via the Replit API. For permission updates, patch each Repl's collaboration settings with the new access list. For deployment configuration, update the Repl's hosting settings and verify the custom domain resolves correctly. For bulk cleanup, list all Repls matching your stale criteria and batch-delete or archive them to reclaim quota.
-
+### Step 2: Seat Audit
 ```typescript
-// Step 2 implementation
+// Identify inactive members for seat optimization
+async function auditSeats(teamId: string) {
+  const members = await listMembers(teamId);
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+  const audit = {
+    total: members.length,
+    active: members.filter(m => new Date(m.lastActive) > thirtyDaysAgo),
+    inactive: members.filter(m => new Date(m.lastActive) <= thirtyDaysAgo),
+    costPerSeat: 25, // USD/month for Teams
+  };
+
+  console.log(`Active: ${audit.active.length}, Inactive: ${audit.inactive.length}`);
+  console.log(`Potential savings: $${audit.inactive.length * audit.costPerSeat}/month`);
+
+  return audit;
+}
 ```
 
-### Step 3: Complete
-Confirm that all changes took effect by querying the Repl metadata and verifying the updated state. Notify affected team members of permission changes. Document the administrative actions taken along with the rationale, particularly for deletions, so the audit trail is clear if questions arise later.
-
+### Step 3: Deployment Promotion
 ```typescript
-// Step 3 implementation
+// Promote from development to production deployment
+async function promoteDeployment(replId: string) {
+  // Step 1: Verify dev deployment is healthy
+  const devHealth = await fetch(`https://${replId}.replit.dev/health`);
+  if (!devHealth.ok) {
+    throw new Error('Development deployment not healthy. Fix before promoting.');
+  }
+
+  // Step 2: Trigger production deployment
+  const res = await fetch(`https://replit.com/api/v1/repls/${replId}/deploy`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.REPLIT_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      type: 'autoscale', // or 'reserved-vm'
+    }),
+  });
+
+  const deployment = await res.json();
+  console.log(`Production URL: ${deployment.url}`);
+
+  // Step 3: Verify production health
+  await new Promise(r => setTimeout(r, 10000)); // Wait for deploy
+  const prodHealth = await fetch(`${deployment.url}/health`);
+  if (!prodHealth.ok) {
+    console.error('Production health check failed. Consider rollback.');
+  }
+
+  return deployment;
+}
 ```
 
-## Output
-- Completed Core Workflow B execution
-- Updated Repl configurations, permissions, or deployment settings
-- Cleanup report listing archived or deleted Repls
-- Success confirmation or error details
+### Step 4: Custom Domain Configuration
+```markdown
+1. Go to Deployment Settings > Custom Domain
+2. Enter your domain: app.example.com
+3. Add DNS records at your registrar:
+   - CNAME: app -> your-repl-slug.replit.app
+4. Wait for SSL certificate auto-provisioning (1-5 minutes)
+5. Verify: curl -I https://app.example.com
+
+For domains purchased through Replit:
+- MX records supported for custom email services
+- DNS managed in Replit dashboard
+```
+
+### Step 5: Bulk Repl Audit
+```typescript
+// Audit all team Repls for compliance
+async function auditRepls(teamId: string) {
+  const res = await fetch(`https://replit.com/api/v1/teams/${teamId}/repls`, {
+    headers: { Authorization: `Bearer ${process.env.REPLIT_TOKEN}` },
+  });
+  const repls = await res.json();
+
+  const report = {
+    total: repls.length,
+    withDeployments: repls.filter((r: any) => r.deployment).length,
+    publicRepls: repls.filter((r: any) => r.isPublic).length,
+    staleRepls: repls.filter((r: any) => {
+      const lastEdit = new Date(r.lastEdited);
+      return Date.now() - lastEdit.getTime() > 90 * 24 * 60 * 60 * 1000;
+    }),
+  };
+
+  console.log('Repl Audit Report:');
+  console.log(`  Total: ${report.total}`);
+  console.log(`  Deployed: ${report.withDeployments}`);
+  console.log(`  Public: ${report.publicRepls} (review for secrets exposure)`);
+  console.log(`  Stale (>90 days): ${report.staleRepls.length}`);
+
+  return report;
+}
+```
+
+### Step 6: Activity Monitoring
+```bash
+# Review recent team activity
+curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
+  -H "Authorization: Bearer $REPLIT_TOKEN" | \
+  jq '.events[] | {user, action, resource, timestamp}'
+
+# Export member activity CSV
+curl "https://replit.com/api/v1/teams/TEAM_ID/members" \
+  -H "Authorization: Bearer $REPLIT_TOKEN" | \
+  jq -r '.[] | [.username, .email, .role, .lastActive] | @csv' > team-activity.csv
+```
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 403 on member invite | Not an admin | Requires Owner or Admin role |
+| Seat limit exceeded | Plan capacity reached | Remove inactive or upgrade plan |
+| Deploy promotion fails | Dev not healthy | Fix dev deployment first |
+| DNS not resolving | Wrong CNAME record | Verify DNS points to `.replit.app` |
 
 ## Resources
-- [Replit Documentation](https://docs.replit.com)
-- [Replit API Reference](https://docs.replit.com/api)
+- [Replit Teams](https://docs.replit.com/teams/identity-and-access-management/groups-and-permissions)
+- [Replit Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
+- [Custom Domains](https://docs.replit.com/hosting/custom-domains)
 
 ## Next Steps
 For common errors, see `replit-common-errors`.

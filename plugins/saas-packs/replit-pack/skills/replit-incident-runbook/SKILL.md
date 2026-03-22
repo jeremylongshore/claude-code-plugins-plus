@@ -1,128 +1,191 @@
 ---
 name: replit-incident-runbook
 description: |
-  Execute Replit incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Replit-related outages, investigating errors,
-  or running post-incident reviews for Replit integration failures.
+  Execute Replit incident response: triage deployment failures, database issues, and platform outages.
+  Use when responding to Replit-related outages, investigating deployment crashes,
+  or running post-incident reviews for Replit app failures.
   Trigger with phrases like "replit incident", "replit outage",
-  "replit down", "replit on-call", "replit emergency", "replit broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "replit down", "replit emergency", "replit broken", "replit crash".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, incident-response]
+tags: [saas, replit, incident-response, debugging]
 
 ---
 # Replit Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Replit-related outages.
+Rapid incident response for Replit deployment failures, database issues, and platform outages. Covers triage, diagnosis, remediation, rollback, and communication.
 
 ## Prerequisites
-- Access to Replit dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+- Access to Replit Workspace and Deployment settings
+- Deployment URL for health checks
+- Communication channel (Slack, email)
+- Rollback awareness (Deployment History)
 
 ## Severity Levels
-
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Replit API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| P1 | Complete outage | < 15 min | App returns 5xx, DB down |
+| P2 | Degraded service | < 1 hour | Slow responses, intermittent errors |
+| P3 | Minor impact | < 4 hours | Non-critical feature broken |
+| P4 | No user impact | Next business day | Monitoring gap |
 
-## Quick Triage
+## Quick Triage (First 5 Minutes)
 
 ```bash
 set -euo pipefail
-# 1. Check Replit status
-curl -s https://status.replit.com | jq
+DEPLOY_URL="https://your-app.replit.app"
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.replit'
+echo "=== TRIAGE ==="
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(replit_errors_total[5m])  # 9090: Prometheus port
+# 1. Check Replit platform status
+echo -n "Replit Status: "
+curl -s https://status.replit.com/api/v2/summary.json | \
+  python3 -c "import sys,json;print(json.load(sys.stdin)['status']['description'])" 2>/dev/null || \
+  echo "Check https://status.replit.com"
 
-# 4. Recent error logs
-kubectl logs -l app=replit-integration --since=5m | grep -i error | tail -20
+# 2. Check your deployment health
+echo -n "App Health: "
+curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)" "$DEPLOY_URL/health" 2>/dev/null || echo "UNREACHABLE"
+echo ""
+
+# 3. Get health details
+echo "Health Response:"
+curl -s "$DEPLOY_URL/health" 2>/dev/null | python3 -m json.tool 2>/dev/null || echo "No response"
+
+# 4. Check if it's a cold start issue (Autoscale)
+echo -n "Second request: "
+curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)\n" "$DEPLOY_URL/health"
 ```
 
 ## Decision Tree
 
 ```
-Replit API returning errors?
-├─ YES: Is status.replit.com showing incident?
-│   ├─ YES → Wait for Replit to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+App not responding?
+├─ YES: Is status.replit.com reporting an incident?
+│   ├─ YES → Platform issue. Wait for Replit. Communicate to users.
+│   └─ NO → Your deployment issue. Continue below.
+│
+│   Can you access the Replit Workspace?
+│   ├─ YES → Check deployment logs:
+│   │   ├─ Build error → Fix code, redeploy
+│   │   ├─ Runtime crash → Check logs, fix, redeploy
+│   │   └─ Secret missing → Add to Secrets tab, redeploy
+│   └─ NO → Network/browser issue. Try incognito window.
+│
+└─ App responds but with errors?
+    ├─ 5xx errors → Check logs for crash/exception
+    ├─ Slow responses → Check database, cold start, memory
+    └─ Auth not working → Verify deployment domain, not dev URL
 ```
 
-## Immediate Actions by Error Type
+## Remediation by Error Type
 
-### 401/403 - Authentication
-```bash
-set -euo pipefail
-# Verify API key is set
-kubectl get secret replit-secrets -o jsonpath='{.data.api-key}' | base64 -d
+### Deployment Crash (5xx / App Unreachable)
+```markdown
+1. Open Replit Workspace
+2. Go to Deployment Settings > Logs
+3. Look for the crash reason:
+   - "Error: Cannot find module..." → Missing dependency
+   - "FATAL: Missing secrets..." → Add to Secrets tab
+   - "EADDRINUSE" → Port conflict in .replit config
+   - "JavaScript heap out of memory" → Increase VM size or fix memory leak
 
-# Check if key was rotated
-# → Verify in Replit dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic replit-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/replit-integration
+4. Fix the issue in code
+5. Click "Deploy" to redeploy
+6. If fix is unclear, ROLLBACK:
+   - Deployment Settings > History
+   - Click "Rollback" on last known-good version
 ```
 
-### 429 - Rate Limited
+### Database Connection Failure
+```markdown
+1. Check database status in Database pane
+2. Verify DATABASE_URL is set in Secrets
+3. Test connection:
+```
 ```bash
-set -euo pipefail
-# Check rate limit headers
-curl -v https://api.replit.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/replit-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Replit for limit increase
+# From Replit Shell
+node -e "
+const {Pool} = require('pg');
+const pool = new Pool({connectionString: process.env.DATABASE_URL, ssl:{rejectUnauthorized:false}});
+pool.query('SELECT NOW()').then(r => console.log('OK:', r.rows[0])).catch(e => console.error('FAIL:', e.message)).finally(() => pool.end());
+"
+```
+```markdown
+4. If connection fails:
+   - Check if PostgreSQL is provisioned (Database pane)
+   - Try creating a new database
+   - Check for connection pool exhaustion (max connections)
 ```
 
-### 500/503 - Replit Errors
-```bash
-set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/replit-integration REPLIT_FALLBACK=true
+### Cold Start Too Slow (Autoscale)
+```markdown
+If cold starts exceed acceptable latency:
+1. Check deployment type: Autoscale scales to zero
+2. Options:
+   a. Switch to Reserved VM (always-on, no cold starts)
+   b. Set up external keep-alive (ping /health every 4 min)
+   c. Optimize startup: lazy imports, defer DB connection
+3. To switch:
+   - Update .replit: deploymentTarget = "cloudrun"
+   - Redeploy
+```
 
-# Notify users of degraded service
-# Update status page
+### Secrets Missing After Deploy
+```markdown
+1. Open Secrets tab (lock icon in sidebar)
+2. Verify all required secrets are present
+3. Check Deployment Settings > Environment Variables
+4. Secrets should auto-sync (2025+), but if not:
+   - Remove and re-add the secret
+   - Redeploy
+5. For Account-level secrets:
+   - Account Settings > Secrets
+   - These apply to ALL Repls
+```
 
-# Monitor Replit status for resolution
+## Rollback Procedure
+```markdown
+Replit supports one-click rollback to any previous deployment:
+
+1. Deployment Settings > History
+2. Find the last successful deployment
+3. Click "Rollback to this version"
+4. Verify health endpoint
+5. Investigate root cause before redeploying fix
+
+Rollback restores:
+- Code at that deployment's commit
+- Deployment configuration at that time
+- Does NOT rollback database changes
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
 ```
-🔴 P1 INCIDENT: Replit Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
+P[1-4] INCIDENT: [App Name] on Replit
+Status: INVESTIGATING / IDENTIFIED / MONITORING / RESOLVED
+Impact: [What users are experiencing]
+Cause: [If known]
+Action: [What we're doing]
+ETA: [When we expect resolution]
 Next update: [Time]
-Incident commander: @[name]
 ```
 
 ### External (Status Page)
 ```
-Replit Integration Issue
+[App Name] Service Disruption
 
-We're experiencing issues with our Replit integration.
-Some users may experience [specific impact].
+We are experiencing issues with [specific feature/service].
+[Describe user impact].
 
-We're actively investigating and will provide updates.
+We have identified the cause and are working on a fix.
+Estimated resolution: [time].
 
 Last updated: [timestamp]
 ```
@@ -132,80 +195,59 @@ Last updated: [timestamp]
 ### Evidence Collection
 ```bash
 set -euo pipefail
-# Generate debug bundle
-./scripts/replit-debug-bundle.sh
+# Capture deployment logs
+# Go to Deployment Settings > Logs > Copy relevant entries
 
-# Export relevant logs
-kubectl logs -l app=replit-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=replit_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
+# Capture timeline
+echo "Timeline of events:" > incident-report.md
+echo "- [time] Issue detected" >> incident-report.md
+echo "- [time] Investigation started" >> incident-report.md
+echo "- [time] Root cause identified" >> incident-report.md
+echo "- [time] Fix deployed / rollback executed" >> incident-report.md
+echo "- [time] Service restored" >> incident-report.md
 ```
 
 ### Postmortem Template
 ```markdown
-## Incident: Replit [Error Type]
+## Incident: [Title]
 **Date:** YYYY-MM-DD
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
 
 ### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+[1-2 sentence description of what happened]
 
 ### Root Cause
 [Technical explanation]
 
+### Timeline
+- HH:MM — First alert
+- HH:MM — Investigation started
+- HH:MM — Root cause found
+- HH:MM — Fix deployed / rollback
+- HH:MM — Service restored
+
 ### Impact
-- Users affected: N
-- Revenue impact: $X
+- Users affected: [N]
+- Downtime: [duration]
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Prevention measure] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Replit-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.replit.status' || echo "UNHEALTHY"
-```
+| Can't access Workspace | Replit outage | Use status.replit.com, wait |
+| Rollback not available | No previous deployments | Fix forward, deploy fix |
+| Logs too short | Container restarted | Set up external log aggregator |
+| DB rollback needed | Bad migration | Restore from Replit DB snapshot |
 
 ## Resources
-- [Replit Status Page](https://status.replit.com)
-- [Replit Support](https://support.replit.com)
+- [Replit Status](https://status.replit.com)
+- [Deployment Rollbacks](https://blog.replit.com/introducing-deployment-rollbacks)
+- [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
+- [Replit Support](https://replit.com/support)
 
 ## Next Steps
-For data handling, see `replit-data-handling`.
+For data handling patterns, see `replit-data-handling`.
