@@ -2,6 +2,7 @@
 name: anthropic-local-dev-loop
 description: |
   Set up a fast local development loop for building with the Anthropic API —
+  Use when working with local-dev-loop patterns.
   hot reload, cost-saving tips, and test patterns.
   Trigger with "anthropic dev setup", "claude local development",
   "anthropic test locally", "claude dev workflow".
@@ -19,8 +20,9 @@ tags: [saas, anthropic, claude, development, testing]
 Set up a fast, cheap development workflow for building with Claude.
 
 ## Prerequisites
-- Completed `anthropic-local-dev-install-auth` setup
-- Valid API credentials configured
+- Node.js 18+ or Python 3.10+
+- `ANTHROPIC_API_KEY` environment variable set
+- npm or pip package manager
 
 ## Instructions
 
@@ -112,8 +114,10 @@ ANTHROPIC_API_KEY=sk-ant-... ipython
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Project scaffolded with SDK, dotenv, and tsx for hot reload
+- Test script running against Claude Haiku (cheapest model)
+- Mock client available for unit tests without API calls
+- Cost estimate printed per request
 
 ## Error Handling
 | Issue | Fix |
@@ -123,7 +127,7 @@ ANTHROPIC_API_KEY=sk-ant-... ipython
 | High dev costs | Log responses, use mocks for unit tests |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (project setup), Step 2 (test script with cost tracking), Step 3 (hot reload), Mock Client section, and Python Dev Loop section above.
 
 ## Resources
 - [Quickstart Guide](https://docs.anthropic.com/en/docs/initial-setup)

@@ -2,6 +2,7 @@
 name: anthropic-sdk-patterns
 description: |
   Production-ready Anthropic SDK patterns — client config, retries, timeouts,
+  Use when working with sdk-patterns patterns.
   error handling, TypeScript types, and async patterns.
   Trigger with "anthropic sdk", "claude client setup", "anthropic typescript",
   "anthropic python patterns".
@@ -22,7 +23,7 @@ Production patterns for the `@anthropic-ai/sdk` (TypeScript) and `anthropic` (Py
 
 ## Instructions
 
-### TypeScript
+### Step 1: TypeScript
 ```typescript
 import Anthropic from '@anthropic-ai/sdk';
 
@@ -41,7 +42,7 @@ const client = new Anthropic({
 });
 ```
 
-### Python
+### Step 2: Python
 ```python
 import anthropic
 
@@ -62,8 +63,11 @@ client = anthropic.Anthropic(
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Properly configured client with retries, timeouts, and custom headers
+- Type-safe error handling with specific exception classes
+- Streaming implementation using your preferred pattern
+- Prompt caching enabled for repeated system prompts (90% cost savings)
+- Batch processing configured for bulk operations (50% cost savings)
 
 ## Error Handling
 ```typescript
@@ -206,7 +210,7 @@ while (status.processing_status !== 'ended') {
 ```
 
 ## Examples
-See code blocks above for complete examples.
+See Client Configuration, Error Handling, Streaming Patterns, TypeScript Types, Prompt Caching, and Message Batches sections above for complete code examples.
 
 ## Resources
 - [TypeScript SDK](https://github.com/anthropics/anthropic-sdk-typescript)
@@ -218,5 +222,6 @@ See code blocks above for complete examples.
 See `anthropic-rate-limits` for throughput optimization.
 
 ## Prerequisites
-- Completed `anthropic-sdk-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Familiarity with TypeScript generics or Python type hints
+- Understanding of async/await patterns

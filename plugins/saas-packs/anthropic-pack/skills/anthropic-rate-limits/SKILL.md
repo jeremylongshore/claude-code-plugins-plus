@@ -2,6 +2,7 @@
 name: anthropic-rate-limits
 description: |
   Handle Anthropic rate limits — understand tiers, implement backoff,
+  Use when working with rate-limits patterns.
   optimize throughput, and monitor usage.
   Trigger with "anthropic rate limit", "claude 429", "anthropic throttling",
   "anthropic usage limits", "claude tokens per minute".
@@ -109,8 +110,10 @@ except anthropic.RateLimitError as e:
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Rate limit tier identified from response headers
+- SDK configured with appropriate `maxRetries` setting
+- Custom backoff implemented with jitter for high-throughput use cases
+- Throughput optimized using batches, caching, or model selection
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -118,7 +121,7 @@ except anthropic.RateLimitError as e:
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Rate Limit Tiers table, Response Headers section, Built-In SDK Retries, Custom Backoff implementation, and Throughput Optimization strategies above.
 
 ## Resources
 - [Rate Limits Docs](https://docs.anthropic.com/en/api/rate-limits)
@@ -129,8 +132,17 @@ See code blocks above for complete examples.
 See `anthropic-cost-tuning` for cost optimization strategies.
 
 ## Prerequisites
-- Completed `anthropic-rate-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Understanding of HTTP response headers
+- Familiarity with exponential backoff patterns
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

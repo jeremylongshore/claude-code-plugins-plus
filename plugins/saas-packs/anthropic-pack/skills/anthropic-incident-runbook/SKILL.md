@@ -2,6 +2,7 @@
 name: anthropic-incident-runbook
 description: |
   Respond to Anthropic API incidents — outages, degraded performance,
+  Use when working with incident-runbook patterns.
   error spikes, and rate limit issues in production.
   Trigger with "anthropic down", "claude outage", "anthropic incident",
   "claude not responding", "anthropic 529".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, incident, runbook]
 # Anthropic Incident Runbook
 
 ## Overview
-Core functionality and patterns for anthropic-incident-runbook.
+Respond to Anthropic API incidents in production — outages, sustained 529 errors, authentication failures, and timeouts. Covers status page checking, severity classification, model fallback activation, communication, and post-incident review.
 
 
 ## Step 1: Confirm the Issue
@@ -75,8 +76,10 @@ async function callWithFallback(params: Anthropic.MessageCreateParams) {
 - Verify all systems recovered
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Incident confirmed via status page and direct API test
+- Severity classified (Low/Medium/High) based on symptoms
+- Fallback activated if needed (downgrade model or queue requests)
+- Impact assessed and documented post-incident
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -84,7 +87,7 @@ async function callWithFallback(params: Anthropic.MessageCreateParams) {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (curl status check and API test), Step 2 (severity classification table), Step 3 (fallback code with model downgrade), and Step 5 (post-incident checklist) above.
 
 ## Resources
 - [Anthropic Status](https://status.anthropic.com)
@@ -94,8 +97,17 @@ See code blocks above for complete examples.
 See `anthropic-reliability-patterns` for building resilient integrations.
 
 ## Prerequisites
-- Completed `anthropic-incident-install-auth` setup
-- Valid API credentials configured
+- Production Claude integration deployed
+- Fallback model configuration in place (see `anthropic-reliability-patterns`)
+- Monitoring/alerting configured (see `anthropic-observability`)
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

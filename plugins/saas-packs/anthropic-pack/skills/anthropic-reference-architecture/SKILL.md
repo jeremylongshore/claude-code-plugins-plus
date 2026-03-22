@@ -2,6 +2,7 @@
 name: anthropic-reference-architecture
 description: |
   Build Claude Code plugins — skills, agents, MCP servers, hooks, and slash commands.
+  Use when working with reference-architecture patterns.
   The complete guide to extending Claude Code with the Anthropic plugin system.
   Trigger with "claude code plugin", "build a skill", "create mcp server",
   "anthropic plugin architecture", "claude code hooks".
@@ -54,8 +55,9 @@ tags: [category, topic]
 What this skill does and when to use it.
 
 ## Prerequisites
-- Completed `anthropic-reference-install-auth` setup
-- Valid API credentials configured
+- Claude Code installed
+- Understanding of Markdown and YAML frontmatter
+- For MCP servers: Node.js 18+ and `@modelcontextprotocol/sdk`
 
 ## Instructions
 Step-by-step instructions Claude follows when this skill activates.
@@ -170,7 +172,7 @@ await server.connect(transport);
 | `$ARGUMENTS` | Commands | User-provided args |
 
 ## Examples
-See code blocks above for complete examples.
+See Building a Skill (SKILL.md), Building a Slash Command, Building an Agent, Building an MCP Server, and Hooks configuration examples above.
 
 ## Resources
 - [Plugin Docs](https://docs.anthropic.com/en/docs/claude-code/plugins)

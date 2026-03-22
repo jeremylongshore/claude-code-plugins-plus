@@ -2,6 +2,7 @@
 name: anthropic-prod-checklist
 description: |
   Production readiness checklist for Claude-powered applications —
+  Use when working with prod-checklist patterns.
   error handling, monitoring, fallbacks, cost controls, and security.
   Trigger with "anthropic production", "claude production ready",
   "anthropic launch checklist", "go live with claude".
@@ -27,8 +28,10 @@ Before going live with a Claude-powered app, verify every item below.
 - [ ] System prompt includes injection guardrails
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- All checklist items verified (authentication, error handling, streaming, cost, monitoring, reliability, content, performance)
+- Production API key configured with appropriate spending limits
+- Monitoring and alerting in place
+- Fallback behavior tested for API outages
 
 ## Error Handling
 - [ ] All Anthropic API calls wrapped in try/catch
@@ -77,7 +80,7 @@ Before going live with a Claude-powered app, verify every item below.
 - [ ] Client-side streaming UI implemented
 
 ## Examples
-See code blocks above for complete examples.
+Each section above is a verifiable checklist. Work through Authentication & Security, Error Handling, Streaming, Cost Controls, Monitoring, Reliability, Content & Compliance, and Performance sections.
 
 ## Resources
 - [API Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
@@ -89,8 +92,18 @@ See code blocks above for complete examples.
 See `anthropic-observability` for monitoring setup.
 
 ## Prerequisites
-- Completed `anthropic-prod-install-auth` setup
-- Valid API credentials configured
+- All other anthropic skills reviewed
+- Application feature-complete and tested locally
+- Production API key created (separate from dev)
+- Deployment platform selected
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

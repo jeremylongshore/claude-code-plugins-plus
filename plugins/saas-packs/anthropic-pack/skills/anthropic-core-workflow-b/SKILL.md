@@ -1,73 +1,72 @@
 ---
 name: anthropic-core-workflow-b
 description: |
-  Execute Anthropic secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "anthropic secondary workflow",
-  "secondary task with anthropic".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Redirect to anthropic-embeddings-search for tool use (function calling)
+  and agentic loop patterns with Claude.
+  Use when looking for the secondary Anthropic workflow.
+  Trigger with "anthropic tools", "claude function calling".
+allowed-tools: Read
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude]
 ---
 
-# Anthropic Core Workflow B
+# Anthropic Core Workflow B → Tool Use
 
 ## Overview
-Secondary workflow for Anthropic. Complements the primary workflow.
+This skill redirects to `anthropic-embeddings-search` which covers tool use (function calling), the agentic tool loop, and building Claude-powered agents.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Familiarity with `anthropic-core-workflow-a`
-- Valid API credentials configured
+- Completed `anthropic-model-inference`
+- Understanding of JSON Schema for tool definitions
 
 ## Instructions
 
-### Step 1: Setup
-```typescript
-// Step 1 implementation
-```
+### Step 1: Use anthropic-embeddings-search instead
+This skill has been replaced. The secondary Anthropic workflow is tool use / function calling, covered in full by `anthropic-embeddings-search`.
 
-### Step 2: Process
-```typescript
-// Step 2 implementation
-```
-
-### Step 3: Complete
-```typescript
-// Step 3 implementation
-```
+### Step 2: Key topics covered there
+- Defining tools with JSON Schema input schemas
+- Sending messages with tools attached
+- Executing tool calls and returning results
+- Building an agentic loop that runs until Claude stops calling tools
+- Error handling for tool use edge cases
 
 ## Output
-- Completed Core Workflow B execution
-- Results from Anthropic API
-- Success confirmation or error details
+- Redirected to `anthropic-embeddings-search`
+- Complete tool use patterns available there
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
+| Issue | Solution |
+|-------|----------|
+| Skill not found | Run `anthropic-embeddings-search` directly |
+| Tool use errors | See tool validation patterns in that skill |
 
 ## Examples
-
-### Complete Workflow
 ```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
+// Use anthropic-embeddings-search for the full tool use guide
+const tools: Anthropic.Tool[] = [{
+  name: 'get_weather',
+  description: 'Get weather for a city',
+  input_schema: {
+    type: 'object',
+    properties: { city: { type: 'string' } },
+    required: ['city'],
+  },
+}];
+const response = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  tools,
+  messages: [{ role: 'user', content: "What's the weather in Paris?" }],
+});
 ```
 
 ## Resources
-- [Anthropic Documentation](https://docs.anthropic.com)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
+- [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
+- [Tool Use API](https://docs.anthropic.com/en/api/messages)
 
 ## Next Steps
-For common errors, see `anthropic-common-errors`.
+Run `anthropic-embeddings-search` for the complete tool use guide.

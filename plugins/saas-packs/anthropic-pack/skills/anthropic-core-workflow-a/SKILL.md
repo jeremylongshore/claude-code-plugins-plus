@@ -1,49 +1,63 @@
 ---
 name: anthropic-core-workflow-a
 description: |
-  This skill has been superseded by anthropic-model-inference.
-  See anthropic-model-inference for Messages API streaming and advanced patterns.
+  Redirect to anthropic-model-inference for Messages API streaming,
+  vision, and structured output patterns.
+  Use when looking for the primary Anthropic workflow.
+  Trigger with "anthropic workflow", "claude main workflow".
 allowed-tools: Read
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code
-tags: [saas, anthropic]
+tags: [saas, anthropic, claude]
 ---
 
-# Anthropic Core Workflow A → See anthropic-model-inference
+# Anthropic Core Workflow A → Model Inference
 
 ## Overview
-Core functionality and patterns for anthropic-core-workflow-a.
+This skill redirects to `anthropic-model-inference` which covers streaming, vision, structured output, and all Messages API patterns.
 
+## Prerequisites
+- Completed `anthropic-install-auth` setup
+- `ANTHROPIC_API_KEY` configured
 
-This skill has been replaced by `anthropic-model-inference` which covers:
-- Streaming responses
-- Vision (sending images)
-- Structured JSON output
+## Instructions
+
+### Step 1: Use anthropic-model-inference instead
+This skill has been replaced. The primary Anthropic workflow is the Messages API, covered in full by `anthropic-model-inference`.
+
+### Step 2: Key topics covered there
+- Streaming responses with `client.messages.stream()`
+- Vision — sending images to Claude
+- Structured JSON output via system prompts
 - Multi-turn conversations
 - All Messages API parameters
 
-Run `anthropic-model-inference` instead.
-
-## Prerequisites
-- Completed `anthropic-core-workflow-install-auth` setup
-- Valid API credentials configured
-
-## Instructions
-Follow the steps in the sections above.
-
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Redirected to `anthropic-model-inference`
+- All Messages API patterns available there
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| API Error | Check error type and status code | See `anthropic-common-errors` |
+| Issue | Solution |
+|-------|----------|
+| Skill not found | Run `anthropic-model-inference` directly |
 
 ## Examples
-See code blocks above for complete examples.
+```typescript
+// Use anthropic-model-inference for the full Messages API guide
+import Anthropic from '@anthropic-ai/sdk';
+const client = new Anthropic();
+const stream = client.messages.stream({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [{ role: 'user', content: 'Hello!' }],
+});
+```
 
 ## Resources
-- [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
+- [Messages API](https://docs.anthropic.com/en/api/messages)
+- [Streaming](https://docs.anthropic.com/en/api/messages-streaming)
+
+## Next Steps
+Run `anthropic-model-inference` for the complete guide.

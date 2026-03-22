@@ -2,6 +2,7 @@
 name: anthropic-data-handling
 description: |
   Handle sensitive data with Claude — PII redaction, conversation management,
+  Use when working with data-handling patterns.
   context window optimization, and data retention policies.
   Trigger with "anthropic data privacy", "claude pii", "anthropic context window",
   "manage claude conversations", "anthropic data retention".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, data, privacy, context]
 # Anthropic Data Handling
 
 ## Overview
-Core functionality and patterns for anthropic-data-handling.
+Handle data responsibly when building with Claude — manage the 200K token context window efficiently, implement conversation trimming strategies, redact PII before sending to the API, and configure data retention settings.
 
 
 ## Context Window Management
@@ -43,7 +44,7 @@ if (count.input_tokens > inputBudget) {
 
 ## Instructions
 
-### Conversation Trimming
+### Step 1: Conversation Trimming
 ```typescript
 function trimConversation(messages: MessageParam[], maxTokens: number): MessageParam[] {
   // Always keep the first message (often contains key context)
@@ -75,8 +76,10 @@ function redactPII(text: string): string {
 - **Your responsibility**: Don't store Claude responses containing user PII longer than needed
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Token counting implemented before sending requests (prevents context overflow errors)
+- Conversation trimming preserving first message and recent turns
+- PII redaction applied for emails, phone numbers, SSNs, and card numbers
+- Data retention policy documented and configured
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -84,7 +87,7 @@ function redactPII(text: string): string {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Context Window Management (token counting + budget), Conversation Trimming function, and PII Handling regex patterns above.
 
 ## Resources
 - [Anthropic Privacy Policy](https://www.anthropic.com/policies/privacy)
@@ -95,5 +98,6 @@ See code blocks above for complete examples.
 See `anthropic-enterprise-rbac` for organization and access management.
 
 ## Prerequisites
-- Completed `anthropic-data-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Application handling user conversations or document processing
+- Understanding of token counting and context windows

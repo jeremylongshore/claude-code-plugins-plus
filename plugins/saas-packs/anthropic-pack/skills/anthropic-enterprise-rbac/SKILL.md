@@ -2,6 +2,7 @@
 name: anthropic-enterprise-rbac
 description: |
   Manage Anthropic workspaces, API keys, team access, and spending limits
+  Use when working with enterprise-rbac patterns.
   for enterprise Claude deployments.
   Trigger with "anthropic workspace", "anthropic team management",
   "claude enterprise", "anthropic api key management".
@@ -53,8 +54,11 @@ Set in Anthropic Console → Settings → Limits:
 - [ ] Audit log review (Console → Logs)
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Separate workspaces for production, staging, and development
+- Dedicated API keys per service/environment with descriptive names
+- Spending limits and alerts configured
+- Key rotation schedule established (90-day cycle)
+- Access control checklist completed
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -62,7 +66,7 @@ Set in Anthropic Console → Settings → Limits:
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Organization Structure diagram, API Key Best Practices table, and Access Control Checklist above.
 
 ## Resources
 - [Console Dashboard](https://console.anthropic.com)
@@ -73,8 +77,17 @@ See code blocks above for complete examples.
 See `anthropic-migration-deep-dive` for migrating from other LLM providers.
 
 ## Prerequisites
-- Completed `anthropic-enterprise-install-auth` setup
-- Valid API credentials configured
+- Anthropic Organization account at [console.anthropic.com](https://console.anthropic.com)
+- Admin access to create workspaces and API keys
+- Understanding of environment isolation requirements
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

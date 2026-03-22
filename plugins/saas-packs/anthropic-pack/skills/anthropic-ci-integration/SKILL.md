@@ -2,6 +2,7 @@
 name: anthropic-ci-integration
 description: |
   Test and validate Claude integrations in CI/CD pipelines —
+  Use when working with ci-integration patterns.
   GitHub Actions, mocking strategies, and cost control.
   Trigger with "anthropic ci", "test claude in ci", "anthropic github actions",
   "claude automated testing".
@@ -117,8 +118,10 @@ describe('Claude API Integration', () => {
 | Budget cap | Set spending limits in Anthropic console |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- GitHub Actions workflow running unit tests (mocked, no API key needed)
+- Integration tests making real Claude API calls on main branch
+- Mock client returning realistic response shapes for unit tests
+- CI costs controlled via Haiku model and tight max_tokens
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -126,7 +129,7 @@ describe('Claude API Integration', () => {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See GitHub Actions YAML, Mock Strategy with Vitest, Integration Test with real API, and Cost Control table above.
 
 ## Resources
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
@@ -136,8 +139,17 @@ See code blocks above for complete examples.
 See `anthropic-deploy-integration` for deploying to production.
 
 ## Prerequisites
-- Completed `anthropic-ci-install-auth` setup
-- Valid API credentials configured
+- GitHub repository with Actions enabled
+- `ANTHROPIC_API_KEY` stored as GitHub Actions secret
+- Test framework installed (Vitest, Jest, or pytest)
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

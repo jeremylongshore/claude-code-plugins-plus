@@ -2,6 +2,7 @@
 name: anthropic-observability
 description: |
   Monitor Claude API calls — log tokens, latency, costs, errors, and
+  Use when working with observability patterns.
   set up alerts for production Claude integrations.
   Trigger with "anthropic monitoring", "claude observability",
   "track claude usage", "anthropic logging".
@@ -84,8 +85,10 @@ function estimateCost(model: string, usage: Anthropic.Usage): number {
 - **API logs**: Not available via API — use your own logging
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Every Claude API call logged with tokens, latency, cost estimate, and model
+- Error calls logged with request ID, status code, and error type
+- Metrics dashboarded: error rate, p95 latency, daily cost, 429/529 rates
+- Spending alerts configured in Anthropic console
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -93,7 +96,7 @@ function estimateCost(model: string, usage: Anthropic.Usage): number {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Logging Wrapper with `trackedCreate()`, `estimateCost()` function, Key Metrics table with alert thresholds, and Anthropic Console Monitoring section above.
 
 ## Resources
 - [Usage Dashboard](https://console.anthropic.com/settings/usage)
@@ -103,8 +106,17 @@ See code blocks above for complete examples.
 See `anthropic-incident-runbook` for when things go wrong.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Logging infrastructure (console, structured logs, or observability platform)
+- Production Claude integration to monitor
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

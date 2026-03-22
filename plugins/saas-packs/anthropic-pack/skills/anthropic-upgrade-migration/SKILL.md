@@ -2,6 +2,7 @@
 name: anthropic-upgrade-migration
 description: |
   Upgrade Anthropic SDK versions and migrate between Claude model generations.
+  Use when working with upgrade-migration patterns.
   Trigger with "upgrade anthropic sdk", "migrate claude model",
   "anthropic breaking changes", "new claude model".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
@@ -15,7 +16,7 @@ tags: [saas, anthropic, claude, migration, upgrade]
 # Anthropic Upgrade & Migration
 
 ## Overview
-Core functionality and patterns for anthropic-upgrade-migration.
+Upgrade the Anthropic SDK to new versions and migrate between Claude model generations. Covers version checking, changelog review, model ID updates across the codebase, output comparison testing, and gradual rollout via environment variables.
 
 
 ## SDK Upgrade
@@ -66,8 +67,11 @@ const message = await client.messages.create({
 | Deprecated SDK method | Check SDK changelog for replacement |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- SDK upgraded to latest version
+- Model IDs updated across all files
+- Integration tests passing with new model
+- Output quality verified against previous model
+- Gradual rollout configured via `CLAUDE_MODEL` environment variable
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -75,7 +79,7 @@ const message = await client.messages.create({
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See SDK Upgrade commands, grep patterns for finding model references, environment-based model selection, and Common Migration Issues table above.
 
 ## Resources
 - [SDK Releases (TS)](https://github.com/anthropics/anthropic-sdk-typescript/releases)
@@ -86,8 +90,17 @@ See code blocks above for complete examples.
 See `anthropic-known-pitfalls` for common mistakes to avoid.
 
 ## Prerequisites
-- Completed `anthropic-upgrade-install-auth` setup
-- Valid API credentials configured
+- Existing Anthropic SDK integration to upgrade
+- Access to the codebase with grep/search capability
+- Test suite for comparing model outputs
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

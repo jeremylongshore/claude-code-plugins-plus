@@ -2,6 +2,7 @@
 name: anthropic-model-inference
 description: |
   Stream Claude responses, use system prompts, handle multi-turn conversations,
+  Use when working with model-inference patterns.
   and process structured output with the Messages API.
   Trigger with "anthropic streaming", "claude messages api", "claude inference",
   "stream claude response".
@@ -127,7 +128,7 @@ print(f"\nTokens: {stream.get_final_message().usage}")
 | `stream` | boolean | Optional. Enable SSE streaming |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (streaming), Step 2 (vision with base64 images), and Step 3 (structured JSON output) above. Python streaming example included.
 
 ## Resources
 - [Messages API](https://docs.anthropic.com/en/api/messages)

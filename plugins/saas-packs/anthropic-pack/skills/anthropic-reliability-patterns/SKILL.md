@@ -2,6 +2,7 @@
 name: anthropic-reliability-patterns
 description: |
   Build fault-tolerant Claude integrations — retries, circuit breakers,
+  Use when working with reliability-patterns patterns.
   fallbacks, timeouts, and graceful degradation.
   Trigger with "anthropic reliability", "claude fault tolerance",
   "anthropic circuit breaker", "claude fallback".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, reliability, resilience]
 # Anthropic Reliability Patterns
 
 ## Overview
-Core functionality and patterns for anthropic-reliability-patterns.
+Build fault-tolerant Claude integrations with built-in SDK retries, model fallback chains (Sonnet → Haiku), circuit breakers to avoid hammering a failing API, graceful degradation with cached/static responses, and per-request timeout configuration.
 
 
 ## Built-In SDK Retries
@@ -107,8 +108,10 @@ const message = await client.messages.create(params, {
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- SDK configured with appropriate `maxRetries` and `timeout`
+- Model fallback chain automatically trying cheaper models on failure
+- Circuit breaker preventing cascading failures during outages
+- Graceful degradation returning static responses when Claude is unavailable
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -116,7 +119,7 @@ const message = await client.messages.create(params, {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Built-In SDK Retries, Model Fallback Chain, Circuit Breaker class, Graceful Degradation handler, and Timeout Handling above.
 
 ## Resources
 - [Error Types](https://docs.anthropic.com/en/api/errors)
@@ -126,8 +129,17 @@ See code blocks above for complete examples.
 See `anthropic-policy-guardrails` for content safety patterns.
 
 ## Prerequisites
-- Completed `anthropic-reliability-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Production Claude integration requiring high availability
+- Understanding of fault tolerance patterns (retries, circuit breakers)
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

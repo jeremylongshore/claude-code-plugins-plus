@@ -2,6 +2,7 @@
 name: anthropic-multi-env-setup
 description: |
   Configure Claude across dev, staging, and production with different
+  Use when working with multi-env-setup patterns.
   models, keys, and rate limits per environment.
   Trigger with "anthropic environments", "claude staging",
   "anthropic dev vs prod", "claude multi-environment".
@@ -78,8 +79,10 @@ ANTHROPIC_API_KEY=sk-ant-prod-...
 | Production (complex) | Opus | Complex reasoning tasks |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Environment-specific Anthropic configuration (model, maxTokens, maxRetries)
+- Separate API keys per environment with appropriate tier limits
+- Spending alerts configured per environment
+- Dev using Haiku (cheap), staging matching prod (Sonnet), prod using Sonnet/Opus
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -87,7 +90,7 @@ ANTHROPIC_API_KEY=sk-ant-prod-...
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Environment Configuration TypeScript pattern, API key separation strategy, and Model Selection Strategy table above.
 
 ## Resources
 - [API Key Management](https://console.anthropic.com/settings/keys)
@@ -96,8 +99,17 @@ See code blocks above for complete examples.
 See `anthropic-observability` for monitoring across environments.
 
 ## Prerequisites
-- Completed `anthropic-multi-env-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Multiple environments (dev/staging/prod) configured
+- Separate Anthropic API keys created per environment
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

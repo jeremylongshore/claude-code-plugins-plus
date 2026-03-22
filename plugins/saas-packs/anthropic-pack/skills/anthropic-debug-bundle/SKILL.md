@@ -2,6 +2,7 @@
 name: anthropic-debug-bundle
 description: |
   Collect debug evidence for Anthropic API issues — request IDs, headers,
+  Use when working with debug-bundle patterns.
   error payloads, and reproduction steps for support tickets.
   Trigger with "anthropic debug", "claude support ticket", "anthropic request id",
   "debug claude api call".
@@ -19,8 +20,9 @@ tags: [saas, anthropic, claude, debugging]
 When you need to file a support ticket or debug a persistent issue, collect these items.
 
 ## Prerequisites
-- Completed `anthropic-debug-install-auth` setup
-- Valid API credentials configured
+- Anthropic SDK installed
+- An API error or issue to debug
+- Access to application logs
 
 ## Instructions
 
@@ -108,8 +110,10 @@ except anthropic.APIStatusError as e:
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Request ID extracted from error response headers
+- Full error bundle with timestamp, status, error type, and rate limit state
+- curl command for minimal reproduction (ready to paste into support ticket)
+- Anthropic API status and recent incidents checked
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -117,7 +121,7 @@ except anthropic.APIStatusError as e:
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (request ID extraction), Step 2 (full error logging), Step 3 (curl reproduction), and Step 4 (status check) above.
 
 ## Resources
 - [Anthropic Status](https://status.anthropic.com)

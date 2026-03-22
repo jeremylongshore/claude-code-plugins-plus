@@ -2,6 +2,7 @@
 name: anthropic-advanced-troubleshooting
 description: |
   Debug complex Claude issues — inconsistent outputs, tool use failures,
+  Use when working with advanced-troubleshooting patterns.
   streaming problems, and edge cases.
   Trigger with "claude inconsistent", "anthropic advanced debug",
   "claude tool use broken", "anthropic streaming issues".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, debugging, advanced]
 # Anthropic Advanced Troubleshooting
 
 ## Overview
-Core functionality and patterns for anthropic-advanced-troubleshooting.
+Debug complex Claude integration issues that go beyond basic error handling — inconsistent outputs, tool use failures where Claude calls nonexistent tools, streaming connection drops, max_tokens truncation, and image/vision format problems.
 
 
 ## Inconsistent Outputs
@@ -104,8 +105,11 @@ if (message.stop_reason === 'max_tokens') {
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Inconsistent outputs fixed via temperature control
+- Tool use validated against defined tool names before execution
+- Streaming connection drops detected and retried
+- Truncated responses identified via `stop_reason` check
+- Image format issues resolved (correct media_type, raw base64, size limits)
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -113,7 +117,7 @@ if (message.stop_reason === 'max_tokens') {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Inconsistent Outputs (temperature fix), Tool Use Failures (validation), Streaming Connection Drops (detection), max_tokens Truncation (stop_reason check), and Image/Vision Issues (correct format) above.
 
 ## Resources
 - [Error Types](https://docs.anthropic.com/en/api/errors)
@@ -124,8 +128,17 @@ See code blocks above for complete examples.
 See `anthropic-debug-bundle` for collecting support evidence.
 
 ## Prerequisites
-- Completed `anthropic-advanced-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-common-errors` for basic error handling
+- Familiarity with Claude API response structure
+- Access to application logs with full request/response data
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

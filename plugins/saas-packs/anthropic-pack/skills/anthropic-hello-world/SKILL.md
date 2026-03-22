@@ -105,7 +105,7 @@ print(message.content[0].text)
 | `claude-haiku-4-5-20251001` | Fast, cheap tasks | 200K | $0.80 / $4 |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (basic message), Step 2 (system prompt), and Step 3 (multi-turn) above. Python example included in its own section.
 
 ## Resources
 - [Messages API Reference](https://docs.anthropic.com/en/api/messages)

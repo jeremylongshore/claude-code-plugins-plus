@@ -2,6 +2,7 @@
 name: anthropic-embeddings-search
 description: |
   Implement tool use (function calling) with Claude to let it execute actions,
+  Use when working with embeddings-search patterns.
   query databases, call APIs, and interact with external systems.
   Trigger with "anthropic tool use", "claude function calling", "claude tools",
   "anthropic structured output with tools".
@@ -165,8 +166,10 @@ while (true) {
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- `tool_use` content blocks with `name` and `input` when Claude wants to call a tool
+- `stop_reason: "tool_use"` indicating Claude is waiting for tool results
+- Final text response after all tool results are provided
+- Complete agentic loop until `stop_reason: "end_turn"`
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -176,7 +179,7 @@ while (true) {
 | `tool_result` mismatch | Wrong `tool_use_id` | Each `tool_result` must reference the exact `id` from the `tool_use` block |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (tool definition), Step 2 (sending with tools), Step 3 (executing and returning results), and the full agentic tool loop example above.
 
 ## Resources
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)

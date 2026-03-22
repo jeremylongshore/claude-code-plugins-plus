@@ -2,6 +2,7 @@
 name: anthropic-webhooks-events
 description: |
   Use Anthropic Message Batches for async bulk processing and event handling.
+  Use when working with webhooks-events patterns.
   Trigger with "anthropic batches", "claude batch api", "anthropic async",
   "bulk claude processing", "anthropic webhook".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
@@ -18,8 +19,9 @@ tags: [saas, anthropic, claude, batches, async]
 Anthropic doesn't have traditional webhooks. Instead, use **Message Batches** for async bulk processing — up to 10,000 requests per batch at 50% off, with a 24-hour processing SLA.
 
 ## Prerequisites
-- Completed `anthropic-webhooks-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Multiple prompts/documents to process in bulk
+- Tolerance for async processing (results within 24 hours)
 
 ## Instructions
 
@@ -119,8 +121,10 @@ for result in client.messages.batches.results(batch.id):
 | Result availability | 29 days after creation |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Batch created with up to 10,000 requests
+- Processing status tracked via polling
+- Results retrieved with per-request success/error status
+- Failed requests identified for retry in a new batch
 
 ## Error Handling
 | Result Type | Meaning | Action |
@@ -131,7 +135,7 @@ for result in client.messages.batches.results(batch.id):
 | `canceled` | Batch was canceled | Resubmit if needed |
 
 ## Examples
-See code blocks above for complete examples.
+See Step 1 (batch creation), Step 2 (polling), Step 3 (result retrieval), Python example, and Batch Limits table above.
 
 ## Resources
 - [Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches)

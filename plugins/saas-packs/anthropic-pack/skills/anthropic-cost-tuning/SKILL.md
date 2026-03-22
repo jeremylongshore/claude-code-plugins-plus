@@ -2,6 +2,7 @@
 name: anthropic-cost-tuning
 description: |
   Optimize Anthropic API costs — model selection, prompt caching, batches,
+  Use when working with cost-tuning patterns.
   token reduction, and usage monitoring.
   Trigger with "anthropic pricing", "claude cost", "reduce anthropic spend",
   "anthropic billing", "claude cheaper".
@@ -30,7 +31,7 @@ Anthropic charges per token. Input tokens, output tokens, and cached tokens each
 
 ## Instructions
 
-### 1. Right-Size Your Model
+### Step 1: Right-Size Your Model
 ```typescript
 // DON'T use Opus for everything
 // DO match model to task complexity:
@@ -45,7 +46,7 @@ const code = await generate(spec, 'claude-sonnet-4-20250514');
 const analysis = await analyze(data, 'claude-opus-4-20250514');
 ```
 
-### 2. Prompt Caching (90% off input tokens)
+### Step 2: Prompt Caching (90% off input tokens)
 ```typescript
 // Cache your system prompt — pays for itself after 2 calls
 const message = await client.messages.create({
@@ -65,7 +66,7 @@ const message = await client.messages.create({
 // Subsequent calls: cache_read_input_tokens charged at 0.1x (90% savings!)
 ```
 
-### 3. Message Batches (50% off everything)
+### Step 3: Message Batches (50% off everything)
 ```typescript
 // For non-urgent work — 50% cheaper, 24h processing SLA
 const batch = await client.messages.batches.create({
@@ -81,7 +82,7 @@ const batch = await client.messages.batches.create({
 // Sonnet: $1.50/$7.50 per MTok instead of $3/$15
 ```
 
-### 4. Reduce Token Count
+### Step 4: Reduce Token Count
 ```typescript
 // Trim conversation history — keep system + last N turns
 function trimMessages(messages: MessageParam[], maxTurns = 10) {
@@ -100,7 +101,7 @@ const message = await client.messages.create({
 system: 'Reply in 1-2 sentences.' // Not a 500-word personality description
 ```
 
-### 5. Monitor Usage
+### Step 5: Monitor Usage
 ```typescript
 // Log every call's cost
 function logUsage(message: Anthropic.Message) {
@@ -122,8 +123,11 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 | Haiku + Batches + Caching | ~$1.00 | $4.00 | ~$5.00 |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Model selection optimized per task complexity (Haiku for simple, Sonnet for balanced, Opus for complex)
+- Prompt caching enabled for repeated system prompts
+- Batch processing configured for non-urgent workloads
+- Token usage logged with cost estimates per request
+- Spending alerts configured in Anthropic console
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -131,7 +135,7 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Pricing table, five numbered strategy sections with code, and the Cost Comparison Example table showing savings from $225 to $5 for 10K documents.
 
 ## Resources
 - [Pricing](https://www.anthropic.com/pricing)
@@ -143,5 +147,6 @@ See code blocks above for complete examples.
 See `anthropic-performance-tuning` for latency optimization.
 
 ## Prerequisites
-- Completed `anthropic-cost-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Active API usage to optimize
+- Access to Anthropic console for usage monitoring

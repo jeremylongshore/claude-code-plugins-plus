@@ -2,6 +2,7 @@
 name: anthropic-migration-deep-dive
 description: |
   Migrate from OpenAI/GPT to Anthropic/Claude — API differences,
+  Use when working with migration-deep-dive patterns.
   prompt adaptation, SDK swap, and feature mapping.
   Trigger with "migrate to claude", "openai to anthropic",
   "switch from gpt to claude", "replace openai with anthropic".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, migration, openai]
 # Migrate from OpenAI to Anthropic
 
 ## Overview
-Core functionality and patterns for anthropic-migration-deep-dive.
+Migrate from OpenAI/GPT to Anthropic/Claude. Covers the complete API mapping (endpoints, models, response shapes), SDK swap with before/after code, five key differences (max_tokens required, system as top-level param, alternating messages, response path, streaming events), and tool use migration.
 
 
 ## API Mapping
@@ -35,7 +36,7 @@ Core functionality and patterns for anthropic-migration-deep-dive.
 
 ## Instructions
 
-### Before (OpenAI)
+### Step 1: Before (OpenAI)
 ```typescript
 import OpenAI from 'openai';
 const openai = new OpenAI();
@@ -50,7 +51,7 @@ const response = await openai.chat.completions.create({
 console.log(response.choices[0].message.content);
 ```
 
-### After (Anthropic)
+### Step 2: After (Anthropic)
 ```typescript
 import Anthropic from '@anthropic-ai/sdk';
 const anthropic = new Anthropic();
@@ -95,8 +96,11 @@ grep -rn "message.content" --include="*.ts" .  # May need updating
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- All `openai` imports replaced with `@anthropic-ai/sdk`
+- Response access patterns updated (`choices[0].message.content` → `content[0].text`)
+- System prompts moved from messages array to top-level `system` parameter
+- `max_tokens` added to all API calls (required, not optional)
+- Tool definitions restructured to Anthropic format
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -104,7 +108,7 @@ grep -rn "message.content" --include="*.ts" .  # May need updating
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See API Mapping table, Before/After SDK code, Key Differences list, Tool Use Migration, and Grep & Replace commands above.
 
 ## Resources
 - [Anthropic Messages API](https://docs.anthropic.com/en/api/messages)
@@ -114,5 +118,6 @@ See code blocks above for complete examples.
 See `anthropic-sdk-patterns` for production Anthropic SDK patterns.
 
 ## Prerequisites
-- Completed `anthropic-migration-deep-install-auth` setup
-- Valid API credentials configured
+- Existing OpenAI integration to migrate
+- Access to codebase with search capability
+- Test suite for comparing outputs between providers

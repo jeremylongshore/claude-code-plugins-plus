@@ -2,6 +2,7 @@
 name: anthropic-load-scale
 description: |
   Scale Claude usage for high-throughput applications — batches, queues,
+  Use when working with load-scale patterns.
   concurrency control, and tier upgrades.
   Trigger with "anthropic scale", "claude high volume", "anthropic throughput",
   "scale claude api", "anthropic concurrent requests".
@@ -16,14 +17,14 @@ tags: [saas, anthropic, claude, scale, throughput]
 # Anthropic Load & Scale
 
 ## Overview
-Core functionality and patterns for anthropic-load-scale.
+Scale Claude usage for high-throughput applications. Covers four strategies: Message Batches (10K requests, 50% off, no rate limits), request queues with concurrency control via p-limit, tier upgrades (Tier 1-4 + Scale), and model selection for throughput (Haiku is 3-4x faster than Sonnet).
 
 
 ## Scaling Strategies
 
 ## Instructions
 
-### 1. Message Batches (Best for Bulk)
+### Step 1: Message Batches (Best for Bulk)
 ```typescript
 // 10K requests per batch, 50% cheaper, no rate limits
 const batch = await client.messages.batches.create({
@@ -35,7 +36,7 @@ const batch = await client.messages.batches.create({
 // Process up to 100 concurrent batches
 ```
 
-### 2. Request Queue with Concurrency Control
+### Step 2: Request Queue with Concurrency Control
 ```typescript
 import pLimit from 'p-limit';
 
@@ -53,7 +54,7 @@ const results = await Promise.all(
 );
 ```
 
-### 3. Tier Upgrades
+### Step 3: Tier Upgrades
 Increase your spending to unlock higher tiers:
 
 | Tier | RPM | Input TPM | How to Qualify |
@@ -64,7 +65,7 @@ Increase your spending to unlock higher tiers:
 | 4 | 4,000 | 400K | $400+ total spend |
 | Scale | Custom | Custom | Contact sales |
 
-### 4. Model Selection for Throughput
+### Step 4: Model Selection for Throughput
 ```typescript
 // Haiku processes 3-4x faster than Sonnet, 8x faster than Opus
 // Use the fastest model that meets quality requirements
@@ -85,8 +86,10 @@ setInterval(() => {
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Batch processing configured for bulk workloads (50% cheaper, no rate limits)
+- Concurrency-controlled request queue matching rate limit tier
+- Rate limit tier upgraded by increasing cumulative spend
+- Throughput metrics tracked (requests/min, tokens/min)
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -94,7 +97,7 @@ setInterval(() => {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See Message Batches example, p-limit concurrency control, Tier Upgrades table, and Monitoring at Scale metrics tracking above.
 
 ## Resources
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
@@ -104,5 +107,6 @@ See code blocks above for complete examples.
 See `anthropic-reliability-patterns` for fault-tolerant high-scale patterns.
 
 ## Prerequisites
-- Completed `anthropic-load-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-rate-limits` for understanding tier limits
+- High-volume use case requiring more than basic tier throughput
+- For batches: tolerance for async processing (24h SLA)

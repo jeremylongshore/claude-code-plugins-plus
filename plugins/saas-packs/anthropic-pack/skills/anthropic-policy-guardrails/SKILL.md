@@ -2,6 +2,7 @@
 name: anthropic-policy-guardrails
 description: |
   Implement content safety guardrails for Claude — input filtering,
+  Use when working with policy-guardrails patterns.
   output validation, usage policies, and prompt injection defense.
   Trigger with "anthropic content policy", "claude safety", "claude guardrails",
   "anthropic prompt injection", "claude content filtering".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, safety, guardrails]
 # Anthropic Policy & Guardrails
 
 ## Overview
-Core functionality and patterns for anthropic-policy-guardrails.
+Implement content safety guardrails for Claude-powered applications. Covers system prompt hardening with explicit rules, input validation (length limits, injection pattern detection), output validation (system prompt leak prevention), and compliance with Anthropic's Acceptable Use Policy.
 
 
 ## System Prompt Guardrails
@@ -99,7 +100,7 @@ You **don't** need to replicate this — focus your guardrails on application-sp
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See System Prompt Guardrails, Input Validation function, Output Validation function, and Anthropic Built-In Safety section above.
 
 ## Resources
 - [Anthropic AUP](https://www.anthropic.com/policies/aup)
@@ -109,8 +110,17 @@ See code blocks above for complete examples.
 See `anthropic-architecture-variants` for different Claude app patterns.
 
 ## Prerequisites
-- Completed `anthropic-policy-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Application with user-facing Claude interactions
+- Understanding of your application's content policy requirements
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

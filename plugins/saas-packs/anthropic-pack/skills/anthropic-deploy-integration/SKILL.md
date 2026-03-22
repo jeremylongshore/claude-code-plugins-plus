@@ -2,6 +2,7 @@
 name: anthropic-deploy-integration
 description: |
   Deploy Claude-powered applications to Vercel, Fly.io, and Cloud Run
+  Use when working with deploy-integration patterns.
   with proper secrets management and streaming support.
   Trigger with "deploy anthropic", "claude production deploy",
   "anthropic vercel", "deploy claude app".
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
 
 ## Instructions
 
-### Deploy to Vercel
+### Step 1: Deploy to Vercel
 ```bash
 # Add secret
 vercel env add ANTHROPIC_API_KEY
@@ -127,8 +128,10 @@ export async function GET() {
 | `ANTHROPIC_MAX_TOKENS` | No | Default max tokens |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Application deployed to chosen platform with streaming support
+- `ANTHROPIC_API_KEY` stored in platform secrets manager
+- Health check endpoint returning Claude connectivity status
+- Environment-specific configuration (model, max_tokens) in place
 
 ## Error Handling
 | Issue | Cause | Solution |
@@ -139,7 +142,7 @@ export async function GET() {
 | CORS errors | Missing headers | Add CORS headers to API route |
 
 ## Examples
-See code blocks above for complete examples.
+See Vercel Edge Function (with SSE streaming), Fly.io Dockerfile, Cloud Run deploy script, and Health Check endpoint above.
 
 ## Resources
 - [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
@@ -149,5 +152,7 @@ See code blocks above for complete examples.
 See `anthropic-observability` for monitoring your Claude calls in production.
 
 ## Prerequisites
-- Completed `anthropic-deploy-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth` and `anthropic-prod-checklist`
+- Production Anthropic API key (separate from dev key)
+- Platform CLI installed: `vercel`, `fly`, or `gcloud`
+- Application code tested locally

@@ -2,6 +2,7 @@
 name: anthropic-common-errors
 description: |
   Diagnose and fix Anthropic API errors — authentication, rate limits,
+  Use when working with common-errors patterns.
   overloaded, context length, and content policy issues.
   Trigger with "anthropic error", "claude 429", "claude overloaded",
   "anthropic not working", "debug claude api".
@@ -22,7 +23,7 @@ Every Anthropic API error includes a `type` field and HTTP status code. Here are
 
 ## Instructions
 
-### `authentication_error` (401)
+### Step 1: `authentication_error` (401)
 ```json
 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
 ```
@@ -43,7 +44,7 @@ curl https://api.anthropic.com/v1/messages \
 
 ---
 
-### `rate_limit_error` (429)
+### Step 2: `rate_limit_error` (429)
 ```json
 {"type":"error","error":{"type":"rate_limit_error","message":"Number of request tokens has exceeded your per-minute rate limit"}}
 ```
@@ -77,7 +78,7 @@ try {
 
 ---
 
-### `overloaded_error` (529)
+### Step 3: `overloaded_error` (529)
 ```json
 {"type":"error","error":{"type":"overloaded_error","message":"Overloaded"}}
 ```
@@ -101,7 +102,7 @@ try {
 
 ---
 
-### `invalid_request_error` (400)
+### Step 4: `invalid_request_error` (400)
 ```json
 {"type":"error","error":{"type":"invalid_request_error","message":"messages: roles must alternate between \"user\" and \"assistant\", but found multiple \"user\" roles in a row"}}
 ```
@@ -127,7 +128,7 @@ function validateMessages(messages: Anthropic.MessageParam[]) {
 
 ---
 
-### `not_found_error` (404)
+### Step 5: `not_found_error` (404)
 ```json
 {"type":"error","error":{"type":"not_found_error","message":"model: model_not_found"}}
 ```
@@ -139,7 +140,7 @@ function validateMessages(messages: Anthropic.MessageParam[]) {
 
 ---
 
-### Content too long (context window)
+### Step 6: Content too long (context window)
 ```json
 {"type":"error","error":{"type":"invalid_request_error","message":"prompt is too long: 204521 tokens > 200000 maximum"}}
 ```
@@ -175,8 +176,10 @@ curl -s https://api.anthropic.com/v1/messages \
 ```
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Identified error type and HTTP status code
+- Root cause determined from error message
+- Applied fix (key rotation, backoff, input validation, model ID correction)
+- Verified resolution with successful API call
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -184,7 +187,7 @@ curl -s https://api.anthropic.com/v1/messages \
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+Each error section above includes the exact JSON error response, cause analysis, and fix code. See Quick Diagnostic section for curl commands to test connectivity.
 
 ## Resources
 - [Error Types Reference](https://docs.anthropic.com/en/api/errors)
@@ -195,5 +198,6 @@ See code blocks above for complete examples.
 For deeper debugging, see `anthropic-debug-bundle`.
 
 ## Prerequisites
-- Completed `anthropic-common-install-auth` setup
-- Valid API credentials configured
+- Anthropic SDK installed (`@anthropic-ai/sdk` or `anthropic`)
+- API credentials configured
+- Access to application logs or console output

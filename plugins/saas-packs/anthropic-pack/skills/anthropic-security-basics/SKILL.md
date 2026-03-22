@@ -2,6 +2,7 @@
 name: anthropic-security-basics
 description: |
   Secure your Anthropic integration — API key management, input validation,
+  Use when working with security-basics patterns.
   prompt injection defense, and data privacy.
   Trigger with "anthropic security", "claude api key security",
   "anthropic prompt injection", "secure claude integration".
@@ -22,7 +23,7 @@ Securing a Claude integration means protecting your API key, validating inputs, 
 
 ## Instructions
 
-### Never Expose Keys Client-Side
+### Step 1: Never Expose Keys Client-Side
 ```typescript
 // BAD — key in browser JavaScript
 const client = new Anthropic({ apiKey: 'sk-ant-...' }); // EXPOSED TO USERS
@@ -32,7 +33,7 @@ const client = new Anthropic({ apiKey: 'sk-ant-...' }); // EXPOSED TO USERS
 const client = new Anthropic(); // reads from env
 ```
 
-### Environment Variables
+### Step 2: Environment Variables
 ```bash
 # .env (local dev — never commit)
 ANTHROPIC_API_KEY=sk-ant-api03-...
@@ -43,7 +44,7 @@ ANTHROPIC_API_KEY=sk-ant-api03-...
 .env.production
 ```
 
-### Rotate Keys Regularly
+### Step 3: Rotate Keys Regularly
 - Console → Settings → API Keys → Create New Key
 - Update all deployments with new key
 - Delete old key only after all deployments are updated
@@ -116,8 +117,12 @@ async function handleChat(userId: string, message: string) {
 - [ ] No unnecessary PII in prompts
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- API key stored securely in environment variables, not in code
+- `.env` excluded from version control via `.gitignore`
+- User input validated for length and content
+- System prompt hardened against injection attempts
+- Per-user rate limiting preventing abuse
+- Security checklist completed
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -125,7 +130,7 @@ async function handleChat(userId: string, message: string) {
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See API Key Security (client-side vs server-side), Input Validation function, Prompt Injection Defense system prompt, Rate Limiting with Upstash, and Security Checklist above.
 
 ## Resources
 - [API Key Management](https://console.anthropic.com/settings/keys)
@@ -136,5 +141,6 @@ See code blocks above for complete examples.
 See `anthropic-prod-checklist` for full production readiness.
 
 ## Prerequisites
-- Completed `anthropic-security-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth`
+- Server-side application (API keys must never reach the browser)
+- Understanding of environment variable management

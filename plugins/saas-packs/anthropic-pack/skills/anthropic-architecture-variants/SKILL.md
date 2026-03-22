@@ -2,6 +2,7 @@
 name: anthropic-architecture-variants
 description: |
   Build different types of Claude-powered applications — chatbots, RAG systems,
+  Use when working with architecture-variants patterns.
   agents, content pipelines, and code generation tools.
   Trigger with "claude architecture", "anthropic rag", "build with claude",
   "claude agent pattern", "anthropic app design".
@@ -16,7 +17,7 @@ tags: [saas, anthropic, claude, architecture, rag, agents]
 # Claude Architecture Variants
 
 ## Overview
-Core functionality and patterns for anthropic-architecture-variants.
+Five architecture patterns for Claude-powered applications: Chatbot (stateless API wrapper), RAG (retrieval-augmented generation with vector search), Agent (tool use loop), Content Pipeline (batch processing), and Evaluation (using Claude as a judge). Each includes complete code and a comparison table.
 
 
 ## 1. Chatbot (Stateless API Wrapper)
@@ -137,8 +138,10 @@ const evaluation = await client.messages.create({
 | Evaluation | Medium | Varies | Simple |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- Architecture pattern selected based on requirements
+- Implementation code for chosen pattern
+- Cost and latency characteristics understood
+- Scaling strategy identified (streaming for chatbots, batches for pipelines)
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -146,7 +149,7 @@ const evaluation = await client.messages.create({
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See five numbered pattern sections with complete TypeScript code, and the Choosing a Pattern comparison table with latency, cost, and complexity ratings.
 
 ## Resources
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
@@ -156,8 +159,17 @@ See code blocks above for complete examples.
 See `anthropic-known-pitfalls` for common mistakes.
 
 ## Prerequisites
-- Completed `anthropic-architecture-install-auth` setup
-- Valid API credentials configured
+- Completed `anthropic-install-auth` and `anthropic-model-inference`
+- Understanding of your use case requirements (latency, cost, complexity)
+- For RAG: vector database and embedding model (Voyage, OpenAI, or Cohere)
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.

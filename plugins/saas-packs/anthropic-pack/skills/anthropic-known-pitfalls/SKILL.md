@@ -2,6 +2,7 @@
 name: anthropic-known-pitfalls
 description: |
   Common mistakes when building with the Anthropic API and how to avoid them.
+  Use when working with known-pitfalls patterns.
   Trigger with "anthropic mistakes", "claude pitfalls", "anthropic gotchas",
   "common claude errors", "anthropic anti-patterns".
 allowed-tools: Read, Write, Edit
@@ -15,7 +16,7 @@ tags: [saas, anthropic, claude, pitfalls, best-practices]
 # Anthropic Known Pitfalls
 
 ## Overview
-Core functionality and patterns for anthropic-known-pitfalls.
+Ten common mistakes when building with the Anthropic API and how to avoid them: forgetting `max_tokens` (required), system prompt in messages array (wrong), non-alternating messages, unchecked `stop_reason`, creating client per request, no 529 handling, hardcoded model IDs, expensive output tokens, no streaming, and unnecessary PII.
 
 
 ## 1. Forgetting `max_tokens`
@@ -110,8 +111,12 @@ Don't include user PII in prompts unless the task requires it. Redact before sen
 | Unnecessary PII | Redact before sending |
 
 ## Output
-- Successful operation confirmed
-- Results logged to console
+- All ten pitfalls checked against your codebase
+- `max_tokens` present on every `messages.create` call
+- System prompt using top-level `system` parameter
+- Messages strictly alternating user/assistant
+- `stop_reason` checked for truncation
+- Client instance reused across requests
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -119,15 +124,24 @@ Don't include user PII in prompts unless the task requires it. Redact before sen
 | API Error | Check error type and status code | See `anthropic-common-errors` |
 
 ## Examples
-See code blocks above for complete examples.
+See ten numbered pitfall sections above, each with BAD/GOOD code comparisons. Quick Reference table at the end summarizes all fixes.
 
 ## Resources
 - [API Reference](https://docs.anthropic.com/en/api/messages)
 - [Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
 
 ## Prerequisites
-- Completed `anthropic-known-install-auth` setup
-- Valid API credentials configured
+- Familiarity with the Anthropic Messages API
+- Active Claude integration to audit
+- Access to codebase for pattern review
 
 ## Instructions
-Follow the steps in the sections above.
+
+### Step 1: Review the patterns below
+Each section contains production-ready code examples. Copy and adapt them to your use case.
+
+### Step 2: Apply to your codebase
+Integrate the patterns that match your requirements. Test each change individually.
+
+### Step 3: Verify
+Run your test suite to confirm the integration works correctly.
