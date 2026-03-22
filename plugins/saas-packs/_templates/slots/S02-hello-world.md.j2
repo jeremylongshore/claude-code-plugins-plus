@@ -17,7 +17,27 @@ tags: [saas, {{ company }}]
 # {{ display_name }} Hello World
 
 ## Overview
+{% if category in ('ai-ml',) %}
+Send your first prompt to the {{ display_name }} API and get a model response back.
+{% elif category in ('data-platform',) %}
+Run your first query against {{ display_name }} and read actual data back.
+{% elif category in ('developer-tools',) %}
+List your projects and trigger your first action via the {{ display_name }} API.
+{% elif category in ('design-creative',) %}
+Connect to {{ display_name }} and list your design files via the API.
+{% elif category in ('sales-crm',) %}
+Pull your first contacts from {{ display_name }} and display them.
+{% elif category in ('communication',) %}
+Send your first test message through the {{ display_name }} API.
+{% elif category in ('productivity',) %}
+List your workspace pages and read content from {{ display_name }}.
+{% elif category in ('fintech',) %}
+Check your account balance and list recent transactions via {{ display_name }}.
+{% elif category in ('infra-ops',) %}
+List your monitored projects and check system status via {{ display_name }}.
+{% else %}
 Minimal working example demonstrating core {{ display_name }} functionality.
+{% endif %}
 
 ## Prerequisites
 - Completed `{{ company }}-install-auth` setup
@@ -34,7 +54,13 @@ Create a new file for your hello world example.
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
 
 const client = new {{ client_class | default(display_name + 'Client') }}({
+{% if category in ('data-platform',) %}
+  connectionString: process.env.{{ company | upper }}_DATABASE_URL,
+{% elif category in ('design-creative',) %}
+  accessToken: process.env.{{ company | upper }}_ACCESS_TOKEN,
+{% else %}
   apiKey: process.env.{{ company | upper }}_API_KEY,
+{% endif %}
 });
 ```
 
@@ -70,7 +96,13 @@ main().catch(console.error);
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
 
 const client = new {{ client_class | default(display_name + 'Client') }}({
+{% if category in ('data-platform',) %}
+  connectionString: process.env.{{ company | upper }}_DATABASE_URL,
+{% elif category in ('design-creative',) %}
+  accessToken: process.env.{{ company | upper }}_ACCESS_TOKEN,
+{% else %}
   apiKey: process.env.{{ company | upper }}_API_KEY,
+{% endif %}
 });
 
 async function main() {

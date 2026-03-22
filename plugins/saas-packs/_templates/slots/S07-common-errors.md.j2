@@ -17,7 +17,17 @@ tags: [saas, {{ company }}]
 # {{ display_name }} Common Errors
 
 ## Overview
+{% if category in ('ai-ml',) %}
+Quick reference for the most common {{ display_name }} API errors: authentication failures, rate limits, context length issues, and model availability.
+{% elif category in ('data-platform',) %}
+Quick reference for the most common {{ display_name }} errors: connection failures, query timeouts, permission issues, and schema problems.
+{% elif category in ('sales-crm',) %}
+Quick reference for the most common {{ display_name }} errors: duplicate records, rate limits, validation failures, and sync conflicts.
+{% elif category in ('communication',) %}
+Quick reference for the most common {{ display_name }} errors: delivery failures, suppressed recipients, domain verification, and template issues.
+{% else %}
 Quick reference for the top 10 most common {{ display_name }} errors and their solutions.
+{% endif %}
 
 ## Prerequisites
 - {{ display_name }} SDK installed
@@ -82,6 +92,47 @@ Follow the solution steps for your specific error.
 ```{{ primary_language | default('typescript') }}
 {{ error_3_solution | default('// Increase timeout\nconst client = new Client({ timeout: 60000 });') }}
 ```
+
+{% if category in ('ai-ml',) %}
+---
+
+### Content Moderation / Safety Filter
+**Error Message:**
+```
+400 Bad Request: Content policy violation — output blocked by safety filter
+```
+
+**Cause:** Model output triggered content policy filters or input contained restricted content.
+
+**Solution:**
+Review your system prompt for policy-compliant framing. Use moderation endpoint to pre-check inputs. Adjust temperature/prompts to reduce edge-case outputs.
+{% elif category in ('data-platform',) %}
+---
+
+### Deadlock Detected
+**Error Message:**
+```
+ERROR: deadlock detected — Process 12345 waits for ShareLock on transaction 67890
+```
+
+**Cause:** Two concurrent transactions waiting on each other's locks. Common with concurrent UPDATEs on same rows.
+
+**Solution:**
+Ensure consistent lock ordering across transactions. Use `SELECT ... FOR UPDATE SKIP LOCKED` for queue patterns. Reduce transaction scope and duration.
+{% elif category in ('sales-crm',) %}
+---
+
+### Duplicate Record on Import
+**Error Message:**
+```
+409 Conflict: Contact with email user@example.com already exists (id: abc-123)
+```
+
+**Cause:** Attempting to create a record with an email/phone that matches an existing contact.
+
+**Solution:**
+Use the upsert endpoint instead of create: `client.contacts.upsert({ email, ...data })`. Or search first and merge if found.
+{% endif %}
 
 ## Examples
 

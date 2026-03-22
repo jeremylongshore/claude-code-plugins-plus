@@ -21,7 +21,15 @@ tags: [saas, {{ company }}]
 
 ## Prerequisites
 - Completed `{{ company }}-install-auth` setup
+{% if category in ('ai-ml',) %}
+- Understanding of model IDs, token limits, and streaming patterns
+{% elif category in ('data-platform',) %}
+- Familiarity with SQL and your database schema
+{% elif category in ('sales-crm',) %}
+- Access to contacts/deals data in your {{ display_name }} instance
+{% else %}
 - Understanding of {{ display_name }} core concepts
+{% endif %}
 - Valid API credentials configured
 
 ## Instructions
@@ -43,7 +51,18 @@ tags: [saas, {{ company }}]
 
 ## Output
 - Completed {{ workflow_a_name | default('Core Workflow A') }} execution
+{% if category in ('ai-ml',) %}
+- Model response with token usage and cost estimate
+- Streaming or batch completion depending on configuration
+{% elif category in ('data-platform',) %}
+- Query results with row count and execution time
+- Data written to target table or exported to file
+{% elif category in ('sales-crm',) %}
+- Contacts imported, enriched, and assigned to pipeline
+- Summary of created, updated, and failed records
+{% else %}
 - Expected results from {{ display_name }} API
+{% endif %}
 - Success confirmation or error details
 
 ## Error Handling

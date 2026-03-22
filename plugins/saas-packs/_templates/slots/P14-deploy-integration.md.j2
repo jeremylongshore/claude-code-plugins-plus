@@ -1,11 +1,11 @@
 ---
 name: {{ company }}-deploy-integration
 description: |
-  Deploy {{ display_name }} integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy {{ display_name }} integrations to production platforms.
   Use when deploying {{ display_name }}-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy {{ company }}", "{{ company }} Vercel",
-  "{{ company }} production deploy", "{{ company }} Cloud Run", "{{ company }} Fly.io".
+  Trigger with phrases like "deploy {{ company }}", "{{ company }} production",
+  "{{ company }} production deploy", "{{ company }} CI/CD".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,7 +17,30 @@ tags: [saas, {{ company }}]
 # {{ display_name }} Deploy Integration
 
 ## Overview
+{% if category in ('ai-ml',) %}
+Deploy {{ display_name }}-powered applications as stateless API wrappers — serverless functions
+that receive user requests, call the {{ display_name }} model API, and stream responses back.
+{% elif category in ('data-platform',) %}
+Deploy {{ display_name }} integrations as data pipeline workers — persistent services that
+maintain database connections, run scheduled queries, and process data continuously.
+{% elif category in ('developer-tools',) %}
+Deploy using {{ display_name }}'s native deployment tools. Configuration lives in the
+project repo and deploys trigger via git push or CLI commands.
+{% elif category in ('sales-crm', 'communication') %}
+Deploy {{ display_name }} integrations as webhook workers — always-on endpoints that
+receive events (contact created, message sent) and trigger downstream actions.
+{% elif category in ('design-creative',) %}
+Deploy {{ display_name }} integration as a CI/CD pipeline step that exports assets,
+syncs design tokens, or generates code from design files during the build.
+{% elif category in ('fintech',) %}
+Deploy {{ display_name }} integrations as secure webhook workers with HMAC signature
+verification, idempotent processing, and dead-letter queues for reliability.
+{% elif category in ('infra-ops',) %}
+Deploy {{ display_name }} as a sidecar agent alongside your application, plus webhook
+endpoints for alert routing and incident response automation.
+{% else %}
 Deploy {{ display_name }}-powered applications to popular platforms with proper secrets management.
+{% endif %}
 
 ## Prerequisites
 - {{ display_name }} API keys for production environment
@@ -25,21 +48,154 @@ Deploy {{ display_name }}-powered applications to popular platforms with proper 
 - Application code ready for deployment
 - Environment variables documented
 
+{% if category in ('ai-ml',) %}
+## Serverless API Wrapper (Recommended for AI/ML)
+
+### Why Serverless?
+AI/ML integrations are stateless request/response — perfect for serverless. Each function
+call receives a prompt, calls the model, and returns the response. No connection pools needed.
+
+### Vercel Edge Function
+```typescript
+// api/chat.ts — streams AI responses at the edge
+import { Client } from '{{ npm_package | default(company + '-sdk') }}';
+
+export const config = { runtime: 'edge' };
+
+export default async function handler(req: Request) {
+  const client = new Client({ apiKey: process.env.{{ company | upper }}_API_KEY });
+  const { messages } = await req.json();
+
+  const stream = await client.chat.completions.create({
+    model: 'default',
+    messages,
+    stream: true,
+  });
+
+  return new Response(stream.toReadableStream(), {
+    headers: { 'Content-Type': 'text/event-stream' },
+  });
+}
+```
+
+### Deploy
+```bash
+vercel secrets add {{ company }}_api_key "${{ company | upper }}_API_KEY"
+vercel --prod
+```
+
+{% elif category in ('data-platform',) %}
+## Data Pipeline Worker (Recommended for Data Platforms)
+
+### Why Persistent Worker?
+Data platform integrations need persistent database connections and often run
+scheduled jobs — ETL pipelines, materialized view refreshes, data syncs.
+
+### Docker Worker
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+# Long-running worker with connection pooling
+CMD ["node", "worker.js"]
+```
+
+### Connection Pooling
+```typescript
+// worker.ts — maintains connection pool across requests
+import { Pool } from '{{ npm_package | default(company + '-sdk') }}';
+
+const pool = new Pool({
+  connectionString: process.env.{{ company | upper }}_DATABASE_URL,
+  max: {{ pool_max | default('20') }},
+  min: {{ pool_min | default('5') }},
+  idleTimeoutMillis: 30000,
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => pool.end());
+```
+
+### Deploy to Cloud Run
+```bash
+gcloud run deploy {{ company }}-worker \
+  --image gcr.io/$PROJECT_ID/{{ company }}-worker \
+  --min-instances=1 \
+  --set-secrets={{ company | upper }}_DATABASE_URL={{ company }}-db-url:latest
+```
+
+{% elif category in ('sales-crm', 'communication', 'fintech') %}
+## Webhook Worker (Recommended for {{ category | replace('-', '/') | title }})
+
+### Why Webhooks?
+{{ display_name }} sends events ({% if category == 'sales-crm' %}contact created, deal stage changed{% elif category == 'communication' %}message delivered, user replied{% elif category == 'fintech' %}transaction completed, card authorized{% else %}resource updated{% endif %})
+to your endpoint. Your worker processes these events and triggers downstream actions.
+
+### Webhook Endpoint
+```typescript
+// api/webhooks/{{ company }}.ts
+export default async function handler(req: Request) {
+{% if category == 'fintech' %}
+  // CRITICAL: Verify HMAC signature before processing
+  const signature = req.headers.get('x-{{ company }}-signature');
+  const body = await req.text();
+  const expected = crypto.createHmac('sha256', process.env.{{ company | upper }}_WEBHOOK_SECRET!)
+    .update(body).digest('hex');
+  if (!crypto.timingSafeEqual(Buffer.from(signature!), Buffer.from(expected))) {
+    return new Response('Invalid signature', { status: 401 });
+  }
+  const event = JSON.parse(body);
+{% else %}
+  const event = await req.json();
+{% endif %}
+
+  switch (event.type) {
+{% if category == 'sales-crm' %}
+    case 'contact.created':
+      await enrichAndAssign(event.data.contact);
+      break;
+    case 'deal.stage_changed':
+      await notifySlack(event.data.deal);
+      break;
+{% elif category == 'communication' %}
+    case 'message.delivered':
+      await updateDeliveryStats(event.data);
+      break;
+    case 'message.bounced':
+      await handleBounce(event.data.recipient);
+      break;
+{% elif category == 'fintech' %}
+    case 'transaction.completed':
+      await syncToAccounting(event.data.transaction);
+      break;
+    case 'card.declined':
+      await alertTeam(event.data);
+      break;
+{% endif %}
+  }
+
+  return new Response('OK', { status: 200 });
+}
+```
+
+### Deploy
+```bash
+# Fly.io — always-on, auto-TLS, persistent
+fly secrets set {{ company | upper }}_API_KEY="${{ company | upper }}_API_KEY"
+fly secrets set {{ company | upper }}_WEBHOOK_SECRET="${{ company | upper }}_WEBHOOK_SECRET"
+fly deploy
+```
+
+{% else %}
 ## Vercel Deployment
 
 ### Environment Setup
 ```bash
-# Add {{ display_name }} secrets to Vercel
 vercel secrets add {{ company }}_api_key sk_live_***
 vercel secrets add {{ company }}_webhook_secret whsec_***
-
-# Link to project
 vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
 vercel --prod
 ```
 
@@ -76,74 +232,17 @@ primary_region = "{{ primary_region | default('iad') }}"
 
 ### Secrets
 ```bash
-# Set {{ display_name }} secrets
 fly secrets set {{ company | upper }}_API_KEY=sk_live_***
-fly secrets set {{ company | upper }}_WEBHOOK_SECRET=whsec_***
-
-# Deploy
 fly deploy
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="{{ company }}-service"
-REGION="{{ gcp_region | default('us-central1') }}"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets={{ company | upper }}_API_KEY={{ company }}-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/{{ company }}.ts
-interface {{ display_name }}Config {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function get{{ display_name }}Config(): {{ display_name }}Config {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.{{ company | upper }}_API_KEY!,
-    environment: env as {{ display_name }}Config['environment'],
-    webhookSecret: process.env.{{ company | upper }}_WEBHOOK_SECRET,
-  };
-}
-```
-
+{% endif %}
 ## Health Check Endpoint
 
 ```typescript
 // api/health.ts
 export async function GET() {
-  const {{ company }}Status = await check{{ display_name }}Connection();
+  const {{ company }}Status = await check{{ display_name.replace(' ', '') }}Connection();
 
   return Response.json({
     status: {{ company }}Status ? 'healthy' : 'degraded',
@@ -158,7 +257,7 @@ export async function GET() {
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide above.
 
 ### Step 2: Configure Secrets
 Store {{ display_name }} API keys securely using the platform's secrets management.
@@ -182,24 +281,6 @@ Test the health check endpoint to confirm {{ display_name }} connectivity.
 | Deploy timeout | Large build | Increase build timeout |
 | Health check fails | Wrong API key | Verify environment variable |
 | Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add {{ company }}_api_key "${{ company | upper }}_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set {{ company | upper }}_API_KEY="${{ company | upper }}_API_KEY"
-    fly deploy
-    ;;
-esac
-```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)

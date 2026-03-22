@@ -43,7 +43,21 @@ tags: [saas, {{ company }}]
 
 ## Output
 - Completed {{ workflow_b_name | default('Core Workflow B') }} execution
+{% if category in ('ai-ml',) %}
+- Vector embeddings generated and stored
+- Semantic search results ranked by similarity
+{% elif category in ('data-platform',) %}
+- Migration applied with schema changes verified
+- Rollback available if issues detected
+{% elif category in ('sales-crm',) %}
+- Deals created and assigned to pipeline stages
+- Pipeline metrics updated with stage counts and values
+{% elif category in ('design-creative',) %}
+- Design tokens extracted and written to code files
+- CSS variables and/or Tailwind config synced
+{% else %}
 - Results from {{ display_name }} API
+{% endif %}
 - Success confirmation or error details
 
 ## Error Handling

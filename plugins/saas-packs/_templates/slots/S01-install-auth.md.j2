@@ -23,7 +23,16 @@ Set up {{ display_name }} SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - {{ display_name }} account with API access
+{% if category in ('ai-ml',) %}
+- API key from {{ display_name }} dashboard (starts with `sk-` or similar prefix)
+{% elif category in ('data-platform',) %}
+- Database connection string or API key from {{ display_name }} dashboard
+- Network access to database host (check firewall/VPC rules)
+{% elif category in ('design-creative', 'sales-crm', 'enterprise-vertical') %}
+- OAuth2 access token or personal API token from {{ display_name }} settings
+{% else %}
 - API key from {{ display_name }} dashboard
+{% endif %}
 
 ## Instructions
 
@@ -37,6 +46,32 @@ pip install {{ pip_package | default(company) }}
 ```
 
 ### Step 2: Configure Authentication
+{% if category in ('data-platform',) %}
+```bash
+# Set connection string (preferred for database platforms)
+export {{ company | upper }}_DATABASE_URL="postgresql://user:pass@host:5432/db"
+
+# Or use API key
+export {{ company | upper }}_API_KEY="your-api-key"
+
+# Or create .env file
+cat >> .env << 'EOF'
+{{ company | upper }}_DATABASE_URL=postgresql://user:pass@host:5432/db
+{{ company | upper }}_API_KEY=your-api-key
+EOF
+```
+{% elif category in ('design-creative',) %}
+```bash
+# OAuth2: Set access token (get from OAuth flow or personal tokens page)
+export {{ company | upper }}_ACCESS_TOKEN="your-access-token"
+
+# Or create .env file
+echo '{{ company | upper }}_ACCESS_TOKEN=your-access-token' >> .env
+```
+
+> **Note:** OAuth tokens expire. For production, implement the refresh token flow.
+> Personal access tokens (if available) are simpler for development.
+{% else %}
 ```bash
 # Set environment variable
 export {{ company | upper }}_API_KEY="your-api-key"
@@ -44,6 +79,7 @@ export {{ company | upper }}_API_KEY="your-api-key"
 # Or create .env file
 echo '{{ company | upper }}_API_KEY=your-api-key' >> .env
 ```
+{% endif %}
 
 ### Step 3: Verify Connection
 ```{{ primary_language | default('typescript') }}
@@ -52,14 +88,33 @@ echo '{{ company | upper }}_API_KEY=your-api-key' >> .env
 
 ## Output
 - Installed SDK package in node_modules or site-packages
+{% if category in ('data-platform',) %}
+- Connection string or API key configured in environment
+- Successful query execution confirming database connectivity
+{% elif category in ('design-creative',) %}
+- OAuth access token configured in environment
+- Successful API call confirming file/project access
+{% else %}
 - Environment variable or .env file with API key
 - Successful connection verification output
+{% endif %}
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
+{% if category in ('ai-ml',) %}
+| Invalid API Key | Key is missing, expired, or has extra whitespace | Verify key in {{ display_name }} dashboard. Check for trailing newlines |
+| Rate Limited | Exceeded requests/tokens per minute | Check usage at {{ docs_url | default('docs.' + company + '.com') }}/usage |
+{% elif category in ('data-platform',) %}
+| Connection Refused | Wrong host/port or firewall blocking | Check connection string, verify network access |
+| Authentication Failed | Wrong password or expired credentials | Reset credentials in {{ display_name }} dashboard |
+{% elif category in ('design-creative',) %}
+| Token Expired | OAuth access token past lifetime | Refresh token or generate new personal access token |
+| Insufficient Scope | Token missing required permissions | Re-authorize with correct OAuth scopes |
+{% else %}
 | Invalid API Key | Incorrect or expired key | Verify key in {{ display_name }} dashboard |
 | Rate Limited | Exceeded quota | Check quota at {{ docs_url | default('docs.' + company + '.com') }} |
+{% endif %}
 | Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
 | Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
@@ -70,7 +125,13 @@ echo '{{ company | upper }}_API_KEY=your-api-key' >> .env
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
 
 const client = new {{ client_class | default(display_name + 'Client') }}({
+{% if category in ('data-platform',) %}
+  connectionString: process.env.{{ company | upper }}_DATABASE_URL,
+{% elif category in ('design-creative',) %}
+  accessToken: process.env.{{ company | upper }}_ACCESS_TOKEN,
+{% else %}
   apiKey: process.env.{{ company | upper }}_API_KEY,
+{% endif %}
 });
 ```
 
@@ -79,7 +140,13 @@ const client = new {{ client_class | default(display_name + 'Client') }}({
 from {{ pip_package | default(company) }} import {{ client_class | default(display_name + 'Client') }}
 
 client = {{ client_class | default(display_name + 'Client') }}(
+{% if category in ('data-platform',) %}
+    connection_string=os.environ.get('{{ company | upper }}_DATABASE_URL')
+{% elif category in ('design-creative',) %}
+    access_token=os.environ.get('{{ company | upper }}_ACCESS_TOKEN')
+{% else %}
     api_key=os.environ.get('{{ company | upper }}_API_KEY')
+{% endif %}
 )
 ```
 
