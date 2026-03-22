@@ -1,155 +1,187 @@
 ---
 name: windsurf-deploy-integration
 description: |
-  Deploy Windsurf integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Windsurf-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy windsurf", "windsurf Vercel",
-  "windsurf production deploy", "windsurf Cloud Run", "windsurf Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy applications using Windsurf's built-in deployment features and Cascade automation.
+  Use when deploying apps from Windsurf, configuring Netlify/Vercel integration,
+  or building deployment workflows with Cascade.
+  Trigger with phrases like "deploy windsurf", "windsurf deploy",
+  "windsurf netlify", "windsurf vercel", "cascade deploy".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, deployment]
+tags: [saas, windsurf, deployment, netlify, vercel]
 
 ---
 # Windsurf Deploy Integration
 
 ## Overview
-Deploy Windsurf extensions and configurations to teams. Windsurf, as a VS Code-based IDE, uses the standard extension deployment model.
+Windsurf offers native deployment integration (starting with Netlify) that lets you deploy directly from the IDE. Combined with Cascade workflows, you can automate the entire build-test-deploy pipeline without leaving the editor.
 
 ## Prerequisites
-- Node.js and npm installed
-- `vsce` CLI for extension packaging (`npm install -g @vscode/vsce`)
-- Windsurf extension project with `package.json`
-- Marketplace publisher account (for public distribution)
+- Windsurf Pro plan or higher
+- Deployment platform account (Netlify, Vercel, or cloud provider)
+- Application ready to deploy
+- Git repository configured
 
 ## Instructions
 
-### Step 1: Package Extension
+### Step 1: Use Windsurf's Native Deploy (Netlify)
+
+Windsurf has a first-party Netlify integration:
+
+```
+1. Open Cascade (Cmd/Ctrl+L)
+2. Prompt: "Deploy this project to Netlify"
+3. Cascade runs the build, connects to Netlify, and deploys
+4. Preview URL appears in Cascade output
+5. Click to verify in browser or use in-IDE Preview
+```
+
+For first-time setup:
+```
+Cascade prompt: "Set up Netlify deployment for this Next.js project.
+Configure build command, output directory, and environment variables."
+```
+
+### Step 2: Create a Deployment Workflow
+
+```markdown
+<!-- .windsurf/workflows/deploy-staging.md -->
+---
+name: deploy-staging
+description: Build, test, and deploy to staging
+---
+
+## Pre-Deploy Checks
+// turbo-all
+1. Run `git status` — abort if uncommitted changes
+2. Run `npm run typecheck` — abort if type errors
+3. Run `npm test` — abort if test failures
+4. Run `npm run lint` — abort if lint errors
+
+## Build and Deploy
+5. Run `npm run build`
+6. Run `npx netlify deploy --dir=dist --site=$NETLIFY_SITE_ID`
+   Or: `npx vercel --yes`
+
+## Post-Deploy Verification
+7. Run `curl -sf $DEPLOY_URL/health | jq .`
+8. Report: deploy URL, build time, health check result
+```
+
+### Step 3: Vercel Deployment via Cascade
+
+```
+Cascade prompt: "Deploy this project to Vercel.
+- Use the production branch for prod deploys
+- Set these environment variables: DATABASE_URL, API_KEY
+- Configure custom domain: app.example.com"
+```
+
+Cascade will run:
 ```bash
-set -euo pipefail
-# Install vsce
-npm install -g @vscode/vsce
+# Install Vercel CLI if needed
+npm i -g vercel
 
-# Package extension as .vsix
-cd my-windsurf-extension
-vsce package
+# Deploy (Cascade handles interactive prompts)
+vercel --yes
 
-# Output: my-extension-1.0.0.vsix
+# Set environment variables
+vercel env add DATABASE_URL production
+vercel env add API_KEY production
+
+# Configure domain
+vercel domains add app.example.com
 ```
 
-### Step 2: Extension package.json
-```json
-{
-  "name": "my-windsurf-extension",
-  "displayName": "My Windsurf Extension",
-  "version": "1.0.0",
-  "engines": {
-    "vscode": "^1.85.0"
-  },
-  "activationEvents": ["onStartupFinished"],
-  "main": "./dist/extension.js",
-  "contributes": {
-    "commands": [{
-      "command": "myext.activate",
-      "title": "Activate My Extension"
-    }],
-    "configuration": {
-      "title": "My Extension",
-      "properties": {
-        "myext.apiKey": {
-          "type": "string",
-          "description": "API key for backend service"
-        }
-      }
-    }
-  },
-  "scripts": {
-    "build": "tsc -p ./",
-    "package": "vsce package",
-    "publish": "vsce publish"
-  }
-}
+### Step 4: Cloud Provider Deployment via Cascade
+
+```markdown
+<!-- AWS deployment workflow -->
+Cascade prompt: "Deploy this Express API to AWS using:
+1. Docker container on ECS Fargate
+2. ECR for container registry
+3. Application Load Balancer
+4. RDS PostgreSQL for database
+Generate the Dockerfile, task definition, and deployment script."
 ```
 
-### Step 3: Distribute to Team
-```bash
-# Install .vsix manually in Windsurf
-# Extensions sidebar > "..." menu > "Install from VSIX..."
-
-# Or via command line
-code --install-extension my-extension-1.0.0.vsix
+```markdown
+<!-- Google Cloud Run deployment -->
+Cascade prompt: "Deploy this to Cloud Run:
+1. Build Docker image
+2. Push to Artifact Registry
+3. Deploy to Cloud Run with 512MB memory, 1 CPU
+4. Set environment variables from .env.production"
 ```
 
-### Step 4: Shared Team Settings
-```json
-// .vscode/settings.json (commit to repo)
-{
-  "myext.apiKey": "",
-  "editor.formatOnSave": true,
-  "windsurf.cascade.enabled": true
-}
-```
+### Step 5: Preview Deployments for PRs
 
-```json
-// .vscode/extensions.json (recommended extensions)
-{
-  "recommendations": [
-    "publisher.my-windsurf-extension",
-    "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
-  ]
-}
-```
-
-### Step 5: CI/CD for Extension
 ```yaml
-# .github/workflows/publish.yml
-name: Publish Extension
-on:
-  push:
-    tags: ["v*"]
+# .github/workflows/preview-deploy.yml
+name: Preview Deploy
+on: pull_request
 
 jobs:
-  publish:
+  preview:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
       - run: npm ci && npm run build
-      - run: npx vsce package
-      - run: npx vsce publish
+      - name: Deploy preview
+        run: npx netlify deploy --dir=dist --alias=pr-${{ github.event.number }}
         env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      - name: Comment PR with preview URL
+        run: |
+          gh pr comment ${{ github.event.number }} \
+            --body "Preview: https://pr-${{ github.event.number }}--your-site.netlify.app"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Step 6: Use Previews to Verify Before Deploy
+
+```
+1. Run build locally: Cascade > "Build and preview the app"
+2. Windsurf opens in-IDE Preview tab
+3. Click through pages, verify functionality
+4. Send broken elements to Cascade: "Fix the layout on mobile"
+5. Once Preview looks correct: Cascade > "Deploy to staging"
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Package fails | Missing files | Check `files` field in package.json |
-| Extension not loading | Wrong engine version | Match `engines.vscode` to Windsurf version |
-| Settings not applied | Wrong scope | Use workspace vs user settings appropriately |
-| Publish rejected | Invalid publisher | Create publisher at marketplace.visualstudio.com |
+| Deploy fails on build | Missing dependencies | Check `npm ci` runs clean |
+| Environment variables missing | Not set in platform | Add via CLI or dashboard |
+| Preview deploy 404 | Wrong output directory | Check build config: `dist/`, `.next/`, `build/` |
+| Netlify integration not available | Older Windsurf version | Update Windsurf to latest |
+| Cascade can't deploy | No platform CLI installed | Install netlify-cli, vercel, or gcloud |
 
 ## Examples
 
-### Quick Package and Install
-```bash
-set -euo pipefail
-npm run build && vsce package && code --install-extension *.vsix
+### Quick Deploy Commands
+```
+Cascade: "Deploy to Netlify production"
+Cascade: "Deploy to Vercel with preview URL"
+Cascade: "Build Docker image and push to ECR"
+Cascade: "Deploy to Cloud Run with 1GB memory"
+```
+
+### Rollback via Cascade
+```
+Cascade: "Roll back the Netlify deployment to the previous version"
+Cascade: "Revert Vercel to the last successful production deploy"
 ```
 
 ## Resources
-- [VS Code Extension Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
-- [Windsurf Documentation](https://docs.windsurf.ai)
+- [Windsurf + Netlify Integration](https://www.netlify.com/press/windsurf-netlify-ai-ide-native-deployment-integration/)
+- [Windsurf Workflows](https://docs.windsurf.com/windsurf/cascade/workflows)
+- [Windsurf Previews](https://docs.windsurf.com/windsurf/previews)
 
 ## Next Steps
 For multi-environment setup, see `windsurf-multi-env-setup`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

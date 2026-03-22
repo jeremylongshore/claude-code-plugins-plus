@@ -1,168 +1,254 @@
 ---
 name: windsurf-performance-tuning
 description: |
-  Optimize Windsurf API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Windsurf integrations.
-  Trigger with phrases like "windsurf performance", "optimize windsurf",
-  "windsurf latency", "windsurf caching", "windsurf slow", "windsurf batch".
-allowed-tools: Read, Write, Edit
+  Optimize Windsurf IDE performance: indexing speed, Cascade responsiveness, and memory usage.
+  Use when Windsurf is slow, indexing takes too long, Cascade times out,
+  or the IDE uses too much memory.
+  Trigger with phrases like "windsurf slow", "windsurf performance",
+  "optimize windsurf", "windsurf memory", "cascade slow", "indexing slow".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, api, performance]
+tags: [saas, windsurf, performance, indexing, optimization]
 
 ---
 # Windsurf Performance Tuning
 
 ## Overview
-Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade flow configuration, context window management, workspace indexing performance, and efficient use of AI completions to minimize latency.
+Optimize Windsurf's indexing engine, Cascade context building, Supercomplete latency, and overall IDE responsiveness. Most performance issues stem from indexing too many files or missing exclusion patterns.
 
 ## Prerequisites
 - Windsurf IDE installed
-- Understanding of Cascade AI flows
-- Workspace with codebase indexed
-- Familiarity with Windsurf settings
+- Understanding of workspace indexing
+- Access to Windsurf settings
 
 ## Instructions
 
 ### Step 1: Optimize Workspace Indexing
-```json
-// .windsurf/settings.json - Exclude large directories from indexing
-{
-  "codeium.indexing.excludePatterns": [
-    "node_modules/**",
-    "dist/**",
-    "build/**",
-    ".git/**",
-    "*.min.js",
-    "**/*.map",
-    "coverage/**",
-    "vendor/**",
-    ".next/**"
-  ],
-  "codeium.indexing.maxFileSize": 1048576,  # 1048576 = configured value
-  "codeium.indexing.enableSemanticIndexing": true
-}
+
+The indexing engine is the #1 performance factor. Exclude everything that isn't source code:
+
+```gitignore
+# .codeiumignore — aggressive exclusion for large codebases
+# Build artifacts
+node_modules/
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+coverage/
+.cache/
+
+# Package manager
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Generated code
+*.min.js
+*.min.css
+*.bundle.js
+*.chunk.js
+**/*.map
+generated/
+__generated__/
+
+# Binary and media files
+*.png
+*.jpg
+*.gif
+*.svg
+*.ico
+*.mp4
+*.woff
+*.woff2
+*.ttf
+*.eot
+
+# Data files
+*.sqlite
+*.db
+*.sql.gz
+*.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.tox/
+*.egg-info/
+
+# Go
+vendor/
+
+# Rust
+target/
 ```
 
-### Step 2: Configure Cascade Flow for Speed
+### Step 2: Open Focused Workspaces
+
+```
+# DON'T: Open entire monorepo root
+windsurf ~/monorepo/          # Indexes ALL packages = slow
+
+# DO: Open specific service directories
+windsurf ~/monorepo/apps/web/        # Only indexes web app
+windsurf ~/monorepo/packages/api/    # Only indexes API
+
+# Each Windsurf window gets its own focused AI context
+# Cascade performs better with fewer, relevant files
+```
+
+### Step 3: Tune IDE Settings
+
 ```json
-// .windsurf/cascade.json - Tune Cascade behavior
+// settings.json — performance-focused configuration
 {
-  "cascade.contextWindow": {
-    "maxFiles": 10,
-    "maxTokensPerFile": 2000,  # 2000: 2 seconds in ms
-    "preferOpenFiles": true,
-    "includeImports": true
+  // Indexing limits
+  "codeium.indexing.maxFileSize": 524288,
+
+  // Reduce extension overhead
+  "extensions.autoUpdate": false,
+  "extensions.autoCheckUpdates": false,
+
+  // Editor performance
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "none",
+  "editor.bracketPairColorization.enabled": false,
+
+  // File watcher optimization
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/.git/objects/**": true,
+    "**/build/**": true
   },
-  "cascade.suggestions": {
-    "debounceMs": 150,
-    "maxSuggestions": 3,
-    "inlineSuggestionsEnabled": true,
-    "multiLineSuggestionsEnabled": true
-  },
-  "cascade.flows": {
-    "preferStreaming": true,
-    "timeoutMs": 30000,  # 30000: 30 seconds in ms
-    "retryCount": 2
+
+  // Search exclusions
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverage": true,
+    "**/*.min.js": true
   }
 }
 ```
 
-### Step 3: Efficient Context Management
-```typescript
-// .windsurf/context.ts - Define project-specific context rules
-// Place in workspace root to help Cascade understand your project
+### Step 4: Optimize Cascade Usage
 
-/**
- * @windsurf-context
- * Framework: Next.js 14 with App Router
- * Language: TypeScript strict mode
- * Styling: Tailwind CSS
- * State: Zustand
- * Testing: Vitest + Testing Library
- *
- * Key patterns:
- * - Server Components by default
- * - Client Components marked with 'use client'
- * - API routes in app/api/
- * - Shared types in types/
- */
+```markdown
+## Cascade Performance Tips
 
-// Create a .windsurfrules file for persistent context
-const WINDSURF_RULES = `
-When generating code:
-- Use TypeScript strict mode
-- Prefer async/await over .then()
-- Use named exports, not default
-- Add JSDoc comments for public APIs
-- Use Tailwind classes, not inline styles
-`;
+1. Start fresh sessions for new tasks
+   - Long conversations accumulate context, slowing responses
+   - Click + in Cascade panel to start new conversation
+
+2. Use @ mentions instead of describing files
+   - BAD: "Look at the auth service file"
+   - GOOD: "@src/services/auth.ts fix the token refresh logic"
+
+3. Scope prompts narrowly
+   - BAD: "Refactor the authentication system"
+   - GOOD: "Extract JWT validation from src/middleware/auth.ts into src/services/jwt.ts"
+
+4. Use Chat mode for questions, Write mode for edits
+   - Chat mode is lighter — doesn't build full edit context
+   - Switch modes based on intent
+
+5. Choose the right model for the task
+   - SWE-1 Lite: fast, lightweight questions (no credits)
+   - SWE-1: standard coding tasks
+   - SWE-1.5 / Claude: complex multi-file tasks (worth the wait)
 ```
 
-### Step 4: Keybinding Optimization for Flow Speed
-```json
-// keybindings.json - Fast access to Cascade features
-[
-  {
-    "key": "ctrl+shift+k",
-    "command": "cascade.openChat",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "ctrl+shift+i",
-    "command": "cascade.inlineEdit",
-    "when": "editorTextFocus"
-  },
-  {
-    "key": "tab",
-    "command": "cascade.acceptSuggestion",
-    "when": "cascade.suggestionsVisible"
-  },
-  {
-    "key": "alt+]",
-    "command": "cascade.nextSuggestion",
-    "when": "cascade.suggestionsVisible"
-  }
-]
+### Step 5: Memory Management
+
+```markdown
+## Reduce Memory Usage
+
+1. Close unused editor tabs
+   - Each open file adds to memory footprint
+   - Cmd/Ctrl+K Cmd/Ctrl+U: close unused tabs
+
+2. Limit extensions
+   - Each extension consumes memory
+   - Disable extensions you don't actively use
+   - Check: Extensions > "@enabled" to review
+
+3. Disable unused Supercomplete languages
+   - Settings > codeium.autocomplete.languages
+   - Disable for languages you don't write
+
+4. Monitor process memory
+   - Help > Open Process Explorer
+   - Look for extensions consuming >200MB
+```
+
+### Step 6: Benchmark Your Setup
+
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "=== Windsurf Performance Check ==="
+
+# Workspace size
+FILE_COUNT=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)
+echo "Indexed files: ~$FILE_COUNT"
+
+# Config status
+echo "Has .codeiumignore: $([ -f .codeiumignore ] && echo 'YES' || echo 'NO (SLOW!)')"
+IGNORE_LINES=$(wc -l < .codeiumignore 2>/dev/null || echo 0)
+echo "Ignore patterns: $IGNORE_LINES"
+
+# Recommendations
+if [ "$FILE_COUNT" -gt 5000 ]; then
+  echo "WARNING: >5000 files. Add more patterns to .codeiumignore"
+fi
+if [ "$IGNORE_LINES" -lt 5 ]; then
+  echo "WARNING: Few ignore patterns. Add build artifacts, binaries, lock files"
+fi
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow indexing | Large node_modules indexed | Add to exclude patterns |
-| Irrelevant suggestions | Too much context | Reduce maxFiles and maxTokensPerFile |
-| Cascade timeout | Complex multi-file operation | Break into smaller Cascade steps |
-| High memory usage | Semantic indexing on large repo | Limit maxFileSize, exclude binaries |
+| Indexing never completes | Too many files | Add `.codeiumignore`, open subdirectory |
+| Cascade timeout | Complex prompt + large context | Narrow scope, start fresh session |
+| High memory usage | Too many extensions/tabs | Close tabs, disable unused extensions |
+| Supercomplete lag | Large file open | Split large files, add to maxFileSize limit |
+| IDE freezes | Extension conflict | Safe Mode: `windsurf --disable-extensions` |
 
 ## Examples
 
-### Project-Specific Rules File
-```markdown
-<!-- .windsurfrules -->
-# Project Context for AI
+### Quick Performance Fix
+```bash
+# Create minimal .codeiumignore if missing
+[ -f .codeiumignore ] || cat > .codeiumignore << 'EOF'
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.min.js
+*.map
+EOF
+```
 
-## Architecture
-- Monorepo with pnpm workspaces
-- packages/api - Express REST API
-- packages/web - Next.js frontend
-- packages/shared - Shared types
-
-## Conventions
-- Use zod for runtime validation
-- Error responses follow RFC 7807  # 7807 = configured value
-- All dates are ISO 8601 UTC  # 8601 = configured value
+### Reset Indexing
+```
+Command Palette (Cmd/Ctrl+Shift+P):
+"Codeium: Reset Indexing"
 ```
 
 ## Resources
-- [Windsurf Documentation](https://docs.windsurf.com)
-- [Cascade AI Guide](https://docs.windsurf.com/cascade)
-- [Codeium Configuration](https://codeium.com/documentation)
+- [Windsurf Context Awareness](https://docs.windsurf.com/context-awareness/overview)
+- [Windsurf Ignore](https://docs.windsurf.com/context-awareness/windsurf-ignore)
+- [Autocomplete Tips](https://docs.windsurf.com/autocomplete/tips)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For cost optimization, see `windsurf-cost-tuning`.

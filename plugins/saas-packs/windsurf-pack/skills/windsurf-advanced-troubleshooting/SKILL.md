@@ -1,265 +1,248 @@
 ---
 name: windsurf-advanced-troubleshooting
 description: |
-  Apply Windsurf advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Windsurf support escalation.
-  Trigger with phrases like "windsurf hard bug", "windsurf mystery error",
-  "windsurf impossible to debug", "difficult windsurf issue", "windsurf deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  Advanced Windsurf debugging for hard-to-diagnose IDE, Cascade, and indexing issues.
+  Use when standard troubleshooting fails, Cascade produces consistently wrong output,
+  or investigating deep configuration problems.
+  Trigger with phrases like "windsurf deep debug", "windsurf mystery error",
+  "windsurf impossible to fix", "cascade keeps failing", "windsurf advanced debug".
+allowed-tools: Read, Grep, Bash(ls:*), Bash(curl:*), Bash(find:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, debugging, scaling]
+tags: [saas, windsurf, debugging, advanced, troubleshooting]
 
 ---
 # Windsurf Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Windsurf issues that resist standard troubleshooting.
+Deep debugging techniques for Windsurf issues that resist standard troubleshooting. Covers Cascade context corruption, indexing engine problems, extension conflicts, MCP failures, and workspace configuration debugging.
 
 ## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
-
-## Evidence Collection Framework
-
-### Comprehensive Debug Bundle
-```bash
-#!/bin/bash
-set -euo pipefail
-# advanced-windsurf-debug.sh
-
-BUNDLE="windsurf-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=windsurf-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u windsurf-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=windsurf_requests_total > "$BUNDLE/metrics/requests.json"  # 9090: Prometheus port
-curl -s localhost:9090/api/v1/query?query=windsurf_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # 443: HTTPS port
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=windsurf > "$BUNDLE/traces/jaeger.json"  # 16686: Jaeger UI port
-
-# 5. Configuration state
-kubectl get cm windsurf-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret windsurf-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
-```typescript
-// Test each layer independently
-async function diagnoseWindsurfIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
-
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.windsurf.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.windsurf.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
-
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new WindsurfClient({
-    apiKey: process.env.WINDSURF_API_KEY!,
-  });
-
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
-  }
-}
-```
-
-## Timing Analysis
-
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
-
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Windsurf client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1024: 1 KB
-      console.warn('Potential memory leak in windsurf integration');
-    }
-  }
-}, 60000);  # 60000: 1 minute in ms
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class WindsurfConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
-
-```markdown
-## Windsurf Support Escalation
-
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]  # 8601 = configured value
-
-### Issue Summary
-[One paragraph description]
-
-### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
-
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (windsurf-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
-```
+- Standard troubleshooting attempted (see `windsurf-common-errors`)
+- Terminal access
+- Understanding of Windsurf's architecture (VS Code base + Codeium AI layer)
 
 ## Instructions
 
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
+### Step 1: Isolate Windsurf Layer vs VS Code Layer
 
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
+```
+Windsurf = VS Code + Codeium AI Layer
 
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
+If the issue is:
+- Editor crashes, rendering, file system → VS Code layer
+- AI suggestions wrong, Cascade fails, indexing stuck → Codeium layer
+- Extension not working → Extension compatibility layer
 
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
+Test VS Code layer:
+  windsurf --disable-extensions  # Run without extensions
+  # If issue persists → VS Code layer problem
 
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
+Test Codeium layer:
+  # Disable Codeium: Extensions > search "codeium" > Disable
+  # If issue resolves → Codeium layer problem
+```
+
+### Step 2: Debug Cascade Context Issues
+
+When Cascade consistently gives wrong or irrelevant suggestions:
+
+```bash
+set -euo pipefail
+echo "=== Cascade Context Debug ==="
+
+# 1. Check rules file
+echo "--- .windsurfrules ---"
+if [ -f .windsurfrules ]; then
+  CHARS=$(wc -c < .windsurfrules)
+  echo "Size: $CHARS chars (limit: 6000)"
+  [ "$CHARS" -gt 6000 ] && echo "WARNING: Over limit — content truncated!"
+else
+  echo "MISSING — Cascade has no project context"
+fi
+
+# 2. Check workspace rules
+echo "--- Workspace Rules ---"
+TOTAL_RULE_CHARS=0
+if [ -d .windsurf/rules ]; then
+  for rule in .windsurf/rules/*.md; do
+    [ -f "$rule" ] || continue
+    CHARS=$(wc -c < "$rule")
+    TOTAL_RULE_CHARS=$((TOTAL_RULE_CHARS + CHARS))
+    HAS_TRIGGER=$(grep -c "^trigger:" "$rule" || true)
+    echo "  $(basename "$rule"): $CHARS chars, trigger: $([[ $HAS_TRIGGER -gt 0 ]] && echo 'YES' || echo 'MISSING')"
+  done
+  echo "Total: $TOTAL_RULE_CHARS chars"
+else
+  echo "No .windsurf/rules/ directory"
+fi
+
+# 3. Check total rules budget
+RULES_CHARS=$(wc -c < .windsurfrules 2>/dev/null || echo 0)
+GLOBAL_CHARS=$(wc -c < ~/.windsurf/global_rules.md 2>/dev/null || echo 0)
+TOTAL=$((RULES_CHARS + GLOBAL_CHARS))
+echo "--- Total Rules Budget ---"
+echo "Project rules: $RULES_CHARS + Global rules: $GLOBAL_CHARS = $TOTAL chars (limit: 12000)"
+[ "$TOTAL" -gt 12000 ] && echo "WARNING: Over 12000 total — rules will be truncated!"
+
+# 4. Check memories
+echo "--- Memories ---"
+MEMORY_DIR="$HOME/.codeium/windsurf/memories"
+if [ -d "$MEMORY_DIR" ]; then
+  MEMORY_COUNT=$(find "$MEMORY_DIR" -type f | wc -l)
+  echo "Memory files: $MEMORY_COUNT"
+  [ "$MEMORY_COUNT" -gt 50 ] && echo "WARNING: Many memories — may cause conflicting context"
+else
+  echo "No memories directory"
+fi
+```
+
+### Step 3: Debug Indexing Problems
+
+```bash
+set -euo pipefail
+echo "=== Indexing Debug ==="
+
+# Count files that would be indexed
+TOTAL_FILES=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)
+echo "Total files (excluding node_modules, .git): $TOTAL_FILES"
+
+# Check for large files that slow indexing
+echo "--- Large files (>1MB, not in node_modules) ---"
+find . -type f -size +1M -not -path '*/node_modules/*' -not -path '*/.git/*' | head -10
+
+# Check .codeiumignore effectiveness
+if [ -f .codeiumignore ]; then
+  echo "--- .codeiumignore patterns ---"
+  wc -l < .codeiumignore
+  echo "patterns defined"
+else
+  echo "WARNING: No .codeiumignore — indexing everything"
+fi
+
+# Recommendations
+if [ "$TOTAL_FILES" -gt 10000 ]; then
+  echo ""
+  echo "RECOMMENDATION: >10K files. Open a subdirectory instead of root."
+  echo "RECOMMENDATION: Add more patterns to .codeiumignore"
+fi
+```
+
+### Step 4: Debug Extension Conflicts
+
+```bash
+set -euo pipefail
+echo "=== Extension Conflict Check ==="
+
+# List all installed extensions
+windsurf --list-extensions 2>/dev/null | while read ext; do
+  # Check for known conflicts
+  case "$ext" in
+    *copilot*|*tabnine*|*cody*|*intellicode*|*aws-toolkit*codewhisperer*)
+      echo "CONFLICT: $ext — competes with Supercomplete/Cascade"
+      ;;
+    *remote*|*liveshare*|*container*)
+      echo "OK: $ext — compatible but may affect performance"
+      ;;
+    *)
+      echo "OK: $ext"
+      ;;
+  esac
+done
+
+echo ""
+echo "Resolution: Disable conflicting extensions or run:"
+echo "  windsurf --disable-extensions  # Test in clean mode"
+```
+
+### Step 5: Debug MCP Server Issues
+
+```bash
+set -euo pipefail
+echo "=== MCP Debug ==="
+
+MCP_CONFIG="$HOME/.codeium/windsurf/mcp_config.json"
+if [ -f "$MCP_CONFIG" ]; then
+  echo "MCP config exists"
+  # Validate JSON
+  python3 -c "import json; json.load(open('$MCP_CONFIG'))" 2>&1 && echo "JSON: valid" || echo "JSON: INVALID"
+
+  # Check each server command
+  python3 -c "
+import json
+config = json.load(open('$MCP_CONFIG'))
+for name, server in config.get('mcpServers', {}).items():
+    cmd = server.get('command', 'N/A')
+    print(f'  {name}: command={cmd}')
+  "
+else
+  echo "No MCP config at $MCP_CONFIG"
+fi
+```
+
+### Step 6: Nuclear Reset Options
+
+When nothing else works:
+
+```markdown
+## Progressive Reset (least to most destructive)
+
+1. Restart Cascade
+   Command Palette > "Cascade: Restart"
+
+2. Reset Indexing
+   Command Palette > "Codeium: Reset Indexing"
+
+3. Reload Window
+   Cmd/Ctrl+Shift+P > "Developer: Reload Window"
+
+4. Clear Memories
+   Delete contents of ~/.codeium/windsurf/memories/
+
+5. Reset All Codeium State
+   Close Windsurf
+   rm -rf ~/.codeium/windsurf/cache/
+   Reopen Windsurf (re-indexes, re-authenticates)
+
+6. Clean Install
+   Uninstall Windsurf
+   rm -rf ~/.codeium/
+   rm -rf ~/.config/Windsurf/  # Linux
+   # or: rm -rf ~/Library/Application Support/Windsurf/  # macOS
+   Reinstall from windsurf.com/download
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
+| Cascade gives contradictory advice | Conflicting memories | Clear old memories |
+| Rules ignored | Over 12K combined chars | Trim rules, check total budget |
+| Wrong file suggestions | Stale index | Reset indexing |
+| Slow after update | Extension incompatibility | Test with `--disable-extensions` |
+| MCP tools missing | Config JSON invalid | Validate with python3 json parser |
+| Everything broken | Corrupted state | Progressive reset (Step 6) |
 
 ## Examples
 
-### Quick Layer Test
+### Quick Diagnostic One-Liner
 ```bash
-set -euo pipefail
-# Test each layer in sequence
-curl -v https://api.windsurf.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+echo "WS files: $(find . -not -path '*/node_modules/*' -not -path '*/.git/*' -type f | wc -l) | Rules: $(wc -c < .windsurfrules 2>/dev/null || echo 0)c | Ignore: $(wc -l < .codeiumignore 2>/dev/null || echo 0) patterns | Exts: $(windsurf --list-extensions 2>/dev/null | wc -l)"
+```
+
+### Submit Support Ticket
+```markdown
+Attach:
+1. Output from all diagnostic scripts above
+2. Debug bundle from windsurf-debug-bundle
+3. Exact prompts that produce wrong results
+4. Expected vs actual Cascade behavior
 ```
 
 ## Resources
-- [Windsurf Support Portal](https://support.windsurf.com)
+- [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 - [Windsurf Status Page](https://status.windsurf.com)
 
 ## Next Steps
-For load testing, see `windsurf-load-scale`.
+For load and scale patterns, see `windsurf-load-scale`.

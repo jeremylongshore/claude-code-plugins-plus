@@ -1,149 +1,209 @@
 ---
 name: windsurf-sdk-patterns
 description: |
-  Apply production-ready Windsurf SDK patterns for TypeScript and Python.
-  Use when implementing Windsurf integrations, refactoring SDK usage,
-  or establishing team coding standards for Windsurf.
-  Trigger with phrases like "windsurf SDK patterns", "windsurf best practices",
-  "windsurf code patterns", "idiomatic windsurf".
-allowed-tools: Read, Write, Edit
+  Apply production-ready Windsurf workspace configuration and Cascade interaction patterns.
+  Use when configuring .windsurfrules, workspace rules, MCP servers,
+  or establishing team coding standards for Windsurf AI.
+  Trigger with phrases like "windsurf patterns", "windsurf best practices",
+  "windsurf config patterns", "windsurfrules", "windsurf workspace".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, python, typescript]
+tags: [saas, windsurf, configuration, rules, mcp]
 
 ---
-# Windsurf SDK Patterns
+# Windsurf Configuration Patterns
 
 ## Overview
-Production-ready patterns for Windsurf SDK usage in TypeScript and Python.
+Production-ready configuration patterns for Windsurf IDE: rules files, workspace rules with trigger modes, MCP server integration, and Cascade prompt engineering.
 
 ## Prerequisites
-- Completed `windsurf-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Windsurf authenticated and operational
+- Understanding of Cascade Write vs Chat modes
+- Project with established coding conventions
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/windsurf/client.ts
-import { WindsurfClient } from '@windsurf/sdk';
+### Step 1: Root-Level .windsurfrules (Permanent Context)
 
-let instance: WindsurfClient | null = null;
+The `.windsurfrules` file is the single highest-impact configuration for Cascade output quality. It provides persistent context every session.
 
-export function getWindsurfClient(): WindsurfClient {
-  if (!instance) {
-    instance = new WindsurfClient({
-      apiKey: process.env.WINDSURF_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
+```markdown
+<!-- .windsurfrules -->
+
+# Project: payments-api
+
+## Stack
+- Runtime: Node.js 20 LTS
+- Language: TypeScript 5.x (strict, noUncheckedIndexedAccess)
+- Framework: Fastify v4
+- ORM: Drizzle (PostgreSQL)
+- Validation: zod
+- Testing: Vitest
+- Linting: Biome
+
+## Architecture Rules
+- Route handlers in src/routes/ — no business logic
+- Business logic in src/services/ — never throw, use Result<T,E>
+- Database queries in src/repositories/ — Drizzle only
+- Shared types in src/types/ — all exported with JSDoc
+
+## Don't
+- Don't use `any` type
+- Don't use default exports
+- Don't use class-based patterns (use functions + closures)
+- Don't modify files in migrations/ without explicit request
+- Don't use deprecated APIs: my_old_helper, legacyAuth
+
+## Testing
+- Unit tests for every service method
+- Integration tests for every route handler
+- No mocking repositories in integration tests
+- Use test fixtures from tests/fixtures/
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { WindsurfError } from '@windsurf/sdk';
+**Limits:** 6,000 characters per rules file. 12,000 total (global + workspace combined).
 
-async function safeWindsurfCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof WindsurfError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+### Step 2: Workspace Rules with Trigger Modes
+
+Create granular rules in `.windsurf/rules/` with YAML frontmatter:
+
+```markdown
+<!-- .windsurf/rules/testing.md -->
+---
+trigger: glob
+globs: **/*.test.ts, **/*.spec.ts
+---
+All test files must:
+- Use describe/it blocks (not test())
+- Mock external API calls with msw
+- Assert both success and error paths
+- Include at least one snapshot test for UI components
+- Use factory functions from tests/fixtures/ for test data
+```
+
+```markdown
+<!-- .windsurf/rules/api-routes.md -->
+---
+trigger: glob
+globs: src/routes/**/*.ts
+---
+API route handlers must:
+- Validate input with zod schema before processing
+- Return consistent error format: { error: string, code: string, statusCode: number }
+- Include request ID in all log lines
+- Never call database directly — use repository layer
+```
+
+```markdown
+<!-- .windsurf/rules/security.md -->
+---
+trigger: model_decision
+description: Apply when code touches authentication, authorization, or secrets
+---
+Security requirements:
+- Never log secrets, tokens, or PII
+- Use parameterized queries (never string interpolation for SQL)
+- Validate JWT tokens with jose library
+- Rate limit all public endpoints
+- CORS: explicit origin whitelist, never wildcard in production
+```
+
+```markdown
+<!-- .windsurf/rules/migrations.md -->
+---
+trigger: manual
+---
+Database migration rules (activate with @migrations):
+- Always create reversible migrations (up + down)
+- Never drop columns in production — deprecate first
+- Add indexes for any new foreign key columns
+- Test migration on a copy of production data first
+```
+
+### Step 3: MCP Server Configuration
+
+Connect external tools to Cascade via Model Context Protocol:
+
+```json
+// ~/.codeium/windsurf/mcp_config.json
+{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-postgres"],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
     }
-    return { data: null, error: err as Error };
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000  # 1000: 1 second in ms
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
+Enable in Windsurf Settings > Cascade > Model Context Protocol (MCP).
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+**Tool limit:** Cascade supports max 100 MCP tools total across all servers. Disable unused tools in each MCP's settings page.
+
+### Step 4: Effective Cascade Prompt Patterns
+
+```
+GOOD prompts (specific, scoped):
+"In src/services/payment.ts, add a refundPayment method that calls
+Stripe's refund API. Handle partial refunds. Return Result<Refund, PaymentError>."
+
+"@src/routes/users.ts Add input validation using the UserCreateSchema
+from src/types/user.ts. Return 400 with field-level errors."
+
+BAD prompts (vague, unscoped):
+"Add validation to the API"
+"Refactor the codebase"
+"Make it better"
+```
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Rules ignored by Cascade | File over 6,000 chars | Trim to essentials, split into workspace rules |
+| Workspace rules not loading | Wrong directory | Must be `.windsurf/rules/`, not `.windsurfrules/` |
+| MCP server not connecting | Command not found | Ensure npx can resolve the package |
+| Too many MCP tools | Over 100 tool limit | Disable unused tools per MCP server |
+| Glob trigger not firing | Wrong pattern syntax | Use gitignore-style globs: `**/*.test.ts` |
 
 ## Examples
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, WindsurfClient>();
-
-export function getClientForTenant(tenantId: string): WindsurfClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new WindsurfClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
+### Global Rules (Apply to All Projects)
+```markdown
+<!-- ~/.windsurf/global_rules.md (6,000 char limit) -->
+- Always use English for code comments and commit messages
+- Prefer functional programming patterns over OOP
+- Write self-documenting code; add comments only for "why", not "what"
+- When suggesting terminal commands, explain what they do
+- Never suggest installing global npm packages
 ```
 
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from windsurf import WindsurfClient
-
-@asynccontextmanager
-async def get_windsurf_client():
-    client = WindsurfClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const windsurfResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
+### Project Health Check
+```bash
+# Verify Windsurf config exists
+ls -la .windsurfrules .codeiumignore .windsurf/rules/ 2>/dev/null
 ```
 
 ## Resources
-- [Windsurf SDK Reference](https://docs.windsurf.com/sdk)
-- [Windsurf API Types](https://docs.windsurf.com/types)
-- [Zod Documentation](https://zod.dev/)
+- [Windsurf Rules Directory](https://windsurf.com/editor/directory)
+- [Cascade Memories](https://docs.windsurf.com/windsurf/cascade/memories)
+- [MCP Integration](https://docs.windsurf.com/windsurf/cascade/mcp)
 
 ## Next Steps
-Apply patterns in `windsurf-core-workflow-a` for real-world usage.
+Apply patterns in `windsurf-core-workflow-a` for real-world Cascade usage.

@@ -1,253 +1,226 @@
 ---
 name: windsurf-migration-deep-dive
 description: |
-  Execute Windsurf major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Windsurf, performing major version upgrades,
-  or re-platforming existing integrations to Windsurf.
-  Trigger with phrases like "migrate windsurf", "windsurf migration",
-  "switch to windsurf", "windsurf replatform", "windsurf upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate to Windsurf from VS Code, Cursor, or other AI IDEs with full configuration transfer.
+  Use when migrating a team to Windsurf, transferring Cursor rules,
+  or evaluating Windsurf against other AI editors.
+  Trigger with phrases like "migrate to windsurf", "switch to windsurf",
+  "windsurf from cursor", "windsurf from copilot", "windsurf evaluation".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, migration]
+tags: [saas, windsurf, migration, cursor, vscode]
 
 ---
 # Windsurf Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`windsurf --version 2>/dev/null || echo 'Not installed'`
+!`code --version 2>/dev/null | head -1 || echo 'VS Code not installed'`
+!`cursor --version 2>/dev/null | head -1 || echo 'Cursor not installed'`
 
 ## Overview
-Comprehensive guide for migrating to or from Windsurf, or major version upgrades.
+Comprehensive guide for migrating teams to Windsurf from VS Code + Copilot, Cursor, or other AI editors. Covers settings transfer, concept mapping, team rollout planning, and rollback strategy.
 
 ## Prerequisites
-- Current system documentation
-- Windsurf SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
-
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "windsurf" > windsurf-files.txt
-
-# Count integration points
-wc -l windsurf-files.txt
-
-# Identify dependencies
-npm list | grep windsurf
-pip freeze | grep windsurf
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessWindsurfMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Windsurf   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Windsurf SDK
-npm install @windsurf/sdk
-
-# Configure credentials
-cp .env.example .env.windsurf
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@windsurf/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/windsurf.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class WindsurfAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const windsurfData = this.transform(data);
-    return windsurfClient.create(windsurfData);
-  }
-
-  private transform(data: CreateInput): WindsurfInput {
-    // Map from old format to Windsurf format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateWindsurfData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await windsurfClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const windsurfPercentage = getFeatureFlag('windsurf_migration_percentage');
-
-  if (Math.random() * 100 < windsurfPercentage) {
-    return new WindsurfAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app WINDSURF_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.windsurf'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateWindsurfMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+- Current editor still installed (for config export)
+- Target repositories identified
+- Team buy-in for evaluation period
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+### Step 1: Feature Comparison Matrix
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+| Feature | VS Code + Copilot | Cursor | Windsurf |
+|---------|------------------|--------|----------|
+| Inline completions | Copilot | Tab | Supercomplete |
+| Agentic AI chat | N/A | Composer | Cascade Write |
+| AI Q&A | Copilot Chat | Chat | Cascade Chat |
+| Inline edit | Copilot Edit | Cmd+K | Cmd+I (Command) |
+| Project rules | N/A | .cursorrules | .windsurfrules |
+| AI ignore file | N/A | .cursorignore | .codeiumignore |
+| Workspace rules | N/A | .cursor/rules/ | .windsurf/rules/ |
+| Reusable workflows | N/A | N/A | .windsurf/workflows/ |
+| Persistent memories | N/A | Notepad | Memories |
+| MCP support | Via extension | Built-in | Built-in |
+| In-IDE preview | N/A | N/A | Previews |
+| Terminal AI | N/A | Limited | Full (Turbo mode) |
+| Deploy from IDE | N/A | N/A | Netlify native |
+| Pricing (individual) | $10/mo | $20/mo | $15/mo |
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+### Step 2: Migrate from Cursor
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Windsurf integration.
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "=== Migrating Cursor → Windsurf ==="
 
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Windsurf
+# 1. Convert rules files
+if [ -f .cursorrules ]; then
+  cp .cursorrules .windsurfrules
+  echo "Converted .cursorrules → .windsurfrules"
+fi
+
+# 2. Convert ignore file
+if [ -f .cursorignore ]; then
+  cp .cursorignore .codeiumignore
+  echo "Converted .cursorignore → .codeiumignore"
+fi
+
+# 3. Convert workspace rules
+if [ -d .cursor/rules ]; then
+  mkdir -p .windsurf/rules
+  for rule in .cursor/rules/*.md; do
+    [ -f "$rule" ] || continue
+    BASENAME=$(basename "$rule")
+    cp "$rule" ".windsurf/rules/$BASENAME"
+    echo "Copied rule: $BASENAME"
+  done
+  echo ""
+  echo "NOTE: Review .windsurf/rules/ files."
+  echo "Windsurf uses frontmatter with 'trigger:' field:"
+  echo "  trigger: always_on | glob | model_decision | manual"
+  echo "  globs: **/*.test.ts (for glob trigger)"
+fi
+
+# 4. Migrate extensions
+if command -v cursor &>/dev/null; then
+  cursor --list-extensions > /tmp/cursor-extensions.txt
+  echo ""
+  echo "Extensions to install in Windsurf:"
+  grep -v "cursor\|anysphere" /tmp/cursor-extensions.txt | while read ext; do
+    echo "  windsurf --install-extension $ext"
+  done
+fi
+
+echo ""
+echo "Migration complete. Remove Cursor-specific references from .windsurfrules"
+```
+
+### Step 3: Migrate from VS Code + Copilot
+
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "=== Migrating VS Code + Copilot → Windsurf ==="
+
+# 1. Export and install extensions
+code --list-extensions > /tmp/vscode-extensions.txt
+echo "Installing $(wc -l < /tmp/vscode-extensions.txt) extensions..."
+grep -v "github.copilot" /tmp/vscode-extensions.txt | while read ext; do
+  windsurf --install-extension "$ext" 2>/dev/null || echo "  SKIP: $ext"
+done
+
+# 2. Copy settings
+SRC="$HOME/.config/Code/User/settings.json"
+DST="$HOME/.config/Windsurf/User/settings.json"
+[ -f "$SRC" ] && cp "$SRC" "$DST" && echo "Settings copied"
+
+# 3. Copy keybindings
+SRC_KB="$HOME/.config/Code/User/keybindings.json"
+DST_KB="$HOME/.config/Windsurf/User/keybindings.json"
+[ -f "$SRC_KB" ] && cp "$SRC_KB" "$DST_KB" && echo "Keybindings copied"
+
+# 4. Create new Windsurf-specific config (no equivalent in VS Code)
+echo ""
+echo "NEW: Create these files for Windsurf AI features:"
+echo "  .windsurfrules   — project context for Cascade AI"
+echo "  .codeiumignore   — exclude files from AI indexing"
+echo "  .windsurf/rules/ — triggered workspace rules"
+```
+
+### Step 4: Team Rollout Plan
+
+```yaml
+# Phased rollout strategy
+migration_plan:
+  week_1_pilot:
+    participants: "2-3 senior developers"
+    goals:
+      - "Install Windsurf, import VS Code settings"
+      - "Create .windsurfrules for 1-2 main repos"
+      - "Use Cascade for real tasks, document experience"
+    success_criteria: "Pilot devs productive in Windsurf"
+
+  week_2_expand:
+    participants: "Full team (keep old editor available)"
+    goals:
+      - "All team members install Windsurf"
+      - "Run setup-windsurf.sh for each repo"
+      - "Training session: Cascade, Supercomplete, Workflows"
+    success_criteria: ">70% team using Windsurf daily"
+
+  week_3_optimize:
+    participants: "Full team"
+    goals:
+      - "Refine .windsurfrules based on team feedback"
+      - "Create team workflows for common tasks"
+      - "Configure Turbo mode allow/deny lists"
+    success_criteria: "Acceptance rate >25%, team satisfied"
+
+  week_4_commit:
+    participants: "Full team"
+    goals:
+      - "Remove old editor from default toolchain"
+      - "Decommission Copilot/Cursor licenses"
+      - "Document final configuration"
+    success_criteria: "100% team on Windsurf, licenses cancelled"
+```
+
+### Step 5: Rollback Plan
+
+```yaml
+rollback:
+  trigger: "Team productivity drops or critical issues discovered"
+  steps:
+    1. "Keep old editor installed during evaluation (don't uninstall)"
+    2. "Git config files (.windsurfrules, .codeiumignore) don't affect other editors"
+    3. "VS Code settings already backed up during migration"
+    4. "Cancel Windsurf subscription within trial period"
+  note: "Windsurf config files are safe to leave in repo — they're ignored by other editors"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
+| Extension doesn't work in Windsurf | VS Code API incompatibility | Check Windsurf marketplace for alternative |
+| Settings cause errors | Windsurf-specific settings format | Remove Cursor/Copilot-specific settings |
+| Team resistance | Unfamiliar with Cascade | Demo session with real project tasks |
+| .cursorrules not working | Wrong filename | Must be `.windsurfrules` in Windsurf |
+| Missing features | Specific Cursor/Copilot feature | Check if Windsurf has equivalent (often different name) |
 
 ## Examples
 
-### Quick Migration Status
-```typescript
-const status = await validateWindsurfMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+### Quick Evaluation Script
+```bash
+# Install Windsurf alongside existing editor
+brew install --cask windsurf  # macOS
+
+# Import settings
+windsurf --list-extensions  # Check what's already imported
+
+# Open same project in both editors, compare AI quality
+windsurf /path/to/project
+cursor /path/to/project  # or: code /path/to/project
+```
+
+### Concept Quick Reference
+```
+Copilot → Supercomplete (Tab completions)
+Copilot Chat → Cascade Chat (Cmd+L, Chat mode)
+Copilot Edit → Cascade Write (Cmd+L, Write mode)
+Composer (Cursor) → Cascade Write
+Cmd+K (Cursor) → Cmd+I (Windsurf Command)
+.cursorrules → .windsurfrules
+.cursorignore → .codeiumignore
 ```
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Windsurf Migration Guide](https://docs.windsurf.com/migration)
+- [Windsurf Download](https://windsurf.com/download)
+- [Windsurf vs Cursor Comparison](https://windsurf.com/compare/windsurf-vs-cursor)
+- [Windsurf Changelog](https://windsurf.com/changelog)
 
-## Flagship+ Skills
+## Next Steps
 For advanced troubleshooting, see `windsurf-advanced-troubleshooting`.

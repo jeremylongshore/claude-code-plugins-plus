@@ -1,119 +1,179 @@
 ---
 name: windsurf-debug-bundle
 description: |
-  Collect Windsurf debug evidence for support tickets and troubleshooting.
+  Collect Windsurf diagnostic information for troubleshooting and support tickets.
   Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Windsurf problems.
-  Trigger with phrases like "windsurf debug", "windsurf support bundle",
-  "collect windsurf logs", "windsurf diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  or collecting diagnostic data for Windsurf problems.
+  Trigger with phrases like "windsurf debug", "windsurf support",
+  "windsurf diagnostic", "windsurf logs", "windsurf not working".
+allowed-tools: Read, Bash(grep:*), Bash(ls:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, debugging]
+tags: [saas, windsurf, debugging, support]
 
 ---
 # Windsurf Debug Bundle
 
 ## Current State
+!`windsurf --version 2>/dev/null || echo 'Windsurf CLI not in PATH'`
 !`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
 !`uname -a`
 
 ## Overview
-Collect all necessary diagnostic information for Windsurf support tickets.
+Collect all diagnostic information needed to troubleshoot Windsurf issues or submit effective support tickets.
 
 ## Prerequisites
-- Windsurf SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Windsurf installed (even if malfunctioning)
+- Terminal access
+- Permission to read Windsurf config directories
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Collect Windsurf Configuration State
+
 ```bash
 #!/bin/bash
-# windsurf-debug-bundle.sh
-
-BUNDLE_DIR="windsurf-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Windsurf Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
 set -euo pipefail
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "WINDSURF_API_KEY: ${WINDSURF_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+
+BUNDLE="windsurf-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"/{config,logs,workspace}
+
+echo "=== Windsurf Debug Bundle ===" > "$BUNDLE/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE/summary.txt"
+
+# 1. Windsurf version and environment
+echo "--- Environment ---" >> "$BUNDLE/summary.txt"
+windsurf --version >> "$BUNDLE/summary.txt" 2>&1 || echo "windsurf CLI not found" >> "$BUNDLE/summary.txt"
+node --version >> "$BUNDLE/summary.txt" 2>&1
+echo "OS: $(uname -srm)" >> "$BUNDLE/summary.txt"
+
+# 2. Codeium config (redacted)
+echo "--- Codeium Config ---" >> "$BUNDLE/summary.txt"
+ls -la ~/.codeium/ >> "$BUNDLE/config/codeium-dir.txt" 2>&1 || echo "No ~/.codeium/" >> "$BUNDLE/config/codeium-dir.txt"
+
+# 3. MCP server config (redacted)
+if [ -f ~/.codeium/windsurf/mcp_config.json ]; then
+  sed 's/"[A-Za-z0-9_-]\{20,\}"/"***REDACTED***"/g' ~/.codeium/windsurf/mcp_config.json > "$BUNDLE/config/mcp-config-redacted.json"
+fi
+
+# 4. Workspace config
+cp .windsurfrules "$BUNDLE/workspace/" 2>/dev/null || true
+cp .codeiumignore "$BUNDLE/workspace/" 2>/dev/null || true
+ls -la .windsurf/ >> "$BUNDLE/workspace/windsurf-dir.txt" 2>/dev/null || true
+ls -la .windsurf/rules/ >> "$BUNDLE/workspace/rules-dir.txt" 2>/dev/null || true
+
+# 5. Extension list
+windsurf --list-extensions > "$BUNDLE/config/extensions.txt" 2>/dev/null || echo "Cannot list extensions" > "$BUNDLE/config/extensions.txt"
 ```
 
-### Step 3: Gather SDK and Logs
+### Step 2: Collect Logs
+
 ```bash
-set -euo pipefail
-# SDK version
-npm list @windsurf/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+# Windsurf logs location varies by OS:
+# macOS: ~/Library/Application Support/Windsurf/logs/
+# Linux: ~/.config/Windsurf/logs/
+# Windows: %APPDATA%/Windsurf/logs/
 
-# Recent logs (redacted)
-grep -i "windsurf" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+LOG_DIR="${HOME}/.config/Windsurf/logs"
+[ -d "$LOG_DIR" ] || LOG_DIR="${HOME}/Library/Application Support/Windsurf/logs"
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+if [ -d "$LOG_DIR" ]; then
+  # Copy last 1000 lines of each log (redacted)
+  for log in "$LOG_DIR"/*.log; do
+    tail -1000 "$log" 2>/dev/null | sed 's/Bearer [^ ]*/Bearer ***REDACTED***/g' > "$BUNDLE/logs/$(basename "$log")"
+  done
+fi
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.windsurf.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+# Codeium-specific logs
+if [ -d ~/.codeium/windsurf/logs ]; then
+  cp ~/.codeium/windsurf/logs/*.log "$BUNDLE/logs/" 2>/dev/null || true
+fi
 ```
 
-### Step 4: Package Bundle
+### Step 3: Check Workspace Health
+
 ```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# Workspace analysis
+echo "--- Workspace Health ---" >> "$BUNDLE/summary.txt"
+echo "File count: $(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)" >> "$BUNDLE/summary.txt"
+echo "Has .windsurfrules: $([ -f .windsurfrules ] && echo 'YES' || echo 'NO')" >> "$BUNDLE/summary.txt"
+echo "Has .codeiumignore: $([ -f .codeiumignore ] && echo 'YES' || echo 'NO')" >> "$BUNDLE/summary.txt"
+echo "Has .windsurf/rules/: $([ -d .windsurf/rules ] && echo 'YES' || echo 'NO')" >> "$BUNDLE/summary.txt"
+
+# Check for common issues
+if [ ! -f .codeiumignore ] && [ -d node_modules ]; then
+  echo "WARNING: No .codeiumignore but node_modules exists -- indexing will be slow" >> "$BUNDLE/summary.txt"
+fi
 ```
 
-## Output
-- `windsurf-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+### Step 4: Package and Submit
+
+```bash
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Debug bundle created: $BUNDLE.tar.gz"
+echo "Review for sensitive data before submitting to support."
+```
+
+## Support Ticket Template
+
+```markdown
+## Windsurf Support Request
+
+**Windsurf Version:** [from debug bundle]
+**OS:** [macOS/Linux/Windows + version]
+**Plan:** [Free/Pro/Teams/Enterprise]
+
+### Issue
+[One paragraph description]
+
+### Steps to Reproduce
+1. [Step 1]
+2. [Step 2]
+
+### Expected vs Actual
+- Expected: [behavior]
+- Actual: [behavior]
+
+### Attachments
+- [ ] Debug bundle (windsurf-debug-*.tar.gz)
+- [ ] Screenshot of error (if visual)
+- [ ] Relevant .windsurfrules (if context-related)
+
+### Already Tried
+- [ ] Restart Cascade
+- [ ] Reload Window
+- [ ] Reset Indexing
+- [ ] Disable conflicting extensions
+```
 
 ## Error Handling
 | Item | Purpose | Included |
 |------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
+| Windsurf version | Compatibility check | Yes |
+| Extension list | Conflict detection | Yes |
+| Workspace config | Context issues | Yes |
+| Log files (redacted) | Error analysis | Yes |
+| MCP config (redacted) | Integration issues | Yes |
 
 ## Examples
 
-### Sensitive Data Handling
-**ALWAYS REDACT:**
+### ALWAYS REDACT
 - API keys and tokens
 - Passwords and secrets
-- PII (emails, names, IDs)
+- Personal file paths (replace with ~/)
+- Customer data
 
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash windsurf-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Windsurf support portal
+### Quick Single-Command Health Check
+```bash
+echo "Windsurf: $(windsurf --version 2>/dev/null || echo 'N/A')" && \
+echo "Rules: $([ -f .windsurfrules ] && wc -c < .windsurfrules || echo 'none')" && \
+echo "Ignore: $([ -f .codeiumignore ] && wc -l < .codeiumignore || echo 'none')"
+```
 
 ## Resources
-- [Windsurf Support](https://docs.windsurf.com/support)
+- [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
 - [Windsurf Status](https://status.windsurf.com)
 
 ## Next Steps

@@ -1,29 +1,28 @@
 ---
 name: windsurf-reference-architecture
 description: |
-  Implement Windsurf reference architecture with best-practice project layout.
-  Use when designing new Windsurf integrations, reviewing project structure,
-  or establishing architecture standards for Windsurf applications.
-  Trigger with phrases like "windsurf architecture", "windsurf best practices",
-  "windsurf project structure", "how to organize windsurf", "windsurf layout".
+  Implement Windsurf reference architecture with optimal project structure and AI configuration.
+  Use when designing workspace configuration for Windsurf, setting up team standards,
+  or establishing architecture patterns that maximize Cascade effectiveness.
+  Trigger with phrases like "windsurf architecture", "windsurf project structure",
+  "windsurf best practices", "windsurf team setup", "optimize for cascade".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, windsurf-reference]
+tags: [saas, windsurf, architecture, configuration, team-setup]
 
 ---
 # Windsurf Reference Architecture
 
 ## Overview
-Project architecture optimized for Windsurf (Codeium) AI-assisted development. Covers workspace configuration, Cascade AI flow optimization, rules files for context, and team standardization patterns.
+Complete project architecture optimized for Windsurf AI. Covers workspace configuration, rules hierarchy, workflow organization, and team standardization patterns that maximize Cascade's effectiveness.
 
 ## Prerequisites
 - Windsurf IDE installed
 - Team agreement on coding standards
 - Repository with consistent project structure
-- Understanding of Cascade AI flows
 
 ## Architecture Diagram
 
@@ -31,160 +30,188 @@ Project architecture optimized for Windsurf (Codeium) AI-assisted development. C
 ┌──────────────────────────────────────────────────────┐
 │              Windsurf Workspace                       │
 │  ┌───────────────┐  ┌────────────────────────────┐    │
-│  │ .windsurfrules│  │ .windsurf/settings.json    │    │
-│  │ (AI context)  │  │ (IDE configuration)        │    │
+│  │ .windsurfrules│  │ .windsurf/                 │    │
+│  │ (AI context)  │  │  ├── rules/ (trigger rules)│    │
+│  │               │  │  ├── workflows/ (automation)│    │
+│  │               │  │  └── settings.json         │    │
+│  └───────────────┘  └────────────────────────────┘    │
+│  ┌───────────────┐  ┌────────────────────────────┐    │
+│  │ .codeiumignore│  │ ~/.codeium/                │    │
+│  │ (index rules) │  │  ├── global_rules.md       │    │
+│  │               │  │  ├── windsurf/memories/    │    │
+│  │               │  │  └── windsurf/mcp_config   │    │
 │  └───────────────┘  └────────────────────────────┘    │
 ├──────────────────────────────────────────────────────┤
 │              Cascade AI Engine                        │
 │  ┌───────────┐  ┌───────────┐  ┌─────────────────┐   │
-│  │ Inline    │  │ Chat      │  │ Multi-file      │   │
-│  │ Complete  │  │ (Cascade) │  │ Edit            │   │
+│  │ Super-    │  │ Cascade   │  │ Command         │   │
+│  │ complete  │  │ Write/Chat│  │ (Inline Edit)   │   │
+│  │ (Tab)     │  │ (Cmd+L)  │  │ (Cmd+I)         │   │
 │  └───────────┘  └───────────┘  └─────────────────┘   │
 ├──────────────────────────────────────────────────────┤
-│              Project Structure                        │
-│  src/ │ tests/ │ docs/ │ .windsurf/ │ .windsurfrules │
-├──────────────────────────────────────────────────────┤
-│              Indexing Engine                           │
-│  Semantic Index │ File Cache │ Dependency Graph       │
+│              Context Layers                           │
+│  Rules > Memories > @Mentions > Open Files > Index   │
 └──────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Windsurf Rules File
-```markdown
-<!-- .windsurfrules - Project context for Cascade AI -->
+### Step 1: Project File Structure
 
-# Project: MyApp
-
-## Tech Stack
-- Framework: Next.js 14 (App Router)
-- Language: TypeScript (strict mode)
-- Styling: Tailwind CSS v3
-- State: Zustand
-- Testing: Vitest + React Testing Library
-- Database: PostgreSQL with Drizzle ORM
-
-## Architecture Patterns
-- Server Components by default, Client Components only when needed
-- API routes in app/api/ using Route Handlers
-- Shared types in types/ directory
-- Business logic in services/ directory
-- Database queries in db/ directory
-
-## Coding Standards
-- Named exports only, never default exports
-- Use async/await, never raw Promises
-- All functions must have JSDoc comments
-- Error handling: use Result pattern, never throw in services
-- Use zod for all runtime validation
+```
+my-project/
+├── .windsurfrules              # AI context (stack, patterns, constraints)
+├── .codeiumignore              # Indexing exclusions
+├── .windsurf/
+│   ├── settings.json           # IDE settings (committed)
+│   ├── rules/
+│   │   ├── testing.md          # trigger: glob **/*.test.ts
+│   │   ├── api-routes.md       # trigger: glob src/routes/**
+│   │   ├── security.md         # trigger: model_decision
+│   │   └── migrations.md       # trigger: manual
+│   └── workflows/
+│       ├── new-feature.md      # /new-feature
+│       ├── deploy-staging.md   # /deploy-staging
+│       ├── review-pr.md        # /review-pr
+│       └── quality-check.md    # /quality-check
+├── src/
+│   ├── routes/                 # API route handlers
+│   ├── services/               # Business logic
+│   ├── repositories/           # Data access
+│   └── types/                  # Shared types
+├── tests/
+│   ├── fixtures/               # Test data factories
+│   └── services/               # Service unit tests
+└── docs/
+    └── architecture.md         # Architecture decisions
 ```
 
-### Step 2: Configure Workspace Settings
+### Step 2: Rules Hierarchy
+
+```yaml
+# Priority order (highest to lowest):
+rules_hierarchy:
+  1_global_rules:
+    path: ~/.windsurf/global_rules.md
+    limit: 6000 chars
+    scope: All workspaces
+    use_for: "Personal coding preferences, universal standards"
+
+  2_windsurfrules:
+    path: .windsurfrules (project root)
+    limit: 6000 chars
+    scope: Current workspace
+    use_for: "Project stack, architecture, conventions"
+
+  3_workspace_rules:
+    path: .windsurf/rules/*.md
+    limit: 12000 chars each
+    scope: Triggered by glob, model_decision, or manual
+    use_for: "File-type-specific patterns, conditional rules"
+
+  4_memories:
+    path: ~/.codeium/windsurf/memories/
+    scope: Workspace-specific (auto-generated)
+    use_for: "Decisions, discoveries (supplement, don't replace rules)"
+
+# Total active chars: 12000 max (global + workspace rules combined)
+# If exceeded: global rules take priority, workspace rules truncated
+```
+
+### Step 3: Team Configuration Template
+
 ```json
+// .windsurf/settings.json (committed to git)
 {
   "codeium.indexing.excludePatterns": [
-    "node_modules/**",
-    ".next/**",
-    "dist/**",
-    "coverage/**",
-    "*.min.js",
-    "**/*.map"
+    "node_modules/**", "dist/**", ".next/**",
+    "coverage/**", "*.min.js", "**/*.map"
   ],
   "codeium.autocomplete.enable": true,
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "biomejs.biome",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "files.associations": {
-    "*.css": "tailwindcss"
-  }
+  "files.associations": { "*.css": "tailwindcss" }
 }
 ```
 
-### Step 3: Team Configuration Template
-```json
-// .windsurf/team-config.json - Shared team settings
-{
-  "cascade": {
-    "preferredModels": ["claude-sonnet", "gpt-4o"],
-    "contextRules": {
-      "maxContextFiles": 15,
-      "preferOpenTabs": true,
-      "includeTestFiles": true,
-      "includeTypeDefinitions": true
-    },
-    "codeGeneration": {
-      "language": "typescript",
-      "strictMode": true,
-      "includeTypes": true,
-      "includeTests": false
-    }
-  },
-  "formatting": {
-    "tabSize": 2,
-    "useTabs": false,
-    "trailingComma": "all",
-    "singleQuote": true,
-    "printWidth": 100
-  }
-}
+### Step 4: Monorepo Strategy
+
+```
+monorepo/
+├── .windsurfrules              # Shared conventions (brief)
+├── .codeiumignore              # Broad exclusions
+├── apps/
+│   ├── web/
+│   │   └── .windsurfrules      # Next.js-specific rules
+│   └── mobile/
+│       └── .windsurfrules      # React Native rules
+├── packages/
+│   ├── api/
+│   │   └── .windsurfrules      # Express/Fastify rules
+│   └── shared/
+│       └── .windsurfrules      # Library conventions
+└── .windsurf/
+    └── workflows/              # Cross-package workflows
+
+# BEST PRACTICE: Open apps/web/ or packages/api/ directly
+# NOT the monorepo root
+# Cascade gets focused context per workspace window
 ```
 
-### Step 4: Project-Specific Context Files
-```typescript
-// .windsurf/patterns.md - Common patterns for Cascade
-/**
- * API Route Pattern:
- * ```typescript
- * export async function GET(req: NextRequest) {
- *   const params = searchParamsSchema.parse(Object.fromEntries(req.nextUrl.searchParams));
- *   const result = await service.find(params);
- *   return NextResponse.json(result);
- * }
- * ```
- *
- * Service Pattern:
- * ```typescript
- * export async function findById(id: string): Promise<Result<Entity, AppError>> {
- *   const entity = await db.query.entities.findFirst({ where: eq(entities.id, id) });
- *   if (!entity) return err(new NotFoundError('Entity', id));
- *   return ok(entity);
- * }
- * ```
- */
+### Step 5: Context Pinning Strategy
+
+```markdown
+## What to Pin in Cascade
+
+Pin files that provide essential context:
+- Type definition files (types/*.ts)
+- Architecture decision records (docs/adr/)
+- API schema files (openapi.yaml)
+- Database schema (prisma/schema.prisma, drizzle/schema.ts)
+
+How to pin:
+- Click the pin icon next to a file in the Cascade context area
+- Pinned files are always included in Cascade's context window
+- Limit: pin 3-5 files max (more = diluted context)
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cascade ignores rules | File not at project root | Place `.windsurfrules` in workspace root |
-| Slow indexing | Large repo with no excludes | Add node_modules and dist to excludes |
-| Inconsistent suggestions | No team config | Create shared `.windsurf/` directory |
-| Wrong framework patterns | Missing context | Add framework details to rules file |
+| Cascade ignores project patterns | Missing/empty .windsurfrules | Add stack and architecture details |
+| Rules truncated | Over 12,000 combined chars | Split into workspace rules with triggers |
+| Wrong patterns for file type | No glob-triggered rules | Add `.windsurf/rules/` with glob triggers |
+| Team inconsistency | No shared config | Commit `.windsurf/` directory to git |
+| Slow indexing in monorepo | Root workspace open | Open specific package/app directory |
 
 ## Examples
 
-### Monorepo Rules File
+### Minimal .windsurfrules for Any Project
 ```markdown
-<!-- .windsurfrules for monorepo -->
-# Monorepo Structure
-- packages/api - Express REST API (Node.js)
-- packages/web - Next.js frontend
-- packages/shared - Shared TypeScript types and utilities
-- packages/db - Database schema and migrations (Drizzle)
+# Project: [name]
+## Stack: [language] + [framework] + [database]
+## Testing: [test framework]
+## Conventions:
+- [3-5 key coding patterns]
+## Don't:
+- [2-3 explicit anti-patterns]
+```
 
-When editing files in packages/api, use Express patterns.
-When editing files in packages/web, use Next.js App Router patterns.
-Always import from @repo/shared for shared types.
+### Verify Architecture Setup
+```bash
+set -euo pipefail
+echo "=== Windsurf Architecture Check ==="
+echo "Rules: $([ -f .windsurfrules ] && wc -c < .windsurfrules || echo 'MISSING') chars"
+echo "Ignore: $([ -f .codeiumignore ] && wc -l < .codeiumignore || echo 'MISSING') patterns"
+echo "Rules dir: $(ls .windsurf/rules/ 2>/dev/null | wc -l || echo 0) files"
+echo "Workflows: $(ls .windsurf/workflows/ 2>/dev/null | wc -l || echo 0) files"
 ```
 
 ## Resources
-- [Windsurf Documentation](https://docs.windsurf.com)
-- [Cascade AI Guide](https://docs.windsurf.com/cascade)
-- [Windsurf Rules Reference](https://docs.windsurf.com/rules)
+- [Windsurf Rules Directory](https://windsurf.com/editor/directory)
+- [Context Awareness](https://docs.windsurf.com/context-awareness/overview)
+- [Cascade Customizations Catalog](https://github.com/Windsurf-Samples/cascade-customizations-catalog)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For workspace variant strategies, see `windsurf-architecture-variants`.

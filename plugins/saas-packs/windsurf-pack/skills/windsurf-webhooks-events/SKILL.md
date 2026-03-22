@@ -1,132 +1,149 @@
 ---
 name: windsurf-webhooks-events
 description: |
-  Implement Windsurf webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Windsurf event notifications securely.
-  Trigger with phrases like "windsurf webhook", "windsurf events",
-  "windsurf webhook signature", "handle windsurf events", "windsurf notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Build Windsurf extensions and integrate with VS Code extension API events.
+  Use when building custom Windsurf extensions, tracking editor events,
+  or integrating Windsurf with external tools via extension development.
+  Trigger with phrases like "windsurf extension", "windsurf events",
+  "windsurf plugin", "build windsurf extension", "windsurf API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, webhooks]
+tags: [saas, windsurf, extensions, vscode-api, development]
 
 ---
-# Windsurf Webhooks & Events
+# Windsurf Extension Development & Events
 
 ## Overview
-Handle Windsurf workspace and editor events for extension development and team workflow integration. Windsurf, built on VS Code architecture, exposes extension events for workspace changes, editor actions, AI interactions (Cascade), and terminal activity.
+Windsurf is built on VS Code and supports the full VS Code Extension API. Build custom extensions to track workspace events, integrate with external tools, and extend Cascade's capabilities. This skill covers extension development specific to the Windsurf environment.
 
 ## Prerequisites
-- Windsurf IDE installed with extension development support
-- Node.js and VS Code extension API familiarity
-- Understanding of VS Code extension model (activationEvents, commands)
-- Windsurf workspace with Cascade AI enabled
-
-## Event Types
-
-| Event | Source | Payload |
-|-------|--------|---------|
-| `workspace.onDidOpenTextDocument` | VS Code API | Document URI, language |
-| `workspace.onDidSaveTextDocument` | VS Code API | File path, content |
-| `cascade.onSuggestionAccepted` | Windsurf API | Suggestion text, file, line |
-| `cascade.onFlowCompleted` | Windsurf API | Flow ID, changes made |
-| `terminal.onDidWriteTerminalData` | VS Code API | Terminal output text |
-| `debug.onDidStartDebugSession` | VS Code API | Session config, type |
+- Node.js 18+ and npm
+- VS Code Extension API familiarity
+- `yo` and `generator-code` for scaffolding
+- Windsurf IDE for testing
 
 ## Instructions
 
-### Step 1: Create Windsurf Extension
+### Step 1: Scaffold Extension
+
+```bash
+# Install scaffolding tools
+npm install -g yo generator-code
+
+# Generate extension
+yo code
+# Select: New Extension (TypeScript)
+# Name: my-windsurf-extension
+```
+
+### Step 2: Track Workspace Events
+
 ```typescript
+// src/extension.ts
 import * as vscode from "vscode";
 
 export function activate(context: vscode.ExtensionContext) {
+  console.log("Extension active in Windsurf");
+
+  // Track file saves
   const saveListener = vscode.workspace.onDidSaveTextDocument(
     async (document) => {
-      console.log(`File saved: ${document.uri.fsPath}`);
-      await handleFileSave(document);
+      const diagnostics = vscode.languages.getDiagnostics(document.uri);
+      const errors = diagnostics.filter(
+        (d) => d.severity === vscode.DiagnosticSeverity.Error
+      );
+      if (errors.length > 0) {
+        vscode.window.showWarningMessage(
+          `${document.fileName}: ${errors.length} error(s) after save`
+        );
+      }
     }
   );
 
+  // Track active editor changes
   const editorListener = vscode.window.onDidChangeActiveTextEditor(
     (editor) => {
       if (editor) {
-        trackFileOpen(editor.document);
+        const lang = editor.document.languageId;
+        const lines = editor.document.lineCount;
+        console.log(`Opened: ${editor.document.fileName} (${lang}, ${lines} lines)`);
       }
     }
   );
 
-  const folderListener = vscode.workspace.onDidChangeWorkspaceFolders(
-    (event) => {
-      for (const added of event.added) {
-        console.log(`Folder added: ${added.uri.fsPath}`);
-      }
+  // Track terminal output
+  const terminalListener = vscode.window.onDidWriteTerminalData((event) => {
+    // Can monitor for specific patterns (errors, warnings)
+    if (event.data.includes("ERROR") || event.data.includes("FAIL")) {
+      vscode.window.showWarningMessage("Error detected in terminal output");
     }
-  );
+  });
 
-  context.subscriptions.push(saveListener, editorListener, folderListener);
-}
-```
-
-### Step 2: Track AI Interaction Events
-```typescript
-async function trackCascadeEvents(context: vscode.ExtensionContext) {
-  const outputChannel = vscode.window.createOutputChannel("Cascade Tracker");
-
-  const completionListener = vscode.languages.registerInlineCompletionItemProvider(
-    { pattern: "**" },
-    {
-      provideInlineCompletionItems(document, position) {
-        outputChannel.appendLine(
-          `Completion requested: ${document.fileName}:${position.line}`
-        );
-        return [];
-      },
-    }
-  );
-
-  context.subscriptions.push(completionListener);
+  context.subscriptions.push(saveListener, editorListener, terminalListener);
 }
 ```
 
 ### Step 3: Send Events to External System
+
 ```typescript
-async function handleFileSave(document: vscode.TextDocument) {
+// src/webhook.ts
+import * as vscode from "vscode";
+
+interface WorkspaceEvent {
+  event: string;
+  file?: string;
+  language?: string;
+  timestamp: string;
+  metadata?: Record<string, unknown>;
+}
+
+async function sendEvent(event: WorkspaceEvent): Promise<void> {
   const webhookUrl = vscode.workspace
     .getConfiguration("windsurf-events")
     .get<string>("webhookUrl");
 
   if (!webhookUrl) return;
 
-  await fetch(webhookUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      event: "file.saved",
-      file: document.uri.fsPath,
-      language: document.languageId,
-      lineCount: document.lineCount,
-      timestamp: new Date().toISOString(),
-    }),
-  });
+  try {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(event),
+    });
+  } catch (err) {
+    console.warn("Webhook delivery failed:", err);
+  }
 }
 
-function trackFileOpen(document: vscode.TextDocument) {
-  const diagnostics = vscode.languages.getDiagnostics(document.uri);
-  const errorCount = diagnostics.filter(
-    d => d.severity === vscode.DiagnosticSeverity.Error
-  ).length;
-  console.log(`${document.fileName}: ${errorCount} errors`);
+// Debounce frequent events
+const debounceMap = new Map<string, NodeJS.Timeout>();
+
+function debouncedSend(event: WorkspaceEvent, delayMs = 2000): void {
+  const key = `${event.event}:${event.file}`;
+  clearTimeout(debounceMap.get(key));
+  debounceMap.set(
+    key,
+    setTimeout(() => {
+      sendEvent(event);
+      debounceMap.delete(key);
+    }, delayMs)
+  );
 }
 ```
 
-### Step 4: Package Configuration
+### Step 4: Extension package.json
+
 ```json
 {
   "name": "windsurf-events",
+  "displayName": "Windsurf Events",
+  "version": "1.0.0",
+  "engines": { "vscode": "^1.85.0" },
   "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
   "contributes": {
     "configuration": {
       "title": "Windsurf Events",
@@ -134,46 +151,93 @@ function trackFileOpen(document: vscode.TextDocument) {
         "windsurf-events.webhookUrl": {
           "type": "string",
           "description": "URL to send workspace events to"
+        },
+        "windsurf-events.trackSaves": {
+          "type": "boolean",
+          "default": true,
+          "description": "Track file save events"
+        },
+        "windsurf-events.trackErrors": {
+          "type": "boolean",
+          "default": true,
+          "description": "Track terminal error events"
         }
       }
-    }
+    },
+    "commands": [
+      {
+        "command": "windsurf-events.showStatus",
+        "title": "Windsurf Events: Show Status"
+      }
+    ]
   }
 }
+```
+
+### Step 5: Build and Install
+
+```bash
+# Build
+npm run compile
+# or: npm run build
+
+# Package as .vsix
+npx vsce package
+
+# Install in Windsurf
+windsurf --install-extension windsurf-events-1.0.0.vsix
+
+# Or publish to marketplace
+npx vsce publish
+```
+
+### Step 6: Test in Windsurf
+
+```
+1. Open Extension Development Host: F5 in Windsurf
+2. A new Windsurf window opens with extension loaded
+3. Open a file, save it, trigger events
+4. Check Output panel > "Windsurf Events" channel
+5. Verify webhook delivery (use https://webhook.site for testing)
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Extension not activating | Wrong activationEvents | Use `onStartupFinished` for always-on |
-| Webhook delivery fails | Network issue | Queue events locally, retry on connect |
+| Extension not activating | Wrong `activationEvents` | Use `onStartupFinished` for always-on |
+| Webhook fails | Network/URL issue | Queue locally, retry with backoff |
 | High CPU usage | Too many listeners | Debounce frequent events (saves, edits) |
-| API deprecation | VS Code API changes | Pin engine version in package.json |
+| API incompatibility | Windsurf vs VS Code version | Pin `engines.vscode` version |
+| `vsce package` fails | Missing fields | Add publisher, repository, license |
 
 ## Examples
 
-### Debounced Save Handler
+### Team Analytics Extension
 ```typescript
-const saveDebounce = new Map<string, NodeJS.Timeout>();
+// Track AI acceptance rate per developer
+vscode.languages.registerInlineCompletionItemProvider(
+  { pattern: "**" },
+  {
+    provideInlineCompletionItems(document, position) {
+      // Log completion requests (don't interfere with Supercomplete)
+      console.log(`Completion at ${document.fileName}:${position.line}`);
+      return []; // Return empty -- let Windsurf handle completions
+    }
+  }
+);
+```
 
-function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {  # 2000: 2 seconds in ms
-  const key = document.uri.fsPath;
-  clearTimeout(saveDebounce.get(key));
-  saveDebounce.set(key, setTimeout(() => {
-    handleFileSave(document);
-    saveDebounce.delete(key);
-  }, delayMs));
-}
+### Quick Test Webhook
+```bash
+# Start a test webhook receiver
+npx -y webhook-relay -p 3456
+# Configure extension: windsurf-events.webhookUrl = "http://localhost:3456"
 ```
 
 ## Resources
 - [VS Code Extension API](https://code.visualstudio.com/api)
-- [Windsurf Documentation](https://docs.windsurf.ai)
+- [VS Code Extension Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+- [Windsurf Marketplace](https://marketplace.windsurf.com)
 
 ## Next Steps
 For multi-environment setup, see `windsurf-multi-env-setup`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale

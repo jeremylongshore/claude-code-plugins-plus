@@ -1,108 +1,239 @@
 ---
 name: windsurf-enterprise-rbac
 description: |
-  Configure Windsurf enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Windsurf.
+  Configure Windsurf enterprise SSO, RBAC, and organization-level controls.
+  Use when implementing SSO/SAML, configuring role-based seat management,
+  or setting up organization-wide Windsurf policies.
   Trigger with phrases like "windsurf SSO", "windsurf RBAC",
-  "windsurf enterprise", "windsurf roles", "windsurf permissions", "windsurf SAML".
+  "windsurf enterprise", "windsurf admin", "windsurf SAML", "windsurf team management".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, rbac]
+tags: [saas, windsurf, enterprise, sso, rbac, admin]
 
 ---
 # Windsurf Enterprise RBAC
 
 ## Overview
-Manage team access to Windsurf AI IDE features, workspace settings, and code generation capabilities. Windsurf (by Codeium) uses per-seat licensing with workspace roles that control access to AI features like Cascade (agentic flows), Supercomplete, and Command.
+Manage enterprise Windsurf deployment: SSO/SAML configuration, role-based seat management, organization-wide AI policies, and admin portal controls. Covers Teams and Enterprise plan features.
 
 ## Prerequisites
-- Windsurf Pro or Enterprise plan (per-seat pricing)
+- Windsurf Teams ($30/user/mo) or Enterprise (custom pricing) plan
 - Organization admin access at windsurf.com/dashboard
-- Identity provider for SSO (Enterprise only)
+- Identity provider for SSO (Enterprise only): Okta, Entra ID, Google Workspace
 
 ## Instructions
 
-### Step 1: Configure Organization-Wide AI Policies
-In Windsurf Admin Dashboard > Policies:
+### Step 1: Configure SSO / SAML (Enterprise Only)
+
+Navigate to Admin Dashboard > Security > SSO:
+
 ```yaml
-# Recommended enterprise AI policy settings
-ai_policies:
-  code_context_sharing: "workspace_only"     # AI cannot see code outside workspace
-  telemetry: "anonymized"                     # No raw code sent to telemetry
-  allowed_models: ["windsurf-cascade", "windsurf-supercomplete"]
-  code_generation_review: "suggest_only"      # AI suggests, human applies
-  max_cascade_steps: 10                       # Limit agentic flow depth
+# SSO Configuration Steps
+sso_setup:
+  1_choose_idp:
+    supported: ["Okta", "Microsoft Entra ID", "Google Workspace", "Any SAML 2.0 IdP"]
+
+  2_configure_saml:
+    entity_id: "https://windsurf.com/saml/your-org-id"
+    acs_url: "https://windsurf.com/saml/callback"
+    # Get these from Admin Dashboard > SSO > SAML Configuration
+
+  3_idp_settings:
+    # Configure in your IdP:
+    sign_on_url: "https://windsurf.com/saml/login/your-org-id"
+    audience_uri: "https://windsurf.com/saml/your-org-id"
+    name_id_format: "emailAddress"
+    attribute_statements:
+      email: "user.email"
+      firstName: "user.firstName"
+      lastName: "user.lastName"
+
+  4_enforce:
+    enforce_sso: true  # Block password login after SSO is verified
+    auto_provision: true  # New IdP users get Windsurf seats automatically
+    domain_restriction: ["yourcompany.com"]  # Only allow company emails
 ```
 
-### Step 2: Manage Seat Assignments
+### Step 2: Configure Roles and Permissions
+
 ```yaml
-# seat-allocation.yaml
-teams:
-  engineering:
-    plan: pro
-    seats: 25
-    features: [cascade, supercomplete, command, inline_chat]
-  design:
-    plan: pro
-    seats: 5
-    features: [supercomplete, command]  # No cascade (agentic flows)
-  contractors:
-    plan: basic
-    seats: 10
-    features: [supercomplete]  # Limited AI features
-```
-Assign seats via Admin Dashboard > Members > Invite with Role.
+# Windsurf RBAC Model
+roles:
+  owner:
+    description: "Organization owner — full control"
+    permissions:
+      - Manage billing and subscription
+      - Add/remove admins
+      - Configure SSO
+      - View all analytics
+      - Manage all seats
 
-### Step 3: Enable SSO (Enterprise Only)
-In Admin Dashboard > Security > SSO:
-- Configure SAML 2.0 with your IdP
-- Map IdP groups to Windsurf workspace roles (Admin, Member)
-- Enable "Enforce SSO" to block password login
-- Set auto-provisioning for new users from approved email domains
+  admin:
+    description: "Team administrator"
+    permissions:
+      - Add/remove members
+      - Assign seat tiers (Pro, Free)
+      - View team analytics
+      - Configure org-wide settings
+      - Manage MCP server allowlist
 
-### Step 4: Set Workspace Access Boundaries
-Control which repositories and folders Windsurf AI can access:
-```json
-// .windsurf/settings.json (workspace-level)
-{
-  "ai.contextExclusions": [
-    "**/secrets/**",
-    "**/.env*",
-    "**/credentials/**"
-  ],
-  "ai.allowedWorkspaces": ["src", "lib", "tests"]
-}
+  member:
+    description: "Standard developer"
+    permissions:
+      - Use assigned AI features
+      - Configure personal settings
+      - Create workspace rules
+      - Cannot view team analytics
+
+# Assign roles via Admin Dashboard > Members > Edit Role
 ```
 
-### Step 5: Review AI Usage Metrics
-Monitor the Admin Dashboard for per-user AI usage: completions accepted, Cascade flows run, and tokens consumed. Use this data for seat optimization (remove seats from users with <10 AI interactions per month).
+### Step 3: Organization-Wide AI Policies
+
+```yaml
+# Admin Dashboard > Settings > AI Policies
+org_policies:
+  # Control which AI models are available
+  allowed_models:
+    - "swe-1"
+    - "swe-1-lite"
+    - "claude-sonnet"
+    # Disable models not approved by security team
+
+  # Terminal command execution controls
+  cascade_terminal:
+    max_execution_level: "normal"  # Options: turbo, normal, manual
+    global_deny_list:
+      - "rm -rf"
+      - "sudo"
+      - "curl | bash"
+      - "DROP TABLE"
+      - "format"
+
+  # Data controls
+  data_policies:
+    telemetry: "off"                      # No telemetry for enterprise
+    data_retention: "zero"                 # Zero-data retention
+    code_context_sharing: "workspace_only" # AI sees only current workspace
+
+  # Feature controls
+  feature_flags:
+    previews_enabled: true
+    mcp_enabled: true
+    workflows_enabled: true
+    auto_deploy_enabled: false  # Disable direct deployment from IDE
+```
+
+### Step 4: Seat Management Workflow
+
+```yaml
+# Seat lifecycle management
+seat_management:
+  onboarding:
+    1. "Admin invites user via Admin Dashboard > Members > Invite"
+    2. "User receives email with SSO login link"
+    3. "SSO authenticates user with company IdP"
+    4. "User gets assigned tier (Pro/Free) based on role"
+    5. "User opens project — .windsurfrules provides context"
+
+  offboarding:
+    1. "Disable user in IdP (SSO will auto-block)"
+    2. "Remove seat in Admin Dashboard > Members"
+    3. "Seat becomes available for reassignment"
+    4. "User's local memories/config remain on their machine"
+
+  tier_changes:
+    upgrade: "Admin Dashboard > Members > Select user > Change to Pro"
+    downgrade: "Admin Dashboard > Members > Select user > Change to Free"
+    note: "Downgraded users keep Supercomplete, lose Cascade Write mode"
+```
+
+### Step 5: Audit and Compliance
+
+```yaml
+# Admin Dashboard > Analytics > Audit
+audit_capabilities:
+  available:
+    - User login events (SSO audit trail)
+    - Credit usage per user per day
+    - Feature usage patterns
+    - Seat assignment changes
+    - Admin actions
+
+  exportable:
+    - CSV export of member usage
+    - API access for SIEM integration (Enterprise)
+
+  compliance_certifications:
+    - SOC 2 Type II
+    - FedRAMP High
+    - HIPAA BAA (on request)
+    - GDPR compliant
+```
+
+### Step 6: Service Keys for API Access (Enterprise)
+
+```yaml
+# For programmatic access to admin APIs
+service_keys:
+  purpose: "CI/CD integration, usage reporting, automated provisioning"
+  create: "Admin Dashboard > Settings > Service Keys > Create"
+  scopes:
+    - "admin:read" — read analytics and member data
+    - "admin:write" — manage members and settings
+    - "usage:read" — read usage metrics
+  rotation: "Rotate every 90 days, revoke immediately on compromise"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| AI features grayed out | Seat not assigned | Assign Pro seat in admin dashboard |
-| Cascade flow blocked | `max_cascade_steps` exceeded | Increase limit or break task into smaller flows |
-| SSO login fails | SAML certificate expired | Update certificate in IdP and Windsurf config |
-| Code context leak concern | No exclusion rules set | Add `.windsurf/settings.json` with exclusions |
+| SSO login fails | SAML certificate expired | Update certificate in IdP and Windsurf |
+| User can't access Cascade | No Pro seat assigned | Assign Pro tier in Admin Dashboard |
+| Admin can't see analytics | Wrong role | Upgrade to admin role in Dashboard |
+| New user auto-provisioned to wrong tier | Default tier not set | Configure default seat tier in Settings |
+| Service key rejected | Expired or wrong scope | Generate new key with correct scopes |
 
 ## Examples
 
-**Basic usage**: Apply windsurf enterprise rbac to a standard project setup with default configuration options.
+### Quick Admin Dashboard Tasks
+```
+Add user: Admin Dashboard > Members > Invite > email@company.com
+Remove user: Members > Select > Remove from organization
+Change tier: Members > Select > Change Plan > Pro/Free
+View usage: Analytics > Overview (or per-member view)
+```
 
-**Advanced scenario**: Customize windsurf enterprise rbac for production environments with multiple constraints and team-specific requirements.
+### Team Structure Example
+```yaml
+engineering_org:
+  platform_team:
+    seats: 8
+    tier: Pro
+    admins: ["tech-lead@company.com"]
 
-## Output
+  frontend_team:
+    seats: 6
+    tier: Pro
+    admins: ["frontend-lead@company.com"]
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+  design_team:
+    seats: 3
+    tier: Free  # Mainly CSS, limited AI use
+
+  contractors:
+    seats: 4
+    tier: Free
+    note: "Temporary, upgrade to Pro if AI use increases"
+```
 
 ## Resources
+- [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
+- [Windsurf Enterprise](https://windsurf.com/enterprise)
+- [Windsurf Security](https://windsurf.com/security)
 
-- Official Windsurf Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For migration strategies, see `windsurf-migration-deep-dive`.
