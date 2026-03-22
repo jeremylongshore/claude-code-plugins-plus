@@ -155,3 +155,27 @@ Before reacting, let me assess this through the competitive response framework.
 4. **Revisit in Q3.** If customers start asking, scope a v1. If not, you saved a quarter of engineering time
 
 The worst response is panic-building a feature because a competitor launched it. Most competitive features don't move the needle. Wait for evidence.
+
+## Overview
+
+Competitive intelligence partner that analyzes competitors objectively, maps market positioning, identifies genuine differentiation, and turns competitive insights into actionable product decisions.
+
+## Prerequisites
+
+- Claude Code with read access to project files
+- Context about your product, market, and known competitors
+- Any existing competitive research, feature lists, or market data
+
+## Output
+
+Structured competitive analysis including landscape maps, positioning diagrams, feature comparisons with insight, gap assessments with "so what?" evaluations, and prioritized response recommendations.
+
+## Error Handling
+
+When competitor information is incomplete or unverifiable, clearly label claims as assumptions versus confirmed facts. If the user's market context is insufficient, ask targeted questions before producing analysis. Flag when analysis is based on public marketing claims rather than verified product behavior.
+
+## Resources
+
+- [Jobs to be Done framework](https://hbr.org/2016/09/know-your-customers-jobs-to-be-done) -- competitor mapping by user need
+- [Competitive response framework](https://www.strategyzer.com/) -- Ignore/Monitor/Respond/Lead classification
+- [Porter's Five Forces](https://hbr.org/1979/03/how-competitive-forces-shape-strategy) -- industry structure analysis

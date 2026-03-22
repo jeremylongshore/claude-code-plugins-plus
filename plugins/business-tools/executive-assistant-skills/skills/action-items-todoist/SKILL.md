@@ -1,8 +1,12 @@
 ---
 name: action-items-todoist
 description: "Extract action items from today's Granola/Grain meetings, create Todoist tasks, complete fulfilled tasks, and draft meeting-triggered follow-up emails. Use when running the daily action items cron, post-meeting cron, or when user asks to process meeting action items. NOT for general email drafting without meeting context."
+version: 1.0.0
+license: MIT
+author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
 compatible-with: claude-code
 tags: [business, action-items]
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(todoist-cli:*), Bash(python3:*), Bash(source:*), Bash(date:*), Glob, Grep, Write
 
 ---
 # Action Items → Todoist + Email Drafts
@@ -201,3 +205,35 @@ If a Grain meeting can't be found (e.g. recording wasn't on), fall back to Grano
 
 #### Matching Grain to Granola meetings
 Match by time overlap (within 15 min of start time), not by title. Grain and Granola may name the same meeting differently. If no Grain match found within the time window, proceed without cross-check.
+
+## Overview
+
+Extracts action items from daily meetings via Granola/Grain, creates Todoist tasks with deduplication, completes fulfilled tasks, and drafts follow-up emails triggered by meeting commitments.
+
+## Prerequisites
+
+- `gog` CLI configured with both Gmail/Calendar accounts
+- `mcporter` with Granola and Grain MCP connections authenticated
+- `todoist-cli` installed with valid API token in workspace `.env`
+- OpenClaw workspace with `skill_log.py` and `audit_log.py` scripts
+- WhatsApp delivery endpoint configured in `user.json`
+
+## Instructions
+
+See the Steps section above (Steps 0 through 5) for the full execution workflow.
+
+## Examples
+
+```bash
+# Trigger via cron or manual invocation
+# The skill reads user.json, queries both calendars, pulls Granola meetings,
+# extracts action items, creates Todoist tasks, drafts emails, and notifies via WhatsApp.
+# Example output: "From Fyxer call: 2 tasks created, 1 intro draft (Gmail), 1 task completed"
+```
+
+## Resources
+
+- [Todoist REST API](https://developer.todoist.com/rest/v2/)
+- [Granola API](https://granola.ai/docs)
+- [Grain API](https://grain.com/docs)
+- [Gmail API](https://developers.google.com/gmail/api)

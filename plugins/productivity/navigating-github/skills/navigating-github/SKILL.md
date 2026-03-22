@@ -143,6 +143,14 @@ Agent: [guides through git rebase -i, explains pick/squash/fixup]
 
 Calibrate all output to the inferred skill level. Beginner: plain English with analogies, explain every command. Intermediate: concise summaries, explain rationale. Advanced: minimal commentary. Expert: raw output only. Read `${CLAUDE_SKILL_DIR}/references/git-concepts-glossary.md` when a term definition is needed.
 
+## Error Handling
+
+- **`gh` not installed**: Detect missing CLI, provide platform-specific install instructions (`brew install gh`, `apt install gh`, `winget install GitHub.cli`), then resume setup.
+- **Authentication failure**: If `gh auth status` fails, walk through `gh auth login` with browser OAuth flow. If token is expired, run `gh auth refresh`.
+- **No git remote**: If `git remote -v` returns empty, guide through `gh repo create` or `git remote add origin <url>`.
+- **Merge conflict during lesson**: Explain what a conflict is at the user's level, show the conflict markers, and walk through resolution step by step.
+- **Detached HEAD**: Detect with `git status`, explain in plain language, and recover with `git checkout <branch>`.
+
 ## Resources
 
 - `${CLAUDE_SKILL_DIR}/references/learning-curriculum.md` — 9 progressive lesson plans from beginner through advanced

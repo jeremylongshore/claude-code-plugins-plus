@@ -7,7 +7,7 @@ description: |
   cloud configurations based on current best practices. Trigger with phrases
   like "research and deploy", "set up Cloud Run", "create Terraform for",
   "deploy this to AWS", or "generate infrastructure configs".
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebSearch, WebFetch
+allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(docker:*), Bash(kubectl:*), Bash(git:*), Bash(npm:*), Glob, Grep, WebSearch, WebFetch
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -101,3 +101,16 @@ The skill will:
 - **Insufficient context:** Asks clarifying questions about the application type, expected traffic, and budget before generating configs.
 - **Web search unavailable:** Falls back to built-in knowledge of common deployment patterns, noting that the recommendations may not reflect the latest documentation.
 - **Conflicting requirements:** Identifies trade-offs (e.g., "HIPAA compliance requires dedicated tenancy which increases costs beyond the $50 budget") and asks the user to prioritize.
+
+## Prerequisites
+
+- Target cloud provider CLI authenticated (`gcloud`, `aws`, or `az`)
+- Terraform >= 1.5 installed (for IaC output)
+- Docker installed (for container-based deployments)
+- WebSearch and WebFetch tools enabled for best-practice research
+
+## Resources
+
+- [Terraform Registry](https://registry.terraform.io/) — official provider and module documentation
+- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/) — cloud architecture best practices
+- [GCP Cloud Architecture Center](https://cloud.google.com/architecture) — reference architectures and patterns

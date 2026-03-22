@@ -97,3 +97,30 @@ Delete all temporary files from the project.
 ```markdown
 Identify temporary files (*.tmp, *.bak, *.swp) in the project. List them for user confirmation before deletion. Never delete files outside the project root.
 ```
+
+## Prerequisites
+
+- A plugin directory containing at least one SKILL.md, command, or agent markdown file
+- Read access to the target plugin's `.claude-plugin/plugin.json` for context
+- Familiarity with the [2026 SKILL.md frontmatter spec](https://docs.anthropic.com/en/docs/claude-code/plugins)
+
+## Output
+
+The skill produces a structured analysis report containing:
+- **Score card**: 5 dimensions rated 1-5 with notes and an overall score out of 25
+- **Improvement list**: Specific weaknesses with file paths and line references
+- **Suggested rewrite**: Full improved prompt text preserving original intent
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| No SKILL.md found | Target path has no skill files | Verify the plugin path and check for `skills/*/SKILL.md` |
+| Invalid frontmatter | YAML parsing failure in target file | Report the specific YAML error and suggest corrections |
+| Empty skill body | File has frontmatter but no instructions | Flag as critical and generate a starter template |
+
+## Resources
+
+- [Claude Code plugins documentation](https://docs.anthropic.com/en/docs/claude-code/plugins) — official plugin and SKILL.md spec
+- [Prompt engineering guide](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering) — Anthropic best practices for prompt design
+- Marketplace conventions: see the repository CLAUDE.md for field requirements and structure

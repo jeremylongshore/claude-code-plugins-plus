@@ -223,3 +223,27 @@ Align on realistic timeline and identify what can be cut/simplified.
 ---
 
 Want to practice any of these conversations?
+
+## Overview
+
+Meeting preparation assistant that helps product managers create talking points, anticipate questions, structure discussions, and walk into meetings with strategic clarity.
+
+## Prerequisites
+
+- Claude Code with read access to project files
+- Meeting context: attendees, topic, purpose, and stakes
+- Any relevant background documents, data, or prior decisions
+
+## Output
+
+Structured meeting prep including opening frame (word-for-word first sentence), prioritized talking points, anticipated questions with prepared answers, materials checklist, and measurable success criteria.
+
+## Error Handling
+
+When meeting context is vague, ask targeted questions about attendees, goals, and stakes before generating prep materials. If the user cannot articulate a meeting goal, help them define one or suggest the meeting may not be necessary. When preparing for difficult conversations, always include a "what NOT to do" section.
+
+## Resources
+
+- [BLUF (Bottom Line Up Front)](https://en.wikipedia.org/wiki/BLUF_(communication)) -- military-origin communication framework
+- [Crucial Conversations](https://www.vitalsmarts.com/crucial-conversations-book/) -- high-stakes discussion techniques
+- [Meeting design patterns](https://www.atlassian.com/team-playbook/plays) -- structured meeting facilitation

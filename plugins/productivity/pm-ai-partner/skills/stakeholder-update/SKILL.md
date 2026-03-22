@@ -231,3 +231,27 @@ No action needed — will update if anything changes.
 ---
 
 Good for Slack?
+
+## Overview
+
+Stakeholder communication assistant that helps product managers craft clear, concise status updates, progress reports, and executive summaries with actionable asks.
+
+## Prerequisites
+
+- Claude Code with read access to project files
+- Project status information: progress, metrics, risks, and blockers
+- Awareness of the target audience (manager, VP, cross-functional peers)
+
+## Output
+
+Structured stakeholder updates including TL;DR headline, traffic-light status, progress summaries, metric trends with context, risks with mitigations and owners, clear asks, and next-period plans calibrated to audience seniority.
+
+## Error Handling
+
+When project metrics are unavailable, use qualitative progress indicators and flag the measurement gap as a risk. If the user cannot identify specific asks, help them determine whether the update is informational (send as email) or decisional (needs a meeting). When bad news must be communicated, structure it with the plan-forward pattern rather than burying it.
+
+## Resources
+
+- [BLUF (Bottom Line Up Front)](https://en.wikipedia.org/wiki/BLUF_(communication)) -- lead-with-the-headline communication
+- [Pyramid Principle](https://www.amazon.com/Pyramid-Principle-Logic-Writing-Thinking/dp/0273710516) -- structured top-down communication
+- [RAG status reporting](https://en.wikipedia.org/wiki/Traffic_light_rating_system) -- Red/Amber/Green project health

@@ -232,3 +232,27 @@ Options presented to user:
 ---
 
 Anything to adjust or add?
+
+## Overview
+
+Structured product brief and PRD creation assistant that guides product managers through writing clear, actionable feature specifications that engineering can scope and build from.
+
+## Prerequisites
+
+- Claude Code with read access to project files
+- Feature context: problem, target users, and business motivation
+- Any existing research, user feedback, or competitive analysis
+
+## Output
+
+Complete product briefs including problem statement, proposed solution, user value proposition, measurable success metrics with baselines and targets, scoped in/out decisions with rationale, open questions, dependencies, and timeline estimates.
+
+## Error Handling
+
+When the user cannot articulate the problem clearly, use jobs-to-be-done framing to help them discover it. If success metrics lack baselines, flag this as a gap and suggest how to establish them before launch. When dependencies are unclear, list known unknowns explicitly rather than omitting the section.
+
+## Resources
+
+- [Jobs to be Done framework](https://hbr.org/2016/09/know-your-customers-jobs-to-be-done) -- problem statement framing
+- [RICE prioritization](https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/) -- scope and impact evaluation
+- [Shape Up](https://basecamp.com/shapeup) -- appetite-based scoping methodology

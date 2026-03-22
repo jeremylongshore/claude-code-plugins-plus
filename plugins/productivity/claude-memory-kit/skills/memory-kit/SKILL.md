@@ -39,6 +39,23 @@ Five commands cover the full lifecycle:
 - A git repository (for `/memory-share`)
 - Write access to the project root (MEMORY.md lives there)
 
+## Instructions
+
+1. **On session start** — check for existing `MEMORY.md` in project root. If found, read and summarize the saved state. Ask the user whether to resume previous context or start fresh.
+2. **On save** (`/memory-save`) — scan the current conversation for goals, decisions, patterns, and open questions. Write a structured snapshot to `MEMORY.md` with timestamped sections.
+3. **On update** (`/memory-update`) — append the user's decision or note to the appropriate section in `MEMORY.md` without overwriting existing content.
+4. **On share** (`/memory-share`) — commit `MEMORY.md` and push to the remote branch so teammates can load the same context.
+5. **On audit** (`/memory-audit`) — review all entries in `MEMORY.md`, flag stale items (older than 7 days or referencing completed work), and prompt the user to confirm removal.
+
+## Output
+
+The skill produces and maintains a `MEMORY.md` file containing:
+- **Session metadata**: Timestamp, branch, and project name
+- **Goals**: Current objectives carried across sessions
+- **Decisions**: Key choices made with rationale
+- **Patterns**: Recurring approaches or conventions discovered
+- **Open questions**: Unresolved items requiring future attention
+
 ## Output Format
 
 For the MEMORY.md template structure, see [output-format.md](references/output-format.md).
@@ -60,3 +77,8 @@ For error scenarios and recovery behavior, see [error-handling.md](references/er
 
 **Team sync:**
 > "Share memory" → runs `scripts/memory-share.sh`, confirms push
+
+## Resources
+
+- [output-format.md](references/output-format.md) — MEMORY.md template structure and section schema
+- [error-handling.md](references/error-handling.md) — error scenarios, recovery behavior, and edge cases

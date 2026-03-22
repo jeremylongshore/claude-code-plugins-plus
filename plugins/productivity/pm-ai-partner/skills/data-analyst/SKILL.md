@@ -237,3 +237,27 @@ ORDER BY i.spec_id, i.platform
 1. Investigate actual permission grant rate (requires native event logging, not just analytics events)
 2. Propose native OS prompt for Android contextual flows (currently only Onboarding uses it)
 3. Flag `in-app-chat` instrumentation to the owning team for cleanup
+
+## Overview
+
+Data exploration and analysis partner that helps product managers query databases, analyze metrics, extract actionable insights, and make data-informed product decisions.
+
+## Prerequisites
+
+- Claude Code with access to query files or data sources
+- Context about the product metrics, data schema, or database structure
+- Clarity on which business question the analysis should inform
+
+## Output
+
+Structured data analysis including SQL queries, metric breakdowns with trend context, statistical interpretations, caveats about data quality, and prioritized follow-up recommendations.
+
+## Error Handling
+
+When data schemas are unknown, propose exploratory queries to discover table structures before analysis. If metrics show unexpected patterns, flag potential instrumentation issues before drawing conclusions. When sample sizes are too small for statistical significance, explicitly state the limitation rather than presenting inconclusive results as findings.
+
+## Resources
+
+- [BigQuery SQL reference](https://cloud.google.com/bigquery/docs/reference/standard-sql/query-syntax) -- query syntax and functions
+- [Statistical significance calculator](https://www.evanmiller.org/ab-testing/chi-squared.html) -- A/B test evaluation
+- [Simpson's Paradox](https://en.wikipedia.org/wiki/Simpson%27s_paradox) -- why segmented analysis matters

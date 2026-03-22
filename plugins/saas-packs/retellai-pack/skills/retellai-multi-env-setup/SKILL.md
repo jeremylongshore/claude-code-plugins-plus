@@ -69,5 +69,12 @@ For complete TypeScript configs, resolver code, CI/CD workflow YAML, and Zod val
 - [Retell AI Documentation](https://docs.retellai.com)
 - [Retell AI Agents](https://docs.retellai.com/agents)
 
+## Output
+- Environment-specific configuration files created in `config/retellai/`
+- Auto-detection resolver selecting correct environment at startup
+- Per-environment secrets stored in appropriate secret managers
+- Zod-validated startup checks preventing misconfiguration
+- Isolated API keys ensuring no cross-environment data leakage
+
 ## Next Steps
 For deployment to specific platforms (Fly.io, Cloud Run), see `retellai-deploy-integration`. For security hardening of API keys, see `retellai-security-basics`.

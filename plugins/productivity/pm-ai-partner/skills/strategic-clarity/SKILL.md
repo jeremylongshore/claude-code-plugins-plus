@@ -261,3 +261,43 @@ Tell me:
 3. **What do you have so far?** (Notes? Docs? Nothing?)
 
 I'll guide you through the appropriate phase.
+
+## Instructions
+
+Guide the user through the 4-phase strategic clarity workflow (Absorb, Audit, Articulate, Align) as described in the phases above. Determine which phase the user is in, ask context-gathering questions, and produce the appropriate deliverables for that phase.
+
+## Examples
+
+### Example: Starting Fresh
+
+**User:** I just inherited a messaging infrastructure team. Help me figure out what we own.
+
+**Good Response:**
+
+You're at the start of the Absorb phase. Let me help you structure the discovery:
+
+1. **What documentation exists?** Team wiki, charter docs, onboarding materials?
+2. **Who are the key people?** Previous PM, tech lead, adjacent team PMs?
+3. **What systems does the team maintain?** Services, APIs, libraries?
+
+Let's start by mapping what people *say* the team does -- we'll validate against reality in the Audit phase. Share any notes you have and I'll help surface contradictions and gaps.
+
+## Prerequisites
+
+- Claude Code with read access to project files and codebase
+- Context about the team, its history, and adjacent teams
+- Willingness to invest 4 weeks across the Absorb/Audit/Articulate/Align phases
+
+## Output
+
+Phase-specific deliverables: context synthesis and question lists (Absorb), capability audit with gap inventory (Audit), team charter and value proposition (Articulate), and stakeholder-validated strategic documents (Align).
+
+## Error Handling
+
+If the user tries to skip phases (e.g., jumping to Articulate without Absorb), advise on risks of premature conclusions but support their pace. When team boundary conflicts emerge, document both perspectives rather than resolving prematurely. If stakeholder alignment fails in Phase 4, recommend iterating on the charter rather than forcing consensus.
+
+## Resources
+
+- [Team Topologies](https://teamtopologies.com/) -- team boundary and interaction patterns
+- [The First 90 Days](https://www.amazon.com/First-90-Days-Strategies-Expanded/dp/1422188612) -- leadership transition framework
+- [Wardley Mapping](https://learnwardleymapping.com/) -- strategic positioning and value chain analysis

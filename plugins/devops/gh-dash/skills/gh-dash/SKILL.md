@@ -6,7 +6,7 @@ description: |
   or merge pull requests without leaving Claude Code. Trigger with phrases like
   "show PR dashboard", "PR status", "check CI progress", "merge this PR",
   or "review pull request".
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*), Glob, Grep
 version: 1.0.0
 author: Jake Kozloski <jakozloski@gmail.com>
 license: MIT
@@ -107,3 +107,9 @@ The skill will:
 - **CI checks still running:** Reports which checks are pending and offers to wait or proceed.
 - **Merge blocked:** Clearly states the blocking reason (failed checks, missing reviews, branch protection) and suggests remediation steps.
 - **GitHub CLI not installed:** Detects missing `gh` command and provides installation instructions for the current platform.
+
+## Resources
+
+- [GitHub CLI manual](https://cli.github.com/manual/) — official `gh` command reference
+- [GitHub REST API docs](https://docs.github.com/en/rest) — underlying API for PR data and checks
+- [GitHub pull request documentation](https://docs.github.com/en/pull-requests) — PR workflows, reviews, and merge strategies

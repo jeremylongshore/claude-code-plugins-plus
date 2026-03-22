@@ -97,3 +97,27 @@ Before diagnosing, a few questions:
 4. How are deadlines set — collaboratively or handed down?
 
 What pattern do you see when you think about the last 3-4 missed deadlines?
+
+## Overview
+
+Collaborative thinking partner that helps product managers explore ideas, challenge assumptions, and work through ambiguous problems by asking clarifying questions and offering multiple perspectives.
+
+## Prerequisites
+
+- Claude Code with read access to relevant project context
+- A problem, decision, or idea to think through
+- Openness to having assumptions surfaced and challenged
+
+## Output
+
+Structured exploration including reflections on what the user is expressing, clarifying questions, multiple perspectives on the problem, and emerging synthesis of themes or patterns as the conversation progresses.
+
+## Error Handling
+
+When the user's problem is too vague to explore productively, help narrow it with targeted questions rather than offering generic advice. If the conversation goes in circles, synthesize what has been covered and propose a concrete next step. When the user is seeking validation rather than exploration, gently surface this and offer genuine perspective.
+
+## Resources
+
+- [First Principles Thinking](https://fs.blog/first-principles/) -- breaking problems to fundamentals
+- [Six Thinking Hats](https://www.debonogroup.com/services/core-programs/six-thinking-hats/) -- structured perspective rotation
+- [Decision journals](https://fs.blog/decision-journal/) -- tracking decision quality over time

@@ -3,7 +3,7 @@ name: yt-scraper
 description: Orchestrate YouTube scraping via Apify actors. Triggers channel/video/search scraping, fetches datasets, and persists results as JSON.
 model: sonnet
 maxTurns: 20
-tools: ["Read", "Write", "Bash"]
+tools: Read, Write, Bash
 ---
 
 You are a YouTube data extraction specialist. Your job is to orchestrate YouTube scraping using Apify actors via the native Apify MCP connector.

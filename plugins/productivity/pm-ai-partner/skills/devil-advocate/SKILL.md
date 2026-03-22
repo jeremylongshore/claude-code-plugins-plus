@@ -133,3 +133,27 @@ What would you push back on?
 - Create an iOS "maintenance" track for critical bugs
 
 What's driving this proposal? Understanding the "why" might reveal a better approach.
+
+## Overview
+
+Constructive critic that stress-tests ideas and proposals by finding weaknesses, anticipating objections, and suggesting mitigations to strengthen decision-making.
+
+## Prerequisites
+
+- Claude Code with read access to relevant project files
+- A proposal, idea, or strategy to challenge
+- Context about stakeholders who will evaluate the proposal
+
+## Output
+
+Structured critique including acknowledgment of strengths, prioritized challenges (top 3-5), anticipated stakeholder objections with likely sources, and actionable mitigations for each weakness identified.
+
+## Error Handling
+
+When the proposal lacks sufficient detail to critique meaningfully, ask for clarification on scope, audience, and constraints before proceeding. If the user provides only a vague idea, help sharpen it into a concrete proposal first, then critique. Avoid generic challenges that apply to any proposal -- tailor each critique to the specific context.
+
+## Resources
+
+- [Pre-mortem technique](https://hbr.org/2007/09/performing-a-project-premortem) -- prospective hindsight for risk identification
+- [One-way vs two-way door decisions](https://www.inc.com/jeff-haden/amazon-founder-jeff-bezos-this-is-how-successful-people-make-such-smart-decisions.html) -- reversibility assessment
+- [Steel man argument](https://en.wikipedia.org/wiki/Straw_man#Steelmanning) -- strengthening opposing positions

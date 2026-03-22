@@ -1,8 +1,12 @@
 ---
 name: meeting-prep
 description: Prepare briefings for today's meetings — attendee research, email history, past meeting notes, LinkedIn, and company context. Use when running the daily meeting prep cron, or when user asks to prepare for meetings, review who they're meeting with, or get context on upcoming calls.
+version: 1.0.0
+license: MIT
+author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
 compatible-with: claude-code
 tags: [business, meeting-prep]
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(python3:*), Bash(openclaw:*), Bash(curl:*), Glob, Grep, Write, WebSearch
 
 ---
 # Daily Meeting Prep
@@ -265,3 +269,50 @@ python3 {user.workspace}/scripts/meeting_prep_assertions.py \
 - Never silently omit a data source — if something returned nothing, say so
 - **No cross-contamination**: Each meeting brief must only include information verified for THAT specific attendee. Do not mix up intro sources, email threads, or Granola notes between different meetings. Double-check that every fact in a brief belongs to the correct person.
 - **No generic focus areas**: Focus must be anchored in (a) explicit prior action items from Granola and/or (b) explicit email trigger for this meeting. If neither exists, say so and use a discovery focus.
+
+## Overview
+
+Prepares executive briefings for each of today's meetings, including attendee research, email history, past meeting notes from Granola/Grain, LinkedIn profiles, company research, and RSVP status, delivered as individual meeting briefs via WhatsApp and Slack.
+
+## Prerequisites
+
+- `gog` CLI configured with both Gmail/Calendar accounts
+- `mcporter` with Granola and Grain MCP connections authenticated
+- Web search access for LinkedIn and company research
+- `openclaw cron` CLI for pre-meeting reminder and post-meeting action item cron jobs
+- Slack bot token for Chief of Staff file upload
+- WhatsApp delivery endpoint configured in `user.json`
+- `meeting_prep_assertions.py` script in workspace for post-run validation
+
+## Instructions
+
+See the Steps section above (For each meeting: Steps 1 through 5) and the Cron Creation section for the full workflow.
+
+## Output
+
+- One WhatsApp message per meeting with structured brief (Who, Context, Email history, Granola, Focus areas, Links)
+- Full brief saved to `{user.workspace}/state/meeting-prep-YYYY-MM-DD.md`
+- Slack DM with brief file to Chief of Staff
+- Pre-meeting reminder crons (5 min before each meeting)
+- Post-meeting action item crons (10 min after each meeting)
+
+## Examples
+
+```bash
+# The skill queries both calendars, researches each attendee, and delivers briefs.
+# Example WhatsApp brief:
+# "1. Sarah Chen (Acme Corp) - 10:00 ART
+#  Who: VP Engineering, Acme Corp (Series B, SF). AI infrastructure platform.
+#  Context: Follow-up. Intro'd by David Park on Feb 15.
+#  Granola: Discussed POC scope, agreed on 2-week trial. Action: send proposal.
+#  Focus areas: Review POC progress, discuss pricing."
+```
+
+## Resources
+
+- [Google Calendar API](https://developers.google.com/calendar/api)
+- [Gmail API](https://developers.google.com/gmail/api)
+- [Granola API](https://granola.ai/docs)
+- [Grain API](https://grain.com/docs)
+- [LinkedIn](https://www.linkedin.com)
+- [Crunchbase](https://www.crunchbase.com)

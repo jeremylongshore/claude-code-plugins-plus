@@ -464,52 +464,46 @@ This skill is based on Eric Ries' Lean Startup methodology. For the complete fra
 - [*"The Lean Startup"*](https://www.amazon.com/Lean-Startup-Entrepreneurs-Continuous-Innovation/dp/0307887898?tag=wondelai00-20) by Eric Ries
 - [*"The Startup Way"*](https://www.amazon.com/Startup-Way-Companies-Entrepreneurial-Management/dp/1101903201?tag=wondelai00-20) by Eric Ries (applying Lean Startup to established companies)
 
-## About the Author
-
-**Eric Ries** is an entrepreneur and author best known for developing the Lean Startup methodology. He was co-founder and CTO of IMVU, where he pioneered continuous deployment and customer development practices that became the foundation of Lean Startup. *The Lean Startup* has been translated into over 30 languages and has influenced startup culture worldwide. Ries is also the creator of the Long-Term Stock Exchange (LTSE), a new stock exchange designed for companies focused on long-term value creation.
-
 ## Overview
 
-Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn.
+A systematic approach to building startups and products that shortens development cycles by applying the Build-Measure-Learn loop, validated learning, and innovation accounting to eliminate waste.
 
 ## Prerequisites
 
-- Access to the testing environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with testing concepts and terminology
+- A product idea or business hypothesis to validate
+- Access to target customers for experiments (even a small initial group)
+- Ability to define and measure actionable metrics (conversion, retention, engagement)
 
 ## Instructions
 
-1. Assess the current state of the testing configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
+1. Identify leap-of-faith assumptions — use the Quick Diagnostic table to audit your plan
+2. Design the smallest MVP to test the riskiest assumption first
+3. Define actionable metrics and run the Build-Measure-Learn loop
+4. Use innovation accounting to evaluate progress and decide pivot-or-persevere
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+- **Hypothesis card**: Assumption, test method, success metric, and pivot criteria
+- **MVP specification**: Type (concierge, smoke test, single-feature, etc.) and scope
+- **Experiment results**: Baseline metrics, tuning outcomes, and pivot-or-persevere recommendation
 
 ## Error Handling
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| No clear hypothesis | Building without a testable assumption | Map leap-of-faith assumptions before designing MVP |
+| Vanity metrics only | Tracking totals instead of cohorts | Switch to actionable metrics (conversion, retention, LTV/CAC) |
+| MVP too large | Over-engineering before validation | Apply the "can you test with less?" filter from Quick Diagnostic |
 
 ## Examples
 
-**Basic usage**: Apply lean startup to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize lean startup for production environments with multiple constraints and team-specific requirements.
+- **Smoke test**: Landing page with signup form to validate demand before building any product (Dropbox pattern).
+- **Concierge MVP**: Manually deliver the service to 10 customers to validate the value hypothesis before automating.
 
 ## Resources
 
-- Official testing documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [references/build-measure-learn.md](references/build-measure-learn.md) — detailed loop execution and reverse planning
+- [references/mvp-design.md](references/mvp-design.md) — MVP types, design patterns, and sizing
+- [references/metrics.md](references/metrics.md) — actionable vs vanity metrics and cohort analysis
+- [*"The Lean Startup"*](https://www.amazon.com/Lean-Startup-Entrepreneurs-Continuous-Innovation/dp/0307887898?tag=wondelai00-20) by Eric Ries — the complete methodology
+

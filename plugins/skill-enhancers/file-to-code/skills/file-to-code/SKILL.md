@@ -6,7 +6,7 @@ description: |
   when the user wants to convert a data file or specification into working code.
   Trigger with phrases like "generate code from this CSV", "create an API from
   this schema", "build a parser for this file", or "turn this spec into code".
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(node:*), Bash(python3:*), Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -94,3 +94,15 @@ The skill will:
 - **Ambiguous types:** When column types cannot be inferred from data alone, asks the user to clarify (e.g., "Is `status` an enum or a free-text string?").
 - **Missing dependencies:** Lists required packages (e.g., `pip install fastapi uvicorn`) and offers to generate a `requirements.txt` or `package.json`.
 - **Large files:** For files with many columns or tables, generates code incrementally and confirms scope before proceeding.
+
+## Prerequisites
+
+- Input file accessible on disk (CSV, JSON Schema, SQL DDL, protobuf, or OpenAPI spec)
+- Target language runtime installed (Node.js, Python, Go, etc.)
+- Package manager available (`npm` or `pip`) for installing generated dependencies
+
+## Resources
+
+- [JSON Schema specification](https://json-schema.org/) — schema definition reference
+- [OpenAPI 3.0 specification](https://spec.openapis.org/oas/v3.0.3) — API description format
+- [Zod documentation](https://zod.dev/) — TypeScript-first schema validation

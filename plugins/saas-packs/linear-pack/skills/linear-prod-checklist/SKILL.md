@@ -24,6 +24,8 @@ Comprehensive checklist for deploying Linear integrations to production.
 - Production Linear workspace
 - Deployment infrastructure ready
 
+## Instructions
+
 ## Pre-Production Checklist
 
 ### 1. Authentication & Security

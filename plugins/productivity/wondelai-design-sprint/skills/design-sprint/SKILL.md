@@ -452,70 +452,45 @@ Audit any sprint plan:
 | Can we recruit 5 target users? | Can't test properly | Start recruiting now (2 weeks ahead) |
 | Will team commit to no interruptions? | Won't maintain focus | Get buy-in from leadership |
 
-## Reference Files
-
-- [monday.md](references/monday.md): Map exercises, HMW notes, target selection
-- [tuesday.md](references/tuesday.md): Sketching templates, Crazy 8s, solution sketches
-- [wednesday.md](references/wednesday.md): Decision exercises, storyboard templates
-- [thursday.md](references/thursday.md): Prototyping tools, techniques, checklists
-- [friday.md](references/friday.md): Interview scripts, note-taking, pattern analysis
-- [facilitation.md](references/facilitation.md): Sprint Master guide, time-boxing, energy management
-- [recruiting.md](references/recruiting.md): User recruitment, screener surveys, scheduling
-- [case-studies.md](references/case-studies.md): Slack, Blue Bottle Coffee, Savioke, and more
-- [remote-sprints.md](references/remote-sprints.md): Adapting sprint for distributed teams
-
-## Further Reading
-
-This skill is based on the Design Sprint process developed at Google Ventures. For the complete methodology, exercises, and case studies:
-
-- [*"Sprint: How to Solve Big Problems and Test New Ideas in Just Five Days"*](https://www.amazon.com/Sprint-Solve-Problems-Test-Ideas/dp/150112174X?tag=wondelai00-20) by Jake Knapp, John Zeratsky, Braden Kowitz
-
-## About the Author
-
-**Jake Knapp** created the Design Sprint process while at Google, where he ran sprints on products like Gmail, Chrome, and Google X. As a design partner at Google Ventures (now GV), he refined the process by running over 100 sprints with startups in the GV portfolio. The Design Sprint is now used by teams at Google, Slack, Airbnb, LEGO, and thousands of companies worldwide. Jake is also the author of *Make Time*, a framework for focus and energy.
-
 ## Overview
 
-Run a structured 5-day process to prototype, test, and validate product ideas with real users.
+A five-day process for answering critical business questions through design, prototyping, and testing with real customers, developed at Google Ventures.
 
 ## Prerequisites
 
-- Access to the testing environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with testing concepts and terminology
+- A clearly defined challenge worth a week of focused effort
+- A decision maker plus 4-7 team members committed for the full 5 days
+- Dedicated room with whiteboards and a way to recruit 5 target customers for Friday testing
 
 ## Instructions
 
-1. Assess the current state of the testing configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
+1. Follow the 5-day structure: Map (Monday), Sketch (Tuesday), Decide (Wednesday), Prototype (Thursday), Test (Friday)
+2. Use the Quick Diagnostic table to verify readiness before starting
+3. Refer to the day-specific reference files for detailed exercises and facilitation guides
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+- **Monday**: Long-term goal, sprint questions, customer journey map, target selection
+- **Wednesday**: Winning solution chosen, detailed storyboard ready to prototype
+- **Friday**: Interview recordings, pattern notes, validated/invalidated hypotheses, next steps decision
 
 ## Error Handling
 
 | Error | Cause | Resolution |
 |-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| No decision maker available | Key stakeholder absent | Postpone sprint until Decider can commit the full week |
+| Cannot recruit 5 users | Insufficient lead time or wrong audience | Start recruiting 2 weeks ahead; broaden screener criteria |
+| Prototype too complex for one day | Storyboard scope too large | Cut to the single riskiest assumption and prototype only that flow |
 
 ## Examples
 
-**Basic usage**: Apply design sprint to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize design sprint for production environments with multiple constraints and team-specific requirements.
+- **New product validation**: A SaaS startup runs a sprint to test onboarding flow with 5 target users before writing production code.
+- **Feature prioritization**: A product team with 3 competing feature proposals uses Wednesday's decision process to choose one, prototypes Thursday, and tests Friday.
 
 ## Resources
 
-- Official testing documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [references/monday.md](references/monday.md) through [references/friday.md](references/friday.md) — daily exercises and facilitation
+- [references/case-studies.md](references/case-studies.md) — Slack, Blue Bottle Coffee, Savioke, and more
+- [references/remote-sprints.md](references/remote-sprints.md) — adapting sprints for distributed teams
+- [*"Sprint"*](https://www.amazon.com/Sprint-Solve-Problems-Test-Ideas/dp/150112174X?tag=wondelai00-20) by Jake Knapp — the complete methodology
+

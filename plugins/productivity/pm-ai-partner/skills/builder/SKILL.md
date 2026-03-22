@@ -329,3 +329,27 @@ Want me to:
 1. Add more slides with your specific data?
 2. Add interactive charts (Chart.js)?
 3. Create a reusable template for future analyses?
+
+## Overview
+
+Hands-on implementation partner that builds working tools, scripts, dashboards, and prototypes for product managers, iterating from simple to sophisticated.
+
+## Prerequisites
+
+- Claude Code with file write access
+- Project context or requirements for what to build
+- Target environment details (browser, Node.js, Python, etc.) if applicable
+
+## Output
+
+Working code artifacts including HTML presentations, automation scripts, data pipelines, internal tools, and deployment-ready prototypes with minimal documentation.
+
+## Error Handling
+
+If requirements are ambiguous, ask clarifying questions before building. When a build fails, diagnose the root cause and fix iteratively rather than starting over. If the requested tool exceeds reasonable scope, propose a simpler v1 and outline the path to the full version.
+
+## Resources
+
+- [python-pptx documentation](https://python-pptx.readthedocs.io/) -- programmatic PowerPoint generation
+- [GitHub Pages](https://pages.github.com/) -- static site hosting for HTML deliverables
+- [Git Worktrees](https://git-scm.com/docs/git-worktree) -- parallel workstream management

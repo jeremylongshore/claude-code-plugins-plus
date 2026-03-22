@@ -1,8 +1,12 @@
 ---
 name: executive-digest
 description: "Generate the daily executive digest — a single WhatsApp summary of everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open Todoist tasks, and upcoming calendar events. Use when running the daily digest cron, or when user asks for a status digest, daily summary, \"what's pending\", or \"catch me up\"."
+version: 1.0.0
+license: MIT
+author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
 compatible-with: claude-code
 tags: [business, executive-digest]
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(todoist-cli:*), Bash(python3:*), Bash(source:*), Bash(curl:*), Glob, Grep, Write
 
 ---
 # Daily Executive Digest
@@ -135,3 +139,46 @@ For sections not explicitly covered above, follow `{user.workspace}/style/DIGEST
 - Nothing needs attention:
   - **Cron context**: NO_REPLY (don't send anything)
   - **User asked for digest**: Send "Nothing needs attention today ✅"
+
+## Overview
+
+Generates a daily executive digest summarizing everything needing attention: stalled scheduling, pending intros, unanswered emails, promised follow-ups, open Todoist tasks, and upcoming calendar events, delivered via WhatsApp and Slack.
+
+## Prerequisites
+
+- `gog` CLI configured with both Gmail/Calendar accounts
+- `todoist-cli` installed with valid API token in workspace `.env`
+- `mcporter` with Granola MCP connection for meeting commitment lookup
+- Slack bot token for Chief of Staff DM delivery
+- WhatsApp delivery endpoint configured in `user.json`
+- State files: `scheduling-threads.json`, `decisions-memory.json`, `digest-state.json`
+
+## Instructions
+
+See the Steps section above (Steps 1 through 5) for the full execution workflow.
+
+## Output
+
+- WhatsApp message with categorized digest (tasks, calendar, pending intros, unanswered emails, promised follow-ups)
+- Slack DM to Chief of Staff with the same digest content
+- Updated `digest-state.json` tracking surfaced items to avoid repetition
+
+## Error Handling
+
+See the Error handling subsection under Step 1 above. Individual data source failures are logged and noted in the digest; the entire digest only aborts if both Gmail accounts are unreachable.
+
+## Examples
+
+```bash
+# The skill checks Todoist, both calendars, Gmail threads, and Granola commitments.
+# Example WhatsApp digest excerpt:
+# "3 overdue tasks, 2 pending intros, 1 unanswered email from Sarah Chen,
+#  5 meetings this week (2 external, 3 internal)"
+```
+
+## Resources
+
+- [Todoist REST API](https://developer.todoist.com/rest/v2/)
+- [Gmail API](https://developers.google.com/gmail/api)
+- [Google Calendar API](https://developers.google.com/calendar/api)
+- [Slack API - chat.postMessage](https://api.slack.com/methods/chat.postMessage)

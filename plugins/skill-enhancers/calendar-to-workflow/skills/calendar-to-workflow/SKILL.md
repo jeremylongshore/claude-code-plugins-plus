@@ -6,7 +6,7 @@ description: |
   prep, standup generation, or scheduling workflows. Trigger with phrases like
   "prep for my meetings", "generate standup notes", "create workflow from calendar",
   or "summarize today's schedule".
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
+allowed-tools: Read, Write, Edit, Bash(git:*), Bash(gh:*), Bash(chmod:*), Glob, Grep
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -88,3 +88,15 @@ The skill will generate a script that:
 - **Unrecognized format:** Attempts best-effort parsing and asks the user to confirm the extracted events.
 - **Missing git context:** Skips repository-specific sections and notes which parts were omitted.
 - **Permission errors:** Suggests checking file permissions or GitHub CLI authentication status.
+
+## Prerequisites
+
+- Calendar data in ICS format, JSON, or plain text event descriptions
+- Git repository context for commit-aware standup generation
+- GitHub CLI (`gh`) authenticated for PR and CI status lookups
+
+## Resources
+
+- [iCalendar (ICS) specification](https://datatracker.ietf.org/doc/html/rfc5545) — event format reference
+- [GitHub CLI manual](https://cli.github.com/manual/) — `gh pr list`, `gh run list` commands
+- [Git log formatting](https://git-scm.com/docs/git-log) — options for activity summaries

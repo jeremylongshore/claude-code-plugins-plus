@@ -1,8 +1,12 @@
 ---
 name: email-drafting
 description: Draft email replies for Gonto's Gmail accounts (m@gon.to, gonto@hypergrowthpartners.com). Handles intro acceptances, scheduling intent, thanks/ack, and positive short replies. Use when user asks to draft or reply to an email, or when Gmail webhook triggers arrive for auto-draft classification. Draft-only mode — never sends automatically.
+version: 1.0.0
+license: MIT
+author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
 compatible-with: claude-code
 tags: [business, webhooks, email-drafting]
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(python3:*), Glob, Grep, Write
 
 ---
 # Email Drafting Skill
@@ -193,3 +197,40 @@ This is non-optional. The user must be able to read and approve the draft from W
 - Alert on: meaningful changes, breakages, time-sensitive items, **auto-drafted emails**
 - Time-sensitive: approvals, meeting changes, 2FA codes, security, travel changes
 - Evaluate Promotions, suppress Spam/Junk/Trash
+
+## Prerequisites
+
+- `gog` CLI configured with both Gmail accounts (primary and work)
+- `mcporter` with Grain MCP connection for meeting transcript access
+- OpenClaw workspace with `skill_log.py` and `audit_log.py` scripts
+- Email style guide at `{user.workspace}/style/EMAIL_STYLE.md`
+- Humanizer skill at `~/executive-assistant-skills/humanizer/SKILL.md`
+
+## Instructions
+
+See the Execution, Trigger Detection, and Drafting Principles sections above for the full workflow. The skill detects trigger class (intro, scheduling, thanks/ack, positive reply), applies confidence gate, drafts via `gog`, and notifies via WhatsApp.
+
+## Output
+
+- Gmail draft created on the correct account (never sent automatically)
+- WhatsApp notification with full draft text, Gmail draft link, and trigger class
+- Audit log entry for each draft created, sent, or skipped
+
+## Error Handling
+
+See the Skip Conditions and Confidence Gate sections above. Low-confidence triggers are not drafted. Errors in external calls (gog, mcporter) are logged via `skill_log.py` before continuing.
+
+## Examples
+
+```bash
+# Auto-draft trigger: intro email detected in inbox
+# Output: Gmail draft with intro acceptance, introducer moved to BCC,
+# scheduling assistant CC'd, WhatsApp notification with full draft text
+# "Draft (m@gon.to -> John): intro acceptance. [Gmail link]"
+```
+
+## Resources
+
+- [Gmail API](https://developers.google.com/gmail/api)
+- [Grain API](https://grain.com/docs)
+- [Gmail Draft URL format](https://mail.google.com/mail/u/?authuser={email}#drafts)

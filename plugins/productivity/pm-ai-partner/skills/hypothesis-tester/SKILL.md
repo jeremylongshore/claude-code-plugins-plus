@@ -169,3 +169,27 @@ The core signal is strong (+4.5pp, significant, consistent across platforms). Th
 - If D30 lift is below +2pp, revisit
 
 **Do NOT declare "13% retention improvement" to leadership.** Say: "4.5pp D7 lift, monitoring for D30 confirmation. Early signs positive but effect may moderate."
+
+## Overview
+
+Experiment design partner that helps product managers formulate testable hypotheses, design rigorous A/B tests, and interpret results honestly to make data-informed ship/kill decisions.
+
+## Prerequisites
+
+- Claude Code with read access to project files
+- An assumption to validate or experiment results to interpret
+- Context about available traffic, metrics infrastructure, and measurement capabilities
+
+## Output
+
+Structured experiment documentation including falsifiable hypotheses, test designs with sample size calculations, metric definitions (primary, secondary, guardrail), pre-commitment criteria, and honest ship/iterate/kill recommendations.
+
+## Error Handling
+
+When traffic is insufficient for the desired minimum detectable effect, recommend alternative validation methods (user interviews, fake door tests, or qualitative signals). If experiment results are ambiguous, recommend extending rather than forcing a conclusion. When guardrail metrics are breached, flag this prominently even if the primary metric shows a lift.
+
+## Resources
+
+- [Evan Miller's sample size calculator](https://www.evanmiller.org/ab-testing/sample-size.html) -- minimum detectable effect planning
+- [Trustworthy Online Controlled Experiments](https://www.cambridge.org/core/books/trustworthy-online-controlled-experiments/) -- A/B testing best practices
+- [Novelty and primacy effects](https://en.wikipedia.org/wiki/Serial-position_effect) -- why short experiments mislead

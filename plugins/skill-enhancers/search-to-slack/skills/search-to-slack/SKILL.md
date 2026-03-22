@@ -6,7 +6,7 @@ description: |
   research a topic and share findings on Slack. Trigger with phrases like
   "research and post to Slack", "create a Slack digest", "summarize and share
   in #channel", or "format search results for Slack".
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebSearch, WebFetch
+allowed-tools: Read, Write, Edit, Bash(curl:*), Glob, Grep, WebSearch, WebFetch
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
@@ -111,3 +111,15 @@ The skill will:
 - **Slack formatting issues:** Validates the output against Slack's mrkdwn spec, escaping special characters (`&`, `<`, `>`) that could break rendering.
 - **No webhook URL provided:** Outputs the formatted message as text for manual pasting and explains how to set up a Slack incoming webhook for automated posting.
 - **Rate limiting:** If web search returns limited results, clearly notes the coverage gap and suggests running the search again later.
+
+## Prerequisites
+
+- WebSearch and WebFetch tools enabled for research queries
+- Slack incoming webhook URL (for automated posting) or manual copy-paste workflow
+- Familiarity with target Slack channel naming conventions
+
+## Resources
+
+- [Slack Block Kit Builder](https://app.slack.com/block-kit-builder) — visual message designer
+- [Slack mrkdwn reference](https://api.slack.com/reference/surfaces/formatting) — formatting syntax
+- [Slack Incoming Webhooks](https://api.slack.com/messaging/webhooks) — setup guide for automated posting

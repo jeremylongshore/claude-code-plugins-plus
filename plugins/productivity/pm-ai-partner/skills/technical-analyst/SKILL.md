@@ -164,3 +164,27 @@ requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 - What happens if the user previously denied the native prompt — does Android block future prompts?
 
 **Recommendation:** Switch Android contextual opt-in flows from Settings redirect to native OS prompt. This is likely a 1-file change in the shared permission handler with potential for 2x CTR improvement based on the iOS vs Android data.
+
+## Overview
+
+Technical analysis translator that helps product managers understand systems, codebases, and APIs in PM-friendly terms, connecting technical details to product implications and decisions.
+
+## Prerequisites
+
+- Claude Code with read access to the codebase and relevant documentation
+- A system, service, or technical concept to investigate
+- Context about which product decision the technical understanding should inform
+
+## Output
+
+Layered technical explanations including one-sentence summaries, PM-friendly system descriptions, product implications for users and features, and prioritized questions to discuss with engineering.
+
+## Error Handling
+
+When codebase access is limited or code is unfamiliar, clearly state what can be inferred versus what requires engineering confirmation. If the technical system is too complex to summarize simply, break it into components and explain each separately. When uncertainty exists about implementation behavior, flag it as a question for engineering rather than guessing.
+
+## Resources
+
+- [C4 model for software architecture](https://c4model.com/) -- layered system visualization
+- [ADR (Architecture Decision Records)](https://adr.github.io/) -- understanding historical technical decisions
+- [API design guidelines](https://cloud.google.com/apis/design) -- evaluating API quality and contracts

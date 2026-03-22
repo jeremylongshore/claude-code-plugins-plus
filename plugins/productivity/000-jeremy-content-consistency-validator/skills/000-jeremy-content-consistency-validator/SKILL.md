@@ -76,6 +76,14 @@ Checks content for tone, terminology, formatting, and structural consistency acr
 2. **Warning** — Add "Feature X" to `README.md` feature list
 ```
 
+## Output
+
+The skill produces a timestamped Markdown report saved to `consistency-reports/YYYY-MM-DD-HH-MM-SS.md` containing:
+- **Executive summary**: Severity counts (Critical/Warning/Info) at a glance
+- **Pair comparison tables**: Field-by-field comparison between each source pair with severity classification
+- **Terminology matrix**: Cross-source consistency check for product names, versions, and key terms
+- **Prioritized action items**: Specific fixes with file paths and line numbers, ordered by severity
+
 ## Error Handling
 
 | Error | Cause | Solution |

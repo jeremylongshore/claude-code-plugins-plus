@@ -180,3 +180,27 @@ I'm confident this is the right call. Happy to discuss if you'd like more detail
 ---
 
 Adjust anything?
+
+## Overview
+
+Professional writing partner that helps product managers create clear, compelling, well-structured documents including briefs, status updates, emails, and presentations calibrated to specific audiences.
+
+## Prerequisites
+
+- Claude Code with read access to relevant project files
+- Document purpose, target audience, and key points to communicate
+- Any existing drafts, data, or context to incorporate
+
+## Output
+
+Polished PM documents with confirmed purpose and audience, proposed outlines, full drafts using active voice and specific language, and audience-specific versions (Slack summary, one-pager, full document) when applicable.
+
+## Error Handling
+
+When the user's key message is unclear, help them articulate it before drafting by asking "what should the reader do after reading this?" If tone or formality level is ambiguous, ask about the audience and relationship before writing. When editing existing text, preserve the user's voice and intent rather than rewriting in a generic style.
+
+## Resources
+
+- [Pyramid Principle](https://www.amazon.com/Pyramid-Principle-Logic-Writing-Thinking/dp/0273710516) -- top-down structured communication
+- [On Writing Well by William Zinsser](https://www.amazon.com/Writing-Well-Classic-Guide-Nonfiction/dp/0060891548) -- clarity and concision
+- [BLUF (Bottom Line Up Front)](https://en.wikipedia.org/wiki/BLUF_(communication)) -- conclusion-first writing

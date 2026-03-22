@@ -1,8 +1,12 @@
 ---
 name: todoist-due-drafts
 description: Check Todoist for tasks due today (and overdue) that involve pinging, emailing, or following up with someone. Auto-draft the emails using meeting context and notify via WhatsApp. Use when running the daily due-drafts cron, or when user asks to process email tasks from Todoist.
+version: 1.0.0
+license: MIT
+author: "Martin Gontovnikas <martin@hypergrowthpartners.com>"
 compatible-with: claude-code
 tags: [business, todoist-due]
+allowed-tools: Read, Bash(gog:*), Bash(mcporter:*), Bash(todoist-cli:*), Bash(python3:*), Bash(source:*), Glob, Grep, Write
 
 ---
 # Todoist Due-Today Email Drafts
@@ -110,3 +114,43 @@ python3 {user.workspace}/scripts/cron_canary.py ping todoist-due-drafts
 - Before drafting, check if user already replied: `gog --account <account> --no-input gmail search "to:<recipient> in:sent newer_than:14d" --json`. If recent sent mail exists in the same thread, skip drafting and note "already replied" in the notification.
 - Check for existing drafts before creating: `gog --account <account> --no-input gmail drafts --json`. If a draft already exists for the same thread (matching thread ID or recipient + subject), skip and note "draft already exists."
 - Overdue outreach tasks get a ⚠️ prefix in the notification.
+
+## Overview
+
+Scans Todoist for due and overdue tasks that involve outreach (pinging, emailing, following up), auto-drafts contextual emails using meeting transcripts and email history, and notifies via WhatsApp.
+
+## Prerequisites
+
+- `todoist-cli` installed with valid API token in workspace `.env`
+- `gog` CLI configured with both Gmail accounts
+- `mcporter` with Granola and Grain MCP connections for meeting context lookup
+- WhatsApp delivery endpoint configured in `user.json`
+- OpenClaw workspace with `skill_log.py` and `cron_canary.py` scripts
+
+## Instructions
+
+See the Steps section above (Steps 1 through 5) for the full execution workflow.
+
+## Output
+
+- Gmail drafts created on the appropriate account for each outreach task
+- A single WhatsApp notification summarizing all drafts created, or a task list if no drafts were needed
+- NO_REPLY if no tasks are due today
+
+## Examples
+
+```bash
+# The skill runs todoist-cli to find due tasks, identifies outreach items,
+# pulls meeting context from Granola/Grain, drafts emails via gog, and notifies.
+# Example WhatsApp output:
+# "2 email drafts created from today's Todoist tasks:
+#  1. Sarah Chen — follow-up on advisory scope (draft in work account)
+#  2. David Park — intro to Marcos (draft in personal account)"
+```
+
+## Resources
+
+- [Todoist REST API](https://developer.todoist.com/rest/v2/)
+- [Gmail API](https://developers.google.com/gmail/api)
+- [Granola API](https://granola.ai/docs)
+- [Grain API](https://grain.com/docs)

@@ -6,7 +6,7 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 user-invocable: true
 argument-hint: "<bot-token> <app-token>"
-allowed-tools: [Read, Write, "Bash(cmd:chmod)"]
+allowed-tools: Read, Write, Bash(chmod:*)
 compatible-with: claude-code
 tags: [mcp, configure]
 
@@ -14,7 +14,16 @@ tags: [mcp, configure]
 
 # /slack-channel:configure
 
-Configure the Slack channel with your bot token and app-level token.
+## Overview
+
+Configure the Slack channel MCP plugin by providing your Slack bot token and app-level token. Writes credentials to a secure `.env` file with owner-only permissions.
+
+## Prerequisites
+
+- A Slack app created at [api.slack.com/apps](https://api.slack.com/apps) with Socket Mode enabled
+- A Bot User OAuth Token (`xoxb-...`) from OAuth & Permissions
+- An App-Level Token (`xapp-...`) from Socket Mode settings
+- Write access to `~/.claude/channels/slack/`
 
 ## Usage
 
@@ -69,3 +78,46 @@ Configure the Slack channel with your bot token and app-level token.
 - Never echo the tokens back in the confirmation message
 - Never log tokens to stdout or any file other than `.env`
 - Always set 0o600 permissions on the `.env` file
+
+## Output
+
+On success, displays:
+```
+Slack channel configured.
+
+Start Claude with the Slack channel:
+  claude --channels plugin:slack-channel@claude-code-plugins
+```
+
+On validation failure, displays the error with correct usage syntax.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Missing token argument | Fewer than 2 arguments provided | Show usage with required token prefixes |
+| Invalid bot token prefix | First token does not start with `xoxb-` | Explain where to find the Bot User OAuth Token |
+| Invalid app token prefix | Second token does not start with `xapp-` | Explain where to find the App-Level Token in Socket Mode settings |
+| Permission denied | Cannot write to `~/.claude/channels/slack/` | Check directory permissions and create parent dirs if needed |
+
+## Examples
+
+**Standard configuration:**
+```
+/slack-channel:configure xoxb-1234567890-abcdef xapp-1-ABCDEF-ghijkl
+→ Slack channel configured.
+```
+
+**Missing token error:**
+```
+/slack-channel:configure xoxb-1234567890
+→ Error: Two tokens required.
+  - Bot token (starts with xoxb-) from OAuth & Permissions
+  - App token (starts with xapp-) from Socket Mode settings
+```
+
+## Resources
+
+- [Slack API: Creating an app](https://api.slack.com/start/quickstart) — app setup walkthrough
+- [Slack Socket Mode](https://api.slack.com/apis/socket-mode) — how to enable and get app-level tokens
+- Access control: `/slack-channel:access` — configure who can message your session
