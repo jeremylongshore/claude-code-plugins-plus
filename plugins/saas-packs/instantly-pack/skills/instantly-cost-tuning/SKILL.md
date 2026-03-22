@@ -1,138 +1,240 @@
 ---
 name: instantly-cost-tuning
 description: |
-  Optimize Instantly costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Instantly billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "instantly cost", "instantly billing",
-  "reduce instantly costs", "instantly pricing", "instantly expensive", "instantly budget".
-allowed-tools: Read, Grep
+  Optimize Instantly.ai costs through plan selection, account management, and usage monitoring.
+  Use when analyzing Instantly billing, reducing per-campaign costs,
+  or choosing between Instantly pricing tiers.
+  Trigger with phrases like "instantly cost", "instantly pricing",
+  "instantly billing", "reduce instantly cost", "instantly plan comparison".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, api, monitoring, cost-optimization]
+tags: [saas, instantly, cost-optimization, pricing]
 
 ---
 # Instantly Cost Tuning
 
 ## Overview
-Optimize Instantly email outreach costs by managing sending account count, right-sizing your plan tier, and maximizing deliverability (which is the core ROI metric). Instantly pricing combines per-seat costs with sending volume tiers (Growth: 5K leads/month, Hypergrowth: 25K leads/month, Light Speed: 100K leads/month).
+Optimize Instantly.ai costs by choosing the right plan, managing email account utilization, monitoring campaign efficiency, and reducing wasted sends. Instantly's pricing is based on sending accounts and features, not per-email — so the key to cost efficiency is maximizing the value per account.
 
-## Prerequisites
-- Instantly workspace admin access
-- Sending account reputation data
-- Campaign performance analytics
+## Instantly Pricing Tiers (2026)
+
+| Plan | Monthly | Annual (per mo) | Email Accounts | Warmup | API Access | Webhooks |
+|------|---------|----------------|----------------|--------|------------|----------|
+| Growth | $30 | $24 | 5 | Included | v2 (limited) | No |
+| Hypergrowth | $97.95 | $77.60 | 25 | Included | v2 (full) | Yes |
+| Light Speed | $358.30 | $286.30 | 500+ | Included | v2 (full) | Yes |
+
+**Key cost decision:** You need **Hypergrowth** ($97.95/mo) minimum for full API v2 access and webhooks.
 
 ## Instructions
 
-### Step 1: Audit Account Efficiency
-```bash
-set -euo pipefail
-# Check per-account performance
-curl "https://api.instantly.ai/api/v1/account/status" \
-  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
-  jq '.accounts[] | {
-    email, daily_limit, sent_today,
-    reputation_score, warmup_status,
-    effective_sends: (.sent_today * .reputation_score / 100)
-  }' | jq -s 'sort_by(-.effective_sends)'
-# Accounts with low reputation are wasting sends (emails go to spam)
+### Step 1: Audit Current Account Utilization
+```typescript
+import { instantly } from "./src/instantly";
+
+async function auditAccountUtilization() {
+  // Get all accounts
+  const accounts = await instantly<Array<{
+    email: string;
+    status: number;
+    daily_limit: number | null;
+    warmup_status: string;
+  }>>("/accounts?limit=200");
+
+  // Get daily analytics for the last 7 days
+  const endDate = new Date().toISOString().split("T")[0];
+  const startDate = new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0];
+  const dailyAnalytics = await instantly<Array<{
+    email: string;
+    date: string;
+    emails_sent: number;
+  }>>(`/accounts/analytics/daily?start_date=${startDate}&end_date=${endDate}&emails=${accounts.map(a => a.email).join(",")}`);
+
+  // Calculate utilization
+  console.log("=== Account Utilization Audit ===\n");
+
+  let totalCapacity = 0;
+  let totalSent = 0;
+  const underutilized: string[] = [];
+
+  for (const account of accounts) {
+    const sent = dailyAnalytics
+      .filter((d) => d.email === account.email)
+      .reduce((sum, d) => sum + d.emails_sent, 0);
+    const dailyAvg = sent / 7;
+    const capacity = account.daily_limit || 50;
+    const utilization = (dailyAvg / capacity) * 100;
+
+    totalCapacity += capacity * 7;
+    totalSent += sent;
+
+    if (utilization < 20) {
+      underutilized.push(account.email);
+    }
+
+    console.log(`${account.email}: ${dailyAvg.toFixed(0)}/day of ${capacity} limit (${utilization.toFixed(0)}% utilized)`);
+  }
+
+  console.log(`\nOverall: ${totalSent} sent of ${totalCapacity} capacity (${((totalSent / totalCapacity) * 100).toFixed(0)}%)`);
+  console.log(`Underutilized accounts (<20%): ${underutilized.length}`);
+  if (underutilized.length > 0) {
+    console.log(`Consider removing: ${underutilized.join(", ")}`);
+  }
+}
 ```
 
-### Step 2: Consolidate Sending Accounts
-```yaml
-# Before: 10 accounts, each sending 30 emails/day = 300 sends/day
-# Problem: 4 accounts have <50 reputation score (emails going to spam)
-current:
-  accounts: 10
-  effective_sends_per_day: 180  # Only 6 accounts delivering well
-  monthly_cost: "$97/month per account subscription"
+### Step 2: Campaign Efficiency Analysis
+```typescript
+async function campaignEfficiency() {
+  const campaigns = await instantly<Array<{ id: string; name: string; status: number }>>(
+    "/campaigns?limit=100"
+  );
 
-optimized:
-  accounts: 6               # Remove low-reputation accounts
-  effective_sends_per_day: 180  # Same effective volume
-  monthly_cost: "58% of original"
+  console.log("=== Campaign Efficiency ===\n");
+
+  for (const campaign of campaigns.filter((c) => c.status === 1 || c.status === 3)) {
+    const analytics = await instantly<{
+      campaign_name: string;
+      total_leads: number;
+      emails_sent: number;
+      emails_replied: number;
+      emails_bounced: number;
+      emails_opened: number;
+    }>(`/campaigns/analytics?id=${campaign.id}`);
+
+    if (analytics.emails_sent === 0) continue;
+
+    const replyRate = (analytics.emails_replied / analytics.emails_sent * 100).toFixed(1);
+    const bounceRate = (analytics.emails_bounced / analytics.emails_sent * 100).toFixed(1);
+    const openRate = (analytics.emails_opened / analytics.emails_sent * 100).toFixed(1);
+
+    // Cost per reply (assuming $97.95/mo plan, 25 accounts, ~30 days)
+    const costPerEmail = 97.95 / (25 * 50 * 30); // ~$0.0026 per email
+    const costPerReply = analytics.emails_replied > 0
+      ? ((analytics.emails_sent * costPerEmail) / analytics.emails_replied).toFixed(2)
+      : "N/A";
+
+    console.log(`${analytics.campaign_name}`);
+    console.log(`  Sent: ${analytics.emails_sent} | Open: ${openRate}% | Reply: ${replyRate}% | Bounce: ${bounceRate}%`);
+    console.log(`  Est. cost/reply: $${costPerReply}`);
+
+    // Warnings
+    if (parseFloat(bounceRate) > 5) {
+      console.log(`  WARNING: High bounce rate — clean lead list`);
+    }
+    if (parseFloat(replyRate) < 1) {
+      console.log(`  WARNING: Low reply rate — review email copy and targeting`);
+    }
+    console.log();
+  }
+}
 ```
 
-### Step 3: Optimize Warmup Strategy
-```yaml
-# Proper warmup maximizes deliverability, which maximizes ROI
-warmup_best_practices:
-  new_account:
-    week_1: 5 emails/day      # Start very low
-    week_2: 15 emails/day
-    week_3: 30 emails/day
-    week_4: 50 emails/day     # Full sending capacity
-    total_warmup: 28 days
+### Step 3: Plan Right-Sizing
+```typescript
+async function recommendPlan() {
+  const accounts = await instantly<Array<{ email: string }>>(
+    "/accounts?limit=200"
+  );
+  const webhooks = await instantly<Array<{ id: string }>>(
+    "/webhooks?limit=50"
+  );
 
-  # Don't rush warmup to save time -- a burnt account costs more to replace
-  # than 4 weeks of gradual warmup
+  const accountCount = accounts.length;
+  const usesWebhooks = webhooks.length > 0;
 
-  monitoring:
-    check_daily: reputation_score
-    pause_if: reputation_score < 60
-    reduce_volume_if: bounce_rate > 3%
+  console.log("=== Plan Recommendation ===\n");
+  console.log(`Active accounts: ${accountCount}`);
+  console.log(`Uses webhooks: ${usesWebhooks}`);
+
+  if (accountCount <= 5 && !usesWebhooks) {
+    console.log("\nRecommended: Growth ($30/mo)");
+    console.log("  You're within the 5-account limit and don't need webhooks.");
+  } else if (accountCount <= 25) {
+    console.log("\nRecommended: Hypergrowth ($97.95/mo)");
+    console.log("  Full API v2 access, webhooks, and 25 accounts.");
+  } else {
+    console.log("\nRecommended: Light Speed ($358.30/mo)");
+    console.log(`  You have ${accountCount} accounts — need the 500+ tier.`);
+  }
+
+  // Check billing details via API
+  try {
+    const billing = await instantly("/workspace-billing/plan-details");
+    console.log("\nCurrent plan:", JSON.stringify(billing, null, 2));
+  } catch {
+    console.log("\n(Could not fetch billing details — scope may be missing)");
+  }
+}
 ```
 
-### Step 4: Right-Size Your Plan
-```yaml
-# Plan selection based on actual sending needs
-growth_plan:
-  leads: 5000/month  # 5000: 5 seconds in ms
-  best_for: "Small team, 1-2 SDRs, testing campaigns"
-  cost: "$37/month"
+### Step 4: Cost Reduction Strategies
+```typescript
+async function applyOptimizations() {
+  console.log("=== Cost Optimization Actions ===\n");
 
-hypergrowth_plan:
-  leads: 25000/month  # 25000 = configured value
-  best_for: "Active outbound team, 3-5 SDRs"
-  cost: "$97/month"
-  tip: "Only upgrade when Growth plan consistently hits >80% lead capacity"
+  // 1. Pause unused accounts to free up slots
+  const accounts = await instantly<Array<{
+    email: string; status: number; daily_limit: number | null;
+  }>>("/accounts?limit=200");
 
-# Calculate: if you're on Hypergrowth but only importing 3K leads/month,
-# switch to Growth and save $60/month
+  for (const account of accounts) {
+    if (account.status === 0) { // inactive
+      console.log(`Consider removing inactive account: ${account.email}`);
+    }
+  }
+
+  // 2. Clean up completed campaigns
+  const campaigns = await instantly<Array<{ id: string; name: string; status: number }>>(
+    "/campaigns?limit=100"
+  );
+  const completed = campaigns.filter((c) => c.status === 3);
+  console.log(`\nCompleted campaigns to archive: ${completed.length}`);
+
+  // 3. Check for duplicate leads across campaigns
+  // (Leads in multiple campaigns waste sends)
+  console.log("\nDuplicate prevention:");
+  console.log("  Use skip_if_in_workspace: true on all lead imports");
+  console.log("  Use skip_if_in_campaign: true for campaign-specific dedup");
+
+  // 4. Verify email quality before import
+  console.log("\nEmail verification:");
+  console.log("  POST /api/v2/email-verification — verify before importing");
+  console.log("  Set verify_leads_on_import: true in lead creation");
+
+  // 5. Block list maintenance
+  const blocklist = await instantly<unknown[]>("/block-lists-entries?limit=1");
+  console.log(`\nBlock list entries: ${blocklist.length}+`);
+  console.log("  Add competitor domains, role-based emails (info@, admin@)");
+  console.log("  Add internal domains to prevent self-emailing");
+}
 ```
 
-### Step 5: Improve Reply Rate (Best ROI Optimization)
-```yaml
-# The highest ROI optimization is improving reply rate, not sending more emails
-optimization_priority:
-  1_clean_lead_lists:
-    action: "Verify emails before importing"
-    impact: "Reduces bounces, protects reputation, fewer wasted sends"
-  2_personalize_sequences:
-    action: "Use merge tags and custom variables"
-    impact: "2-3x reply rate improvement"
-  3_optimize_sending_schedule:
-    action: "Send Tuesday-Thursday 9-11am recipient timezone"
-    impact: "20-30% better open rates"
-  4_a_b_test_subject_lines:
-    action: "Test 2-3 variants per campaign"
-    impact: "10-20% open rate improvement"
-```
+## Cost Optimization Checklist
+- [ ] Right-sized plan for account count and feature needs
+- [ ] Underutilized accounts identified and removed
+- [ ] Duplicate leads prevented with `skip_if_in_workspace`
+- [ ] Lead emails verified before import
+- [ ] Block list populated with competitor/internal domains
+- [ ] Campaigns with >5% bounce rate cleaned up
+- [ ] Daily limits tuned per account (not over-provisioned)
+- [ ] Completed campaigns archived
+- [ ] Warmup-only accounts tracked separately
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Paying for unused sending capacity | Plan oversized for actual volume | Downgrade plan tier |
-| Low ROI per dollar spent | Poor deliverability | Fix warmup, clean lists, improve personalization |
-| Account costs without results | Account reputation too low | Pause account, rewarm or replace domain |
-| High bounce rate | Unverified lead lists | Use email verification before import |
-
-## Examples
-
-**Basic usage**: Apply instantly cost tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize instantly cost tuning for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| Can't access billing API | Missing workspace scope | Use dashboard instead |
+| Analytics return empty | Campaign too new | Wait 24h for data |
+| Account count exceeds plan | Plan limits reached | Upgrade or remove accounts |
 
 ## Resources
+- [Instantly Pricing](https://instantly.ai/pricing)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [Workspace Billing API](https://developer.instantly.ai/api/v2/schemas)
 
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For reference architecture, see `instantly-reference-architecture`.

@@ -1,211 +1,295 @@
 ---
 name: instantly-incident-runbook
 description: |
-  Execute Instantly incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Instantly-related outages, investigating errors,
-  or running post-incident reviews for Instantly integration failures.
+  Execute Instantly.ai incident response procedures with triage, mitigation, and recovery.
+  Use when responding to campaign failures, account health crises,
+  deliverability drops, or Instantly API outages.
   Trigger with phrases like "instantly incident", "instantly outage",
-  "instantly down", "instantly on-call", "instantly emergency", "instantly broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "instantly campaign failed", "instantly emergency", "instantly runbook".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, incident-response]
+tags: [saas, instantly, incident-response, runbook]
 
 ---
 # Instantly Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Instantly-related outages.
-
-## Prerequisites
-- Access to Instantly dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Structured incident response procedures for Instantly.ai integration failures. Covers campaign pause cascades, account health crises, bounce protect triggers, webhook delivery failures, and API outages.
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Instantly API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Severity | Criteria | Response Time | Examples |
+|----------|----------|---------------|----------|
+| P1 Critical | All campaigns stopped, sending halted | 15 min | All accounts unhealthy, API 5xx |
+| P2 High | Multiple campaigns affected | 1 hour | Bounce protect on key campaign, warmup degraded |
+| P3 Medium | Single campaign/account issue | 4 hours | One account SMTP failure, webhook delivery issue |
+| P4 Low | Non-blocking issue | Next business day | Analytics gap, cosmetic dashboard issue |
 
-## Quick Triage
+## Incident: All Campaigns in Accounts Unhealthy (-1)
 
+### Triage
+```typescript
+import { InstantlyClient } from "./src/instantly/client";
+const client = new InstantlyClient();
+
+async function triageCampaignHealth() {
+  console.log("=== P1 TRIAGE: Campaign Health ===\n");
+
+  // 1. Get all campaigns and their statuses
+  const campaigns = await client.campaigns.list(100);
+  const statusCounts: Record<number, number> = {};
+  for (const c of campaigns) {
+    statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
+  }
+  console.log("Campaign status distribution:", statusCounts);
+
+  const unhealthy = campaigns.filter((c) => c.status === -1);
+  console.log(`Unhealthy campaigns: ${unhealthy.length}`);
+
+  // 2. Test ALL account vitals
+  const accounts = await client.accounts.list(200);
+  const vitals = await client.accounts.testVitals(accounts.map((a) => a.email));
+
+  const broken = (vitals as any[]).filter((v) => v.smtp_status !== "ok" || v.imap_status !== "ok");
+  const healthy = (vitals as any[]).filter((v) => v.smtp_status === "ok" && v.imap_status === "ok");
+
+  console.log(`\nAccounts: ${accounts.length} total, ${healthy.length} healthy, ${broken.length} broken`);
+
+  if (broken.length > 0) {
+    console.log("\nBroken accounts:");
+    for (const v of broken) {
+      console.log(`  ${v.email}: SMTP=${v.smtp_status} IMAP=${v.imap_status} DNS=${v.dns_status}`);
+    }
+  }
+
+  return { unhealthy, broken, healthy };
+}
+```
+
+### Mitigation
+```typescript
+async function mitigateBrokenAccounts() {
+  const { broken, healthy } = await triageCampaignHealth();
+
+  // Step 1: Pause broken accounts
+  for (const v of broken) {
+    try {
+      await client.accounts.pause(v.email);
+      console.log(`Paused broken account: ${v.email}`);
+    } catch (e: any) {
+      console.log(`Failed to pause ${v.email}: ${e.message}`);
+    }
+  }
+
+  // Step 2: Check if remaining healthy accounts can carry the load
+  if (healthy.length < 3) {
+    console.log("\nWARNING: Fewer than 3 healthy accounts. Campaign performance will be degraded.");
+    console.log("Action: Fix broken account credentials or add new accounts.");
+  }
+
+  // Step 3: After fixing accounts, resume them
+  console.log("\nTo resume fixed accounts:");
+  for (const v of broken) {
+    console.log(`  POST /accounts/${encodeURIComponent(v.email)}/resume`);
+  }
+
+  // Step 4: Re-activate unhealthy campaigns
+  console.log("\nAfter accounts are fixed, reactivate campaigns:");
+  console.log("  POST /campaigns/{id}/activate");
+}
+```
+
+## Incident: Bounce Protect Triggered (-2)
+
+### Triage & Response
+```typescript
+async function handleBounceProtect() {
+  console.log("=== P2 TRIAGE: Bounce Protect ===\n");
+
+  const campaigns = await client.campaigns.list(100);
+  const bounceProtected = campaigns.filter((c) => c.status === -2);
+
+  for (const campaign of bounceProtected) {
+    const analytics = await client.campaigns.analytics(campaign.id);
+    const bounceRate = ((analytics.emails_bounced / analytics.emails_sent) * 100).toFixed(1);
+
+    console.log(`${campaign.name}: ${bounceRate}% bounce rate`);
+    console.log(`  Sent: ${analytics.emails_sent}, Bounced: ${analytics.emails_bounced}`);
+
+    // Check lead quality
+    const leads = await client.leads.list({
+      campaign: campaign.id,
+      limit: 100,
+    });
+    const bouncedLeads = leads.filter((l) => l.status === -1); // Bounced
+    console.log(`  Bounced leads: ${bouncedLeads.length} of ${leads.length} sampled`);
+  }
+
+  console.log("\n=== Recovery Steps ===");
+  console.log("1. Export remaining leads and verify emails with external service");
+  console.log("2. Remove bounced/invalid leads from the campaign");
+  console.log("3. Add verified leads back or create new campaign with clean list");
+  console.log("4. Re-activate campaign: POST /campaigns/{id}/activate");
+  console.log("\n=== Prevention ===");
+  console.log("- Set verify_leads_on_import: true on all lead imports");
+  console.log("- Use email verification: POST /api/v2/email-verification");
+  console.log("- Set allow_risky_contacts: false on campaign");
+}
+```
+
+## Incident: Webhook Delivery Failure
+
+### Triage & Recovery
+```typescript
+async function handleWebhookFailure() {
+  console.log("=== P3 TRIAGE: Webhook Delivery ===\n");
+
+  // Check webhook status
+  const webhooks = await client.webhooks.list();
+
+  for (const w of webhooks as any[]) {
+    console.log(`${w.name}: ${w.event_type} -> ${w.target_hook_url}`);
+    console.log(`  Status: ${w.status || "active"}`);
+  }
+
+  // Check delivery summary
+  const summary = await client.request("/webhook-events/summary");
+  console.log("\nDelivery summary:", JSON.stringify(summary, null, 2));
+
+  // Check by date
+  const byDate = await client.request("/webhook-events/summary-by-date");
+  console.log("By date:", JSON.stringify(byDate, null, 2));
+
+  // Resume paused webhooks
+  for (const w of webhooks as any[]) {
+    if (w.status === "paused") {
+      console.log(`\nResuming paused webhook: ${w.name}`);
+      try {
+        await client.request(`/webhooks/${w.id}/resume`, { method: "POST" });
+        console.log("  Resumed successfully");
+
+        // Test delivery
+        await client.request(`/webhooks/${w.id}/test`, { method: "POST" });
+        console.log("  Test event sent");
+      } catch (e: any) {
+        console.log(`  Failed: ${e.message}`);
+      }
+    }
+  }
+}
+```
+
+## Incident: API Rate Limit Storm (429s)
+
+### Response
+```typescript
+async function handleRateLimitStorm() {
+  console.log("=== P2 TRIAGE: Rate Limit Storm ===\n");
+
+  console.log("Immediate actions:");
+  console.log("1. Stop all automated API calls (pause cron jobs, workers)");
+  console.log("2. Check for runaway loops or misconfigured batch jobs");
+  console.log("3. Implement exponential backoff if not already in place");
+
+  // Check background jobs for stuck operations
+  const jobs = await client.request<Array<{
+    id: string; status: string; timestamp_created: string;
+  }>>("/background-jobs?limit=20");
+
+  const stuck = jobs.filter((j) => j.status === "in_progress");
+  console.log(`\nBackground jobs in progress: ${stuck.length}`);
+  for (const j of stuck) {
+    console.log(`  ${j.id}: ${j.status} (created: ${j.timestamp_created})`);
+  }
+
+  console.log("\nRate limit guidelines:");
+  console.log("  - Most endpoints: standard REST limits");
+  console.log("  - GET /emails: 20 req/min (strictest)");
+  console.log("  - Implement 2^attempt second backoff on 429");
+  console.log("  - Add jitter to prevent thundering herd");
+  console.log("  - Use request queue with max concurrency of 3-5");
+}
+```
+
+## Incident: Warmup Degradation
+
+### Response
+```typescript
+async function handleWarmupDegradation() {
+  console.log("=== P2 TRIAGE: Warmup Degradation ===\n");
+
+  const accounts = await client.accounts.list(200);
+  const warmupData = await client.accounts.warmupAnalytics(
+    accounts.map((a) => a.email)
+  ) as Array<{
+    email: string;
+    warmup_emails_sent: number;
+    warmup_emails_landed_inbox: number;
+    warmup_emails_landed_spam: number;
+  }>;
+
+  const degraded = warmupData.filter((w) => {
+    const sent = w.warmup_emails_sent || 1;
+    return (w.warmup_emails_landed_inbox / sent) < 0.8;
+  });
+
+  if (degraded.length > 0) {
+    console.log(`${degraded.length} accounts with low warmup inbox rate:\n`);
+    for (const w of degraded) {
+      const rate = ((w.warmup_emails_landed_inbox / (w.warmup_emails_sent || 1)) * 100).toFixed(1);
+      console.log(`  ${w.email}: ${rate}% inbox rate (${w.warmup_emails_landed_spam} spam)`);
+    }
+
+    console.log("\n=== Recovery ===");
+    console.log("1. Pause ALL campaigns using degraded accounts");
+    console.log("2. Keep warmup running (don't disable)");
+    console.log("3. Reduce campaign daily_limit to 10-20 per account");
+    console.log("4. Wait 7-14 days for reputation recovery");
+    console.log("5. Re-test inbox rates before re-enabling campaigns");
+    console.log("6. Check DNS: SPF, DKIM, DMARC records are correct");
+  } else {
+    console.log("All accounts have healthy warmup rates (>80% inbox)");
+  }
+}
+```
+
+## Quick Diagnostic Script
 ```bash
 set -euo pipefail
-# 1. Check Instantly status
-curl -s https://status.instantly.com | jq
+echo "=== Instantly Incident Diagnostic ==="
+echo "Time: $(date -u)"
+echo
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.instantly'
+echo "--- Campaign Status ---"
+curl -s https://api.instantly.ai/api/v2/campaigns?limit=100 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq 'group_by(.status) | map({status: .[0].status, count: length})'
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(instantly_errors_total[5m])  # 9090: Prometheus port
+echo "--- Account Vitals ---"
+EMAILS=$(curl -s https://api.instantly.ai/api/v2/accounts?limit=50 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | jq -r '[.[].email] | join(",")')
+echo "Accounts: $EMAILS"
 
-# 4. Recent error logs
-kubectl logs -l app=instantly-integration --since=5m | grep -i error | tail -20
+echo "--- Webhooks ---"
+curl -s https://api.instantly.ai/api/v2/webhooks?limit=20 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '[.[] | {name, event_type, status}]'
 ```
-
-## Decision Tree
-
-```
-Instantly API returning errors?
-├─ YES: Is status.instantly.com showing incident?
-│   ├─ YES → Wait for Instantly to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
-```bash
-set -euo pipefail
-# Verify API key is set
-kubectl get secret instantly-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Instantly dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic instantly-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/instantly-integration
-```
-
-### 429 - Rate Limited
-```bash
-set -euo pipefail
-# Check rate limit headers
-curl -v https://api.instantly.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/instantly-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Instantly for limit increase
-```
-
-### 500/503 - Instantly Errors
-```bash
-set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/instantly-integration INSTANTLY_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Instantly status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Instantly Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Instantly Integration Issue
-
-We're experiencing issues with our Instantly integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-set -euo pipefail
-# Generate debug bundle
-./scripts/instantly-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=instantly-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=instantly_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
-```
-
-### Postmortem Template
-```markdown
-## Incident: Instantly [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Instantly-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.instantly.status' || echo "UNHEALTHY"
-```
+| Can't reach API during incident | Instantly outage | Check status.instantly.ai, wait |
+| Can't pause accounts | `403` scope error | Use dashboard as fallback |
+| Runbook script rate-limited | Too many diagnostic calls | Space out requests, use backoff |
 
 ## Resources
-- [Instantly Status Page](https://status.instantly.com)
-- [Instantly Support](https://support.instantly.com)
+- [Instantly Help Center](https://help.instantly.ai)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [Instantly Status Page](https://status.instantly.ai)
 
 ## Next Steps
-For data handling, see `instantly-data-handling`.
+For data handling and compliance, see `instantly-data-handling`.

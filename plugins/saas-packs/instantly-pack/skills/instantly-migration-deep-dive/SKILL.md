@@ -1,253 +1,335 @@
 ---
 name: instantly-migration-deep-dive
 description: |
-  Execute Instantly major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Instantly, performing major version upgrades,
-  or re-platforming existing integrations to Instantly.
-  Trigger with phrases like "migrate instantly", "instantly migration",
-  "switch to instantly", "instantly replatform", "instantly upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Execute complex Instantly.ai migration strategies for platform changes.
+  Use when migrating between cold email platforms, consolidating workspaces,
+  or re-architecting outreach infrastructure around Instantly.
+  Trigger with phrases like "migrate to instantly", "instantly migration",
+  "switch to instantly", "instantly platform migration", "outreach migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, migration]
+tags: [saas, instantly, migration, architecture]
 
 ---
 # Instantly Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
 ## Overview
-Comprehensive guide for migrating to or from Instantly, or major version upgrades.
+Strategies for migrating to/from Instantly or consolidating multiple outreach tools into Instantly. Covers data migration (leads, campaigns, templates), account migration (email infrastructure), analytics preservation, and parallel-run strategies with zero-downtime cutover.
 
-## Prerequisites
-- Current system documentation
-- Instantly SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+## Migration Scenarios
 
-## Migration Types
+| Scenario | Complexity | Duration |
+|----------|-----------|----------|
+| Lemlist/Woodpecker/Mailshake to Instantly | Medium | 1-2 weeks |
+| Salesloft/Outreach to Instantly | High | 2-4 weeks |
+| Multiple Instantly workspaces to one | Low | 1 week |
+| Manual outreach to Instantly automation | Low | 3-5 days |
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+## Instructions
 
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "instantly" > instantly-files.txt
-
-# Count integration points
-wc -l instantly-files.txt
-
-# Identify dependencies
-npm list | grep instantly
-pip freeze | grep instantly
-```
-
-### Step 2: Data Inventory
+### Step 1: Pre-Migration Audit
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+import { InstantlyClient } from "./src/instantly/client";
+const client = new InstantlyClient();
+
+interface MigrationPlan {
+  sourceLeadCount: number;
+  sourceCampaignCount: number;
+  sourceTemplateCount: number;
+  emailAccountsToMigrate: string[];
+  estimatedDuration: string;
+  risks: string[];
 }
 
-async function assessInstantlyMigration(): Promise<MigrationInventory> {
+async function preMigrationAudit(): Promise<MigrationPlan> {
+  // Check current Instantly workspace state
+  const existingCampaigns = await client.campaigns.list(100);
+  const existingAccounts = await client.accounts.list(100);
+
+  console.log("=== Current Instantly Workspace ===");
+  console.log(`Campaigns: ${existingCampaigns.length}`);
+  console.log(`Accounts: ${existingAccounts.length}`);
+
+  // Check warmup status
+  if (existingAccounts.length > 0) {
+    const warmup = await client.accounts.warmupAnalytics(
+      existingAccounts.map((a) => a.email)
+    );
+    console.log(`Accounts with warmup: ${(warmup as any[]).length}`);
+  }
+
+  console.log("\n=== Migration Checklist ===");
+  console.log("[ ] Export leads from source platform (CSV)");
+  console.log("[ ] Export campaign templates and sequences");
+  console.log("[ ] Document sending schedules and daily limits");
+  console.log("[ ] Export analytics/historical data for reference");
+  console.log("[ ] Identify email accounts to migrate (IMAP/SMTP creds)");
+  console.log("[ ] Map custom fields to Instantly custom_variables");
+  console.log("[ ] Create block list from source platform unsubscribes");
+  console.log("[ ] Plan warmup period (14+ days for new accounts)");
+
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    sourceLeadCount: 0, // fill from source audit
+    sourceCampaignCount: 0,
+    sourceTemplateCount: 0,
+    emailAccountsToMigrate: [],
+    estimatedDuration: "2 weeks",
+    risks: [
+      "Warmup period delays campaign launch by 14+ days",
+      "Custom field mapping may lose data if not 1:1",
+      "Sending reputation doesn't transfer between platforms",
+    ],
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Instantly   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Instantly SDK
-npm install @instantly/sdk
-
-# Configure credentials
-cp .env.example .env.instantly
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@instantly/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
+### Step 2: Import Email Accounts
 ```typescript
-// src/adapters/instantly.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
+// Add email accounts with IMAP/SMTP credentials
+async function migrateEmailAccounts(accounts: Array<{
+  email: string;
+  first_name: string;
+  last_name: string;
+  smtp_host: string;
+  smtp_port: number;
+  smtp_username: string;
+  smtp_password: string;
+  imap_host: string;
+  imap_port: number;
+  imap_username: string;
+  imap_password: string;
+  daily_limit: number;
+}>) {
+  const results = { added: 0, failed: 0, errors: [] as string[] };
 
-class InstantlyAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const instantlyData = this.transform(data);
-    return instantlyClient.create(instantlyData);
-  }
-
-  private transform(data: CreateInput): InstantlyInput {
-    // Map from old format to Instantly format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateInstantlyData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+  for (const account of accounts) {
     try {
-      const transformed = batch.map(transform);
-      await instantlyClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
+      await client.request("/accounts", {
+        method: "POST",
+        body: JSON.stringify({
+          email: account.email,
+          first_name: account.first_name,
+          last_name: account.last_name,
+          smtp_host: account.smtp_host,
+          smtp_port: account.smtp_port,
+          smtp_username: account.smtp_username,
+          smtp_password: account.smtp_password,
+          imap_host: account.imap_host,
+          imap_port: account.imap_port,
+          imap_username: account.imap_username,
+          imap_password: account.imap_password,
+          daily_limit: account.daily_limit,
+        }),
+      });
+      results.added++;
+      console.log(`Added: ${account.email}`);
+    } catch (e: any) {
+      results.failed++;
+      results.errors.push(`${account.email}: ${e.message}`);
     }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
   }
 
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const instantlyPercentage = getFeatureFlag('instantly_migration_percentage');
-
-  if (Math.random() * 100 < instantlyPercentage) {
-    return new InstantlyAdapter();
+  // Enable warmup on all newly added accounts
+  if (results.added > 0) {
+    const addedEmails = accounts
+      .slice(0, results.added)
+      .map((a) => a.email);
+    await client.accounts.enableWarmup(addedEmails);
+    console.log(`Warmup enabled for ${addedEmails.length} accounts`);
   }
 
-  return new LegacyAdapter();
+  console.log(`\nAccount migration: ${results.added} added, ${results.failed} failed`);
+  return results;
 }
-```
 
-## Rollback Plan
+// Or use OAuth for Google/Microsoft accounts
+async function migrateWithOAuth(provider: "google" | "microsoft") {
+  const endpoint = provider === "google"
+    ? "/oauth/google/init"
+    : "/oauth/microsoft/init";
 
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app INSTANTLY_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.instantly'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateInstantlyMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  const session = await client.request<{ session_id: string; redirect_url: string }>(
+    endpoint,
+    { method: "POST" }
   );
 
-  return { checks: results, passed: results.every(r => r.result.success) };
+  console.log(`OAuth flow started. Redirect user to: ${session.redirect_url}`);
+  console.log(`Session ID: ${session.session_id}`);
+
+  // Poll for completion
+  let status = await client.request(`/oauth/session/status/${session.session_id}`);
+  console.log("Session status:", status);
 }
 ```
 
-## Instructions
-
-### Assess current configuration
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Instantly integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Instantly
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
+### Step 3: Import Leads from CSV
 ```typescript
-const status = await validateInstantlyMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+import { readFileSync } from "fs";
+import { parse } from "csv-parse/sync";
+
+async function importLeadsFromCSV(
+  filePath: string,
+  campaignId: string,
+  fieldMapping: Record<string, string>
+) {
+  const csv = readFileSync(filePath, "utf-8");
+  const records = parse(csv, { columns: true, skip_empty_lines: true });
+
+  console.log(`Importing ${records.length} leads from ${filePath}`);
+
+  const results = { added: 0, skipped: 0, failed: 0 };
+
+  for (let i = 0; i < records.length; i++) {
+    const row = records[i];
+    try {
+      const lead: Record<string, unknown> = {
+        campaign: campaignId,
+        skip_if_in_workspace: true,
+        verify_leads_on_import: true,
+      };
+
+      // Map CSV columns to Instantly fields
+      for (const [csvCol, instantlyField] of Object.entries(fieldMapping)) {
+        if (row[csvCol]) {
+          lead[instantlyField] = row[csvCol];
+        }
+      }
+
+      // Handle custom variables (anything not in standard fields)
+      const standardFields = ["email", "first_name", "last_name", "company_name", "website", "phone"];
+      const customVars: Record<string, string> = {};
+      for (const [csvCol, instantlyField] of Object.entries(fieldMapping)) {
+        if (!standardFields.includes(instantlyField) && row[csvCol]) {
+          customVars[instantlyField] = row[csvCol];
+        }
+      }
+      if (Object.keys(customVars).length > 0) {
+        lead.custom_variables = customVars;
+      }
+
+      await client.request("/leads", {
+        method: "POST",
+        body: JSON.stringify(lead),
+      });
+      results.added++;
+    } catch (e: any) {
+      if (e.message.includes("422")) {
+        results.skipped++; // duplicate
+      } else {
+        results.failed++;
+      }
+    }
+
+    // Progress report every 100 leads
+    if ((i + 1) % 100 === 0) {
+      console.log(`Progress: ${i + 1}/${records.length}`);
+    }
+  }
+
+  console.log(`Import complete: ${results.added} added, ${results.skipped} skipped, ${results.failed} failed`);
+}
+
+// Example field mapping: CSV column -> Instantly field
+const mapping = {
+  "Email": "email",
+  "First Name": "first_name",
+  "Last Name": "last_name",
+  "Company": "company_name",
+  "Website": "website",
+  "Title": "title",         // goes to custom_variables
+  "Industry": "industry",   // goes to custom_variables
+};
 ```
 
-## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Instantly Migration Guide](https://docs.instantly.com/migration)
+### Step 4: Migrate Unsubscribes to Block List
+```typescript
+async function migrateUnsubscribes(unsubscribedEmails: string[]) {
+  console.log(`Migrating ${unsubscribedEmails.length} unsubscribes to block list`);
 
-## Flagship+ Skills
-For advanced troubleshooting, see `instantly-advanced-troubleshooting`.
+  // Bulk add to block list
+  const batchSize = 100;
+  for (let i = 0; i < unsubscribedEmails.length; i += batchSize) {
+    const batch = unsubscribedEmails.slice(i, i + batchSize);
+    await client.request("/block-lists-entries/bulk-create", {
+      method: "POST",
+      body: JSON.stringify({ entries: batch }),
+    });
+    console.log(`Batch ${Math.floor(i / batchSize) + 1}: ${batch.length} entries added`);
+  }
+
+  console.log("Block list migration complete");
+}
+```
+
+### Step 5: Parallel Run Strategy
+```typescript
+// Run old and new platforms simultaneously during transition
+async function parallelRunMonitor() {
+  console.log("=== Parallel Run Status ===\n");
+
+  // Check Instantly campaign performance
+  const campaigns = await client.campaigns.list(50);
+  const activeCampaigns = campaigns.filter((c) => c.status === 1);
+
+  for (const campaign of activeCampaigns) {
+    const analytics = await client.campaigns.analytics(campaign.id);
+    const sent = analytics.emails_sent || 1;
+    console.log(`${campaign.name}:`);
+    console.log(`  Sent: ${analytics.emails_sent} | Open: ${((analytics.emails_opened / sent) * 100).toFixed(1)}% | Reply: ${((analytics.emails_replied / sent) * 100).toFixed(1)}%`);
+  }
+
+  console.log("\n=== Cutover Checklist ===");
+  console.log("[ ] Instantly campaigns matching old platform performance");
+  console.log("[ ] All leads migrated and deduplicated");
+  console.log("[ ] Webhooks delivering to CRM correctly");
+  console.log("[ ] Block list complete (all unsubscribes migrated)");
+  console.log("[ ] Warmup healthy (>80% inbox rate) for all accounts");
+  console.log("[ ] Old platform campaigns paused");
+  console.log("[ ] Team trained on Instantly dashboard");
+}
+```
+
+## Migration Timeline
+```
+Week 1: Setup & Warmup
+  - Add email accounts to Instantly
+  - Enable warmup (runs for 14+ days)
+  - Import block list / unsubscribes
+  - Map custom fields
+
+Week 2: Data Migration
+  - Import leads from CSV
+  - Recreate campaign templates as sequences
+  - Set up webhooks and CRM integration
+  - Configure sending schedules
+
+Week 3: Parallel Run
+  - Launch test campaign on Instantly (small list)
+  - Compare metrics with old platform
+  - Fix any delivery or integration issues
+
+Week 4: Cutover
+  - Pause old platform campaigns
+  - Activate full Instantly campaigns
+  - Monitor for 48 hours
+  - Decommission old platform
+```
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Account SMTP auth fails | Wrong credentials from old platform | Re-check app password or OAuth flow |
+| Leads rejected as duplicates | Already imported | Use `skip_if_in_workspace: true` |
+| Custom fields lost | No matching Instantly field | Map to `custom_variables` object |
+| Performance worse than old platform | Accounts not warmed up | Wait 14+ days, check inbox rates |
+
+## Resources
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [Instantly Account API](https://developer.instantly.ai/api/v2/account)
+- [Instantly Quick Start Guide](https://help.instantly.ai/en/articles/6451970-quick-start-guide-all-in-one)
+
+## Next Steps
+After migration, set up monitoring with `instantly-observability`.

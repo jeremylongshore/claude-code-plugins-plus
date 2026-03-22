@@ -1,151 +1,244 @@
 ---
 name: instantly-rate-limits
 description: |
-  Implement Instantly rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Instantly.
-  Trigger with phrases like "instantly rate limit", "instantly throttling",
-  "instantly 429", "instantly retry", "instantly backoff".
-allowed-tools: Read, Write, Edit
+  Implement Instantly.ai rate limiting, backoff, and request throttling patterns.
+  Use when handling 429 errors, implementing retry logic,
+  or building high-throughput Instantly integrations.
+  Trigger with phrases like "instantly rate limit", "instantly 429",
+  "instantly throttle", "instantly backoff", "instantly retry".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, api]
+tags: [saas, instantly, rate-limits, reliability]
 
 ---
 # Instantly Rate Limits
 
 ## Overview
-Handle Instantly rate limits gracefully with exponential backoff and idempotency.
+Handle Instantly API v2 rate limits. The API returns `429 Too Many Requests` when limits are exceeded. Most endpoints follow standard limits. The email listing endpoint has a stricter constraint of **20 requests per minute**. Failed webhook deliveries are retried up to **3 times within 30 seconds**.
 
 ## Prerequisites
-- Instantly SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+- Completed `instantly-install-auth` setup
+- Understanding of exponential backoff patterns
+
+## Known Rate Limits
+
+| Endpoint | Limit | Notes |
+|----------|-------|-------|
+| Most API endpoints | Standard REST limits | Varies by plan |
+| `GET /emails` | 20 req/min | Stricter — email listing |
+| Webhook deliveries | 3 retries in 30s | Instantly retries to your endpoint |
+| Background jobs | N/A | Async — poll via `GET /background-jobs/{id}` |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
-
+### Step 1: Exponential Backoff with Jitter
 ```typescript
-async function withExponentialBackoff<T>(
+import { InstantlyApiError } from "./src/instantly/client";
+
+interface RetryOptions {
+  maxRetries: number;
+  baseDelayMs: number;
+  maxDelayMs: number;
+}
+
+const DEFAULT_RETRY: RetryOptions = {
+  maxRetries: 5,
+  baseDelayMs: 1000,
+  maxDelayMs: 30000,
+};
+
+async function withBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
+  opts: Partial<RetryOptions> = {}
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+  const { maxRetries, baseDelayMs, maxDelayMs } = { ...DEFAULT_RETRY, ...opts };
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
+    } catch (err) {
+      const isRetryable =
+        err instanceof InstantlyApiError &&
+        (err.status === 429 || err.status >= 500);
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      if (!isRetryable || attempt === maxRetries) throw err;
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+      // Parse Retry-After header if available
+      let delay = baseDelayMs * Math.pow(2, attempt);
+      delay = Math.min(delay, maxDelayMs);
+
+      // Add jitter (10-30% of delay)
+      const jitter = delay * (0.1 + Math.random() * 0.2);
+      const totalDelay = delay + jitter;
+
+      console.warn(
+        `Rate limited (attempt ${attempt + 1}/${maxRetries}). Waiting ${Math.round(totalDelay)}ms...`
+      );
+      await new Promise((r) => setTimeout(r, totalDelay));
     }
   }
-  throw new Error('Unreachable');
+  throw new Error("Unreachable");
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
+### Step 2: Request Queue with Concurrency Control
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+class RequestQueue {
+  private queue: Array<() => Promise<void>> = [];
+  private running = 0;
+  private readonly maxConcurrent: number;
+  private readonly delayBetweenMs: number;
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+  constructor(maxConcurrent = 5, delayBetweenMs = 200) {
+    this.maxConcurrent = maxConcurrent;
+    this.delayBetweenMs = delayBetweenMs;
+  }
+
+  async add<T>(operation: () => Promise<T>): Promise<T> {
+    return new Promise((resolve, reject) => {
+      this.queue.push(async () => {
+        try {
+          const result = await withBackoff(operation);
+          resolve(result);
+        } catch (err) {
+          reject(err);
+        } finally {
+          this.running--;
+          this.processQueue();
+        }
+      });
+      this.processQueue();
+    });
+  }
+
+  private async processQueue() {
+    while (this.running < this.maxConcurrent && this.queue.length > 0) {
+      const task = this.queue.shift()!;
+      this.running++;
+      if (this.delayBetweenMs > 0) {
+        await new Promise((r) => setTimeout(r, this.delayBetweenMs));
+      }
+      task();
+    }
+  }
 }
 
-async function idempotentRequest<T>(
-  client: InstantlyClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+// Usage — add 500 leads with controlled concurrency
+const queue = new RequestQueue(3, 300); // 3 concurrent, 300ms gap
+
+for (const lead of leads) {
+  queue.add(() =>
+    instantly("/leads", {
+      method: "POST",
+      body: JSON.stringify({ campaign: campaignId, email: lead.email, ...lead }),
+    })
+  );
 }
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 3: Rate-Limited Email Listing
+```typescript
+// The /emails endpoint has a 20 req/min limit
+// Use a dedicated throttled fetcher
+class ThrottledEmailFetcher {
+  private requestTimestamps: number[] = [];
+  private readonly maxPerMinute = 18; // leave 2 req margin
+
+  private async waitForSlot() {
+    const now = Date.now();
+    this.requestTimestamps = this.requestTimestamps.filter(
+      (t) => now - t < 60000
+    );
+
+    if (this.requestTimestamps.length >= this.maxPerMinute) {
+      const oldest = this.requestTimestamps[0];
+      const waitMs = 60000 - (now - oldest) + 1000; // +1s buffer
+      console.log(`Email API throttle: waiting ${waitMs}ms`);
+      await new Promise((r) => setTimeout(r, waitMs));
+    }
+
+    this.requestTimestamps.push(Date.now());
+  }
+
+  async listEmails(params: {
+    campaign_id?: string;
+    is_unread?: boolean;
+    limit?: number;
+    starting_after?: string;
+  }) {
+    await this.waitForSlot();
+
+    const qs = new URLSearchParams();
+    if (params.campaign_id) qs.set("campaign_id", params.campaign_id);
+    if (params.is_unread !== undefined) qs.set("is_unread", String(params.is_unread));
+    if (params.limit) qs.set("limit", String(params.limit));
+    if (params.starting_after) qs.set("starting_after", params.starting_after);
+
+    return instantly(`/emails?${qs}`);
+  }
+}
+```
+
+### Step 4: Batch Operations Pattern
+```typescript
+// Instead of creating leads one-by-one, batch where possible
+async function addLeadsBatched(
+  campaignId: string,
+  leads: Array<{ email: string; first_name?: string }>,
+  batchSize = 10,
+  delayBetweenBatchesMs = 1000
+) {
+  let added = 0;
+  let failed = 0;
+
+  for (let i = 0; i < leads.length; i += batchSize) {
+    const batch = leads.slice(i, i + batchSize);
+
+    const results = await Promise.allSettled(
+      batch.map((lead) =>
+        withBackoff(() =>
+          instantly("/leads", {
+            method: "POST",
+            body: JSON.stringify({
+              campaign: campaignId,
+              email: lead.email,
+              first_name: lead.first_name,
+              skip_if_in_workspace: true,
+            }),
+          })
+        )
+      )
+    );
+
+    added += results.filter((r) => r.status === "fulfilled").length;
+    failed += results.filter((r) => r.status === "rejected").length;
+
+    console.log(`Batch ${Math.floor(i / batchSize) + 1}: ${added} added, ${failed} failed`);
+
+    if (i + batchSize < leads.length) {
+      await new Promise((r) => setTimeout(r, delayBetweenBatchesMs));
+    }
+  }
+
+  console.log(`\nTotal: ${added} added, ${failed} failed out of ${leads.length}`);
+}
+```
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,  # 1000: 1 second in ms
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `429` on lead import | Too many sequential POSTs | Use batch pattern with delays |
+| `429` on email listing | >20 req/min | Use `ThrottledEmailFetcher` |
+| `5xx` intermittent | Instantly server overload | Backoff + retry; check status.instantly.ai |
+| Webhook delivery retries exhausted | Your endpoint too slow | Return 200 immediately, process async |
+| Queue memory growing | Too many queued operations | Set max queue size, reject overflow |
 
 ## Resources
-- [Instantly Rate Limits](https://docs.instantly.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [Instantly Blog: API Rate Limits](https://instantly.ai/blog/api-webhooks-custom-integrations-for-outreach/)
 
 ## Next Steps
-For security configuration, see `instantly-security-basics`.
+For security patterns, see `instantly-security-basics`.

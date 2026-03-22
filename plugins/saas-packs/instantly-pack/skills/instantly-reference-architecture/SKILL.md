@@ -1,217 +1,266 @@
 ---
 name: instantly-reference-architecture
 description: |
-  Implement Instantly reference architecture with best-practice project layout.
-  Use when designing new Instantly integrations, reviewing project structure,
-  or establishing architecture standards for Instantly applications.
-  Trigger with phrases like "instantly architecture", "instantly best practices",
-  "instantly project structure", "how to organize instantly", "instantly layout".
-allowed-tools: Read, Grep
+  Implement Instantly.ai reference architecture with best-practice project layout.
+  Use when designing new Instantly integrations, planning multi-campaign systems,
+  or building an outreach automation platform.
+  Trigger with phrases like "instantly architecture", "instantly project structure",
+  "instantly reference design", "instantly system design", "instantly integration layout".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, instantly-reference]
+tags: [saas, instantly, architecture, design]
 
 ---
 # Instantly Reference Architecture
 
 ## Overview
-Production architecture for cold outreach automation with Instantly. Covers campaign orchestration, lead management pipelines, multi-account warmup strategies, and reply handling with CRM synchronization.
-
-## Prerequisites
-- Instantly API key (v1 REST)
-- Email accounts configured with warmup
-- CRM for lead status tracking
-- Webhook endpoint for reply/bounce handling
+Reference architecture for production Instantly.ai integrations. Covers project layout, API client design, event-driven webhook processing, campaign management, lead pipeline, and analytics dashboard. Designed for teams building outreach automation on top of Instantly API v2.
 
 ## Architecture Diagram
 
 ```
-set -euo pipefail
-┌──────────────────────────────────────────────────────┐
-│              Lead Sources                             │
-│  Clay │ Apollo │ CSV Import │ CRM Export │ API       │
-└──────────┬───────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────┐
-│              Instantly Platform                       │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐   │
-│  │ Email        │  │ Campaigns    │  │ Lead      │   │
-│  │ Accounts     │  │ & Sequences  │  │ Lists     │   │
-│  │ (warmup)     │  │ (A/B test)   │  │ (import)  │   │
-│  └──────┬───────┘  └──────┬───────┘  └─────┬─────┘   │
-│         │                 │                │          │
-│         ▼                 ▼                ▼          │
-│  ┌──────────────────────────────────────────────┐     │
-│  │         Sending Engine                        │     │
-│  │  Throttling │ Rotation │ Tracking │ Warmup   │     │
-│  └──────────────────────┬───────────────────────┘     │
-└─────────────────────────┼───────────────────────────┘
-                          │
-           ┌──────────────┼──────────────┐
-           ▼              ▼              ▼
-   ┌──────────────┐ ┌────────┐ ┌──────────────┐
-   │ Replies      │ │ Opens  │ │ Bounces      │
-   │ (webhook)    │ │ Clicks │ │ Unsubscribes │
-   └──────┬───────┘ └────────┘ └──────────────┘
-          │
-          ▼
-   ┌──────────────┐
-   │ CRM Sync     │
-   │ (HubSpot/SF) │
-   └──────────────┘
+                                     Instantly API v2
+                                    (api.instantly.ai)
+                                          |
+                    ┌─────────────────────┼─────────────────────┐
+                    |                     |                     |
+              Campaign Mgmt         Lead Pipeline         Account Mgmt
+              (create/launch/       (import/move/          (warmup/
+               pause/analytics)      enrich/block)         vitals/pause)
+                    |                     |                     |
+                    └─────────┬───────────┘                    |
+                              |                                |
+                    ┌─────────┴─────────┐                     |
+                    |   Your Backend    |◄────────────────────┘
+                    |  (Node/Python)    |
+                    └────────┬──────────┘
+                             |
+                    ┌────────┴──────────┐
+                    |  Webhook Receiver |◄──── Instantly Webhooks
+                    |  (Cloud Run /     |      (reply_received,
+                    |   Vercel / Fly)   |       email_bounced, etc.)
+                    └────────┬──────────┘
+                             |
+               ┌─────────────┼─────────────┐
+               |             |             |
+           CRM Sync     Slack Alerts   Analytics DB
 ```
 
-## Instructions
+## Project Layout
 
-### Step 1: Campaign Management Service
-```typescript
-const INSTANTLY_API = 'https://api.instantly.ai/api/v1';
-
-async function instantlyRequest(endpoint: string, options?: RequestInit) {
-  const url = new URL(`${INSTANTLY_API}${endpoint}`);
-  url.searchParams.set('api_key', process.env.INSTANTLY_API_KEY!);
-
-  const response = await fetch(url.toString(), {
-    ...options,
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-  });
-
-  if (!response.ok) throw new Error(`Instantly API error: ${response.status}`);
-  return response.json();
-}
-
-async function listCampaigns() {
-  return instantlyRequest('/campaign/list');
-}
-
-async function getCampaignStatus(campaignId: string) {
-  return instantlyRequest(`/campaign/get?campaign_id=${campaignId}`);
-}
+```
+instantly-integration/
+├── src/
+│   ├── instantly/
+│   │   ├── client.ts          # API client wrapper with retry + auth
+│   │   ├── types.ts           # TypeScript interfaces for API schemas
+│   │   ├── pagination.ts      # Cursor-based pagination helpers
+│   │   └── cache.ts           # Analytics caching layer
+│   ├── campaigns/
+│   │   ├── create.ts          # Campaign creation with sequences
+│   │   ├── launch.ts          # Campaign activation workflow
+│   │   ├── analytics.ts       # Campaign performance tracking
+│   │   └── templates.ts       # Email sequence templates
+│   ├── leads/
+│   │   ├── import.ts          # Lead import from CSV/CRM
+│   │   ├── lists.ts           # Lead list management
+│   │   ├── enrich.ts          # Lead enrichment pipeline
+│   │   └── blocklist.ts       # Block list management
+│   ├── accounts/
+│   │   ├── warmup.ts          # Warmup enable/disable/monitor
+│   │   ├── health.ts          # Account vitals testing
+│   │   └── rotation.ts       # Account assignment to campaigns
+│   ├── webhooks/
+│   │   ├── server.ts          # Express webhook receiver
+│   │   ├── handlers.ts        # Event type handlers
+│   │   └── validation.ts     # Payload validation
+│   └── config.ts              # Environment config
+├── tests/
+│   ├── unit/                  # Unit tests (mocked API)
+│   ├── integration/           # Integration tests (mock server)
+│   └── e2e/                   # End-to-end (live API, read-only)
+├── scripts/
+│   ├── seed-leads.ts          # Seed campaign with test leads
+│   ├── audit.ts               # Workspace audit script
+│   └── migrate-v1-to-v2.ts   # API migration helper
+├── .env.example
+├── .github/workflows/ci.yml
+├── Dockerfile
+├── package.json
+└── tsconfig.json
 ```
 
-### Step 2: Lead Upload Pipeline
+## Core Module Implementation
+
+### API Client (src/instantly/client.ts)
 ```typescript
-interface Lead {
-  email: string;
-  first_name?: string;
-  last_name?: string;
-  company_name?: string;
-  personalization?: string;
-  custom_variables?: Record<string, string>;
-}
+import "dotenv/config";
 
-async function uploadLeads(campaignId: string, leads: Lead[]) {
-  const BATCH_SIZE = 100;
-  let totalUploaded = 0;
+export class InstantlyClient {
+  constructor(
+    private apiKey = process.env.INSTANTLY_API_KEY!,
+    private baseUrl = "https://api.instantly.ai/api/v2"
+  ) {}
 
-  for (let i = 0; i < leads.length; i += BATCH_SIZE) {
-    const batch = leads.slice(i, i + BATCH_SIZE);
-    await instantlyRequest('/lead/add', {
-      method: 'POST',
-      body: JSON.stringify({
-        campaign_id: campaignId,
-        skip_if_in_workspace: true,
-        leads: batch,
-      }),
+  async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const res = await fetch(`${this.baseUrl}${path}`, {
+      ...init,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${this.apiKey}`,
+        ...init.headers,
+      },
     });
-    totalUploaded += batch.length;
-    await new Promise(r => setTimeout(r, 200)); // Rate limit  # HTTP 200 OK
+
+    if (res.status === 429) {
+      await new Promise((r) => setTimeout(r, 2000));
+      return this.request<T>(path, init);
+    }
+
+    if (!res.ok) {
+      throw new InstantlyApiError(res.status, path, await res.text());
+    }
+
+    return res.json() as Promise<T>;
   }
 
-  return { uploaded: totalUploaded };
+  // Campaign operations
+  campaigns = {
+    list: (limit = 50) => this.request<Campaign[]>(`/campaigns?limit=${limit}`),
+    get: (id: string) => this.request<Campaign>(`/campaigns/${id}`),
+    create: (data: CreateCampaignInput) =>
+      this.request<Campaign>("/campaigns", { method: "POST", body: JSON.stringify(data) }),
+    activate: (id: string) =>
+      this.request<void>(`/campaigns/${id}/activate`, { method: "POST" }),
+    pause: (id: string) =>
+      this.request<void>(`/campaigns/${id}/pause`, { method: "POST" }),
+    analytics: (id: string) =>
+      this.request<CampaignAnalytics>(`/campaigns/analytics?id=${id}`),
+    analyticsDaily: (id: string, start: string, end: string) =>
+      this.request(`/campaigns/analytics/daily?campaign_id=${id}&start_date=${start}&end_date=${end}`),
+  };
+
+  // Lead operations
+  leads = {
+    create: (data: CreateLeadInput) =>
+      this.request<Lead>("/leads", { method: "POST", body: JSON.stringify(data) }),
+    list: (filter: ListLeadsInput) =>
+      this.request<Lead[]>("/leads/list", { method: "POST", body: JSON.stringify(filter) }),
+    get: (id: string) => this.request<Lead>(`/leads/${id}`),
+    delete: (id: string) => this.request(`/leads/${id}`, { method: "DELETE" }),
+    updateInterest: (email: string, campaignId: string, value: number) =>
+      this.request("/leads/update-interest-status", {
+        method: "POST",
+        body: JSON.stringify({ lead_email: email, campaign_id: campaignId, interest_value: value }),
+      }),
+  };
+
+  // Account operations
+  accounts = {
+    list: (limit = 50) => this.request<Account[]>(`/accounts?limit=${limit}`),
+    get: (email: string) => this.request<Account>(`/accounts/${encodeURIComponent(email)}`),
+    enableWarmup: (emails: string[]) =>
+      this.request("/accounts/warmup/enable", { method: "POST", body: JSON.stringify({ emails }) }),
+    warmupAnalytics: (emails: string[]) =>
+      this.request("/accounts/warmup-analytics", { method: "POST", body: JSON.stringify({ emails }) }),
+    testVitals: (emails: string[]) =>
+      this.request("/accounts/test/vitals", { method: "POST", body: JSON.stringify({ accounts: emails }) }),
+    pause: (email: string) =>
+      this.request(`/accounts/${encodeURIComponent(email)}/pause`, { method: "POST" }),
+    resume: (email: string) =>
+      this.request(`/accounts/${encodeURIComponent(email)}/resume`, { method: "POST" }),
+  };
+
+  // Webhook operations
+  webhooks = {
+    list: () => this.request<Webhook[]>("/webhooks?limit=50"),
+    create: (data: CreateWebhookInput) =>
+      this.request<Webhook>("/webhooks", { method: "POST", body: JSON.stringify(data) }),
+    test: (id: string) => this.request(`/webhooks/${id}/test`, { method: "POST" }),
+    delete: (id: string) => this.request(`/webhooks/${id}`, { method: "DELETE" }),
+  };
 }
 ```
 
-### Step 3: Multi-Sequence Campaign Structure
+### Campaign Template System (src/campaigns/templates.ts)
 ```typescript
-// Campaign sequence design for cold outreach
-const CAMPAIGN_SEQUENCE = {
-  name: 'Q1 Outreach - {ICP Segment}',
-  sequences: [
-    {
-      step: 1,
-      delay: 0,
-      subject: 'Quick question about {{company_name}}',
-      body: 'Hi {{first_name}},\n\n{{personalization}}\n\n...',
-      variant: 'A',
+export const SEQUENCE_TEMPLATES = {
+  "3-step-cold": {
+    name: "3-Step Cold Outreach",
+    sequences: [{
+      steps: [
+        { type: "email" as const, delay: 0, variants: [
+          { subject: "{{firstName}}, quick question about {{companyName}}", body: "..." },
+        ]},
+        { type: "email" as const, delay: 3, delay_unit: "days" as const, variants: [
+          { subject: "Re: {{firstName}}, quick question", body: "..." },
+        ]},
+        { type: "email" as const, delay: 5, delay_unit: "days" as const, variants: [
+          { subject: "Re: {{firstName}}, quick question", body: "..." },
+        ]},
+      ],
+    }],
+    defaults: {
+      daily_limit: 50,
+      stop_on_reply: true,
+      email_gap: 120,
+      link_tracking: false,
+      open_tracking: true,
     },
-    {
-      step: 1,
-      delay: 0,
-      subject: '{{first_name}} - saw something interesting',
-      body: 'Hi {{first_name}},\n\n...',
-      variant: 'B', // A/B test variant
+  },
+
+  "meeting-request": {
+    name: "Meeting Request",
+    sequences: [{
+      steps: [
+        { type: "email" as const, delay: 0, variants: [
+          { subject: "15 min chat, {{firstName}}?", body: "..." },
+        ]},
+        { type: "email" as const, delay: 2, delay_unit: "days" as const, variants: [
+          { subject: "Re: 15 min chat", body: "..." },
+        ]},
+      ],
+    }],
+    defaults: {
+      daily_limit: 30,
+      stop_on_reply: true,
+      email_gap: 180,
     },
-    {
-      step: 2,
-      delay: 3, // 3 days after step 1
-      subject: 'Re: Quick question',
-      body: 'Hi {{first_name}},\n\nJust following up...',
-    },
-    {
-      step: 3,
-      delay: 5, // 5 days after step 2
-      subject: 'Last try',
-      body: 'Hi {{first_name}},\n\nI know you\'re busy...',
-    },
-  ],
+  },
 };
 ```
 
-### Step 4: Reply Handling Webhook
-```typescript
-app.post('/webhooks/instantly', express.json(), async (req, res) => {
-  const { event_type, lead_email, campaign_id, reply_text } = req.body;
-
-  switch (event_type) {
-    case 'reply_received':
-      await syncToCRM({ email: lead_email, status: 'replied', note: reply_text });
-      break;
-    case 'email_bounced':
-      await syncToCRM({ email: lead_email, status: 'bounced' });
-      break;
-    case 'unsubscribed':
-      await addToSuppressionList(lead_email);
-      break;
-  }
-
-  res.json({ processed: true });
-});
+## Data Flow Summary
+```
+Lead CSV/CRM → import.ts → POST /leads → Campaign
+                                            ↓
+                              POST /campaigns/{id}/activate
+                                            ↓
+                              Instantly sends emails
+                                            ↓
+                              Webhook events fire
+                                            ↓
+                              handlers.ts routes events
+                                            ↓
+                    ┌─────────┬─────────┬───────────┐
+                    CRM       Slack     Analytics   Block List
 ```
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Low deliverability | Accounts not warmed | Run warmup 2+ weeks before campaigns |
-| High bounce rate | Bad lead data | Verify emails before upload |
-| Duplicate sends | Lead in multiple campaigns | Use `skip_if_in_workspace` flag |
-| Rate limit | Too many API calls | Add 200ms delay between requests |
-
-## Examples
-
-### Campaign Analytics Dashboard
-```typescript
-async function getCampaignMetrics() {
-  const campaigns = await listCampaigns();
-  return Promise.all(campaigns.map(async (c: any) => ({
-    name: c.name,
-    status: c.status,
-    analytics: await instantlyRequest(
-      `/analytics/campaign/summary?campaign_id=${c.id}`
-    ),
-  })));
-}
-```
+| Client constructor fails | Missing `INSTANTLY_API_KEY` | Check `.env` file |
+| Namespace methods fail | API scope mismatch | Verify key has correct scopes |
+| Import fails midway | Network/rate limit | Batch with retry (see `instantly-performance-tuning`) |
+| Webhook events missing | Webhook not registered | Register after deploy (see `instantly-webhooks-events`) |
 
 ## Resources
-- [Instantly API Documentation](https://developer.instantly.ai/)
-- [Instantly Campaign Guide](https://instantly.ai/resources)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [API Schemas](https://developer.instantly.ai/api/v2/schemas)
+- [Instantly Help Center](https://help.instantly.ai)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+For multi-environment setup, see `instantly-multi-env-setup`.

@@ -1,120 +1,240 @@
 ---
 name: instantly-debug-bundle
 description: |
-  Collect Instantly debug evidence for support tickets and troubleshooting.
+  Collect Instantly.ai debug evidence for support tickets and troubleshooting.
   Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Instantly problems.
-  Trigger with phrases like "instantly debug", "instantly support bundle",
-  "collect instantly logs", "instantly diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  or auditing campaign/account state.
+  Trigger with phrases like "instantly debug", "instantly support ticket",
+  "instantly diagnostic", "instantly audit", "collect instantly evidence".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, debugging]
+tags: [saas, instantly, debugging, support]
 
 ---
 # Instantly Debug Bundle
 
-## Current State
-!`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
-!`uname -a`
-
 ## Overview
-Collect all necessary diagnostic information for Instantly support tickets.
+Collect a comprehensive debug bundle from your Instantly workspace: campaign state, account health, warmup metrics, lead stats, webhook delivery status, and recent errors. Output is a JSON report suitable for support tickets or internal audits.
 
 ## Prerequisites
-- Instantly SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Completed `instantly-install-auth` setup
+- API key with `all:read` scope (or individual read scopes for each resource)
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# instantly-debug-bundle.sh
+### Step 1: Collect Full Debug Bundle
+```typescript
+import { instantly } from "./src/instantly";
+import { writeFileSync } from "fs";
 
-BUNDLE_DIR="instantly-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+interface DebugBundle {
+  timestamp: string;
+  workspace: unknown;
+  campaigns: unknown[];
+  accounts: unknown[];
+  warmup_analytics: unknown[];
+  webhooks: unknown[];
+  webhook_event_summary: unknown;
+  background_jobs: unknown[];
+  lead_count_by_campaign: Record<string, number>;
+  errors: string[];
+}
 
-echo "=== Instantly Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+async function collectDebugBundle(): Promise<DebugBundle> {
+  const bundle: DebugBundle = {
+    timestamp: new Date().toISOString(),
+    workspace: null,
+    campaigns: [],
+    accounts: [],
+    warmup_analytics: [],
+    webhooks: [],
+    webhook_event_summary: null,
+    background_jobs: [],
+    lead_count_by_campaign: {},
+    errors: [],
+  };
+
+  // Workspace info
+  try {
+    bundle.workspace = await instantly("/workspaces/current");
+  } catch (e: any) {
+    bundle.errors.push(`workspace: ${e.message}`);
+  }
+
+  // All campaigns with status
+  try {
+    bundle.campaigns = await instantly("/campaigns?limit=100");
+  } catch (e: any) {
+    bundle.errors.push(`campaigns: ${e.message}`);
+  }
+
+  // All email accounts
+  try {
+    bundle.accounts = await instantly("/accounts?limit=100");
+  } catch (e: any) {
+    bundle.errors.push(`accounts: ${e.message}`);
+  }
+
+  // Warmup analytics for all accounts
+  try {
+    const accounts = bundle.accounts as Array<{ email: string }>;
+    if (accounts.length > 0) {
+      bundle.warmup_analytics = await instantly("/accounts/warmup-analytics", {
+        method: "POST",
+        body: JSON.stringify({ emails: accounts.map((a) => a.email) }),
+      });
+    }
+  } catch (e: any) {
+    bundle.errors.push(`warmup_analytics: ${e.message}`);
+  }
+
+  // Webhooks
+  try {
+    bundle.webhooks = await instantly("/webhooks?limit=50");
+  } catch (e: any) {
+    bundle.errors.push(`webhooks: ${e.message}`);
+  }
+
+  // Webhook event delivery summary
+  try {
+    bundle.webhook_event_summary = await instantly("/webhook-events/summary");
+  } catch (e: any) {
+    bundle.errors.push(`webhook_events: ${e.message}`);
+  }
+
+  // Recent background jobs
+  try {
+    bundle.background_jobs = await instantly("/background-jobs?limit=20");
+  } catch (e: any) {
+    bundle.errors.push(`background_jobs: ${e.message}`);
+  }
+
+  // Lead counts per campaign
+  for (const c of (bundle.campaigns as Array<{ id: string; name: string }>).slice(0, 10)) {
+    try {
+      const analytics = await instantly<{ total_leads: number }>(
+        `/campaigns/analytics?id=${c.id}`
+      );
+      bundle.lead_count_by_campaign[c.name] = analytics.total_leads;
+    } catch {
+      bundle.lead_count_by_campaign[c.name] = -1; // error
+    }
+  }
+
+  return bundle;
+}
 ```
 
-### Step 2: Collect Environment Info
+### Step 2: Save and Analyze
+```typescript
+async function main() {
+  console.log("Collecting Instantly debug bundle...\n");
+  const bundle = await collectDebugBundle();
+
+  // Save to file
+  const filename = `instantly-debug-${Date.now()}.json`;
+  writeFileSync(filename, JSON.stringify(bundle, null, 2));
+  console.log(`Saved debug bundle to ${filename}`);
+
+  // Print summary
+  const campaigns = bundle.campaigns as Array<{ name: string; status: number }>;
+  const accounts = bundle.accounts as Array<{ email: string; status: number }>;
+
+  console.log("\n=== Debug Summary ===");
+  console.log(`Campaigns: ${campaigns.length}`);
+  console.log(`  Active: ${campaigns.filter((c) => c.status === 1).length}`);
+  console.log(`  Paused: ${campaigns.filter((c) => c.status === 2).length}`);
+  console.log(`  Unhealthy: ${campaigns.filter((c) => c.status === -1).length}`);
+  console.log(`  Bounce Protected: ${campaigns.filter((c) => c.status === -2).length}`);
+
+  console.log(`\nAccounts: ${accounts.length}`);
+  console.log(`Webhooks: ${(bundle.webhooks as any[]).length}`);
+  console.log(`Background Jobs: ${(bundle.background_jobs as any[]).length}`);
+
+  if (bundle.errors.length > 0) {
+    console.log(`\nErrors during collection:`);
+    bundle.errors.forEach((e) => console.log(`  - ${e}`));
+  }
+}
+
+main().catch(console.error);
+```
+
+### Step 3: Account Vitals Deep Dive
+```typescript
+async function accountVitalsDiagnostic() {
+  const accounts = await instantly<Array<{ email: string }>>(
+    "/accounts?limit=100"
+  );
+
+  const vitals = await instantly("/accounts/test/vitals", {
+    method: "POST",
+    body: JSON.stringify({ accounts: accounts.map((a) => a.email) }),
+  }) as Array<{ email: string; smtp_status: string; imap_status: string; dns_status: string }>;
+
+  console.log("\n=== Account Vitals ===");
+  const broken = vitals.filter((v) => v.smtp_status !== "ok" || v.imap_status !== "ok");
+  const healthy = vitals.filter((v) => v.smtp_status === "ok" && v.imap_status === "ok");
+
+  console.log(`Healthy: ${healthy.length} | Broken: ${broken.length}`);
+  for (const v of broken) {
+    console.log(`  BROKEN: ${v.email} — SMTP=${v.smtp_status} IMAP=${v.imap_status} DNS=${v.dns_status}`);
+  }
+}
+```
+
+### Step 4: Curl-Based Quick Diagnostic
 ```bash
 set -euo pipefail
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "INSTANTLY_API_KEY: ${INSTANTLY_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "=== Instantly Quick Diagnostic ==="
+echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
-### Step 3: Gather SDK and Logs
-```bash
-set -euo pipefail
-# SDK version
-npm list @instantly/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+echo -e "\n--- Campaigns ---"
+curl -s https://api.instantly.ai/api/v2/campaigns?limit=100 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '[.[] | {name, status, id}] | length as $total |
+    {total: $total,
+     active: [.[] | select(.status==1)] | length,
+     paused: [.[] | select(.status==2)] | length,
+     unhealthy: [.[] | select(.status==-1)] | length}'
 
-# Recent logs (redacted)
-grep -i "instantly" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+echo -e "\n--- Accounts ---"
+curl -s https://api.instantly.ai/api/v2/accounts?limit=100 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq 'length as $total | {total: $total, accounts: [.[:5][] | {email, status}]}'
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+echo -e "\n--- Webhooks ---"
+curl -s https://api.instantly.ai/api/v2/webhooks?limit=50 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '[.[] | {name, event_type, target_hook_url}]'
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.instantly.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+echo -e "\n--- Recent Background Jobs ---"
+curl -s https://api.instantly.ai/api/v2/background-jobs?limit=5 \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '[.[] | {id, status, timestamp_created}]'
 ```
 
 ## Output
-- `instantly-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- `instantly-debug-{timestamp}.json` — full debug bundle
+- Console summary with campaign/account/webhook counts
+- Broken account identification with SMTP/IMAP status
+- Errors collected during diagnostic
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash instantly-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Instantly support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `403` on workspace endpoint | Key missing workspace scope | Add `all:read` scope to API key |
+| Empty warmup analytics | No accounts have warmup enabled | Enable warmup first |
+| Partial bundle | Some endpoints failed | Check `errors` array in bundle output |
+| Large bundle (>10MB) | 100+ campaigns and accounts | Reduce limits or collect per-campaign |
 
 ## Resources
-- [Instantly Support](https://docs.instantly.com/support)
-- [Instantly Status](https://status.instantly.com)
+- [Instantly Help Center](https://help.instantly.ai)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [Background Jobs API](https://developer.instantly.ai/api/v2/backgroundjob)
 
 ## Next Steps
-For rate limit issues, see `instantly-rate-limits`.
+For error resolution patterns, see `instantly-common-errors`.

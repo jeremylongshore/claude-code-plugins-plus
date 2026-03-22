@@ -1,121 +1,231 @@
 ---
 name: instantly-local-dev-loop
 description: |
-  Configure Instantly local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Instantly.
-  Trigger with phrases like "instantly dev setup", "instantly local development",
-  "instantly dev environment", "develop with instantly".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure Instantly.ai local development with mock server and test workflows.
+  Use when setting up a dev environment, testing API calls without sending emails,
+  or building integration tests against Instantly endpoints.
+  Trigger with phrases like "instantly dev setup", "test instantly locally",
+  "instantly mock server", "instantly development environment".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, instantly, testing, workflow]
+tags: [saas, instantly, development, testing]
 
 ---
 # Instantly Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Instantly.
+Set up a local development workflow for Instantly integrations. Instantly provides a mock server at `https://developer.instantly.ai/_mock/api/v2/` for testing without sending real emails or consuming API limits. This skill covers mock server usage, integration testing, and local webhook development.
 
 ## Prerequisites
 - Completed `instantly-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- Node.js 18+ with TypeScript
+- A separate Instantly API key for dev/test (recommended)
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-instantly-project/
-├── src/
-│   ├── instantly/
-│   │   ├── client.ts       # Instantly client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── instantly.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+### Step 1: Configure Dev Environment
+```typescript
+// src/config.ts
+import "dotenv/config";
+
+interface Config {
+  baseUrl: string;
+  apiKey: string;
+  useMock: boolean;
+}
+
+export function getConfig(): Config {
+  const useMock = process.env.INSTANTLY_USE_MOCK === "true";
+  return {
+    baseUrl: useMock
+      ? "https://developer.instantly.ai/_mock/api/v2"
+      : process.env.INSTANTLY_BASE_URL || "https://api.instantly.ai/api/v2",
+    apiKey: process.env.INSTANTLY_API_KEY || "",
+    useMock,
+  };
+}
 ```
 
-### Step 2: Configure Environment
 ```bash
-set -euo pipefail
-# Copy environment template
-cp .env.example .env.local
+# .env.development
+INSTANTLY_API_KEY=your-dev-api-key
+INSTANTLY_BASE_URL=https://api.instantly.ai/api/v2
+INSTANTLY_USE_MOCK=true
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+# .env.production
+INSTANTLY_API_KEY=your-prod-api-key
+INSTANTLY_BASE_URL=https://api.instantly.ai/api/v2
+INSTANTLY_USE_MOCK=false
 ```
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+### Step 2: Build a Testable API Client
+```typescript
+// src/instantly.ts
+import { getConfig } from "./config";
+
+const config = getConfig();
+
+export async function instantly<T = unknown>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const url = `${config.baseUrl}${path}`;
+  const res = await fetch(url, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${config.apiKey}`,
+      ...options.headers,
+    },
+  });
+
+  if (res.status === 429) {
+    const retryAfter = parseInt(res.headers.get("retry-after") || "2", 10);
+    console.warn(`Rate limited. Retrying in ${retryAfter}s...`);
+    await new Promise((r) => setTimeout(r, retryAfter * 1000));
+    return instantly<T>(path, options);
+  }
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new InstantlyError(res.status, path, body);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+class InstantlyError extends Error {
+  constructor(
+    public status: number,
+    public path: string,
+    public body: string
+  ) {
+    super(`Instantly API ${status} on ${path}: ${body}`);
+    this.name = "InstantlyError";
   }
 }
 ```
 
-### Step 4: Configure Testing
+### Step 3: Write Integration Tests
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { InstantlyClient } from '../src/instantly/client';
+// tests/instantly.test.ts
+import { describe, it, expect, beforeAll } from "vitest";
+import { instantly } from "../src/instantly";
 
-describe('Instantly Client', () => {
-  it('should initialize with API key', () => {
-    const client = new InstantlyClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+describe("Instantly API Integration", () => {
+  it("should list campaigns", async () => {
+    const campaigns = await instantly<Array<{ id: string; name: string }>>(
+      "/campaigns?limit=5"
+    );
+    expect(Array.isArray(campaigns)).toBe(true);
+  });
+
+  it("should list email accounts", async () => {
+    const accounts = await instantly<Array<{ email: string }>>(
+      "/accounts?limit=5"
+    );
+    expect(Array.isArray(accounts)).toBe(true);
+  });
+
+  it("should create and delete a lead list", async () => {
+    const list = await instantly<{ id: string; name: string }>(
+      "/lead-lists",
+      {
+        method: "POST",
+        body: JSON.stringify({ name: `test-list-${Date.now()}` }),
+      }
+    );
+    expect(list.id).toBeDefined();
+    expect(list.name).toContain("test-list-");
+
+    // Clean up
+    await instantly(`/lead-lists/${list.id}`, { method: "DELETE" });
+  });
+
+  it("should handle 401 on bad key", async () => {
+    const res = await fetch("https://api.instantly.ai/api/v2/campaigns?limit=1", {
+      headers: { Authorization: "Bearer invalid-key" },
+    });
+    expect(res.status).toBe(401);
   });
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Instantly development
+### Step 4: Local Webhook Testing with ngrok
+```bash
+set -euo pipefail
+# Start your webhook server locally
+# In terminal 1:
+npx tsx src/webhook-server.ts  # listens on port 3000
+
+# In terminal 2 — expose with ngrok:
+ngrok http 3000
+
+# Register the ngrok URL as a webhook
+curl -X POST https://api.instantly.ai/api/v2/webhooks \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Local Dev Webhook",
+    "target_hook_url": "https://abc123.ngrok.io/webhooks/instantly",
+    "event_type": "all_events"
+  }'
+```
+
+```typescript
+// src/webhook-server.ts — minimal local webhook receiver
+import express from "express";
+
+const app = express();
+app.use(express.json());
+
+app.post("/webhooks/instantly", (req, res) => {
+  console.log("Webhook received:", JSON.stringify(req.body, null, 2));
+  res.status(200).json({ received: true });
+});
+
+app.listen(3000, () => console.log("Webhook server on http://localhost:3000"));
+```
+
+### Step 5: Test Webhook Delivery
+```typescript
+// After registering the webhook, test it via API
+async function testWebhook(webhookId: string) {
+  await instantly(`/webhooks/${webhookId}/test`, { method: "POST" });
+  console.log("Test webhook fired — check your local server logs");
+}
+```
+
+## Project Structure
+```
+instantly-integration/
+├── src/
+│   ├── config.ts           # Environment-aware config
+│   ├── instantly.ts         # API client with retry
+│   └── webhook-server.ts   # Local webhook receiver
+├── tests/
+│   └── instantly.test.ts   # Integration tests
+├── .env.development         # Dev config (mock mode)
+├── .env.production          # Prod config
+├── package.json
+└── tsconfig.json
+```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Instantly Responses
-```typescript
-vi.mock('@instantly/sdk', () => ({
-  InstantlyClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-set -euo pipefail
-# Enable verbose logging
-DEBUG=INSTANTLY=* npm run dev
-```
+| Mock returns unexpected data | Mock schema mismatch | Check mock docs at developer.instantly.ai |
+| `ECONNREFUSED` on localhost | Webhook server not running | Start it before registering webhook |
+| Tests passing locally, failing in CI | Different env vars | Ensure CI uses `.env.development` |
+| ngrok tunnel expired | Free tier 2-hour limit | Restart ngrok or upgrade |
 
 ## Resources
-- [Instantly SDK Reference](https://docs.instantly.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Instantly Mock Server](https://developer.instantly.ai/_mock/api/v2/)
+- [Instantly API v2 Docs](https://developer.instantly.ai/)
+- [ngrok Quick Start](https://ngrok.com/docs/getting-started/)
 
 ## Next Steps
-See `instantly-sdk-patterns` for production-ready code patterns.
+For production SDK patterns, see `instantly-sdk-patterns`.
