@@ -1,12 +1,12 @@
 ---
 name: vastai-enterprise-rbac
 description: |
-  Configure Vast.ai enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Vast.ai.
-  Trigger with phrases like "vastai SSO", "vastai RBAC",
-  "vastai enterprise", "vastai roles", "vastai permissions", "vastai SAML".
-allowed-tools: Read, Write, Edit
+  Implement team access control and spending governance for Vast.ai GPU cloud.
+  Use when managing multi-team GPU access, implementing spending controls,
+  or setting up API key separation for different teams.
+  Trigger with phrases like "vastai team access", "vastai RBAC",
+  "vastai enterprise", "vastai spending controls", "vastai permissions".
+allowed-tools: Read, Write, Edit, Bash(vastai:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,99 +17,155 @@ tags: [saas, vast-ai, rbac]
 # Vast.ai Enterprise RBAC
 
 ## Overview
-Control access to Vast.ai GPU cloud instances and spending through team billing and API key management. Vast.ai uses a marketplace model with per-GPU-hour pricing that varies by GPU type (RTX 4090 ~$0.20/hr, A100 ~$1.50/hr, H100 ~$3.00/hr).
+Control access to Vast.ai GPU instances and spending through API key management, team-level budgets, and GPU allocation policies. Vast.ai uses a marketplace model with per-GPU-hour pricing (RTX 4090 ~$0.20/hr, A100 ~$1.50/hr, H100 ~$3.00/hr).
 
 ## Prerequisites
-- Vast.ai account with team billing enabled
-- API key from cloud.vast.ai
-- Understanding of GPU pricing tiers on the Vast.ai marketplace
+- Vast.ai account(s) with API keys
+- Understanding of team GPU usage patterns
+- Budget allocation per team/project
 
 ## Instructions
 
-### Step 1: Create Scoped API Keys per Team
-```bash
-# Key for the ML training team (high-end GPUs, high budget)
-vastai set api-key --name "ml-training-team" \
-  --spending-limit 5000 \  # 5000: 5 seconds in ms
-  --allowed-gpu-types "A100,H100" \
-  --max-instances 10
+### Step 1: Team API Key Strategy
 
-# Key for the inference team (cost-efficient GPUs)
-vastai set api-key --name "inference-prod" \
-  --spending-limit 1000 \  # 1000: 1 second in ms
-  --allowed-gpu-types "RTX_4090,RTX_3090,A6000" \
-  --max-instances 20
-```
+```python
+# Separate API keys per team for billing isolation
+# Option A: Separate Vast.ai accounts per team
+# Option B: Single account with application-level controls
 
-### Step 2: Implement GPU Provisioning Policies
-```typescript
-// vastai-policy.ts - Enforce rules before provisioning
-interface ProvisionPolicy {
-  allowedGpuTypes: string[];
-  maxPricePerHour: number;
-  maxInstances: number;
-  requireSpotInstance: boolean;
+TEAM_CONFIGS = {
+    "ml-research": {
+        "api_key_env": "VASTAI_KEY_RESEARCH",
+        "gpu_whitelist": ["A100", "H100_SXM"],
+        "max_instances": 8,
+        "daily_budget": 200.00,
+        "max_dph": 4.00,
+    },
+    "ml-engineering": {
+        "api_key_env": "VASTAI_KEY_ENGINEERING",
+        "gpu_whitelist": ["RTX_4090", "A100"],
+        "max_instances": 4,
+        "daily_budget": 50.00,
+        "max_dph": 2.00,
+    },
+    "data-science": {
+        "api_key_env": "VASTAI_KEY_DATASCIENCE",
+        "gpu_whitelist": ["RTX_4090", "RTX_3090"],
+        "max_instances": 2,
+        "daily_budget": 10.00,
+        "max_dph": 0.30,
+    },
 }
-
-const TEAM_POLICIES: Record<string, ProvisionPolicy> = {
-  training:  { allowedGpuTypes: ['A100', 'H100'], maxPricePerHour: 4.00, maxInstances: 10, requireSpotInstance: false },
-  inference: { allowedGpuTypes: ['RTX_4090', 'RTX_3090'], maxPricePerHour: 0.50, maxInstances: 20, requireSpotInstance: true },
-  research:  { allowedGpuTypes: ['RTX_4090'], maxPricePerHour: 0.30, maxInstances: 3, requireSpotInstance: true },
-};
 ```
 
-### Step 3: Set Spending Alerts
-```bash
-# Configure spending alerts via the Vast.ai CLI
-vastai set spending-alert --threshold 1000 --email "ops@company.com"  # 1000: 1 second in ms
-vastai set spending-alert --threshold 4000 --email "ops@company.com,finance@company.com"  # 4000: dev server port
-vastai set auto-stop --daily-limit 500  # Auto-destroy instances if daily spend exceeds $500
+### Step 2: Policy Enforcement Layer
+
+```python
+class VastPolicyEnforcer:
+    def __init__(self, team_config):
+        self.config = team_config
+        self.client = VastClient(api_key=os.environ[team_config["api_key_env"]])
+
+    def can_provision(self, gpu_name, num_gpus=1):
+        """Check if provisioning is allowed by team policy."""
+        if gpu_name not in self.config["gpu_whitelist"]:
+            return False, f"GPU {gpu_name} not in team whitelist"
+
+        running = len([i for i in self.client.show_instances()
+                      if i.get("actual_status") == "running"])
+        if running >= self.config["max_instances"]:
+            return False, f"Instance limit reached ({running}/{self.config['max_instances']})"
+
+        return True, "OK"
+
+    def provision_with_policy(self, gpu_name, image, disk_gb=20):
+        allowed, reason = self.can_provision(gpu_name)
+        if not allowed:
+            raise PermissionError(f"Policy violation: {reason}")
+
+        offers = self.client.search_offers({
+            "gpu_name": {"eq": gpu_name},
+            "dph_total": {"lte": self.config["max_dph"]},
+            "reliability2": {"gte": 0.95},
+            "rentable": {"eq": True},
+        })
+        if not offers.get("offers"):
+            raise RuntimeError("No offers matching policy constraints")
+
+        return self.client.create_instance(
+            offers["offers"][0]["id"], image, disk_gb)
 ```
 
-### Step 4: Monitor Active Instances and Costs
-```bash
-# List all running instances with cost data
-vastai show instances --raw | jq '.[] | {
-  id, gpu_name, num_gpus,
-  cost_per_hr: .dph_total,
-  hours_running: ((.end_date // now) - .start_date) / 3600,  # 3600: timeout: 1 hour
-  total_cost: .total_dph
-}'
+### Step 3: Audit Logging
 
-# Get team spending summary
-vastai show invoices --last 30 | jq '.total_cost'
+```python
+import json, datetime
+
+class AuditLogger:
+    def __init__(self, log_file="vast_audit.jsonl"):
+        self.log_file = log_file
+
+    def log(self, team, action, details):
+        entry = {
+            "timestamp": datetime.datetime.utcnow().isoformat(),
+            "team": team,
+            "action": action,
+            **details,
+        }
+        with open(self.log_file, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+
+# Usage
+audit = AuditLogger()
+audit.log("ml-research", "provision", {
+    "gpu": "A100", "offer_id": 12345, "dph": 1.50})
+audit.log("ml-research", "destroy", {
+    "instance_id": 67890, "duration_hours": 4.2, "total_cost": 6.30})
 ```
 
-### Step 5: Auto-Terminate Idle Instances
-```bash
-# Cron job: destroy instances idle for more than 2 hours
-vastai show instances --raw | \
-  jq -r '.[] | select(.gpu_utilization < 5 and .duration > 7200) | .id' | \  # 7200: timeout: 2 hours
-  xargs -I{} vastai destroy instance {}
+### Step 4: Spending Reports
+
+```python
+def team_spending_report(audit_file="vast_audit.jsonl"):
+    """Generate spending report from audit log."""
+    import json
+    costs = {}
+    with open(audit_file) as f:
+        for line in f:
+            entry = json.loads(line)
+            if entry["action"] == "destroy" and "total_cost" in entry:
+                team = entry["team"]
+                costs.setdefault(team, 0)
+                costs[team] += entry["total_cost"]
+
+    print("Team Spending Report:")
+    for team, cost in sorted(costs.items(), key=lambda x: -x[1]):
+        print(f"  {team}: ${cost:.2f}")
 ```
+
+## Output
+- Team-specific API key configuration
+- Policy enforcement layer (GPU whitelist, instance limits, budget caps)
+- Audit logging for all provisioning and destruction events
+- Spending reports per team
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| `insufficient_funds` | Account balance depleted | Add credits or enable auto-recharge |
-| Instance won't start | GPU type unavailable in region | Try different region or GPU type |
-| Spending limit hit | Daily cap reached | Increase limit or wait for next day |
-| SSH connection refused | Instance still initializing | Wait 2-3 minutes after creation |
+| Policy violation on provision | GPU not in whitelist or limit reached | Request policy change or destroy idle instances |
+| Budget exceeded | Team exceeded daily limit | Alert team lead; pause provisioning until next day |
+| Missing API key | Environment variable not set | Configure key in secrets manager |
+| Audit log missing entries | Logger not wired into all operations | Audit the code paths for missing log calls |
+
+## Resources
+- [Vast.ai Account](https://cloud.vast.ai)
+- [REST API](https://vast.ai/developers/api)
+
+## Next Steps
+For migration strategies, see `vastai-migration-deep-dive`.
 
 ## Examples
 
-**Basic usage**: Apply vastai enterprise rbac to a standard project setup with default configuration options.
+**Team onboarding**: Create a new team config entry with conservative limits (2 instances, RTX 4090 only, $10/day). Increase limits after the team demonstrates responsible usage.
 
-**Advanced scenario**: Customize vastai enterprise rbac for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Resources
-
-- Official Vastai Enterprise Rbac documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+**Monthly chargeback**: Parse the audit log to generate per-team invoices for internal cost allocation.

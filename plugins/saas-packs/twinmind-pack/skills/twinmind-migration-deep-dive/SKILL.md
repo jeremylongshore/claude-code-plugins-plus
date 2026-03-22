@@ -1,97 +1,106 @@
 ---
 name: twinmind-migration-deep-dive
 description: |
-  Comprehensive migration guide from other meeting AI tools to TwinMind.
-  Use when migrating from Otter.ai, Fireflies, Rev, or other transcription services.
-  Trigger with phrases like "migrate to twinmind", "switch from otter",
-  "twinmind migration", "move to twinmind", "replace fireflies".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Migrate from other meeting AI tools (Otter.
+  Use when implementing migration deep dive,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind migration deep dive", "twinmind migration deep dive".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, migration, transcription]
+tags: ['saas', 'twinmind', 'migration']
 
 ---
 # TwinMind Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Comprehensive guide for migrating from Otter.ai, Fireflies.ai, Rev.ai, Zoom, Google Meet, Teams, and other meeting AI services to TwinMind. Covers assessment, export, transformation, import, and verification.
+Migrate from other meeting AI tools (Otter.ai, Fireflies, Grain) to TwinMind with transcript import and workflow adaptation. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind Pro/Enterprise account
-- Export access on source platform
-- Understanding of data formats
-- Sufficient storage for migration data
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- API access (Pro/Enterprise tier)
 
 ## Instructions
 
-### Step 1: Assess Current Data
-Build a migration assessment script that scans exported files, counts transcripts, calculates total duration hours, identifies date range and data formats, estimates migration time, and flags potential issues.
+### Step 1: Enterprise Configuration
 
-### Step 2: Export Data from Source
-Use platform-specific exporters: Otter.ai (via Puppeteer web scraping), Fireflies.ai (GraphQL API), Rev.ai (REST API with transcript retrieval), Zoom (VTT file parsing).
+TwinMind Enterprise supports on-premise deployment, custom AI models, and unlimited context tokens.
 
-### Step 3: Transform Data to TwinMind Format
-Build transformer functions per source: `transformOtterToTwinMind()`, `transformFirefliesToTwinMind()`, `transformRevToTwinMind()`, `transformZoomVTTToTwinMind()`. Map speakers, segments, timestamps, and metadata to TwinMind's `Transcript` schema.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Import to TwinMind
-Create batch import with configurable batch size, rate limit delays, duplicate detection (by original_id metadata), and progress logging.
+### Step 2: Role Configuration
 
-### Step 5: Verify Migration
-Run verification comparing source vs imported counts, spot-checking content (word count within 10%), validating duration accuracy, and identifying missing transcripts.
+```javascript
+// TwinMind Migration Deep Dive implementation
+// Enterprise tier features
+const twinmind = {
+  ssoProvider: "okta",
+  teamSharing: true,
+  customModels: ["gpt-4-turbo"],
+  onPremise: true,
+};
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete assessment script, platform exporters, transformers, batch importer, and verification code.
+// Configure team access
+async function configureTeam() {
+  const team = await twinmind.createTeam({ name: "Engineering", members: ["user1", "user2"] });
+  console.log("Team configured:", team.id);
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind enterprise setup
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/team/members | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Migration assessment tool
-- Platform-specific exporters
-- Data transformation functions
-- TwinMind import utility
-- Verification scripts
+- TwinMind Migration Deep Dive configured and verified
+- TwinMind integration operational
+- Enterprise features enabled
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Export rate limited | Too many requests | Add delays between requests |
-| Data format changed | API version update | Update transformer functions |
-| Import duplicate | Already migrated | Skip or overwrite (dedup by original_id) |
-| Missing speakers | Source didn't export | Set as "unknown" |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-observability` for monitoring setup.
 
 ## Examples
 
+**Basic**: Configure migration deep dive with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind migration deep dive to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind migration deep dive for production environments with multiple constraints and team-specific requirements.
-
-## Platform Comparison
-
-| Feature | TwinMind | Otter.ai | Fireflies |
-|---------|----------|----------|-----------|
-| WER | 5.26% | ~8% | ~7% |
-| Languages | 140+ | 30+ | 60+ |
-| On-device | Yes | No | No |
-| No audio storage | Yes | No | No |
-
-## Resources
-- [TwinMind Import API](https://twinmind.com/docs/import)
-- [Data Export Best Practices](https://twinmind.com/docs/migration)
-- [Platform Comparison](https://twinmind.com/compare)
-
-## Congratulations!
-You have completed the TwinMind skill pack.
+**Enterprise**: Deploy on-premise with custom AI models and SSO for team-wide meeting intelligence.

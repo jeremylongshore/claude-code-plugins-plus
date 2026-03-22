@@ -1,12 +1,11 @@
 ---
 name: speak-rate-limits
 description: |
-  Implement Speak rate limiting, backoff, and idempotency patterns for language learning APIs.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Speak integrations.
-  Trigger with phrases like "speak rate limit", "speak throttling",
-  "speak 429", "speak retry", "speak backoff".
-allowed-tools: Read, Write, Edit
+  Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
+  Use when implementing rate limits features,
+  or troubleshooting Speak language learning integration issues.
+  Trigger with phrases like "speak rate limits", "speak rate limits".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,63 +16,102 @@ tags: [saas, speak, api]
 # Speak Rate Limits
 
 ## Overview
-Rate limit management for Speak's language learning API. Audio processing endpoints are computationally expensive, with stricter limits on pronunciation assessment than text-based endpoints. Covers per-endpoint tracking, batch queuing, and retry logic.
+Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
 
 ## Prerequisites
-- Speak API access configured
-- Understanding of audio processing latency
-- Queue infrastructure for batch assessments (optional)
-
-## Speak API Rate Limits
-
-| Endpoint | Limit | Notes |
-|----------|-------|-------|
-| Pronunciation Assessment | 30/min | Audio processing intensive |
-| Conversation Start | 20/min | Creates session state |
-| Conversation Turn | 60/min | Within active sessions |
-| Translation | 120/min | Text-only, faster |
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
 
-### Step 1: Identify Endpoint Limits
-Review the rate limits table above. Map each API call in the application to its endpoint category. Alternatively, check the `X-RateLimit-Remaining` response header for real-time tracking.
+### Rate Limit Overview
+| Tier | Assessments/min | Conversations/min | Audio upload/min |
+|------|----------------|-------------------|-----------------|
+| Free | 10 | 5 | 10 |
+| Pro | 60 | 30 | 60 |
+| Enterprise | 300 | 150 | 300 |
 
-### Step 2: Implement Per-Endpoint Rate Limiter
-Create a thread-safe rate limiter that tracks sliding windows per endpoint. Block requests that would exceed the limit until capacity is available.
+### Rate-Limited Client
+```typescript
+class RateLimitedSpeakClient {
+  private lastRequest = 0;
+  private minDelay: number;
 
-### Step 3: Add Retry Logic for 429 Responses
-Parse the `Retry-After` header from 429 responses. Sleep for the specified duration before retrying. Limit retries to 3 attempts with exponential backoff.
+  constructor(private client: SpeakClient, requestsPerMinute: number = 60) {
+    this.minDelay = 60000 / requestsPerMinute;
+  }
 
-### Step 4: Queue Batch Assessments
-Submit multiple pronunciation assessments to a priority queue. Process them sequentially within rate limits, recording results per student.
+  private async throttle() {
+    const elapsed = Date.now() - this.lastRequest;
+    if (elapsed < this.minDelay) {
+      await new Promise(r => setTimeout(r, this.minDelay - elapsed));
+    }
+    this.lastRequest = Date.now();
+  }
 
-### Step 5: Monitor Rate Limit Usage
-Track used vs. available capacity per endpoint. Log warnings when approaching 80% of any endpoint limit. Adjust batch processing speed based on remaining capacity.
+  async assessPronunciation(config: PronunciationConfig) {
+    await this.throttle();
+    return this.retryOn429(() => this.client.assessPronunciation(config));
+  }
 
-For complete Python rate limiter class, batch assessment queue, retry handler, and rate status monitor, see [limiter implementation](references/limiter-implementation.md).
+  private async retryOn429<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        return await fn();
+      } catch (err: any) {
+        if (err.response?.status === 429 && i < maxRetries - 1) {
+          const wait = parseInt(err.response.headers['retry-after'] || String(2 ** i));
+          console.log(`Rate limited. Waiting ${wait}s...`);
+          await new Promise(r => setTimeout(r, wait * 1000));
+          continue;
+        }
+        throw err;
+      }
+    }
+    throw new Error('Max retries exceeded');
+  }
+}
+```
+
+### Batch Assessment Queue
+```typescript
+async function batchAssess(client: RateLimitedSpeakClient, recordings: Recording[]) {
+  const results = [];
+  for (const rec of recordings) {
+    const result = await client.assessPronunciation({
+      audioPath: rec.path, targetText: rec.text, language: rec.lang,
+    });
+    results.push({ ...rec, score: result.score });
+    console.log(`Assessed "${rec.text}": ${result.score}/100`);
+  }
+  return results;
+}
+```
 
 ## Output
-- Rate limiter implementation configured per endpoint
-- Retry logic with backoff for 429 responses
-- Batch assessment queue with priority ordering
-- Monitoring output showing rate limit usage
+- Limits implementation complete
+- Speak API integration verified
+- Production-ready patterns applied
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| 429 on assessment | Exceeded 30/min pronunciation limit | Queue assessments and spread over time |
-| Slow batch processing | Sequential audio processing | Respect rate limits; avoid excessive parallelism |
-| Session timeout | Conversation idle too long | Send turns within the session timeout window |
-| Audio upload rejected | File exceeds 25MB | Compress audio before uploading |
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
+| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
+| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
+| Session expired | Timeout after 30 min | Start a new conversation session |
+
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+See `speak-prod-checklist` for production readiness.
 
 ## Examples
 
-**Basic rate limiting**: Instantiate `SpeakRateLimiter()`, call `limiter.wait_if_needed("pronunciation")` before each assessment request, and let the limiter automatically sleep when the 30/min limit is reached.
+**Basic**: Apply rate limits with default configuration for a standard Speak integration.
 
-**Batch student assessments**: Submit 50 student recordings to `AssessmentQueue` with priority levels, call `process_all()` to process within rate limits, and review the results dictionary for scores and failures.
-
-## Resources
-- [Speak API Docs](https://docs.speak.com)
-
-## Next Steps
-Proceed to `speak-sdk-patterns` for production-ready SDK patterns.
+**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.

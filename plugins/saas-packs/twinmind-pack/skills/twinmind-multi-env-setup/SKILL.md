@@ -1,97 +1,106 @@
 ---
 name: twinmind-multi-env-setup
 description: |
-  Set up TwinMind across multiple environments (dev, staging, production).
-  Use when configuring environment-specific settings, managing multiple API keys,
-  or implementing environment promotion workflows.
-  Trigger with phrases like "twinmind environments", "twinmind multi-env",
-  "twinmind staging setup", "twinmind dev vs prod".
-allowed-tools: Read, Write, Edit
+  Configure TwinMind across development, staging, and production environments with separate accounts and API key management.
+  Use when implementing multi env setup,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind multi env setup", "twinmind multi env setup".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, workflow]
+tags: ['saas', 'twinmind', 'deployment']
 
 ---
 # TwinMind Multi-Environment Setup
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Configure TwinMind for development, staging, and production environments with proper isolation, environment-aware client factory, validation scripts, config promotion workflows, and feature flags.
+Configure TwinMind across development, staging, and production environments with separate accounts and API key management. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Multiple TwinMind API keys (one per environment)
-- Understanding of environment management
-- CI/CD pipeline for deployments
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- API access (Pro/Enterprise tier)
 
 ## Instructions
 
-### Step 1: Environment Configuration Structure
-Define `EnvironmentConfig` interface covering TwinMind settings (API key, model, features, debug mode), rate limits, concurrency, daily quotas, and integration settings (Slack channel, calendar, email). Configure dev (ear-2, 30/min, quota 10), staging (ear-3, 60/min, quota 50), and production (ear-3, 300/min, unlimited).
+### Step 1: Enterprise Configuration
 
-### Step 2: Environment Variable Files
-Create `.env.development`, `.env.staging`, `.env.production` with environment-specific API keys and webhook secrets. Commit `.env.example` with empty values.
+TwinMind Enterprise supports on-premise deployment, custom AI models, and unlimited context tokens.
 
-### Step 3: Environment-Aware Client Factory
-Build `getTwinMindClient()` factory that creates and caches clients per environment, automatically selecting the right API key and config.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Environment Validation
-Create validation script that checks required environment variables, API key format (starts with `tm_sk_`), and API connectivity for each environment.
+### Step 2: Role Configuration
 
-### Step 5: Config Promotion Workflow
-Build `promoteConfig()` script to promote feature settings, webhook events, and integration configs from dev -> staging -> production while preserving environment-specific values.
+```javascript
+// TwinMind Multi-Environment Setup implementation
+// Enterprise tier features
+const twinmind = {
+  ssoProvider: "okta",
+  teamSharing: true,
+  customModels: ["gpt-4-turbo"],
+  onPremise: true,
+};
 
-### Step 6: Feature Flags per Environment
-Implement `FeatureFlags` with environment overrides: beta features in dev only, diarization off in dev (faster), email follow-ups only in production, audio duration limits per environment.
+// Configure team access
+async function configureTeam() {
+  const team = await twinmind.createTeam({ name: "Engineering", members: ["user1", "user2"] });
+  console.log("Team configured:", team.id);
+}
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete environment configs, client factory, validation scripts, promotion workflow, and feature flag code.
+### Step 3: Verification
+
+```bash
+# Verify TwinMind enterprise setup
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/team/members | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Environment configuration structure
-- Environment variable templates
-- Client factory with environment awareness
-- Environment validation script
-- Config promotion workflow
-- Feature flags per environment
+- TwinMind Multi-Environment Setup configured and verified
+- TwinMind integration operational
+- Enterprise features enabled
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Wrong API key used | Env mismatch | Validate before deploy |
-| Feature not available | Wrong environment | Check feature flags |
-| Config not loading | Missing file | Verify config paths |
-| Promotion failed | Schema mismatch | Validate configs first |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-observability` for monitoring setup.
 
 ## Examples
 
+**Basic**: Configure multi env setup with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind multi env setup to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind multi env setup for production environments with multiple constraints and team-specific requirements.
-
-## Environment Matrix
-
-| Setting | Development | Staging | Production |
-|---------|-------------|---------|------------|
-| Model | ear-2 | ear-3 | ear-3 |
-| Diarization | Off | On | On |
-| Debug mode | On | On | Off |
-| Rate limit | 30/min | 60/min | 300/min |
-| Email sending | Off | Off | On |
-
-## Resources
-- [12-Factor App Config](https://12factor.net/config)
-- [Environment Best Practices](https://twinmind.com/docs/environments)
-
-## Next Steps
-For monitoring setup, see `twinmind-observability`.
+**Enterprise**: Deploy on-premise with custom AI models and SSO for team-wide meeting intelligence.

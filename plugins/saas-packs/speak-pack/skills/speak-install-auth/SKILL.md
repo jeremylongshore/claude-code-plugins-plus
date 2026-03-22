@@ -1,11 +1,11 @@
 ---
 name: speak-install-auth
 description: |
-  Install and configure Speak language learning SDK/API authentication.
-  Use when setting up a new Speak integration, configuring API keys,
-  or initializing Speak services in your language learning application.
+  Set up Speak language learning API integration and authentication.
+  Use when configuring Speak API access, setting up OAuth with OpenAI
+  Realtime API for speech, or initializing a language tutoring application.
   Trigger with phrases like "install speak", "setup speak",
-  "speak auth", "configure speak API key", "speak language learning setup".
+  "speak auth", "configure speak API", "speak language learning setup".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,35 +17,42 @@ tags: [saas, speak, api, authentication]
 # Speak Install & Auth
 
 ## Overview
-Set up the Speak language learning SDK and configure authentication credentials for AI-powered language tutoring integration. Supports pronunciation assessment, conversation practice, and proficiency evaluation across 10+ languages.
+Set up the Speak language learning platform integration. Speak uses OpenAI's GPT-4o and Realtime API for AI tutoring with real-time pronunciation feedback. Supports 14+ languages including Korean, Spanish, Japanese, French, and Mandarin.
 
 ## Prerequisites
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
 - Speak developer account with API access
-- API key from Speak developer dashboard
+- Microphone for speech input testing
 
 ## Instructions
 
-### Step 1: Install the SDK
+### Step 1: Install Dependencies
 ```bash
 set -euo pipefail
-# Node.js
+# Core Speak SDK
 npm install @speak/language-sdk
 
-# Python
-pip install speak-language-sdk
+# Audio processing dependencies
+npm install openai          # OpenAI Realtime API for speech
+npm install fluent-ffmpeg   # Audio format conversion
+npm install node-record-lpcm16  # Microphone capture
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-# Set environment variables
-export SPEAK_API_KEY="your-api-key"
+# Speak API credentials
+export SPEAK_API_KEY="your-speak-api-key"
 export SPEAK_APP_ID="your-app-id"
 
-# Or create .env file
-echo 'SPEAK_API_KEY=your-api-key' >> .env
-echo 'SPEAK_APP_ID=your-app-id' >> .env
+# OpenAI key for Realtime API (used by Speak for speech processing)
+export OPENAI_API_KEY="your-openai-key"
+
+# Create .env file
+cat << 'EOF' >> .env
+SPEAK_API_KEY=your-speak-api-key
+SPEAK_APP_ID=your-app-id
+OPENAI_API_KEY=your-openai-key
+EOF
 ```
 
 ### Step 3: Initialize the Client
@@ -56,49 +63,76 @@ import { SpeakClient } from '@speak/language-sdk';
 const client = new SpeakClient({
   apiKey: process.env.SPEAK_API_KEY!,
   appId: process.env.SPEAK_APP_ID!,
-  language: 'ko', // Target language: Korean, Spanish (es), Japanese (ja), etc.
+  language: 'es', // Target language: es, ko, ja, fr, de, pt, zh, id
 });
+
+// Verify connection
+async function verifySetup() {
+  const languages = await client.getLanguages();
+  console.log('Available languages:', languages.map(l => l.code).join(', '));
+  const health = await client.health.check();
+  console.log('API status:', health.status);
+}
+
+verifySetup();
 ```
 
-### Step 4: Verify the Connection
+### Step 4: Configure Speech Recognition
 ```typescript
-async function verifyConnection() {
-  const status = await client.health.check();
-  console.log('Speak connection verified:', status);
-  return status;
+// OpenAI Realtime API for speech-to-text (used by Speak)
+import OpenAI from 'openai';
+
+const openai = new OpenAI();
+
+async function transcribeAudio(audioPath: string): Promise<string> {
+  const transcription = await openai.audio.transcriptions.create({
+    file: fs.createReadStream(audioPath),
+    model: 'whisper-1',
+    language: 'es', // Match target language
+  });
+  return transcription.text;
 }
 ```
 
-### Step 5: Select Target Language
-Configure the `language` parameter for the target language. Alternatively, switch languages dynamically per session to support multi-language applications.
-
-For TypeScript setup with speech recognition, Python configuration, supported language codes, and alternative API approaches, see [setup examples](references/setup-examples.md).
+### Step 5: Supported Languages
+| Language | Code | Pronunciation | Conversation |
+|----------|------|--------------|-------------|
+| Korean | ko | Yes | Yes |
+| Spanish | es | Yes | Yes |
+| Japanese | ja | Yes | Yes |
+| French | fr | Yes | Yes |
+| German | de | Yes | Yes |
+| Portuguese (BR) | pt | Yes | Yes |
+| Mandarin (Simplified) | zh-CN | Yes | Yes |
+| English | en | Yes | Yes |
+| Indonesian | id | Yes | Yes |
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API credentials
-- Successful connection verification output
+- Speak SDK installed and configured
+- API key and OpenAI credentials set
+- Language support verified
+- Speech recognition pipeline ready
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Speak developer dashboard |
-| App ID Mismatch | Wrong application identifier | Check app ID in project settings |
-| Rate Limited | Exceeded quota | Check usage at developer.speak.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS is allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| Invalid API Key | Wrong or expired key | Verify at developer.speak.com dashboard |
+| App ID Mismatch | Wrong application ID | Check app settings in Speak dashboard |
+| OpenAI auth failed | Invalid OpenAI key | Verify at platform.openai.com |
+| Module not found | Installation failed | Run `npm install` again |
+| Language not supported | Invalid language code | Use codes from supported languages table |
+
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [OpenAI Whisper](https://platform.openai.com/docs/guides/speech-to-text)
+- [Speak Blog: GPT-4 Integration](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+After successful auth, proceed to `speak-hello-world` for your first lesson session.
 
 ## Examples
 
-**TypeScript quickstart**: Install `@speak/language-sdk`, set `SPEAK_API_KEY` and `SPEAK_APP_ID` environment variables, initialize `SpeakClient` with target language `ko`, and call `client.health.check()` to verify the connection.
+**Quick test**: Set `SPEAK_API_KEY`, initialize the client with `language: 'ko'` for Korean, and call `client.health.check()` to verify connectivity.
 
-**Python quickstart**: Install `speak-language-sdk` via pip, initialize `SpeakClient` with `api_key` and `app_id` from environment variables, set language to `ja` for Japanese, and verify with `client.health.check()`.
-
-## Resources
-- [Speak Developer Documentation](https://developer.speak.com/docs)
-- [Speak API Reference](https://developer.speak.com/api)
-- [Speak Status Page](https://status.speak.com)
-- [OpenAI Real-time API (used by Speak)](https://platform.openai.com/docs/guides/realtime)
-
-## Next Steps
-After successful auth, proceed to `speak-hello-world` for the first lesson session.
+**Python setup**: Install `speak-language-sdk` via pip, initialize with `api_key` from environment, and verify with a health check.

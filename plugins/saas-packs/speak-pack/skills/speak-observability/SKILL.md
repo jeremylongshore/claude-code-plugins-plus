@@ -1,69 +1,88 @@
 ---
 name: speak-observability
 description: |
-  Set up comprehensive observability for Speak integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Speak operations, setting up dashboards,
-  or configuring alerting for language learning feature health.
-  Trigger with phrases like "speak monitoring", "speak metrics",
-  "speak observability", "monitor speak", "speak alerts", "speak tracing".
-allowed-tools: Read, Write, Edit
+  Monitor Speak API health, assessment latency, session metrics, and pronunciation score distributions.
+  Use when implementing observability,
+  or managing Speak language learning platform operations.
+  Trigger with phrases like "speak observability", "speak observability".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, monitoring, observability, dashboard]
+tags: [saas, speak, api]
 
 ---
 # Speak Observability
 
 ## Overview
-Set up comprehensive observability for Speak language learning integrations.
+Monitor Speak API health, assessment latency, session metrics, and pronunciation score distributions.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
-1. **Key Metrics for Language Learning**
-2. **Prometheus Metrics Implementation**
-3. **Instrumented Speak Client**
-4. **Distributed Tracing**
-5. **Structured Logging**
-6. **Alert Configuration**
-7. **Grafana Dashboard**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Configuration
 
-## Output
-- Business and technical metrics
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-- Grafana dashboard ready
+Configure observability for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-### Quick Metrics Endpoint
 ```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+// speak_observability_config.ts
+const config = {
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  environment: process.env.NODE_ENV || 'development',
+};
 ```
 
+### Step 2: Implementation
+
+```typescript
+// Core implementation for speak observability
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient(config);
+
+// Production-ready implementation
+async function setup() {
+  const health = await client.health.check();
+  console.log("Status:", health.status);
+  return health;
+}
+```
+
+### Step 3: Verification
+
+```bash
+curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
+```
+
+## Output
+- Speak Observability configured and verified
+- Production-ready Speak integration
+- Error handling and monitoring in place
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| Connection timeout | Network issue | Check connectivity to api.speak.com |
+| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
+
 ## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Speak Observability Guide](https://developer.speak.com/docs/observability)
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
-For incident response, see `speak-incident-runbook`.
+For production checklist, see `speak-prod-checklist`.
+
+## Examples
+
+**Basic**: Apply observability with default settings for a standard Speak integration.
+
+**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.

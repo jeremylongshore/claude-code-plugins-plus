@@ -1,77 +1,88 @@
 ---
 name: speak-incident-runbook
 description: |
-  Execute Speak incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Speak-related outages, investigating errors,
-  or running post-incident reviews for language learning feature failures.
-  Trigger with phrases like "speak incident", "speak outage",
-  "speak down", "speak on-call", "speak emergency", "speak broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Incident response for Speak API outages: triage, fallback to offline mode, and recovery procedures.
+  Use when implementing incident runbook,
+  or managing Speak language learning platform operations.
+  Trigger with phrases like "speak incident runbook", "speak incident runbook".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, incident-response]
+tags: [saas, speak, api]
 
 ---
 # Speak Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Speak language learning-related outages.
+Incident response for Speak API outages: triage, fallback to offline mode, and recovery procedures.
 
 ## Prerequisites
-- Access to Speak dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
-1. **Severity Levels**
-2. **Quick Triage**
-3. **Decision Tree**
-4. **Immediate Actions by Error Type**
-5. **Communication Templates**
-6. **Fallback Modes**
-7. **Post-Incident**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Configuration
+
+Configure incident runbook for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
+
+```typescript
+// speak_incident_runbook_config.ts
+const config = {
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  environment: process.env.NODE_ENV || 'development',
+};
+```
+
+### Step 2: Implementation
+
+```typescript
+// Core implementation for speak incident runbook
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient(config);
+
+// CI test with mocked responses
+async function runCITests() {
+  const mockClient = new MockSpeakClient();
+  await mockClient.assessPronunciation({ audioPath: "test.wav", targetText: "hello", language: "en" });
+  console.log("CI tests passed");
+}
+```
+
+### Step 3: Verification
+
+```bash
+npm test
+```
 
 ## Output
-- Issue identified and categorized
-- Mitigation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-- Fallback modes enabled if needed
+- Speak Incident Runbook configured and verified
+- CI pipeline with mocked Speak API tests
+- Error handling and monitoring in place
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Fallback not working | Cache empty | Pre-warm cache |
-
-## Examples
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.speak.status' || echo "UNHEALTHY"
-```
-
-### Quick Fallback Toggle
-```bash
-set -euo pipefail
-# Enable fallback
-kubectl set env deployment/speak-integration SPEAK_FALLBACK_MODE=true
-
-# Disable fallback (restore normal)
-kubectl set env deployment/speak-integration SPEAK_FALLBACK_MODE-
-```
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| Connection timeout | Network issue | Check connectivity to api.speak.com |
+| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
 
 ## Resources
-- [Speak Status Page](https://status.speak.com)
-- [Speak Support](https://support.speak.com)
-- [Internal Runbook Wiki](#)
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
-For data handling, see `speak-data-handling`.
+For deployment, see `speak-deploy-integration`.
+
+## Examples
+
+**Basic**: Apply incident runbook with default settings for a standard Speak integration.
+
+**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.

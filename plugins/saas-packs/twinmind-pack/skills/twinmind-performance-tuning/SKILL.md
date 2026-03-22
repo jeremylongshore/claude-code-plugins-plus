@@ -1,94 +1,106 @@
 ---
 name: twinmind-performance-tuning
 description: |
-  Optimize TwinMind transcription accuracy and processing speed.
-  Use when improving transcription quality, reducing latency,
-  or tuning model parameters for specific use cases.
-  Trigger with phrases like "twinmind performance", "improve transcription accuracy",
-  "faster twinmind", "optimize twinmind", "transcription quality".
-allowed-tools: Read, Write, Edit
+  Optimize TwinMind transcription accuracy and speed with Ear-3 model configuration, audio quality tuning, and caching strategies.
+  Use when implementing performance tuning,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind performance tuning", "twinmind performance tuning".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, performance, transcription]
+tags: ['saas', 'twinmind', 'performance']
 
 ---
 # TwinMind Performance Tuning
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Optimize TwinMind for better transcription accuracy (WER), faster processing, audio preprocessing, model selection per use case, streaming optimization, and transcript caching/deduplication.
+Optimize TwinMind transcription accuracy and speed with Ear-3 model configuration, audio quality tuning, and caching strategies. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind Pro/Enterprise account
-- Understanding of audio processing concepts
-- Access to quality metrics and logs
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Understand Performance Metrics
-Track key metrics: Word Error Rate (Ear-3: ~5.26%), Diarization Error Rate (~3.8%), confidence score, processing time, real-time factor (~0.3x), and first word latency (~300ms). Analyze metrics to generate recommendations.
+### Step 1: Setup
 
-### Step 2: Audio Quality Optimization
-Build preprocessing pipeline with ffmpeg: target 16kHz sample rate, mono channel, noise reduction (highpass 200Hz + lowpass 3kHz + FFT denoiser), and EBU R128 loudness normalization. Assess audio quality before transcription.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Model Selection and Configuration
-Create optimized configs per scenario: standard meeting (ear-3, auto language, diarization on), technical presentation (ear-3 + custom vocabulary), call center (diarization + profanity filter), medical (ear-3-custom), lecture (single speaker, no diarization), podcast (diarization on).
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Streaming Optimization
-Configure streaming with 100ms chunks, 50ms overlap, 5s max buffer, interim results, and endpoint detection. Build `OptimizedStreamingClient` that accumulates chunks and processes when sufficient data is available.
+### Step 2: Implementation
 
-### Step 5: Caching and Deduplication
-Implement `TranscriptCache` with SHA-256 audio hashing for deduplication, 24-hour TTL, and `transcribeWithCache()` that skips re-processing of identical audio.
+```javascript
+// TwinMind Performance Tuning implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete audio preprocessing, model configs, streaming client, and caching code.
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Performance metrics tracking
-- Audio preprocessing pipeline
-- Model configuration for use cases
-- Streaming optimization
-- Caching and deduplication
+- TwinMind Performance Tuning configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| High WER | Poor audio quality | Apply preprocessing pipeline |
-| Slow processing | Large file | Use streaming API |
-| Wrong language | Auto-detect failed | Specify language explicitly |
-| Missing speakers | Low audio separation | Improve microphone setup |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure performance tuning with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind performance tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind performance tuning for production environments with multiple constraints and team-specific requirements.
-
-## Performance Benchmarks
-
-| Metric | Target | Ear-3 Actual |
-|--------|--------|--------------|
-| Word Error Rate | < 10% | ~5.26% |
-| Diarization Error Rate | < 5% | ~3.8% |
-| Real-time Factor | < 0.5x | ~0.3x |
-| First Word Latency | < 500ms | ~300ms |
-| Languages | 100+ | 140+ |
-
-## Resources
-- [TwinMind Ear-3 Model](https://twinmind.com/ear-3)
-- [Audio Best Practices](https://twinmind.com/docs/audio-quality)
-- [Streaming API](https://twinmind.com/docs/streaming)
-
-## Next Steps
-For cost optimization, see `twinmind-cost-tuning`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

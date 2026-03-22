@@ -1,88 +1,106 @@
 ---
 name: twinmind-security-basics
 description: |
-  Implement security best practices for TwinMind integrations.
-  Use when securing API keys, configuring privacy settings,
-  or implementing data protection for meeting recordings.
-  Trigger with phrases like "twinmind security", "secure twinmind",
-  "twinmind privacy", "protect twinmind data", "twinmind api key security".
-allowed-tools: Read, Write, Edit
+  Security best practices for TwinMind: on-device audio processing, encrypted cloud backups, microphone permissions, and data privacy controls.
+  Use when implementing security basics,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind security basics", "twinmind security basics".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, security]
+tags: ['saas', 'twinmind', 'security']
 
 ---
 # TwinMind Security Basics
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Essential security practices for TwinMind integrations covering API key management, webhook verification, data encryption, access control, privacy configuration, and audit logging.
+Security best practices for TwinMind: on-device audio processing, encrypted cloud backups, microphone permissions, and data privacy controls. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind account configured
-- Understanding of environment variables
-- Basic security and cryptography concepts
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Secure API Key Management
-Store keys in environment variables or a secrets manager (GCP Secret Manager, AWS Secrets Manager). Never hardcode credentials. Use `.env` files (gitignored) with `.env.example` templates committed to the repo.
+### Step 1: Setup
 
-### Step 2: Validate Webhook Signatures
-Verify `x-twinmind-signature` headers using HMAC-SHA256 with `crypto.timingSafeEqual` to prevent timing attacks. Reject requests with missing or invalid signatures.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Encrypt Sensitive Data at Rest
-Use AES-256-GCM encryption for storing transcripts. Store IV and auth tag alongside ciphertext. Key management via environment variables or KMS.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Implement Access Control
-Define `Permission` enums (transcripts:read, transcripts:write, settings:manage, admin:*) and Express middleware (`requirePermission`) to enforce RBAC on all routes.
+### Step 2: Implementation
 
-### Step 5: Configure Privacy Settings
-Create a `PrivacyConfig` interface controlling audio storage (default: never stored), transcript retention days, encryption, local processing, PII redaction patterns (SSN, credit card, email).
+```javascript
+// TwinMind Security Basics implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
 
-### Step 6: Enable Audit Logging
-Build an `AuditLogger` class that records userId, action, resource, timestamp, IP address, and user agent for all sensitive operations. Persist to a logging service.
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete security code including encryption, webhook verification, RBAC middleware, and audit logging.
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Secure API key storage
-- Webhook signature verification
-- Data encryption at rest
-- Access control implementation
-- Privacy configuration
-- Audit logging
+- TwinMind Security Basics configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| API key exposed | Hardcoded secret | Rotate key immediately, audit logs |
-| Webhook unverified | Missing middleware | Always verify signatures |
-| PII leaked | Missing redaction | Enable PII patterns, encrypt data |
-| Unauthorized access | No RBAC | Implement permission middleware |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure security basics with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind security basics to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind security basics for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [TwinMind Security Whitepaper](https://twinmind.com/security)
-- [TwinMind Privacy Policy](https://twinmind.com/privacy)
-- [OWASP Security Guidelines](https://owasp.org/www-project-web-security-testing-guide/)
-
-## Next Steps
-For production deployment, see `twinmind-prod-checklist`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

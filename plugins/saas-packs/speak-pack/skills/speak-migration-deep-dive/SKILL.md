@@ -1,73 +1,88 @@
 ---
 name: speak-migration-deep-dive
 description: |
-  Execute Speak major re-architecture and migration strategies for language learning platforms.
-  Use when migrating to or from Speak, performing major version upgrades,
-  or re-platforming existing language learning integrations.
-  Trigger with phrases like "migrate speak", "speak migration",
-  "switch to speak", "speak replatform", "speak upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate between language learning platforms, import student progress, and transition from legacy speech APIs.
+  Use when implementing migration deep dive,
+  or managing Speak language learning platform operations.
+  Trigger with phrases like "speak migration deep dive", "speak migration deep dive".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, migration]
+tags: [saas, speak, api]
 
 ---
 # Speak Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
 ## Overview
-Comprehensive guide for migrating to or from Speak, or major version upgrades for language learning platforms.
+Migrate between language learning platforms, import student progress, and transition from legacy speech APIs.
 
 ## Prerequisites
-- Current system documentation
-- Speak SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
-- User communication plan
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
-1. **Migration Types**
-2. **Pre-Migration Assessment**
-3. **Migration Strategy: Strangler Fig Pattern**
-4. **Implementation Plan**
-5. **Audio Migration**
-6. **Rollback Plan**
-7. **Post-Migration Validation**
-8. **Post-Migration**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Configuration
 
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- User data migrated successfully
-- Traffic fully shifted to Speak
-- Rollback tested and documented
+Configure migration deep dive for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transforms |
-| Performance drop | No caching | Add caching layer |
-| User confusion | UI changes | Provide tutorials |
-| Audio format error | Incompatible format | Re-encode audio |
-
-## Examples
-### Quick Migration Status
 ```typescript
-const status = await validateMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c =>
-  console.log(`  ${c.result.success ? 'OK' : 'FAIL'} ${c.name}`)
-);
+// speak_migration_deep_dive_config.ts
+const config = {
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  environment: process.env.NODE_ENV || 'development',
+};
 ```
 
+### Step 2: Implementation
+
+```typescript
+// Core implementation for speak migration deep dive
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient(config);
+
+// Production-ready implementation
+async function setup() {
+  const health = await client.health.check();
+  console.log("Status:", health.status);
+  return health;
+}
+```
+
+### Step 3: Verification
+
+```bash
+curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
+```
+
+## Output
+- Speak Migration Deep Dive configured and verified
+- Production-ready Speak integration
+- Error handling and monitoring in place
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| Connection timeout | Network issue | Check connectivity to api.speak.com |
+| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
+
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Speak Migration Guide](https://developer.speak.com/docs/migration)
-- [Data Migration Best Practices](https://developer.speak.com/docs/data-migration)
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+For production checklist, see `speak-prod-checklist`.
+
+## Examples
+
+**Basic**: Apply migration deep dive with default settings for a standard Speak integration.
+
+**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.

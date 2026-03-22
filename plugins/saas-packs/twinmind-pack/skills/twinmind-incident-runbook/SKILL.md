@@ -1,86 +1,106 @@
 ---
 name: twinmind-incident-runbook
 description: |
-  Incident response procedures for TwinMind integration failures.
-  Use when experiencing outages, debugging production issues,
-  or responding to alerts related to TwinMind.
-  Trigger with phrases like "twinmind incident", "twinmind outage",
-  "twinmind down", "twinmind emergency", "twinmind runbook".
-allowed-tools: Read, Bash(curl:*), Grep
+  Incident response for TwinMind failures: transcription not starting, audio not captured, sync failures, and calendar disconnect.
+  Use when implementing incident runbook,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind incident runbook", "twinmind incident runbook".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, debugging, incident-response]
+tags: ['saas', 'twinmind', 'incident-response']
 
 ---
 # TwinMind Incident Runbook
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Procedures for diagnosing and resolving TwinMind integration incidents, covering classification, diagnostics, common scenarios, escalation, and post-incident review.
+Incident response for TwinMind failures: transcription not starting, audio not captured, sync failures, and calendar disconnect. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Access to monitoring dashboards
-- Production environment credentials
-- On-call rotation contacts
-- TwinMind support contact
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Classify and Acknowledge
-Classify severity (P1=15min/P2=1hr/P3=4hr/P4=24hr). Acknowledge in PagerDuty, join incident Slack channel, note start time.
+### Step 1: Setup
 
-### Step 2: Run Quick Health Checks
-Check TwinMind status page, your service health endpoint, recent deployments, and infrastructure status using diagnostic commands.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Diagnose by Scenario
-Follow scenario-specific playbooks: all transcriptions failing (API down, invalid key, network issue), high latency (TwinMind slow, service overloaded, network latency), rate limiting (429 errors, heavy consumers), or authentication failures (401 errors, key rotation).
+```bash
+# TwinMind API access (Pro/Enterprise)
+export TWINMIND_API_KEY="your-api-key"
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health
+# Expected: {"status": "ok"}
 
-### Step 4: Execute Resolution
-Apply resolution steps based on diagnosis. Follow escalation path: On-Call (0-15min) -> Team Lead (15-30min) -> Engineering Manager (30-60min) -> VP Engineering (60+ min).
 
-### Step 5: Post-Incident Review
-Confirm resolution, update status page, notify stakeholders, document timeline, schedule post-mortem within 1 week, create action items.
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for diagnostic commands, scenario playbooks, and incident report template.
+### Step 2: Implementation
+
+```javascript
+// TwinMind Incident Runbook implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
+
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Incident classification guide
-- Diagnostic commands
-- Common scenario playbooks
-- Escalation procedures
-- Post-incident checklist
-- Report template
+- TwinMind Incident Runbook configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| All transcriptions failing | TwinMind API down | Monitor status.twinmind.com, notify users |
-| High latency (P95 > 5s) | Service overloaded | Scale replicas, queue requests |
-| Rate limit exceeded (429) | Too many requests | Enable request queue, request limit increase |
-| Auth failures (401) | Key expired/revoked | Regenerate key, update secrets |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure incident runbook with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind incident runbook to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind incident runbook for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [TwinMind Status Page](https://status.twinmind.com)
-- [TwinMind Support](https://twinmind.com/support)
-- [PagerDuty Best Practices](https://response.pagerduty.com/)
-
-## Next Steps
-For data handling procedures, see `twinmind-data-handling`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

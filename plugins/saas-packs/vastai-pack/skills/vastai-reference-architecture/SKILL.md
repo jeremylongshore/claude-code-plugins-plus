@@ -1,191 +1,172 @@
 ---
 name: vastai-reference-architecture
 description: |
-  Implement Vast.ai reference architecture with best-practice project layout.
-  Use when designing new Vast.ai integrations, reviewing project structure,
-  or establishing architecture standards for Vast.ai applications.
-  Trigger with phrases like "vastai architecture", "vastai best practices",
-  "vastai project structure", "how to organize vastai", "vastai layout".
+  Implement Vast.ai reference architecture for GPU compute workflows.
+  Use when designing ML training pipelines, structuring GPU orchestration,
+  or establishing architecture patterns for Vast.ai applications.
+  Trigger with phrases like "vastai architecture", "vastai design pattern",
+  "vastai project structure", "vastai ml pipeline".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, vastai-reference]
+tags: [saas, vast-ai, architecture]
 
 ---
 # Vast.ai Reference Architecture
 
 ## Overview
-Production architecture for GPU compute on Vast.ai. Covers instance lifecycle management, training job orchestration, model serving patterns, and cost-optimized instance selection for ML workloads.
+Production architecture for GPU compute workflows on Vast.ai. Covers the three-tier pattern (orchestrator, GPU workers, artifact storage), job queue design, and fault-tolerant training pipelines.
 
 ## Prerequisites
-- Vast.ai account with API key
-- `vastai` CLI installed
-- Docker for container image management
-- SSH key pair configured
-
-## Architecture Diagram
-
-```
-┌──────────────────────────────────────────────────────┐
-│              Job Orchestrator                         │
-│  Training Jobs │ Inference Serving │ Batch Processing │
-└──────────┬───────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────┐
-│              Vast.ai Instance Manager                 │
-│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐   │
-│  │ Search       │  │ Create       │  │ Monitor   │   │
-│  │ (find GPUs)  │  │ (provision)  │  │ (status)  │   │
-│  └──────────────┘  └──────────────┘  └───────────┘   │
-├──────────────────────────────────────────────────────┤
-│              GPU Instance                             │
-│  ┌──────────────────────────────────────────────┐     │
-│  │  Docker Container                             │     │
-│  │  PyTorch │ Data │ Model Weights │ Checkpoints│     │
-│  └──────────────────────────────────────────────┘     │
-├──────────────────────────────────────────────────────┤
-│              Data Transfer                            │
-│  rsync (upload) │ S3/GCS (persist) │ rsync (download)│
-└──────────────────────────────────────────────────────┘
-```
+- Vast.ai account with CLI
+- Cloud storage (S3, GCS, or MinIO) for artifacts
+- Understanding of ML training pipelines
 
 ## Instructions
 
-### Step 1: Instance Selection Strategy
+### Architecture: Three-Tier GPU Compute
+
+```
+┌─────────────────────────────────────────────────┐
+│  ORCHESTRATOR (your server / CI / cloud function) │
+│  - Job queue management                          │
+│  - Instance provisioning via Vast.ai API         │
+│  - Status monitoring and auto-recovery           │
+│  - Cost tracking and budget enforcement          │
+└───────────────┬─────────────────────────────────┘
+                │ Vast.ai REST API
+┌───────────────▼─────────────────────────────────┐
+│  GPU WORKERS (Vast.ai rented instances)          │
+│  - Training / inference execution                │
+│  - Checkpoint saving to cloud storage            │
+│  - Health reporting back to orchestrator         │
+│  - Graceful shutdown on SIGTERM (spot preemption)│
+└───────────────┬─────────────────────────────────┘
+                │ S3 / GCS / MinIO
+┌───────────────▼─────────────────────────────────┐
+│  ARTIFACT STORAGE (persistent)                   │
+│  - Model checkpoints                             │
+│  - Training logs and metrics                     │
+│  - Dataset cache                                 │
+│  - Final model artifacts                         │
+└─────────────────────────────────────────────────┘
+```
+
+### Project Structure
+
+```
+ml-pipeline/
+  orchestrator/
+    job_queue.py         # Job definition and scheduling
+    provisioner.py       # Vast.ai instance lifecycle
+    monitor.py           # Status polling and auto-recovery
+    cost_tracker.py      # Budget enforcement
+  worker/
+    Dockerfile           # GPU worker image
+    train.py             # Training entry point
+    checkpoint.py        # Cloud storage checkpoint manager
+    health.py            # Report status back to orchestrator
+  config/
+    gpu_profiles.yaml    # GPU selection criteria per job type
+    budgets.yaml         # Cost limits per team/project
+  scripts/
+    deploy.py            # CLI for launching jobs
+    cost_report.py       # Spending analysis
+```
+
+### GPU Profile Configuration
+
+```yaml
+# config/gpu_profiles.yaml
+profiles:
+  dev-test:
+    gpu_name: RTX_4090
+    num_gpus: 1
+    max_dph: 0.25
+    reliability_min: 0.90
+    max_duration_hours: 2
+
+  training-standard:
+    gpu_name: A100
+    num_gpus: 1
+    max_dph: 2.00
+    reliability_min: 0.98
+    max_duration_hours: 24
+
+  training-distributed:
+    gpu_name: H100_SXM
+    num_gpus: 4
+    max_dph: 4.00
+    reliability_min: 0.99
+    max_duration_hours: 48
+
+  inference-batch:
+    gpu_name: RTX_4090
+    num_gpus: 1
+    max_dph: 0.15
+    reliability_min: 0.95
+    max_duration_hours: 4
+```
+
+### Checkpoint Manager Pattern
+
 ```python
-import subprocess
-import json
+import boto3, os, json, time
 
-def search_instances(
-    gpu_type: str = "RTX 4090",
-    max_price: float = 0.50,
-    min_ram_gb: int = 32,
-    min_disk_gb: int = 50,
-):
-    """Search for cost-effective GPU instances."""
-    cmd = [
-        "vastai", "search", "offers",
-        "--gpu-name", gpu_type,
-        "--dph", f"<={max_price}",
-        "--min-ram", str(min_ram_gb),
-        "--min-disk", str(min_disk_gb),
-        "--reliability", ">0.95",
-        "--order", "dlperf_per_dphtotal-desc",
-        "--limit", "5",
-        "--raw"
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    return json.loads(result.stdout)
+class CheckpointManager:
+    def __init__(self, bucket, prefix, interval_steps=500):
+        self.s3 = boto3.client("s3")
+        self.bucket = bucket
+        self.prefix = prefix
+        self.interval = interval_steps
 
-# GPU selection guide:
-# Training:    A100 80GB ($1.50-2.50/hr) or H100 ($2.50-4.00/hr)
-# Fine-tuning: RTX 4090 ($0.30-0.50/hr) or A6000 ($0.60-1.00/hr)
-# Inference:   RTX 3090 ($0.20-0.35/hr) or RTX 4090
+    def save(self, model, optimizer, step, metrics):
+        if step % self.interval != 0:
+            return
+        checkpoint = {
+            "model_state": model.state_dict(),
+            "optimizer_state": optimizer.state_dict(),
+            "step": step, "metrics": metrics,
+            "timestamp": time.time(),
+        }
+        path = f"{self.prefix}/checkpoint-{step}.pt"
+        torch.save(checkpoint, f"/tmp/checkpoint-{step}.pt")
+        self.s3.upload_file(f"/tmp/checkpoint-{step}.pt", self.bucket, path)
+
+    def load_latest(self):
+        objects = self.s3.list_objects_v2(Bucket=self.bucket, Prefix=self.prefix)
+        if not objects.get("Contents"):
+            return None
+        latest = max(objects["Contents"], key=lambda o: o["LastModified"])
+        self.s3.download_file(self.bucket, latest["Key"], "/tmp/latest.pt")
+        return torch.load("/tmp/latest.pt")
 ```
 
-### Step 2: Training Job Automation
-```python
-class VastTrainingJob:
-    def __init__(self, api_key: str):
-        self.api_key = api_key
-
-    def launch(self, offer_id: int, image: str, disk_gb: int = 50):
-        result = subprocess.run([
-            "vastai", "create", "instance", str(offer_id),
-            "--image", image,
-            "--disk", str(disk_gb),
-            "--onstart-cmd", "cd /workspace && python train.py",
-            "--raw"
-        ], capture_output=True, text=True)
-        return json.loads(result.stdout)
-
-    def wait_until_ready(self, instance_id: int, timeout: int = 600):  # 600: timeout: 10 minutes
-        import time
-        for _ in range(timeout // 10):
-            status = self.get_status(instance_id)
-            if status.get("actual_status") == "running":
-                return status
-            time.sleep(10)
-        raise TimeoutError("Instance failed to start")
-
-    def get_status(self, instance_id: int):
-        result = subprocess.run(
-            ["vastai", "show", "instance", str(instance_id), "--raw"],
-            capture_output=True, text=True
-        )
-        return json.loads(result.stdout)
-
-    def destroy(self, instance_id: int):
-        subprocess.run(["vastai", "destroy", "instance", str(instance_id)])
-```
-
-### Step 3: Docker Image for Training
-```dockerfile
-FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
-
-WORKDIR /workspace
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-# Pre-download model weights during build
-RUN python -c "from transformers import AutoModel; AutoModel.from_pretrained('meta-llama/Llama-3.2-1B')"
-
-ENTRYPOINT ["python", "train.py"]
-```
-
-### Step 4: Data Transfer Pattern
-```python
-def upload_data(instance_id: int, local_path: str, remote_path: str = "/workspace/data"):
-    info = get_instance_info(instance_id)
-    subprocess.run([
-        "rsync", "-avz", "--progress",
-        "-e", f"ssh -p {info['ssh_port']} -o StrictHostKeyChecking=no",
-        local_path, f"root@{info['ssh_host']}:{remote_path}"
-    ], check=True)
-
-def download_results(instance_id: int, remote_path: str, local_path: str):
-    info = get_instance_info(instance_id)
-    subprocess.run([
-        "rsync", "-avz", "--progress",
-        "-e", f"ssh -p {info['ssh_port']}",
-        f"root@{info['ssh_host']}:{remote_path}", local_path
-    ], check=True)
-```
+## Output
+- Three-tier architecture (orchestrator, GPU workers, artifact storage)
+- Project structure for ML pipeline on Vast.ai
+- GPU profile configuration per job type
+- Checkpoint manager with cloud storage integration
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| No instances available | Filters too strict | Relax price or GPU type constraints |
-| Instance killed | Host maintenance | Use checkpointing, auto-restart |
-| Slow data transfer | Large dataset | Pre-load data in Docker image |
-| OOM during training | Model too large for VRAM | Use gradient checkpointing, smaller batch |
+| Orchestrator loses track of instance | API timeout | Implement heartbeat from worker |
+| Checkpoint upload fails | S3 permissions | Verify credentials on GPU instance |
+| Worker can't reach orchestrator | No public IP | Use polling model (worker pulls jobs) |
+| Budget exceeded | No cost controls | Implement profile-based max_duration_hours |
+
+## Resources
+- [Vast.ai REST API](https://vast.ai/developers/api)
+- [PyTorch Distributed](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
+
+## Next Steps
+For multi-environment configuration, see `vastai-multi-env-setup`.
 
 ## Examples
 
-### End-to-End Training Pipeline
-```python
-job = VastTrainingJob(api_key="...")
-offers = search_instances("A100", max_price=2.00)
-instance = job.launch(offers[0]["id"], "my-training:latest")
-job.wait_until_ready(instance["new_contract"])
-upload_data(instance["new_contract"], "./data/")
-# Training runs via onstart-cmd
-download_results(instance["new_contract"], "/workspace/output/", "./results/")
-job.destroy(instance["new_contract"])
-```
+**Simple pipeline**: Orchestrator searches for offers matching `training-standard` profile, provisions instance, uploads data via SCP, runs training, saves checkpoints to S3, destroys instance.
 
-## Resources
-- [Vast.ai CLI Documentation](https://vast.ai/docs/cli/commands)
-- [Vast.ai Instance Guide](https://vast.ai/docs)
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+**Fault-tolerant training**: Worker saves checkpoint every 500 steps to S3. On preemption, orchestrator provisions replacement and worker resumes from latest checkpoint.

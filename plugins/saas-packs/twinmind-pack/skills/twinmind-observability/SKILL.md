@@ -1,89 +1,106 @@
 ---
 name: twinmind-observability
 description: |
-  Set up comprehensive observability for TwinMind integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for TwinMind operations, setting up dashboards,
-  or configuring alerting for meeting AI integration health.
-  Trigger with phrases like "twinmind monitoring", "twinmind metrics",
-  "twinmind observability", "monitor twinmind", "twinmind alerts", "twinmind tracing".
-allowed-tools: Read, Write, Edit
+  Monitor TwinMind transcription quality, meeting coverage, action item extraction rates, and memory vault health.
+  Use when implementing observability,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind observability", "twinmind observability".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, monitoring, observability, dashboard]
+tags: ['saas', 'twinmind', 'monitoring']
 
 ---
 # TwinMind Observability
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Set up comprehensive observability for TwinMind integrations including Prometheus metrics, OpenTelemetry distributed tracing, structured logging, AlertManager rules, and Grafana dashboards.
+Monitor TwinMind transcription quality, meeting coverage, action item extraction rates, and memory vault health. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Define Key Metrics
-Register Prometheus counters (transcriptions_total, errors_total, api_requests_total, ai_tokens_used), histograms (transcription_duration_seconds, api_latency_seconds), and gauges (rate_limit_remaining).
+### Step 1: Setup
 
-### Step 2: Instrument the TwinMind Client
-Wrap all API calls in an `InstrumentedTwinMindClient` that records metrics on every request: increment counters, observe latency histograms, update rate limit gauges from response headers.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Add Distributed Tracing
-Configure OpenTelemetry SDK with OTLP exporter. Create a `TracedTwinMindClient` that wraps operations in spans with attributes like `twinmind.model`, `twinmind.audio_url`, `twinmind.transcript_id`.
+```bash
+# TwinMind API access (Pro/Enterprise)
+export TWINMIND_API_KEY="your-api-key"
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health
+# Expected: {"status": "ok"}
 
-### Step 4: Implement Structured Logging
-Use Pino with automatic redaction of sensitive fields (apiKey, authorization, password). Log operation name, duration, and context for all TwinMind calls.
 
-### Step 5: Configure Alert Rules
-Create AlertManager rules for: high error rate (>5%), high latency (P95 >5s), transcription failures, rate limit approaching/exceeded, API down, and high token usage.
+```
 
-### Step 6: Build Grafana Dashboard
-Configure panels for transcription rate by status, API latency percentiles (P50/P95/P99), error rate by type, rate limit gauge, audio hours processed, and AI tokens used.
+### Step 2: Implementation
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete Prometheus metrics, OpenTelemetry setup, alert rules YAML, and Grafana dashboard JSON.
+```javascript
+// TwinMind Observability implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
+
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Prometheus metrics implementation
-- Distributed tracing with OpenTelemetry
-- Structured logging with Pino
-- AlertManager rules
-- Grafana dashboard configuration
-- Metrics endpoint
+- TwinMind Observability configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure observability with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind observability to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind observability for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Grafana Dashboard Examples](https://grafana.com/grafana/dashboards/)
-
-## Next Steps
-For incident response, see `twinmind-incident-runbook`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

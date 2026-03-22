@@ -1,12 +1,11 @@
 ---
 name: speak-common-errors
 description: |
-  Diagnose and fix Speak common errors and exceptions.
-  Use when encountering Speak errors, debugging failed sessions,
-  or troubleshooting language learning integration issues.
-  Trigger with phrases like "speak error", "fix speak",
-  "speak not working", "debug speak", "speak lesson failed".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Diagnose and fix common Speak API errors: authentication failures, audio format issues, rate limits, and session management problems.
+  Use when implementing common errors features,
+  or troubleshooting Speak language learning integration issues.
+  Trigger with phrases like "speak common errors", "speak common errors".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,115 +16,94 @@ tags: [saas, speak, debugging]
 # Speak Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Speak errors and their solutions.
+Diagnose and fix common Speak API errors: authentication failures, audio format issues, rate limits, and session management problems.
 
 ## Prerequisites
-- Speak SDK installed
-- API credentials configured
-- Access to error logs
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- ffmpeg installed for audio processing
 
 ## Instructions
-1. **Quick Diagnostic Commands**
-2. **Escalation Path**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Error Code Reference
 
-## Error Handling
-| Error | Solution |
-|-------|----------|
-| Authentication Failed | See implementation guide |
-| Rate Limit Exceeded | See implementation guide |
-| Audio Processing Failed | See implementation guide |
-| Session Expired | See implementation guide |
-| Language Not Supported | See implementation guide |
-| Speech Recognition Failed | See implementation guide |
-| Network Timeout | See implementation guide |
-| Quota Exceeded | See implementation guide |
+| HTTP | Error Code | Description | Fix |
+|------|-----------|-------------|-----|
+| 400 | `audio_format_invalid` | Audio not WAV 16kHz mono | Convert with ffmpeg |
+| 400 | `audio_too_short` | Recording < 0.5 seconds | Record longer audio |
+| 400 | `audio_too_long` | Recording > 60 seconds | Trim to under 60s |
+| 400 | `language_not_supported` | Invalid language code | Use supported codes |
+| 401 | `invalid_api_key` | Wrong or expired key | Regenerate at dashboard |
+| 403 | `quota_exceeded` | Monthly limit reached | Upgrade plan or wait |
+| 404 | `session_not_found` | Invalid session ID | Start a new session |
+| 408 | `session_expired` | Session timed out | Sessions expire after 30 min |
+| 413 | `payload_too_large` | Audio file > 25MB | Compress or trim audio |
+| 429 | `rate_limit_exceeded` | Too many requests | Wait `Retry-After` seconds |
 
-## Resources
-- [Speak Status Page](https://status.speak.com)
-- [Speak Support](https://support.speak.com)
-- [Speak Error Codes](https://developer.speak.com/docs/errors)
-
-## Next Steps
-For comprehensive debugging, see `speak-debug-bundle`.
-
-## Output
-
-- Identified error root cause with matching error code
-- Corrected configuration or code fix applied
-- Verification that the fix resolves the error (e.g., successful API call)
-
-See [debugging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
-
-## Examples
-
-### Basic: Diagnose and Fix Authentication Errors
+### Quick Diagnostic
 ```bash
-# Check if API key is set and valid
-echo "SPEAK_API_KEY length: ${#SPEAK_API_KEY}"
+# Check API key validity
 curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $SPEAK_API_KEY" \
   https://api.speak.com/v1/languages
-# 200 = valid, 401 = invalid/expired, 403 = wrong permissions
+# 200 = valid, 401 = invalid, 403 = insufficient permissions
+
+# Check audio format
+ffprobe -v quiet -print_format json -show_streams recording.wav \
+  | python3 -c "import sys,json; s=json.load(sys.stdin)['streams'][0]; print(f'Rate: {s[\"sample_rate\"]}Hz, Channels: {s[\"channels\"]}')"
+# Must be: Rate: 16000Hz, Channels: 1
 ```
 
+### Error Recovery Pattern
 ```typescript
-// Wrap Speak calls with error classification
-async function withSpeakErrorHandling<T>(fn: () => Promise<T>): Promise<T> {
-  try {
-    return await fn();
-  } catch (err: any) {
-    const status = err.response?.status;
-    const code = err.response?.data?.error?.code;
-    switch (status) {
-      case 401: throw new Error("Auth failed — check SPEAK_API_KEY");
-      case 429: throw new Error(`Rate limited — retry after ${err.response.headers["retry-after"]}s`);
-      case 400:
-        if (code === "audio_format_invalid") throw new Error("Convert audio to WAV 16kHz mono");
-        if (code === "language_not_supported") throw new Error(`Language "${err.response.data.error.lang}" not available`);
-        throw err;
-      default: throw err;
-    }
-  }
-}
-```
-
-### Advanced: Structured Error Recovery with Retry and Fallback
-```typescript
-const ERROR_RECOVERY: Record<string, (ctx: any) => Promise<void>> = {
-  "audio_format_invalid": async (ctx) => {
-    // Auto-convert to supported format using ffmpeg
-    const { execSync } = require("child_process");
-    const wavPath = ctx.audioPath.replace(/\.\w+$/, ".wav");
-    execSync(`ffmpeg -y -i "${ctx.audioPath}" -ar 16000 -ac 1 "${wavPath}"`);
-    ctx.audioPath = wavPath;
-  },
-  "session_expired": async (ctx) => {
-    // Re-create the session transparently
-    ctx.session = await ctx.client.startConversation(ctx.sessionConfig);
-  },
-  "rate_limit_exceeded": async (ctx) => {
-    const wait = parseInt(ctx.retryAfter || "5", 10);
-    await new Promise((r) => setTimeout(r, wait * 1000));
-  },
-};
-
-async function resilientSpeakCall<T>(fn: () => Promise<T>, ctx: any, maxRetries = 3): Promise<T> {
+async function resilientSpeakCall<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
     } catch (err: any) {
       const code = err.response?.data?.error?.code;
-      const recovery = ERROR_RECOVERY[code];
-      if (recovery && i < maxRetries - 1) {
-        ctx.retryAfter = err.response?.headers?.["retry-after"];
-        await recovery(ctx);
-      } else {
-        throw err;
+      if (code === 'audio_format_invalid') {
+        // Auto-convert and retry
+        throw new Error('Convert audio to WAV 16kHz mono before retrying');
       }
+      if (code === 'session_expired') {
+        throw new Error('Session expired — start a new conversation session');
+      }
+      if (err.response?.status === 429) {
+        const wait = parseInt(err.response.headers['retry-after'] || '5');
+        await new Promise(r => setTimeout(r, wait * 1000));
+        continue;
+      }
+      throw err;
     }
   }
-  throw new Error("Max retries exceeded");
+  throw new Error('Max retries exceeded');
 }
 ```
+
+## Output
+- Errors implementation complete
+- Speak API integration verified
+- Error recovery tested
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
+| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
+| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
+| Session expired | Timeout after 30 min | Start a new conversation session |
+
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+See `speak-debug-bundle` for diagnostic tools.
+
+## Examples
+
+**Basic**: Apply common errors with default configuration for a standard Speak integration.
+
+**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.

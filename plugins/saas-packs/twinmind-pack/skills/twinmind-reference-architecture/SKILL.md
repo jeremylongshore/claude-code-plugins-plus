@@ -1,89 +1,106 @@
 ---
 name: twinmind-reference-architecture
 description: |
-  Implement TwinMind reference architecture with best-practice project layout.
-  Use when designing new TwinMind integrations, reviewing project structure,
-  or establishing architecture standards for meeting AI applications.
-  Trigger with phrases like "twinmind architecture", "twinmind best practices",
-  "twinmind project structure", "how to organize twinmind", "twinmind layout".
-allowed-tools: Read, Grep
+  Production architecture for meeting AI systems using TwinMind: transcription pipeline, memory vault, action item workflow, and calendar integration.
+  Use when implementing reference architecture,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind reference architecture", "twinmind reference architecture".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, twinmind-reference]
+tags: ['saas', 'twinmind', 'architecture']
 
 ---
 # TwinMind Reference Architecture
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Production-ready architecture patterns for TwinMind meeting AI integrations with layered architecture (API -> Service -> TwinMind -> Integration -> Infrastructure), singleton client wrapper, service orchestration, error boundaries, and health checks.
+Production architecture for meeting AI systems using TwinMind: transcription pipeline, memory vault, action item workflow, and calendar integration. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Understanding of layered architecture
-- TwinMind API knowledge
-- TypeScript project setup
-- Testing framework configured
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Project Structure
-Organize into layers: `src/twinmind/` (client, config, types, errors, handlers), `src/services/meeting/` (transcription, summary, actions, cache), `src/integrations/` (calendar, slack, linear, email), `src/api/` (routes, middleware), `src/jobs/` (sync, cleanup, reports), `src/utils/` (audio, logging, metrics), plus `tests/`, `config/`, and `docs/`.
+### Step 1: Setup
 
-### Step 2: Client Wrapper
-Build a singleton `TwinMindService` with Axios, caching via `TranscriptCache`, metrics via `MetricsCollector`, and request/response interceptors for logging and error tracking.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Service Layer
-Create `MeetingService` that orchestrates transcription, summary generation, action item extraction, speaker identification, and Slack notification. Run summary + action items in parallel for performance.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Error Boundary
-Implement `TwinMindError` with error codes (AUTH_FAILED, RATE_LIMITED, SERVER_ERROR), retryable flag, and factory method `fromApiError()` for consistent error handling.
+### Step 2: Implementation
 
-### Step 5: Health Checks
-Build `checkHealth()` that validates TwinMind API connectivity, cache availability, and database status. Return overall status (healthy/degraded/unhealthy) with per-check latency.
+```javascript
+// TwinMind Reference Architecture implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
 
-### Step 6: Configuration Management
-Create environment-specific JSON config files with `loadConfig()` that merges environment variables with file-based defaults for API URL, timeout, retries, cache TTL, and feature flags.
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete client wrapper, service layer, error boundary, health check, and config management code.
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Structured project layout
-- Client wrapper with caching and metrics
-- Service layer with business logic
-- Error boundary implemented
-- Health checks configured
-- Configuration management
+- TwinMind Reference Architecture configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add TwinMind type definitions |
-| Test isolation | Shared state | Use dependency injection |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure reference architecture with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind reference architecture to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind reference architecture for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [TwinMind API Reference](https://twinmind.com/docs/api)
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [TypeScript Best Practices](https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html)
-
-## Next Steps
-For multi-environment setup, see `twinmind-multi-env-setup`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

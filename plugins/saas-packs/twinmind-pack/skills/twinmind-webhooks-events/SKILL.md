@@ -1,98 +1,106 @@
 ---
 name: twinmind-webhooks-events
 description: |
-  Handle TwinMind webhooks and events for real-time meeting notifications.
-  Use when implementing webhook handlers, processing meeting events,
-  or building real-time integrations.
-  Trigger with phrases like "twinmind webhooks", "twinmind events",
-  "twinmind notifications", "meeting webhook handler".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Handle TwinMind meeting events including transcription completion, action item extraction, and calendar sync notifications.
+  Use when implementing webhooks events,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind webhooks events", "twinmind webhooks events".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, webhooks]
+tags: ['saas', 'twinmind', 'webhooks']
 
 ---
 # TwinMind Webhooks & Events
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Implement webhook handlers for real-time TwinMind meeting events including transcription completion, meeting lifecycle, summary generation, action item extraction, and usage alerts. Includes signature verification, event routing, and retry logic.
+Handle TwinMind meeting events including transcription completion, action item extraction, and calendar sync notifications. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind Pro/Enterprise account
-- Public HTTPS endpoint for webhooks
-- Webhook secret configured
-- Understanding of event-driven architecture
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Define Event Types
-Create `TwinMindEventType` enum for transcription (started/completed/failed), meeting (started/ended/participant join/leave), summary (generated), action items (extracted), calendar (synced/reminder), and usage (limit warning/exceeded).
+### Step 1: Setup
 
-### Step 2: Implement Webhook Handler
-Build signature verification middleware using HMAC-SHA256 with timestamp validation (5-minute replay window) and `crypto.timingSafeEqual`. Create event handler registry with `registerHandler()` and async `handleWebhook()` that acknowledges immediately then processes.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Register Event Handlers
-Wire up handlers: transcription.completed triggers summary generation, meeting.ended notifies Slack and sends summary email, summary.generated stores in database, action_items.extracted creates Linear tasks, usage.limit.warning alerts ops channel.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Set Up Webhook Endpoint
-Create Express route with raw body parser for signature verification, connect to handler.
+### Step 2: Implementation
 
-### Step 5: Register Webhooks with TwinMind
-Script to register webhook URL with desired event types via TwinMind API.
+```javascript
+// TwinMind Webhooks & Events implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
 
-### Step 6: Implement Retry Logic
-Build `WebhookRetryQueue` with exponential backoff (base 60s), max 5 retries, and dead letter queue for failed events with ops team alerting.
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete event types, webhook handler, event processors, registration script, and retry queue.
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Event type definitions
-- Webhook handler with signature verification
-- Event processing logic
-- Webhook registration script
-- Retry queue for failed events
+- TwinMind Webhooks & Events configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret matches |
-| Event missed | Endpoint down | Implement retry queue |
-| Processing slow | Heavy handler | Use async background queue |
-| Duplicate events | Retries from TwinMind | Implement idempotency by event ID |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure webhooks events with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind webhooks events to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind webhooks events for production environments with multiple constraints and team-specific requirements.
-
-## Webhook Events Reference
-
-| Event | Description |
-|-------|-------------|
-| `transcription.completed` | Transcription finished |
-| `meeting.ended` | Meeting finished |
-| `summary.generated` | AI summary ready |
-| `action_items.extracted` | Action items available |
-| `usage.limit.warning` | Usage approaching limit |
-
-## Resources
-- [TwinMind Webhooks API](https://twinmind.com/docs/webhooks)
-- [Webhook Best Practices](https://twinmind.com/docs/webhook-best-practices)
-- [Event Reference](https://twinmind.com/docs/events)
-
-## Next Steps
-For performance optimization, see `twinmind-performance-tuning`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

@@ -6,7 +6,7 @@ description: |
   or collecting diagnostic information for Vast.ai problems.
   Trigger with phrases like "vastai debug", "vastai support bundle",
   "collect vastai logs", "vastai diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+allowed-tools: Read, Bash(vastai:*), Bash(curl:*), Bash(ssh:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,104 +17,124 @@ tags: [saas, vast-ai, debugging]
 # Vast.ai Debug Bundle
 
 ## Current State
-!`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
-!`uname -a`
+!`vastai --version 2>/dev/null || echo 'vastai CLI not installed'`
+!`python3 --version 2>/dev/null || echo 'Python not available'`
 
 ## Overview
-Collect all necessary diagnostic information for Vast.ai support tickets.
+Collect comprehensive diagnostic information for Vast.ai GPU instance issues. Covers account verification, instance inspection, log collection, GPU diagnostics, and network testing.
 
 ## Prerequisites
-- Vast.ai SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Vast.ai CLI installed and authenticated
+- Access to the problematic instance (if still running)
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Account and Auth Diagnostics
+
 ```bash
 #!/bin/bash
-# vastai-debug-bundle.sh
-
-BUNDLE_DIR="vastai-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Vast.ai Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
 set -euo pipefail
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "VASTAI_API_KEY: ${VASTAI_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+echo "=== Vast.ai Debug Bundle ==="
+echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+echo -e "\n--- Account Info ---"
+vastai show user --raw | python3 -c "
+import sys, json
+u = json.load(sys.stdin)
+print(f'Username: {u.get(\"username\", \"?\")}')
+print(f'Balance: \${u.get(\"balance\", 0):.2f}')
+print(f'API Key (first 8): {u.get(\"api_key\", \"?\")[:8]}...')
+"
 ```
 
-### Step 3: Gather SDK and Logs
+### Step 2: Instance Status Collection
+
 ```bash
-set -euo pipefail
-# SDK version
-npm list @vastai/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "vastai" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.vastai.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+echo -e "\n--- All Instances ---"
+vastai show instances --raw | python3 -c "
+import sys, json
+instances = json.load(sys.stdin)
+for i in instances:
+    print(f'ID: {i[\"id\"]} | Status: {i.get(\"actual_status\", \"?\")} | '
+          f'GPU: {i.get(\"gpu_name\", \"?\")} | '
+          f'\$/hr: {i.get(\"dph_total\", 0):.3f} | '
+          f'SSH: {i.get(\"ssh_host\", \"?\")}:{i.get(\"ssh_port\", \"?\")}')
+"
 ```
 
-### Step 4: Package Bundle
+### Step 3: Instance Log Collection
+
 ```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# Collect logs from a specific instance
+INSTANCE_ID="${1:-}"
+if [ -n "$INSTANCE_ID" ]; then
+    echo -e "\n--- Instance $INSTANCE_ID Logs ---"
+    vastai logs "$INSTANCE_ID" --tail 100 2>/dev/null || echo "No logs available"
+
+    echo -e "\n--- Instance $INSTANCE_ID Details ---"
+    vastai show instance "$INSTANCE_ID" --raw | python3 -c "
+import sys, json
+i = json.load(sys.stdin)
+for key in ['actual_status', 'status_msg', 'gpu_name', 'gpu_ram',
+            'cuda_max_good', 'disk_space', 'ssh_host', 'ssh_port',
+            'image_uuid', 'onstart', 'reliability2']:
+    print(f'{key}: {i.get(key, \"?\")}')
+"
+fi
+```
+
+### Step 4: Remote GPU Diagnostics (if SSH accessible)
+
+```bash
+if [ -n "$SSH_HOST" ] && [ -n "$SSH_PORT" ]; then
+    echo -e "\n--- GPU Diagnostics (remote) ---"
+    ssh -p "$SSH_PORT" -o StrictHostKeyChecking=no "root@$SSH_HOST" << 'REMOTE'
+nvidia-smi
+echo "---"
+nvidia-smi --query-gpu=name,memory.total,memory.used,temperature.gpu,utilization.gpu --format=csv
+echo "---"
+python3 -c "import torch; print(f'PyTorch CUDA: {torch.cuda.is_available()}, Device: {torch.cuda.get_device_name(0) if torch.cuda.is_available() else \"N/A\"}')" 2>/dev/null || echo "PyTorch not available"
+echo "---"
+df -h /workspace
+free -h
+REMOTE
+fi
+```
+
+### Step 5: Network Diagnostics
+
+```bash
+echo -e "\n--- API Connectivity ---"
+curl -s -o /dev/null -w "HTTP %{http_code} in %{time_total}s" \
+  -H "Authorization: Bearer $VASTAI_API_KEY" \
+  "https://cloud.vast.ai/api/v0/users/current"
+echo ""
 ```
 
 ## Output
-- `vastai-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- Account info (username, balance, key prefix)
+- All instance statuses with GPU details
+- Instance logs (last 100 lines)
+- Remote GPU diagnostics (nvidia-smi, CUDA, disk, memory)
+- API connectivity test
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
+| Issue | Diagnostic | Solution |
+|-------|------------|----------|
+| Instance shows `error` | Check `status_msg` in details | Destroy and reprovision on different host |
+| SSH unreachable | Instance may still be loading | Wait for `running` status |
+| GPU not detected | CUDA driver mismatch | Use image matching host CUDA version |
+| Disk full | Check `df -h /workspace` | Increase disk or clean artifacts |
+
+## Resources
+- [Vast.ai CLI Reference](https://docs.vast.ai/cli/get-started)
+- [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
+
+## Next Steps
+For rate limit handling, see `vastai-rate-limits`.
 
 ## Examples
 
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
+**Quick debug**: Run `vastai show instance ID --raw | jq '{actual_status, status_msg, gpu_name, ssh_host, ssh_port}'` for a one-line status summary.
 
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash vastai-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Vast.ai support portal
-
-## Resources
-- [Vast.ai Support](https://docs.vastai.com/support)
-- [Vast.ai Status](https://status.vastai.com)
-
-## Next Steps
-For rate limit issues, see `vastai-rate-limits`.
+**Support ticket**: Collect the full debug bundle output, include `vastai logs ID`, and attach `nvidia-smi` output from the instance.

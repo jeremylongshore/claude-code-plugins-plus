@@ -10,80 +10,78 @@
 
 ## About TwinMind
 
-TwinMind is an AI-powered meeting assistant and "second brain" that:
-- Records and transcribes meetings in 140+ languages with Ear-3 speech model (5.26% WER)
-- Generates summaries and extracts action items automatically
-- Integrates with Google Calendar, Zoom, Meet, Teams, and more
-- Provides memory vault for past conversation recall
-- Works via Chrome extension and mobile apps (iOS/Android)
-- Processes audio on-device for privacy (no recordings stored)
+[TwinMind](https://twinmind.com) is an AI-powered "second brain" that captures and organizes your spoken knowledge. Built by ex-Google X scientists at ThirdEar AI Inc., TwinMind transcribes meetings, generates summaries, extracts action items, and builds a searchable memory vault of everything you've discussed. Raised $5.7M (seed round, Sept 2025).
+
+**Key facts:**
+- **Ear-3 speech model**: 5.26% Word Error Rate, 3.8% speaker diarization error, 140+ languages
+- **Privacy-first**: On-device audio processing, no recordings stored, local transcripts with optional encrypted cloud backup
+- **Multi-model AI**: Auto-routes to GPT-4, Claude, or Gemini based on task (summaries, quick answers, memory search)
+- **Platforms**: Chrome extension, iOS, Android with two-way sync
+- **Pricing**: Free (unlimited transcription) / Pro $10/mo / Enterprise (custom, on-premise)
 
 ## Skills Included
 
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `twinmind-install-auth` | Install Chrome extension, mobile app, and configure account |
-| `twinmind-hello-world` | First meeting transcription and AI summary |
-| `twinmind-local-dev-loop` | Development workflow with TwinMind API |
-| `twinmind-sdk-patterns` | Production patterns for TwinMind integration |
+| `twinmind-install-auth` | Install Chrome extension, mobile app, calendar integration |
+| `twinmind-hello-world` | First meeting transcription with AI summary and action items |
+| `twinmind-local-dev-loop` | Development workflow with TwinMind API integration |
+| `twinmind-sdk-patterns` | Transcription patterns, memory vault queries, AI routing |
 | `twinmind-core-workflow-a` | Meeting transcription and summary workflow |
 | `twinmind-core-workflow-b` | Action item extraction and follow-up automation |
-| `twinmind-common-errors` | Diagnose transcription and sync errors |
-| `twinmind-debug-bundle` | Collect diagnostic data for TwinMind issues |
-| `twinmind-rate-limits` | Handle API limits and optimize token usage |
-| `twinmind-security-basics` | Privacy controls and data handling |
-| `twinmind-prod-checklist` | Production deployment checklist |
-| `twinmind-upgrade-migration` | Upgrade between TwinMind plan tiers |
+| `twinmind-common-errors` | Diagnose microphone, transcription, and sync errors |
+| `twinmind-debug-bundle` | Audio diagnostics, API health, extension state |
+| `twinmind-rate-limits` | API limits, context token management, model routing |
+| `twinmind-security-basics` | On-device processing, encrypted backups, permissions |
+| `twinmind-prod-checklist` | Production deployment and integration checklist |
+| `twinmind-upgrade-migration` | Plan tier upgrades and feature migrations |
 
 ### Pro Skills (P13-P18)
 | Skill | Description |
 |-------|-------------|
-| `twinmind-ci-integration` | CI pipeline integration for meeting workflows |
-| `twinmind-deploy-integration` | Deploy TwinMind to production environments |
-| `twinmind-webhooks-events` | Handle meeting events and webhooks |
-| `twinmind-performance-tuning` | Optimize transcription accuracy and speed |
-| `twinmind-cost-tuning` | Optimize costs across Free/Pro/Enterprise tiers |
-| `twinmind-reference-architecture` | Reference architecture for meeting AI systems |
+| `twinmind-ci-integration` | CI pipeline for meeting workflow automation |
+| `twinmind-deploy-integration` | Production deployment with API access |
+| `twinmind-webhooks-events` | Meeting events, transcription completion, calendar sync |
+| `twinmind-performance-tuning` | Ear-3 configuration, audio quality, caching |
+| `twinmind-cost-tuning` | Tier selection, usage monitoring, cost optimization |
+| `twinmind-reference-architecture` | Meeting AI pipeline architecture |
 
 ### Flagship Skills (F19-F24)
 | Skill | Description |
 |-------|-------------|
-| `twinmind-multi-env-setup` | Multi-environment configuration |
-| `twinmind-observability` | Monitoring and alerting for TwinMind |
-| `twinmind-incident-runbook` | Incident response for meeting failures |
-| `twinmind-data-handling` | GDPR compliance and data retention |
-| `twinmind-enterprise-rbac` | Enterprise role-based access control |
-| `twinmind-migration-deep-dive` | Migrate from other meeting AI tools |
+| `twinmind-multi-env-setup` | Dev/staging/prod environment configuration |
+| `twinmind-observability` | Transcription quality, coverage, and vault health |
+| `twinmind-incident-runbook` | Transcription failures, sync issues, recovery |
+| `twinmind-data-handling` | GDPR compliance, data export, retention policies |
+| `twinmind-enterprise-rbac` | On-premise, SSO, custom models, team sharing |
+| `twinmind-migration-deep-dive` | Migrate from Otter.ai, Fireflies, Grain |
 
-## Usage
+## Quick Start
 
-Skills trigger automatically when you discuss TwinMind topics. For example:
+1. Install Chrome extension from [Chrome Web Store](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+2. Sign in with Google or email
+3. Join a Google Meet, Zoom, or Teams call in your browser
+4. Click TwinMind icon and "Start Transcribing"
+5. After the meeting: review transcript, AI summary, and action items
 
-- "Help me set up TwinMind" → triggers `twinmind-install-auth`
-- "Debug this transcription error" → triggers `twinmind-common-errors`
-- "Deploy my TwinMind integration" → triggers `twinmind-deploy-integration`
-- "Migrate from Otter.ai" → triggers `twinmind-migration-deep-dive`
+## Ear-3 Speech Model
 
-## Key Features
+| Metric | Value | Industry Comparison |
+|--------|-------|-------------------|
+| Word Error Rate | 5.26% | Best in class |
+| Speaker Diarization | 3.8% DER | Best in class |
+| Languages | 140+ | Broadest coverage |
+| Cost | $0.23/hour | Competitive |
+| Latency | Real-time | On-device processing |
 
-### Ear-3 Speech Model
-- Industry-leading 5.26% Word Error Rate (WER)
-- 3.8% Diarization Error Rate for speaker labeling
-- 140+ language support
-- $0.23/hour transcription cost
+## Resources
 
-### Privacy-First Architecture
-- On-device audio processing
-- No audio recordings stored
-- Local transcript storage with optional encrypted cloud backup
-- GDPR and privacy regulation compliant
-
-### Platform Integration
-- Google Calendar, Meet, Docs, Gmail
-- Zoom, Microsoft Teams
-- Slack, LinkedIn, GitHub
-- Chrome extension + iOS/Android apps
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension Tutorial](https://twinmind.com/ce-tutorial)
+- [Ear-3 Model Announcement](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+- [Android App](https://play.google.com/store/apps/details?id=ai.twinmind.android)
 
 ## License
 

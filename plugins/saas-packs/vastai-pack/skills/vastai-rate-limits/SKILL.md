@@ -1,9 +1,9 @@
 ---
 name: vastai-rate-limits
 description: |
-  Implement Vast.ai rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Vast.ai.
+  Handle Vast.ai API rate limits with backoff and request optimization.
+  Use when encountering 429 errors, implementing retry logic,
+  or optimizing API request throughput.
   Trigger with phrases like "vastai rate limit", "vastai throttling",
   "vastai 429", "vastai retry", "vastai backoff".
 allowed-tools: Read, Write, Edit
@@ -17,135 +17,128 @@ tags: [saas, vast-ai, api]
 # Vast.ai Rate Limits
 
 ## Overview
-Handle Vast.ai rate limits gracefully with exponential backoff and idempotency.
+Handle Vast.ai REST API rate limits gracefully. The API at `cloud.vast.ai/api/v0` returns HTTP 429 when request limits are exceeded. Most operations (search, show) are read-heavy and rarely hit limits, but automated scripts doing rapid provisioning or polling can trigger throttling.
 
 ## Prerequisites
-- Vast.ai SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+- Vast.ai CLI or REST API client
+- Understanding of exponential backoff
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Rate-Limited HTTP Client
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+```python
+import requests
+import time
 
-### Step 2: Implement Exponential Backoff with Jitter
+class RateLimitedVastClient:
+    BASE_URL = "https://cloud.vast.ai/api/v0"
 
-```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
+    def __init__(self, api_key, min_delay=0.5, max_retries=5):
+        self.session = requests.Session()
+        self.session.headers["Authorization"] = f"Bearer {api_key}"
+        self.min_delay = min_delay
+        self.max_retries = max_retries
+        self.last_request = 0
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+    def request(self, method, endpoint, **kwargs):
+        # Enforce minimum delay between requests
+        elapsed = time.time() - self.last_request
+        if elapsed < self.min_delay:
+            time.sleep(self.min_delay - elapsed)
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+        for attempt in range(self.max_retries):
+            self.last_request = time.time()
+            resp = self.session.request(method, f"{self.BASE_URL}{endpoint}", **kwargs)
+
+            if resp.status_code == 429:
+                retry_after = int(resp.headers.get("Retry-After", 2 ** attempt))
+                print(f"Rate limited. Waiting {retry_after}s (attempt {attempt+1})")
+                time.sleep(retry_after)
+                continue
+
+            resp.raise_for_status()
+            return resp.json()
+
+        raise RuntimeError("Max retries exceeded due to rate limiting")
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 2: Polling with Adaptive Backoff
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+```python
+def poll_instance_status(client, instance_id, target="running", timeout=300):
+    """Poll instance status with increasing intervals."""
+    start = time.time()
+    interval = 5  # Start at 5s, increase to max 30s
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+    while time.time() - start < timeout:
+        info = client.request("GET", f"/instances/{instance_id}/")
+        status = info.get("actual_status", "unknown")
 
-async function idempotentRequest<T>(
-  client: Vast.aiClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
+        if status == target:
+            return info
+        if status in ("error", "offline"):
+            raise RuntimeError(f"Instance {instance_id} failed: {status}")
+
+        time.sleep(interval)
+        interval = min(interval * 1.5, 30)
+
+    raise TimeoutError(f"Instance did not reach '{target}' within {timeout}s")
 ```
+
+### Step 3: Batch Search with Throttling
+
+```python
+def batch_search(client, gpu_configs):
+    """Search for multiple GPU types with rate-limit-safe delays."""
+    results = {}
+    for config in gpu_configs:
+        query = GPUQuery(**config).to_filter()
+        offers = client.request("GET", "/bundles/", params={"q": str(query)})
+        results[config.get("gpu_name", "any")] = offers.get("offers", [])
+        time.sleep(1)  # Be polite between searches
+    return results
+
+# Usage
+configs = [
+    {"gpu_name": "RTX_4090", "max_dph": 0.30},
+    {"gpu_name": "A100", "max_dph": 2.00},
+    {"gpu_name": "H100_SXM", "max_dph": 4.00},
+]
+all_offers = batch_search(client, configs)
+```
+
+### Step 4: Request Optimization
+
+Strategies to reduce API calls:
+- **Cache search results**: Offers change slowly; cache for 60-120 seconds
+- **Use `--limit`**: Restrict search results to what you need
+- **Batch instance checks**: Use `show instances` (lists all) instead of individual `show instance ID` calls
+- **Avoid polling loops**: Use longer intervals (15-30s) for status checks
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+- Rate-limited HTTP client with automatic retry on 429
+- Adaptive polling for instance status changes
+- Batch search with inter-request delays
+- Request optimization strategies
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
+| Scenario | Response |
+|----------|----------|
+| First 429 | Wait `Retry-After` header value, then retry |
+| Repeated 429s | Double wait time between retries |
+| 429 during provisioning | Instance creation is idempotent; safe to retry |
+| 429 during search | Cache previous results and use them temporarily |
+
+## Resources
+- [Vast.ai REST API](https://vast.ai/developers/api)
+- [API Reference](https://docs.vast.ai/api-reference/introduction)
+
+## Next Steps
+For security best practices, see `vastai-security-basics`.
 
 ## Examples
 
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
+**Safe multi-instance provisioning**: Create 10 instances with 2-second delays between each `create instance` call to avoid triggering rate limits during cluster setup.
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,  # 1000: 1 second in ms
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
-
-## Resources
-- [Vast.ai Rate Limits](https://docs.vastai.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
-
-## Next Steps
-For security configuration, see `vastai-security-basics`.
+**Efficient monitoring**: Poll all instances with a single `show instances` call every 30 seconds instead of individual calls per instance.

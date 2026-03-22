@@ -1,88 +1,106 @@
 ---
 name: twinmind-ci-integration
 description: |
-  Integrate TwinMind into CI/CD pipelines for automated testing and deployment.
-  Use when setting up GitHub Actions, GitLab CI, or other CI systems
-  with TwinMind API testing and validation.
-  Trigger with phrases like "twinmind ci", "twinmind github actions",
-  "twinmind pipeline", "automate twinmind testing".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Integrate TwinMind meeting transcription workflows into CI/CD pipelines for automated meeting documentation and action item tracking.
+  Use when implementing ci integration,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind ci integration", "twinmind ci integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, deployment, api, testing]
+tags: ['saas', 'twinmind', 'ci-cd']
 
 ---
 # TwinMind CI Integration
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Integrate TwinMind testing and validation into CI/CD pipelines with GitHub Actions workflows, unit tests, integration tests, smoke tests, and GitLab CI configuration.
+Integrate TwinMind meeting transcription workflows into CI/CD pipelines for automated meeting documentation and action item tracking. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind Pro/Enterprise API access
-- CI/CD system (GitHub Actions, GitLab CI, etc.)
-- Test audio samples
-- Secrets management for API keys
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: GitHub Actions Workflow
-Create a multi-job workflow with lint-and-typecheck, unit-tests, integration-tests (with API key from secrets), api-health-check, and transcription-smoke-test (on main/schedule only).
+### Step 1: Setup
 
-### Step 2: Write Unit Tests
-Build Vitest unit tests mocking the TwinMind client. Test correct request formatting, rate limit handling (429 responses), and summary generation response parsing.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Write Integration Tests
-Create integration tests that use real API keys (from environment variables). Test API health, account access, and actual transcription with configurable test audio URL.
+```bash
+# TwinMind API access (Pro/Enterprise)
+export TWINMIND_API_KEY="your-api-key"
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health
+# Expected: {"status": "ok"}
 
-### Step 4: Build Smoke Test Script
-Create a standalone smoke test runner that checks API health, account access, and optionally transcription. Report pass/fail with duration for each test.
 
-### Step 5: GitLab CI Configuration
-Set up equivalent GitLab CI with lint, test, integration stages. Use YAML anchors for shared node template. Configure coverage reporting and scheduled runs.
+```
 
-### Step 6: Configure Vitest
-Set up vitest.config.ts with V8 coverage provider, 30s test timeout, and separate test scripts for unit, integration, and smoke tests.
+### Step 2: Implementation
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete GitHub Actions YAML, test files, smoke test runner, and GitLab CI config.
+```javascript
+// TwinMind CI Integration implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
+
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- GitHub Actions workflow
-- Unit test suite
-- Integration test suite
-- Smoke test script
-- GitLab CI configuration
+- TwinMind CI Integration configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Not configured | Add to GitHub/GitLab Secrets |
-| Test timeout | Large audio file | Use 10-30 second test samples |
-| Rate limited in CI | Too many runs | Use dedicated test API key |
-| API unavailable | TwinMind outage | Add retry logic to tests |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure ci integration with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind ci integration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind ci integration for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [GitHub Actions Documentation](https://docs.github.com/actions)
-- [GitLab CI Documentation](https://docs.gitlab.com/ee/ci/)
-- [Vitest Documentation](https://vitest.dev/)
-
-## Next Steps
-For deployment integration, see `twinmind-deploy-integration`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

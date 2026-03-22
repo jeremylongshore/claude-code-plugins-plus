@@ -1,85 +1,106 @@
 ---
 name: twinmind-enterprise-rbac
 description: |
-  Implement enterprise role-based access control for TwinMind.
-  Use when setting up team permissions, configuring SSO/SAML,
-  or implementing organization-level access policies.
-  Trigger with phrases like "twinmind RBAC", "twinmind permissions",
-  "twinmind enterprise access", "twinmind SSO", "twinmind team management".
-allowed-tools: Read, Write, Edit
+  Configure TwinMind Enterprise with on-premise deployment, custom AI models, SSO integration, and team-wide transcript sharing.
+  Use when implementing enterprise rbac,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind enterprise rbac", "twinmind enterprise rbac".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, rbac]
+tags: ['saas', 'twinmind', 'rbac']
 
 ---
 # TwinMind Enterprise RBAC
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Enterprise-grade role-based access control for TwinMind with SSO/SAML integration, team management, resource-level authorization, and access audit logging.
+Configure TwinMind Enterprise with on-premise deployment, custom AI models, SSO integration, and team-wide transcript sharing. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- TwinMind Enterprise account
-- Admin access to TwinMind organization
-- Identity provider (Okta, Azure AD, Google Workspace)
-- Understanding of RBAC concepts
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- API access (Pro/Enterprise tier)
 
 ## Instructions
 
-### Step 1: Define Roles and Permissions
-Create `Permission` enum covering transcript, summary, action item, team, settings, billing, and admin permissions. Define role hierarchy: Viewer -> Member -> Manager -> Admin -> Owner with permission inheritance via `resolvePermissions()`.
+### Step 1: Enterprise Configuration
 
-### Step 2: Implement Permission Checking
-Build `AuthorizationService` with `hasPermission()`, `hasAnyPermission()`, `hasAllPermissions()` methods. Support admin wildcard, explicit deny lists, and resource-level authorization (own transcripts vs all transcripts).
+TwinMind Enterprise supports on-premise deployment, custom AI models, and unlimited context tokens.
 
-### Step 3: Configure SSO/SAML Integration
-Set up SAML strategy with passport-saml. Map IdP attributes (email, name, groups) to TwinMind users. Configure group-to-role mapping (e.g., "TwinMind-Admins" -> admin role).
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Team Management
-Build `TeamManager` with create team, add/remove/invite members, role updates, and sync to TwinMind organization. Enforce permission checks on team operations.
+### Step 2: Role Configuration
 
-### Step 5: Access Audit Logging
-Create `AccessAuditLogger` that records all access attempts (granted and denied) with user, action, resource, IP, and user agent. Send to SIEM if configured. Add Express middleware for automatic audit trail.
+```javascript
+// TwinMind Enterprise RBAC implementation
+// Enterprise tier features
+const twinmind = {
+  ssoProvider: "okta",
+  teamSharing: true,
+  customModels: ["gpt-4-turbo"],
+  onPremise: true,
+};
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete RBAC code including Permission enum, role definitions, SSO config, team management, and audit logging.
+// Configure team access
+async function configureTeam() {
+  const team = await twinmind.createTeam({ name: "Engineering", members: ["user1", "user2"] });
+  console.log("Team configured:", team.id);
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind enterprise setup
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/team/members | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Role and permission definitions
-- Permission checking service
-- SSO/SAML configuration
-- Team management functionality
-- Access audit logging
+- TwinMind Enterprise RBAC configured and verified
+- TwinMind integration operational
+- Enterprise features enabled
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| SSO login failed | Certificate mismatch | Update IdP certificate |
-| Role not syncing | SCIM misconfigured | Check provisioning setup |
-| Permission denied | Wrong role assigned | Review role mapping |
-| Audit gaps | Middleware not applied | Add to all routes |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-observability` for monitoring setup.
 
 ## Examples
 
+**Basic**: Configure enterprise rbac with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind enterprise rbac to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind enterprise rbac for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [TwinMind Enterprise](https://twinmind.com/enterprise)
-- [SAML 2.0 Specification](https://docs.oasis-open.org/security/saml/v2.0/)
-- [SCIM Protocol](https://scim.cloud/)
-
-## Next Steps
-For migration from other tools, see `twinmind-migration-deep-dive`.
+**Enterprise**: Deploy on-premise with custom AI models and SSO for team-wide meeting intelligence.

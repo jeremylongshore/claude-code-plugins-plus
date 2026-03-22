@@ -1,149 +1,150 @@
 ---
 name: vastai-sdk-patterns
 description: |
-  Apply production-ready Vast.ai SDK patterns for TypeScript and Python.
+  Apply production-ready Vast.ai SDK patterns for Python and REST API.
   Use when implementing Vast.ai integrations, refactoring SDK usage,
-  or establishing team coding standards for Vast.ai.
+  or establishing coding standards for GPU cloud operations.
   Trigger with phrases like "vastai SDK patterns", "vastai best practices",
   "vastai code patterns", "idiomatic vastai".
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, python, typescript]
+tags: [saas, vast-ai, python, patterns]
 
 ---
 # Vast.ai SDK Patterns
 
 ## Overview
-Production-ready patterns for Vast.ai SDK usage in TypeScript and Python.
+Production-ready patterns for the Vast.ai CLI, Python SDK, and REST API at `cloud.vast.ai/api/v0`. Covers typed search queries, instance lifecycle management, offer scoring, and error handling.
 
 ## Prerequisites
 - Completed `vastai-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Python 3.8+ with `requests`
+- Familiarity with the Vast.ai marketplace model
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/vastai/client.ts
-import { Vast.aiClient } from '@vastai/sdk';
+### Pattern 1: Typed Search Query Builder
 
-let instance: Vast.aiClient | null = null;
+```python
+from dataclasses import dataclass
+from typing import Optional
 
-export function getVast.aiClient(): Vast.aiClient {
-  if (!instance) {
-    instance = new Vast.aiClient({
-      apiKey: process.env.VASTAI_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
+@dataclass
+class GPUQuery:
+    num_gpus: int = 1
+    gpu_name: Optional[str] = None
+    gpu_ram_min: Optional[float] = None
+    reliability_min: float = 0.95
+    max_dph: Optional[float] = None
+
+    def to_filter(self) -> dict:
+        f = {"rentable": {"eq": True}, "num_gpus": {"eq": self.num_gpus},
+             "reliability2": {"gte": self.reliability_min}}
+        if self.gpu_name:
+            f["gpu_name"] = {"eq": self.gpu_name}
+        if self.gpu_ram_min:
+            f["gpu_ram"] = {"gte": self.gpu_ram_min}
+        if self.max_dph:
+            f["dph_total"] = {"lte": self.max_dph}
+        return f
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { Vast.aiError } from '@vastai/sdk';
+### Pattern 2: Context-Managed Instance Lifecycle
 
-async function safeVast.aiCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof Vast.aiError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def managed_instance(client, offer_id, image, disk_gb=20, timeout=300):
+    """Auto-destroy instance on exit or exception."""
+    inst = client.create_instance(offer_id, image, disk_gb)
+    instance_id = inst["new_contract"]
+    try:
+        info = client.poll_until_running(instance_id, timeout)
+        yield info
+    finally:
+        client.destroy_instance(instance_id)
+
+# Usage
+with managed_instance(client, offer["id"], "pytorch/pytorch:latest") as inst:
+    ssh_exec(inst["ssh_host"], inst["ssh_port"], "python train.py")
 ```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000  # 1000: 1 second in ms
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+### Pattern 3: Offer Scoring
+
+```python
+def score_offer(offer, weights=None):
+    w = weights or {"cost": 0.4, "reliability": 0.3, "perf": 0.3}
+    return (w["cost"] * (1.0 / max(offer["dph_total"], 0.01)) +
+            w["reliability"] * offer.get("reliability2", 0) * 100 +
+            w["perf"] * offer.get("dlperf", 0))
+
+best = max(offers, key=score_offer)
+```
+
+### Pattern 4: Retry with Backoff
+
+```python
+import time
+from functools import wraps
+
+def retry(max_attempts=3, backoff=2):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for i in range(max_attempts):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    if i == max_attempts - 1: raise
+                    time.sleep(backoff ** i)
+        return wrapper
+    return decorator
+```
+
+### Pattern 5: SSH Command Executor
+
+```python
+import subprocess
+
+def ssh_exec(host, port, cmd, timeout=300):
+    r = subprocess.run(
+        ["ssh", "-p", str(port), "-o", "StrictHostKeyChecking=no",
+         f"root@{host}", cmd],
+        capture_output=True, text=True, timeout=timeout)
+    if r.returncode != 0:
+        raise RuntimeError(f"SSH failed: {r.stderr}")
+    return r.stdout
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+- Typed `GPUQuery` builder for search filters
+- Context-managed instance lifecycle with auto-destroy
+- Offer scoring algorithm (cost, reliability, performance)
+- Retry decorator with exponential backoff
+- SSH command executor for remote jobs
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Offer unavailable | Already rented | Re-search and pick next best |
+| SSH key rejected | Key not uploaded | Upload at cloud.vast.ai > SSH Keys |
+| Instance destroyed unexpectedly | Spot preemption | Use `managed_instance` with checkpoints |
+| API timeout | Network or server issue | Apply retry decorator |
+
+## Resources
+- [REST API Reference](https://vast.ai/developers/api)
+- [Search Filtering](https://docs.vast.ai/search-and-filter-gpu-offers)
+- [vast-cli GitHub](https://github.com/vast-ai/vast-cli)
+
+## Next Steps
+See `vastai-core-workflow-a` for the complete provisioning workflow.
 
 ## Examples
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, Vast.aiClient>();
+**Cost-optimized scoring**: Use weights `{"cost": 0.7, "reliability": 0.2, "perf": 0.1}` for batch jobs where price dominates. Use `{"cost": 0.1, "reliability": 0.6, "perf": 0.3}` for long training runs where uptime matters.
 
-export function getClientForTenant(tenantId: string): Vast.aiClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new Vast.aiClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from vastai import Vast.aiClient
-
-@asynccontextmanager
-async def get_vastai_client():
-    client = Vast.aiClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const vastaiResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
-
-## Resources
-- [Vast.ai SDK Reference](https://docs.vastai.com/sdk)
-- [Vast.ai API Types](https://docs.vastai.com/types)
-- [Zod Documentation](https://zod.dev/)
-
-## Next Steps
-Apply patterns in `vastai-core-workflow-a` for real-world usage.
+**Auto-cleanup**: Wrap any GPU job in `managed_instance` to guarantee destruction even on crash.

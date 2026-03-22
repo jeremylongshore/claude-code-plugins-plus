@@ -1,12 +1,12 @@
 ---
 name: vastai-migration-deep-dive
 description: |
-  Execute Vast.ai major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Vast.ai, performing major version upgrades,
-  or re-platforming existing integrations to Vast.ai.
-  Trigger with phrases like "migrate vastai", "vastai migration",
-  "switch to vastai", "vastai replatform", "vastai upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate GPU workloads to or from Vast.ai, or between GPU providers.
+  Use when switching from AWS/GCP/Azure GPU instances to Vast.ai,
+  migrating between GPU types, or re-platforming ML infrastructure.
+  Trigger with phrases like "migrate to vastai", "vastai migration",
+  "switch to vastai", "vastai from aws", "vastai from lambda".
+allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(docker:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,237 +17,168 @@ tags: [saas, vast-ai, migration]
 # Vast.ai Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`vastai --version 2>/dev/null || echo 'vastai CLI not installed'`
+!`pip show vastai 2>/dev/null | grep Version || echo 'N/A'`
 
 ## Overview
-Comprehensive guide for migrating to or from Vast.ai, or major version upgrades.
+Migrate GPU workloads to Vast.ai from hyperscaler providers (AWS, GCP, Azure) or other GPU clouds (Lambda, RunPod, CoreWeave). Also covers migrating between GPU types on Vast.ai and the reverse migration away from Vast.ai.
 
 ## Prerequisites
-- Current system documentation
-- Vast.ai SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
-
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-set -euo pipefail
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "vastai" > vastai-files.txt
-
-# Count integration points
-wc -l vastai-files.txt
-
-# Identify dependencies
-npm list | grep vastai
-pip freeze | grep vastai
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessVast.aiMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Vast.ai   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-set -euo pipefail
-# Install Vast.ai SDK
-npm install @vastai/sdk
-
-# Configure credentials
-cp .env.example .env.vastai
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@vastai/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/vastai.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class Vast.aiAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const vastaiData = this.transform(data);
-    return vastaiClient.create(vastaiData);
-  }
-
-  private transform(data: CreateInput): Vast.aiInput {
-    // Map from old format to Vast.ai format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateVast.aiData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await vastaiClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const vastaiPercentage = getFeatureFlag('vastai_migration_percentage');
-
-  if (Math.random() * 100 < vastaiPercentage) {
-    return new Vast.aiAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-set -euo pipefail
-# Immediate rollback
-kubectl set env deployment/app VASTAI_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.vastai'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateVast.aiMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+- Existing GPU workload with Docker image
+- Understanding of current GPU costs and utilization
+- Checkpoint-based training pipeline (for training migrations)
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+### Step 1: Cost Comparison Analysis
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+```python
+# Compare your current GPU costs against Vast.ai marketplace prices
+PROVIDER_COSTS = {
+    "aws_p4d.24xlarge":      {"gpu": "A100 40GB", "gpus": 8, "hourly": 32.77},
+    "aws_p3.2xlarge":        {"gpu": "V100 16GB", "gpus": 1, "hourly": 3.06},
+    "gcp_a2-highgpu-1g":     {"gpu": "A100 40GB", "gpus": 1, "hourly": 3.67},
+    "azure_NC24ads_A100_v4": {"gpu": "A100 80GB", "gpus": 1, "hourly": 3.67},
+    "lambda_1xA100":         {"gpu": "A100",      "gpus": 1, "hourly": 1.25},
+}
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+VASTAI_TYPICAL = {
+    "RTX_4090":  0.20,
+    "A100":      1.50,
+    "H100_SXM":  3.00,
+}
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Vast.ai integration.
+def savings_analysis(current_provider, current_hourly, vastai_gpu, vastai_hourly):
+    monthly_current = current_hourly * 730  # hours/month
+    monthly_vastai = vastai_hourly * 730
+    savings = monthly_current - monthly_vastai
+    pct = (savings / monthly_current) * 100
+    print(f"Current ({current_provider}): ${monthly_current:,.0f}/mo")
+    print(f"Vast.ai ({vastai_gpu}): ${monthly_vastai:,.0f}/mo")
+    print(f"Savings: ${savings:,.0f}/mo ({pct:.0f}%)")
+
+savings_analysis("AWS p3.2xlarge", 3.06, "RTX_4090", 0.20)
+# Output: Savings: $2,088/mo (93%)
+```
+
+### Step 2: Docker Image Migration
+
+```bash
+# Most Docker images work unchanged on Vast.ai
+# Key differences:
+# - Vast.ai instances run as root
+# - /workspace is the default working directory
+# - SSH access (not IAM roles) for authentication
+
+# Adapt your existing Dockerfile
+cat << 'DOCKERFILE' > Dockerfile.vastai
+FROM your-existing-image:latest
+
+# Vast.ai instances use /workspace by default
+WORKDIR /workspace
+
+# Install any Vast.ai-specific tools
+RUN pip install boto3  # for S3 checkpoint uploads
+
+# Copy training code
+COPY src/ /workspace/src/
+COPY configs/ /workspace/configs/
+
+CMD ["python", "src/train.py"]
+DOCKERFILE
+
+docker build -t ghcr.io/org/training:vastai -f Dockerfile.vastai .
+docker push ghcr.io/org/training:vastai
+```
+
+### Step 3: Adapt Cloud Storage Credentials
+
+```python
+# On AWS/GCP: IAM roles provide automatic credentials
+# On Vast.ai: Pass credentials explicitly via environment variables
+
+# Create instance with env vars for cloud storage access
+vastai create instance $OFFER_ID \
+  --image ghcr.io/org/training:vastai \
+  --disk 100 \
+  --env "AWS_ACCESS_KEY_ID=AKIA... AWS_SECRET_ACCESS_KEY=... AWS_DEFAULT_REGION=us-east-1"
+```
+
+### Step 4: Migration Validation
+
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "Migration Validation Checklist"
+
+# 1. Docker image runs on Vast.ai
+vastai create instance $OFFER_ID --image ghcr.io/org/training:vastai --disk 50
+# Wait for running...
+
+# 2. GPU access works
+ssh -p $PORT root@$HOST "nvidia-smi && python -c 'import torch; print(torch.cuda.is_available())'"
+
+# 3. Cloud storage works
+ssh -p $PORT root@$HOST "aws s3 ls s3://your-bucket/ | head -5"
+
+# 4. Training runs and saves checkpoints
+ssh -p $PORT root@$HOST "cd /workspace && python src/train.py --epochs 1 --checkpoint-dir /workspace/ckpt"
+
+# 5. Checkpoints uploaded to cloud storage
+ssh -p $PORT root@$HOST "aws s3 sync /workspace/ckpt/ s3://your-bucket/ckpt/"
+
+# 6. Clean up
+vastai destroy instance $INSTANCE_ID
+echo "Migration validation complete"
+```
+
+### Step 5: Rollback Plan
+
+```markdown
+## Rollback Procedure
+1. Stop all Vast.ai instances: `vastai show instances` → `vastai destroy instance ID`
+2. Re-provision on original cloud provider
+3. Resume training from cloud-stored checkpoint
+4. Vast.ai Docker image remains available for future retry
+```
+
+## Migration Comparison
+
+| Factor | AWS/GCP/Azure | Vast.ai |
+|--------|--------------|---------|
+| Pricing | Fixed, premium | Variable, 50-90% cheaper |
+| GPU availability | On-demand guaranteed | Marketplace (may sell out) |
+| SLA | 99.9% uptime | No SLA (spot instances) |
+| IAM roles | Native | Manual credential passing |
+| Networking | VPC, private subnets | Public SSH only |
+| Storage | EBS/PD attached | Local disk + cloud storage |
+| Support | Enterprise support | Community/email |
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Vast.ai
+- Cost savings analysis comparing providers
+- Adapted Docker image for Vast.ai
+- Cloud credential migration pattern
+- Validation script for migration testing
+- Rollback procedure
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
+| Docker image incompatible | Relies on IAM roles or cloud-specific APIs | Pass credentials via env vars |
+| CUDA version mismatch | Different CUDA on Vast.ai hosts | Filter by `cuda_max_good` in search |
+| Data transfer too slow | Large dataset over public internet | Stage data in cloud storage, download on instance |
+| No matching offers | Specific GPU unavailable | Try alternative GPU type or wait for availability |
+
+## Resources
+- [Vast.ai vs AWS](https://vast.ai/)
+- [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
+- [Docker Migration](https://docs.docker.com/get-started/)
+
+## Next Steps
+Review `vastai-reference-architecture` for best-practice project structure.
 
 ## Examples
 
-### Quick Migration Status
-```typescript
-const status = await validateVast.aiMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+**AWS to Vast.ai**: Replace p3.2xlarge ($3.06/hr) with RTX 4090 ($0.20/hr) for a 93% cost reduction. Adapt the Dockerfile to pass AWS credentials via env vars for S3 checkpoint access.
 
-## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Vast.ai Migration Guide](https://docs.vastai.com/migration)
-
-## Flagship+ Skills
-For advanced troubleshooting, see `vastai-advanced-troubleshooting`.
+**Hybrid approach**: Use Vast.ai for experimentation and hyperparameter search (cheap GPUs), then run final training on AWS for SLA guarantees.

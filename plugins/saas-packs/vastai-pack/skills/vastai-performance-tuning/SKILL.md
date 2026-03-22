@@ -1,12 +1,12 @@
 ---
 name: vastai-performance-tuning
 description: |
-  Optimize Vast.ai API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Vast.ai integrations.
+  Optimize Vast.ai GPU instance selection, startup time, and training throughput.
+  Use when optimizing instance selection, reducing startup latency,
+  or maximizing GPU utilization on rented hardware.
   Trigger with phrases like "vastai performance", "optimize vastai",
-  "vastai latency", "vastai caching", "vastai slow", "vastai batch".
-allowed-tools: Read, Write, Edit
+  "vastai slow", "vastai gpu utilization", "vastai throughput".
+allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,183 +17,147 @@ tags: [saas, vast-ai, api, performance]
 # Vast.ai Performance Tuning
 
 ## Overview
-Optimize GPU instance selection, startup time, and training throughput on Vast.ai. Focus on instance filtering by cost-performance ratio, Docker image caching, data transfer optimization, and multi-GPU orchestration.
+Optimize GPU instance selection, startup time, and training throughput on Vast.ai. Key levers: Docker image caching, GPU selection by dlperf score, data pipeline optimization, and multi-GPU scaling.
 
 ## Prerequisites
-- Vast.ai account with API key
-- `vastai` CLI installed (`pip install vastai`)
-- Understanding of GPU types (A100, H100, RTX 4090)
-- SSH key configured for instance access
+- Vast.ai account with active or planned instances
+- Understanding of GPU compute bottlenecks
+- Profiling tools (nvidia-smi, torch.profiler)
 
 ## Instructions
 
-### Step 1: Smart Instance Selection by Cost-Performance
+### Step 1: Optimize Instance Selection by Performance
+
 ```bash
-# Find cheapest A100 instances with high reliability
-vastai search offers \
-  --type on-demand \
-  --gpu-name "A100" \
-  --min-ram 32 \
-  --min-disk 100 \
-  --reliability ">0.95" \
-  --order "dph_total" \
-  --limit 10
+# Sort by dlperf (deep learning performance benchmark) instead of price
+vastai search offers 'num_gpus=1 gpu_ram>=24 reliability>0.95' \
+  --order 'dlperf-' --limit 10
 
-# Filter by DLPerf score for training workloads
-vastai search offers \
-  --gpu-name "RTX 4090" \  # 4090 = configured value
-  --min-dlperf 30 \
-  --order "dlperf_per_dphtotal-desc" \
-  --limit 5
+# The dlperf field measures actual GPU compute throughput
+# Higher dlperf = faster training even at same GPU model
+# Variance within same GPU model can be 20-30%
 ```
 
 ```python
-# Automated instance selection
-import subprocess
-import json
-
-def find_best_instance(
-    gpu_type: str = "A100",
-    max_price: float = 1.50,
-    min_reliability: float = 0.95
-):
-    cmd = [
-        "vastai", "search", "offers",
-        "--gpu-name", gpu_type,
-        "--reliability", f">{min_reliability}",
-        "--dph", f"<={max_price}",
-        "--order", "dlperf_per_dphtotal-desc",
-        "--limit", "1",
-        "--raw"
-    ]
-    result = subprocess.run(cmd, capture_output=True, text=True)
-    offers = json.loads(result.stdout)
-    return offers[0] if offers else None
+def select_by_performance_per_dollar(offers):
+    """Select the offer with best performance per dollar."""
+    for o in offers:
+        o["perf_per_dollar"] = o.get("dlperf", 0) / max(o["dph_total"], 0.01)
+    return max(offers, key=lambda o: o["perf_per_dollar"])
 ```
 
-### Step 2: Optimize Docker Image for Fast Startup
-```dockerfile
-# Use Vast.ai optimized base images for faster pulls
-FROM vastai/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+### Step 2: Reduce Instance Startup Time
 
-# Install dependencies in a cached layer
-COPY requirements.txt /app/
-RUN pip install --no-cache-dir -r /app/requirements.txt
+```bash
+# Use smaller, pre-cached Docker images
+# FAST: nvidia/cuda:12.1.1-runtime-ubuntu22.04 (~2GB, widely cached)
+# MEDIUM: pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime (~4GB)
+# SLOW: custom-image:latest with pip install at build (~10GB+)
 
-# Copy code last (changes most frequently)
-COPY . /app/
-WORKDIR /app
+# Pre-install deps in the image, not in onstart
+# BAD (slow startup):
+vastai create instance $ID --image pytorch/pytorch:latest \
+  --onstart-cmd "pip install transformers datasets wandb"
 
-# Pre-download model weights during build
-RUN python -c "from transformers import AutoModel; AutoModel.from_pretrained('bert-base-uncased')"
-
-CMD ["python", "train.py"]
+# GOOD (fast startup):
+# Build custom image with all deps pre-installed
 ```
 
-### Step 3: Data Transfer Optimization
+### Step 3: Data Pipeline Optimization
+
 ```python
-import subprocess
+# Profile GPU utilization on the instance
+# SSH into instance and run:
+"""
+watch -n 1 nvidia-smi  # Check if GPU util is <80% → data bottleneck
 
-def sync_data_to_instance(instance_id: int, local_path: str, remote_path: str):
-    """Use rsync with compression for fast data transfer."""
-    # Get instance SSH info
-    info = subprocess.run(
-        ["vastai", "show", "instance", str(instance_id), "--raw"],
-        capture_output=True, text=True
-    )
-    instance = json.loads(info.stdout)
-    ssh_host = instance["ssh_host"]
-    ssh_port = instance["ssh_port"]
+# Common fixes for low GPU utilization:
+# 1. Increase DataLoader num_workers
+# 2. Use pin_memory=True
+# 3. Pre-fetch data to local SSD (not NFS)
+# 4. Use WebDataset or FFCV for streaming datasets
+"""
 
-    subprocess.run([
-        "rsync", "-avz", "--progress",
-        "--compress-level=9",
-        "-e", f"ssh -p {ssh_port} -o StrictHostKeyChecking=no",
-        local_path,
-        f"root@{ssh_host}:{remote_path}"
-    ], check=True)
+# Optimize PyTorch DataLoader
+from torch.utils.data import DataLoader
 
-def download_results(instance_id: int, remote_path: str, local_path: str):
-    """Download trained model and logs."""
-    info = subprocess.run(
-        ["vastai", "show", "instance", str(instance_id), "--raw"],
-        capture_output=True, text=True
-    )
-    instance = json.loads(info.stdout)
-
-    subprocess.run([
-        "rsync", "-avz",
-        "-e", f"ssh -p {instance['ssh_port']}",
-        f"root@{instance['ssh_host']}:{remote_path}",
-        local_path
-    ], check=True)
+loader = DataLoader(
+    dataset,
+    batch_size=32,
+    num_workers=4,       # Match CPU cores on instance
+    pin_memory=True,     # Faster GPU transfer
+    prefetch_factor=2,   # Pre-load 2 batches per worker
+    persistent_workers=True,  # Don't respawn workers each epoch
+)
 ```
 
-### Step 4: Instance Lifecycle Management
+### Step 4: GPU Memory Optimization
+
 ```python
-def create_and_monitor(
-    template_id: int,
-    image: str,
-    disk_gb: int = 50
-):
-    """Create instance and wait until ready."""
-    result = subprocess.run([
-        "vastai", "create", "instance",
-        str(template_id),
-        "--image", image,
-        "--disk", str(disk_gb),
-        "--raw"
-    ], capture_output=True, text=True)
+# Check available VRAM before selecting batch size
+import torch
 
-    instance_id = json.loads(result.stdout)["new_contract"]
-
-    # Poll until running
-    import time
-    for _ in range(60):
-        status = subprocess.run(
-            ["vastai", "show", "instance", str(instance_id), "--raw"],
-            capture_output=True, text=True
-        )
-        info = json.loads(status.stdout)
-        if info.get("actual_status") == "running":
-            return instance_id
-        time.sleep(10)
-
-    raise TimeoutError("Instance did not start within 10 minutes")
-
-def cleanup_instance(instance_id: int):
-    """Destroy instance to stop billing."""
-    subprocess.run(["vastai", "destroy", "instance", str(instance_id)])
+def optimal_batch_size(model, sample_input, gpu_memory_gb):
+    """Binary search for largest batch size that fits in VRAM."""
+    lo, hi, best = 1, 512, 1
+    while lo <= hi:
+        mid = (lo + hi) // 2
+        try:
+            torch.cuda.empty_cache()
+            batch = sample_input.repeat(mid, *([1] * (sample_input.dim() - 1)))
+            _ = model(batch.cuda())
+            best = mid
+            lo = mid + 1
+        except torch.cuda.OutOfMemoryError:
+            hi = mid - 1
+        torch.cuda.empty_cache()
+    return best
 ```
+
+### Step 5: Multi-GPU Scaling
+
+```bash
+# Search for multi-GPU offers (NVLink preferred for training)
+vastai search offers 'num_gpus>=4 gpu_name=A100 total_flops>=100' \
+  --order 'dph_total' --limit 5
+
+# Use torchrun for distributed training
+ssh -p $PORT root@$HOST "torchrun --nproc_per_node=4 train.py --batch-size 128"
+```
+
+## GPU Performance Reference
+
+| GPU | VRAM | FP16 TFLOPS | Typical $/hr | Best For |
+|-----|------|-------------|-------------|----------|
+| RTX 4090 | 24GB | 82.6 | $0.15-0.30 | Fine-tuning, inference |
+| A100 40GB | 40GB | 77.97 | $0.80-1.50 | Training medium models |
+| A100 80GB | 80GB | 77.97 | $1.00-2.00 | Training large models |
+| H100 SXM | 80GB | 267 | $2.50-4.00 | High-throughput training |
+
+## Output
+- Performance-per-dollar offer selection
+- Optimized Docker image for fast startup
+- Data pipeline tuning (DataLoader, pin_memory, workers)
+- GPU memory optimization with auto batch sizing
+- Multi-GPU scaling with torchrun
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| No offers found | Filters too strict | Relax reliability or price constraints |
-| Slow instance startup | Large Docker image | Use pre-cached base images |
-| SSH timeout | Instance not ready | Poll status before connecting |
-| High data transfer cost | Uploading large datasets | Use compressed rsync, store on instance disk |
+| Low GPU utilization (<50%) | Data pipeline bottleneck | Increase `num_workers`, use `pin_memory` |
+| OOM during training | Batch size too large | Use `optimal_batch_size()` or gradient accumulation |
+| Slow instance startup | Large Docker image | Pre-install deps in image, not onstart |
+| Poor multi-GPU scaling | Communication bottleneck | Use NVLink-connected GPUs, reduce sync frequency |
+
+## Resources
+- [Vast.ai Search Filtering](https://docs.vast.ai/search-and-filter-gpu-offers)
+- [PyTorch Performance Guide](https://pytorch.org/tutorials/recipes/recipes/tuning_guide.html)
+
+## Next Steps
+For cost optimization, see `vastai-cost-tuning`.
 
 ## Examples
 
-### Training Job Automation
-```python
-instance_id = create_and_monitor(
-    template_id=best_offer["id"],
-    image="pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime"
-)
-sync_data_to_instance(instance_id, "./data/", "/workspace/data/")
-# Run training via SSH...
-download_results(instance_id, "/workspace/output/", "./results/")
-cleanup_instance(instance_id)
-```
+**Profile first**: SSH into instance, run `watch nvidia-smi` during training. If GPU-Util < 80%, the bottleneck is data loading, not compute.
 
-## Resources
-- [Vast.ai CLI Reference](https://vast.ai/docs/cli/commands)
-- [Vast.ai Instance Types](https://vast.ai/docs/gpu-faq)
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+**Best value GPU**: Use `perf_per_dollar` scoring to find hosts where the same GPU model runs faster due to better cooling or fewer co-tenants.

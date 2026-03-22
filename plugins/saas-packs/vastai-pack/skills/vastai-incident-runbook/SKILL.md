@@ -1,12 +1,12 @@
 ---
 name: vastai-incident-runbook
 description: |
-  Execute Vast.ai incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Vast.ai-related outages, investigating errors,
-  or running post-incident reviews for Vast.ai integration failures.
+  Execute Vast.ai incident response for GPU instance failures and outages.
+  Use when responding to instance failures, investigating training crashes,
+  or handling spot preemption emergencies.
   Trigger with phrases like "vastai incident", "vastai outage",
-  "vastai down", "vastai on-call", "vastai emergency", "vastai broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "vastai down", "vastai emergency", "vastai instance failed".
+allowed-tools: Read, Grep, Bash(vastai:*), Bash(curl:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,195 +17,154 @@ tags: [saas, vast-ai, incident-response]
 # Vast.ai Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Vast.ai-related outages.
+Rapid incident response procedures for Vast.ai GPU instance failures. Covers triage, mitigation, recovery, and postmortem for common incident types: spot preemption, instance crashes, GPU failures, and billing issues.
 
 ## Prerequisites
-- Access to Vast.ai dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Vast.ai API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
-
-```bash
-set -euo pipefail
-# 1. Check Vast.ai status
-curl -s https://status.vastai.com | jq
-
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.vastai'
-
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(vastai_errors_total[5m])  # 9090: Prometheus port
-
-# 4. Recent error logs
-kubectl logs -l app=vastai-integration --since=5m | grep -i error | tail -20
-```
-
-## Decision Tree
-
-```
-Vast.ai API returning errors?
-├─ YES: Is status.vastai.com showing incident?
-│   ├─ YES → Wait for Vast.ai to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
-```bash
-set -euo pipefail
-# Verify API key is set
-kubectl get secret vastai-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Vast.ai dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic vastai-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/vastai-integration
-```
-
-### 429 - Rate Limited
-```bash
-set -euo pipefail
-# Check rate limit headers
-curl -v https://api.vastai.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/vastai-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Vast.ai for limit increase
-```
-
-### 500/503 - Vast.ai Errors
-```bash
-set -euo pipefail
-# Enable graceful degradation
-kubectl set env deployment/vastai-integration VASTAI_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Vast.ai status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Vast.ai Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Vast.ai Integration Issue
-
-We're experiencing issues with our Vast.ai integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-set -euo pipefail
-# Generate debug bundle
-./scripts/vastai-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=vastai-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=vastai_errors_total&start=2h" > metrics.json  # 9090: Prometheus port
-```
-
-### Postmortem Template
-```markdown
-## Incident: Vast.ai [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
+- Vast.ai CLI access
+- SSH access to instances (if still running)
+- Checkpoint storage accessible (S3/GCS)
 
 ## Instructions
 
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
+### Triage: Assess Impact (< 2 minutes)
 
-### Step 2: Follow Decision Tree
-Determine if the issue is Vast.ai-side or internal.
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "=== INCIDENT TRIAGE ==="
+echo "Time: $(date -u)"
 
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
+# 1. Check all instances
+echo -e "\n--- Instance Status ---"
+vastai show instances --raw | python3 -c "
+import sys, json
+for inst in json.load(sys.stdin):
+    status = inst.get('actual_status', '?')
+    flag = 'ALERT' if status in ('error', 'exited', 'offline') else 'OK'
+    print(f'  [{flag}] ID:{inst[\"id\"]} Status:{status} '
+          f'GPU:{inst.get(\"gpu_name\",\"?\")} \${inst.get(\"dph_total\",0):.3f}/hr')
+"
 
-### Step 4: Communicate Status
-Update internal and external stakeholders.
+# 2. Check if affected instance has recent logs
+echo -e "\n--- Recent Logs (last 20 lines) ---"
+vastai logs ${INSTANCE_ID:-0} --tail 20 2>/dev/null || echo "No logs available"
+
+# 3. Check account balance
+echo -e "\n--- Account ---"
+vastai show user --raw | python3 -c "import sys,json; u=json.load(sys.stdin); print(f'Balance: \${u.get(\"balance\",0):.2f}')"
+```
+
+### Incident Type 1: Spot Preemption
+
+**Symptoms**: Instance status changes from `running` to `exited` or `offline` without user action.
+
+```bash
+# 1. Verify preemption (not user error)
+vastai show instance $ID --raw | python3 -c "
+import sys, json; i=json.load(sys.stdin)
+print(f'Status: {i.get(\"actual_status\")}')
+print(f'Status msg: {i.get(\"status_msg\", \"none\")}')
+"
+
+# 2. Check if checkpoint was saved
+# (depends on your checkpoint storage — S3, GCS, etc.)
+aws s3 ls s3://bucket/checkpoints/ --recursive | tail -5
+
+# 3. Provision replacement instance
+vastai search offers "gpu_name=${GPU_NAME} reliability>0.98 rentable=true" \
+  --order dph_total --limit 3
+
+# 4. Create replacement and resume from checkpoint
+vastai create instance $NEW_OFFER_ID --image $IMAGE --disk 50
+```
+
+### Incident Type 2: Training Job Crash
+
+**Symptoms**: Instance running but training process exited with error.
+
+```bash
+# 1. SSH in and check logs
+ssh -p $PORT root@$HOST "tail -100 /workspace/train.log 2>/dev/null || echo 'No log file'"
+
+# 2. Common causes
+ssh -p $PORT root@$HOST << 'CHECK'
+# GPU memory issue?
+nvidia-smi | grep -i "out of memory" && echo "OOM detected"
+# Disk full?
+df -h /workspace | tail -1
+# Process still running?
+ps aux | grep python | grep -v grep
+CHECK
+
+# 3. Restart training from checkpoint
+ssh -p $PORT root@$HOST "cd /workspace && python train.py --resume-from latest"
+```
+
+### Incident Type 3: GPU Hardware Failure
+
+**Symptoms**: `nvidia-smi` fails, CUDA errors, or ECC memory errors.
+
+```bash
+# 1. Check GPU health
+ssh -p $PORT root@$HOST "nvidia-smi" || echo "GPU not responding"
+
+# 2. This is a host-level failure — you cannot fix it
+# Destroy the instance and provision on a different host
+vastai destroy instance $ID
+
+# 3. Report the host to Vast.ai support
+echo "Report host ID to Vast.ai support for investigation"
+```
+
+### Incident Type 4: Billing Emergency
+
+```bash
+# Stop all billing immediately
+echo "EMERGENCY: Destroying all instances"
+vastai show instances --raw | python3 -c "
+import sys, json, subprocess
+for inst in json.load(sys.stdin):
+    if inst.get('actual_status') in ('running', 'loading'):
+        subprocess.run(['vastai', 'destroy', 'instance', str(inst['id'])])
+        print(f'Destroyed instance {inst[\"id\"]}')
+"
+```
+
+### Postmortem Template
+
+```markdown
+## Incident Report
+- **Date**: YYYY-MM-DD
+- **Duration**: X hours
+- **Impact**: N instances affected, $X cost
+- **Root cause**: [spot preemption / OOM / disk full / GPU failure]
+- **Resolution**: [replaced instance / increased VRAM / expanded disk]
+- **Prevention**: [higher reliability filter / checkpoints / auto-recovery]
+```
 
 ## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
+- Triage script with instant status assessment
+- Recovery procedures for 4 incident types
+- Emergency billing stop command
+- Postmortem template
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
+| Incident | MTTR Target | Recovery |
+|----------|-------------|----------|
+| Spot preemption | < 10 min | Auto-provision replacement, resume from checkpoint |
+| Training crash | < 5 min | SSH in, diagnose, restart from checkpoint |
+| GPU failure | < 15 min | Destroy instance, provision on different host |
+| Billing emergency | < 1 min | Destroy all instances immediately |
+
+## Resources
+- [Vast.ai Status](https://status.vast.ai)
+- [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
+
+## Next Steps
+For data handling and security, see `vastai-data-handling`.
 
 ## Examples
 
-### One-Line Health Check
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.vastai.status' || echo "UNHEALTHY"
-```
+**Auto-recovery script**: Run the event poller from `vastai-webhooks-events` with an auto-recovery handler that provisions a replacement within 5 minutes of preemption.
 
-## Resources
-- [Vast.ai Status Page](https://status.vastai.com)
-- [Vast.ai Support](https://support.vastai.com)
-
-## Next Steps
-For data handling, see `vastai-data-handling`.
+**Kill switch**: Keep `vastai show instances && vastai destroy instance ALL` aliased for emergency billing stops.

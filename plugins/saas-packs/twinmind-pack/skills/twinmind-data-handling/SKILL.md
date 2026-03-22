@@ -1,91 +1,106 @@
 ---
 name: twinmind-data-handling
 description: |
-  Handle data privacy, GDPR compliance, and data retention for TwinMind.
-  Use when implementing data protection, handling user data requests,
-  or ensuring compliance with privacy regulations.
-  Trigger with phrases like "twinmind GDPR", "twinmind data privacy",
-  "twinmind data retention", "twinmind user data", "twinmind compliance".
-allowed-tools: Read, Write, Edit
+  Handle TwinMind meeting data with GDPR compliance: transcript storage, memory vault management, data export, and deletion policies.
+  Use when implementing data handling,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind data handling", "twinmind data handling".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, compliance]
+tags: ['saas', 'twinmind', 'compliance']
 
 ---
 # TwinMind Data Handling
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Data privacy, retention, and compliance procedures for TwinMind meeting transcriptions including PII redaction, GDPR data subject requests, consent management, and data anonymization.
+Handle TwinMind meeting data with GDPR compliance: transcript storage, memory vault management, data export, and deletion policies. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- TwinMind account with admin access
-- Database access for data management
-- Legal/compliance team consultation
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Configure Data Retention Policies
-Define `RetentionPolicy` with configurable retention days for transcripts (default 90), summaries (linked to transcript), action items (180 days), and user profiles (30 days post-deletion). Implement auto-cleanup job for expired data.
+### Step 1: Setup
 
-### Step 2: Implement PII Redaction
-Build PII detection with regex patterns for SSN, credit card, email, phone, and IP address. Create `redactPII()` function returning redacted text and a count of redactions by type. Enable automatic redaction via TwinMind settings API.
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: Handle GDPR Data Subject Requests
-Implement `GDPRHandler` with right to access (Article 15), right to erasure (Article 17), and right to data portability (Article 20). Track DSR requests with 30-day deadline and compliance team notifications.
+```javascript
+// TwinMind configuration
+const config = {
+  apiKey: process.env.TWINMIND_API_KEY,
+  model: "ear-3", // Transcription model
+  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
+};
+```
 
-### Step 4: Manage Consent
-Build `ConsentManager` tracking consent per purpose (transcription, aiProcessing, storage, sharing, marketing). Add Express middleware `requireConsent()` that blocks processing without valid consent.
+### Step 2: Implementation
 
-### Step 5: Data Anonymization
-Implement transcript anonymization using HMAC-based ID hashing, PII redaction, and speaker name replacement for analytics exports.
+```javascript
+// TwinMind Data Handling implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete retention policy, PII patterns, GDPR handlers, consent manager, and anonymization code.
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Data retention policy configuration
-- PII redaction implementation
-- GDPR request handlers
-- Consent management system
-- Data anonymization utilities
+- TwinMind Data Handling configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| DSR deadline missed | Processing delay | Automate DSR handling |
-| PII not redacted | Pattern not matched | Update regex patterns |
-| Consent invalid | Version mismatch | Re-request consent |
-| Data not deleted | Cascade failure | Verify deletion recursively |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure data handling with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind data handling to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind data handling for production environments with multiple constraints and team-specific requirements.
-
-## TwinMind Privacy Features
-- **No audio storage**: Audio processed in real-time and immediately deleted
-- **On-device processing**: Option for local transcription
-- **Encrypted storage**: Transcripts encrypted with user-controlled keys
-- **Data residency**: Choose storage region (EU, US, APAC)
-
-## Resources
-- [GDPR Official Text](https://gdpr.eu/)
-- [TwinMind Privacy Policy](https://twinmind.com/privacy)
-- [TwinMind DPA Template](https://twinmind.com/legal/dpa)
-
-## Next Steps
-For enterprise access control, see `twinmind-enterprise-rbac`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.

@@ -1,12 +1,12 @@
 ---
 name: vastai-deploy-integration
 description: |
-  Deploy Vast.ai integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Vast.ai-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy vastai", "vastai Vercel",
-  "vastai production deploy", "vastai Cloud Run", "vastai Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy ML training jobs and inference services on Vast.ai GPU cloud.
+  Use when deploying GPU workloads, configuring Docker images,
+  or setting up automated deployment scripts.
+  Trigger with phrases like "deploy vastai", "vastai deployment",
+  "vastai docker", "vastai production deploy".
+allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(docker:*), Bash(ssh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,140 +17,148 @@ tags: [saas, vast-ai, deployment]
 # Vast.ai Deploy Integration
 
 ## Overview
-Deploy ML training jobs and inference services on Vast.ai GPU cloud. Covers instance provisioning via the REST API, Docker image configuration, data transfer strategies, and automated deployment scripts for GPU workloads.
+Deploy ML training jobs and inference services on Vast.ai GPU cloud. Covers Docker image optimization, automated provisioning scripts, data transfer strategies, and deployment automation.
 
 ## Prerequisites
-- Vast.ai account with API key stored in `VASTAI_API_KEY` environment variable
-- Vast.ai CLI installed (`pip install vastai`)
-- Docker image for your workload published to a registry
-- SSH key configured for instance access
+- Vast.ai CLI authenticated
+- Docker image published to a registry
+- Training/inference code tested locally
 
 ## Instructions
 
-### Step 1: Search and Provision GPU
-```bash
-set -euo pipefail
-# Search for available GPUs
-vastai search offers 'gpu_name=RTX_4090 reliability2>0.95 disk_space>50' \
-  -o 'dph_total' --limit 5
+### Step 1: Optimized Docker Image
 
-# Create instance from best offer
-vastai create instance $OFFER_ID \
-  --image pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime \
-  --disk 100 \
-  --onstart-cmd "cd /workspace && git clone https://github.com/myorg/project.git && pip install -r project/requirements.txt"
-```
-
-### Step 2: Deploy Custom Docker Image
 ```dockerfile
-# Dockerfile.gpu
-FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+# Dockerfile.vastai — optimized for fast pulls on Vast.ai
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+
+# Install dependencies in a single layer
+COPY requirements.txt /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements.txt && rm /tmp/requirements.txt
+
+# Copy application code
+COPY src/ /workspace/src/
+COPY scripts/ /workspace/scripts/
 
 WORKDIR /workspace
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-
-CMD ["python", "train.py", "--config", "config.yaml"]
+CMD ["python", "src/train.py"]
 ```
 
 ```bash
-set -euo pipefail
 # Build and push
-docker build -f Dockerfile.gpu -t myregistry/ml-trainer:latest .
-docker push myregistry/ml-trainer:latest
-
-# Deploy on Vast.ai
-vastai create instance $OFFER_ID \
-  --image myregistry/ml-trainer:latest \
-  --disk 100 \
-  --env "WANDB_API_KEY=$WANDB_API_KEY HF_TOKEN=$HF_TOKEN"
+docker build -t ghcr.io/yourorg/training:v1 -f Dockerfile.vastai .
+docker push ghcr.io/yourorg/training:v1
 ```
 
-### Step 3: Automated Deployment Script
+### Step 2: Automated Deployment Script
+
 ```python
-import requests
-import json
-import os
+#!/usr/bin/env python3
+"""deploy.py — Automated Vast.ai deployment with monitoring."""
+import subprocess, json, time, argparse, sys
 
-VASTAI_API = "https://cloud.vast.ai/api/v0"
-API_KEY = os.environ["VASTAI_API_KEY"]
+def deploy(args):
+    # Search for matching offer
+    query = (f"num_gpus={args.gpus} gpu_name={args.gpu} "
+             f"reliability>{args.reliability} dph_total<={args.max_price} "
+             f"disk_space>={args.disk} rentable=true")
 
-def deploy_training_job(gpu_type="RTX_4090", disk_gb=100):
-    # Find cheapest matching offer
-    response = requests.get(f"{VASTAI_API}/bundles", params={
-        "api_key": API_KEY,
-        "q": json.dumps({
-            "gpu_name": {"eq": gpu_type},
-            "rentable": {"eq": True},
-            "disk_space": {"gte": disk_gb},
-            "reliability2": {"gte": 0.95},
-        }),
-        "order": "dph_total",
-        "limit": 1,
-    })
+    offers = json.loads(subprocess.run(
+        ["vastai", "search", "offers", query, "--order", "dph_total",
+         "--raw", "--limit", "5"],
+        capture_output=True, text=True, check=True).stdout)
 
-    offers = response.json()["offers"]
     if not offers:
-        raise ValueError(f"No {gpu_type} available")
+        print(f"ERROR: No offers matching: {query}", file=sys.stderr)
+        sys.exit(1)
 
-    # Provision instance
-    result = requests.put(
-        f"{VASTAI_API}/asks/{offers[0]['id']}/",
-        params={"api_key": API_KEY},
-        json={
-            "image": "myregistry/ml-trainer:latest",
-            "disk": disk_gb,
-            "env": {"WANDB_API_KEY": os.environ.get("WANDB_API_KEY", "")},
-        },
-    )
+    offer = offers[0]
+    print(f"Selected: {offer['gpu_name']} ${offer['dph_total']:.3f}/hr "
+          f"(ID: {offer['id']})")
 
-    instance = result.json()
-    print(f"Instance {instance['new_contract']} created at ${offers[0]['dph_total']}/hr")
-    return instance
+    # Create instance
+    cmd = ["vastai", "create", "instance", str(offer["id"]),
+           "--image", args.image, "--disk", str(args.disk)]
+    if args.onstart:
+        cmd.extend(["--onstart-cmd", args.onstart])
+
+    result = json.loads(subprocess.run(
+        cmd, capture_output=True, text=True, check=True).stdout)
+    instance_id = result["new_contract"]
+    print(f"Instance {instance_id} provisioning...")
+
+    # Wait for running
+    for _ in range(30):
+        info = json.loads(subprocess.run(
+            ["vastai", "show", "instance", str(instance_id), "--raw"],
+            capture_output=True, text=True).stdout)
+        if info.get("actual_status") == "running":
+            print(f"READY: ssh -p {info['ssh_port']} root@{info['ssh_host']}")
+            return instance_id, info
+        time.sleep(10)
+
+    raise TimeoutError("Instance did not start")
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--gpu", default="RTX_4090")
+    parser.add_argument("--gpus", type=int, default=1)
+    parser.add_argument("--image", required=True)
+    parser.add_argument("--disk", type=int, default=50)
+    parser.add_argument("--max-price", type=float, default=0.50)
+    parser.add_argument("--reliability", type=float, default=0.95)
+    parser.add_argument("--onstart", default="")
+    deploy(parser.parse_args())
 ```
 
-### Step 4: Monitor and Cleanup
+### Step 3: Data Transfer Strategies
+
 ```bash
-# List running instances
-vastai show instances
+# Small datasets (<5GB): SCP directly
+scp -P $PORT ./data.tar.gz root@$HOST:/workspace/
 
-# Check instance status
-vastai show instance $INSTANCE_ID
+# Large datasets (>5GB): Use rsync with compression
+rsync -avz --progress -e "ssh -p $PORT" ./data/ root@$HOST:/workspace/data/
 
-# Download results
-vastai scp $INSTANCE_ID:/workspace/output ./results/
-
-# Destroy instance when done
-vastai destroy instance $INSTANCE_ID
+# Very large datasets: Pre-stage on cloud storage
+ssh -p $PORT root@$HOST "wget -q https://storage.example.com/dataset.tar.gz -O /workspace/data.tar.gz"
 ```
+
+### Step 4: Health Check After Deploy
+
+```bash
+ssh -p $PORT -o StrictHostKeyChecking=no root@$HOST << 'CHECK'
+echo "=== Deploy Health Check ==="
+nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
+python -c "import torch; print(f'CUDA: {torch.cuda.is_available()}')"
+df -h /workspace | tail -1
+echo "=== Ready ==="
+CHECK
+```
+
+## Output
+- Optimized Docker image for fast Vast.ai pulls
+- Automated deployment script with GPU/price selection
+- Data transfer patterns (SCP, rsync, cloud storage)
+- Post-deploy health check verification
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| No GPU available | High demand | Try different GPU type or region |
-| Instance preempted | Outbid on spot | Use on-demand or increase bid |
-| SSH connection refused | Instance still booting | Wait for `running` status |
-| Out of disk | Large dataset | Increase `--disk` parameter |
+| Docker pull timeout | Image too large (>10GB) | Use multi-stage builds; minimize image layers |
+| Disk space exhausted | Insufficient disk allocation | Increase `--disk` parameter |
+| SSH timeout after deploy | Instance still loading image | Wait longer or use smaller base image |
+| CUDA version mismatch | Image CUDA > host CUDA | Filter offers by `cuda_max_good` |
+
+## Resources
+- [Vast.ai Instance Creation](https://docs.vast.ai/api-reference/instances/create-instance)
+- [Docker Best Practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+
+## Next Steps
+For event-driven workflows, see `vastai-webhooks-events`.
 
 ## Examples
 
-### Quick Training Deploy
-```bash
-vastai search offers 'gpu_name=A100_SXM4 num_gpus=1' -o 'dph_total' --limit 3
-vastai create instance $BEST_OFFER --image myregistry/trainer:latest --disk 200  # HTTP 200 OK
-```
+**One-command deploy**: `python deploy.py --gpu A100 --image ghcr.io/org/train:v1 --max-price 2.00 --disk 100`
 
-## Resources
-- [Vast.ai Documentation](https://vast.ai/docs)
-- [Vast.ai CLI Reference](https://vast.ai/docs/cli)
-- [GPU Pricing](https://vast.ai/pricing)
-
-## Next Steps
-For multi-environment setup, see `vastai-multi-env-setup`.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+**Multi-GPU deploy**: Set `--gpus 4` and `--gpu H100_SXM` for distributed training with `torchrun`.

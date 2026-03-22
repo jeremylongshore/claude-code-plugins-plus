@@ -1,70 +1,144 @@
 ---
 name: speak-sdk-patterns
 description: |
-  Apply production-ready Speak SDK patterns for TypeScript and Python.
-  Use when implementing Speak integrations, refactoring SDK usage,
-  or establishing team coding standards for language learning features.
-  Trigger with phrases like "speak SDK patterns", "speak best practices",
-  "speak code patterns", "idiomatic speak".
-allowed-tools: Read, Write, Edit
+  Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
+  Use when implementing sdk patterns features,
+  or troubleshooting Speak language learning integration issues.
+  Trigger with phrases like "speak sdk patterns", "speak sdk patterns".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, python, typescript]
+tags: [saas, speak, api]
 
 ---
 # Speak SDK Patterns
 
 ## Overview
-Production patterns for the Speak language learning REST API. Covers pronunciation assessment, conversation practice, audio preprocessing, and batch assessment with rate-limit-aware scheduling.
+Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
 
 ## Prerequisites
-- Speak API key configured via `SPEAK_API_KEY` environment variable
-- Audio recording capability (WAV/MP3 format)
-- Understanding of language learning assessment concepts
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- ffmpeg installed for audio processing
 
 ## Instructions
 
-### Step 1: Initialize the Client
-Create a `SpeakClient` class wrapping the REST API with session-based authentication and a reusable `_post` helper method.
+### Pattern 1: Conversation Session Manager
+```typescript
+class ConversationManager {
+  private client: SpeakClient;
+  private sessions: Map<string, SessionState> = new Map();
 
-### Step 2: Implement Pronunciation Assessment
-Send audio files to the `/pronunciation/assess` endpoint with target text and language. Parse word-level and phoneme-level scores from the response.
+  async startLesson(language: string, scenario: string, level: string) {
+    const session = await this.client.startConversation({
+      scenario, language, level, nativeLanguage: 'en',
+    });
+    this.sessions.set(session.id, {
+      turns: [], startTime: Date.now(), language,
+    });
+    return session;
+  }
 
-### Step 3: Add Conversation Practice
-Start a conversation session with a scenario, language, and proficiency level. Send audio turns to the session endpoint and receive AI-generated responses.
+  async submitResponse(sessionId: string, audioPath: string) {
+    const turn = await this.client.sendTurn(sessionId, { audioPath });
+    this.sessions.get(sessionId)?.turns.push(turn);
+    return turn;
+  }
 
-### Step 4: Preprocess Audio Files
-Convert input audio to WAV 16kHz mono using ffmpeg before sending to the API. This ensures consistent format and reduces upload size. Alternatively, accept pre-formatted WAV files directly.
+  async endAndReport(sessionId: string) {
+    const summary = await this.client.endSession(sessionId);
+    const state = this.sessions.get(sessionId)!;
+    return {
+      ...summary,
+      duration: (Date.now() - state.startTime) / 1000,
+      totalTurns: state.turns.length,
+      avgPronunciation: state.turns.reduce((s, t) =>
+        s + (t.pronunciationScore || 0), 0) / state.turns.length,
+    };
+  }
+}
+```
 
-### Step 5: Implement Batch Assessment
-Process multiple student recordings sequentially with a configurable delay between requests. Handle 429 rate limit errors by reading the `Retry-After` header and sleeping before retrying.
+### Pattern 2: Audio Preprocessor
+```typescript
+import { execSync } from 'child_process';
 
-For the complete client class, batch assessment runner, audio preprocessing utility, and usage examples, see [code patterns](references/code-patterns.md).
+function preprocessAudio(inputPath: string): string {
+  const outputPath = inputPath.replace(/\.[^.]+$/, '.processed.wav');
+  // Convert to WAV 16kHz mono PCM — required by Speak API
+  execSync(
+    `ffmpeg -y -i "${inputPath}" -ar 16000 -ac 1 -c:a pcm_s16le "${outputPath}"`,
+    { stdio: 'pipe' }
+  );
+  return outputPath;
+}
+```
+
+### Pattern 3: Retry with Backoff
+```typescript
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (err: any) {
+      if (err.response?.status === 429 && i < maxRetries - 1) {
+        const wait = parseInt(err.response.headers['retry-after'] || '5');
+        await new Promise(r => setTimeout(r, wait * 1000));
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+```
+
+### Pattern 4: Progress Tracker
+```typescript
+class LearningProgress {
+  private history: SessionSummary[] = [];
+
+  addSession(summary: SessionSummary) {
+    this.history.push(summary);
+  }
+
+  getReport() {
+    const recent = this.history.slice(-10);
+    return {
+      totalSessions: this.history.length,
+      avgPronunciation: recent.reduce((s, h) => s + h.avgPronunciationScore, 0) / recent.length,
+      totalMinutes: this.history.reduce((s, h) => s + h.durationMinutes, 0),
+      vocabularyLearned: [...new Set(this.history.flatMap(h => h.newWords))].length,
+    };
+  }
+}
+```
 
 ## Output
-- Production-ready `SpeakClient` class with typed methods
-- Audio preprocessing pipeline (format conversion, quality validation)
-- Batch assessment runner with rate-limit-aware scheduling
-- Pronunciation scoring at word and phoneme granularity
+- Patterns implementation complete
+- Speak API integration verified
+- Production-ready patterns applied
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `400 Bad audio format` | Unsupported codec | Convert to WAV 16kHz mono with ffmpeg |
-| `413 Payload too large` | Audio file exceeds 25MB | Trim or compress audio before upload |
-| `429 Rate limited` | Too many assessments | Add delay between requests or use batch queue |
-| Low confidence score | Background noise | Record in a quiet environment |
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
+| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
+| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
+| Session expired | Timeout after 30 min | Start a new conversation session |
+
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+See `speak-prod-checklist` for production readiness.
 
 ## Examples
 
-**Single pronunciation assessment**: Initialize `SpeakClient()`, call `assess_pronunciation("recording.wav", "Hello, how are you?")`, and print the overall score and per-word scores from the response.
+**Basic**: Apply sdk patterns with default configuration for a standard Speak integration.
 
-**Conversation practice session**: Start a session with `start_conversation("ordering at a restaurant", language="es")`, send student audio via `send_turn(session_id, "reply.wav")`, and display the AI tutor response.
-
-## Resources
-- [Speak API Docs](https://docs.speak.com)
-
-## Next Steps
-Proceed to `speak-data-handling` for transcript storage and analysis patterns.
+**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.

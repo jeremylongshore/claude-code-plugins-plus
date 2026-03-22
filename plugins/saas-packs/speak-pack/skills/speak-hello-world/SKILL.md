@@ -1,12 +1,12 @@
 ---
 name: speak-hello-world
 description: |
-  Create a minimal working Speak language learning example.
+  Create your first Speak AI tutoring session with pronunciation feedback.
   Use when starting a new Speak integration, testing your setup,
-  or learning basic Speak API patterns for language tutoring.
+  or learning basic language learning API patterns.
   Trigger with phrases like "speak hello world", "speak example",
-  "speak quick start", "simple speak lesson".
-allowed-tools: Read, Write, Edit
+  "speak quick start", "first speak lesson".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,48 +17,111 @@ tags: [saas, speak, api, testing]
 # Speak Hello World
 
 ## Overview
-Minimal working example demonstrating core Speak functionality for AI-powered language learning.
+Create your first AI tutoring session with Speak. Demonstrates conversation practice, pronunciation assessment, and real-time feedback using GPT-4o-powered tutoring.
 
 ## Prerequisites
 - Completed `speak-install-auth` setup
 - Valid API credentials configured
-- Development environment ready
-- Microphone access for speech input (optional for testing)
+- Microphone access (optional for testing)
 
 ## Instructions
 
-1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Start a Conversation Session
+```typescript
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient({
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  language: 'es',
+});
+
+// Start a beginner Spanish lesson
+const session = await client.startConversation({
+  scenario: 'greetings',
+  language: 'es',
+  level: 'beginner',
+  nativeLanguage: 'en',
+});
+
+console.log('Session ID:', session.id);
+console.log('AI Tutor:', session.firstPrompt.text);
+// Output: "Hola! Bienvenido a tu leccion de espanol. Como te llamas?"
+console.log('Audio URL:', session.firstPrompt.audioUrl);
+```
+
+### Step 2: Send a Student Response
+```typescript
+// Submit text response (or audio file for pronunciation scoring)
+const turn = await client.sendTurn(session.id, {
+  text: 'Hola, me llamo Juan. Mucho gusto.',
+  // Or: audioPath: './recordings/response.wav'
+});
+
+console.log('Tutor response:', turn.tutorText);
+console.log('Pronunciation score:', turn.pronunciationScore); // 0-100
+console.log('Grammar corrections:', turn.corrections);
+// Output: [{original: "me llamo", suggestion: null, correct: true}]
+console.log('Vocabulary notes:', turn.vocabularyNotes);
+```
+
+### Step 3: Pronunciation Assessment
+```typescript
+// Assess pronunciation of a specific phrase
+const assessment = await client.assessPronunciation({
+  audioPath: './recordings/hola-como-estas.wav',
+  targetText: 'Hola, como estas?',
+  language: 'es',
+  detailLevel: 'phoneme', // 'word' or 'phoneme'
+});
+
+console.log(`Overall score: ${assessment.score}/100`);
+for (const word of assessment.words) {
+  console.log(`  "${word.text}": ${word.score}/100`);
+  if (word.phonemes) {
+    for (const p of word.phonemes.filter(p => p.score < 70)) {
+      console.log(`    Weak phoneme: ${p.symbol} (${p.score}) - ${p.suggestion}`);
+    }
+  }
+}
+```
+
+### Step 4: End Session and Review
+```typescript
+const summary = await client.endSession(session.id);
+console.log('Session Summary:');
+console.log(`  Duration: ${summary.durationMinutes} min`);
+console.log(`  Turns: ${summary.totalTurns}`);
+console.log(`  Pronunciation: ${summary.avgPronunciationScore}/100`);
+console.log(`  Grammar: ${summary.grammarAccuracy}%`);
+console.log(`  New vocabulary: ${summary.newWords.join(', ')}`);
+```
 
 ## Output
-- Working code file with Speak client initialization
-- Successful lesson session creation
-- AI tutor prompt and feedback displayed
-- Console output showing:
-```
-AI Tutor says: Hola! Welcome to your Spanish lesson. Let's practice greetings. Can you say "Hello, my name is..." in Spanish?
-Audio URL: https://speak.com/audio/abc123.mp3
-Feedback: Great job! Your pronunciation was clear.
-Pronunciation: 85
-Grammar: [No corrections needed]
-```
+- Working conversation session with AI tutor
+- Pronunciation assessment with phoneme-level feedback
+- Session summary with learning metrics
+- Console output showing scores and corrections
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list @speak/language-sdk` |
-| Auth Error | Invalid credentials | Check environment variables are set |
-| Session Timeout | Exceeded lesson duration | Extend session or start new one |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-| Language Not Supported | Invalid language code | Use supported language codes |
-
-## Examples
-See `references/implementation-guide.md` for detailed examples.
+| Session timeout | Exceeded max duration | Start a new session |
+| Audio format invalid | Wrong codec or sample rate | Convert to WAV 16kHz mono |
+| Language not supported | Invalid language code | Use supported codes (es, ko, ja, fr, de) |
+| Low pronunciation score | Background noise | Record in a quiet environment |
+| Rate limit exceeded | Too many requests | Wait and retry with backoff |
 
 ## Resources
-- [Speak Getting Started](https://developer.speak.com/docs/getting-started)
-- [Speak API Reference](https://developer.speak.com/api)
-- [Speak Lesson Types](https://developer.speak.com/docs/lesson-types)
-- [Speech Recognition Guide](https://developer.speak.com/docs/speech-recognition)
+- [Speak Website](https://speak.com)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
 
 ## Next Steps
 Proceed to `speak-local-dev-loop` for development workflow setup.
+
+## Examples
+
+**Text-only test**: Skip audio and use text responses to test the conversation flow before integrating microphone input.
+
+**Multi-language**: Start sessions in different languages by changing the `language` parameter to `ko` (Korean), `ja` (Japanese), or `fr` (French).

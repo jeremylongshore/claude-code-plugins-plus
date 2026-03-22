@@ -1,12 +1,11 @@
 ---
 name: speak-debug-bundle
 description: |
-  Collect Speak debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Speak problems.
-  Trigger with phrases like "speak debug", "speak support bundle",
-  "collect speak logs", "speak diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect diagnostic information for Speak API issues: auth verification, audio format validation, session inspection, and network testing.
+  Use when implementing debug bundle features,
+  or troubleshooting Speak language learning integration issues.
+  Trigger with phrases like "speak debug bundle", "speak debug bundle".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -16,113 +15,101 @@ tags: [saas, speak, debugging]
 ---
 # Speak Debug Bundle
 
-## Current State
-!`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
-!`uname -a`
-
 ## Overview
-Collect all necessary diagnostic information for Speak support tickets.
+Collect diagnostic information for Speak API issues: auth verification, audio format validation, session inspection, and network testing.
 
 ## Prerequisites
-- Speak SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- ffmpeg installed for audio processing
 
 ## Instructions
-1. **Complete Script**
-2. **Sensitive Data Handling**
-3. **Submit to Support**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+## Current State
+!`node --version 2>/dev/null || echo 'N/A'`
+!`ffmpeg -version 2>/dev/null | head -1 || echo 'ffmpeg not installed'`
+
+### Step 1: Auth Diagnostic
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "=== Speak Debug Bundle ==="
+echo "Time: $(date -u)"
+
+echo -e "\n--- Auth Check ---"
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $SPEAK_API_KEY" \
+  https://api.speak.com/v1/languages)
+echo "API Key Status: HTTP $STATUS"
+[ "$STATUS" = "200" ] && echo "  Auth: OK" || echo "  Auth: FAILED"
+
+echo -e "\n--- Environment ---"
+echo "SPEAK_API_KEY set: $([ -n \"${SPEAK_API_KEY:-}\" ] && echo 'yes' || echo 'no')"
+echo "SPEAK_APP_ID set: $([ -n \"${SPEAK_APP_ID:-}\" ] && echo 'yes' || echo 'no')"
+```
+
+### Step 2: Audio Format Validator
+```typescript
+import { execSync } from 'child_process';
+
+function validateAudio(filePath: string): { valid: boolean; issues: string[] } {
+  const issues: string[] = [];
+  try {
+    const info = JSON.parse(execSync(
+      `ffprobe -v quiet -print_format json -show_streams "${filePath}"`,
+      { encoding: 'utf-8' }
+    ));
+    const stream = info.streams[0];
+
+    if (stream.codec_name !== 'pcm_s16le') issues.push(`Codec: ${stream.codec_name} (need pcm_s16le)`);
+    if (parseInt(stream.sample_rate) !== 16000) issues.push(`Sample rate: ${stream.sample_rate} (need 16000)`);
+    if (stream.channels !== 1) issues.push(`Channels: ${stream.channels} (need 1/mono)`);
+
+    const size = parseInt(execSync(`stat -f%z "${filePath}"`, { encoding: 'utf-8' }));
+    if (size > 25 * 1024 * 1024) issues.push(`File too large: ${(size/1024/1024).toFixed(1)}MB (max 25MB)`);
+    if (size < 1000) issues.push('File too small — may be empty or corrupt');
+  } catch (e) {
+    issues.push(`Cannot read file: ${e}`);
+  }
+  return { valid: issues.length === 0, issues };
+}
+```
+
+### Step 3: Network Connectivity
+```bash
+echo -e "\n--- Network ---"
+curl -s -o /dev/null -w "API: HTTP %{http_code} in %{time_total}s\n" \
+  -H "Authorization: Bearer $SPEAK_API_KEY" \
+  https://api.speak.com/v1/health
+
+curl -s -o /dev/null -w "OpenAI: HTTP %{http_code} in %{time_total}s\n" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  https://api.openai.com/v1/models
+```
 
 ## Output
-- `speak-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `sessions.txt` - Recent session activity
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Resources
-- [Speak Support Portal](https://support.speak.com)
-- [Speak Status](https://status.speak.com)
-- [Developer Community](https://community.speak.com)
-
-## Next Steps
-For rate limit issues, see `speak-rate-limits`.
+- Bundle implementation complete
+- Speak API integration verified
+- Production-ready patterns applied
 
 ## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
+| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
+| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
+| Session expired | Timeout after 30 min | Start a new conversation session |
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with debugging |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+See `speak-prod-checklist` for production readiness.
 
 ## Examples
 
-### Basic: Collect Debug Bundle
-```bash
-#!/bin/bash
-BUNDLE_DIR="speak-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+**Basic**: Apply debug bundle with default configuration for a standard Speak integration.
 
-# Environment info
-node --version > "$BUNDLE_DIR/summary.txt" 2>&1
-echo "OS: $(uname -a)" >> "$BUNDLE_DIR/summary.txt"
-npm list --depth=0 2>/dev/null | grep -i speak >> "$BUNDLE_DIR/summary.txt"
-
-# Redact API keys from config
-cat .env 2>/dev/null | sed 's/=.*/=REDACTED/' > "$BUNDLE_DIR/config-redacted.txt"
-
-# Recent logs (last 200 lines, secrets stripped)
-tail -200 logs/speak.log 2>/dev/null | \
-  sed -E 's/(Bearer |api_key=)[^ "]+/\1REDACTED/g' > "$BUNDLE_DIR/logs.txt"
-
-# Package into archive
-tar czf "${BUNDLE_DIR}.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: ${BUNDLE_DIR}.tar.gz"
-```
-
-### Advanced: Automated Debug Bundle with API Health Check
-```typescript
-import { execSync } from "child_process";
-import * as fs from "fs";
-import * as path from "path";
-
-interface HealthCheck {
-  endpoint: string;
-  status: number;
-  latencyMs: number;
-  error?: string;
-}
-
-async function collectSpeakDebugBundle(apiKey: string): Promise<string> {
-  const bundleDir = `speak-debug-${Date.now()}`;
-  fs.mkdirSync(bundleDir, { recursive: true });
-
-  // Health check critical endpoints
-  const endpoints = ["/v1/languages", "/v1/pronunciation/status", "/v1/conversation/status"];
-  const checks: HealthCheck[] = [];
-  for (const ep of endpoints) {
-    const start = Date.now();
-    try {
-      const res = await fetch(`https://api.speak.com${ep}`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
-      });
-      checks.push({ endpoint: ep, status: res.status, latencyMs: Date.now() - start });
-    } catch (err: any) {
-      checks.push({ endpoint: ep, status: 0, latencyMs: Date.now() - start, error: err.message });
-    }
-  }
-  fs.writeFileSync(path.join(bundleDir, "health-checks.json"), JSON.stringify(checks, null, 2));
-
-  // Collect dependency versions
-  const deps = execSync("npm list --depth=0 --json 2>/dev/null || echo '{}'").toString();
-  fs.writeFileSync(path.join(bundleDir, "dependencies.json"), deps);
-
-  // Create archive
-  execSync(`tar czf "${bundleDir}.tar.gz" "${bundleDir}"`);
-  return `${bundleDir}.tar.gz`;
-}
-```
+**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.

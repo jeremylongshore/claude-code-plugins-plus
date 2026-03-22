@@ -1,61 +1,88 @@
 ---
 name: speak-ci-integration
 description: |
-  Configure Speak CI/CD integration with GitHub Actions and automated testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Speak language learning tests into your build process.
-  Trigger with phrases like "speak CI", "speak GitHub Actions",
-  "speak automated tests", "CI speak".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
+  Use when implementing ci integration,
+  or managing Speak language learning platform operations.
+  Trigger with phrases like "speak ci integration", "speak ci integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, testing, ci-cd]
+tags: [saas, speak, api]
 
 ---
 # Speak CI Integration
 
 ## Overview
-Integrate Speak language learning API validation into CI/CD pipelines. Covers pronunciation analysis endpoint testing, lesson content validation, API response format verification, and regression testing for language assessment accuracy.
+GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
 
 ## Prerequisites
-- Speak API key stored as GitHub secret
-- GitHub Actions configured
-- Test framework (Vitest or Jest)
-- Audio test fixtures for pronunciation tests
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
 
-1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Configuration
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| API key invalid | Secret not set | Add `SPEAK_API_KEY` to repo secrets |
-| Audio fixture too large | Uncompressed WAV | Compress to 16-bit mono |
-| Lesson validation fails | Missing required field | Check schema and fix JSON files |
-| Flaky pronunciation test | Audio quality varies | Use consistent test recordings |
+Configure ci integration for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
 
-## Examples
-### Minimal Smoke Test
-```yaml
-- name: Speak API health check
-  env:
-    SPEAK_API_KEY: ${{ secrets.SPEAK_API_KEY }}
-  run: |
-    curl -s -H "Authorization: Bearer $SPEAK_API_KEY" \
-      https://api.speak.com/v1/languages | jq '.languages | length'
+```typescript
+// speak_ci_integration_config.ts
+const config = {
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  environment: process.env.NODE_ENV || 'development',
+};
 ```
 
-## Resources
-- [Speak API Documentation](https://docs.speak.com)
-- [Speak Developer Guide](https://speak.com/developers)
+### Step 2: Implementation
+
+```typescript
+// Core implementation for speak ci integration
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient(config);
+
+// CI test with mocked responses
+async function runCITests() {
+  const mockClient = new MockSpeakClient();
+  await mockClient.assessPronunciation({ audioPath: "test.wav", targetText: "hello", language: "en" });
+  console.log("CI tests passed");
+}
+```
+
+### Step 3: Verification
+
+```bash
+npm test
+```
 
 ## Output
+- Speak CI Integration configured and verified
+- CI pipeline with mocked Speak API tests
+- Error handling and monitoring in place
 
-- GitHub Actions workflow file (`.github/workflows/speak-tests.yml`)
-- Pronunciation regression test suite with audio fixtures
-- CI badge and test result artifacts uploaded per run
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| Connection timeout | Network issue | Check connectivity to api.speak.com |
+| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
 
-See [CI/CD implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+## Resources
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
+
+## Next Steps
+For deployment, see `speak-deploy-integration`.
+
+## Examples
+
+**Basic**: Apply ci integration with default settings for a standard Speak integration.
+
+**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.

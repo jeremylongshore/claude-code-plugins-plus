@@ -1,82 +1,88 @@
 ---
 name: speak-enterprise-rbac
 description: |
-  Configure Speak enterprise SSO, role-based access control, and organization management for language schools.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for enterprise language learning.
-  Trigger with phrases like "speak SSO", "speak RBAC",
-  "speak enterprise", "speak roles", "speak permissions", "speak SAML".
-allowed-tools: Read, Write, Edit
+  Configure Speak for schools and organizations: SSO, teacher/student roles, class management, and usage reporting.
+  Use when implementing enterprise rbac,
+  or managing Speak language learning platform operations.
+  Trigger with phrases like "speak enterprise rbac", "speak enterprise rbac".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, rbac]
+tags: [saas, speak, api]
 
 ---
 # Speak Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Speak language learning integrations in schools, businesses, and organizations.
+Configure Speak for schools and organizations: SSO, teacher/student roles, class management, and usage reporting.
 
 ## Prerequisites
-- Speak Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- Understanding of Speak API patterns
 
 ## Instructions
-1. **Role Definitions for Language Learning**
-2. **Role Implementation**
-3. **SSO Integration**
-4. **Organization Management**
-5. **Team and Class Management**
-6. **Access Control Middleware**
-7. **Audit Trail**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Step 1: Configuration
 
-## Output
-- Role definitions for education/enterprise
-- SSO integration (SAML/OIDC)
-- Team and class management
-- Permission middleware
-- Audit trail enabled
+Configure enterprise rbac for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Team access denied | Not a member | Check team membership |
-
-## Examples
-### Quick Permission Check
 ```typescript
-if (!checkPermission(user.role, 'viewLearnerProgress')) {
-  throw new ForbiddenError('Cannot view learner progress');
+// speak_enterprise_rbac_config.ts
+const config = {
+  apiKey: process.env.SPEAK_API_KEY!,
+  appId: process.env.SPEAK_APP_ID!,
+  environment: process.env.NODE_ENV || 'development',
+};
+```
+
+### Step 2: Implementation
+
+```typescript
+// Core implementation for speak enterprise rbac
+import { SpeakClient } from '@speak/language-sdk';
+
+const client = new SpeakClient(config);
+
+// Production-ready implementation
+async function setup() {
+  const health = await client.health.check();
+  console.log("Status:", health.status);
+  return health;
 }
 ```
 
-### Instructor Dashboard Access
-```typescript
-app.get('/instructor/dashboard',
-  requireSpeakPermission('viewLearnerProgress'),
-  async (req, res) => {
-    const teams = await teamManager.getInstructorTeams(req.user.id);
-    const progress = await Promise.all(
-      teams.map(t => teamManager.getTeamProgress(t.id))
-    );
-    res.json({ teams, progress });
-  }
-);
+### Step 3: Verification
+
+```bash
+curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
 ```
 
+## Output
+- Speak Enterprise RBAC configured and verified
+- Production-ready Speak integration
+- Error handling and monitoring in place
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| Connection timeout | Network issue | Check connectivity to api.speak.com |
+| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
+
 ## Resources
-- [Speak Enterprise Guide](https://developer.speak.com/docs/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
-For major migrations, see `speak-migration-deep-dive`.
+For production checklist, see `speak-prod-checklist`.
+
+## Examples
+
+**Basic**: Apply enterprise rbac with default settings for a standard Speak integration.
+
+**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.

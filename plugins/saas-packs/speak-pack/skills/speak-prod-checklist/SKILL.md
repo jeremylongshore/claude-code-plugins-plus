@@ -1,61 +1,98 @@
 ---
 name: speak-prod-checklist
 description: |
-  Execute Speak production deployment checklist and rollback procedures.
-  Use when deploying Speak integrations to production, preparing for launch,
-  or implementing go-live procedures for language learning features.
-  Trigger with phrases like "speak production", "deploy speak",
-  "speak go-live", "speak launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for Speak language learning integrations: auth, audio pipeline, monitoring, and compliance.
+  Use when implementing prod checklist features,
+  or troubleshooting Speak language learning integration issues.
+  Trigger with phrases like "speak prod checklist", "speak prod checklist".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, deployment]
+tags: [saas, speak, api]
 
 ---
-# Speak Prod Checklist
+# Speak Production Checklist
 
 ## Overview
-Complete checklist for deploying Speak language learning integrations to production.
+Production readiness checklist for Speak language learning integrations: auth, audio pipeline, monitoring, and compliance.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
-- Audio infrastructure tested
+- Completed `speak-install-auth` setup
+- Valid API credentials configured
+- ffmpeg installed for audio processing
 
 ## Instructions
-1. **Health Check Implementation**
-2. **Rollback Procedure**
-3. **Alert Configuration**
-4. **Production Monitoring Dashboard**
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+### Authentication
+- [ ] API keys stored in secrets manager
+- [ ] Key rotation schedule established (90 days)
+- [ ] Separate keys for dev/staging/production
+- [ ] Error handling for expired keys
+
+### Audio Pipeline
+- [ ] Audio preprocessor converts to WAV 16kHz mono
+- [ ] File size validation (< 25MB)
+- [ ] Duration validation (0.5s - 60s)
+- [ ] Background noise detection/warning
+- [ ] Fallback for unsupported audio formats
+
+### Rate Limiting & Performance
+- [ ] Rate-limited client wrapper implemented
+- [ ] Retry logic with exponential backoff on 429
+- [ ] Request queue for batch assessments
+- [ ] Response caching where appropriate
+
+### Monitoring & Alerting
+- [ ] API response time tracking
+- [ ] Error rate monitoring (target < 1%)
+- [ ] Rate limit hit tracking
+- [ ] Assessment score distribution monitoring
+- [ ] Session completion rate tracking
+
+### Compliance
+- [ ] Student data privacy policy documented
+- [ ] Audio data retention policy implemented
+- [ ] COPPA compliance verified (if applicable)
+- [ ] FERPA compliance verified (if educational)
+- [ ] GDPR data processing agreement (if EU users)
+
+### Verification Script
+```bash
+#!/bin/bash
+set -euo pipefail
+echo "Speak Production Readiness"
+curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" \
+  https://api.speak.com/v1/health | jq '.status'
+echo "  Auth: PASS"
+ffmpeg -version > /dev/null 2>&1 && echo "  ffmpeg: PASS" || echo "  ffmpeg: FAIL"
+echo "Checks complete."
+```
 
 ## Output
-- Deployed Speak integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented and tested
-- Alerting configured
+- Checklist implementation complete
+- Speak API integration verified
+- Production-ready patterns applied
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Health check fails | Speak service down | Enable fallback mode |
-| High latency | Audio processing slow | Scale audio workers |
-| Session failures | API key issues | Verify credentials |
-| Low completion rate | UX issues | Review user feedback |
-
-## Examples
-See `references/implementation-guide.md` for detailed examples.
+| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
+| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
+| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
+| Session expired | Timeout after 30 min | Start a new conversation session |
 
 ## Resources
-- [Speak Status](https://status.speak.com)
-- [Speak Support](https://support.speak.com)
-- [Speak Production Guide](https://developer.speak.com/docs/production)
+- [Speak Website](https://speak.com)
+- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
+- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
 
 ## Next Steps
-For version upgrades, see `speak-upgrade-migration`.
+See `speak-prod-checklist` for production readiness.
+
+## Examples
+
+**Basic**: Apply prod checklist with default configuration for a standard Speak integration.
+
+**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.

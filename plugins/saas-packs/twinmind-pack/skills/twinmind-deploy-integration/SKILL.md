@@ -1,85 +1,106 @@
 ---
 name: twinmind-deploy-integration
 description: |
-  Deploy TwinMind integrations to production environments.
-  Use when deploying to cloud platforms, configuring production infrastructure,
-  or setting up deployment automation.
-  Trigger with phrases like "deploy twinmind", "twinmind production deploy",
-  "twinmind cloud deployment", "twinmind infrastructure".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Grep
+  Deploy TwinMind integrations to production environments with Chrome extension deployment, mobile app configuration, and API access setup.
+  Use when implementing deploy integration,
+  or managing TwinMind meeting AI operations.
+  Trigger with phrases like "twinmind deploy integration", "twinmind deploy integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, deployment]
+tags: ['saas', 'twinmind', 'deployment']
 
 ---
 # TwinMind Deploy Integration
 
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Deploy TwinMind integrations to production cloud environments with Docker, AWS ECS/Fargate, GCP Cloud Run, Kubernetes, and GitHub Actions deployment pipelines.
+Deploy TwinMind integrations to production environments with Chrome extension deployment, mobile app configuration, and API access setup. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
 
 ## Prerequisites
-- Completed `twinmind-ci-integration` setup
-- Cloud provider account (AWS, GCP, or Azure)
-- Docker installed
-- Terraform or Pulumi for IaC
+- TwinMind account (Free, Pro $10/mo, or Enterprise)
+- Chrome extension installed and authenticated
+- Understanding of TwinMind workflow
 
 ## Instructions
 
-### Step 1: Docker Configuration
-Create multi-stage Dockerfile (builder + runner) with non-root user, health check, and production NODE_ENV. Add docker-compose.yml with service replicas, resource limits, Redis, and logging config.
+### Step 1: Setup
 
-### Step 2: AWS Deployment (ECS/Fargate)
-Write Terraform for Secrets Manager (API key + webhook secret), ECS cluster with container insights, Fargate task definition with secrets injection, ECS service with deployment circuit breaker, and CPU-based auto-scaling (2-10 instances, target 70%).
+TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
 
-### Step 3: GCP Deployment (Cloud Run)
-Write Terraform for Secret Manager, Cloud Run v2 service with auto-scaling (1-10 instances), startup/liveness probes, service account with secret accessor role.
+```bash
+# TwinMind API access (Pro/Enterprise)
+export TWINMIND_API_KEY="your-api-key"
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health
+# Expected: {"status": "ok"}
 
-### Step 4: Kubernetes Deployment
-Create Deployment (2 replicas, resource limits, readiness/liveness probes, non-root security context), Service (ClusterIP), and HorizontalPodAutoscaler (CPU target 70%, 2-10 replicas).
 
-### Step 5: GitHub Actions Deployment
-Create deploy workflow: build-and-push to ECR, deploy-staging (wait for stable), deploy-production (manual approval via environment protection).
+```
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete Dockerfile, Terraform modules, Kubernetes manifests, and deployment workflow.
+### Step 2: Implementation
+
+```javascript
+// TwinMind Deploy Integration implementation
+// Core TwinMind integration
+const twinmind = {
+  transcriptionModel: "ear-3",
+  languages: ["en", "es", "ko", "ja", "fr"],
+  features: ["transcription", "summary", "action-items"],
+  privacyMode: "on-device", // Audio never stored
+};
+
+// Check transcription capabilities
+async function verify() {
+  const health = await fetch("https://api.twinmind.com/v1/health");
+  console.log("TwinMind status:", await health.json());
+}
+```
+
+### Step 3: Verification
+
+```bash
+# Verify TwinMind integration
+curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+```
+
+## Key TwinMind Specifications
+
+| Feature | Specification |
+|---------|--------------|
+| Transcription model | Ear-3 (5.26% WER) |
+| Speaker diarization | 3.8% DER |
+| Languages | 140+ supported |
+| Audio processing | On-device (no recordings stored) |
+| AI models | GPT-4, Claude, Gemini (auto-routed) |
+| Platforms | Chrome extension, iOS, Android |
+| Pricing | Free / Pro $10/mo / Enterprise custom |
 
 ## Output
-- Docker configuration files
-- AWS ECS/Fargate Terraform
-- GCP Cloud Run Terraform
-- Kubernetes manifests
-- GitHub Actions deployment workflow
+- TwinMind Deploy Integration configured and verified
+- TwinMind integration operational
+- Meeting transcription workflow ready
 
 ## Error Handling
-
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Image pull failed | Registry auth | Verify credentials |
-| Health check failed | Service not ready | Increase start period |
-| Scaling not working | Metrics missing | Check monitoring config |
-| Secrets not found | IAM permissions | Update service account |
+| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
+| Transcription not starting | Audio source not detected | Check microphone selection |
+| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
+| Sync failed | Network interruption | Check connection, retry |
+| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
+
+## Resources
+- [TwinMind Website](https://twinmind.com)
+- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
+- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
+- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
+
+## Next Steps
+See `twinmind-prod-checklist` for production readiness.
 
 ## Examples
 
+**Basic**: Configure deploy integration with default TwinMind settings for standard meeting workflows.
 
-**Basic usage**: Apply twinmind deploy integration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize twinmind deploy integration for production environments with multiple constraints and team-specific requirements.
-
-## Resources
-- [AWS ECS Documentation](https://docs.aws.amazon.com/ecs/)
-- [GCP Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-
-## Next Steps
-For webhook handling, see `twinmind-webhooks-events`.
+**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.
