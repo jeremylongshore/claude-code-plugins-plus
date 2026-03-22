@@ -1,12 +1,11 @@
 ---
 name: algolia-incident-runbook
 description: |
-  Execute Algolia incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Algolia-related outages, investigating errors,
-  or running post-incident reviews for Algolia integration failures.
-  Trigger with phrases like "algolia incident", "algolia outage",
-  "algolia down", "algolia on-call", "algolia emergency", "algolia broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Execute Algolia incident response: triage search failures, distinguish
+  Algolia-side vs your-side issues, apply fallbacks, and run postmortems.
+  Trigger: "algolia incident", "algolia outage", "algolia down",
+  "algolia on-call", "algolia emergency", "algolia broken", "search is down".
+allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,189 +16,204 @@ compatible-with: claude-code
 # Algolia Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Algolia-related outages.
 
-## Prerequisites
-- Access to Algolia dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response procedures for Algolia search failures. Algolia's infrastructure is distributed across multiple data centers with automatic failover, so true Algolia outages are rare. Most incidents are caused by API key issues, settings drift, or indexing pipeline failures on your side.
 
-## Severity Levels
+## Severity Classification
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Algolia API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response | Examples |
+|-------|------------|----------|----------|
+| P1 | Search completely down | < 15 min | 403/500 on all queries, Algolia unreachable |
+| P2 | Degraded search | < 1 hour | High latency, partial results, stale data |
+| P3 | Minor issue | < 4 hours | Analytics not updating, synonyms wrong |
+| P4 | No user impact | Next day | Monitoring gap, test failures |
 
-## Quick Triage
+## Quick Triage (Run These First)
 
 ```bash
-# 1. Check Algolia status
-curl -s https://status.algolia.com | jq
+#!/bin/bash
+echo "=== ALGOLIA TRIAGE ==="
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.algolia'
+# 1. Is Algolia's infrastructure up?
+echo -n "Algolia Status: "
+curl -s https://status.algolia.com/api/v2/status.json | jq -r '.status.description'
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(algolia_errors_total[5m])
+# 2. Can we reach our Algolia app?
+echo -n "API Connectivity: "
+curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)" \
+  "https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes" \
+  -H "X-Algolia-Application-Id: ${ALGOLIA_APP_ID}" \
+  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_KEY}"
+echo ""
 
-# 4. Recent error logs
-kubectl logs -l app=algolia-integration --since=5m | grep -i error | tail -20
+# 3. Can we actually search?
+echo -n "Search test: "
+curl -s "https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes/products/query" \
+  -H "X-Algolia-Application-Id: ${ALGOLIA_APP_ID}" \
+  -H "X-Algolia-API-Key: ${ALGOLIA_SEARCH_KEY}" \
+  -d '{"query":"test","hitsPerPage":1}' | jq '{nbHits, processingTimeMS}'
+
+# 4. Check index health
+echo "Index stats:"
+curl -s "https://${ALGOLIA_APP_ID}-dsn.algolia.net/1/indexes" \
+  -H "X-Algolia-Application-Id: ${ALGOLIA_APP_ID}" \
+  -H "X-Algolia-API-Key: ${ALGOLIA_ADMIN_KEY}" \
+  | jq '.items[] | {name, entries, lastBuildTimeS}'
 ```
 
 ## Decision Tree
 
 ```
-Algolia API returning errors?
-├─ YES: Is status.algolia.com showing incident?
-│   ├─ YES → Wait for Algolia to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Search returning errors?
+├── YES: What HTTP status?
+│   ├── 403: API key issue
+│   │   ├── Key expired/deleted → Rotate key (see below)
+│   │   └── Wrong key type → Use admin key for writes, search key for reads
+│   ├── 404: Index doesn't exist
+│   │   ├── Typo in index name → Check INDICES config
+│   │   └── Index accidentally deleted → Trigger full reindex
+│   ├── 429: Rate limited
+│   │   ├── Per-key limit → Increase maxQueriesPerIPPerHour
+│   │   └── Server limit → Reduce indexing batch frequency
+│   └── 5xx: Algolia-side error
+│       ├── status.algolia.com shows incident → Wait + enable fallback
+│       └── No incident shown → Contact Algolia support with request IDs
+└── NO: Search returning wrong/stale results?
+    ├── 0 results unexpectedly → Check searchableAttributes, synonyms
+    ├── Stale data → Check indexing pipeline, look at last sync timestamp
+    └── Wrong ranking → Review customRanking, check for conflicting rules
 ```
 
-## Immediate Actions by Error Type
+## Immediate Remediation by Error Type
 
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret algolia-secrets -o jsonpath='{.data.api-key}' | base64 -d
+### 403 — Rotate API Key
 
-# Check if key was rotated
-# → Verify in Algolia dashboard
+```typescript
+import { algoliasearch } from 'algoliasearch';
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic algolia-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/algolia-integration
+// Emergency: create a new key with same permissions
+const adminClient = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
+
+const { key: emergencyKey } = await adminClient.addApiKey({
+  apiKey: {
+    acl: ['search'],
+    description: `Emergency search key — ${new Date().toISOString()}`,
+    indexes: ['products', 'articles'],
+    maxQueriesPerIPPerHour: 50000,
+  },
+});
+
+console.log(`Emergency key created: ...${emergencyKey.slice(-8)}`);
+console.log('Update ALGOLIA_SEARCH_KEY and redeploy');
 ```
 
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.algolia.com 2>&1 | grep -i rate
+### 0 Results — Emergency Reindex
 
-# Enable request queuing
-kubectl set env deployment/algolia-integration RATE_LIMIT_MODE=queue
+```typescript
+// Check if index is empty
+const { items } = await client.listIndices();
+const target = items.find(i => i.name === 'products');
+console.log(`products: ${target?.entries ?? 'NOT FOUND'} records`);
 
-# Long-term: Contact Algolia for limit increase
+// If empty, trigger emergency reindex
+if (!target || target.entries === 0) {
+  console.log('Index is empty — triggering emergency reindex');
+  // Import your reindex function
+  await fullReindex();
+}
 ```
 
-### 500/503 - Algolia Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/algolia-integration ALGOLIA_FALLBACK=true
+### High Latency — Enable Fallback
 
-# Notify users of degraded service
-# Update status page
+```typescript
+// Circuit breaker: switch to DB search if Algolia is slow
+const TIMEOUT_MS = 2000;
+const FAILURE_THRESHOLD = 5;
+let failures = 0;
 
-# Monitor Algolia status for resolution
+async function searchWithCircuitBreaker(query: string) {
+  if (failures >= FAILURE_THRESHOLD) {
+    console.warn('Circuit open: using database fallback');
+    return databaseSearch(query);
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    const result = await client.searchSingleIndex({
+      indexName: 'products',
+      searchParams: { query, hitsPerPage: 20 },
+    });
+
+    clearTimeout(timeout);
+    failures = 0; // Reset on success
+    return result;
+  } catch (error) {
+    failures++;
+    console.error(`Algolia failure ${failures}/${FAILURE_THRESHOLD}:`, error);
+    return databaseSearch(query);
+  }
+}
 ```
 
 ## Communication Templates
 
-### Internal (Slack)
+### Internal (Slack/PagerDuty)
+
 ```
-🔴 P1 INCIDENT: Algolia Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
+P[1-4] INCIDENT: Algolia Search
+Status: INVESTIGATING | IDENTIFIED | MONITORING | RESOLVED
+Impact: [Users cannot search / Search is slow / Results are stale]
+Root cause: [API key expired / Index empty / Algolia incident]
+Mitigation: [Fallback enabled / Key rotated / Waiting for Algolia]
 Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Algolia Integration Issue
-
-We're experiencing issues with our Algolia integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/algolia-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=algolia-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=algolia_errors_total&start=2h" > metrics.json
+Owner: @[name]
 ```
 
 ### Postmortem Template
+
 ```markdown
-## Incident: Algolia [Error Type]
-**Date:** YYYY-MM-DD
+## Incident: Search [Outage/Degradation]
+**Date:** YYYY-MM-DD HH:MM–HH:MM UTC
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
+**Detection:** [Alert name / User report / Status page]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM — First alert fired
+- HH:MM — Triage started, identified [root cause]
+- HH:MM — Mitigation applied: [action]
+- HH:MM — Resolved, monitoring
 
 ### Root Cause
-[Technical explanation]
+[Technical explanation: what broke and why]
 
 ### Impact
-- Users affected: N
-- Revenue impact: $X
+- Search availability: X% during incident
+- Users affected: ~N
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Fix] — Owner — Due date
+- [ ] [Prevent] — Owner — Due date
+- [ ] [Detect faster] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Algolia-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.algolia.status' || echo "UNHEALTHY"
-```
+| Can't reach status.algolia.com | Your network issue | Use mobile, VPN, or check @algloiastatus on Twitter |
+| Triage script fails | Missing env vars | Set ALGOLIA_APP_ID, ALGOLIA_ADMIN_KEY, ALGOLIA_SEARCH_KEY |
+| Fallback search slow | No DB index | Add database full-text index as backup |
+| Key rotation breaks frontend | CDN cache | Purge CDN cache or wait for TTL |
 
 ## Resources
+
 - [Algolia Status Page](https://status.algolia.com)
 - [Algolia Support](https://support.algolia.com)
+- [Algolia API Logs](https://dashboard.algolia.com) (Dashboard > Monitoring > API Logs)
 
 ## Next Steps
-For data handling, see `algolia-data-handling`.
+
+For data handling and privacy, see `algolia-data-handling`.

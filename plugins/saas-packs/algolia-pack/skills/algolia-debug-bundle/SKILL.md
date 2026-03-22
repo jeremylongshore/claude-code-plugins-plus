@@ -1,12 +1,11 @@
 ---
 name: algolia-debug-bundle
 description: |
-  Collect Algolia debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Algolia problems.
-  Trigger with phrases like "algolia debug", "algolia support bundle",
-  "collect algolia logs", "algolia diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect Algolia debug evidence: index stats, API key ACLs, query logs,
+  and network diagnostics for support tickets.
+  Trigger: "algolia debug", "algolia support bundle", "collect algolia logs",
+  "algolia diagnostic", "algolia troubleshoot".
+allowed-tools: Read, Bash(curl:*), Bash(npm:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,97 +16,167 @@ compatible-with: claude-code
 # Algolia Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Algolia support tickets.
+
+Collect all necessary diagnostic information for Algolia support tickets or internal troubleshooting. Uses real Algolia API endpoints to gather index stats, key permissions, and query performance data.
 
 ## Prerequisites
-- Algolia SDK installed
-- Access to application logs
-- Permission to collect environment info
+
+- `ALGOLIA_APP_ID` and `ALGOLIA_ADMIN_KEY` environment variables set
+- `curl` and `jq` available
+- Permission to read API key ACLs and index settings
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Create the Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # algolia-debug-bundle.sh
+set -euo pipefail
 
+APP_ID="${ALGOLIA_APP_ID:?Set ALGOLIA_APP_ID}"
+API_KEY="${ALGOLIA_ADMIN_KEY:?Set ALGOLIA_ADMIN_KEY}"
 BUNDLE_DIR="algolia-debug-$(date +%Y%m%d-%H%M%S)"
+BASE_URL="https://${APP_ID}-dsn.algolia.net"
+HEADERS=(-H "X-Algolia-Application-Id: ${APP_ID}" -H "X-Algolia-API-Key: ${API_KEY}")
+
 mkdir -p "$BUNDLE_DIR"
 
-echo "=== Algolia Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "=== Algolia Debug Bundle ===" | tee "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$BUNDLE_DIR/summary.txt"
+echo "App ID: $APP_ID" | tee -a "$BUNDLE_DIR/summary.txt"
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
+# 1. List all indices with record counts
+echo "--- Indices ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s "${BASE_URL}/1/indexes" "${HEADERS[@]}" \
+  | jq '.items[] | {name, entries, dataSize, lastBuildTimeS}' \
+  > "$BUNDLE_DIR/indices.json" 2>/dev/null
+echo "Indices saved" >> "$BUNDLE_DIR/summary.txt"
+
+# 2. Check API key permissions (redacted key)
+echo "--- API Key ACL ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s "${BASE_URL}/1/keys" "${HEADERS[@]}" \
+  | jq '.keys[] | {description, acl, indexes, maxQueriesPerIPPerHour, validity}' \
+  > "$BUNDLE_DIR/api-keys-acl.json" 2>/dev/null
+echo "Key ACLs saved (keys redacted)" >> "$BUNDLE_DIR/summary.txt"
+
+# 3. Get recent query logs (last 1000)
+echo "--- Query Logs ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s "${BASE_URL}/1/logs?length=100&type=all" "${HEADERS[@]}" \
+  | jq '.logs[] | {timestamp, method, url, answer_code, processing_time_ms, query_nb_hits}' \
+  > "$BUNDLE_DIR/query-logs.json" 2>/dev/null
+echo "Last 100 log entries saved" >> "$BUNDLE_DIR/summary.txt"
+
+# 4. Network connectivity test
+echo "--- Network Diagnostics ---" >> "$BUNDLE_DIR/summary.txt"
+for host in "${APP_ID}-dsn.algolia.net" "${APP_ID}-1.algolianet.com" "${APP_ID}-2.algolianet.com"; do
+  RESULT=$(curl -s -o /dev/null -w "%{http_code},%{time_total}" "https://${host}/1/indexes" "${HEADERS[@]}" 2>/dev/null || echo "FAILED")
+  echo "  ${host}: ${RESULT}" >> "$BUNDLE_DIR/summary.txt"
+done
+
+# 5. SDK version
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "ALGOLIA_API_KEY: ${ALGOLIA_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>/dev/null || echo "node: not found" >> "$BUNDLE_DIR/summary.txt"
+npm list algoliasearch 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "algoliasearch: not installed" >> "$BUNDLE_DIR/summary.txt"
+
+# 6. Algolia service status
+echo "--- Algolia Status ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s https://status.algolia.com/api/v2/status.json \
+  | jq -r '.status.description' >> "$BUNDLE_DIR/summary.txt" 2>/dev/null
+
+# Package (API keys already excluded from raw responses)
+tar -czf "${BUNDLE_DIR}.tar.gz" "$BUNDLE_DIR"
+rm -rf "$BUNDLE_DIR"
+echo ""
+echo "Bundle created: ${BUNDLE_DIR}.tar.gz"
 ```
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @algolia/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+### Step 2: Programmatic Debug Data Collection
 
-# Recent logs (redacted)
-grep -i "algolia" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+```typescript
+import { algoliasearch } from 'algoliasearch';
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+async function collectDebugInfo() {
+  const client = algoliasearch(
+    process.env.ALGOLIA_APP_ID!,
+    process.env.ALGOLIA_ADMIN_KEY!
+  );
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.algolia.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+  const debug: Record<string, any> = {};
+
+  // Index list and stats
+  const { items } = await client.listIndices();
+  debug.indices = items.map(i => ({
+    name: i.name,
+    entries: i.entries,
+    dataSize: i.dataSize,
+    lastBuildTimeS: i.lastBuildTimeS,
+  }));
+
+  // Per-index settings for problematic index
+  const indexName = 'products'; // Target index
+  try {
+    debug.settings = await client.getSettings({ indexName });
+  } catch (e) {
+    debug.settings = `Failed: ${e}`;
+  }
+
+  // Recent logs
+  const { logs } = await client.getLogs({
+    indexName,
+    length: 50,
+    type: 'error',  // 'all' | 'query' | 'build' | 'error'
+  });
+  debug.recentErrors = logs.map(l => ({
+    timestamp: l.timestamp,
+    method: l.method,
+    answerCode: l.answer_code,
+    processingTimeMs: l.processing_time_ms,
+  }));
+
+  // API key used (check its ACL)
+  try {
+    const keyInfo = await client.getApiKey({
+      key: process.env.ALGOLIA_ADMIN_KEY!,
+    });
+    debug.currentKeyAcl = keyInfo.acl;
+  } catch (e) {
+    debug.currentKeyAcl = 'Unable to read key ACL';
+  }
+
+  return debug;
+}
 ```
 
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
+## Sensitive Data Handling
 
-## Output
-- `algolia-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+**ALWAYS REDACT before sharing:**
+- Full API keys (only share last 4 chars)
+- User PII in query logs
+- Internal hostnames or IPs
+
+**Safe to include:**
+- App ID (it's in every frontend bundle)
+- Error codes and status codes
+- Index names and record counts
+- SDK and Node.js versions
+- Processing times and latencies
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash algolia-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Algolia support portal
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `getLogs` returns empty | Logs retention is 7 days (Grow) or 30 days (Premium) | Run sooner after incident |
+| `getApiKey` 403 | Non-admin key can only read its own info | Use Admin key |
+| curl returns `000` | DNS or firewall blocking | Check outbound HTTPS to `*.algolia.net` |
+| No `jq` available | Not installed | `apt install jq` or parse JSON differently |
 
 ## Resources
-- [Algolia Support](https://docs.algolia.com/support)
-- [Algolia Status](https://status.algolia.com)
+
+- [Algolia Logs API](https://www.algolia.com/doc/api-reference/api-methods/get-logs/)
+- [Algolia Status Page](https://status.algolia.com)
+- [Algolia Support](https://support.algolia.com)
 
 ## Next Steps
+
 For rate limit issues, see `algolia-rate-limits`.

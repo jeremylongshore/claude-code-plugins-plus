@@ -1,11 +1,10 @@
 ---
 name: algolia-data-handling
 description: |
-  Implement Algolia PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Algolia integrations.
-  Trigger with phrases like "algolia data", "algolia PII",
-  "algolia GDPR", "algolia data retention", "algolia privacy", "algolia CCPA".
+  Implement Algolia data handling: record transforms, PII filtering before indexing,
+  data retention, GDPR/CCPA compliance with Algolia's deleteByQuery and Insights deletion.
+  Trigger: "algolia data", "algolia PII", "algolia GDPR", "algolia data retention",
+  "algolia privacy", "algolia CCPA", "algolia data sync".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,206 +16,238 @@ compatible-with: claude-code
 # Algolia Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Algolia.
 
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Algolia SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+Algolia stores your records in their cloud. You control what data goes in (via `saveObjects`), what comes back (via `attributesToRetrieve`), and what users can search (via `searchableAttributes`). For privacy compliance, you must filter PII before indexing and implement deletion workflows.
 
-## Data Classification
+## Data Flow: Source → Algolia → User
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
 ```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Algolia request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupAlgoliaData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.algoliaLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupAlgoliaData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const algoliaData = await algoliaClient.getUserData(userId);
-
-  return {
-    source: 'Algolia',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: algoliaData.profile,
-      activities: algoliaData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Algolia
-  await algoliaClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.algoliaUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'algolia',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await algoliaClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
+Source Database        Transform           Algolia Index           Search Response
+┌──────────┐     ┌──────────────┐     ┌──────────────────┐     ┌──────────────┐
+│ Full user │     │ Strip PII    │     │ Searchable       │     │ Retrieved    │
+│ record    │ ──▶ │ Truncate     │ ──▶ │ fields only      │ ──▶ │ fields only  │
+│ (all cols)│     │ Normalize    │     │ + ranking data   │     │ (UI needs)   │
+└──────────┘     └──────────────┘     └──────────────────┘     └──────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Algolia data by sensitivity level.
+### Step 1: Transform Records Before Indexing
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+import { algoliasearch } from 'algoliasearch';
+
+const client = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
+
+// Define what goes into Algolia — NOT everything from your DB
+interface AlgoliaProduct {
+  objectID: string;
+  name: string;
+  description: string;     // Truncated, plain text
+  category: string;
+  brand: string;
+  price: number;
+  in_stock: boolean;
+  image_url: string;
+  rating: number;
+  _tags: string[];
+}
+
+function transformForAlgolia(dbRecord: any): AlgoliaProduct {
+  return {
+    objectID: dbRecord.id,
+    name: dbRecord.name,
+    description: stripHtml(dbRecord.description).substring(0, 5000),
+    category: dbRecord.category?.name || 'uncategorized',
+    brand: dbRecord.brand?.name || '',
+    price: dbRecord.price_cents / 100,
+    in_stock: dbRecord.inventory_count > 0,
+    image_url: dbRecord.images?.[0]?.url || '',
+    rating: dbRecord.avg_rating || 0,
+    _tags: buildTags(dbRecord),
+  };
+}
+
+// Strip HTML tags for clean search text
+function stripHtml(html: string): string {
+  return html?.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() || '';
+}
+
+function buildTags(record: any): string[] {
+  const tags: string[] = [];
+  if (record.is_featured) tags.push('featured');
+  if (record.is_new) tags.push('new-arrival');
+  if (record.discount_percent > 0) tags.push('on-sale');
+  return tags;
 }
 ```
 
-### Redact Before Logging
+### Step 2: PII Detection and Filtering
+
 ```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Algolia response:', safeData);
+// NEVER index PII unless absolutely necessary for search
+const PII_FIELDS = ['email', 'phone', 'ssn', 'address', 'credit_card', 'password', 'api_key'];
+
+function stripPII(record: Record<string, any>): Record<string, any> {
+  const clean = { ...record };
+  for (const field of PII_FIELDS) {
+    delete clean[field];
+  }
+  return clean;
+}
+
+// If you MUST index user-facing names (e.g., author names in articles)
+// Use unretrievableAttributes so they're searchable but never returned
+await client.setSettings({
+  indexName: 'articles',
+  indexSettings: {
+    searchableAttributes: ['title', 'author_name', 'content'],
+    unretrievableAttributes: ['author_name'],  // Searchable but never in response
+    attributesToRetrieve: ['title', 'excerpt', 'url', 'published_at'],
+  },
+});
 ```
 
-### GDPR Data Export
+### Step 3: Algolia-Side Data Access Control
+
 ```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+// Use secured API keys to filter what each user can see
+function generateUserKey(userId: string, tenantId: string) {
+  return client.generateSecuredApiKey({
+    parentApiKey: process.env.ALGOLIA_SEARCH_KEY!,
+    restrictions: {
+      filters: `tenant_id:${tenantId} AND (visibility:public OR created_by:${userId})`,
+      validUntil: Math.floor(Date.now() / 1000) + 3600,
+    },
+  });
+}
+
+// User can only search records where:
+// - tenant_id matches their org AND
+// - visibility is public OR they created it
 ```
+
+### Step 4: GDPR Right to Deletion
+
+```typescript
+// When a user requests data deletion:
+async function deleteUserData(userId: string) {
+  const results: Record<string, string> = {};
+
+  // 1. Delete user's records from all indices
+  for (const indexName of ['products', 'reviews', 'wishlists']) {
+    try {
+      await client.deleteBy({
+        indexName,
+        deleteByParams: { filters: `created_by:${userId}` },
+      });
+      results[indexName] = 'deleted';
+    } catch (e) {
+      results[indexName] = `failed: ${e}`;
+    }
+  }
+
+  // 2. Delete Insights/Analytics data for this user
+  // Algolia retains events for 90 days by default
+  // Use the Insights API to request user data deletion
+  await client.deleteUserToken({ userToken: userId });
+
+  // 3. Log the deletion for compliance audit
+  console.log({
+    event: 'gdpr.deletion',
+    userId,
+    timestamp: new Date().toISOString(),
+    results,
+  });
+
+  return results;
+}
+```
+
+### Step 5: Data Subject Access Request (DSAR)
+
+```typescript
+// Export all data associated with a user
+async function exportUserData(userId: string) {
+  const exportData: Record<string, any[]> = {};
+
+  for (const indexName of ['products', 'reviews', 'wishlists']) {
+    const records: any[] = [];
+    let cursor: string | undefined;
+
+    // Browse all records matching the user
+    do {
+      const result = await client.browse({
+        indexName,
+        browseParams: {
+          filters: `created_by:${userId}`,
+          hitsPerPage: 1000,
+          cursor,
+        },
+      });
+      records.push(...result.hits);
+      cursor = result.cursor;
+    } while (cursor);
+
+    exportData[indexName] = records;
+  }
+
+  return {
+    exportedAt: new Date().toISOString(),
+    userId,
+    data: exportData,
+  };
+}
+```
+
+### Step 6: Data Retention and Cleanup
+
+```typescript
+// Scheduled job: delete old records past retention period
+async function enforceRetention(indexName: string, retentionDays: number) {
+  const cutoffTimestamp = Math.floor(
+    (Date.now() - retentionDays * 24 * 60 * 60 * 1000) / 1000
+  );
+
+  await client.deleteBy({
+    indexName,
+    deleteByParams: {
+      filters: `created_at_timestamp < ${cutoffTimestamp}`,
+    },
+  });
+
+  console.log(`Deleted records older than ${retentionDays} days from ${indexName}`);
+}
+
+// Run daily: enforceRetention('activity_logs', 90);
+```
+
+## Data Classification for Algolia
+
+| Category | Examples | Index It? | Retrieve It? |
+|----------|----------|-----------|-------------|
+| Public product data | Name, price, category | Yes | Yes |
+| Searchable metadata | Tags, internal categories | Yes | No (`unretrievableAttributes`) |
+| User-generated content | Reviews, comments | Yes (anonymized) | Yes |
+| PII | Email, phone, address | NO | NO |
+| Sensitive business data | Margins, supplier costs | NO | NO |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in Algolia index | Transform didn't strip | Add PII check to indexing pipeline |
+| `deleteBy` no effect | Filter doesn't match | Verify field is in `attributesForFaceting` |
+| DSAR export incomplete | Paginated results | Use cursor-based browsing |
+| Retention job deletes too much | Wrong timestamp format | Use Unix timestamp (seconds), not milliseconds |
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Algolia Privacy Guide](https://docs.algolia.com/privacy)
+
+- [Algolia Privacy & GDPR](https://www.algolia.com/policies/privacy/)
+- [deleteBy Reference](https://www.algolia.com/doc/api-reference/api-methods/delete-by/)
+- [browse Reference](https://www.algolia.com/doc/api-reference/api-methods/browse/)
+- [Insights User Deletion](https://www.algolia.com/doc/guides/sending-events/getting-started/)
 
 ## Next Steps
+
 For enterprise access control, see `algolia-enterprise-rbac`.

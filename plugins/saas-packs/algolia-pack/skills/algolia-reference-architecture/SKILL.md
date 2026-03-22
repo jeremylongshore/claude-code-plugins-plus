@@ -1,11 +1,10 @@
 ---
 name: algolia-reference-architecture
 description: |
-  Implement Algolia reference architecture with best-practice project layout.
-  Use when designing new Algolia integrations, reviewing project structure,
-  or establishing architecture standards for Algolia applications.
-  Trigger with phrases like "algolia architecture", "algolia best practices",
-  "algolia project structure", "how to organize algolia", "algolia layout".
+  Implement Algolia reference architecture: index design, multi-index strategy,
+  data pipeline, search service layer, and frontend/backend separation.
+  Trigger: "algolia architecture", "algolia best practices", "algolia project structure",
+  "how to organize algolia", "algolia index design".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +16,239 @@ compatible-with: claude-code
 # Algolia Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Algolia integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Algolia SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Production-ready architecture for Algolia-powered search. Covers index design, data pipeline from source to Algolia, service layer patterns, and frontend integration.
+
+## Architecture Overview
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                      Frontend                                 │
+│  InstantSearch.js / React InstantSearch                       │
+│  Uses: liteClient (search-only key)                          │
+│  Sends: search-insights events (clicks, conversions)          │
+└───────────────────────┬──────────────────────────────────────┘
+                        │ Search + Events
+                        ▼
+┌──────────────────────────────────────────────────────────────┐
+│                   Algolia Cloud                               │
+│  ┌─────────┐  ┌──────────────┐  ┌─────────────┐             │
+│  │ Search   │  │ Analytics    │  │ Recommend   │             │
+│  │ Engine   │  │ + Insights   │  │ (ML-based)  │             │
+│  └─────────┘  └──────────────┘  └─────────────┘             │
+└───────────────────────▲──────────────────────────────────────┘
+                        │ Indexing (admin key)
+                        │
+┌──────────────────────────────────────────────────────────────┐
+│                    Backend Service                            │
+│  ┌────────────┐  ┌──────────────┐  ┌─────────────────┐      │
+│  │ Search     │  │ Indexing     │  │ Settings        │      │
+│  │ Service    │  │ Pipeline     │  │ Manager         │      │
+│  └────────────┘  └──────┬───────┘  └─────────────────┘      │
+│                         │                                     │
+│  ┌──────────────────────▼────────────────────────────┐       │
+│  │              Source Database                        │       │
+│  │  PostgreSQL / MongoDB / CMS / External API          │       │
+│  └────────────────────────────────────────────────────┘       │
+└──────────────────────────────────────────────────────────────┘
+```
 
 ## Project Structure
 
 ```
-my-algolia-project/
-├── src/
-│   ├── algolia/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── algolia/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── algolia/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── algolia/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── algolia/
-│   └── integration/
-│       └── algolia/
-├── config/
-│   ├── algolia.development.json
-│   ├── algolia.staging.json
-│   └── algolia.production.json
-└── docs/
-    └── algolia/
-        ├── SETUP.md
-        └── RUNBOOK.md
+src/
+├── algolia/
+│   ├── client.ts           # Singleton client (see algolia-sdk-patterns)
+│   ├── indices.ts          # Index name constants + environment prefixing
+│   ├── settings/
+│   │   ├── products.ts     # Products index settings
+│   │   ├── articles.ts     # Articles index settings
+│   │   └── apply.ts        # Script to apply all settings
+│   └── transforms/
+│       ├── product.ts      # DB record → Algolia record transformer
+│       └── article.ts      # DB record → Algolia record transformer
+├── services/
+│   ├── search.ts           # Search service (wraps Algolia client)
+│   └── indexing.ts         # Indexing pipeline (DB → transform → Algolia)
+├── api/
+│   ├── search.ts           # Search endpoint (returns Algolia results)
+│   └── reindex.ts          # Admin endpoint to trigger reindex
+└── jobs/
+    └── sync-algolia.ts     # Cron job for periodic full sync
 ```
 
-## Layer Architecture
+## Index Design Patterns
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Algolia Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/algolia/client.ts
-export class AlgoliaService {
-  private client: AlgoliaClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: AlgoliaConfig) {
-    this.client = new AlgoliaClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('algolia');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/algolia/errors.ts
-export class AlgoliaServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AlgoliaServiceError';
-  }
-}
-
-export function wrapAlgoliaError(error: unknown): AlgoliaServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/algolia/health.ts
-export async function checkAlgoliaHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await algoliaClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Algolia    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Algolia    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
+### Pattern 1: One Index Per Entity Type
 
 ```typescript
-// config/algolia.ts
-export interface AlgoliaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
+// src/algolia/indices.ts
+const ENV = process.env.NODE_ENV === 'production' ? '' : `${process.env.NODE_ENV}_`;
+
+export const INDICES = {
+  products:  `${ENV}products`,
+  articles:  `${ENV}articles`,
+  faq:       `${ENV}faq`,
+  users:     `${ENV}users`,     // Internal search only (never expose to frontend)
+} as const;
+
+export type IndexName = typeof INDICES[keyof typeof INDICES];
+```
+
+### Pattern 2: Record Transformer (Source → Algolia)
+
+```typescript
+// src/algolia/transforms/product.ts
+import type { Product } from '../db/types';
+
+interface AlgoliaProduct {
+  objectID: string;
+  name: string;
+  description: string;
+  category: string;
+  brand: string;
+  price: number;
+  rating: number;
+  review_count: number;
+  in_stock: boolean;
+  image_url: string;
+  _tags: string[];        // Algolia convention: filterable tags
+}
+
+export function transformProduct(product: Product): AlgoliaProduct {
+  return {
+    objectID: product.id,
+    name: product.name,
+    description: product.description?.substring(0, 5000) || '',  // Truncate
+    category: product.category.name,
+    brand: product.brand.name,
+    price: product.price / 100,                  // Cents → dollars
+    rating: product.avgRating,
+    review_count: product.reviewCount,
+    in_stock: product.inventory > 0,
+    image_url: product.images[0]?.url || '',
+    _tags: [
+      product.category.slug,
+      ...(product.isFeatured ? ['featured'] : []),
+      ...(product.isNew ? ['new-arrival'] : []),
+    ],
   };
 }
+```
 
-export function loadAlgoliaConfig(): AlgoliaConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./algolia.${env}.json`);
+### Pattern 3: Settings as Code
+
+```typescript
+// src/algolia/settings/products.ts
+import type { IndexSettings } from 'algoliasearch';
+
+export const productSettings: IndexSettings = {
+  searchableAttributes: [
+    'name',
+    'brand',
+    'category',
+    'unordered(description)',
+  ],
+  attributesForFaceting: [
+    'searchable(brand)',
+    'category',
+    'filterOnly(price)',
+    'filterOnly(in_stock)',
+    '_tags',
+  ],
+  customRanking: ['desc(review_count)', 'desc(rating)'],
+  attributesToRetrieve: ['name', 'brand', 'price', 'image_url', 'category', 'rating'],
+  attributesToHighlight: ['name', 'description'],
+  attributesToSnippet: ['description:30'],
+  unretrievableAttributes: ['_tags'],
+  distinct: 1,
+  attributeForDistinct: 'product_group_id',
+  replicas: [
+    'virtual(products_price_asc)',
+    'virtual(products_price_desc)',
+    'virtual(products_newest)',
+  ],
+};
+
+// src/algolia/settings/apply.ts
+import { getClient } from '../client';
+import { INDICES } from '../indices';
+import { productSettings } from './products';
+
+async function applyAllSettings() {
+  const client = getClient();
+  await client.setSettings({ indexName: INDICES.products, indexSettings: productSettings });
+  console.log('All Algolia settings applied');
 }
 ```
 
-## Instructions
+### Pattern 4: Search Service Layer
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+```typescript
+// src/services/search.ts
+import { getClient } from '../algolia/client';
+import { INDICES } from '../algolia/indices';
+import { ApiError } from 'algoliasearch';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+export class SearchService {
+  private client = getClient();
 
-### Step 3: Add Error Handling
-Implement custom error classes for Algolia operations.
+  async searchProducts(params: {
+    query: string;
+    filters?: string;
+    facetFilters?: string[][];
+    page?: number;
+    hitsPerPage?: number;
+  }) {
+    try {
+      return await this.client.searchSingleIndex({
+        indexName: INDICES.products,
+        searchParams: {
+          query: params.query,
+          filters: params.filters,
+          facetFilters: params.facetFilters,
+          page: params.page ?? 0,
+          hitsPerPage: params.hitsPerPage ?? 20,
+          facets: ['category', 'brand'],
+          clickAnalytics: true,
+        },
+      });
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        return { hits: [], nbHits: 0, nbPages: 0, page: 0 };
+      }
+      throw error;
+    }
+  }
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Algolia connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Algolia types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/algolia/{handlers} src/services/algolia src/api/algolia
-touch src/algolia/{client,config,types,errors}.ts
-touch src/services/algolia/{index,sync,cache}.ts
+  async federatedSearch(query: string) {
+    const { results } = await this.client.search({
+      requests: [
+        { indexName: INDICES.products, query, hitsPerPage: 5 },
+        { indexName: INDICES.articles, query, hitsPerPage: 3 },
+        { indexName: INDICES.faq, query, hitsPerPage: 3 },
+      ],
+    });
+    return results;
+  }
+}
 ```
 
-## Resources
-- [Algolia SDK Documentation](https://docs.algolia.com/sdk)
-- [Algolia Best Practices](https://docs.algolia.com/best-practices)
+## Error Handling
 
-## Flagship Skills
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependency | Service imports client imports service | Use lazy initialization |
+| Config drift | Dashboard edits not in code | Apply settings from code in CI |
+| Transform errors | DB schema change | Add validation in transformer |
+| Index name typo | Hardcoded strings | Use `INDICES` constants |
+
+## Resources
+
+- [Algolia Architecture Guide](https://www.algolia.com/doc/guides/getting-started/how-algolia-works/)
+- [Index Design Best Practices](https://www.algolia.com/doc/guides/sending-and-managing-data/prepare-your-data/)
+- [Multi-Index Search](https://www.algolia.com/doc/guides/building-search-ui/ui-and-ux-patterns/multi-index-search/js/)
+
+## Next Steps
+
 For multi-environment setup, see `algolia-multi-env-setup`.

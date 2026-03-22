@@ -1,11 +1,10 @@
 ---
 name: algolia-enterprise-rbac
 description: |
-  Configure Algolia enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Algolia.
-  Trigger with phrases like "algolia SSO", "algolia RBAC",
-  "algolia enterprise", "algolia roles", "algolia permissions", "algolia SAML".
+  Configure Algolia enterprise access control: team-scoped API keys, Secured API Keys
+  for multi-tenant RBAC, dashboard team management, and audit logging.
+  Trigger: "algolia RBAC", "algolia enterprise", "algolia roles", "algolia permissions",
+  "algolia team access", "algolia multi-tenant", "algolia SSO".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,208 +16,242 @@ compatible-with: claude-code
 # Algolia Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Algolia integrations.
 
-## Prerequisites
-- Algolia Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
+Algolia's access control is built on **API keys with ACL (Access Control Lists)**. Each key has specific permissions, index restrictions, and rate limits. For multi-tenant apps, **Secured API Keys** provide per-user filtering without creating individual keys. For team management, Algolia's dashboard supports team members with role-based access.
 
-## Role Definitions
+## API Key ACL Permissions
 
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
+| ACL | Operations Allowed | Use For |
+|-----|-------------------|---------|
+| `search` | Search queries | Frontend, search-only clients |
+| `browse` | Browse/export all records | Data export, migration scripts |
+| `addObject` | Add or replace records | Indexing pipelines |
+| `deleteObject` | Delete records | Data cleanup, GDPR deletion |
+| `editSettings` | Modify index settings | Deployment scripts |
+| `listIndexes` | List all indices | Monitoring, health checks |
+| `deleteIndex` | Delete entire indices | Admin operations only |
+| `analytics` | Read analytics data | Dashboards, reporting |
+| `recommendation` | Algolia Recommend API | Product recommendations |
+| `usage` | Read usage data | Billing monitoring |
+| `logs` | Read API logs | Debugging, audit |
 
-## Role Implementation
+## Instructions
+
+### Step 1: Define Application Roles
 
 ```typescript
-enum AlgoliaRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
+import { algoliasearch } from 'algoliasearch';
 
-interface AlgoliaPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
+const client = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
 
-const ROLE_PERMISSIONS: Record<AlgoliaRole, AlgoliaPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
+// Role definitions with minimal permissions
+const ROLES = {
+  // Backend search service: search only, scoped to specific indices
+  searchService: {
+    acl: ['search'] as const,
+    description: 'Search service — production read-only',
+    indexes: ['products', 'articles'],
+    maxQueriesPerIPPerHour: 100000,
+  },
+
+  // Indexing pipeline: write records, no search or delete
+  indexingPipeline: {
+    acl: ['addObject', 'editSettings', 'listIndexes'] as const,
+    description: 'Indexing pipeline — write-only, no delete',
+    indexes: ['products', 'articles'],
+    maxQueriesPerIPPerHour: 10000,
+  },
+
+  // Analytics dashboard: read analytics, no data access
+  analyticsDashboard: {
+    acl: ['analytics', 'usage', 'listIndexes'] as const,
+    description: 'Analytics reader — no record access',
+    indexes: ['products', 'articles'],
+    maxQueriesPerIPPerHour: 5000,
+  },
+
+  // Data admin: full CRUD, restricted to non-production
+  dataAdmin: {
+    acl: ['search', 'browse', 'addObject', 'deleteObject', 'editSettings', 'listIndexes', 'deleteIndex'] as const,
+    description: 'Data admin — full access, staging only',
+    indexes: ['staging_*'],
+    maxQueriesPerIPPerHour: 50000,
+  },
 };
 
-function checkPermission(
-  role: AlgoliaRole,
-  action: keyof AlgoliaPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
+async function createRoleKey(roleName: keyof typeof ROLES) {
+  const role = ROLES[roleName];
+  const { key } = await client.addApiKey({
+    apiKey: {
+      acl: [...role.acl],
+      description: role.description,
+      indexes: role.indexes,
+      maxQueriesPerIPPerHour: role.maxQueriesPerIPPerHour,
+    },
+  });
+  console.log(`Created ${roleName} key: ...${key.slice(-8)}`);
+  return key;
 }
 ```
 
-## SSO Integration
-
-### SAML Configuration
+### Step 2: Multi-Tenant RBAC with Secured API Keys
 
 ```typescript
-// Algolia SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://algolia.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/algolia/callback',
-};
+// Secured API Keys embed filters the client cannot bypass.
+// Generate on YOUR server, send to the frontend.
 
-// Map IdP groups to Algolia roles
-const groupRoleMapping: Record<string, AlgoliaRole> = {
-  'Engineering': AlgoliaRole.Developer,
-  'Platform-Admins': AlgoliaRole.Admin,
-  'Data-Team': AlgoliaRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@algolia/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.ALGOLIA_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.ALGOLIA_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/algolia/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface AlgoliaOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: AlgoliaRole;
+interface UserContext {
+  userId: string;
+  tenantId: string;
+  role: 'admin' | 'editor' | 'viewer';
 }
 
-async function createOrganization(
-  config: AlgoliaOrganization
-): Promise<void> {
-  await algoliaClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
+function generateUserSearchKey(user: UserContext): string {
+  // Base filter: tenant isolation
+  let filters = `tenant_id:${user.tenantId}`;
+
+  // Role-based visibility
+  switch (user.role) {
+    case 'admin':
+      // Admins see everything in their tenant
+      break;
+    case 'editor':
+      // Editors see published + their own drafts
+      filters += ` AND (status:published OR author_id:${user.userId})`;
+      break;
+    case 'viewer':
+      // Viewers see published only
+      filters += ' AND status:published';
+      break;
+  }
+
+  return client.generateSecuredApiKey({
+    parentApiKey: process.env.ALGOLIA_SEARCH_KEY!,
+    restrictions: {
+      filters,
+      validUntil: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+      restrictIndices: ['products', 'articles'],
     },
   });
 }
+
+// API endpoint: generate key for authenticated user
+// GET /api/algolia/key
+// Response: { appId: "...", searchKey: "secured_key_here" }
 ```
 
-## Access Control Middleware
+### Step 3: Permission Checking Middleware
 
 ```typescript
-function requireAlgoliaPermission(
-  requiredPermission: keyof AlgoliaPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { algoliaRole: AlgoliaRole };
+// Validate that the calling service has required Algolia permissions
+async function validateKeyPermissions(
+  apiKey: string,
+  requiredAcl: string[]
+): Promise<boolean> {
+  try {
+    const keyInfo = await client.getApiKey({ key: apiKey });
+    const hasAll = requiredAcl.every(perm => keyInfo.acl.includes(perm));
 
-    if (!checkPermission(user.algoliaRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
+    if (!hasAll) {
+      const missing = requiredAcl.filter(p => !keyInfo.acl.includes(p));
+      console.warn(`Key missing permissions: ${missing.join(', ')}`);
     }
 
+    return hasAll;
+  } catch (e) {
+    console.error('Failed to validate API key:', e);
+    return false;
+  }
+}
+
+// Express middleware
+function requireAlgoliaPermission(requiredAcl: string[]) {
+  return async (req: any, res: any, next: any) => {
+    const key = req.headers['x-algolia-api-key'];
+    if (!key || !(await validateKeyPermissions(key, requiredAcl))) {
+      return res.status(403).json({ error: 'Insufficient Algolia permissions' });
+    }
     next();
   };
 }
-
-// Usage
-app.delete('/algolia/resource/:id',
-  requireAlgoliaPermission('delete'),
-  deleteResourceHandler
-);
 ```
 
-## Audit Trail
+### Step 4: API Key Audit and Rotation
 
 ```typescript
-interface AlgoliaAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: AlgoliaRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
+// List all API keys and audit their permissions
+async function auditApiKeys() {
+  const { keys } = await client.listApiKeys();
 
-async function logAlgoliaAccess(entry: AlgoliaAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
+  console.log(`Total API keys: ${keys.length}\n`);
 
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
+  for (const key of keys) {
+    const ageMs = Date.now() - new Date(key.createdAt * 1000).getTime();
+    const ageDays = Math.floor(ageMs / (1000 * 60 * 60 * 24));
+
+    console.log(`Key: ...${key.value.slice(-8)}`);
+    console.log(`  Description: ${key.description || '(none)'}`);
+    console.log(`  ACL: ${key.acl.join(', ')}`);
+    console.log(`  Indices: ${key.indexes?.join(', ') || 'ALL'}`);
+    console.log(`  Rate limit: ${key.maxQueriesPerIPPerHour || 'unlimited'}/hr`);
+    console.log(`  Age: ${ageDays} days`);
+
+    // Flag old keys
+    if (ageDays > 90) {
+      console.log(`  WARNING: Key is ${ageDays} days old — consider rotation`);
+    }
+    // Flag overly permissive keys
+    if (key.acl.includes('deleteIndex') && !key.description?.includes('admin')) {
+      console.log(`  WARNING: Has deleteIndex permission — verify this is intentional`);
+    }
+    console.log('');
   }
 }
 ```
 
-## Instructions
+### Step 5: Dashboard Team Management
 
-### Step 1: Define Roles
-Map organizational roles to Algolia permissions.
+```
+Algolia Dashboard Team Roles (configured in dashboard.algolia.com > Team):
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+| Dashboard Role | Can Do                                    | Can't Do              |
+|----------------|-------------------------------------------|-----------------------|
+| Owner          | Everything + billing + team management    | N/A                   |
+| Admin          | All index operations + API key management | Billing               |
+| Editor         | Search, index data, edit settings         | API key management    |
+| Viewer         | Search, view analytics                    | Modify anything       |
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+Configure at: dashboard.algolia.com > Settings > Team
+Enterprise plans support SSO (SAML 2.0) for team authentication.
 ```
 
+## Security Checklist
+
+- [ ] Each microservice has its own scoped API key (not shared admin key)
+- [ ] Frontend keys are search-only with `referers` restriction
+- [ ] Multi-tenant apps use Secured API Keys with `filters`
+- [ ] `maxQueriesPerIPPerHour` set on all non-admin keys
+- [ ] Keys restricted to specific `indexes` (not all)
+- [ ] Key rotation scheduled (every 90 days)
+- [ ] Dashboard team members have appropriate roles
+- [ ] API key audit runs monthly
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 403 on search | Key missing `search` ACL | Check key permissions with `getApiKey` |
+| Secured key invalid | Parent key deleted/rotated | Regenerate secured keys from new parent |
+| Filter bypass | Client-side filter manipulation | Secured API Keys enforce filters server-side |
+| Audit shows unknown keys | Leaked or forgotten keys | Delete unrecognized keys, rotate known ones |
+
 ## Resources
-- [Algolia Enterprise Guide](https://docs.algolia.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+- [API Keys Guide](https://www.algolia.com/doc/guides/security/api-keys/)
+- [Secured API Keys](https://www.algolia.com/doc/guides/security/api-keys/in-depth/secured-api-keys/)
+- [Team Management](https://www.algolia.com/doc/guides/security/api-keys/in-depth/api-key-restrictions/)
+- [Enterprise SSO](https://www.algolia.com/enterprise/)
 
 ## Next Steps
-For major migrations, see `algolia-migration-deep-dive`.
+
+For major platform migrations, see `algolia-migration-deep-dive`.

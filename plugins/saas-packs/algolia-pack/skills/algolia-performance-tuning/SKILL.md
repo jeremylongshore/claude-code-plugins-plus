@@ -1,11 +1,10 @@
 ---
 name: algolia-performance-tuning
 description: |
-  Optimize Algolia API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Algolia integrations.
-  Trigger with phrases like "algolia performance", "optimize algolia",
-  "algolia latency", "algolia caching", "algolia slow", "algolia batch".
+  Optimize Algolia search performance: record size, searchable attributes,
+  replica strategy, response caching, and query-time parameter tuning.
+  Trigger: "algolia performance", "optimize algolia", "algolia latency",
+  "algolia slow", "algolia caching", "algolia response time".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,200 +16,206 @@ compatible-with: claude-code
 # Algolia Performance Tuning
 
 ## Overview
-Optimize Algolia API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Algolia SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Algolia's edge infrastructure typically delivers search in < 50ms globally. When performance degrades, the causes are usually: oversized records, too many searchable attributes, unoptimized faceting, or missing client-side caching. This skill covers server-side and client-side optimizations.
 
-## Latency Benchmarks
+## Performance Baselines
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Metric | Good | Warning | Action Needed |
+|--------|------|---------|---------------|
+| Search latency (P50) | < 20ms | 20-100ms | > 100ms |
+| Search latency (P95) | < 50ms | 50-200ms | > 200ms |
+| Indexing time per 1K records | < 2s | 2-10s | > 10s |
+| Record size (avg) | < 5KB | 5-50KB | > 50KB |
 
-## Caching Strategy
+## Instructions
 
-### Response Caching
+### Step 1: Optimize Record Size
+
+```typescript
+import { algoliasearch } from 'algoliasearch';
+
+const client = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
+
+// BAD: Full record with unnecessary data
+const badRecord = {
+  objectID: '1',
+  name: 'Running Shoes',
+  full_html_description: '<div>...5000 chars of HTML...</div>',  // Too big
+  internal_notes: 'Supplier ref: ABC-123',                       // Not searchable
+  all_reviews: [/* 200 reviews */],                                // Huge array
+};
+
+// GOOD: Lean record for search
+const goodRecord = {
+  objectID: '1',
+  name: 'Running Shoes',
+  description: 'Lightweight running shoes with cushioned sole',  // Plain text, truncated
+  category: 'shoes',
+  brand: 'Nike',
+  price: 129.99,
+  rating: 4.5,
+  review_count: 200,          // Count, not full reviews
+  in_stock: true,
+  image_url: '/images/1.jpg', // URL, not base64
+};
+```
+
+### Step 2: Optimize Searchable Attributes
+
+```typescript
+await client.setSettings({
+  indexName: 'products',
+  indexSettings: {
+    // Order matters: first attribute = highest priority in ranking
+    // Fewer searchable attributes = faster search
+    searchableAttributes: [
+      'name',                    // Highest priority
+      'brand',
+      'category',
+      'unordered(description)',  // unordered = position in attribute doesn't affect ranking
+    ],
+    // DON'T make IDs, URLs, or numeric fields searchable
+
+    // unretrievableAttributes: fields searchable but never returned in hits
+    // Use for fields users should match against but not see
+    unretrievableAttributes: ['internal_tags'],
+
+    // attributesToRetrieve: limit what comes back (smaller response = faster)
+    attributesToRetrieve: ['name', 'brand', 'price', 'image_url', 'category'],
+  },
+});
+```
+
+### Step 3: Optimize Faceting
+
+```typescript
+await client.setSettings({
+  indexName: 'products',
+  indexSettings: {
+    attributesForFaceting: [
+      'category',              // Regular facet: counts computed
+      'brand',                 // Regular facet
+      'filterOnly(price)',     // filterOnly: no counts = faster
+      'filterOnly(in_stock)',  // Use for boolean/numeric filters
+      'filterOnly(created_at)',
+    ],
+    // filterOnly() saves CPU — use it when you don't need facet counts
+    // searchable(brand) lets users search within facet values
+  },
+});
+```
+
+### Step 4: Client-Side Response Caching
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
+const searchCache = new LRUCache<string, any>({
+  max: 500,           // Max cached queries
+  ttl: 60 * 1000,     // 1 minute TTL
 });
 
-async function cachedAlgoliaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function cachedSearch(query: string, filters?: string) {
+  const cacheKey = `${query}|${filters || ''}`;
+  const cached = searchCache.get(cacheKey);
+  if (cached) return cached;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
+  const result = await client.searchSingleIndex({
+    indexName: 'products',
+    searchParams: { query, filters, hitsPerPage: 20 },
+  });
+
+  searchCache.set(cacheKey, result);
   return result;
 }
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
+### Step 5: Query-Time Optimization Parameters
 
 ```typescript
-import DataLoader from 'dataloader';
+const { hits } = await client.searchSingleIndex({
+  indexName: 'products',
+  searchParams: {
+    query: 'laptop',
 
-const algoliaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Algolia
-    const results = await algoliaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
+    // Reduce response size
+    attributesToRetrieve: ['name', 'price', 'image_url'],  // Only what UI needs
+    attributesToHighlight: ['name'],                         // Fewer = faster
+    attributesToSnippet: [],                                 // Skip snippets if not used
+    responseFields: ['hits', 'nbHits', 'page', 'nbPages'],  // Skip unnecessary metadata
+
+    // Limit processing
+    hitsPerPage: 20,              // Don't over-fetch
+    maxValuesPerFacet: 10,        // Limit facet values returned
+
+    // Disable features you don't use
+    // typoTolerance: false,      // Uncomment if exact matching is fine
+    // removeStopWords: false,    // Keep stop words in query
   },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  algoliaLoader.load('id-1'),
-  algoliaLoader.load('id-2'),
-  algoliaLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AlgoliaClient({
-  apiKey: process.env.ALGOLIA_API_KEY!,
-  httpAgent: agent,
 });
 ```
 
-## Pagination Optimization
+### Step 6: Replica Strategy for Sort Orders
 
 ```typescript
-async function* paginatedAlgoliaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
+// Standard replicas share data but have their own ranking
+// Virtual replicas share data AND ranking config (less storage cost)
+await client.setSettings({
+  indexName: 'products',
+  indexSettings: {
+    replicas: [
+      'virtual(products_price_asc)',   // Virtual: cheaper, limited customization
+      'virtual(products_price_desc)',
+      'products_newest',               // Standard: full ranking control
+    ],
+  },
+});
 
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAlgoliaList(cursor =>
-  algoliaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
+// Virtual replica can only override: customRanking and ranking
+// Standard replica can override all settings
 ```
 
 ## Performance Monitoring
 
 ```typescript
-async function measuredAlgoliaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
+async function measureSearchLatency(query: string, iterations = 10) {
+  const latencies: number[] = [];
+
+  for (let i = 0; i < iterations; i++) {
+    const start = performance.now();
+    await client.searchSingleIndex({
+      indexName: 'products',
+      searchParams: { query, hitsPerPage: 20 },
+    });
+    latencies.push(performance.now() - start);
   }
+
+  latencies.sort((a, b) => a - b);
+  console.log({
+    p50: latencies[Math.floor(iterations * 0.5)].toFixed(1),
+    p95: latencies[Math.floor(iterations * 0.95)].toFixed(1),
+    p99: latencies[Math.floor(iterations * 0.99)].toFixed(1),
+    avg: (latencies.reduce((a, b) => a + b) / iterations).toFixed(1),
+  });
 }
 ```
 
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Algolia operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAlgoliaCall(name, () =>
-    cachedAlgoliaRequest(`cache:${name}`, fn)
-  );
-```
+| P95 > 200ms | Oversized records | Trim records, use `unretrievableAttributes` |
+| Facet queries slow | Too many facet values | Use `filterOnly()` or `maxValuesPerFacet` |
+| Indexing slow | Large batch + complex settings | Reduce batch size, simplify `searchableAttributes` |
+| Cache stampede | TTL expired, burst traffic | Use stale-while-revalidate pattern |
 
 ## Resources
-- [Algolia Performance Guide](https://docs.algolia.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Performance Best Practices](https://www.algolia.com/doc/guides/managing-results/optimize-search-results/)
+- [Record Size Tips](https://support.algolia.com/hc/en-us/articles/4406981897617)
+- [Virtual Replicas](https://www.algolia.com/doc/guides/managing-results/refine-results/sorting/how-to/sort-an-index-by-date/)
 
 ## Next Steps
+
 For cost optimization, see `algolia-cost-tuning`.

@@ -1,12 +1,11 @@
 ---
 name: algolia-webhooks-events
 description: |
-  Implement Algolia webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Algolia event notifications securely.
-  Trigger with phrases like "algolia webhook", "algolia events",
-  "algolia webhook signature", "handle algolia events", "algolia notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement Algolia Insights API for click/conversion tracking, search analytics,
+  and real-time event-driven index updates via database change listeners.
+  Trigger: "algolia events", "algolia analytics", "algolia insights",
+  "algolia click tracking", "algolia conversion", "algolia event tracking".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,188 +13,205 @@ tags: [saas, search, algolia]
 compatible-with: claude-code
 ---
 
-# Algolia Webhooks & Events
+# Algolia Events & Insights
 
 ## Overview
-Securely handle Algolia webhooks with signature validation and replay protection.
+
+Algolia doesn't use traditional webhooks. Instead, it provides the **Insights API** for sending user behavior events (clicks, conversions, views) back to Algolia, and the **Analytics API** for reading search performance data. For keeping your index in sync, you build event-driven pipelines from your database to Algolia.
 
 ## Prerequisites
-- Algolia webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
 
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/algolia',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-algolia-signature'] as string;
-    const timestamp = req.headers['x-algolia-timestamp'] as string;
-
-    if (!verifyAlgoliaSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleAlgoliaEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyAlgoliaSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.ALGOLIA_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type AlgoliaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface AlgoliaEvent {
-  id: string;
-  type: AlgoliaEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<AlgoliaEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleAlgoliaEvent(event: AlgoliaEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `algolia:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `algolia:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Algolia CLI to send test events
-algolia webhooks trigger resource.created --url http://localhost:3000/webhooks/algolia
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- `algoliasearch` v5 installed (Insights client is included)
+- Index with records and `queryID` enabled (for click analytics)
+- `search-insights` npm package for frontend event tracking
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Algolia dashboard.
+### Step 1: Enable Click Analytics in Search
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+import { algoliasearch } from 'algoliasearch';
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+const client = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/algolia \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+// Enable clickAnalytics to get queryID in search results
+const { hits, queryID } = await client.searchSingleIndex({
+  indexName: 'products',
+  searchParams: {
+    query: 'running shoes',
+    clickAnalytics: true,  // Returns queryID for event correlation
+  },
+});
+// queryID links this search to subsequent click/conversion events
 ```
 
+### Step 2: Send Click and Conversion Events (Backend)
+
+```typescript
+// The Insights API is built into the algoliasearch client
+// Events connect user behavior back to specific search queries
+
+// Track a click on a search result
+await client.pushEvents({
+  events: [{
+    eventType: 'click',
+    eventName: 'Product Clicked',
+    index: 'products',
+    userToken: 'user-123',        // Unique user identifier
+    queryID: queryID,              // From search response
+    objectIDs: ['product-456'],    // What was clicked
+    positions: [3],                // Position in results (1-indexed)
+    timestamp: Date.now(),
+  }],
+});
+
+// Track a conversion (purchase, add-to-cart)
+await client.pushEvents({
+  events: [{
+    eventType: 'conversion',
+    eventName: 'Product Purchased',
+    index: 'products',
+    userToken: 'user-123',
+    queryID: queryID,
+    objectIDs: ['product-456'],
+    timestamp: Date.now(),
+  }],
+});
+
+// Track a view (product page visit, no search context)
+await client.pushEvents({
+  events: [{
+    eventType: 'view',
+    eventName: 'Product Viewed',
+    index: 'products',
+    userToken: 'user-123',
+    objectIDs: ['product-456'],
+    timestamp: Date.now(),
+  }],
+});
+```
+
+### Step 3: Frontend Event Tracking with search-insights
+
+```bash
+npm install search-insights
+```
+
+```typescript
+// Frontend: lightweight event tracking
+import { default as aa } from 'search-insights';
+
+aa('init', {
+  appId: 'YourAppID',
+  apiKey: 'YourSearchOnlyKey',  // Search-only key is fine for events
+});
+
+// Set user token (anonymous or authenticated)
+aa('setUserToken', 'user-123');
+
+// After user clicks a search result
+aa('clickedObjectIDsAfterSearch', {
+  eventName: 'Product Clicked',
+  index: 'products',
+  queryID: 'abc123',          // From search response
+  objectIDs: ['product-456'],
+  positions: [3],
+});
+
+// After user converts (purchases)
+aa('convertedObjectIDsAfterSearch', {
+  eventName: 'Product Purchased',
+  index: 'products',
+  queryID: 'abc123',
+  objectIDs: ['product-456'],
+});
+```
+
+### Step 4: Read Search Analytics
+
+```typescript
+// The analytics client is part of algoliasearch
+const analyticsClient = client.initAnalytics({ region: 'us' });
+
+// Top searches
+const { searches } = await client.getTopSearches({
+  index: 'products',
+  startDate: '2025-01-01',
+  endDate: '2025-01-31',
+});
+searches.forEach(s => console.log(`"${s.search}" — ${s.count} searches, ${s.nbHits} avg hits`));
+
+// Searches with no results (critical for relevance tuning)
+const { searches: noResults } = await client.getSearchesNoResults({
+  index: 'products',
+  startDate: '2025-01-01',
+  endDate: '2025-01-31',
+});
+noResults.forEach(s => console.log(`"${s.search}" — ${s.count} times, 0 results`));
+
+// Click-through rate and conversion rate
+const { clickRate, conversionRate } = await client.getClickThroughRate({
+  index: 'products',
+});
+console.log(`CTR: ${(clickRate * 100).toFixed(1)}%, CVR: ${(conversionRate * 100).toFixed(1)}%`);
+```
+
+### Step 5: Database-to-Algolia Sync Pipeline
+
+```typescript
+// Real-time index updates from your database change events
+// Works with Prisma, Drizzle, Mongoose change streams, PostgreSQL LISTEN/NOTIFY
+
+import { getClient } from './algolia/client';
+
+// Prisma middleware example
+prisma.$use(async (params, next) => {
+  const result = await next(params);
+  const client = getClient();
+
+  if (params.model === 'Product') {
+    switch (params.action) {
+      case 'create':
+      case 'update':
+        await client.saveObject({
+          indexName: 'products',
+          body: {
+            objectID: result.id,
+            name: result.name,
+            price: result.price,
+            category: result.category,
+          },
+        });
+        break;
+      case 'delete':
+        await client.deleteObject({
+          indexName: 'products',
+          objectID: params.args.where.id,
+        });
+        break;
+    }
+  }
+
+  return result;
+});
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `queryID` is null | `clickAnalytics: true` not set | Add to search params |
+| Events not appearing in dashboard | Wrong `userToken` format | Use stable, non-empty string identifiers |
+| Analytics shows 0 CTR | Events not correlated | Ensure `queryID` matches between search and click |
+| Sync pipeline losing events | No retry on failure | Add dead-letter queue for failed updates |
+
 ## Resources
-- [Algolia Webhooks Guide](https://docs.algolia.com/webhooks)
-- [Webhook Security Best Practices](https://docs.algolia.com/webhooks/security)
+
+- [Insights API](https://www.algolia.com/doc/guides/sending-events/getting-started/)
+- [Analytics API](https://www.algolia.com/doc/libraries/javascript/v5/methods/analytics/)
+- [search-insights](https://www.npmjs.com/package/search-insights)
+- [Click Analytics Guide](https://www.algolia.com/doc/guides/getting-analytics/search-analytics/out-of-the-box-analytics/)
 
 ## Next Steps
+
 For performance optimization, see `algolia-performance-tuning`.
