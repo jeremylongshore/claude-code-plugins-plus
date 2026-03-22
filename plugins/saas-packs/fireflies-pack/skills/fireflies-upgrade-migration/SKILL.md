@@ -1,12 +1,12 @@
 ---
 name: fireflies-upgrade-migration
 description: |
-  Analyze, plan, and execute Fireflies.ai SDK upgrades with breaking change detection.
-  Use when upgrading Fireflies.ai SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade fireflies", "fireflies migration",
-  "fireflies breaking changes", "update fireflies SDK", "analyze fireflies version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Handle Fireflies.ai API deprecations and migrate to current query patterns.
+  Use when updating deprecated fields, migrating query patterns,
+  or responding to Fireflies API changelog updates.
+  Trigger with phrases like "upgrade fireflies", "fireflies deprecated",
+  "fireflies migration", "fireflies breaking changes", "fireflies changelog".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,105 +17,172 @@ tags: [saas, fireflies, api, migration]
 # Fireflies.ai Upgrade & Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+!`npm list graphql graphql-request 2>/dev/null || echo 'No graphql packages'`
 
 ## Overview
-Guide for upgrading Fireflies.ai SDK versions and handling breaking changes.
+Fireflies.ai uses a GraphQL API (no versioned SDK). Breaking changes come as field deprecations and new query parameter patterns. This skill covers all known deprecations and migration paths.
 
-## Prerequisites
-- Current Fireflies.ai SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+## Known Deprecations
 
-## Instructions
+### Transcript Query Parameter Changes
+```typescript
+// DEPRECATED: Single organizer email string
+const OLD = `{ transcripts(organizer_email: "alice@co.com") { id } }`;
 
-### Step 1: Check Current Version
+// CURRENT: Array of organizer emails
+const NEW = `{ transcripts(organizers: ["alice@co.com"]) { id } }`;
+```
+
+```typescript
+// DEPRECATED: Single participant email string
+const OLD = `{ transcripts(participant_email: "bob@co.com") { id } }`;
+
+// CURRENT: Array of participant emails
+const NEW = `{ transcripts(participants: ["bob@co.com"]) { id } }`;
+```
+
+```typescript
+// DEPRECATED: title parameter for search
+const OLD = `{ transcripts(title: "standup") { id } }`;
+
+// CURRENT: keyword with scope
+const NEW = `{ transcripts(keyword: "standup") { id } }`;
+```
+
+```typescript
+// DEPRECATED: date parameter (single date)
+const OLD = `{ transcripts(date: "2026-03-01") { id } }`;
+
+// CURRENT: fromDate/toDate range
+const NEW = `{
+  transcripts(
+    fromDate: "2026-03-01T00:00:00Z"
+    toDate: "2026-03-31T23:59:59Z"
+  ) { id }
+}`;
+```
+
+### Field-Level Deprecations
+```typescript
+// DEPRECATED
+transcript.host_email
+
+// CURRENT
+transcript.organizer_email
+```
+
+## Migration Procedure
+
+### Step 1: Scan Codebase for Deprecated Patterns
 ```bash
 set -euo pipefail
-npm list @fireflies/sdk
-npm view @fireflies/sdk version
+echo "=== Scanning for deprecated Fireflies patterns ==="
+
+# Deprecated query parameters
+grep -rn 'organizer_email:' --include='*.ts' --include='*.js' --include='*.py' . || echo "No organizer_email (good)"
+grep -rn 'participant_email:' --include='*.ts' --include='*.js' --include='*.py' . || echo "No participant_email (good)"
+grep -rn 'host_email' --include='*.ts' --include='*.js' --include='*.py' . || echo "No host_email (good)"
+grep -rn 'transcripts(.*title:' --include='*.ts' --include='*.js' --include='*.py' . || echo "No title param (good)"
+grep -rn 'transcripts(.*date:' --include='*.ts' --include='*.js' --include='*.py' . || echo "No date param (good)"
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/fireflies/sdk/releases
+### Step 2: Update Query Patterns
+Create a migration helper:
+```typescript
+// migrations/fireflies-deprecations.ts
+
+/**
+ * Maps old query parameter names to new ones.
+ * Update your GraphQL queries to use the new parameter names.
+ */
+const PARAM_MIGRATIONS: Record<string, string> = {
+  "organizer_email": "organizers (now an array)",
+  "participant_email": "participants (now an array)",
+  "title": "keyword",
+  "date": "fromDate + toDate",
+  "host_email": "organizer_email",
+};
+
+export function checkForDeprecations(query: string): string[] {
+  const warnings: string[] = [];
+  for (const [old, replacement] of Object.entries(PARAM_MIGRATIONS)) {
+    if (query.includes(old)) {
+      warnings.push(`Deprecated: "${old}" → use "${replacement}"`);
+    }
+  }
+  return warnings;
+}
 ```
 
-### Step 3: Create Upgrade Branch
+### Step 3: Introspect Schema for Changes
 ```bash
 set -euo pipefail
-git checkout -b upgrade/fireflies-sdk-vX.Y.Z
-npm install @fireflies/sdk@latest
-npm test
+# Discover all available query fields
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ __schema { queryType { fields { name args { name type { name kind } } } } } }"
+  }' | jq '.data.__schema.queryType.fields[] | {name, args: [.args[] | .name]}'
+
+# Discover transcript fields
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "{ __type(name: \"Transcript\") { fields { name type { name kind } } } }"
+  }' | jq '.data.__type.fields[] | .name'
 ```
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
+### Step 4: Test Updated Queries
 ```typescript
-// Before (v1.x)
-import { Client } from '@fireflies/sdk';
+import { describe, it, expect } from "vitest";
+import { checkForDeprecations } from "../migrations/fireflies-deprecations";
 
-// After (v2.x)
-import { Fireflies.aiClient } from '@fireflies/sdk';
-```
+describe("Deprecation Check", () => {
+  it("should flag deprecated parameters", () => {
+    const warnings = checkForDeprecations(
+      '{ transcripts(organizer_email: "test") { id } }'
+    );
+    expect(warnings.length).toBeGreaterThan(0);
+    expect(warnings[0]).toContain("organizers");
+  });
 
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new Fireflies.aiClient({
-  apiKey: 'xxx',
+  it("should pass clean queries", () => {
+    const warnings = checkForDeprecations(
+      '{ transcripts(organizers: ["test"]) { id } }'
+    );
+    expect(warnings.length).toBe(0);
+  });
 });
 ```
 
-### Rollback Procedure
+### Step 5: Monitor Fireflies Changelog
 ```bash
+# Check for API updates
 set -euo pipefail
-npm install @fireflies/sdk@1.x.x --save-exact
+curl -s https://docs.fireflies.ai/additional-info/change-log | head -100
+# Or visit: https://docs.fireflies.ai/getting-started/whats-new
 ```
 
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Fireflies.ai]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Field not found | Using removed field | Introspect schema, update query |
+| Unexpected null | Field renamed | Check deprecation list above |
+| Query validation error | Old parameter name | Update to array-based params |
+| Type mismatch | String vs array param | Wrap single value in array |
 
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+## Output
+- Codebase scanned for deprecated patterns
+- All queries updated to current API patterns
+- Schema introspection results for reference
+- Tests verifying updated queries work
 
 ## Resources
-- [Fireflies.ai Changelog](https://github.com/fireflies/sdk/releases)
-- [Fireflies.ai Migration Guide](https://docs.fireflies.com/migration)
+- [Fireflies Changelog](https://docs.fireflies.ai/additional-info/change-log)
+- [Fireflies What's New](https://docs.fireflies.ai/getting-started/whats-new)
+- [Fireflies Introspection](https://docs.fireflies.ai/fundamentals/introspection)
 
 ## Next Steps
 For CI integration during upgrades, see `fireflies-ci-integration`.

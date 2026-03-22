@@ -1,12 +1,12 @@
 ---
 name: fireflies-prod-checklist
 description: |
-  Execute Fireflies.ai production deployment checklist and rollback procedures.
+  Execute Fireflies.ai production deployment checklist with health checks and rollback.
   Use when deploying Fireflies.ai integrations to production, preparing for launch,
   or implementing go-live procedures.
   Trigger with phrases like "fireflies production", "deploy fireflies",
   "fireflies go-live", "fireflies launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,107 +17,161 @@ tags: [saas, fireflies, deployment]
 # Fireflies.ai Production Checklist
 
 ## Overview
-Complete checklist for deploying Fireflies.ai integrations to production.
+Complete checklist for deploying Fireflies.ai integrations to production. Covers API key management, webhook setup, health checks, and monitoring.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Staging environment tested
+- Production API key from Fireflies dashboard
+- Webhook endpoint with HTTPS and signature verification
+- Monitoring infrastructure ready
 
-## Instructions
+## Pre-Deployment Checklist
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Fireflies.ai error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Fireflies.ai connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
+### API & Auth
+- [ ] Production `FIREFLIES_API_KEY` in secret manager (not env file)
+- [ ] API key has minimum required access
+- [ ] `FIREFLIES_WEBHOOK_SECRET` configured (16-32 chars)
+- [ ] Separate keys for dev/staging/prod environments
 - [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-set -euo pipefail
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.fireflies.com
+### Code Quality
+- [ ] All GraphQL queries tested against real API in staging
+- [ ] Error handling for all Fireflies error codes (`auth_failed`, `too_many_requests`, `require_ai_credits`)
+- [ ] Rate limiting with exponential backoff implemented
+- [ ] No hardcoded API keys or transcript IDs
+- [ ] Webhook signature verification (HMAC-SHA256) enabled
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/fireflies-integration app=image:new --record
-kubectl rollout pause deployment/fireflies-integration
+### Webhook Configuration
+- [ ] Webhook URL registered in Fireflies dashboard (Settings > Developer settings)
+- [ ] HTTPS endpoint with valid TLS certificate
+- [ ] `x-hub-signature` header verified on every request
+- [ ] Webhook handler responds with 200 immediately (process async)
+- [ ] Dead-letter queue for failed webhook processing
 
-# Monitor canary traffic for 10 minutes
-sleep 600  # 600: timeout: 10 minutes
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/fireflies-integration
-kubectl rollout pause deployment/fireflies-integration
-sleep 300  # 300: timeout: 5 minutes
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/fireflies-integration
-kubectl rollout status deployment/fireflies-integration
-```
-
-## Output
-- Deployed Fireflies.ai integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
+### Health Check Endpoint
 ```typescript
-async function healthCheck(): Promise<{ status: string; fireflies: any }> {
-  const start = Date.now();
+// /api/health
+export async function GET() {
+  const checks: Record<string, any> = {};
+
+  // Fireflies API connectivity
   try {
-    await firefliesClient.ping();
-    return { status: 'healthy', fireflies: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', fireflies: { connected: false, latencyMs: Date.now() - start } };
+    const start = Date.now();
+    const res = await fetch("https://api.fireflies.ai/graphql", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
+      },
+      body: JSON.stringify({ query: "{ user { email } }" }),
+      signal: AbortSignal.timeout(5000),
+    });
+    const json = await res.json();
+    checks.fireflies = {
+      status: json.errors ? "error" : "healthy",
+      latencyMs: Date.now() - start,
+      error: json.errors?.[0]?.code,
+    };
+  } catch (err) {
+    checks.fireflies = { status: "unreachable", error: (err as Error).message };
   }
+
+  const allHealthy = Object.values(checks).every((c: any) => c.status === "healthy");
+  return Response.json(
+    { status: allHealthy ? "healthy" : "degraded", checks },
+    { status: allHealthy ? 200 : 503 }
+  );
 }
 ```
 
-### Immediate Rollback
+### Monitoring & Alerting
+- [ ] Alert on Fireflies API errors (5xx, 401, 429)
+- [ ] Track webhook delivery latency
+- [ ] Monitor transcript processing queue depth
+- [ ] Dashboard showing: meetings/day, avg processing time, error rate
+- [ ] PagerDuty/Slack alert for auth failures (P1)
+
+### Alerting Thresholds
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| Auth failure | Any `auth_failed` error | P1 -- API key may be revoked |
+| Rate limited | 429 errors > 5/min | P2 -- backoff or upgrade plan |
+| API unreachable | Health check fails 3x | P1 -- check Fireflies status |
+| Webhook backlog | Queue > 100 events | P3 -- scale webhook processor |
+
+## Deployment Steps
+
+### Step 1: Pre-flight
 ```bash
 set -euo pipefail
-kubectl rollout undo deployment/fireflies-integration
-kubectl rollout status deployment/fireflies-integration
+# Verify staging passes
+curl -f https://staging.example.com/api/health | jq '.checks.fireflies'
+
+# Verify production API key works
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY_PROD" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ user { email is_admin } }"}' | jq .
 ```
 
+### Step 2: Deploy
+```bash
+set -euo pipefail
+# Deploy with your platform
+# Vercel: vercel --prod
+# Docker: docker push && kubectl apply
+# Fly.io: fly deploy --app production
+
+# Verify health immediately
+curl -f https://production.example.com/api/health | jq .
+```
+
+### Step 3: Post-Deploy Verification
+```bash
+set -euo pipefail
+# Verify webhook is registered
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY_PROD" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ user { email } }"}' | jq .
+
+# Test webhook delivery (upload a short audio file)
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY_PROD" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "mutation($input: AudioUploadInput) { uploadAudio(input: $input) { success message } }",
+    "variables": { "input": { "url": "https://example.com/test.mp3", "title": "Deploy Test" } }
+  }' | jq .
+```
+
+## Rollback
+```bash
+set -euo pipefail
+# Immediate rollback
+# Platform-specific: revert deployment to previous version
+
+# Verify rollback
+curl -f https://production.example.com/api/health | jq '.checks.fireflies'
+```
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Auth fails post-deploy | Wrong API key in production secrets | Update secret, redeploy |
+| Webhook not firing | URL not saved in Fireflies dashboard | Re-register at app.fireflies.ai/settings |
+| Rate limiting in prod | Burst traffic on deploy | Enable request queuing |
+| Missing transcripts | Bot not joining meetings | Verify calendar integration is connected |
+
+## Output
+- Production deployment with verified health checks
+- Webhook endpoint receiving and verifying events
+- Monitoring and alerting configured
+- Rollback procedure tested
+
 ## Resources
-- [Fireflies.ai Status](https://status.fireflies.com)
-- [Fireflies.ai Support](https://docs.fireflies.com/support)
+- [Fireflies API Docs](https://docs.fireflies.ai/)
+- [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
 
 ## Next Steps
 For version upgrades, see `fireflies-upgrade-migration`.

@@ -1,11 +1,11 @@
 ---
 name: fireflies-local-dev-loop
 description: |
-  Configure Fireflies.ai local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Fireflies.ai.
+  Configure local development workflow for Fireflies.ai GraphQL integrations.
+  Use when setting up a development environment, mocking transcript data,
+  or establishing a fast iteration cycle with the Fireflies API.
   Trigger with phrases like "fireflies dev setup", "fireflies local development",
-  "fireflies dev environment", "develop with fireflies".
+  "fireflies dev environment", "develop with fireflies", "mock fireflies".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,105 +17,191 @@ tags: [saas, fireflies, testing, workflow]
 # Fireflies.ai Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Fireflies.ai.
+Set up a fast local development workflow for Fireflies.ai integrations: project structure, mock data for offline development, test helpers, and API response recording for replay.
 
 ## Prerequisites
 - Completed `fireflies-install-auth` setup
 - Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- Vitest for testing
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
 ```
-my-fireflies-project/
-├── src/
-│   ├── fireflies/
-│   │   ├── client.ts       # Fireflies.ai client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── fireflies.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
-```bash
-set -euo pipefail
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+my-fireflies-app/
+  src/
+    lib/
+      fireflies-client.ts    # GraphQL client (see fireflies-sdk-patterns)
+      transcript-service.ts  # Business logic layer
+    types/
+      fireflies.ts           # TypeScript interfaces
+  tests/
+    fixtures/
+      transcript.json        # Recorded API responses
+    fireflies-client.test.ts
+    transcript-service.test.ts
+  .env.local                 # FIREFLIES_API_KEY (git-ignored)
+  .env.example               # Template without secrets
 ```
 
-### Step 3: Setup Hot Reload
+### Step 2: Record Real API Responses as Fixtures
+```typescript
+// scripts/record-fixtures.ts
+import { FirefliesClient } from "../src/lib/fireflies-client";
+import { writeFileSync, mkdirSync } from "fs";
+
+async function recordFixtures() {
+  const client = new FirefliesClient();
+  mkdirSync("tests/fixtures", { recursive: true });
+
+  // Record user
+  const user = await client.query(`{ user { name email user_id is_admin } }`);
+  writeFileSync("tests/fixtures/user.json", JSON.stringify(user, null, 2));
+
+  // Record transcript list
+  const list = await client.query(`{
+    transcripts(limit: 3) {
+      id title date duration organizer_email
+      summary { overview action_items keywords }
+    }
+  }`);
+  writeFileSync("tests/fixtures/transcripts.json", JSON.stringify(list, null, 2));
+
+  // Record single transcript with sentences
+  const id = list.transcripts[0]?.id;
+  if (id) {
+    const full = await client.query(`
+      query($id: String!) {
+        transcript(id: $id) {
+          id title date duration
+          speakers { id name }
+          sentences { speaker_name text start_time end_time }
+          summary { overview action_items keywords }
+          analytics {
+            sentiments { positive_pct negative_pct neutral_pct }
+            speakers { name duration word_count }
+          }
+        }
+      }
+    `, { id });
+    writeFileSync("tests/fixtures/transcript-full.json", JSON.stringify(full, null, 2));
+  }
+
+  console.log("Fixtures recorded in tests/fixtures/");
+}
+
+recordFixtures().catch(console.error);
+```
+
+### Step 3: Mock Client for Tests
+```typescript
+// tests/helpers/mock-fireflies.ts
+import { readFileSync } from "fs";
+
+export function createMockClient() {
+  const fixtures: Record<string, any> = {};
+
+  return {
+    loadFixture(name: string) {
+      fixtures[name] = JSON.parse(
+        readFileSync(`tests/fixtures/${name}.json`, "utf-8")
+      );
+    },
+
+    async query(gql: string, variables?: Record<string, any>) {
+      // Match query to fixture by operation
+      if (gql.includes("transcripts(")) return fixtures["transcripts"];
+      if (gql.includes("transcript(id:")) return fixtures["transcript-full"];
+      if (gql.includes("user {")) return fixtures["user"];
+      throw new Error(`No fixture for query: ${gql.slice(0, 50)}`);
+    },
+  };
+}
+```
+
+### Step 4: Write Tests
+```typescript
+// tests/transcript-service.test.ts
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { createMockClient } from "./helpers/mock-fireflies";
+
+describe("Transcript Service", () => {
+  let mockClient: ReturnType<typeof createMockClient>;
+
+  beforeEach(() => {
+    mockClient = createMockClient();
+    mockClient.loadFixture("transcripts");
+    mockClient.loadFixture("transcript-full");
+  });
+
+  it("should list recent transcripts", async () => {
+    const data = await mockClient.query("{ transcripts(limit: 3) { id title } }");
+    expect(data.transcripts).toBeDefined();
+    expect(data.transcripts.length).toBeGreaterThan(0);
+  });
+
+  it("should fetch full transcript with sentences", async () => {
+    const data = await mockClient.query(
+      `query($id: String!) { transcript(id: $id) { sentences { text } } }`,
+      { id: "test-id" }
+    );
+    expect(data.transcript.sentences).toBeDefined();
+  });
+
+  it("should handle API errors gracefully", async () => {
+    const errorClient = {
+      query: vi.fn().mockRejectedValue(new Error("Fireflies: auth_failed")),
+    };
+    await expect(errorClient.query("{ user { email } }"))
+      .rejects.toThrow("auth_failed");
+  });
+});
+```
+
+### Step 5: Development Scripts
 ```json
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "record-fixtures": "tsx scripts/record-fixtures.ts",
+    "typecheck": "tsc --noEmit"
   }
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { Fireflies.aiClient } from '../src/fireflies/client';
+### Step 6: Environment Setup
+```bash
+set -euo pipefail
+# Create .env from template
+cp .env.example .env.local
 
-describe('Fireflies.ai Client', () => {
-  it('should initialize with API key', () => {
-    const client = new Fireflies.aiClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+# .env.example
+echo 'FIREFLIES_API_KEY=your-key-here' > .env.example
+
+# .gitignore additions
+echo '.env.local' >> .gitignore
+echo 'tests/fixtures/*.json' >> .gitignore
 ```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Fireflies.ai development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
+| Fixture not found | Fixtures not recorded | Run `npm run record-fixtures` |
+| Auth error in tests | Using real API key in CI | Use mock client, not real API |
+| Type mismatch | API schema changed | Re-record fixtures, update types |
+| Rate limit during recording | Too many fixture requests | Record once, commit fixtures |
 
-## Examples
-
-### Mock Fireflies.ai Responses
-```typescript
-vi.mock('@fireflies/sdk', () => ({
-  Fireflies.aiClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-set -euo pipefail
-# Enable verbose logging
-DEBUG=FIREFLIES=* npm run dev
-```
+## Output
+- Project structure with typed client and service layers
+- Recorded API fixtures for offline testing
+- Mock client for unit tests
+- Dev scripts with hot reload and watch mode
 
 ## Resources
-- [Fireflies.ai SDK Reference](https://docs.fireflies.com/sdk)
 - [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Fireflies API Docs](https://docs.fireflies.ai/)
 
 ## Next Steps
-See `fireflies-sdk-patterns` for production-ready code patterns.
+See `fireflies-sdk-patterns` for production-ready client patterns.

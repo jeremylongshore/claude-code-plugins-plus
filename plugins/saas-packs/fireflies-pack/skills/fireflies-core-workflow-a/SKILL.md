@@ -1,78 +1,232 @@
 ---
 name: fireflies-core-workflow-a
 description: |
-  Execute Fireflies.ai primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "fireflies main workflow",
-  "primary task with fireflies".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Retrieve and process Fireflies.ai meeting transcripts with speaker diarization and summaries.
+  Use when fetching transcripts, extracting action items,
+  or building meeting intelligence pipelines.
+  Trigger with phrases like "fireflies transcript", "get meeting notes",
+  "fireflies meeting data", "fetch fireflies recording".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, workflow]
+tags: [saas, fireflies, workflow, transcripts]
 
 ---
-# Fireflies.ai Core Workflow A
+# Fireflies.ai Core Workflow A -- Transcript Retrieval & Processing
 
 ## Overview
-Primary money-path workflow for Fireflies.ai. This is the most common use case. Fireflies.ai is an AI meeting recorder and transcription service that automatically joins video calls, generates searchable transcripts, and extracts action items and summaries. Integrating Fireflies into your workflow eliminates manual note-taking and ensures that key decisions and follow-ups are captured consistently across all meetings.
+Primary workflow for Fireflies.ai: fetch meeting transcripts via GraphQL, process speaker-diarized sentences, extract action items and summaries, and route meeting intelligence downstream.
 
 ## Prerequisites
 - Completed `fireflies-install-auth` setup
-- Understanding of Fireflies.ai core concepts
-- Valid API credentials configured
+- `FIREFLIES_API_KEY` set with Business+ plan for full access
+- At least one completed meeting in Fireflies
 
 ## Instructions
 
-### Step 1: Initialize
-Authenticate with the Fireflies.ai API and verify that your workspace bot is properly configured to join meetings. Confirm that your calendar integrations (Google Calendar or Outlook) are connected so the bot receives invites automatically. Check that the preferred recording language and transcript format are configured according to your team's standards.
-
+### Step 1: Build the GraphQL Client
 ```typescript
-// Step 1 implementation
+// lib/fireflies.ts
+const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+
+export async function firefliesQuery<T = any>(
+  query: string,
+  variables?: Record<string, any>
+): Promise<T> {
+  const res = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const json = await res.json();
+  if (json.errors) {
+    const err = json.errors[0];
+    throw new Error(`Fireflies API error: ${err.message} (${err.code || "unknown"})`);
+  }
+  return json.data;
+}
 ```
 
-### Step 2: Execute
-Retrieve completed meeting transcripts using the Fireflies GraphQL API. Query by date range, participant, or meeting title to locate the recording you need. Access the full transcript text, speaker-diarized segments, and AI-generated summary. Review the action items extracted by Fireflies to determine which require follow-up assignment.
-
+### Step 2: List Transcripts with Filters
 ```typescript
-// Step 2 implementation
+const LIST_TRANSCRIPTS = `
+  query ListTranscripts(
+    $limit: Int,
+    $mine: Boolean,
+    $fromDate: DateTime,
+    $toDate: DateTime,
+    $organizers: [String],
+    $participants: [String]
+  ) {
+    transcripts(
+      limit: $limit
+      mine: $mine
+      fromDate: $fromDate
+      toDate: $toDate
+      organizers: $organizers
+      participants: $participants
+    ) {
+      id title date duration
+      organizer_email participants
+      summary { overview action_items keywords }
+    }
+  }
+`;
+
+// Fetch this week's meetings for a specific organizer
+const data = await firefliesQuery(LIST_TRANSCRIPTS, {
+  limit: 20,
+  fromDate: "2026-03-15T00:00:00Z",
+  organizers: ["alice@company.com"],
+});
 ```
 
-### Step 3: Finalize
-Export the transcript and action items to your downstream systems — project management tools, CRMs, or team wikis. Use the speaker labels and timestamps to attribute decisions correctly. Distribute the meeting summary to attendees who need a quick recap without reading the full transcript.
-
+### Step 3: Fetch Full Transcript with Sentences
 ```typescript
-// Step 3 implementation
+const GET_TRANSCRIPT = `
+  query GetTranscript($id: String!) {
+    transcript(id: $id) {
+      id title date duration
+      organizer_email
+      speakers { id name }
+      sentences {
+        index
+        speaker_name
+        speaker_id
+        text
+        raw_text
+        start_time
+        end_time
+        ai_filters {
+          task
+          question
+          sentiment
+          pricing
+          metric
+          date_and_time
+        }
+      }
+      summary {
+        overview
+        short_summary
+        bullet_gist
+        action_items
+        keywords
+        outline
+        topics_discussed
+      }
+      meeting_attendees { displayName email }
+      meeting_attendance { name join_time leave_time }
+      analytics {
+        sentiments { positive_pct negative_pct neutral_pct }
+        speakers {
+          name duration word_count
+          words_per_minute questions
+          longest_monologue filler_words
+        }
+      }
+    }
+  }
+`;
+
+const { transcript } = await firefliesQuery(GET_TRANSCRIPT, { id: "abc123" });
 ```
 
-## Output
-- Completed Core Workflow A execution
-- Full transcript with speaker attribution and timestamps
-- AI-generated summary and extracted action items
-- Success confirmation or error details if the transcript could not be retrieved
+### Step 4: Process Meeting Intelligence
+```typescript
+interface MeetingIntelligence {
+  id: string;
+  title: string;
+  attendees: string[];
+  actionItems: string[];
+  keyTopics: string[];
+  speakerBreakdown: { name: string; minutes: number; wordCount: number }[];
+  sentiment: { positive: number; negative: number; neutral: number };
+  questions: string[];
+}
+
+function processMeeting(transcript: any): MeetingIntelligence {
+  // Extract questions from AI filters
+  const questions = transcript.sentences
+    .filter((s: any) => s.ai_filters?.question)
+    .map((s: any) => `${s.speaker_name}: ${s.text}`);
+
+  return {
+    id: transcript.id,
+    title: transcript.title,
+    attendees: transcript.meeting_attendees?.map((a: any) => a.email) || [],
+    actionItems: transcript.summary?.action_items || [],
+    keyTopics: transcript.summary?.keywords || [],
+    speakerBreakdown: (transcript.analytics?.speakers || []).map((s: any) => ({
+      name: s.name,
+      minutes: Math.round(s.duration / 60),
+      wordCount: s.word_count,
+    })),
+    sentiment: {
+      positive: transcript.analytics?.sentiments?.positive_pct || 0,
+      negative: transcript.analytics?.sentiments?.negative_pct || 0,
+      neutral: transcript.analytics?.sentiments?.neutral_pct || 0,
+    },
+    questions,
+  };
+}
+```
+
+### Step 5: Export Transcript as Text
+```typescript
+function transcriptToText(transcript: any): string {
+  const lines: string[] = [
+    `# ${transcript.title}`,
+    `Date: ${transcript.date} | Duration: ${transcript.duration}min`,
+    `Speakers: ${transcript.speakers.map((s: any) => s.name).join(", ")}`,
+    "",
+    "## Summary",
+    transcript.summary?.overview || "(no summary)",
+    "",
+    "## Action Items",
+    ...(transcript.summary?.action_items || []).map((a: string) => `- ${a}`),
+    "",
+    "## Transcript",
+  ];
+
+  for (const s of transcript.sentences) {
+    const timestamp = formatTimestamp(s.start_time);
+    lines.push(`[${timestamp}] ${s.speaker_name}: ${s.text}`);
+  }
+  return lines.join("\n");
+}
+
+function formatTimestamp(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = Math.floor(seconds % 60);
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
+| `auth_failed` | Invalid API key | Regenerate in Fireflies dashboard |
+| Empty `sentences` array | Transcript still processing | Check `meeting_info.summary_status` |
+| `null` summary | Short meeting (<1 min) | Summary requires minimum content |
+| Rate limit 429 | Over 60 req/min (Business) | Implement backoff per `fireflies-rate-limits` |
+| Missing `analytics` | Free/Pro plan | Analytics requires Business+ plan |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+## Output
+- Full transcript with speaker-diarized sentences and timestamps
+- AI-generated summary, action items, and keywords
+- Speaker analytics with talk time, word count, and sentiment
+- Meeting intelligence object ready for downstream processing
 
 ## Resources
-- [Fireflies.ai Documentation](https://docs.fireflies.com)
-- [Fireflies.ai API Reference](https://docs.fireflies.com/api)
+- [Transcript Query](https://docs.fireflies.ai/graphql-api/query/transcript)
+- [Fireflies API Concepts](https://docs.fireflies.ai/fundamentals/concepts)
 
 ## Next Steps
-For secondary workflow, see `fireflies-core-workflow-b`.
+For search, analytics, and AskFred, see `fireflies-core-workflow-b`.

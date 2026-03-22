@@ -1,7 +1,7 @@
 ---
 name: fireflies-rate-limits
 description: |
-  Implement Fireflies.ai rate limiting, backoff, and idempotency patterns.
+  Implement Fireflies.ai rate limiting, backoff, and request queuing.
   Use when handling rate limit errors, implementing retry logic,
   or optimizing API request throughput for Fireflies.ai.
   Trigger with phrases like "fireflies rate limit", "fireflies throttling",
@@ -17,135 +17,178 @@ tags: [saas, fireflies, api]
 # Fireflies.ai Rate Limits
 
 ## Overview
-Handle Fireflies.ai rate limits gracefully with exponential backoff and idempotency.
+Handle Fireflies.ai GraphQL API rate limits with exponential backoff and request queuing. Fireflies enforces per-plan limits and per-operation limits.
 
-## Prerequisites
-- Fireflies.ai SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+## Rate Limit Reference
+
+### Per-Plan Limits
+| Plan | Limit | Scope |
+|------|-------|-------|
+| Free | 50 requests/day | Per API key |
+| Pro | 50 requests/day | Per API key |
+| Business | 60 requests/min | Per API key |
+| Enterprise | 60 requests/min | Per API key |
+
+### Per-Operation Limits
+| Operation | Limit | Error Code |
+|-----------|-------|------------|
+| `addToLiveMeeting` | 3 per 20 minutes | `too_many_requests` |
+| `shareMeeting` | 10 per hour (up to 50 emails each) | `too_many_requests` |
+| `deleteTranscript` | 10 per minute | `too_many_requests` |
+| `uploadAudio` | Varies by plan | `too_many_requests` |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
-
+### Step 1: Detect Rate Limits in Responses
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }  # 32000: 500: 1000: 1 second in ms
+interface FirefliesError {
+  message: string;
+  code: string;
+  extensions?: { status: number };
+}
+
+function isRateLimited(response: any): boolean {
+  return response.errors?.some(
+    (e: FirefliesError) =>
+      e.code === "too_many_requests" ||
+      e.extensions?.status === 429
+  );
+}
+```
+
+### Step 2: Exponential Backoff with Jitter
+```typescript
+async function firefliesQueryWithRetry<T>(
+  query: string,
+  variables?: Record<string, any>,
+  maxRetries = 5
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;  # 600: HTTP 429 Too Many Requests
+  const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const res = await fetch(FIREFLIES_API, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
+      },
+      body: JSON.stringify({ query, variables }),
+    });
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+    const json = await res.json();
+
+    if (!isRateLimited(json)) {
+      if (json.errors) throw new Error(json.errors[0].message);
+      return json.data;
     }
+
+    if (attempt === maxRetries) {
+      throw new Error(`Rate limited after ${maxRetries} retries`);
+    }
+
+    // Exponential backoff: 1s, 2s, 4s, 8s, 16s + jitter
+    const baseDelay = 1000 * Math.pow(2, attempt);
+    const jitter = Math.random() * 500;
+    const delay = Math.min(baseDelay + jitter, 32000);
+
+    console.log(`Rate limited. Retry ${attempt + 1}/${maxRetries} in ${delay.toFixed(0)}ms`);
+    await new Promise(r => setTimeout(r, delay));
   }
-  throw new Error('Unreachable');
+
+  throw new Error("Unreachable");
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
+### Step 3: Request Queue for Batch Operations
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from "p-queue";
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: Fireflies.aiClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,  # 1000: 1 second in ms
-  intervalCap: 10,
+// Business plan: 60 req/min = 1 req/sec safe rate
+const firefliesQueue = new PQueue({
+  concurrency: 1,
+  interval: 1100,
+  intervalCap: 1,
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function queuedQuery<T>(query: string, variables?: Record<string, any>): Promise<T> {
+  return firefliesQueue.add(() => firefliesQueryWithRetry<T>(query, variables));
+}
+
+// Batch fetch transcripts without hitting rate limits
+async function batchFetchTranscripts(ids: string[]) {
+  const results = [];
+  for (const id of ids) {
+    const data = await queuedQuery(`
+      query GetTranscript($id: String!) {
+        transcript(id: $id) {
+          id title date duration
+          summary { overview action_items }
+        }
+      }
+    `, { id });
+    results.push(data);
+  }
+  return results;
 }
 ```
 
-### Monitor Rate Limit Usage
+### Step 4: Free/Pro Plan Daily Budget Tracker
 ```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+class DailyBudgetTracker {
+  private count = 0;
+  private resetDate = new Date().toDateString();
+  private readonly dailyLimit: number;
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);  # 1000: 1 second in ms
+  constructor(plan: "free" | "pro" | "business") {
+    this.dailyLimit = plan === "business" ? Infinity : 50;
+  }
+
+  canRequest(): boolean {
+    this.resetIfNewDay();
+    return this.count < this.dailyLimit;
+  }
+
+  record(): void {
+    this.resetIfNewDay();
+    this.count++;
+  }
+
+  remaining(): number {
+    this.resetIfNewDay();
+    return Math.max(0, this.dailyLimit - this.count);
+  }
+
+  private resetIfNewDay(): void {
+    const today = new Date().toDateString();
+    if (today !== this.resetDate) {
+      this.count = 0;
+      this.resetDate = today;
     }
   }
+}
 
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
+const budget = new DailyBudgetTracker("pro");
+if (!budget.canRequest()) {
+  console.log("Daily API limit reached. Try again tomorrow.");
 }
 ```
 
+## Error Handling
+| Scenario | Detection | Action |
+|----------|-----------|--------|
+| 429 response | `code: "too_many_requests"` | Exponential backoff |
+| Daily limit hit (Free/Pro) | Track request count | Wait until next day |
+| `addToLiveMeeting` throttle | 3 per 20 min | Queue with 7-min spacing |
+| Burst of webhook events | Many transcripts at once | Queue transcript fetches |
+
+## Output
+- Rate-limit-aware GraphQL client with automatic retry
+- Request queue preventing burst-induced throttling
+- Daily budget tracker for Free/Pro plans
+
 ## Resources
-- [Fireflies.ai Rate Limits](https://docs.fireflies.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [Fireflies API Rate Limits](https://docs.fireflies.ai/fundamentals/concepts)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For security configuration, see `fireflies-security-basics`.

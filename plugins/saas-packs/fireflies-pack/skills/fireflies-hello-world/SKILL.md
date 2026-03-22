@@ -1,12 +1,12 @@
 ---
 name: fireflies-hello-world
 description: |
-  Create a minimal working Fireflies.ai example.
+  Create a minimal working Fireflies.ai example that queries transcripts.
   Use when starting a new Fireflies.ai integration, testing your setup,
-  or learning basic Fireflies.ai API patterns.
+  or learning the GraphQL API patterns for meeting data.
   Trigger with phrases like "fireflies hello world", "fireflies example",
   "fireflies quick start", "simple fireflies code".
-allowed-tools: Read, Write, Edit
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,82 +17,141 @@ tags: [saas, fireflies, api, testing]
 # Fireflies.ai Hello World
 
 ## Overview
-Minimal working example demonstrating core Fireflies.ai functionality.
+Minimal working examples demonstrating core Fireflies.ai GraphQL queries: list users, fetch transcripts, and read a meeting summary.
 
 ## Prerequisites
 - Completed `fireflies-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- `FIREFLIES_API_KEY` environment variable set
+- At least one meeting recorded in Fireflies
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
-```typescript
-import { Fireflies.aiClient } from '@fireflies/sdk';
-
-const client = new Fireflies.aiClient({
-  apiKey: process.env.FIREFLIES_API_KEY,
-});
+### Step 1: List Workspace Users
+```bash
+set -euo pipefail
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ users { name user_id email } }"}' | jq '.data.users'
 ```
 
-### Step 3: Make Your First API Call
+### Step 2: Fetch Recent Transcripts
 ```typescript
-async function main() {
-  // Your first API call here
+const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+
+async function firefliesQuery(query: string, variables?: Record<string, any>) {
+  const res = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+  const json = await res.json();
+  if (json.errors) throw new Error(json.errors[0].message);
+  return json.data;
 }
 
-main().catch(console.error);
+// List 5 most recent transcripts
+const data = await firefliesQuery(`
+  query RecentMeetings {
+    transcripts(limit: 5) {
+      id
+      title
+      date
+      duration
+      organizer_email
+      participants
+    }
+  }
+`);
+
+for (const t of data.transcripts) {
+  console.log(`${t.title} (${t.duration}min) - ${t.date}`);
+  console.log(`  Organizer: ${t.organizer_email}`);
+  console.log(`  Participants: ${t.participants?.join(", ")}`);
+}
 ```
 
-## Output
-- Working code file with Fireflies.ai client initialization
-- Successful API response confirming connection
-- Console output showing:
+### Step 3: Read a Single Transcript with Summary
+```typescript
+async function getTranscriptSummary(id: string) {
+  return firefliesQuery(`
+    query GetTranscript($id: String!) {
+      transcript(id: $id) {
+        id
+        title
+        date
+        duration
+        organizer_email
+        speakers { id name }
+        summary {
+          overview
+          short_summary
+          action_items
+          keywords
+        }
+      }
+    }
+  `, { id });
+}
+
+const { transcript } = await getTranscriptSummary("your-transcript-id");
+console.log(`Title: ${transcript.title}`);
+console.log(`Summary: ${transcript.summary.overview}`);
+console.log(`Action Items: ${transcript.summary.action_items?.join("\n  - ")}`);
+console.log(`Keywords: ${transcript.summary.keywords?.join(", ")}`);
 ```
-Success! Your Fireflies.ai connection is working.
+
+### Step 4: Python Hello World
+```python
+import os, requests
+
+API = "https://api.fireflies.ai/graphql"
+HEADERS = {
+    "Content-Type": "application/json",
+    "Authorization": f"Bearer {os.environ['FIREFLIES_API_KEY']}",
+}
+
+def gql(query, variables=None):
+    resp = requests.post(API, json={"query": query, "variables": variables}, headers=HEADERS)
+    data = resp.json()
+    if "errors" in data:
+        raise Exception(data["errors"][0]["message"])
+    return data["data"]
+
+# List recent meetings
+meetings = gql("{ transcripts(limit: 5) { id title date duration } }")
+for m in meetings["transcripts"]:
+    print(f"{m['title']} - {m['duration']}min - {m['date']}")
 ```
+
+## Key Queries Reference
+
+| Query | Purpose | Key Fields |
+|-------|---------|------------|
+| `user` | Current user info | `name`, `email`, `is_admin` |
+| `users` | All workspace users | `name`, `user_id`, `email` |
+| `transcripts(limit: N)` | Recent meetings | `id`, `title`, `date`, `duration` |
+| `transcript(id: "...")` | Single meeting | `sentences`, `summary`, `speakers` |
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+| `auth_failed` | Missing or invalid API key | Verify `FIREFLIES_API_KEY` is set |
+| Empty transcripts array | No meetings recorded yet | Record a meeting or upload audio |
+| `null` summary fields | Transcript still processing | Wait for processing to complete |
+| Network timeout | API unreachable | Check internet connectivity |
 
-## Examples
-
-### TypeScript Example
-```typescript
-import { Fireflies.aiClient } from '@fireflies/sdk';
-
-const client = new Fireflies.aiClient({
-  apiKey: process.env.FIREFLIES_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from fireflies import Fireflies.aiClient
-
-client = Fireflies.aiClient()
-
-# Your first API call here
-```
+## Output
+- Working GraphQL queries against `https://api.fireflies.ai/graphql`
+- Transcript listing with metadata
+- Meeting summary with action items and keywords
 
 ## Resources
-- [Fireflies.ai Getting Started](https://docs.fireflies.com/getting-started)
-- [Fireflies.ai API Reference](https://docs.fireflies.com/api)
-- [Fireflies.ai Examples](https://docs.fireflies.com/examples)
+- [Fireflies API Docs](https://docs.fireflies.ai/)
+- [Transcript Query Reference](https://docs.fireflies.ai/graphql-api/query/transcript)
 
 ## Next Steps
-Proceed to `fireflies-local-dev-loop` for development workflow setup.
+Proceed to `fireflies-core-workflow-a` for transcript retrieval and processing.

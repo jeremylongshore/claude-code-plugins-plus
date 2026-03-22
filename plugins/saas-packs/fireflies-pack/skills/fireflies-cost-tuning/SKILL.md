@@ -1,124 +1,217 @@
 ---
 name: fireflies-cost-tuning
 description: |
-  Optimize Fireflies.ai costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Fireflies.ai billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
+  Optimize Fireflies.ai subscription costs through seat auditing, selective recording, and plan sizing.
+  Use when analyzing Fireflies.ai billing, reducing per-seat costs,
+  or implementing usage monitoring and right-sizing.
   Trigger with phrases like "fireflies cost", "fireflies billing",
   "reduce fireflies costs", "fireflies pricing", "fireflies expensive", "fireflies budget".
-allowed-tools: Read, Grep
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, monitoring, cost-optimization]
+tags: [saas, fireflies, api, cost-optimization]
 
 ---
-# Fireflies Cost Tuning
+# Fireflies.ai Cost Tuning
 
 ## Overview
-Optimize Fireflies.ai per-seat subscription costs by right-sizing seat count, configuring selective recording, and managing transcript storage. Fireflies charges per seat per month (Pro: ~$18/seat/month, Business: ~$29/seat/month, Enterprise: custom).
+Optimize Fireflies.ai subscription costs. Fireflies charges per-seat per month. The main levers: remove unused seats, configure selective recording, manage storage, and right-size your plan tier.
 
-## Prerequisites
-- Fireflies workspace admin access
-- Visibility into per-member usage
-- Understanding of meeting recording policies
+## Pricing Reference
+
+| Plan | Price | API Access | Key Features |
+|------|-------|-----------|--------------|
+| Free | $0 | 50 req/day | 800 min storage, limited transcription |
+| Pro | ~$18/seat/month | 50 req/day | 8,000 min/seat, AI summaries |
+| Business | ~$29/seat/month | 60 req/min | Unlimited transcription, CRM, analytics |
+| Enterprise | Custom | 60 req/min | SSO, Super Admin webhooks, custom |
 
 ## Instructions
 
-### Step 1: Audit Seat Utilization
+### Step 1: Audit Seat Utilization via API
 ```bash
 set -euo pipefail
-# Identify members who aren't using their seats
-curl -X POST https://api.fireflies.ai/graphql \
+# List all workspace users with their transcript counts
+curl -s -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ teamMembers { email role transcripts_count last_active } }"}' | \
-  jq '.data.teamMembers | sort_by(.transcripts_count) | .[] | {email, transcripts: .transcripts_count, last_active}'
-# Members with 0-1 transcripts per month are wasting seats
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ users { name email user_id num_transcripts minutes_consumed } }"}' \
+  | jq '.data.users | sort_by(.num_transcripts) | .[] | {name, email, transcripts: .num_transcripts, minutes: .minutes_consumed}'
 ```
 
-### Step 2: Remove Inactive Seats
+```typescript
+// Automated utilization report
+async function seatUtilizationReport() {
+  const data = await firefliesQuery(`{
+    users {
+      name email user_id
+      num_transcripts minutes_consumed
+      recent_meeting
+    }
+  }`);
+
+  const users = data.users;
+  const inactive = users.filter((u: any) => u.num_transcripts < 2);
+  const active = users.filter((u: any) => u.num_transcripts >= 2);
+
+  console.log(`Total seats: ${users.length}`);
+  console.log(`Active (2+ transcripts): ${active.length}`);
+  console.log(`Inactive (<2 transcripts): ${inactive.length}`);
+  console.log(`Potential savings: ${inactive.length} seats * $29/mo = $${inactive.length * 29}/mo`);
+
+  if (inactive.length > 0) {
+    console.log("\nInactive seats to review:");
+    for (const u of inactive) {
+      console.log(`  ${u.email}: ${u.num_transcripts} transcripts, last meeting: ${u.recent_meeting || "never"}`);
+    }
+  }
+
+  return { total: users.length, active: active.length, inactive, savings: inactive.length * 29 };
+}
+```
+
+### Step 2: Configure Selective Recording
+Instead of recording every meeting, configure auto-join rules in Fireflies Settings > Auto-Join:
+
 ```yaml
-# Seat optimization strategy
-current_state:
-  total_seats: 20
-  active_users: 12      # >2 recordings/month
-  low_usage: 5          # 1-2 recordings/month
-  inactive: 3           # 0 recordings/month
+# Recommended recording policy
+record_always:
+  - External meetings (client/prospect calls)
+  - Meetings with 3+ participants
+  - Meetings with keywords: "review", "planning", "standup", "demo"
 
-optimized_state:
-  total_seats: 14       # Keep active + low_usage, remove inactive
-  savings: 6 seats * $29/month = $174/month
+skip_recording:
+  - 1-on-1 informal chats
+  - Social events
+  - Meetings shorter than 5 minutes
+  - Recurring "lunch" or "coffee" meetings
 ```
-Remove inactive members or downgrade them to Viewer roles (which don't consume seats on most plans).
 
-### Step 3: Configure Selective Auto-Recording
+Estimated savings: Teams recording every meeting typically waste 30-50% of transcription credits on low-value meetings.
+
+### Step 3: Manage Storage to Avoid Forced Upgrades
+```typescript
+// Check storage and clean up old transcripts
+async function storageAudit() {
+  const data = await firefliesQuery(`{
+    transcripts(limit: 100) {
+      id title date duration
+    }
+    user { minutes_consumed }
+  }`);
+
+  const now = Date.now();
+  const transcripts = data.transcripts;
+
+  // Find transcripts older than 90 days
+  const old = transcripts.filter((t: any) => {
+    const age = (now - new Date(t.date).getTime()) / 86400000;
+    return age > 90;
+  });
+
+  console.log(`Total transcripts: ${transcripts.length}`);
+  console.log(`Older than 90 days: ${old.length}`);
+  console.log(`Minutes consumed: ${data.user.minutes_consumed}`);
+
+  return { total: transcripts.length, old, minutesUsed: data.user.minutes_consumed };
+}
+
+// Delete old transcripts to free storage
+async function deleteOldTranscripts(ids: string[]) {
+  for (const id of ids) {
+    await firefliesQuery(`
+      mutation($id: String!) {
+        deleteTranscript(transcript_id: $id)
+      }
+    `, { id });
+    console.log(`Deleted: ${id}`);
+    // deleteTranscript is rate limited: 10/min
+    await new Promise(r => setTimeout(r, 6500));
+  }
+}
+```
+
+### Step 4: Right-Size Your Plan
 ```yaml
-# Instead of recording every meeting (wastes transcription credits):
-auto_record_policy:
-  record:
-    - internal meetings with 3+ participants
-    - external meetings (client/prospect calls)
-    - meetings with "standup" or "review" in title
-  skip:
-    - 1-on-1 informal chats
-    - social/team-building events
-    - meetings shorter than 5 minutes
-```
-Configure in Fireflies Settings > Auto-Join > Selective Recording.
+# Decision matrix
+choose_pro:
+  when:
+    - Team averages <15 meetings/week per person
+    - No CRM integration needed
+    - Basic AI summaries sufficient
+  saves: $11/seat/month vs Business
 
-### Step 4: Manage Storage to Avoid Tier Upgrades
-```bash
-set -euo pipefail
-# Check storage usage
-curl -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ workspace { storage_used_gb storage_limit_gb } }"}' | \
-  jq '.data.workspace | {used_gb, limit_gb, usage_pct: (.storage_used_gb / .storage_limit_gb * 100)}'
+choose_business:
+  when:
+    - Sales team recording every call
+    - CRM integration required (Salesforce, HubSpot)
+    - Meeting analytics dashboards needed
+    - 20+ meetings/week per person
 
-# Delete old transcripts that are no longer needed
-# Set auto-deletion policy: delete transcripts older than 365 days
+choose_enterprise:
+  when:
+    - SSO/SAML required
+    - Super Admin webhooks needed (org-wide meeting data)
+    - Custom data retention policies
+    - Dedicated support
 ```
 
-### Step 5: Compare Plan Tiers
-```yaml
-# Decision matrix for plan selection
-pro_18_per_seat:
-  storage: 8000 min transcription/seat  # 8000: API server port
-  best_for: Teams that record <15 meetings/week per person
-  features: [transcription, search, basic AI summaries]
+### Step 5: API Cost Optimization
+```typescript
+// Free/Pro plans: 50 requests/day. Make every request count.
+// Strategy: Fetch meeting list once, cache aggressively
 
-business_29_per_seat:
-  storage: Unlimited transcription
-  best_for: Sales teams recording every call
-  features: [transcription, search, AI summaries, CRM integration, analytics]
-  tip: Only worth it if team averages 20+ meetings/week per person
+async function efficientDailySync() {
+  // One request: get all recent transcripts
+  const data = await firefliesQuery(`{
+    transcripts(limit: 50) {
+      id title date duration
+      summary { overview action_items }
+    }
+  }`);
 
-# If your team averages <10 meetings/week per person, Pro tier saves $11/seat/month
+  // Process locally -- no additional API calls
+  const today = new Date().toDateString();
+  const todaysMeetings = data.transcripts.filter(
+    (t: any) => new Date(t.date).toDateString() === today
+  );
+
+  console.log(`Today's meetings: ${todaysMeetings.length}`);
+  console.log(`API requests used: 1 of 50 daily budget`);
+
+  return todaysMeetings;
+}
 ```
+
+## Cost Savings Summary
+
+| Lever | Typical Savings |
+|-------|----------------|
+| Remove inactive seats | $29/seat/month |
+| Selective recording | 30-50% fewer transcriptions |
+| Pro vs Business downgrade | $11/seat/month |
+| Storage cleanup | Avoid forced tier upgrade |
+| API request caching | Stay within Free/Pro limits |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Seat cost growing | Auto-provisioning new members | Disable auto-provisioning, manually add seats |
-| Storage limit approaching | Recording every meeting | Enable selective recording, delete old transcripts |
-| Paying for unused features | On Business tier but only using transcription | Downgrade to Pro tier |
-| Invoice higher than expected | New members auto-added | Set member invitation to admin-only |
-
-## Examples
-
-**Basic usage**: Apply fireflies cost tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize fireflies cost tuning for production environments with multiple constraints and team-specific requirements.
+| Can't remove seat | User has admin role | Reassign admin first |
+| Storage limit warning | Too many transcripts | Delete old transcripts |
+| API daily limit hit | Free/Pro 50 req/day | Cache results, batch efficiently |
+| Unexpected invoice increase | Auto-provisioned members | Disable auto-provisioning |
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Seat utilization report with inactive members identified
+- Selective recording policy configured
+- Storage audit with cleanup recommendations
+- Plan right-sizing recommendation
 
 ## Resources
+- [Fireflies Pricing](https://fireflies.ai/pricing)
+- [Fireflies API Docs](https://docs.fireflies.ai/)
 
-- Official monitoring documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Next Steps
+For architecture design, see `fireflies-reference-architecture`.

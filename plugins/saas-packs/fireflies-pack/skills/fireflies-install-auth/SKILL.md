@@ -1,12 +1,12 @@
 ---
 name: fireflies-install-auth
 description: |
-  Install and configure Fireflies.ai SDK/CLI authentication.
+  Configure Fireflies.ai GraphQL API authentication and verify connectivity.
   Use when setting up a new Fireflies.ai integration, configuring API keys,
-  or initializing Fireflies.ai in your project.
+  or initializing the GraphQL client for transcript access.
   Trigger with phrases like "install fireflies", "setup fireflies",
   "fireflies auth", "configure fireflies API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,77 +17,135 @@ tags: [saas, fireflies, api, authentication]
 # Fireflies.ai Install & Auth
 
 ## Overview
-Set up Fireflies.ai SDK/CLI and configure authentication credentials.
+Set up Fireflies.ai GraphQL API authentication. Fireflies uses a single GraphQL endpoint at `https://api.fireflies.ai/graphql` with Bearer token auth. No SDK needed -- all interaction is via HTTP POST with GraphQL queries.
 
 ## Prerequisites
+- Fireflies.ai account (Pro or higher for API access)
+- API key from app.fireflies.ai > Integrations > Fireflies API
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Fireflies.ai account with API access
-- API key from Fireflies.ai dashboard
+- A GraphQL client library (optional but recommended)
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Get Your API Key
+1. Log in at [app.fireflies.ai](https://app.fireflies.ai)
+2. Navigate to **Integrations > Fireflies API**
+3. Copy your API key (starts with a long alphanumeric string)
+4. Store it securely -- this key grants access to all your meeting data
+
+### Step 2: Configure Environment
 ```bash
 set -euo pipefail
-# Node.js
-npm install @fireflies/sdk
+# Create .env file (NEVER commit to git)
+echo 'FIREFLIES_API_KEY=your-api-key-here' >> .env
 
-# Python
-pip install fireflies
+# Add to .gitignore
+echo '.env' >> .gitignore
+echo '.env.local' >> .gitignore
 ```
 
-### Step 2: Configure Authentication
+### Step 3: Install GraphQL Client (Optional)
 ```bash
-# Set environment variable
-export FIREFLIES_API_KEY="your-api-key"
+set -euo pipefail
+# Node.js -- graphql-request is lightweight and typed
+npm install graphql-request graphql
 
-# Or create .env file
-echo 'FIREFLIES_API_KEY=your-api-key' >> .env
+# Or use plain fetch -- no library needed
+# Python -- use requests
+pip install requests
 ```
 
-### Step 3: Verify Connection
+### Step 4: Verify Connection
 ```typescript
-// Test connection code here
+// verify-fireflies.ts
+const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+
+async function verifyConnection() {
+  const query = `{ user { name email is_admin } }`;
+
+  const response = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({ query }),
+  });
+
+  const result = await response.json();
+
+  if (result.errors) {
+    throw new Error(`Auth failed: ${result.errors[0].message}`);
+  }
+
+  const user = result.data.user;
+  console.log(`Connected as: ${user.name} (${user.email})`);
+  console.log(`Admin: ${user.is_admin}`);
+  return user;
+}
+
+verifyConnection().catch(console.error);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 5: Verify with cURL
+```bash
+set -euo pipefail
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ user { name email } }"}' | jq .
+```
+
+### Python Verification
+```python
+import os, requests
+
+FIREFLIES_API = "https://api.fireflies.ai/graphql"
+
+def verify_connection():
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {os.environ['FIREFLIES_API_KEY']}",
+    }
+    query = '{ user { name email is_admin } }'
+    resp = requests.post(FIREFLIES_API, json={"query": query}, headers=headers)
+    data = resp.json()
+
+    if "errors" in data:
+        raise Exception(f"Auth failed: {data['errors'][0]['message']}")
+
+    user = data["data"]["user"]
+    print(f"Connected as: {user['name']} ({user['email']})")
+    return user
+
+verify_connection()
+```
+
+## Rate Limits by Plan
+
+| Plan | Limit | Notes |
+|------|-------|-------|
+| Free / Pro | 50 requests/day | Cannot upload audio on Free |
+| Business | 60 requests/min | Full API access |
+| Enterprise | 60 requests/min | Super Admin webhooks |
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Fireflies.ai dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.fireflies.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+| Error | Code | Solution |
+|-------|------|----------|
+| `auth_failed` | 401 | Check API key is valid and not expired |
+| `too_many_requests` | 429 | Rate limit hit -- back off and retry |
+| `account_cancelled` | 403 | Subscription inactive -- renew plan |
+| Network timeout | - | Verify outbound HTTPS to api.fireflies.ai |
 
-## Examples
-
-### TypeScript Setup
-```typescript
-import { Fireflies.aiClient } from '@fireflies/sdk';
-
-const client = new Fireflies.aiClient({
-  apiKey: process.env.FIREFLIES_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from fireflies import Fireflies.aiClient
-
-client = Fireflies.aiClient(
-    api_key=os.environ.get('FIREFLIES_API_KEY')
-)
-```
+## Output
+- Environment variable configured with API key
+- GraphQL client verified against `https://api.fireflies.ai/graphql`
+- User identity confirmed via `user` query
 
 ## Resources
-- [Fireflies.ai Documentation](https://docs.fireflies.com)
-- [Fireflies.ai Dashboard](https://api.fireflies.com)
-- [Fireflies.ai Status](https://status.fireflies.com)
+- [Fireflies API Documentation](https://docs.fireflies.ai/)
+- [Fireflies Quickstart](https://docs.fireflies.ai/getting-started/quickstart)
+- [Fireflies API Key](https://app.fireflies.ai) (Integrations > Fireflies API)
 
 ## Next Steps
-After successful auth, proceed to `fireflies-hello-world` for your first API call.
+After successful auth, proceed to `fireflies-hello-world` for your first transcript query.
