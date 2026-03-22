@@ -17,27 +17,24 @@ tags: [saas, langfuse, testing, ci-cd]
 # Langfuse CI Integration
 
 ## Overview
-Integrate Langfuse observability and prompt management into CI/CD. Covers trace validation tests, prompt versioning checks, evaluation score regression testing, and automated prompt deployment from version control.
+Integrate Langfuse into CI/CD pipelines: trace validation tests, prompt regression testing, experiment-driven quality gates, automated prompt deployment from version control, and score monitoring.
 
 ## Prerequisites
-- Langfuse Cloud or self-hosted instance
-- Langfuse API keys (public + secret) as GitHub secrets
-- Test framework configured
-- Understanding of Langfuse traces and prompts
+- Langfuse API keys stored as GitHub secrets (`LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`)
+- Test framework (Vitest or Jest)
+- OpenAI API key for LLM tests
 
 ## Instructions
 
-### Step 1: CI Workflow for Trace Validation
+### Step 1: GitHub Actions Workflow for AI Quality Tests
+
 ```yaml
 # .github/workflows/langfuse-tests.yml
-name: Langfuse AI Quality Tests
+name: AI Quality Tests
 
 on:
   pull_request:
-    paths:
-      - 'src/ai/**'
-      - 'src/prompts/**'
-      - 'tests/ai/**'
+    paths: ["src/ai/**", "src/prompts/**", "tests/ai/**"]
 
 jobs:
   ai-quality:
@@ -45,192 +42,238 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: "20", cache: "npm" }
       - run: npm ci
 
       - name: Run AI quality tests with tracing
         env:
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-          LANGFUSE_HOST: ${{ vars.LANGFUSE_HOST || 'https://cloud.langfuse.com' }}
+          LANGFUSE_BASE_URL: ${{ vars.LANGFUSE_BASE_URL || 'https://cloud.langfuse.com' }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: npm test -- tests/ai/ --reporter=verbose
+        run: npx vitest run tests/ai/ --reporter=verbose
 
-      - name: Flush Langfuse traces
-        run: node -e "
-          const { Langfuse } = require('langfuse');
-          const lf = new Langfuse();
-          lf.flushAsync().then(() => console.log('Traces flushed'));
-        "
+      - name: Langfuse connectivity check
+        env:
+          LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+          LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+        run: |
+          node -e "
+            const { LangfuseClient } = require('@langfuse/client');
+            const lf = new LangfuseClient();
+            lf.prompt.get('__ci-health__').catch(() => {});
+            console.log('Langfuse SDK initialized OK');
+          "
 ```
 
 ### Step 2: Prompt Regression Tests
+
 ```typescript
 // tests/ai/prompt-quality.test.ts
-import { describe, it, expect } from 'vitest';
-import { Langfuse } from 'langfuse';
+import { describe, it, expect, afterAll } from "vitest";
+import { LangfuseClient } from "@langfuse/client";
+import { startActiveObservation, updateActiveObservation } from "@langfuse/tracing";
+import OpenAI from "openai";
 
-const langfuse = new Langfuse();
+const langfuse = new LangfuseClient();
+const openai = new OpenAI();
 
-describe('Prompt Quality Regression', () => {
-  it('summarization prompt produces valid output', async () => {
-    const prompt = await langfuse.getPrompt('summarize-article');
+describe("Prompt Quality Regression", () => {
+  it("summarization prompt produces valid output", async () => {
+    const prompt = await langfuse.prompt.get("summarize-article", { type: "text" });
+    const compiled = prompt.compile({ maxLength: "100 words" });
 
-    const trace = langfuse.trace({ name: 'ci-test-summarize' });
-    const generation = trace.generation({
-      name: 'summarize',
-      prompt: prompt.prompt,
-      model: 'gpt-4o-mini',
-    });
+    const result = await startActiveObservation(
+      { name: "ci-test-summarize", asType: "generation" },
+      async () => {
+        updateActiveObservation({ model: "gpt-4o-mini", input: compiled });
 
-    // Call your LLM with the prompt
-    const result = await callLLM(prompt.compile({ maxLength: '100 words' }));
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o-mini",
+          messages: [{ role: "user", content: compiled }],
+          temperature: 0,
+        });
 
-    generation.end({ output: result });
-    trace.score({ name: 'has-content', value: result.length > 20 ? 1 : 0 });
-
-    expect(result.length).toBeGreaterThan(20);
-    expect(result.length).toBeLessThan(500);  # HTTP 500 Internal Server Error
-  });
-
-  it('classification prompt returns expected format', async () => {
-    const prompt = await langfuse.getPrompt('classify-intent');
-    const trace = langfuse.trace({ name: 'ci-test-classify' });
-
-    const result = await callLLM(
-      prompt.compile({ userMessage: 'I want to cancel my subscription' })
+        const output = response.choices[0].message.content || "";
+        updateActiveObservation({
+          output,
+          usage: {
+            promptTokens: response.usage?.prompt_tokens,
+            completionTokens: response.usage?.completion_tokens,
+          },
+        });
+        return output;
+      }
     );
 
-    const validIntents = ['billing', 'cancellation', 'support', 'feedback'];
-    expect(validIntents).toContain(result.trim().toLowerCase());
-
-    trace.score({ name: 'valid-intent', value: 1 });
+    expect(result.length).toBeGreaterThan(20);
+    expect(result.length).toBeLessThan(600);
   });
 
-  afterAll(async () => {
-    await langfuse.flushAsync();
+  it("classification prompt returns valid intent", async () => {
+    const prompt = await langfuse.prompt.get("classify-intent", { type: "text" });
+    const compiled = prompt.compile({ userMessage: "I want to cancel my subscription" });
+
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: compiled }],
+      temperature: 0,
+    });
+
+    const intent = response.choices[0].message.content?.trim().toLowerCase() || "";
+    const validIntents = ["billing", "cancellation", "support", "feedback"];
+    expect(validIntents).toContain(intent);
   });
 });
 ```
 
-### Step 3: Prompt Version Sync
+### Step 3: Experiment-Driven Quality Gates
+
+```typescript
+// tests/ai/experiment-gate.test.ts
+import { describe, it, expect } from "vitest";
+import { LangfuseClient } from "@langfuse/client";
+import OpenAI from "openai";
+
+const langfuse = new LangfuseClient();
+const openai = new OpenAI();
+
+describe("Quality Gate: Intent Classification", () => {
+  it("scores above 80% accuracy on test dataset", async () => {
+    async function classifyIntent(input: { query: string }) {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Classify intent. Return one word." },
+          { role: "user", content: input.query },
+        ],
+        temperature: 0,
+      });
+      return response.choices[0].message.content?.trim() || "";
+    }
+
+    const result = await langfuse.runExperiment({
+      datasetName: "intent-classification-test",
+      runName: `ci-${process.env.GITHUB_SHA?.slice(0, 7) || "local"}`,
+      task: classifyIntent,
+      evaluators: [
+        ({ output, expectedOutput }) => ({
+          name: "exact-match",
+          value: output.toLowerCase() === expectedOutput.intent.toLowerCase() ? 1 : 0,
+          dataType: "BOOLEAN" as const,
+        }),
+      ],
+    });
+
+    // Calculate accuracy
+    const scores = result.runs.flatMap((r) => r.scores || []);
+    const accuracy = scores.filter((s) => s.value === 1).length / scores.length;
+
+    console.log(`Accuracy: ${(accuracy * 100).toFixed(1)}%`);
+    expect(accuracy).toBeGreaterThanOrEqual(0.8);
+  });
+});
+```
+
+### Step 4: Automated Prompt Deployment
+
 ```yaml
-# .github/workflows/sync-prompts.yml
-name: Sync Prompts to Langfuse
+# .github/workflows/deploy-prompts.yml
+name: Deploy Prompts to Langfuse
 
 on:
   push:
     branches: [main]
-    paths:
-      - 'src/prompts/**'
+    paths: ["src/prompts/**"]
 
 jobs:
-  sync-prompts:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with: { node-version: "20", cache: "npm" }
       - run: npm ci
 
-      - name: Deploy prompts to Langfuse
+      - name: Deploy prompts
         env:
           LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
           LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-        run: node scripts/deploy-prompts.js
+        run: node scripts/deploy-prompts.mjs
 ```
 
 ```typescript
-// scripts/deploy-prompts.ts
-import { Langfuse } from 'langfuse';
-import { readdirSync, readFileSync } from 'fs';
-import { join } from 'path';
+// scripts/deploy-prompts.mjs
+import { LangfuseClient } from "@langfuse/client";
+import { readdirSync, readFileSync } from "fs";
+import { join } from "path";
 
-const langfuse = new Langfuse();
+const langfuse = new LangfuseClient();
+const promptDir = join(process.cwd(), "src/prompts");
 
-async function deployPrompts() {
-  const promptDir = join(process.cwd(), 'src/prompts');
+for (const file of readdirSync(promptDir).filter((f) => f.endsWith(".json"))) {
+  const config = JSON.parse(readFileSync(join(promptDir, file), "utf-8"));
 
-  for (const file of readdirSync(promptDir)) {
-    if (!file.endsWith('.json')) continue;
+  await langfuse.api.prompts.create({
+    name: config.name,
+    prompt: config.template,
+    type: config.type || "text",
+    config: config.config || {},
+    labels: ["production", `deploy-${new Date().toISOString().split("T")[0]}`],
+  });
 
-    const config = JSON.parse(readFileSync(join(promptDir, file), 'utf-8'));
-
-    await langfuse.createPrompt({
-      name: config.name,
-      prompt: config.template,
-      config: config.config || {},
-      labels: ['production', `deployed-${new Date().toISOString().split('T')[0]}`],
-    });
-
-    console.log(`Deployed prompt: ${config.name}`);
-  }
-
-  await langfuse.flushAsync();
+  console.log(`Deployed: ${config.name}`);
 }
-
-deployPrompts();
 ```
 
-### Step 4: Evaluation Score Monitoring
+### Step 5: Score Regression Monitoring
+
 ```typescript
-// scripts/check-scores.ts - Run as CI step
-import { Langfuse } from 'langfuse';
+// scripts/check-quality-regression.ts
+import { LangfuseClient } from "@langfuse/client";
 
-const langfuse = new Langfuse();
+const langfuse = new LangfuseClient();
 
-async function checkScoreRegression() {
-  // Fetch recent scores
-  const scores = await langfuse.fetchScores({
-    name: 'quality',
+async function checkRegression() {
+  const scores = await langfuse.api.scores.list({
+    name: "quality",
     limit: 100,
   });
 
-  const avgScore = scores.data.reduce((s, sc) => s + sc.value, 0) / scores.data.length;
+  const values = scores.data.map((s) => s.value).filter((v): v is number => v !== null);
+  const avg = values.reduce((a, b) => a + b, 0) / values.length;
 
-  console.log(`Average quality score: ${avgScore.toFixed(2)}`);
+  console.log(`Average quality score: ${avg.toFixed(3)} (n=${values.length})`);
 
-  if (avgScore < 0.7) {
-    console.error('QUALITY REGRESSION: Score dropped below 0.7 threshold');
+  if (avg < 0.7) {
+    console.error("QUALITY REGRESSION: Score below 0.7 threshold");
     process.exit(1);
   }
 }
 
-checkScoreRegression();
+checkRegression();
 ```
+
+## CI Best Practices
+
+| Practice | Why |
+|----------|-----|
+| Use `temperature: 0` in CI tests | Deterministic outputs, fewer false failures |
+| Separate CI API keys | Isolate test traces from production |
+| Run experiments on dataset changes | Catch regressions before deploy |
+| Assert on ranges, not exact strings | LLM output varies even at temp 0 |
+| Flush/shutdown in `afterAll` | Ensure all traces reach Langfuse |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Traces not appearing | Flush not called | Always call `flushAsync` in afterAll |
-| Prompt not found | Wrong name or not deployed | Check prompt name matches exactly |
-| Flaky quality tests | Non-deterministic LLM | Set temperature to 0, use broader assertions |
-| Missing API keys | Not in GitHub secrets | Add both public and secret keys |
-
-## Examples
-
-### Minimal CI Smoke Test
-```yaml
-- name: Langfuse connectivity check
-  env:
-    LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
-    LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-  run: |
-    node -e "
-      const { Langfuse } = require('langfuse');
-      const lf = new Langfuse();
-      lf.trace({ name: 'ci-health-check' });
-      lf.flushAsync().then(() => console.log('Langfuse OK'));
-    "
-```
+| Traces not in dashboard | No flush in CI | Add `sdk.shutdown()` or `afterAll` flush |
+| Flaky quality tests | Non-deterministic LLM | Use `temperature: 0`, assert on ranges |
+| Prompt not found | Not yet deployed | Deploy prompts before running tests |
+| Missing secrets in CI | Not configured | Add to GitHub Settings > Secrets > Actions |
 
 ## Resources
-- [Langfuse Documentation](https://langfuse.com/docs)
-- [Langfuse Prompt Management](https://langfuse.com/docs/prompts)
-- [Langfuse Evaluation](https://langfuse.com/docs/scores)
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- [Experiments via SDK](https://langfuse.com/docs/evaluation/experiments/experiments-via-sdk)
+- [Prompt Management](https://langfuse.com/docs/prompt-management/get-started)
+- [Scores via SDK](https://langfuse.com/docs/evaluation/evaluation-methods/scores-via-sdk)

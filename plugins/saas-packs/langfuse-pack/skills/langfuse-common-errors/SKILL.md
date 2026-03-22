@@ -17,142 +17,134 @@ tags: [saas, langfuse, debugging]
 # Langfuse Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Langfuse errors and their solutions.
+Diagnostic reference for the 10 most common Langfuse integration errors, with real error messages, root causes, and tested solutions.
 
 ## Prerequisites
 - Langfuse SDK installed
 - API credentials configured
-- Access to error logs
+- Access to application logs or console output
 
-## Instructions
+## Error Reference
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 1. Authentication Failed (401)
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### 1. Authentication Failed
-**Error Message:**
+**Error:**
 ```
 Langfuse: Unauthorized - Invalid API key
-Error: 401 Unauthorized  # HTTP 401 Unauthorized
+Error: 401 Unauthorized
 ```
 
-**Cause:** API key is missing, expired, or mismatched with host.
+**Cause:** API key missing, expired, revoked, or keys from wrong project.
 
-**Solution:**
+**Fix:**
 ```bash
 set -euo pipefail
-# Verify environment variables are set
-echo "Public: $LANGFUSE_PUBLIC_KEY"
-echo "Secret: ${LANGFUSE_SECRET_KEY:0:10}..."  # Partial for security
-echo "Host: $LANGFUSE_HOST"
+# Verify env vars are set
+echo "Public: ${LANGFUSE_PUBLIC_KEY:0:15}..."
+echo "Secret: ${LANGFUSE_SECRET_KEY:0:10}..."
 
-# Test connection
-curl -X GET "$LANGFUSE_HOST/api/public/health" \
-  -H "Authorization: Basic $(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)"
+# Test auth against API
+HOST="${LANGFUSE_BASE_URL:-https://cloud.langfuse.com}"
+curl -s -o /dev/null -w "HTTP %{http_code}" \
+  "$HOST/api/public/health"
+
+# Auth test
+curl -s -o /dev/null -w "HTTP %{http_code}" \
+  -H "Authorization: Basic $(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)" \
+  "$HOST/api/public/traces?limit=1"
 ```
 
----
-
 ### 2. Traces Not Appearing in Dashboard
-**Symptom:** Code runs without errors but traces don't show up.
 
-**Cause:** Data not flushed before process exits.
+**Symptom:** Code runs without errors but no traces show in UI.
 
-**Solution:**
+**Root causes (in order of likelihood):**
+1. Data not flushed before process exits
+2. Wrong project keys (traces going to different project)
+3. Dashboard filter hiding traces
+
+**Fix:**
 ```typescript
-// Always flush before exit
+// v4+: Ensure OTel SDK is shut down properly
+const sdk = new NodeSDK({ spanProcessors: [new LangfuseSpanProcessor()] });
+sdk.start();
+// ... your code ...
+await sdk.shutdown(); // MUST call this before process exits
+
+// v3: Always flush
 await langfuse.flushAsync();
 
-// Or use shutdown for clean exit
-await langfuse.shutdownAsync();
-
-// Register shutdown handler
+// v3: Register shutdown handler for long-running processes
 process.on("beforeExit", async () => {
   await langfuse.shutdownAsync();
 });
 ```
 
----
+### 3. Network / Connection Errors
 
-### 3. Network/Connection Errors
-**Error Message:**
+**Error:**
 ```
 FetchError: request to https://cloud.langfuse.com failed
 ECONNREFUSED / ETIMEDOUT
 ```
 
-**Cause:** Network connectivity or firewall issues.
-
-**Solution:**
+**Fix:**
 ```bash
 set -euo pipefail
 # Test connectivity
 curl -v https://cloud.langfuse.com/api/public/health
 
-# Check DNS resolution
+# Check DNS
 nslookup cloud.langfuse.com
 
-# For self-hosted, verify host URL
-curl -v $LANGFUSE_HOST/api/public/health
+# For self-hosted
+curl -v $LANGFUSE_BASE_URL/api/public/health
 ```
 
 ```typescript
-// Increase timeout if needed
-const langfuse = new Langfuse({
-  requestTimeout: 30000, // 30 seconds  # 30000: 30 seconds in ms
-});
+// Increase timeout for slow networks
+// v4+: Configure via OTel span processor options
+// v3:
+const langfuse = new Langfuse({ requestTimeout: 30000 });
 ```
-
----
 
 ### 4. Missing Token Usage
-**Symptom:** Generations appear but token counts are 0.
 
-**Cause:** Usage data not captured from LLM response.
+**Symptom:** Generations appear but token counts show zero.
 
-**Solution:**
+**Fix:**
 ```typescript
-// For streaming, enable usage in options
+// For OpenAI streaming -- enable usage reporting
 const stream = await openai.chat.completions.create({
-  model: "gpt-4",
+  model: "gpt-4o",
   messages,
   stream: true,
-  stream_options: { include_usage: true }, // Important!
+  stream_options: { include_usage: true }, // Required!
 });
 
-// Manually add usage if not available
+// For manual tracing -- always include usage on generation end
 generation.end({
   output: content,
   usage: {
-    promptTokens: response.usage?.prompt_tokens || 0,
-    completionTokens: response.usage?.completion_tokens || 0,
+    promptTokens: response.usage?.prompt_tokens ?? 0,
+    completionTokens: response.usage?.completion_tokens ?? 0,
   },
+});
+
+// v4+: updateActiveObservation with usage
+updateActiveObservation({
+  output: content,
+  usage: { promptTokens: 100, completionTokens: 50 },
 });
 ```
 
----
+### 5. Spans Stuck "In Progress" (v3)
 
-### 5. Trace/Span Not Ending
-**Symptom:** Traces show as "in progress" indefinitely.
+**Symptom:** Spans show as in-progress indefinitely in the dashboard.
 
-**Cause:** Missing `.end()` call on spans/generations.
-
-**Solution:**
+**Fix:**
 ```typescript
-// Always end in try/finally
+// Always end spans in try/finally
 const span = trace.span({ name: "operation" });
 try {
   const result = await doWork();
@@ -163,179 +155,160 @@ try {
   throw error;
 }
 
-// Or use finally
-const span = trace.span({ name: "operation" });
-try {
+// v4+ avoids this entirely -- startActiveObservation auto-ends
+await startActiveObservation("operation", async () => {
+  // Span automatically ends when callback completes or throws
   return await doWork();
-} finally {
-  span.end();
-}
+});
 ```
-
----
 
 ### 6. Duplicate Traces
+
 **Symptom:** Same operation creates multiple traces.
 
-**Cause:** Client instantiated multiple times or missing singleton.
-
-**Solution:**
+**Fix:**
 ```typescript
-// Use singleton pattern
-let langfuseInstance: Langfuse | null = null;
+// Use singleton pattern -- NEVER create Langfuse per request
+// BAD:
+app.get("/api", async (req, res) => {
+  const langfuse = new Langfuse(); // Creates new client per request
+});
 
-export function getLangfuse(): Langfuse {
-  if (!langfuseInstance) {
-    langfuseInstance = new Langfuse();
-  }
-  return langfuseInstance;
-}
-
-// Don't create new instance per request
-// BAD: const langfuse = new Langfuse(); // in handler
-// GOOD: const langfuse = getLangfuse();
+// GOOD:
+const langfuse = new Langfuse(); // Single instance
+app.get("/api", async (req, res) => {
+  const trace = langfuse.trace({ name: "api-request" });
+});
 ```
 
----
+### 7. SDK Import Errors
 
-### 7. SDK Version Mismatch
-**Error Message:**
+**Error:**
 ```
 TypeError: langfuse.trace is not a function
-Property 'observeOpenAI' does not exist
+Cannot find module '@langfuse/tracing'
 ```
 
-**Cause:** Outdated SDK or breaking API change.
-
-**Solution:**
+**Fix:**
 ```bash
 set -euo pipefail
-# Check current version
-npm list langfuse
+# Check installed version
+npm list langfuse @langfuse/client @langfuse/tracing
+
+# v3 import
+# import { Langfuse } from "langfuse";
+
+# v4+ imports
+# import { LangfuseClient } from "@langfuse/client";
+# import { startActiveObservation, observe } from "@langfuse/tracing";
 
 # Update to latest
-npm install langfuse@latest
-
-# Check changelog for breaking changes
-# https://github.com/langfuse/langfuse-js/releases
+npm install @langfuse/client@latest @langfuse/tracing@latest @langfuse/otel@latest
 ```
 
----
-
 ### 8. Environment Variable Not Loaded
-**Error Message:**
+
+**Error:**
 ```
 Langfuse: Missing required configuration - publicKey
 ```
 
-**Cause:** .env file not loaded or wrong variable names.
-
-**Solution:**
-```bash
-# Verify .env file exists and has correct names
-cat .env | grep LANGFUSE
-
-# Required variable names:
-# LANGFUSE_PUBLIC_KEY=pk-lf-...
-# LANGFUSE_SECRET_KEY=sk-lf-...
-# LANGFUSE_HOST=https://cloud.langfuse.com
-```
-
+**Fix:**
 ```typescript
-// Load .env in your app
-import "dotenv/config"; // At top of entry file
+// Load .env at the very top of your entry file
+import "dotenv/config";
 
-// Or specify env file
+// Or use specific path
 import { config } from "dotenv";
 config({ path: ".env.local" });
-```
 
----
+// Validate on startup
+if (!process.env.LANGFUSE_PUBLIC_KEY) {
+  throw new Error("LANGFUSE_PUBLIC_KEY not set");
+}
+```
 
 ### 9. Self-Hosted Connection Issues
-**Error Message:**
+
+**Error:**
 ```
-Failed to connect to localhost:3000  # 3000: 3 seconds in ms
+Failed to connect to localhost:3000
 Certificate verification failed
 ```
 
-**Cause:** Self-hosted instance not running or SSL issues.
-
-**Solution:**
+**Fix:**
 ```bash
 set -euo pipefail
-# Check if Langfuse is running
+# Check if Langfuse container is running
 docker ps | grep langfuse
-curl http://localhost:3000/api/public/health  # 3000: 3 seconds in ms
 
-# For HTTPS without valid cert
-export NODE_TLS_REJECT_UNAUTHORIZED=0  # Development only!
+# Health check
+curl http://localhost:3000/api/public/health
+
+# Common issue: trailing slash in URL
+# BAD:  LANGFUSE_BASE_URL=http://localhost:3000/
+# GOOD: LANGFUSE_BASE_URL=http://localhost:3000
 ```
 
-```typescript
-// Verify host URL doesn't have trailing slash
-const langfuse = new Langfuse({
-  baseUrl: "http://localhost:3000", // No trailing slash  # 3000: 3 seconds in ms
-});
-```
+### 10. Rate Limiting (429)
 
----
-
-### 10. Rate Limiting
-**Error Message:**
+**Error:**
 ```
-Error: 429 Too Many Requests  # HTTP 429 Too Many Requests
+Error: 429 Too Many Requests
 Retry-After: 60
 ```
 
-**Cause:** Exceeded Langfuse API rate limits.
-
-**Solution:**
+**Fix:**
 ```typescript
-// Increase batch size to reduce requests
+// v3: Increase batch size to reduce API calls
 const langfuse = new Langfuse({
-  flushAt: 50,        // Batch more events
-  flushInterval: 30000, // Flush less often  # 30000: 30 seconds in ms
+  flushAt: 50,         // Batch more events
+  flushInterval: 30000, // Flush less often (30s)
 });
 
-// See langfuse-rate-limits skill for advanced handling
+// For sustained high volume, see langfuse-rate-limits skill
 ```
 
-## Quick Diagnostic Commands
+## Quick Diagnostic Script
+
 ```bash
+#!/bin/bash
 set -euo pipefail
-# Check Langfuse cloud status
-curl -s https://status.langfuse.com
 
-# Verify API connectivity
-curl -I https://cloud.langfuse.com/api/public/health
+echo "=== Langfuse Diagnostics ==="
+echo "Node: $(node --version 2>/dev/null || echo 'N/A')"
+echo "Python: $(python3 --version 2>/dev/null || echo 'N/A')"
+echo ""
 
-# Check local environment
-env | grep LANGFUSE
+# SDK versions
+echo "--- Installed SDK ---"
+npm list langfuse @langfuse/client @langfuse/tracing 2>/dev/null || echo "npm: not found"
+pip show langfuse 2>/dev/null | grep Version || echo "pip: not found"
+echo ""
 
-# Test auth
-curl -X GET "https://cloud.langfuse.com/api/public/traces" \
-  -H "Authorization: Basic $(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)" \
-  | head -c 200  # HTTP 200 OK
+# Config check
+echo "--- Config ---"
+echo "Public Key: ${LANGFUSE_PUBLIC_KEY:+SET (${LANGFUSE_PUBLIC_KEY:0:10}...)}"
+echo "Secret Key: ${LANGFUSE_SECRET_KEY:+SET}"
+echo "Base URL: ${LANGFUSE_BASE_URL:-${LANGFUSE_HOST:-default cloud}}"
+echo ""
+
+# Connectivity
+HOST="${LANGFUSE_BASE_URL:-${LANGFUSE_HOST:-https://cloud.langfuse.com}}"
+echo "--- Connectivity ---"
+echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 ```
 
 ## Escalation Path
-1. Collect evidence with `langfuse-debug-bundle`
-2. Check [Langfuse Status](https://status.langfuse.com)
-3. Search [GitHub Issues](https://github.com/langfuse/langfuse/issues)
-4. Join [Discord Community](https://langfuse.com/discord)
-5. Contact support with debug bundle
+
+1. Run diagnostic script above
+2. Collect debug bundle with `langfuse-debug-bundle` skill
+3. Check [Langfuse Status](https://status.langfuse.com)
+4. Search [GitHub Issues](https://github.com/langfuse/langfuse/issues)
+5. Ask in [Discord](https://langfuse.com/discord)
 
 ## Resources
-- [Langfuse Troubleshooting](https://langfuse.com/docs/get-started)
-- [Langfuse GitHub Issues](https://github.com/langfuse/langfuse/issues)
+- [Langfuse Troubleshooting](https://langfuse.com/docs/observability/get-started)
+- [GitHub Issues](https://github.com/langfuse/langfuse/issues)
 - [Langfuse Discord](https://langfuse.com/discord)
-
-## Next Steps
-For comprehensive debugging, see `langfuse-debug-bundle`.
-
-## Examples
-
-**Basic usage**: Apply langfuse common errors to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langfuse common errors for production environments with multiple constraints and team-specific requirements.
+- [Status Page](https://status.langfuse.com)

@@ -17,36 +17,122 @@ tags: [saas, langfuse, testing, tracing]
 # Langfuse Hello World
 
 ## Overview
-Minimal working example demonstrating core Langfuse tracing functionality.
+Create your first Langfuse trace with real SDK calls. Demonstrates the trace/span/generation hierarchy, the `observe` wrapper, and the OpenAI drop-in integration.
 
 ## Prerequisites
 - Completed `langfuse-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Valid API credentials in environment variables
+- OpenAI API key (for the OpenAI integration example)
 
 ## Instructions
 
-### Step 1: Create Entry File
+### Step 1: Hello World with v4+ Modular SDK
 
-Create a new file for your hello world trace.
+```typescript
+// hello-langfuse.ts
+import { startActiveObservation, observe, updateActiveObservation } from "@langfuse/tracing";
+import { LangfuseSpanProcessor } from "@langfuse/otel";
+import { NodeSDK } from "@opentelemetry/sdk-node";
 
-### Step 2: Import and Initialize Client
+// Register OpenTelemetry processor (once at startup)
+const sdk = new NodeSDK({
+  spanProcessors: [new LangfuseSpanProcessor()],
+});
+sdk.start();
+
+async function main() {
+  // Create a top-level trace with startActiveObservation
+  await startActiveObservation("hello-world", async (span) => {
+    span.update({
+      input: { message: "Hello, Langfuse!" },
+      metadata: { source: "hello-world-example" },
+    });
+
+    // Nested span -- automatically linked to parent
+    await startActiveObservation("process-input", async (child) => {
+      child.update({ input: { text: "processing..." } });
+      await new Promise((r) => setTimeout(r, 100));
+      child.update({ output: { result: "done" } });
+    });
+
+    // Nested generation (LLM call tracking)
+    await startActiveObservation(
+      { name: "llm-response", asType: "generation" },
+      async (gen) => {
+        gen.update({
+          model: "gpt-4o",
+          input: [{ role: "user", content: "Say hello" }],
+          output: { content: "Hello! How can I help you today?" },
+          usage: { promptTokens: 5, completionTokens: 10, totalTokens: 15 },
+        });
+      }
+    );
+
+    span.update({ output: { status: "completed" } });
+  });
+
+  // Allow time for the span processor to flush
+  await sdk.shutdown();
+  console.log("Trace created! Check your Langfuse dashboard.");
+}
+
+main().catch(console.error);
+```
+
+### Step 2: Hello World with `observe` Wrapper
+
+The `observe` wrapper traces existing functions without modifying internals:
+
+```typescript
+import { observe, updateActiveObservation } from "@langfuse/tracing";
+
+// Wrap any async function -- it becomes a traced span
+const processQuery = observe(async (query: string) => {
+  updateActiveObservation({ input: { query } });
+
+  // Simulate processing
+  const result = `Processed: ${query}`;
+
+  updateActiveObservation({ output: { result } });
+  return result;
+});
+
+// Wrap an LLM call as a generation
+const generateAnswer = observe(
+  { name: "generate-answer", asType: "generation" },
+  async (prompt: string) => {
+    updateActiveObservation({
+      model: "gpt-4o",
+      input: [{ role: "user", content: prompt }],
+    });
+
+    const answer = "Langfuse is an open-source LLM observability platform.";
+
+    updateActiveObservation({
+      output: answer,
+      usage: { promptTokens: 10, completionTokens: 20 },
+    });
+    return answer;
+  }
+);
+
+// Both functions auto-nest when called within an observed context
+const pipeline = observe(async () => {
+  await processQuery("What is Langfuse?");
+  await generateAnswer("Explain Langfuse in one sentence.");
+});
+
+await pipeline();
+```
+
+### Step 3: Hello World with Legacy v3 SDK
 
 ```typescript
 import { Langfuse } from "langfuse";
 
-const langfuse = new Langfuse({
-  publicKey: process.env.LANGFUSE_PUBLIC_KEY!,
-  secretKey: process.env.LANGFUSE_SECRET_KEY!,
-  baseUrl: process.env.LANGFUSE_HOST,
-});
-```
+const langfuse = new Langfuse();
 
-### Step 3: Create Your First Trace
-
-```typescript
 async function helloLangfuse() {
-  // Create a trace (top-level operation)
   const trace = langfuse.trace({
     name: "hello-world",
     userId: "demo-user",
@@ -54,180 +140,43 @@ async function helloLangfuse() {
     tags: ["demo", "getting-started"],
   });
 
-  // Add a span (child operation)
+  // Span: child operation
   const span = trace.span({
     name: "process-input",
     input: { message: "Hello, Langfuse!" },
   });
+  await new Promise((r) => setTimeout(r, 100));
+  span.end({ output: { result: "Processed successfully!" } });
 
-  // Simulate some processing
-  await new Promise((resolve) => setTimeout(resolve, 100));
-
-  // End the span with output
-  span.end({
-    output: { result: "Processed successfully!" },
-  });
-
-  // Add a generation (LLM call tracking)
+  // Generation: LLM call tracking
   trace.generation({
     name: "llm-response",
-    model: "gpt-4",
+    model: "gpt-4o",
     input: [{ role: "user", content: "Say hello" }],
     output: { content: "Hello! How can I help you today?" },
-    usage: {
-      promptTokens: 5,
-      completionTokens: 10,
-      totalTokens: 15,
-    },
+    usage: { promptTokens: 5, completionTokens: 10, totalTokens: 15 },
   });
 
-  // Flush to ensure data is sent
   await langfuse.flushAsync();
-
-  console.log("Trace created! View at:", trace.getTraceUrl());
+  console.log("Trace URL:", trace.getTraceUrl());
 }
 
-helloLangfuse().catch(console.error);
+helloLangfuse();
 ```
 
-## Output
-- Working code file with Langfuse client initialization
-- A trace visible in Langfuse dashboard containing:
-  - One span with input/output
-  - One generation with mock LLM data
-- Console output showing:
-```
-Trace created! View at: https://cloud.langfuse.com/trace/abc123...
-```
+### Step 4: Python Hello World
 
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list langfuse` |
-| Auth Error | Invalid credentials | Check environment variables are set |
-| Trace not appearing | Data not flushed | Ensure `flushAsync()` is called |
-| Network Error | Host unreachable | Verify LANGFUSE_HOST URL |
-
-## Examples
-
-### TypeScript Complete Example
-```typescript
-import { Langfuse } from "langfuse";
-
-const langfuse = new Langfuse();
-
-async function main() {
-  // Create trace
-  const trace = langfuse.trace({
-    name: "hello-world",
-    input: { query: "What is Langfuse?" },
-  });
-
-  // Simulate LLM call
-  const generation = trace.generation({
-    name: "answer-query",
-    model: "gpt-4",
-    modelParameters: { temperature: 0.7 },
-    input: [
-      { role: "system", content: "You are a helpful assistant." },
-      { role: "user", content: "What is Langfuse?" },
-    ],
-  });
-
-  // Simulate response
-  await new Promise((r) => setTimeout(r, 500));  # HTTP 500 Internal Server Error
-
-  // End generation with output
-  generation.end({
-    output: "Langfuse is an open-source LLM observability platform...",
-    usage: { promptTokens: 25, completionTokens: 50 },
-  });
-
-  // Update trace with final output
-  trace.update({
-    output: { answer: "Langfuse is an LLM observability platform." },
-  });
-
-  // Flush and get URL
-  await langfuse.flushAsync();
-  console.log("View trace:", trace.getTraceUrl());
-}
-
-main();
-```
-
-### Python Complete Example
-```python
-from langfuse import Langfuse
-import time
-
-langfuse = Langfuse()
-
-def main():
-    # Create trace
-    trace = langfuse.trace(
-        name="hello-world",
-        input={"query": "What is Langfuse?"},
-        user_id="demo-user",
-    )
-
-    # Add a span for processing
-    span = trace.span(
-        name="process-query",
-        input={"query": "What is Langfuse?"},
-    )
-
-    # Simulate processing
-    time.sleep(0.1)
-
-    span.end(output={"processed": True})
-
-    # Add LLM generation
-    generation = trace.generation(
-        name="answer-query",
-        model="gpt-4",
-        model_parameters={"temperature": 0.7},
-        input=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "What is Langfuse?"},
-        ],
-    )
-
-    # Simulate LLM response
-    time.sleep(0.5)
-
-    generation.end(
-        output="Langfuse is an open-source LLM observability platform...",
-        usage={"prompt_tokens": 25, "completion_tokens": 50},
-    )
-
-    # Update trace with final output
-    trace.update(
-        output={"answer": "Langfuse is an LLM observability platform."}
-    )
-
-    # Flush data
-    langfuse.flush()
-    print(f"View trace: {trace.get_trace_url()}")
-
-if __name__ == "__main__":
-    main()
-```
-
-### With Decorators (Python)
 ```python
 from langfuse.decorators import observe, langfuse_context
 
 @observe()
 def process_query(query: str) -> str:
-    # This function is automatically traced
     return f"Processed: {query}"
 
 @observe(as_type="generation")
-def generate_response(messages: list) -> str:
-    # This is tracked as an LLM generation
+def generate_response(prompt: str) -> str:
     langfuse_context.update_current_observation(
-        model="gpt-4",
+        model="gpt-4o",
         usage={"prompt_tokens": 10, "completion_tokens": 20},
     )
     return "Hello from Langfuse!"
@@ -235,16 +184,41 @@ def generate_response(messages: list) -> str:
 @observe()
 def main():
     result = process_query("Hello!")
-    response = generate_response([{"role": "user", "content": "Hi"}])
+    response = generate_response("Say hello")
     return response
 
 main()
 ```
 
+## Trace Hierarchy
+
+```
+Trace: hello-world
+  ├── Span: process-input
+  │     input: { message: "Hello, Langfuse!" }
+  │     output: { result: "Processed successfully!" }
+  └── Generation: llm-response
+        model: gpt-4o
+        input: [{ role: "user", content: "Say hello" }]
+        output: "Hello! How can I help you today?"
+        usage: { promptTokens: 5, completionTokens: 10 }
+```
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Import error | SDK not installed | `npm install @langfuse/tracing @langfuse/otel @opentelemetry/sdk-node` |
+| Auth error (401) | Invalid credentials | Verify `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` |
+| Trace not appearing | Data not flushed | Call `sdk.shutdown()` (v4+) or `langfuse.flushAsync()` (v3) |
+| Network error | Host unreachable | Check `LANGFUSE_BASE_URL` value |
+| No auto-nesting | Missing OTel setup | Register `LangfuseSpanProcessor` with `NodeSDK` |
+
 ## Resources
-- [Langfuse Tracing Concepts](https://langfuse.com/docs/tracing)
-- [Langfuse SDK Reference](https://langfuse.com/docs/sdk)
-- [Langfuse Examples](https://langfuse.com/docs/get-started)
+- [Langfuse JS/TS SDK Cookbook](https://langfuse.com/guides/cookbook/js_langfuse_sdk)
+- [TypeScript SDK Instrumentation](https://langfuse.com/docs/observability/sdk/typescript/instrumentation)
+- [Python Decorators Guide](https://langfuse.com/docs/sdk/python/decorators)
+- [Observation Types](https://langfuse.com/docs/observability/features/observation-types)
 
 ## Next Steps
-Proceed to `langfuse-local-dev-loop` for development workflow setup.
+Proceed to `langfuse-core-workflow-a` for real OpenAI/Anthropic tracing, or `langfuse-local-dev-loop` for development workflow setup.

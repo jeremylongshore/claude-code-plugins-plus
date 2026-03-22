@@ -17,11 +17,11 @@ tags: [saas, langfuse, performance, scaling, tracing]
 # Langfuse Performance Tuning
 
 ## Overview
-Optimize Langfuse tracing for minimal overhead and maximum throughput.
+Optimize Langfuse tracing for minimal overhead and maximum throughput: benchmark measurement, batch tuning, non-blocking patterns, payload optimization, sampling, and memory management.
 
 ## Prerequisites
 - Existing Langfuse integration
-- Performance baseline measurements
+- Performance baseline to compare against
 - Understanding of async patterns
 
 ## Performance Targets
@@ -29,279 +29,198 @@ Optimize Langfuse tracing for minimal overhead and maximum throughput.
 | Metric | Target | Critical |
 |--------|--------|----------|
 | Trace creation overhead | < 1ms | < 5ms |
-| Flush latency | < 100ms | < 500ms |
-| Memory per trace | < 1KB | < 5KB |
+| Flush latency (batch) | < 100ms | < 500ms |
+| Memory per active trace | < 1KB | < 5KB |
 | CPU overhead | < 1% | < 5% |
 
 ## Instructions
 
-### Step 1: Measure Baseline Performance
+### Step 1: Benchmark Current Performance
 
 ```typescript
 // scripts/benchmark-langfuse.ts
-import { Langfuse } from "langfuse";
 import { performance } from "perf_hooks";
+import { startActiveObservation, updateActiveObservation } from "@langfuse/tracing";
+import { LangfuseSpanProcessor } from "@langfuse/otel";
+import { NodeSDK } from "@opentelemetry/sdk-node";
 
 async function benchmark() {
-  const langfuse = new Langfuse();
-  const iterations = 1000;  # 1000: 1 second in ms
+  const sdk = new NodeSDK({
+    spanProcessors: [new LangfuseSpanProcessor()],
+  });
+  sdk.start();
+
+  const iterations = 1000;
 
   // Measure trace creation
-  const traceTimings: number[] = [];
+  const timings: number[] = [];
   for (let i = 0; i < iterations; i++) {
     const start = performance.now();
-    const trace = langfuse.trace({ name: `benchmark-${i}` });
-    traceTimings.push(performance.now() - start);
-  }
-
-  // Measure generation creation
-  const genTimings: number[] = [];
-  const trace = langfuse.trace({ name: "gen-benchmark" });
-  for (let i = 0; i < iterations; i++) {
-    const start = performance.now();
-    const gen = trace.generation({
-      name: `gen-${i}`,
-      model: "gpt-4",
-      input: [{ role: "user", content: "test" }],
+    await startActiveObservation(`bench-${i}`, async () => {
+      updateActiveObservation({ input: { i }, output: { done: true } });
     });
-    gen.end({ output: "response" });
-    genTimings.push(performance.now() - start);
+    timings.push(performance.now() - start);
   }
 
-  // Measure flush
-  const flushStart = performance.now();
-  await langfuse.flushAsync();
-  const flushTime = performance.now() - flushStart;
-
-  // Calculate stats
-  const stats = (arr: number[]) => ({
-    mean: arr.reduce((a, b) => a + b) / arr.length,
-    p50: arr.sort((a, b) => a - b)[Math.floor(arr.length * 0.5)],
-    p95: arr.sort((a, b) => a - b)[Math.floor(arr.length * 0.95)],
-    p99: arr.sort((a, b) => a - b)[Math.floor(arr.length * 0.99)],
-  });
-
+  const sorted = timings.sort((a, b) => a - b);
   console.log("=== Langfuse Performance Benchmark ===");
-  console.log(`\nTrace Creation (${iterations} iterations):`);
-  console.log(JSON.stringify(stats(traceTimings), null, 2));
-  console.log(`\nGeneration Creation (${iterations} iterations):`);
-  console.log(JSON.stringify(stats(genTimings), null, 2));
-  console.log(`\nFlush Time: ${flushTime.toFixed(2)}ms`);
+  console.log(`Iterations: ${iterations}`);
+  console.log(`Mean:  ${(sorted.reduce((a, b) => a + b) / sorted.length).toFixed(3)}ms`);
+  console.log(`P50:   ${sorted[Math.floor(sorted.length * 0.5)].toFixed(3)}ms`);
+  console.log(`P95:   ${sorted[Math.floor(sorted.length * 0.95)].toFixed(3)}ms`);
+  console.log(`P99:   ${sorted[Math.floor(sorted.length * 0.99)].toFixed(3)}ms`);
 
-  await langfuse.shutdownAsync();
+  const flushStart = performance.now();
+  await sdk.shutdown();
+  console.log(`Flush: ${(performance.now() - flushStart).toFixed(1)}ms`);
 }
 
 benchmark();
 ```
 
-### Step 2: Optimize Batching Configuration
+### Step 2: Optimize Batch Configuration
 
 ```typescript
-// High-throughput configuration
+// v4+: Tune OTel span processor
+import { LangfuseSpanProcessor } from "@langfuse/otel";
+import { NodeSDK } from "@opentelemetry/sdk-node";
+
+const processor = new LangfuseSpanProcessor({
+  exportIntervalMillis: 10000,  // Flush every 10s (default: 5000)
+  maxExportBatchSize: 100,      // Larger batches = fewer API calls
+  maxQueueSize: 4096,           // Buffer more events before dropping
+});
+
+const sdk = new NodeSDK({ spanProcessors: [processor] });
+sdk.start();
+```
+
+```typescript
+// v3: Direct configuration
 const langfuse = new Langfuse({
-  publicKey: process.env.LANGFUSE_PUBLIC_KEY!,
-  secretKey: process.env.LANGFUSE_SECRET_KEY!,
-
-  // Batching optimization
-  flushAt: 100,           // Larger batches = fewer requests
-  flushInterval: 10000,   // Less frequent flushes  # 10000: 10 seconds in ms
-
-  // Timeout tuning
-  requestTimeout: 30000,  // Allow time for large batches  # 30000: 30 seconds in ms
-
-  // Optional: Disable in development
-  enabled: process.env.NODE_ENV === "production",
+  flushAt: 100,           // Larger batches
+  flushInterval: 10000,   // Less frequent flushes
+  requestTimeout: 30000,  // Allow time for large batches
 });
 ```
 
-### Step 3: Implement Non-Blocking Tracing
+| Setting | Low Volume | High Volume | Ultra-High |
+|---------|-----------|-------------|------------|
+| Batch size | 15 | 50-100 | 200 |
+| Flush interval | 5s | 10s | 30s |
+| Queue size | 1024 | 4096 | 8192 |
+
+### Step 3: Non-Blocking Trace Wrapper
+
+Ensure tracing never blocks your application's critical path:
 
 ```typescript
-// Trace wrapper that never blocks the main operation
-class NonBlockingLangfuse {
-  private langfuse: Langfuse;
-  private errorCount = 0;
-  private maxErrors = 10;
+import { observe, updateActiveObservation } from "@langfuse/tracing";
 
-  constructor(config: ConstructorParameters<typeof Langfuse>[0]) {
-    this.langfuse = new Langfuse(config);
-  }
-
-  // Fire-and-forget trace
-  trace(params: Parameters<typeof this.langfuse.trace>[0]) {
-    if (this.errorCount >= this.maxErrors) {
-      // Circuit breaker: stop tracing if too many errors
-      return this.createNoOpTrace();
-    }
-
+// The observe wrapper is already non-blocking for the trace submission.
+// But protect against SDK crashes:
+function safeObserve<T extends (...args: any[]) => Promise<any>>(
+  name: string,
+  fn: T
+): T {
+  return (async (...args: Parameters<T>) => {
     try {
-      return this.langfuse.trace(params);
+      return await observe({ name }, async () => {
+        updateActiveObservation({ input: args });
+        const result = await fn(...args);
+        updateActiveObservation({ output: result });
+        return result;
+      })();
     } catch (error) {
-      this.errorCount++;
-      console.error("Langfuse trace error:", error);
-      return this.createNoOpTrace();
+      // If tracing throws, run function without tracing
+      console.warn(`Tracing failed for ${name}:`, error);
+      return fn(...args);
     }
-  }
-
-  private createNoOpTrace() {
-    return {
-      id: "noop",
-      span: () => this.createNoOpSpan(),
-      generation: () => this.createNoOpGeneration(),
-      update: () => {},
-      getTraceUrl: () => "",
-    };
-  }
-
-  private createNoOpSpan() {
-    return {
-      id: "noop",
-      span: () => this.createNoOpSpan(),
-      generation: () => this.createNoOpGeneration(),
-      end: () => {},
-    };
-  }
-
-  private createNoOpGeneration() {
-    return {
-      id: "noop",
-      end: () => {},
-    };
-  }
-
-  // Background flush - don't await in hot path
-  flush() {
-    this.langfuse.flushAsync().catch((error) => {
-      this.errorCount++;
-      console.error("Langfuse flush error:", error);
-    });
-  }
-
-  async shutdown() {
-    return this.langfuse.shutdownAsync();
-  }
+  }) as T;
 }
 ```
 
-### Step 4: Optimize Data Payload Size
+### Step 4: Payload Size Optimization
+
+Large trace payloads slow down flush and increase costs:
 
 ```typescript
-// Reduce trace payload size
-function optimizeTraceInput(input: any): any {
-  // Truncate large strings
-  const MAX_STRING_LENGTH = 10000;  # 10000: 10 seconds in ms
-
+function truncateForTrace(input: any, maxStringLen = 5000, maxArrayLen = 50): any {
   if (typeof input === "string") {
-    return input.length > MAX_STRING_LENGTH
-      ? input.slice(0, MAX_STRING_LENGTH) + "...[truncated]"
+    return input.length > maxStringLen
+      ? input.slice(0, maxStringLen) + `...[truncated ${input.length - maxStringLen} chars]`
       : input;
   }
 
   if (Array.isArray(input)) {
-    // Limit array size
-    const MAX_ARRAY_LENGTH = 100;
-    const truncated = input.slice(0, MAX_ARRAY_LENGTH);
-    return truncated.map(optimizeTraceInput);
+    return input.slice(0, maxArrayLen).map((item) => truncateForTrace(item));
+  }
+
+  if (input instanceof Buffer || input instanceof Uint8Array) {
+    return `[Binary: ${input.length} bytes]`;
   }
 
   if (typeof input === "object" && input !== null) {
-    // Remove large binary data
-    const optimized: Record<string, any> = {};
+    const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(input)) {
-      if (value instanceof Buffer || value instanceof Uint8Array) {
-        optimized[key] = `[Binary: ${value.length} bytes]`;
-      } else {
-        optimized[key] = optimizeTraceInput(value);
-      }
+      result[key] = truncateForTrace(value);
     }
-    return optimized;
+    return result;
   }
 
   return input;
 }
 
-// Use in traces
-const trace = langfuse.trace({
-  name: "optimized-trace",
-  input: optimizeTraceInput(largeInput),
+// Usage
+await startActiveObservation("process", async () => {
+  updateActiveObservation({
+    input: truncateForTrace(largeInput),  // Truncated for trace
+  });
+  const result = await process(largeInput); // Full input to function
+  updateActiveObservation({ output: truncateForTrace(result) });
 });
 ```
 
-### Step 5: Implement Sampling for Ultra-High Volume
+### Step 5: Sampling for Ultra-High Volume
+
+When you cannot afford to trace every request:
 
 ```typescript
-interface SamplingStrategy {
-  shouldSample(params: TraceParams): boolean;
-}
-
-// Deterministic sampling based on trace attributes
-class DeterministicSampler implements SamplingStrategy {
+class TraceSampler {
   private rate: number;
+  private windowMs = 60000;
+  private maxPerWindow: number;
+  private timestamps: number[] = [];
 
-  constructor(rate: number) {
+  constructor(rate: number, maxPerMinute: number) {
     this.rate = rate;
+    this.maxPerWindow = maxPerMinute;
   }
 
-  shouldSample(params: TraceParams): boolean {
-    // Always sample errors
-    if (params.level === "ERROR" || params.tags?.includes("error")) {
-      return true;
-    }
+  shouldSample(isError = false): boolean {
+    if (isError) return true; // Always trace errors
 
-    // Deterministic hash-based sampling
-    const hash = this.hashString(params.name + (params.userId || ""));
-    return (hash % 100) < (this.rate * 100);
-  }
-
-  private hashString(str: string): number {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return Math.abs(hash);
-  }
-}
-
-// Adaptive sampling based on throughput
-class AdaptiveSampler implements SamplingStrategy {
-  private windowMs = 60000;  # 60000: 1 minute in ms
-  private maxPerWindow = 1000;  # 1000: 1 second in ms
-  private counts: number[] = [];
-
-  shouldSample(params: TraceParams): boolean {
     const now = Date.now();
-    const windowStart = now - this.windowMs;
+    this.timestamps = this.timestamps.filter((t) => t > now - this.windowMs);
 
-    // Clean old counts
-    this.counts = this.counts.filter((t) => t > windowStart);
+    if (this.timestamps.length >= this.maxPerWindow) return false;
+    if (Math.random() > this.rate) return false;
 
-    // Check if under limit
-    if (this.counts.length < this.maxPerWindow) {
-      this.counts.push(now);
-      return true;
-    }
-
-    // Over limit - only sample important traces
-    return params.level === "ERROR";
+    this.timestamps.push(now);
+    return true;
   }
 }
 
-// Apply sampling
-const sampler = new DeterministicSampler(0.1); // 10% sampling
+const sampler = new TraceSampler(0.1, 1000); // 10%, max 1000/min
 
-function sampledTrace(params: TraceParams) {
-  if (!sampler.shouldSample(params)) {
-    return createNoOpTrace();
+async function maybeTrace<T>(name: string, fn: () => Promise<T>, isError = false): Promise<T> {
+  if (!sampler.shouldSample(isError)) {
+    return fn(); // Skip tracing
   }
 
-  return langfuse.trace({
-    ...params,
-    metadata: {
-      ...params.metadata,
-      sampled: true,
-    },
+  return startActiveObservation(name, async () => {
+    updateActiveObservation({ metadata: { sampled: true } });
+    return fn();
   });
 }
 ```
@@ -309,86 +228,40 @@ function sampledTrace(params: TraceParams) {
 ### Step 6: Memory Management
 
 ```typescript
-// Prevent memory leaks with trace cleanup
-class ManagedLangfuse {
-  private langfuse: Langfuse;
-  private activeTraces: Map<string, { createdAt: Date }> = new Map();
-  private maxTraceAge = 300000; // 5 minutes  # 300000 = configured value
-
-  constructor(config: ConstructorParameters<typeof Langfuse>[0]) {
-    this.langfuse = new Langfuse(config);
-
-    // Periodic cleanup
-    setInterval(() => this.cleanupStaleTraces(), 60000);  # 60000: 1 minute in ms
-  }
-
-  trace(params: Parameters<typeof this.langfuse.trace>[0]) {
-    const trace = this.langfuse.trace(params);
-    this.activeTraces.set(trace.id, { createdAt: new Date() });
-    return trace;
-  }
-
-  private cleanupStaleTraces() {
-    const now = Date.now();
-    let cleaned = 0;
-
-    for (const [id, meta] of this.activeTraces) {
-      if (now - meta.createdAt.getTime() > this.maxTraceAge) {
-        this.activeTraces.delete(id);
-        cleaned++;
-      }
-    }
-
-    if (cleaned > 0) {
-      console.log(`Cleaned up ${cleaned} stale trace references`);
-    }
-  }
-
-  getStats() {
-    return {
-      activeTraces: this.activeTraces.size,
-      heapUsed: process.memoryUsage().heapUsed / 1024 / 1024,  # 1024: 1 KB
-    };
-  }
+// Monitor trace-related memory usage
+function logMemoryStats() {
+  const mem = process.memoryUsage();
+  console.log({
+    heapUsedMB: (mem.heapUsed / 1024 / 1024).toFixed(1),
+    rssMB: (mem.rss / 1024 / 1024).toFixed(1),
+    externalMB: (mem.external / 1024 / 1024).toFixed(1),
+  });
 }
+
+// Log every minute in production
+setInterval(logMemoryStats, 60000);
 ```
 
-## Output
-- Baseline performance measurements
-- Optimized batching configuration
-- Non-blocking trace wrapper
-- Payload size optimization
-- Sampling strategies for high volume
-- Memory leak prevention
+## Optimization Impact Matrix
 
-## Performance Optimization Checklist
-
-| Optimization | Impact | Effort |
-|--------------|--------|--------|
-| Increase `flushAt` | High | Low |
-| Non-blocking traces | High | Medium |
-| Payload truncation | Medium | Low |
-| Sampling | High | Medium |
-| Memory management | Medium | Medium |
+| Optimization | Latency Impact | Throughput Impact | Effort |
+|-------------|---------------|-------------------|--------|
+| Increase batch size | High | High | Low |
+| Non-blocking wrapper | High | Medium | Low |
+| Payload truncation | Medium | Medium | Low |
+| Sampling | High | Very High | Medium |
+| Memory monitoring | Low | Low | Low |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| High latency | Small batch size | Increase `flushAt` |
-| Memory growth | No cleanup | Add trace cleanup |
-| Request timeouts | Large payloads | Truncate inputs |
-| High CPU | Sync operations | Use async patterns |
+| High P99 latency | Sync flush in hot path | Use non-blocking wrapper |
+| Memory growth | No payload limits | Truncate inputs/outputs |
+| Request timeouts | Batch too large | Reduce batch size or increase timeout |
+| Dropped spans | Queue full | Increase `maxQueueSize` |
 
 ## Resources
-- [Langfuse SDK Configuration](https://langfuse.com/docs/sdk)
-- [Node.js Performance](https://nodejs.org/en/docs/guides/dont-block-the-event-loop)
-- [Sampling Strategies](https://opentelemetry.io/docs/concepts/sampling/)
-
-## Next Steps
-For cost optimization, see `langfuse-cost-tuning`.
-
-## Examples
-
-**Basic usage**: Apply langfuse performance tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langfuse performance tuning for production environments with multiple constraints and team-specific requirements.
+- [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
+- [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
+- [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)

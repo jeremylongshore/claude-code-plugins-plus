@@ -17,150 +17,190 @@ tags: [saas, langfuse, llm, debugging, workflow]
 # Langfuse Local Dev Loop
 
 ## Overview
-Set up a fast, iterative local development workflow with Langfuse tracing and debugging.
+Fast local development workflow with Langfuse tracing, immediate trace visibility, debug logging, and optional self-hosted local instance via Docker.
 
 ## Prerequisites
 - Completed `langfuse-install-auth` setup
-- Node.js 18+ or Python 3.9+
+- Node.js 18+ with `tsx` for hot reload (`npm install -D tsx`)
 - Docker (optional, for self-hosted local instance)
-- IDE with TypeScript/Python support
 
 ## Instructions
 
-### Step 1: Configure Development Environment
-
-Create a `.env.local` file for development-specific settings:
+### Step 1: Development Environment File
 
 ```bash
-# .env.local
+# .env.local (git-ignored)
 LANGFUSE_PUBLIC_KEY=pk-lf-dev-...
 LANGFUSE_SECRET_KEY=sk-lf-dev-...
-LANGFUSE_HOST=https://cloud.langfuse.com
+LANGFUSE_BASE_URL=https://cloud.langfuse.com
 
-# Development options
-LANGFUSE_DEBUG=true
-LANGFUSE_FLUSH_AT=1        # Flush after every event for immediate visibility
-LANGFUSE_FLUSH_INTERVAL=1000  # 1000: Flush every second
+# Dev-specific settings
+NODE_ENV=development
+OPENAI_API_KEY=sk-...
 ```
 
-### Step 2: Create Debug-Enabled Client
+### Step 2: Dev-Optimized Langfuse Setup (v4+)
 
 ```typescript
-// src/lib/langfuse.ts
+// src/lib/langfuse-dev.ts
+import { LangfuseSpanProcessor } from "@langfuse/otel";
+import { NodeSDK } from "@opentelemetry/sdk-node";
+import { LangfuseClient } from "@langfuse/client";
+
+const isDev = process.env.NODE_ENV !== "production";
+
+// Configure span processor with dev-friendly settings
+const processor = new LangfuseSpanProcessor({
+  // In dev: flush immediately for instant visibility
+  ...(isDev && { exportIntervalMillis: 1000, maxExportBatchSize: 1 }),
+});
+
+const sdk = new NodeSDK({ spanProcessors: [processor] });
+sdk.start();
+
+export const langfuse = new LangfuseClient();
+
+// Print trace URLs in development
+export function logTrace(traceId: string) {
+  if (isDev) {
+    const host = process.env.LANGFUSE_BASE_URL || "https://cloud.langfuse.com";
+    console.log(`\n  Trace: ${host}/trace/${traceId}\n`);
+  }
+}
+
+// Clean shutdown
+process.on("SIGINT", async () => {
+  await sdk.shutdown();
+  process.exit(0);
+});
+```
+
+### Step 3: Dev-Optimized Setup (v3 Legacy)
+
+```typescript
+// src/lib/langfuse-dev.ts
 import { Langfuse } from "langfuse";
 
 const isDev = process.env.NODE_ENV !== "production";
 
 export const langfuse = new Langfuse({
-  publicKey: process.env.LANGFUSE_PUBLIC_KEY!,
-  secretKey: process.env.LANGFUSE_SECRET_KEY!,
-  baseUrl: process.env.LANGFUSE_HOST,
-  // Development settings
-  flushAt: isDev ? 1 : 15,
-  flushInterval: isDev ? 1000 : 10000,  # 10000: 1 second in ms
-  // Enable debug logging in dev
-  ...(isDev && {
-    debug: true,
-  }),
+  flushAt: isDev ? 1 : 15,          // Immediate flush in dev
+  flushInterval: isDev ? 1000 : 10000,
+  ...(isDev && { debug: true }),     // Verbose SDK logging
 });
 
-// Auto-flush on process exit
+export function logTraceUrl(trace: ReturnType<typeof langfuse.trace>) {
+  if (isDev) {
+    console.log(`\n  Trace: ${trace.getTraceUrl()}\n`);
+  }
+}
+
 process.on("beforeExit", async () => {
   await langfuse.shutdownAsync();
 });
-
-// Helper to get trace URL immediately
-export function logTraceUrl(trace: ReturnType<typeof langfuse.trace>) {
-  if (isDev) {
-    console.log(`\n🔍 Trace: ${trace.getTraceUrl()}\n`);
-  }
-}
 ```
 
-### Step 3: Set Up Hot Reload Development Script
+### Step 4: Hot Reload Scripts
 
 ```json
-// package.json
 {
   "scripts": {
     "dev": "tsx watch --env-file=.env.local src/index.ts",
-    "dev:debug": "DEBUG=langfuse* tsx watch --env-file=.env.local src/index.ts"
+    "dev:debug": "DEBUG=langfuse* tsx watch --env-file=.env.local src/index.ts",
+    "dev:trace": "LANGFUSE_DEBUG=true tsx watch --env-file=.env.local src/index.ts"
   }
 }
 ```
 
-### Step 4: Add Development Utilities
+### Step 5: Development Tracing Utilities
 
 ```typescript
 // src/lib/dev-utils.ts
-import { langfuse, logTraceUrl } from "./langfuse";
+import { observe, updateActiveObservation, startActiveObservation } from "@langfuse/tracing";
 
-// Wrapper that logs trace URLs in dev
-export function withTracing<T extends (...args: any[]) => Promise<any>>(
+// Quick traced function wrapper with console output
+export function devTrace<T extends (...args: any[]) => Promise<any>>(
   name: string,
   fn: T
 ): T {
-  return (async (...args: Parameters<T>) => {
-    const trace = langfuse.trace({
-      name,
-      input: args,
-      tags: ["dev"],
-    });
+  return observe({ name }, async (...args: Parameters<T>) => {
+    updateActiveObservation({ input: args, metadata: { env: "dev" } });
+    const start = Date.now();
 
-    logTraceUrl(trace);
+    const result = await fn(...args);
 
-    try {
-      const result = await fn(...args);
-      trace.update({ output: result });
-      return result;
-    } catch (error) {
-      trace.update({
-        output: { error: String(error) },
-        tags: ["dev", "error"],
-      });
-      throw error;
-    }
+    const duration = Date.now() - start;
+    updateActiveObservation({ output: result });
+    console.log(`  [${name}] ${duration}ms`);
+
+    return result;
   }) as T;
 }
 
-// Quick debug trace
-export function debugTrace(name: string, data: Record<string, any>) {
-  const trace = langfuse.trace({
-    name: `debug/${name}`,
-    metadata: data,
-    tags: ["debug"],
+// Quick debug trace -- fire-and-forget diagnostic trace
+export async function debugTrace(name: string, data: Record<string, any>) {
+  await startActiveObservation(`debug/${name}`, async () => {
+    updateActiveObservation({
+      input: data,
+      metadata: { debug: true, timestamp: new Date().toISOString() },
+    });
   });
-  logTraceUrl(trace);
-  return trace;
 }
 ```
 
-## Local Self-Hosted Instance (Optional)
+### Step 6: Example Dev Workflow
 
-For completely local development without cloud:
+```typescript
+// src/index.ts
+import "dotenv/config";
+import { initTracing, langfuse } from "./lib/langfuse-dev";
+import { devTrace } from "./lib/dev-utils";
+import OpenAI from "openai";
+import { observeOpenAI } from "@langfuse/openai";
+
+initTracing();
+
+const openai = observeOpenAI(new OpenAI());
+
+const askQuestion = devTrace("ask-question", async (question: string) => {
+  const response = await openai.chat.completions.create({
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: question }],
+  });
+  return response.choices[0].message.content;
+});
+
+// Run on file save (tsx watch restarts automatically)
+const answer = await askQuestion("What is Langfuse?");
+console.log("Answer:", answer);
+```
+
+## Local Self-Hosted Langfuse (Optional)
+
+For offline development or data privacy:
 
 ```yaml
 # docker-compose.langfuse.yml
-version: "3.8"
 services:
   langfuse:
     image: langfuse/langfuse:latest
     ports:
-      - "3000:3000"  # 3000: 3 seconds in ms
+      - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/langfuse  # 5432: PostgreSQL port
-      - NEXTAUTH_SECRET=development-secret-change-in-prod
-      - NEXTAUTH_URL=http://localhost:3000  # 3 seconds in ms
-      - SALT=development-salt-change-in-prod
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/langfuse
+      - NEXTAUTH_SECRET=dev-secret-change-in-prod
+      - NEXTAUTH_URL=http://localhost:3000
+      - SALT=dev-salt-change-in-prod
+      - ENCRYPTION_KEY=0000000000000000000000000000000000000000000000000000000000000000
     depends_on:
       - db
 
   db:
-    image: postgres:15-alpine
+    image: postgres:16-alpine
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=langfuse
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: langfuse
     volumes:
       - langfuse-db:/var/lib/postgresql/data
 
@@ -173,95 +213,27 @@ set -euo pipefail
 # Start local Langfuse
 docker compose -f docker-compose.langfuse.yml up -d
 
-# Update .env.local
-echo 'LANGFUSE_HOST=http://localhost:3000' >> .env.local  # 3000: 3 seconds in ms
-```
+# Wait for startup, then visit http://localhost:3000
+# Create account, project, and API keys in the local UI
 
-## Output
-- Development environment with hot reload
-- Immediate trace visibility (flush after every event)
-- Debug logging enabled
-- Trace URLs printed to console
-- (Optional) Local Langfuse instance
+# Update .env.local
+echo 'LANGFUSE_BASE_URL=http://localhost:3000' >> .env.local
+```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Traces delayed | Batching enabled | Set `flushAt: 1` in dev |
-| No debug output | Debug not enabled | Set `LANGFUSE_DEBUG=true` |
-| Hot reload fails | File watching issue | Use `tsx watch` or `nodemon` |
-| Local instance unreachable | Docker not running | Run `docker compose up -d` |
-
-## Examples
-
-### Quick Development Test
-```typescript
-// src/index.ts
-import { langfuse, logTraceUrl } from "./lib/langfuse";
-import OpenAI from "openai";
-import { observeOpenAI } from "langfuse";
-
-const openai = observeOpenAI(new OpenAI());
-
-async function devTest() {
-  const trace = langfuse.trace({
-    name: "dev-test",
-    tags: ["dev"],
-  });
-
-  logTraceUrl(trace);
-
-  const response = await openai.chat.completions.create(
-    {
-      model: "gpt-4",
-      messages: [{ role: "user", content: "Hello!" }],
-    },
-    { langfuseParent: trace }
-  );
-
-  console.log("Response:", response.choices[0].message.content);
-  await langfuse.flushAsync();
-}
-
-devTest();
-```
-
-### Watch Mode with Live Trace Links
-```bash
-set -euo pipefail
-# Terminal output with trace links
-$ pnpm dev
-
-🔄 Watching for changes...
-
-🔍 Trace: https://cloud.langfuse.com/trace/abc123...
-
-Response: Hello! How can I help you today?
-
-[File changed, reloading...]
-
-🔍 Trace: https://cloud.langfuse.com/trace/def456...
-
-Response: I'm doing great, thanks for asking!
-```
-
-### Debug Mode Configuration
-```typescript
-// Enable verbose SDK debugging
-const langfuse = new Langfuse({
-  publicKey: process.env.LANGFUSE_PUBLIC_KEY!,
-  secretKey: process.env.LANGFUSE_SECRET_KEY!,
-  debug: true, // Logs all SDK operations
-});
-
-// Or use environment variable
-// DEBUG=langfuse* pnpm dev
-```
+| Traces delayed in dev | Batching still active | Set `flushAt: 1` or `exportIntervalMillis: 1000` |
+| No debug output | Debug not enabled | Set `LANGFUSE_DEBUG=true` or `DEBUG=langfuse*` |
+| Hot reload not working | Wrong watch command | Use `tsx watch` (not `ts-node`) |
+| Local instance 502 | DB not ready | Wait 10s for PostgreSQL startup |
+| Traces going to cloud | Wrong `LANGFUSE_BASE_URL` | Point to `http://localhost:3000` |
 
 ## Resources
-- [Langfuse Local Development](https://langfuse.com/docs/get-started)
-- [Langfuse Self-Hosting](https://langfuse.com/docs/deployment/self-host)
-- [Langfuse Docker Image](https://hub.docker.com/r/langfuse/langfuse)
+- [TypeScript SDK Setup](https://langfuse.com/docs/observability/sdk/typescript/setup)
+- [Self-Hosting Docker Compose](https://langfuse.com/self-hosting/deployment/docker-compose)
+- [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
 
 ## Next Steps
 For SDK patterns and best practices, see `langfuse-sdk-patterns`.

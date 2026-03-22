@@ -17,76 +17,222 @@ tags: [saas, langfuse, api, migration]
 # Langfuse Upgrade & Migration
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
-## Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
+!`npm list langfuse @langfuse/client @langfuse/tracing @langfuse/otel 2>/dev/null | head -10 || echo 'No langfuse packages found'`
+!`pip show langfuse 2>/dev/null | grep -E "Name|Version" || echo 'Python langfuse not installed'`
 
 ## Overview
-Guide for upgrading Langfuse SDK versions, handling breaking changes between v2 and v3 (TypeScript) or v1 and v2 (Python), with automated codemod support.
+Step-by-step guide for upgrading the Langfuse SDK across major versions. Covers v3 to v4 (OTel rewrite), v4 to v5, breaking changes, and automated codemods.
 
 ## Prerequisites
 - Existing Langfuse integration
-- Access to test environment
-- Version control (git)
+- Test suite covering traced operations
+- Git branch for the upgrade
+
+## Version Roadmap
+
+| SDK | Package | Architecture | Status |
+|-----|---------|-------------|--------|
+| v3 | `langfuse` (single) | Custom, `Langfuse` class | Legacy |
+| v4 | `@langfuse/client`, `@langfuse/tracing`, `@langfuse/otel` | OpenTelemetry-based | Stable |
+| v5 | `@langfuse/client`, `@langfuse/tracing`, `@langfuse/otel` | OpenTelemetry + improvements | Latest |
 
 ## Instructions
 
-### Step 1: Check Current Version
-Run `npm list langfuse` (Node) or `pip show langfuse` (Python) and review changelogs.
+### Step 1: Check Current Version and Plan
 
-### Step 2: Review Breaking Changes
-Key v3 changes: named exports, sync `trace()`, `flushAsync()` replaces `flush()`, camelCase usage keys.
+```bash
+set -euo pipefail
+# Check what you have
+npm list langfuse @langfuse/client @langfuse/tracing 2>/dev/null
 
-### Step 3: Create Upgrade Branch and Update
-Create `chore/upgrade-langfuse` branch. Run `npm install langfuse@latest`. Run tests.
+# Check latest available
+npm info @langfuse/client version
+npm info @langfuse/tracing version
+npm info langfuse version
 
-### Step 4: Apply TypeScript API Changes
-Change `import Langfuse` to `import { Langfuse }`. Remove `await` from `trace()`. Replace `flush()` with `flushAsync()`.
+# Python
+pip show langfuse 2>/dev/null | grep Version
+pip index versions langfuse 2>/dev/null | head -3
+```
 
-### Step 5: Apply Python API Changes
-Update decorator from `@langfuse.observe()` to `@observe()`. Import from `langfuse.decorators`.
+### Step 2: v3 to v4 Migration (TypeScript)
 
-### Step 6: Run Migration Codemod
-Use `ts-morph` script to auto-update imports and flush calls across the codebase.
+This is the biggest migration -- v4 rewrites tracing on OpenTelemetry.
 
-### Step 7: Verify with Migration Tests
-Run tests verifying trace creation, generation usage format, and flush behavior.
+**2a. Install new packages:**
+```bash
+set -euo pipefail
+# Install v4+ packages
+npm install @langfuse/client @langfuse/tracing @langfuse/otel @opentelemetry/sdk-node
 
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
+# Keep langfuse v3 temporarily for comparison
+# Remove after migration: npm uninstall langfuse
+```
 
-## Output
-- Updated SDK to latest version
-- Migrated deprecated API calls
-- All tests passing
-- No breaking changes in functionality
+**2b. Update initialization:**
+```typescript
+// BEFORE (v3):
+import { Langfuse } from "langfuse";
+const langfuse = new Langfuse({
+  publicKey: process.env.LANGFUSE_PUBLIC_KEY,
+  secretKey: process.env.LANGFUSE_SECRET_KEY,
+  baseUrl: process.env.LANGFUSE_HOST,
+});
+
+// AFTER (v4+):
+import { LangfuseClient } from "@langfuse/client";
+import { LangfuseSpanProcessor } from "@langfuse/otel";
+import { NodeSDK } from "@opentelemetry/sdk-node";
+
+// OTel setup (once at entry point)
+const sdk = new NodeSDK({
+  spanProcessors: [new LangfuseSpanProcessor()],
+});
+sdk.start();
+
+// Client for prompts, datasets, scores
+const langfuse = new LangfuseClient();
+```
+
+**2c. Update tracing calls:**
+```typescript
+// BEFORE (v3): Manual trace/span/generation
+const trace = langfuse.trace({ name: "my-op", input: data });
+const span = trace.span({ name: "step-1", input: data });
+await doWork();
+span.end({ output: result });
+const gen = trace.generation({ name: "llm", model: "gpt-4o" });
+gen.end({ output: response, usage: { promptTokens: 10 } });
+await langfuse.flushAsync();
+
+// AFTER (v4+): startActiveObservation with auto-nesting
+import { startActiveObservation, updateActiveObservation } from "@langfuse/tracing";
+
+await startActiveObservation("my-op", async () => {
+  updateActiveObservation({ input: data });
+
+  await startActiveObservation("step-1", async () => {
+    updateActiveObservation({ input: data });
+    const result = await doWork();
+    updateActiveObservation({ output: result });
+  });
+
+  await startActiveObservation({ name: "llm", asType: "generation" }, async () => {
+    updateActiveObservation({ model: "gpt-4o" });
+    const response = await callLLM();
+    updateActiveObservation({ output: response, usage: { promptTokens: 10 } });
+  });
+});
+```
+
+**2d. Update OpenAI wrapper:**
+```typescript
+// BEFORE (v3):
+import { observeOpenAI } from "langfuse";
+
+// AFTER (v4+):
+import { observeOpenAI } from "@langfuse/openai";
+// npm install @langfuse/openai
+```
+
+**2e. Update environment variable:**
+```bash
+# BEFORE: LANGFUSE_HOST or LANGFUSE_BASEURL
+# AFTER:  LANGFUSE_BASE_URL (LANGFUSE_BASEURL still works in v4 but not v5)
+```
+
+**2f. Update prompt management:**
+```typescript
+// BEFORE (v3):
+const prompt = await langfuse.getPrompt("my-prompt", 2); // version as positional arg
+
+// AFTER (v4+):
+const prompt = await langfuse.prompt.get("my-prompt", {
+  version: 2, // version in options object
+  type: "text", // explicit type
+});
+```
+
+**2g. Update shutdown:**
+```typescript
+// BEFORE (v3):
+await langfuse.shutdownAsync();
+
+// AFTER (v4+):
+await sdk.shutdown(); // Shuts down OTel SDK + flushes spans
+```
+
+### Step 3: Python SDK Migration (v2 to v3)
+
+```python
+# BEFORE (v2):
+from langfuse import Langfuse
+langfuse = Langfuse()
+
+@langfuse.observe()
+def my_function():
+    pass
+
+# AFTER (v3):
+from langfuse.decorators import observe, langfuse_context
+
+@observe()
+def my_function():
+    langfuse_context.update_current_observation(
+        metadata={"key": "value"}
+    )
+```
+
+### Step 4: Run Tests and Verify
+
+```bash
+set -euo pipefail
+# Run existing test suite
+npm test
+
+# Verify traces appear in dashboard
+node -e "
+  const { startActiveObservation, updateActiveObservation } = require('@langfuse/tracing');
+  startActiveObservation('upgrade-verify', async () => {
+    updateActiveObservation({ input: { test: true }, output: { migrated: true } });
+  }).then(() => console.log('Migration verified'));
+"
+```
+
+### Step 5: Remove Old Package
+
+```bash
+set -euo pipefail
+# After all tests pass
+npm uninstall langfuse
+
+# Verify no lingering imports
+grep -rn "from ['\"]langfuse['\"]" src/ || echo "No old imports found"
+```
+
+## Breaking Changes Quick Reference
+
+| Change | v3 | v4+ |
+|--------|-------|-------|
+| Package | `langfuse` | `@langfuse/client` + `@langfuse/tracing` + `@langfuse/otel` |
+| Client class | `Langfuse` | `LangfuseClient` |
+| Base URL env | `LANGFUSE_HOST` | `LANGFUSE_BASE_URL` |
+| Tracing | `langfuse.trace()` / `.span()` / `.generation()` | `startActiveObservation()` / `observe()` |
+| Flush | `langfuse.flushAsync()` | `sdk.shutdown()` |
+| Prompt version | `getPrompt(name, version)` | `prompt.get(name, { version })` |
+| OpenAI | `import { observeOpenAI } from "langfuse"` | `import { observeOpenAI } from "@langfuse/openai"` |
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import error | Changed export | Use named import `{ Langfuse }` |
-| Type error on usage | Key name change | Use camelCase keys |
-| flush() not found | Method renamed | Use `flushAsync()` |
-| Decorator error | New import path | Import from `langfuse.decorators` |
-
-## Examples
-
-### Version Compatibility Matrix
-| Feature | v2.x | v3.x | Migration |
-|---------|------|------|-----------|
-| Default import | `import Langfuse` | `import { Langfuse }` | Update imports |
-| `trace()` return | `Promise<Trace>` | `Trace` | Remove `await` |
-| `flush()` | Sync | N/A | Use `flushAsync()` |
-| Usage keys | `snake_case` | `camelCase` | Update all usage objects |
+| `Cannot find module '@langfuse/tracing'` | Package not installed | `npm install @langfuse/tracing @langfuse/otel @opentelemetry/sdk-node` |
+| `langfuse.trace is not a function` | Using v4 `LangfuseClient` for tracing | Use `startActiveObservation` from `@langfuse/tracing` |
+| Flat traces (no nesting) | OTel SDK not started | Register `LangfuseSpanProcessor` with `NodeSDK` |
+| `LANGFUSE_HOST` ignored | v5 dropped legacy env var | Rename to `LANGFUSE_BASE_URL` |
 
 ## Resources
-- [Langfuse JS Changelog](https://github.com/langfuse/langfuse-js/releases)
-- [Langfuse Python Changelog](https://github.com/langfuse/langfuse-python/releases)
-- [Langfuse Migration Guide](https://langfuse.com/docs/sdk)
+- [v3 to v4 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v3-to-v4)
+- [v4 to v5 Migration Guide](https://langfuse.com/docs/observability/sdk/upgrade-path/js-v4-to-v5)
+- [Python v3 to v4 Migration](https://langfuse.com/docs/observability/sdk/upgrade-path/python-v3-to-v4)
+- [TypeScript SDK v4 Changelog](https://langfuse.com/changelog/2025-08-28-typescript-sdk-v4-ga)

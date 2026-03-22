@@ -17,121 +17,200 @@ tags: [saas, langfuse, api, security, observability]
 # Langfuse Security Basics
 
 ## Overview
-Security practices for Langfuse LLM observability integrations. Langfuse captures prompts, completions, and metadata from LLM calls -- making data privacy and access control critical since traced data may contain PII.
+Security practices for Langfuse LLM observability: credential management, PII scrubbing before tracing, self-hosted hardening, data retention, and secret scanning.
 
 ## Prerequisites
 - Langfuse instance (cloud or self-hosted)
 - API keys provisioned
-- Understanding of data privacy requirements
+- Understanding of data privacy requirements (GDPR, SOC2, HIPAA)
 
 ## Instructions
 
-### Step 1: Credential Separation
+### Step 1: Credential Security
 
-Langfuse uses separate public and secret keys. Only the secret key should be protected.
+Langfuse uses two keys with different security profiles:
 
-```python
-import os
+```typescript
+// Startup validation -- catch misconfigurations early
+function validateLangfuseCredentials() {
+  const publicKey = process.env.LANGFUSE_PUBLIC_KEY;
+  const secretKey = process.env.LANGFUSE_SECRET_KEY;
 
-# Public key: safe for client-side (identifies project)
-LANGFUSE_PUBLIC_KEY = os.environ["LANGFUSE_PUBLIC_KEY"]
+  if (!publicKey || !secretKey) {
+    throw new Error("LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY are required");
+  }
 
-# Secret key: NEVER expose (grants write access to traces)
-LANGFUSE_SECRET_KEY = os.environ["LANGFUSE_SECRET_KEY"]
+  // Catch key swap (common mistake)
+  if (secretKey.startsWith("pk-lf-")) {
+    throw new Error("LANGFUSE_SECRET_KEY contains a public key (pk-lf-). Keys are swapped.");
+  }
 
-# Host (for self-hosted)
-LANGFUSE_HOST = os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
+  if (publicKey.startsWith("sk-lf-")) {
+    throw new Error("LANGFUSE_PUBLIC_KEY contains a secret key (sk-lf-). Keys are swapped.");
+  }
 
-# Validate on startup
-assert LANGFUSE_SECRET_KEY, "LANGFUSE_SECRET_KEY required"
-assert not LANGFUSE_SECRET_KEY.startswith("pk-"), "Using public key as secret key!"
+  return { publicKey, secretKey };
+}
+
+// Use validated credentials
+const { publicKey, secretKey } = validateLangfuseCredentials();
 ```
+
+**Key security rules:**
+- Public key (`pk-lf-...`): Identifies the project. Safe in client-side code.
+- Secret key (`sk-lf-...`): Grants write access. **Server-side only.**
+- Store in environment variables or secret manager -- never in source code.
+- Rotate keys immediately if exposed in logs, git, or error reports.
 
 ### Step 2: PII Scrubbing Before Tracing
 
-Langfuse stores everything you send. Scrub PII before tracing.
+Langfuse stores everything you send. Scrub PII from inputs and outputs before tracing.
 
-```python
-import re
-from langfuse import Langfuse
+```typescript
+// src/lib/pii-scrubber.ts
 
-langfuse = Langfuse()
+const PII_PATTERNS: Array<{ regex: RegExp; replacement: string }> = [
+  { regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b/gi, replacement: "[EMAIL]" },
+  { regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, replacement: "[PHONE]" },
+  { regex: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: "[SSN]" },
+  { regex: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, replacement: "[CARD]" },
+  { regex: /\b(?:sk|pk)-[a-zA-Z0-9_-]{20,}\b/g, replacement: "[API_KEY]" },
+];
 
-def scrub_pii(text: str) -> str:
-    text = re.sub(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}\b', '[EMAIL]', text, flags=re.IGNORECASE)
-    text = re.sub(r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', '[PHONE]', text)
-    text = re.sub(r'\b\d{3}-\d{2}-\d{4}\b', '[SSN]', text)
-    return text
+export function scrubPII(text: string): string {
+  let scrubbed = text;
+  for (const { regex, replacement } of PII_PATTERNS) {
+    scrubbed = scrubbed.replace(regex, replacement);
+  }
+  return scrubbed;
+}
 
-def traced_llm_call(prompt: str, user_id: str):
-    trace = langfuse.trace(
-        name="llm-call",
-        user_id=user_id,  # OK: user IDs are fine
-        input=scrub_pii(prompt),  # scrub before tracing
-    )
-    response = call_llm(prompt)  # send original to LLM
-    trace.update(output=scrub_pii(response))  # scrub output too
-    return response
+export function scrubObject(obj: any): any {
+  if (typeof obj === "string") return scrubPII(obj);
+  if (Array.isArray(obj)) return obj.map(scrubObject);
+  if (typeof obj === "object" && obj !== null) {
+    const result: Record<string, any> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      result[key] = scrubObject(value);
+    }
+    return result;
+  }
+  return obj;
+}
 ```
 
-### Step 3: Access Control for Self-Hosted
+```typescript
+// Usage with tracing
+import { observe, updateActiveObservation } from "@langfuse/tracing";
+import { scrubPII, scrubObject } from "./lib/pii-scrubber";
+
+const tracedChat = observe(async (userMessage: string) => {
+  // Scrub input before tracing
+  updateActiveObservation({ input: scrubPII(userMessage) });
+
+  // Send original to LLM (unscrubbed)
+  const response = await callLLM(userMessage);
+
+  // Scrub output before tracing
+  updateActiveObservation({ output: scrubPII(response) });
+  return response;
+});
+```
+
+### Step 3: Self-Hosted Hardening
 
 ```yaml
-# docker-compose.yml for self-hosted Langfuse
+# docker-compose.yml -- production-hardened
 services:
   langfuse:
     image: langfuse/langfuse:latest
     environment:
-      - AUTH_DISABLE_SIGNUP=true           # prevent open registration
-      - AUTH_DOMAINS_WITH_SSO_ENFORCEMENT=company.com  # require SSO
-      - LANGFUSE_DEFAULT_PROJECT_ROLE=VIEWER  # least privilege default
-      - ENCRYPTION_KEY=${ENCRYPTION_KEY}   # encrypt data at rest
+      # Disable open registration
+      - AUTH_DISABLE_SIGNUP=true
+      # Enforce SSO for your domain
+      - AUTH_DOMAINS_WITH_SSO_ENFORCEMENT=company.com
+      # Least-privilege default role
+      - LANGFUSE_DEFAULT_PROJECT_ROLE=VIEWER
+      # Encrypt data at rest
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      # Data retention (days)
+      - LANGFUSE_RETENTION_DAYS=90
+      # Database
+      - DATABASE_URL=${DATABASE_URL}
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - SALT=${SALT}
 ```
 
-### Step 4: Trace Data Retention
+### Step 4: Git Secret Scanning
 
-Configure automatic cleanup of old traces to limit exposure.
+Prevent Langfuse keys from being committed:
 
-```python
-# Self-hosted: set retention via environment
-# LANGFUSE_RETENTION_DAYS=90
-
-# Cloud: use API to delete old traces
-from datetime import datetime, timedelta
-
-def cleanup_old_traces(langfuse: Langfuse, max_age_days: int = 90):
-    cutoff = datetime.now() - timedelta(days=max_age_days)
-    # Use Langfuse API to list and delete traces older than cutoff
-    # Implement based on your Langfuse version's API
-    print(f"Cleaning traces older than {cutoff.isoformat()}")
+```bash
+# .gitignore
+.env
+.env.local
+.env.production
 ```
+
+```yaml
+# .github/workflows/secret-scan.yml
+name: Secret Scan
+on: [push, pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Langfuse keys
+        run: |
+          if grep -rn "sk-lf-[a-zA-Z0-9]" --include="*.ts" --include="*.js" --include="*.py" .; then
+            echo "ERROR: Secret key found in source code!"
+            exit 1
+          fi
+```
+
+### Step 5: Scoped API Keys and Least Privilege
+
+```typescript
+// Create separate API keys per service/environment
+// In Langfuse dashboard: Settings > API Keys
+
+// Backend API service -- full write access
+// LANGFUSE_SECRET_KEY=sk-lf-backend-...
+
+// Analytics worker -- read-only access
+// Use Langfuse API with read-only key
+// LANGFUSE_SECRET_KEY=sk-lf-readonly-...
+
+// CI/CD pipeline -- scoped to test project
+// LANGFUSE_SECRET_KEY=sk-lf-ci-test-...
+// LANGFUSE_PUBLIC_KEY=pk-lf-ci-test-...
+```
+
+## Security Checklist
+
+| Category | Check | Status |
+|----------|-------|--------|
+| Credentials | Secret key in env vars / secret manager only | |
+| Credentials | Keys validated at startup (no swap) | |
+| Credentials | .env files in .gitignore | |
+| Data Privacy | PII scrubbed from trace inputs/outputs | |
+| Data Privacy | Retention policy configured | |
+| Self-Hosted | Signup disabled, SSO enforced | |
+| Self-Hosted | Encryption key set for data at rest | |
+| CI/CD | Secret scanning in pipeline | |
+| Access | Least-privilege roles per team member | |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in traces | Not scrubbing before trace | Apply PII scrubbing to inputs/outputs |
-| Secret key leaked | Wrong key in client code | Validate key prefix (sk- vs pk-) |
-| Unauthorized access | No SSO enforcement | Enable `AUTH_DOMAINS_WITH_SSO_ENFORCEMENT` |
+| PII in traces | Not scrubbing before trace | Apply `scrubPII()` to all inputs/outputs |
+| Secret key leaked | Key in source code | Rotate immediately, add secret scanning |
+| Unauthorized access | Default roles too permissive | Set `LANGFUSE_DEFAULT_PROJECT_ROLE=VIEWER` |
 | Data accumulation | No retention policy | Set `LANGFUSE_RETENTION_DAYS` |
 
-## Examples
-
-### Secure Initialization
-```python
-from langfuse import Langfuse
-langfuse = Langfuse(
-    public_key=os.environ["LANGFUSE_PUBLIC_KEY"],
-    secret_key=os.environ["LANGFUSE_SECRET_KEY"],
-    host=os.environ.get("LANGFUSE_HOST", "https://cloud.langfuse.com")
-)
-```
-
 ## Resources
-- [Langfuse Security Docs](https://langfuse.com/docs/data-security-privacy)
-- [Self-Hosting Guide](https://langfuse.com/docs/deployment/self-host)
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- [Langfuse Data Security](https://langfuse.com/docs/data-security-privacy)
+- [Self-Hosting Configuration](https://langfuse.com/self-hosting/configuration)
+- [Headless Initialization](https://langfuse.com/self-hosting/administration/headless-initialization)

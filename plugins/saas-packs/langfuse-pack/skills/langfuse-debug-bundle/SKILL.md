@@ -19,147 +19,97 @@ tags: [saas, langfuse, debugging]
 ## Current State
 !`node --version 2>/dev/null || echo 'N/A'`
 !`python3 --version 2>/dev/null || echo 'N/A'`
-!`uname -a`
+!`npm list langfuse @langfuse/client @langfuse/tracing 2>/dev/null | head -5 || echo 'No langfuse packages'`
 
 ## Overview
-Collect all necessary diagnostic information for Langfuse support tickets.
+Collect all diagnostic information needed for Langfuse support tickets: environment versions, SDK config, API connectivity, redacted logs, and a reproduction template.
 
 ## Prerequisites
 - Langfuse SDK installed
 - Access to application logs
-- Permission to collect environment info
+- Bash shell available
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Run the Full Debug Bundle Script
+
+Save this as `langfuse-debug.sh` and run it:
+
 ```bash
 #!/bin/bash
-# langfuse-debug-bundle.sh
+set -euo pipefail
 
 BUNDLE_DIR="langfuse-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
 
-echo "=== Langfuse Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "=== Langfuse Debug Bundle ===" | tee "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" | tee -a "$BUNDLE_DIR/summary.txt"
 
-### Step 2: Collect Environment Info
-```bash
-set -euo pipefail
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-echo "Node.js: $(node --version 2>/dev/null || echo 'not installed')" >> "$BUNDLE_DIR/summary.txt"
-echo "Python: $(python3 --version 2>/dev/null || echo 'not installed')" >> "$BUNDLE_DIR/summary.txt"
-echo "npm: $(npm --version 2>/dev/null || echo 'not installed')" >> "$BUNDLE_DIR/summary.txt"
-echo "OS: $(uname -a)" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+# --- Environment ---
+{
+  echo ""
+  echo "--- Environment ---"
+  echo "Node.js: $(node --version 2>/dev/null || echo 'not installed')"
+  echo "Python: $(python3 --version 2>/dev/null || echo 'not installed')"
+  echo "npm: $(npm --version 2>/dev/null || echo 'not installed')"
+  echo "OS: $(uname -srm)"
+} >> "$BUNDLE_DIR/summary.txt"
 
-# Langfuse config (redacted)
-echo "--- Langfuse Config ---" >> "$BUNDLE_DIR/summary.txt"
-echo "LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:+[SET - ${LANGFUSE_PUBLIC_KEY:0:10}...]}" >> "$BUNDLE_DIR/summary.txt"
-echo "LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-echo "LANGFUSE_HOST: ${LANGFUSE_HOST:-[NOT SET - using default]}" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+# --- SDK Versions ---
+{
+  echo ""
+  echo "--- SDK Versions ---"
+  npm list langfuse @langfuse/client @langfuse/tracing @langfuse/otel @langfuse/openai @langfuse/langchain 2>/dev/null || echo "npm: no langfuse packages"
+  pip show langfuse 2>/dev/null | grep -E "Name|Version" || echo "pip: langfuse not found"
+} >> "$BUNDLE_DIR/summary.txt"
 
-### Step 3: Gather SDK and Package Info
-```bash
-set -euo pipefail
-# SDK versions
-echo "--- SDK Versions ---" >> "$BUNDLE_DIR/summary.txt"
-npm list langfuse 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "npm: langfuse not found" >> "$BUNDLE_DIR/summary.txt"
-pip show langfuse 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "pip: langfuse not found" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+# --- Config (redacted) ---
+{
+  echo ""
+  echo "--- Langfuse Config ---"
+  echo "LANGFUSE_PUBLIC_KEY: ${LANGFUSE_PUBLIC_KEY:+SET (${LANGFUSE_PUBLIC_KEY:0:12}...)}"
+  echo "LANGFUSE_SECRET_KEY: ${LANGFUSE_SECRET_KEY:+SET}"
+  echo "LANGFUSE_BASE_URL: ${LANGFUSE_BASE_URL:-NOT SET}"
+  echo "LANGFUSE_HOST: ${LANGFUSE_HOST:-NOT SET}"
+} >> "$BUNDLE_DIR/summary.txt"
 
-# Related packages
-echo "--- Related Packages ---" >> "$BUNDLE_DIR/summary.txt"
-npm list openai @anthropic-ai/sdk langchain 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+# --- Network Connectivity ---
+{
+  echo ""
+  echo "--- Network Test ---"
+  HOST="${LANGFUSE_BASE_URL:-${LANGFUSE_HOST:-https://cloud.langfuse.com}}"
+  echo "Target host: $HOST"
+  echo -n "Health endpoint: "
+  curl -s -o /dev/null -w "%{http_code} (%{time_total}s)" "$HOST/api/public/health" 2>/dev/null || echo "FAILED"
+  echo ""
 
-### Step 4: Test API Connectivity
-```bash
-set -euo pipefail
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+  if [ -n "${LANGFUSE_PUBLIC_KEY:-}" ] && [ -n "${LANGFUSE_SECRET_KEY:-}" ]; then
+    AUTH=$(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)
+    echo -n "Auth test: "
+    curl -s -o /dev/null -w "%{http_code}" \
+      -H "Authorization: Basic $AUTH" \
+      "$HOST/api/public/traces?limit=1" 2>/dev/null || echo "FAILED"
+    echo ""
+  fi
+} >> "$BUNDLE_DIR/summary.txt"
 
-HOST="${LANGFUSE_HOST:-https://cloud.langfuse.com}"
-echo "Testing host: $HOST" >> "$BUNDLE_DIR/summary.txt"
-
-# Health check
-echo -n "Health endpoint: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" "$HOST/api/public/health" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-
-# Auth test (if keys available)
-if [ -n "$LANGFUSE_PUBLIC_KEY" ] && [ -n "$LANGFUSE_SECRET_KEY" ]; then
-  echo -n "Auth test: " >> "$BUNDLE_DIR/summary.txt"
-  AUTH=$(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)
-  HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-    -H "Authorization: Basic $AUTH" \
-    "$HOST/api/public/traces?limit=1")
-  echo "$HTTP_CODE" >> "$BUNDLE_DIR/summary.txt"
-fi
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 5: Collect Application Logs
-```bash
-# Recent logs (redacted)
-echo "--- Recent Logs ---" >> "$BUNDLE_DIR/summary.txt"
-
-# Search for langfuse-related logs
+# --- Application Logs (redacted) ---
 if [ -d "logs" ]; then
-  grep -i "langfuse\|trace\|generation" logs/*.log 2>/dev/null | \
+  grep -i "langfuse\|trace\|generation\|flush" logs/*.log 2>/dev/null | \
     tail -100 | \
     sed 's/sk-lf-[a-zA-Z0-9]*/sk-lf-***REDACTED***/g' | \
     sed 's/pk-lf-[a-zA-Z0-9]*/pk-lf-***REDACTED***/g' \
-    >> "$BUNDLE_DIR/logs.txt"
+    > "$BUNDLE_DIR/app-logs-redacted.txt" 2>/dev/null || true
 fi
 
-# npm logs
-if [ -d "$HOME/.npm/_logs" ]; then
-  grep -i "langfuse" "$HOME/.npm/_logs"/*.log 2>/dev/null | \
-    tail -50 >> "$BUNDLE_DIR/npm-logs.txt"
-fi
-echo "Log files collected (if available)" >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 6: Capture Configuration Files
-```bash
-# Configuration (redacted)
-echo "--- Config Files ---" >> "$BUNDLE_DIR/summary.txt"
-
-# .env (redacted)
-if [ -f ".env" ]; then
-  cat .env 2>/dev/null | \
-    sed 's/=.*/=***REDACTED***/' | \
-    grep -i "langfuse\|openai\|anthropic" \
-    >> "$BUNDLE_DIR/config-redacted.txt"
-  echo ".env: captured (redacted)" >> "$BUNDLE_DIR/summary.txt"
-fi
-
-# package.json dependencies
+# --- Package Dependencies ---
 if [ -f "package.json" ]; then
-  grep -A 50 '"dependencies"' package.json | head -60 >> "$BUNDLE_DIR/package-deps.txt"
-  echo "package.json: captured" >> "$BUNDLE_DIR/summary.txt"
+  grep -A 100 '"dependencies"' package.json | head -60 > "$BUNDLE_DIR/package-deps.txt" 2>/dev/null || true
 fi
 
-# tsconfig.json
-if [ -f "tsconfig.json" ]; then
-  cp tsconfig.json "$BUNDLE_DIR/"
-  echo "tsconfig.json: captured" >> "$BUNDLE_DIR/summary.txt"
-fi
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 7: Package Bundle
-```bash
-# Add reproduction steps template
-cat > "$BUNDLE_DIR/reproduction-steps.md" << 'EOF'
-# Reproduction Steps
+# --- Reproduction Template ---
+cat > "$BUNDLE_DIR/reproduction-steps.md" << 'REPRO'
+# Bug Report
 
 ## Environment
 - Node.js version:
@@ -179,113 +129,73 @@ cat > "$BUNDLE_DIR/reproduction-steps.md" << 'EOF'
 
 ## Error Messages
 ```
-Paste error messages here
+Paste error output here
 ```
 
 ## Relevant Code
 ```typescript
-// Paste relevant code here
+// Paste minimal reproduction here
 ```
-EOF
+REPRO
 
-# Create archive
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+# --- Package ---
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR" 2>/dev/null
 echo ""
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
-echo ""
 echo "Contents:"
 ls -la "$BUNDLE_DIR/"
 ```
 
-## Output
-- `langfuse-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted application logs
-  - `npm-logs.txt` - npm debug logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-  - `package-deps.txt` - Dependencies
-  - `reproduction-steps.md` - Template for bug report
+### Step 2: Review Before Sharing
 
-## Sensitive Data Handling
+**Always redact before submitting:**
 
-**ALWAYS REDACT:**
-- API keys (pk-lf-*, sk-lf-*)
-- Secret keys and tokens
-- Passwords and credentials
-- PII (emails, names, IDs)
-- Internal URLs and IPs
+| Include | Redact |
+|---------|--------|
+| Error messages and stack traces | API keys (`pk-lf-*`, `sk-lf-*`) |
+| SDK versions and config structure | Secret keys and passwords |
+| HTTP status codes | PII (emails, user IDs) |
+| Timing and latency data | Internal URLs and IPs |
+| OS and runtime versions | Database connection strings |
 
-**Safe to Include:**
-- Error messages and stack traces
-- SDK versions
-- Configuration structure (not values)
-- HTTP status codes
-- Timing information
+### Step 3: Submit to Support
 
-## Quick Debug Script
+1. Run: `bash langfuse-debug.sh`
+2. Review bundle contents for leaked secrets
+3. Fill in `reproduction-steps.md`
+4. Submit via:
+   - [GitHub Issues](https://github.com/langfuse/langfuse/issues) (public)
+   - [Discord](https://langfuse.com/discord) (community)
+   - Email support (enterprise customers)
 
-Save as `langfuse-debug.sh`:
+### Step 4: Quick Inline Diagnostic (No File)
+
+For a fast check without creating files:
+
 ```bash
-#!/bin/bash
-set -e
-
-BUNDLE_DIR="langfuse-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-# Quick diagnostics
-{
-  echo "=== Langfuse Quick Debug ==="
-  echo "Date: $(date)"
-  echo ""
-  echo "--- Environment ---"
-  echo "Node: $(node --version 2>/dev/null || echo 'N/A')"
-  echo "Python: $(python3 --version 2>/dev/null || echo 'N/A')"
-  echo ""
-  echo "--- SDK ---"
-  npm list langfuse 2>/dev/null || echo "npm: not found"
-  pip show langfuse 2>/dev/null | grep Version || echo "pip: not found"
-  echo ""
-  echo "--- Config ---"
-  echo "Public Key: ${LANGFUSE_PUBLIC_KEY:+SET}"
-  echo "Secret Key: ${LANGFUSE_SECRET_KEY:+SET}"
-  echo "Host: ${LANGFUSE_HOST:-default}"
-  echo ""
-  echo "--- Connectivity ---"
-  HOST="${LANGFUSE_HOST:-https://cloud.langfuse.com}"
-  echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
-} > "$BUNDLE_DIR/summary.txt"
-
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Created: $BUNDLE_DIR.tar.gz"
+set -euo pipefail
+echo "=== Quick Langfuse Check ==="
+echo "Node: $(node --version 2>/dev/null || echo N/A)"
+npm list langfuse @langfuse/client 2>/dev/null | head -5
+echo ""
+echo "Public Key: ${LANGFUSE_PUBLIC_KEY:+SET} | Secret Key: ${LANGFUSE_SECRET_KEY:+SET}"
+HOST="${LANGFUSE_BASE_URL:-${LANGFUSE_HOST:-https://cloud.langfuse.com}}"
+echo "Health: $(curl -s -o /dev/null -w '%{http_code}' $HOST/api/public/health)"
 ```
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | Yes |
-| SDK version | Version-specific bugs | Yes |
-| Error logs (redacted) | Root cause analysis | Yes |
-| Config (redacted) | Configuration issues | Yes |
-| Network test | Connectivity issues | Yes |
-| Reproduction template | Bug reporting | Yes |
 
-## Submit to Support
-1. Run debug script: `bash langfuse-debug.sh`
-2. Review bundle for sensitive data
-3. Fill in `reproduction-steps.md`
-4. Open issue at [GitHub](https://github.com/langfuse/langfuse/issues)
-5. Or post in [Discord](https://langfuse.com/discord)
+| Collected Item | Why It Matters |
+|----------------|---------------|
+| SDK version | Version-specific bugs, breaking changes between v3/v4/v5 |
+| Environment versions | Node 18+ required, Python 3.9+ |
+| Network test | Firewall, DNS, self-hosted connectivity |
+| Auth test | Key validity, project mismatch |
+| Redacted logs | Trace errors, flush failures, rate limits |
+| Package deps | Conflicting versions, missing peer deps |
 
 ## Resources
-- [Langfuse GitHub Issues](https://github.com/langfuse/langfuse/issues)
-- [Langfuse Discord](https://langfuse.com/discord)
+- [GitHub Issues](https://github.com/langfuse/langfuse/issues)
+- [Discord Community](https://langfuse.com/discord)
 - [Langfuse Status](https://status.langfuse.com)
-
-## Next Steps
-For rate limit issues, see `langfuse-rate-limits`.
-
-## Examples
-
-**Basic usage**: Apply langfuse debug bundle to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize langfuse debug bundle for production environments with multiple constraints and team-specific requirements.
+- [Self-Hosting Troubleshooting](https://langfuse.com/self-hosting/configuration)
