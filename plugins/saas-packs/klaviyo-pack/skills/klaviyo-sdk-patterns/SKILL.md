@@ -1,84 +1,159 @@
 ---
 name: klaviyo-sdk-patterns
 description: |
-  Apply production-ready Klaviyo SDK patterns for TypeScript and Python.
+  Apply production-ready Klaviyo SDK patterns for the klaviyo-api package.
   Use when implementing Klaviyo integrations, refactoring SDK usage,
-  or establishing team coding standards for Klaviyo.
+  or establishing team coding standards for Klaviyo API calls.
   Trigger with phrases like "klaviyo SDK patterns", "klaviyo best practices",
-  "klaviyo code patterns", "idiomatic klaviyo".
+  "klaviyo code patterns", "idiomatic klaviyo", "klaviyo wrapper".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo]
+tags: [saas, klaviyo, email-marketing, cdp]
 compatible-with: claude-code
 ---
 
 # Klaviyo SDK Patterns
 
 ## Overview
-Production-ready patterns for Klaviyo SDK usage in TypeScript and Python.
+
+Production-ready patterns for the `klaviyo-api` Node.js SDK: singleton sessions, type-safe wrappers, retry logic, pagination, and multi-tenant support.
 
 ## Prerequisites
+
+- `klaviyo-api` package installed
 - Completed `klaviyo-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- TypeScript project with strict mode
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Singleton Session Pattern
+
 ```typescript
-// src/klaviyo/client.ts
-import { KlaviyoClient } from '@klaviyo/sdk';
+// src/klaviyo/session.ts
+import { ApiKeySession } from 'klaviyo-api';
 
-let instance: KlaviyoClient | null = null;
+let _session: ApiKeySession | null = null;
 
-export function getKlaviyoClient(): KlaviyoClient {
-  if (!instance) {
-    instance = new KlaviyoClient({
-      apiKey: process.env.KLAVIYO_API_KEY!,
-      // Additional options
-    });
+export function getSession(apiKey?: string): ApiKeySession {
+  if (!_session) {
+    const key = apiKey || process.env.KLAVIYO_PRIVATE_KEY;
+    if (!key) throw new Error('KLAVIYO_PRIVATE_KEY is required');
+    _session = new ApiKeySession(key);
   }
-  return instance;
+  return _session;
+}
+
+// For testing: reset the singleton
+export function resetSession(): void {
+  _session = null;
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { KlaviyoError } from '@klaviyo/sdk';
+### Step 2: Type-Safe API Wrapper
 
-async function safeKlaviyoCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
+```typescript
+// src/klaviyo/api.ts
+import {
+  ApiKeySession,
+  ProfilesApi,
+  EventsApi,
+  ListsApi,
+  SegmentsApi,
+  CampaignsApi,
+  FlowsApi,
+  MetricsApi,
+  TemplatesApi,
+  CatalogsApi,
+  DataPrivacyApi,
+  WebhooksApi,
+} from 'klaviyo-api';
+import { getSession } from './session';
+
+// Lazy-initialized API clients -- avoids creating unused clients
+const apis = {
+  get profiles() { return new ProfilesApi(getSession()); },
+  get events() { return new EventsApi(getSession()); },
+  get lists() { return new ListsApi(getSession()); },
+  get segments() { return new SegmentsApi(getSession()); },
+  get campaigns() { return new CampaignsApi(getSession()); },
+  get flows() { return new FlowsApi(getSession()); },
+  get metrics() { return new MetricsApi(getSession()); },
+  get templates() { return new TemplatesApi(getSession()); },
+  get catalogs() { return new CatalogsApi(getSession()); },
+  get dataPrivacy() { return new DataPrivacyApi(getSession()); },
+  get webhooks() { return new WebhooksApi(getSession()); },
+};
+
+export default apis;
+```
+
+### Step 3: Error Handling Wrapper
+
+```typescript
+// src/klaviyo/errors.ts
+
+export interface KlaviyoApiError {
+  status: number;
+  statusText: string;
+  errors: Array<{ id: string; code: string; title: string; detail: string }>;
+  retryAfter?: number;
+}
+
+export function parseKlaviyoError(error: any): KlaviyoApiError {
+  return {
+    status: error.status || 500,
+    statusText: error.statusText || 'Unknown Error',
+    errors: error.body?.errors || [{ id: '', code: 'unknown', title: 'Unknown', detail: error.message }],
+    retryAfter: error.headers?.['retry-after'] ? parseInt(error.headers['retry-after']) : undefined,
+  };
+}
+
+export async function safeCall<T>(
+  operation: () => Promise<T>,
+  context: string
+): Promise<{ data: T | null; error: KlaviyoApiError | null }> {
   try {
     const data = await operation();
     return { data, error: null };
-  } catch (err) {
-    if (err instanceof KlaviyoError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+  } catch (err: any) {
+    const parsed = parseKlaviyoError(err);
+    console.error(`[Klaviyo] ${context} failed:`, {
+      status: parsed.status,
+      errors: parsed.errors.map(e => e.detail),
+    });
+    return { data: null, error: parsed };
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
+### Step 4: Retry with Retry-After Header
+
 ```typescript
-async function withRetry<T>(
+// src/klaviyo/retry.ts
+
+export async function withRetry<T>(
   operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
+  options = { maxRetries: 3, baseDelayMs: 1000 }
 ): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= options.maxRetries; attempt++) {
     try {
       return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
+    } catch (error: any) {
+      if (attempt === options.maxRetries) throw error;
+
+      const status = error.status;
+      // Only retry on 429 (rate limit) and 5xx (server errors)
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+
+      // Honor Klaviyo's Retry-After header (seconds)
+      const retryAfter = error.headers?.['retry-after'];
+      const delay = retryAfter
+        ? parseInt(retryAfter) * 1000
+        : options.baseDelayMs * Math.pow(2, attempt) + Math.random() * 500;
+
+      console.log(`[Klaviyo] Retry ${attempt + 1}/${options.maxRetries} in ${delay.toFixed(0)}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -86,64 +161,101 @@ async function withRetry<T>(
 }
 ```
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+### Step 5: Cursor-Based Pagination
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
 ```typescript
-const clients = new Map<string, KlaviyoClient>();
+// src/klaviyo/pagination.ts
 
-export function getClientForTenant(tenantId: string): KlaviyoClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new KlaviyoClient({ apiKey }));
+/**
+ * Auto-paginate any Klaviyo list endpoint.
+ * Klaviyo uses cursor-based pagination with `page[cursor]` param.
+ * Each page returns max 20 items (some endpoints allow up to 100).
+ */
+export async function* paginate<T>(
+  fetcher: (pageCursor?: string) => Promise<{
+    body: { data: T[]; links?: { next?: string } };
+  }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const response = await fetcher(cursor);
+    for (const item of response.body.data) {
+      yield item;
+    }
+
+    // Extract cursor from next link URL
+    const nextLink = response.body.links?.next;
+    if (nextLink) {
+      const url = new URL(nextLink);
+      cursor = url.searchParams.get('page[cursor]') || undefined;
+    } else {
+      cursor = undefined;
+    }
+  } while (cursor);
+}
+
+// Usage: iterate all profiles
+// for await (const profile of paginate(cursor => profilesApi.getProfiles({ pageCursor: cursor }))) {
+//   console.log(profile.attributes.email);
+// }
+```
+
+### Step 6: Multi-Tenant Factory
+
+```typescript
+// src/klaviyo/multi-tenant.ts
+import { ApiKeySession, ProfilesApi, EventsApi, ListsApi } from 'klaviyo-api';
+
+interface TenantApis {
+  profiles: ProfilesApi;
+  events: EventsApi;
+  lists: ListsApi;
+}
+
+const tenantCache = new Map<string, TenantApis>();
+
+export function getApisForTenant(tenantId: string, apiKey: string): TenantApis {
+  if (!tenantCache.has(tenantId)) {
+    const session = new ApiKeySession(apiKey);
+    tenantCache.set(tenantId, {
+      profiles: new ProfilesApi(session),
+      events: new EventsApi(session),
+      lists: new ListsApi(session),
+    });
   }
-  return clients.get(tenantId)!;
+  return tenantCache.get(tenantId)!;
 }
 ```
 
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from klaviyo import KlaviyoClient
+## SDK Conventions
 
-@asynccontextmanager
-async def get_klaviyo_client():
-    client = KlaviyoClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
+| Convention | Example |
+|-----------|---------|
+| Property casing | `firstName` (not `first_name`) |
+| Response access | `response.body.data` (not `response.data`) |
+| Payload structure | `{ data: { type: 'profile', attributes: { ... } } }` |
+| Filter syntax | `equals(email,"user@example.com")` |
+| Sort syntax | `'-datetime'` (descending), `'datetime'` (ascending) |
+| Include relations | `{ include: ['lists'] }` |
 
-### Zod Validation
-```typescript
-import { z } from 'zod';
+## Error Handling
 
-const klaviyoResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Error | Status | Retryable | Solution |
+|-------|--------|-----------|----------|
+| Invalid API key | 401 | No | Check KLAVIYO_PRIVATE_KEY |
+| Missing scope | 403 | No | Add required scope to API key |
+| Validation error | 400 | No | Fix request payload |
+| Rate limited | 429 | Yes | Honor Retry-After header |
+| Server error | 500/503 | Yes | Retry with backoff |
+| Conflict | 409 | No | Resource already exists; use update |
 
 ## Resources
-- [Klaviyo SDK Reference](https://docs.klaviyo.com/sdk)
-- [Klaviyo API Types](https://docs.klaviyo.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [klaviyo-api-node README](https://github.com/klaviyo/klaviyo-api-node/blob/main/README.md)
+- [API Overview](https://developers.klaviyo.com/en/reference/api_overview)
+- [API Versioning](https://developers.klaviyo.com/en/docs/api_versioning_and_deprecation_policy)
 
 ## Next Steps
-Apply patterns in `klaviyo-core-workflow-a` for real-world usage.
+
+Apply patterns in `klaviyo-core-workflow-a` for profile and list management.

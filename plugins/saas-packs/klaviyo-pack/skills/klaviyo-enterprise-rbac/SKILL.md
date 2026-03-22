@@ -1,146 +1,168 @@
 ---
 name: klaviyo-enterprise-rbac
 description: |
-  Configure Klaviyo enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Klaviyo.
-  Trigger with phrases like "klaviyo SSO", "klaviyo RBAC",
-  "klaviyo enterprise", "klaviyo roles", "klaviyo permissions", "klaviyo SAML".
+  Configure Klaviyo enterprise access control with API key scopes and OAuth.
+  Use when implementing per-key scoping, configuring OAuth app authorization,
+  or setting up organization-level access controls for Klaviyo.
+  Trigger with phrases like "klaviyo scopes", "klaviyo RBAC",
+  "klaviyo enterprise", "klaviyo permissions", "klaviyo OAuth", "klaviyo access control".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo]
+tags: [saas, klaviyo, email-marketing, cdp]
 compatible-with: claude-code
 ---
 
 # Klaviyo Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Klaviyo integrations.
+
+Enterprise access control for Klaviyo: API key scoping with granular read/write permissions, OAuth app authorization flows, and application-level RBAC built on top of Klaviyo's scope system.
 
 ## Prerequisites
-- Klaviyo Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
 
-## Role Definitions
+- Klaviyo account with API key management access
+- Understanding of OAuth 2.0 (for OAuth apps)
+- Application requiring per-user or per-role Klaviyo access
 
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
+## Klaviyo Access Control Model
 
-## Role Implementation
+Klaviyo uses **scoped API keys** and **OAuth** for access control. There are no built-in "roles" in Klaviyo's API -- you implement RBAC by creating multiple API keys with different scopes.
+
+### API Key Scopes
+
+| Scope | Read | Write | What It Controls |
+|-------|------|-------|-----------------|
+| `accounts` | Account info | N/A | Organization name, timezone |
+| `campaigns` | List campaigns | Create/send campaigns | Email, SMS, push campaigns |
+| `catalogs` | Browse items | CRUD catalog items | Product catalog management |
+| `coupons` | List coupons | Create coupons | Coupon/discount codes |
+| `data-privacy` | N/A | Delete profiles | GDPR/CCPA deletion requests |
+| `events` | Query events | Track events | Server-side event tracking |
+| `flows` | List flows | Create/update flows | Flow automation |
+| `images` | List images | Upload images | Email template images |
+| `lists` | List lists | CRUD lists/members | List management |
+| `metrics` | Query metrics | N/A | Metric aggregations |
+| `profiles` | Read profiles | Create/update profiles | Profile management |
+| `segments` | Read segments | N/A | Segment queries |
+| `tags` | Read tags | CRUD tags | Resource tagging |
+| `templates` | Read templates | Create/update templates | Email templates |
+| `webhooks` | List webhooks | CRUD webhooks | Webhook subscriptions |
+
+## Instructions
+
+### Step 1: Create Scoped API Keys
+
+Create separate API keys per service/role in Klaviyo dashboard (**Settings > API Keys**):
 
 ```typescript
-enum KlaviyoRole {
+// Example: different keys for different services
+
+// Profile Sync Service -- only needs profiles + lists
+// Key scopes: profiles:read, profiles:write, lists:read, lists:write
+const profileSyncSession = new ApiKeySession(process.env.KLAVIYO_KEY_PROFILE_SYNC!);
+
+// Event Tracking Service -- only needs events + profiles
+// Key scopes: events:write, profiles:read, profiles:write
+const eventTrackingSession = new ApiKeySession(process.env.KLAVIYO_KEY_EVENT_TRACKER!);
+
+// Reporting Dashboard -- read-only
+// Key scopes: campaigns:read, metrics:read, segments:read, profiles:read
+const reportingSession = new ApiKeySession(process.env.KLAVIYO_KEY_REPORTING!);
+
+// Admin Service -- full access (use sparingly)
+// Key scopes: all scopes
+const adminSession = new ApiKeySession(process.env.KLAVIYO_KEY_ADMIN!);
+```
+
+### Step 2: Application-Level RBAC
+
+```typescript
+// src/klaviyo/rbac.ts
+
+enum AppRole {
   Admin = 'admin',
+  Marketer = 'marketer',
   Developer = 'developer',
   Viewer = 'viewer',
   Service = 'service',
 }
 
 interface KlaviyoPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
+  canReadProfiles: boolean;
+  canWriteProfiles: boolean;
+  canDeleteProfiles: boolean;
+  canSendCampaigns: boolean;
+  canManageLists: boolean;
+  canTrackEvents: boolean;
+  canViewReports: boolean;
+  canManageWebhooks: boolean;
 }
 
-const ROLE_PERMISSIONS: Record<KlaviyoRole, KlaviyoPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
+const ROLE_PERMISSIONS: Record<AppRole, KlaviyoPermissions> = {
+  admin: {
+    canReadProfiles: true, canWriteProfiles: true, canDeleteProfiles: true,
+    canSendCampaigns: true, canManageLists: true, canTrackEvents: true,
+    canViewReports: true, canManageWebhooks: true,
+  },
+  marketer: {
+    canReadProfiles: true, canWriteProfiles: false, canDeleteProfiles: false,
+    canSendCampaigns: true, canManageLists: true, canTrackEvents: false,
+    canViewReports: true, canManageWebhooks: false,
+  },
+  developer: {
+    canReadProfiles: true, canWriteProfiles: true, canDeleteProfiles: false,
+    canSendCampaigns: false, canManageLists: true, canTrackEvents: true,
+    canViewReports: true, canManageWebhooks: true,
+  },
+  viewer: {
+    canReadProfiles: true, canWriteProfiles: false, canDeleteProfiles: false,
+    canSendCampaigns: false, canManageLists: false, canTrackEvents: false,
+    canViewReports: true, canManageWebhooks: false,
+  },
+  service: {
+    canReadProfiles: true, canWriteProfiles: true, canDeleteProfiles: false,
+    canSendCampaigns: false, canManageLists: false, canTrackEvents: true,
+    canViewReports: false, canManageWebhooks: false,
+  },
 };
 
-function checkPermission(
-  role: KlaviyoRole,
-  action: keyof KlaviyoPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
+export function checkPermission(role: AppRole, permission: keyof KlaviyoPermissions): boolean {
+  return ROLE_PERMISSIONS[role][permission];
 }
-```
 
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Klaviyo SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://klaviyo.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/klaviyo/callback',
+// Map roles to API keys with appropriate scopes
+const ROLE_API_KEYS: Record<AppRole, string> = {
+  admin: process.env.KLAVIYO_KEY_ADMIN!,
+  marketer: process.env.KLAVIYO_KEY_MARKETER!,
+  developer: process.env.KLAVIYO_KEY_DEVELOPER!,
+  viewer: process.env.KLAVIYO_KEY_VIEWER!,
+  service: process.env.KLAVIYO_KEY_SERVICE!,
 };
 
-// Map IdP groups to Klaviyo roles
-const groupRoleMapping: Record<string, KlaviyoRole> = {
-  'Engineering': KlaviyoRole.Developer,
-  'Platform-Admins': KlaviyoRole.Admin,
-  'Data-Team': KlaviyoRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@klaviyo/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.KLAVIYO_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.KLAVIYO_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/klaviyo/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface KlaviyoOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: KlaviyoRole;
-}
-
-async function createOrganization(
-  config: KlaviyoOrganization
-): Promise<void> {
-  await klaviyoClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
+export function getSessionForRole(role: AppRole): ApiKeySession {
+  const key = ROLE_API_KEYS[role];
+  if (!key) throw new Error(`No API key configured for role: ${role}`);
+  return new ApiKeySession(key);
 }
 ```
 
-## Access Control Middleware
+### Step 3: Permission Middleware
 
 ```typescript
-function requireKlaviyoPermission(
-  requiredPermission: keyof KlaviyoPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { klaviyoRole: KlaviyoRole };
+// src/middleware/klaviyo-auth.ts
+import { checkPermission, AppRole, KlaviyoPermissions } from '../klaviyo/rbac';
 
-    if (!checkPermission(user.klaviyoRole, requiredPermission)) {
+export function requireKlaviyoPermission(permission: keyof KlaviyoPermissions) {
+  return (req: any, res: any, next: any) => {
+    const userRole = req.user?.klaviyoRole as AppRole;
+    if (!userRole) return res.status(401).json({ error: 'No Klaviyo role assigned' });
+
+    if (!checkPermission(userRole, permission)) {
       return res.status(403).json({
         error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
+        message: `Role '${userRole}' does not have permission: ${permission}`,
       });
     }
 
@@ -148,77 +170,135 @@ function requireKlaviyoPermission(
   };
 }
 
-// Usage
-app.delete('/klaviyo/resource/:id',
-  requireKlaviyoPermission('delete'),
-  deleteResourceHandler
+// Usage in routes
+app.get('/api/klaviyo/profiles',
+  requireKlaviyoPermission('canReadProfiles'),
+  profilesHandler
+);
+
+app.post('/api/klaviyo/campaigns/send',
+  requireKlaviyoPermission('canSendCampaigns'),
+  campaignSendHandler
+);
+
+app.delete('/api/klaviyo/profiles/:id',
+  requireKlaviyoPermission('canDeleteProfiles'),
+  profileDeleteHandler
 );
 ```
 
-## Audit Trail
+### Step 4: OAuth App Flow (for third-party integrations)
 
 ```typescript
+// OAuth flow for Klaviyo apps (marketplace integrations)
+// Reference: https://developers.klaviyo.com/en/docs/set_up_oauth
+
+const OAUTH_CONFIG = {
+  clientId: process.env.KLAVIYO_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.KLAVIYO_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://your-app.com/auth/klaviyo/callback',
+  authorizationUrl: 'https://www.klaviyo.com/oauth/authorize',
+  tokenUrl: 'https://a.klaviyo.com/oauth/token',
+  // Only request scopes your app needs
+  scopes: ['profiles:read', 'profiles:write', 'events:write', 'lists:read'],
+};
+
+// Step 1: Redirect user to Klaviyo authorization
+function getAuthorizationUrl(state: string): string {
+  const params = new URLSearchParams({
+    response_type: 'code',
+    client_id: OAUTH_CONFIG.clientId,
+    redirect_uri: OAUTH_CONFIG.redirectUri,
+    scope: OAUTH_CONFIG.scopes.join(' '),
+    state,
+  });
+  return `${OAUTH_CONFIG.authorizationUrl}?${params}`;
+}
+
+// Step 2: Exchange code for access token
+async function exchangeCodeForToken(code: string): Promise<{
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}> {
+  const response = await fetch(OAUTH_CONFIG.tokenUrl, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'authorization_code',
+      code,
+      client_id: OAUTH_CONFIG.clientId,
+      client_secret: OAUTH_CONFIG.clientSecret,
+      redirect_uri: OAUTH_CONFIG.redirectUri,
+    }),
+  });
+
+  const data = await response.json();
+  return {
+    accessToken: data.access_token,
+    refreshToken: data.refresh_token,
+    expiresIn: data.expires_in,
+  };
+}
+```
+
+### Step 5: Audit Trail
+
+```typescript
+// src/klaviyo/audit.ts
+
 interface KlaviyoAuditEntry {
   timestamp: Date;
   userId: string;
-  role: KlaviyoRole;
+  role: AppRole;
   action: string;
   resource: string;
   success: boolean;
-  ipAddress: string;
+  klaviyoEndpoint: string;
+  ipAddress?: string;
 }
 
 async function logKlaviyoAccess(entry: KlaviyoAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
+  // Store in audit database
+  await db.auditLog.create({ data: entry });
 
   // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
+  if (entry.action === 'DELETE' && entry.resource.includes('profile')) {
+    await alertSecurityTeam(`Profile deletion by ${entry.userId} (${entry.role})`);
   }
 }
 ```
 
-## Instructions
+## Environment Variable Layout
 
-### Step 1: Define Roles
-Map organizational roles to Klaviyo permissions.
+```bash
+# Per-role API keys (create in Klaviyo dashboard with specific scopes)
+KLAVIYO_KEY_ADMIN=pk_admin_***         # All scopes
+KLAVIYO_KEY_MARKETER=pk_marketer_***   # campaigns:*, lists:*, profiles:read, segments:read
+KLAVIYO_KEY_DEVELOPER=pk_dev_***       # profiles:*, events:*, lists:*, webhooks:*, templates:*
+KLAVIYO_KEY_VIEWER=pk_viewer_***       # *:read only
+KLAVIYO_KEY_SERVICE=pk_service_***     # events:write, profiles:read/write
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
-
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+# OAuth (for marketplace apps)
+KLAVIYO_OAUTH_CLIENT_ID=your_client_id
+KLAVIYO_OAUTH_CLIENT_SECRET=your_client_secret
 ```
 
+## Error Handling
+
+| Error | Status | Cause | Solution |
+|-------|--------|-------|----------|
+| `permission_denied` | 403 | API key missing required scope | Create new key with correct scopes |
+| OAuth code expired | 400 | User took too long to authorize | Retry authorization flow |
+| Token refresh failed | 401 | Refresh token revoked | Re-authorize the app |
+| Role not assigned | 401 | User missing `klaviyoRole` | Assign role in your user management |
+
 ## Resources
-- [Klaviyo Enterprise Guide](https://docs.klaviyo.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+- [Klaviyo API Scopes](https://developers.klaviyo.com/en/docs/authenticate_)
+- [OAuth Setup Guide](https://developers.klaviyo.com/en/docs/set_up_oauth)
+- [Update OAuth Scopes](https://developers.klaviyo.com/en/docs/update_your_oauth_scopes)
 
 ## Next Steps
+
 For major migrations, see `klaviyo-migration-deep-dive`.

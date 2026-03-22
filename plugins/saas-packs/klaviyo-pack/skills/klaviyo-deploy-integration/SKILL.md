@@ -10,57 +10,100 @@ allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo]
+tags: [saas, klaviyo, email-marketing, cdp]
 compatible-with: claude-code
 ---
 
 # Klaviyo Deploy Integration
 
 ## Overview
-Deploy Klaviyo-powered applications to popular platforms with proper secrets management.
+
+Deploy Klaviyo-powered applications to Vercel, Fly.io, and Google Cloud Run with proper secrets management and health checks.
 
 ## Prerequisites
-- Klaviyo API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+- Klaviyo production API key (`pk_*`)
+- Platform CLI installed (`vercel`, `fly`, or `gcloud`)
+- Application tested with `klaviyo-api` SDK
+- `klaviyo-prod-checklist` completed
 
-### Environment Setup
+## Instructions
+
+### Vercel Deployment
+
 ```bash
-# Add Klaviyo secrets to Vercel
-vercel secrets add klaviyo_api_key sk_live_***
-vercel secrets add klaviyo_webhook_secret whsec_***
+# 1. Add secrets to Vercel project
+vercel env add KLAVIYO_PRIVATE_KEY production
+# Paste your pk_*** key when prompted
 
-# Link to project
-vercel link
+vercel env add KLAVIYO_WEBHOOK_SIGNING_SECRET production
+# Paste your whsec_*** secret
 
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# 2. Configure vercel.json
 ```
 
-### vercel.json Configuration
 ```json
 {
   "env": {
-    "KLAVIYO_API_KEY": "@klaviyo_api_key"
+    "KLAVIYO_PRIVATE_KEY": "@klaviyo_private_key"
   },
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/webhooks/klaviyo", "destination": "/api/webhooks/klaviyo" }
+  ]
 }
 ```
 
-## Fly.io Deployment
+```bash
+# 3. Deploy
+vercel --prod
 
-### fly.toml
+# 4. Verify health
+curl -s https://your-app.vercel.app/api/health | jq '.services.klaviyo'
+```
+
+#### Vercel Webhook Handler (Edge-compatible)
+
+```typescript
+// api/webhooks/klaviyo.ts (Vercel serverless function)
+import crypto from 'crypto';
+
+export const config = { api: { bodyParser: false } };
+
+export default async function handler(req: any, res: any) {
+  if (req.method !== 'POST') return res.status(405).end();
+
+  const chunks: Buffer[] = [];
+  for await (const chunk of req) chunks.push(chunk);
+  const body = Buffer.concat(chunks);
+
+  // Verify HMAC-SHA256 signature
+  const signature = req.headers['klaviyo-webhook-signature'];
+  const expected = crypto
+    .createHmac('sha256', process.env.KLAVIYO_WEBHOOK_SIGNING_SECRET!)
+    .update(body)
+    .digest('base64');
+
+  if (!crypto.timingSafeEqual(Buffer.from(signature || ''), Buffer.from(expected))) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  const event = JSON.parse(body.toString());
+  // Process event...
+  console.log('Klaviyo webhook:', event.type);
+
+  res.status(200).json({ received: true });
+}
+```
+
+### Fly.io Deployment
+
 ```toml
+# fly.toml
 app = "my-klaviyo-app"
 primary_region = "iad"
 
@@ -70,142 +113,124 @@ primary_region = "iad"
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = "stop"
   auto_start_machines = true
+  min_machines_running = 1
+
+[[services.http_checks]]
+  interval = 30000
+  timeout = 5000
+  path = "/health"
+  method = "GET"
 ```
 
-### Secrets
 ```bash
-# Set Klaviyo secrets
-fly secrets set KLAVIYO_API_KEY=sk_live_***
-fly secrets set KLAVIYO_WEBHOOK_SECRET=whsec_***
+# 1. Set secrets
+fly secrets set KLAVIYO_PRIVATE_KEY=pk_***
+fly secrets set KLAVIYO_WEBHOOK_SIGNING_SECRET=whsec_***
 
-# Deploy
+# 2. Deploy
 fly deploy
+
+# 3. Verify
+fly status
+curl -s https://my-klaviyo-app.fly.dev/health | jq
 ```
 
-## Google Cloud Run
+### Google Cloud Run Deployment
 
-### Dockerfile
 ```dockerfile
-FROM node:20-slim
+# Dockerfile
+FROM node:20-slim AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
+
+FROM node:20-slim
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json .
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
 ```
 
-### Deploy Script
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+# 1. Store secret in GCP Secret Manager
+echo -n "pk_***" | gcloud secrets create klaviyo-private-key --data-file=-
+echo -n "whsec_***" | gcloud secrets create klaviyo-webhook-secret --data-file=-
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="klaviyo-service"
-REGION="us-central1"
+# 2. Grant Cloud Run access to secrets
+gcloud secrets add-iam-policy-binding klaviyo-private-key \
+  --member="serviceAccount:YOUR_SA@PROJECT.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
 
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
+# 3. Deploy to Cloud Run
+gcloud run deploy klaviyo-service \
+  --source . \
+  --region us-central1 \
   --allow-unauthenticated \
-  --set-secrets=KLAVIYO_API_KEY=klaviyo-api-key:latest
+  --set-secrets=KLAVIYO_PRIVATE_KEY=klaviyo-private-key:latest,KLAVIYO_WEBHOOK_SIGNING_SECRET=klaviyo-webhook-secret:latest \
+  --min-instances=1 \
+  --max-instances=10
+
+# 4. Verify
+gcloud run services describe klaviyo-service --region=us-central1 --format="value(status.url)"
 ```
 
-## Environment Configuration Pattern
+### Universal Health Check
 
 ```typescript
-// config/klaviyo.ts
-interface KlaviyoConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// src/health.ts -- works on all platforms
+import { ApiKeySession, AccountsApi } from 'klaviyo-api';
 
-export function getKlaviyoConfig(): KlaviyoConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.KLAVIYO_API_KEY!,
-    environment: env as KlaviyoConfig['environment'],
-    webhookSecret: process.env.KLAVIYO_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const klaviyoStatus = await checkKlaviyoConnection();
-
-  return Response.json({
-    status: klaviyoStatus ? 'healthy' : 'degraded',
-    services: {
-      klaviyo: klaviyoStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+export async function healthCheck(): Promise<{
+  status: string;
+  services: { klaviyo: { connected: boolean; latencyMs: number } };
+}> {
+  const start = Date.now();
+  try {
+    const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+    const api = new AccountsApi(session);
+    await api.getAccounts();
+    return {
+      status: 'healthy',
+      services: { klaviyo: { connected: true, latencyMs: Date.now() - start } },
+    };
+  } catch {
+    return {
+      status: 'degraded',
+      services: { klaviyo: { connected: false, latencyMs: Date.now() - start } },
+    };
+  }
 }
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Klaviyo API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Klaviyo integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Klaviyo connectivity.
 
 ## Output
-- Application deployed to production
-- Klaviyo secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+
+- Application deployed with Klaviyo secrets configured
+- Health check endpoint verifying Klaviyo connectivity
+- Webhook endpoint with HMAC signature verification
+- Platform-specific best practices applied
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add klaviyo_api_key "$KLAVIYO_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set KLAVIYO_API_KEY="$KLAVIYO_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Secret not found at runtime | Missing env config | Verify secret binding in platform |
+| Cold start timeout | Klaviyo API slow on first call | Set `min_instances=1` |
+| Webhook 401 | Wrong signing secret | Verify secret matches Klaviyo dashboard |
+| Health check fails | Wrong API key per env | Separate keys for staging/prod |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Klaviyo Deploy Guide](https://docs.klaviyo.com/deploy)
+
+- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Fly.io Secrets](https://fly.io/docs/apps/secrets/)
+- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
+- [Klaviyo API Reference](https://developers.klaviyo.com/en/reference/api_overview)
 
 ## Next Steps
+
 For webhook handling, see `klaviyo-webhooks-events`.

@@ -1,201 +1,280 @@
 ---
 name: klaviyo-webhooks-events
 description: |
-  Implement Klaviyo webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Klaviyo event notifications securely.
+  Implement Klaviyo webhooks with HMAC-SHA256 signature verification and event handling.
+  Use when setting up webhook endpoints, handling Klaviyo event notifications,
+  or creating event-driven integrations with Klaviyo.
   Trigger with phrases like "klaviyo webhook", "klaviyo events",
   "klaviyo webhook signature", "handle klaviyo events", "klaviyo notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo]
+tags: [saas, klaviyo, email-marketing, cdp]
 compatible-with: claude-code
 ---
 
 # Klaviyo Webhooks & Events
 
 ## Overview
-Securely handle Klaviyo webhooks with signature validation and replay protection.
+
+Set up Klaviyo webhooks with HMAC-SHA256 signature verification, event routing, idempotency handling, and the Webhooks API for programmatic subscription management.
 
 ## Prerequisites
-- Klaviyo webhook secret configured
+
+- Klaviyo account with webhooks enabled
 - HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- API key with scopes: `webhooks:read`, `webhooks:write`
+- Redis or database for idempotency (recommended)
 
-## Webhook Endpoint Setup
+## Klaviyo Webhook Architecture
 
-### Express.js
+Klaviyo webhooks fire when specific **topics** occur in your account. Each webhook is signed with a **secret key** using HMAC-SHA256.
+
+| Topic Category | Example Topics |
+|---------------|---------------|
+| Profile | `profile.created`, `profile.updated`, `profile.deleted` |
+| List | `list.member.added`, `list.member.removed` |
+| Segment | `segment.member.added`, `segment.member.removed` |
+| Campaign | `campaign.sent`, `campaign.delivered` |
+| Flow | `flow.triggered`, `flow.message.sent` |
+| Event | Custom metric events |
+
+## Instructions
+
+### Step 1: Create a Webhook via API
+
+```typescript
+import { ApiKeySession, WebhooksApi } from 'klaviyo-api';
+
+const session = new ApiKeySession(process.env.KLAVIYO_PRIVATE_KEY!);
+const webhooksApi = new WebhooksApi(session);
+
+// Create a webhook subscription
+const webhook = await webhooksApi.createWebhook({
+  data: {
+    type: 'webhook',
+    attributes: {
+      name: 'Profile Updates',
+      endpointUrl: 'https://your-app.com/webhooks/klaviyo',
+      // The secret used for HMAC-SHA256 signing
+      // Store this as KLAVIYO_WEBHOOK_SIGNING_SECRET
+      description: 'Receives profile create/update events',
+    },
+    relationships: {
+      webhookTopics: {
+        data: [
+          { type: 'webhook-topic', id: 'profile.created' },
+          { type: 'webhook-topic', id: 'profile.updated' },
+        ],
+      },
+    },
+  },
+});
+
+console.log('Webhook ID:', webhook.body.data.id);
+// Save the signing secret from the response
+```
+
+### Step 2: Signature Verification
+
+```typescript
+// src/klaviyo/webhook-verify.ts
+import crypto from 'crypto';
+
+/**
+ * Verify Klaviyo webhook HMAC-SHA256 signature.
+ * Klaviyo sends the signature in the webhook-signature header.
+ */
+export function verifyWebhookSignature(
+  rawBody: Buffer | string,
+  signature: string,
+  secret: string
+): boolean {
+  if (!signature || !secret) return false;
+
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(typeof rawBody === 'string' ? rawBody : rawBody.toString())
+    .digest('base64');
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expectedSignature)
+    );
+  } catch {
+    return false;
+  }
+}
+```
+
+### Step 3: Express Webhook Handler
+
 ```typescript
 import express from 'express';
-import crypto from 'crypto';
+import { verifyWebhookSignature } from './klaviyo/webhook-verify';
 
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
+// CRITICAL: Use raw body parser for signature verification
 app.post('/webhooks/klaviyo',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers['x-klaviyo-signature'] as string;
-    const timestamp = req.headers['x-klaviyo-timestamp'] as string;
-
-    if (!verifyKlaviyoSignature(req.body, signature, timestamp)) {
+    // 1. Verify signature
+    const signature = req.headers['webhook-signature'] as string;
+    if (!verifyWebhookSignature(
+      req.body,
+      signature,
+      process.env.KLAVIYO_WEBHOOK_SIGNING_SECRET!
+    )) {
+      console.warn('[Webhook] Invalid signature rejected');
       return res.status(401).json({ error: 'Invalid signature' });
     }
 
+    // 2. Parse event
     const event = JSON.parse(req.body.toString());
-    await handleKlaviyoEvent(event);
 
-    res.status(200).json({ received: true });
+    // 3. Check idempotency (prevent duplicate processing)
+    const eventId = event.id || event.data?.id;
+    if (eventId && await isAlreadyProcessed(eventId)) {
+      return res.status(200).json({ status: 'already_processed' });
+    }
+
+    // 4. Route to handler
+    try {
+      await routeWebhookEvent(event);
+      if (eventId) await markProcessed(eventId);
+      res.status(200).json({ received: true });
+    } catch (error) {
+      console.error('[Webhook] Processing failed:', error);
+      res.status(500).json({ error: 'Processing failed' });
+    }
   }
 );
 ```
 
-## Signature Verification
+### Step 4: Event Router
 
 ```typescript
-function verifyKlaviyoSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.KLAVIYO_WEBHOOK_SECRET!;
+// src/klaviyo/webhook-router.ts
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
+type WebhookHandler = (data: any) => Promise<void>;
 
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
+const handlers: Record<string, WebhookHandler> = {
+  'profile.created': async (data) => {
+    const profile = data.attributes;
+    console.log(`New profile: ${profile.email}`);
+    // Sync to your database, trigger welcome flow, etc.
+    await db.users.upsert({
+      email: profile.email,
+      firstName: profile.firstName,
+      klaviyoProfileId: data.id,
+    });
+  },
 
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
+  'profile.updated': async (data) => {
+    const profile = data.attributes;
+    console.log(`Updated profile: ${profile.email}`);
+    await db.users.update({
+      where: { klaviyoProfileId: data.id },
+      data: { firstName: profile.firstName, lastName: profile.lastName },
+    });
+  },
 
-## Event Handler Pattern
+  'list.member.added': async (data) => {
+    console.log(`Profile ${data.relationships.profile.data.id} added to list ${data.relationships.list.data.id}`);
+  },
 
-```typescript
-type KlaviyoEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface KlaviyoEvent {
-  id: string;
-  type: KlaviyoEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<KlaviyoEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
+  'campaign.sent': async (data) => {
+    console.log(`Campaign sent: ${data.attributes.name}`);
+    await analytics.track('campaign_sent', { campaignId: data.id });
+  },
 };
 
-async function handleKlaviyoEvent(event: KlaviyoEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
+export async function routeWebhookEvent(event: any): Promise<void> {
+  const topic = event.type || event.topic;
+  const handler = handlers[topic];
 
   if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
+    console.log(`[Webhook] Unhandled topic: ${topic}`);
     return;
   }
 
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
+  await handler(event.data || event);
 }
 ```
 
-## Idempotency Handling
+### Step 5: Idempotency with Redis
 
 ```typescript
+// src/klaviyo/webhook-idempotency.ts
 import { Redis } from 'ioredis';
 
-const redis = new Redis(process.env.REDIS_URL);
+const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+const TTL_SECONDS = 86400 * 7;  // 7 days
 
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `klaviyo:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
+export async function isAlreadyProcessed(eventId: string): Promise<boolean> {
+  const key = `klaviyo:webhook:${eventId}`;
+  return (await redis.exists(key)) === 1;
 }
 
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `klaviyo:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+export async function markProcessed(eventId: string): Promise<void> {
+  const key = `klaviyo:webhook:${eventId}`;
+  await redis.setex(key, TTL_SECONDS, new Date().toISOString());
 }
 ```
 
-## Webhook Testing
+### Step 6: List and Manage Webhooks
 
-```bash
-# Use Klaviyo CLI to send test events
-klaviyo webhooks trigger resource.created --url http://localhost:3000/webhooks/klaviyo
+```typescript
+// List all webhooks
+const webhooks = await webhooksApi.getWebhooks();
+for (const wh of webhooks.body.data) {
+  console.log(`${wh.attributes.name}: ${wh.attributes.endpointUrl}`);
+}
 
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
+// Get webhook topics (available event types)
+const topics = await webhooksApi.getWebhookTopics();
+for (const topic of topics.body.data) {
+  console.log(`Topic: ${topic.id} - ${topic.attributes.description}`);
+}
+
+// Delete a webhook
+await webhooksApi.deleteWebhook({ id: 'WEBHOOK_ID' });
 ```
 
-## Instructions
+## Testing Webhooks Locally
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Klaviyo dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
 ```bash
-# Use ngrok to expose local server
+# 1. Start your app
+npm run dev  # localhost:3000
+
+# 2. Expose via ngrok
 ngrok http 3000
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/klaviyo \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+# 3. Register ngrok URL as webhook endpoint in Klaviyo
+# https://abc123.ngrok.io/webhooks/klaviyo
+
+# 4. Trigger an event (e.g., create a profile) and watch your logs
 ```
 
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature | Wrong signing secret | Verify secret matches webhook creation response |
+| Duplicate events | No idempotency | Track event IDs in Redis/DB |
+| Webhook timeout | Slow processing | Return 200 immediately, process async |
+| Missing events | Wrong topics subscribed | Check webhook topic subscriptions |
+| Body parse error | Using JSON body parser | Must use `express.raw()` for signature verification |
+
 ## Resources
-- [Klaviyo Webhooks Guide](https://docs.klaviyo.com/webhooks)
-- [Webhook Security Best Practices](https://docs.klaviyo.com/webhooks/security)
+
+- [Webhooks API Overview](https://developers.klaviyo.com/en/reference/webhooks_api_overview)
+- [Working with System Webhooks](https://developers.klaviyo.com/en/docs/working_with_system_webhooks)
+- [Understanding Webhook Status Codes](https://developers.klaviyo.com/en/docs/understanding_webhook_status_codes)
 
 ## Next Steps
+
 For performance optimization, see `klaviyo-performance-tuning`.
