@@ -1,86 +1,92 @@
 ---
 name: quicknode-install-auth
 description: |
-  QuickNode install auth — blockchain RPC and Web3 infrastructure integration.
-  Use when working with QuickNode for blockchain development.
-  Trigger with phrases like "quicknode install auth", "quicknode-install-auth", "blockchain RPC".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Install and configure QuickNode SDK/CLI authentication.
+  Use when setting up a new QuickNode integration, configuring API keys,
+  or initializing QuickNode in your project.
+  Trigger with phrases like "install quicknode", "setup quicknode",
+  "quicknode auth", "configure quicknode API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, quicknode]
 ---
 
-# QuickNode Install Auth
+# QuickNode Install & Auth
 
 ## Overview
-Set up QuickNode blockchain RPC endpoints and install the QuickNode SDK or ethers.js for blockchain interactions.
+Set up QuickNode SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- QuickNode account at quicknode.com
-- An endpoint created for your target chain (Ethereum, Solana, etc.)
-- Node.js 18+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- QuickNode account with API access
+- API key from QuickNode dashboard
 
 ## Instructions
 
-### Step 1: Create Endpoint
-```text
-1. Go to quicknode.com > Dashboard > Create Endpoint
-2. Select chain: Ethereum Mainnet (or testnet for development)
-3. Copy the HTTP URL and WSS URL
-   HTTP: https://xxx-yyy.quiknode.pro/TOKEN/
-   WSS: wss://xxx-yyy.quiknode.pro/TOKEN/
-```
-
-### Step 2: Install SDK
+### Step 1: Install SDK
 ```bash
-set -euo pipefail
-npm install @quicknode/sdk viem
-# Or with ethers.js
-npm install ethers
+# Node.js
+npm install @quicknode/sdk
+
+# Python
+pip install quicknode
 ```
 
-### Step 3: Configure Environment
+### Step 2: Configure Authentication
 ```bash
-# .env
-QUICKNODE_ENDPOINT=https://xxx-yyy.quiknode.pro/YOUR_TOKEN/
-QUICKNODE_WSS=wss://xxx-yyy.quiknode.pro/YOUR_TOKEN/
+# Set environment variable
+export QUICKNODE_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'QUICKNODE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 4: Verify Connection (QuickNode SDK)
+### Step 3: Verify Connection
 ```typescript
-import { Core } from '@quicknode/sdk';
-
-const core = new Core({ endpointUrl: process.env.QUICKNODE_ENDPOINT });
-const blockNumber = await core.client.request({ method: 'eth_blockNumber' });
-console.log(`Connected! Current block: ${parseInt(blockNumber, 16)}`);
-```
-
-### Step 5: Verify Connection (ethers.js)
-```typescript
-import { ethers } from 'ethers';
-
-const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
-const block = await provider.getBlockNumber();
-console.log(`Connected! Block: ${block}`);
+// Test connection code here
 ```
 
 ## Output
-- QuickNode endpoint configured
-- SDK installed and verified
-- Successful RPC call confirming connectivity
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid token in URL | Verify endpoint URL from Dashboard |
-| `ECONNREFUSED` | Wrong endpoint URL | Check HTTPS URL format |
-| `eth method not found` | Add-on required | Enable add-on in QuickNode Dashboard |
+| Invalid API Key | Incorrect or expired key | Verify key in QuickNode dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.quicknode.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { QuickNodeClient } from '@quicknode/sdk';
+
+const client = new QuickNodeClient({
+  apiKey: process.env.QUICKNODE_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from quicknode import QuickNodeClient
+
+client = QuickNodeClient(
+    api_key=os.environ.get('QUICKNODE_API_KEY')
+)
+```
 
 ## Resources
-- [QuickNode SDK Getting Started](https://www.quicknode.com/docs/quicknode-sdk/getting-started)
-- [Ethereum Quickstart](https://www.quicknode.com/docs/ethereum/quickstart)
+- [QuickNode Documentation](https://docs.quicknode.com)
+- [QuickNode Dashboard](https://api.quicknode.com)
+- [QuickNode Status](https://status.quicknode.com)
 
 ## Next Steps
-First blockchain query: `quicknode-hello-world`
+After successful auth, proceed to `quicknode-hello-world` for your first API call.

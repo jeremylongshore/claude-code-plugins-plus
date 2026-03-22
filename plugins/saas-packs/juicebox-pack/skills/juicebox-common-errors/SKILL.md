@@ -1,49 +1,113 @@
 ---
 name: juicebox-common-errors
 description: |
-  Diagnose and fix Juicebox API errors.
-  Trigger: "juicebox error", "fix juicebox", "debug juicebox".
+  Diagnose and fix Juicebox common errors and exceptions.
+  Use when encountering Juicebox errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "juicebox error", "fix juicebox",
+  "juicebox not working", "debug juicebox".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox Common Errors
 
-## Error Reference
+## Overview
+Quick reference for the top 10 most common Juicebox errors and their solutions.
 
-### 401 Authentication
-```json
-{"error": "invalid_api_key"}
+## Prerequisites
+- Juicebox SDK installed
+- API credentials configured
+- Access to error logs
+
+## Instructions
+
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
+
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
 ```
-**Fix:** Verify key at app.juicebox.ai > Settings.
-
-### 403 Plan Limits
-```json
-{"error": "quota_exceeded"}
+Authentication error: Invalid API key
 ```
-**Fix:** Check quota in dashboard, upgrade plan.
 
-### 429 Rate Limited
-**Fix:** Check `Retry-After` header. Implement exponential backoff.
+**Cause:** API key is missing, expired, or invalid.
 
-### 400 Invalid Query
-**Fix:** Ensure query is non-empty, check filter syntax.
-
-### 404 Profile Not Found
-**Fix:** Profile may be removed. Re-run search.
-
-## Quick Diagnostic
+**Solution:**
 ```bash
-curl -s -H "Authorization: Bearer $JUICEBOX_API_KEY" \
-  https://api.juicebox.ai/v1/health
+# Verify API key is set
+echo $JUICEBOX_API_KEY
 ```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `juicebox-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Juicebox status
+curl -s https://status.juicebox.com
+
+# Verify API connectivity
+curl -I https://api.juicebox.com
+
+# Check local configuration
+env | grep JUICEBOX
+```
+
+### Escalation Path
+1. Collect evidence with `juicebox-debug-bundle`
+2. Check Juicebox status page
+3. Contact support with request ID
 
 ## Resources
-- [Juicebox Docs](https://docs.juicebox.work)
+- [Juicebox Status Page](https://status.juicebox.com)
+- [Juicebox Support](https://docs.juicebox.com/support)
+- [Juicebox Error Codes](https://docs.juicebox.com/errors)
 
 ## Next Steps
-See `juicebox-debug-bundle`.
+For comprehensive debugging, see `juicebox-debug-bundle`.

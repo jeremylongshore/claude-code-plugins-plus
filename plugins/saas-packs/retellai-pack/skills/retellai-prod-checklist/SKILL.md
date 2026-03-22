@@ -1,49 +1,121 @@
 ---
 name: retellai-prod-checklist
 description: |
-  Retell AI prod checklist — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell prod checklist", "retellai-prod-checklist", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Execute Retell AI production deployment checklist and rollback procedures.
+  Use when deploying Retell AI integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "retellai production", "deploy retellai",
+  "retellai go-live", "retellai launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
-# Retell AI Prod Checklist
+# Retell AI Production Checklist
 
 ## Overview
-Implementation patterns for Retell AI prod checklist — voice agent and telephony platform.
+Complete checklist for deploying Retell AI integrations to production.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Step 1: SDK Pattern
-```typescript
-import Retell from 'retell-sdk';
-const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-const agents = await retell.agent.list();
-console.log(`Agents: ${agents.length}`);
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Retell AI error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
+
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Retell AI connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
+
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.retellai.com
+
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/retellai-integration app=image:new --record
+kubectl rollout pause deployment/retellai-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/retellai-integration
+kubectl rollout pause deployment/retellai-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/retellai-integration
+kubectl rollout status deployment/retellai-integration
 ```
 
 ## Output
-- Retell AI integration for prod checklist
+- Deployed Retell AI integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 400 Bad Request | Invalid parameters | Check API documentation |
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; retellai: any }> {
+  const start = Date.now();
+  try {
+    await retellaiClient.ping();
+    return { status: 'healthy', retellai: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', retellai: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/retellai-integration
+kubectl rollout status deployment/retellai-integration
+```
 
 ## Resources
-- [Retell AI Documentation](https://docs.retellai.com)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [Retell AI Status](https://status.retellai.com)
+- [Retell AI Support](https://docs.retellai.com/support)
 
 ## Next Steps
-See related Retell AI skills for more workflows.
+For version upgrades, see `retellai-upgrade-migration`.

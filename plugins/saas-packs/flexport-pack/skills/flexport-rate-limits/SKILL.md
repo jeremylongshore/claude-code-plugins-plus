@@ -1,133 +1,151 @@
 ---
 name: flexport-rate-limits
 description: |
-  Handle Flexport API rate limits with exponential backoff, queue-based throttling,
-  and response header monitoring for logistics API calls.
-  Trigger: "flexport rate limit", "flexport 429", "flexport throttling", "flexport backoff".
+  Implement Flexport rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Flexport.
+  Trigger with phrases like "flexport rate limit", "flexport throttling",
+  "flexport 429", "flexport retry", "flexport backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
 compatible-with: claude-code
+tags: [saas, flexport]
 ---
 
 # Flexport Rate Limits
 
 ## Overview
+Handle Flexport rate limits gracefully with exponential backoff and idempotency.
 
-The Flexport API v2 enforces rate limits per API key. When exceeded, you get a `429 Too Many Requests` with `Retry-After` and `X-RateLimit-*` headers. Key limits to know: the API returns headers on every response telling you remaining quota.
-
-## Rate Limit Headers
-
-| Header | Description | Example |
-|--------|-------------|---------|
-| `X-RateLimit-Limit` | Max requests per window | `100` |
-| `X-RateLimit-Remaining` | Remaining in current window | `47` |
-| `X-RateLimit-Reset` | Unix timestamp when window resets | `1711234567` |
-| `Retry-After` | Seconds to wait (only on 429) | `30` |
+## Prerequisites
+- Flexport SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Monitor Rate Limit Headers
+### Step 1: Understand Rate Limit Tiers
+
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
+
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-class RateLimitTracker {
-  remaining = Infinity;
-  resetAt = 0;
-
-  update(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '100');
-    this.resetAt = parseInt(headers.get('X-RateLimit-Reset') || '0') * 1000;
-  }
-
-  async waitIfNeeded() {
-    if (this.remaining <= 2 && Date.now() < this.resetAt) {
-      const wait = this.resetAt - Date.now() + 100;
-      console.log(`Rate limit near. Waiting ${wait}ms`);
-      await new Promise(r => setTimeout(r, wait));
-    }
-  }
-}
-```
-
-### Step 2: Exponential Backoff with Jitter
-
-```typescript
-async function flexportWithRetry<T>(
-  fn: () => Promise<Response>,
-  maxRetries = 4
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    const res = await fn();
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-    if (res.ok) return res.json();
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-    if (res.status === 429) {
-      const retryAfter = parseInt(res.headers.get('Retry-After') || '60');
-      const jitter = Math.random() * 2000;
-      const delay = retryAfter * 1000 + jitter;
-      console.log(`429 rate limited. Retry in ${(delay / 1000).toFixed(1)}s`);
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
       await new Promise(r => setTimeout(r, delay));
-      continue;
     }
-
-    if (res.status >= 500 && attempt < maxRetries) {
-      const delay = Math.pow(2, attempt) * 1000 + Math.random() * 1000;
-      await new Promise(r => setTimeout(r, delay));
-      continue;
-    }
-
-    throw new Error(`Flexport ${res.status}: ${await res.text()}`);
   }
-  throw new Error('Max retries exceeded');
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Queue-Based Throttling
+### Step 3: Add Idempotency Keys
 
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+async function idempotentRequest<T>(
+  client: FlexportClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
+```
+
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
+
+## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
+
+## Examples
+
+### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-// Limit to 10 requests per second with max 3 concurrent
-const flexportQueue = new PQueue({
-  concurrency: 3,
+const queue = new PQueue({
+  concurrency: 5,
   interval: 1000,
   intervalCap: 10,
 });
 
-async function throttledRequest(path: string): Promise<any> {
-  return flexportQueue.add(() =>
-    fetch(`https://api.flexport.com${path}`, {
-      headers: {
-        'Authorization': `Bearer ${process.env.FLEXPORT_API_KEY}`,
-        'Flexport-Version': '2',
-      },
-    }).then(r => r.json())
-  );
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
 }
-
-// Bulk operations stay within limits
-const shipmentIds = ['shp_001', 'shp_002', 'shp_003', /* ... */];
-const results = await Promise.all(
-  shipmentIds.map(id => throttledRequest(`/shipments/${id}`))
-);
 ```
 
-## Error Handling
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
 
-| Scenario | Strategy |
-|----------|----------|
-| Single 429 | Honor `Retry-After` header |
-| Repeated 429s | Increase backoff, reduce concurrency |
-| Bulk import | Use `p-queue` with `intervalCap` |
-| Batch reads | Paginate with `per=100` to minimize calls |
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-
-- [Flexport API Reference](https://apidocs.flexport.com/)
-- [p-queue](https://github.com/sindresorhus/p-queue)
+- [Flexport Rate Limits](https://docs.flexport.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
 For security configuration, see `flexport-security-basics`.

@@ -1,114 +1,203 @@
 ---
 name: evernote-cost-tuning
 description: |
-  Optimize Evernote integration costs and resource usage.
-  Use when managing API quotas, reducing storage usage,
-  or optimizing upload limits.
-  Trigger with phrases like "evernote cost", "evernote quota",
-  "evernote limits", "evernote upload".
-allowed-tools: Read, Write, Edit, Grep
+  Optimize Evernote costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Evernote billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "evernote cost", "evernote billing",
+  "reduce evernote costs", "evernote pricing", "evernote expensive", "evernote budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Cost Tuning
 
 ## Overview
-Optimize resource usage and manage costs in Evernote integrations, focusing on monthly upload quotas, storage efficiency, image compression, and account limit monitoring.
+Optimize Evernote costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
-- Understanding of Evernote account tiers (Basic: 60MB/mo, Premium: 10GB/mo, Business: 20GB/mo)
-- Access to user quota information via `user.accounting`
-- Monitoring infrastructure for alerts
+- Access to Evernote billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## Instructions
+## Pricing Tiers
 
-### Step 1: Quota Monitoring
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-Query `userStore.getUser()` to access `user.accounting` which contains `uploadLimit`, `uploaded`, and `uploadLimitEnd`. Calculate remaining quota and percentage used.
+## Cost Estimation
 
-```javascript
-async function getQuotaStatus(userStore) {
-  const user = await userStore.getUser();
-  const { uploadLimit, uploaded, uploadLimitEnd } = user.accounting;
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateEvernoteCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
   return {
-    totalMB: Math.round(uploadLimit / 1024 / 1024),
-    usedMB: Math.round(uploaded / 1024 / 1024),
-    remainingMB: Math.round((uploadLimit - uploaded) / 1024 / 1024),
-    percentUsed: Math.round((uploaded / uploadLimit) * 100),
-    resetsAt: new Date(uploadLimitEnd)
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
   };
 }
 ```
 
-### Step 2: Resource Optimization
+## Usage Monitoring
 
-Compress images before attaching to notes. Resize large images to a maximum dimension (e.g., 1920px). Convert PNG screenshots to JPEG for smaller file sizes. Skip attaching files that exceed the single-note size limit (25MB for Basic, 200MB for Premium).
+```typescript
+class EvernoteUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
 
-```javascript
-function estimateNoteSize(content, resources = []) {
-  const contentBytes = Buffer.byteLength(content, 'utf8');
-  const resourceBytes = resources.reduce((sum, r) => sum + r.data.size, 0);
-  return contentBytes + resourceBytes;
-}
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
 
-function canUpload(noteSize, remainingQuota) {
-  return noteSize < remainingQuota;
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Evernote budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateEvernoteCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
 }
 ```
 
-### Step 3: Efficient Note Creation
+## Cost Reduction Strategies
 
-Check quota before creating notes with large attachments. Use `findNotesMetadata()` for read operations (zero upload cost). Batch small notes into single notes where appropriate.
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
 
-### Step 4: Storage Cleanup
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await evernoteClient.trackEvent(event);
+}
+```
 
-Find large notes consuming quota. List notes sorted by content length to identify optimization candidates. Remove unused resources and delete notes in trash to reclaim space.
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => evernoteClient.get(id)));
 
-### Step 5: Quota Alerts
+// Use batch endpoint (1 call)
+await evernoteClient.batchGet(ids);
+```
 
-Send alerts when upload usage exceeds thresholds (e.g., 75%, 90%, 95%). Log quota status after each upload operation for trend analysis.
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
 
-For the complete quota monitor, image optimizer, cleanup utilities, and alert system, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Compression
+```typescript
+const client = new EvernoteClient({
+  compression: true, // Enable gzip
+});
+```
 
-## Account Limits Reference
+## Budget Alerts
 
-| Limit | Basic | Premium | Business |
-|-------|-------|---------|----------|
-| Monthly upload | 60 MB | 10 GB | 20 GB/user |
-| Single note size | 25 MB | 200 MB | 200 MB |
-| Notebooks | 250 | 250 | 10,000 |
-| Tags | 100,000 | 100,000 | 100,000 |
-| Notes | 100,000 | 100,000 | 500,000 |
+```bash
+# Set up billing alerts in Evernote dashboard
+# Or use API if available:
+# Check Evernote documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM evernote_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Evernote dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-- Quota monitoring service with percentage tracking
-- Image compression pipeline for resource optimization
-- Pre-upload quota check with size estimation
-- Storage cleanup utilities for large notes
-- Threshold-based alert system for quota usage
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `QUOTA_REACHED` | Monthly upload limit exceeded | Wait for quota reset at `uploadLimitEnd` |
-| `LIMIT_REACHED` | Too many notebooks or tags | Delete unused notebooks, merge duplicate tags |
-| `DATA_REQUIRED` | Empty note after optimization | Ensure note still has content after compression |
-| `BAD_DATA_FORMAT` | Attachment hash mismatch | Recompute MD5 hash after image compression |
-
-## Resources
-- [Account Limits](https://help.evernote.com/hc/articles/209005247)
-- [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [API Reference - User.accounting](https://dev.evernote.com/doc/reference/)
-
-## Next Steps
-For architecture patterns, see `evernote-reference-architecture`.
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
 
 ## Examples
 
-**Quota dashboard**: Build a dashboard showing current upload usage (MB used / total), days until reset, largest notes by size, and projected usage based on recent trends.
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateEvernoteCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
-**Image pipeline**: Before attaching images, resize to max 1920px width, convert PNG to JPEG at 80% quality, check resulting size against remaining quota, and skip if insufficient.
+## Resources
+- [Evernote Pricing](https://evernote.com/pricing)
+- [Evernote Billing Dashboard](https://dashboard.evernote.com/billing)
+
+## Next Steps
+For architecture patterns, see `evernote-reference-architecture`.

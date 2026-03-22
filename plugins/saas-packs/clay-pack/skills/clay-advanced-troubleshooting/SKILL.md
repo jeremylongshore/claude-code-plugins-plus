@@ -1,256 +1,263 @@
 ---
 name: clay-advanced-troubleshooting
 description: |
-  Deep-debug complex Clay enrichment failures, provider degradation, and data flow issues.
-  Use when standard troubleshooting fails, investigating intermittent enrichment failures,
-  or preparing detailed evidence for Clay support escalation.
+  Apply Clay advanced debugging techniques for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating complex race conditions,
+  or preparing evidence bundles for Clay support escalation.
   Trigger with phrases like "clay hard bug", "clay mystery error",
   "clay impossible to debug", "difficult clay issue", "clay deep debug".
-allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, debugging, scaling]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Advanced Troubleshooting
 
 ## Overview
-
-Deep debugging techniques for complex Clay issues that resist standard troubleshooting. Covers provider-level isolation, waterfall diagnosis, HTTP API column debugging, Claygent failure analysis, and Clay support escalation with proper evidence.
+Deep debugging techniques for complex Clay issues that resist standard troubleshooting.
 
 ## Prerequisites
+- Access to production logs and metrics
+- kubectl access to clusters
+- Network capture tools available
+- Understanding of distributed tracing
 
-- Access to Clay table with the failing enrichments
-- curl and jq for API testing
-- Understanding of Clay's enrichment architecture (providers, waterfall, columns)
-- Browser developer tools for network inspection
+## Evidence Collection Framework
 
-## Instructions
-
-### Step 1: Isolate the Failure Layer
-
+### Comprehensive Debug Bundle
 ```bash
 #!/bin/bash
-# clay-layer-test.sh — test each integration layer independently
-set -euo pipefail
+# advanced-clay-debug.sh
 
-echo "=== Layer Isolation Test ==="
+BUNDLE="clay-advanced-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
 
-# Layer 1: Webhook delivery
-echo "Layer 1: Webhook"
-WEBHOOK_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "$CLAY_WEBHOOK_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"_debug": true, "domain": "google.com"}')
-echo "  Webhook: $WEBHOOK_CODE"
+# 1. Extended logs (1 hour window)
+kubectl logs -l app=clay-integration --since=1h > "$BUNDLE/logs/pods.log"
+journalctl -u clay-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
 
-# Layer 2: Enterprise API (if applicable)
-if [ -n "${CLAY_API_KEY:-}" ]; then
-  echo "Layer 2: Enterprise API"
-  API_RESULT=$(curl -s -X POST "https://api.clay.com/v1/companies/enrich" \
-    -H "Authorization: Bearer $CLAY_API_KEY" \
-    -H "Content-Type: application/json" \
-    -d '{"domain": "google.com"}')
-  echo "  API response keys: $(echo "$API_RESULT" | jq 'keys')"
-fi
+# 2. Metrics dump
+curl -s localhost:9090/api/v1/query?query=clay_requests_total > "$BUNDLE/metrics/requests.json"
+curl -s localhost:9090/api/v1/query?query=clay_errors_total > "$BUNDLE/metrics/errors.json"
 
-# Layer 3: HTTP API callback endpoint
-echo "Layer 3: Callback endpoint"
-CALLBACK_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "${CLAY_CALLBACK_URL:-http://localhost:3000/api/clay/enriched}" \
-  -H "Content-Type: application/json" \
-  -d '{"_debug_test": true}')
-echo "  Callback: $CALLBACK_CODE"
+# 3. Network capture (30 seconds)
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
 
-echo ""
-echo "First failing layer = root cause location"
+# 4. Distributed traces
+curl -s localhost:16686/api/traces?service=clay > "$BUNDLE/traces/jaeger.json"
+
+# 5. Configuration state
+kubectl get cm clay-config -o yaml > "$BUNDLE/config/configmap.yaml"
+kubectl get secret clay-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Advanced debug bundle: $BUNDLE.tar.gz"
 ```
 
-### Step 2: Diagnose Enrichment Column Failures
+## Systematic Isolation
 
-In the Clay UI, click on red/error cells to see detailed error messages:
-
-```yaml
-# Common enrichment column error patterns and root causes:
-errors:
-  "No data found":
-    meaning: "Provider has no data for this input"
-    check:
-      - Is the input domain valid? (not personal email domain)
-      - Is the input name spelled correctly?
-      - Is the provider connected? (Settings > Connections)
-    fix: "Add more waterfall providers for broader coverage"
-
-  "Rate limit exceeded":
-    meaning: "Provider API rate limit hit"
-    check:
-      - How many rows are processing simultaneously?
-      - Is the provider's rate limit known? (see provider docs)
-    fix: "Reduce table row count, add delay between batches"
-
-  "Invalid API key":
-    meaning: "Provider connection lost or key expired"
-    check:
-      - Go to Settings > Connections
-      - Click on the failing provider
-      - Test the connection
-    fix: "Reconnect with a valid API key"
-
-  "Timeout":
-    meaning: "Provider took too long to respond"
-    check:
-      - Is the provider's status page showing issues?
-      - Is the input data unusually complex?
-    fix: "Retry the column on failed rows (click cell > retry)"
-
-  "Column dependency not met":
-    meaning: "A column this enrichment depends on hasn't completed yet"
-    check:
-      - Check column order (left to right execution)
-      - Is the prerequisite column populated?
-    fix: "Reorder columns so dependencies run first"
-```
-
-### Step 3: Debug HTTP API Column Issues
+### Layer-by-Layer Testing
 
 ```typescript
-// debug/http-api-column.ts — replicate Clay's HTTP API column call locally
-async function debugHTTPAPIColumn(
-  url: string,
-  method: string,
-  headers: Record<string, string>,
-  body: Record<string, string>,
-  sampleRow: Record<string, string>,
-): Promise<void> {
-  // Replace {{column_name}} placeholders with sample data
-  let resolvedUrl = url;
-  let resolvedBody = JSON.stringify(body);
+// Test each layer independently
+async function diagnoseClayIssue(): Promise<DiagnosisReport> {
+  const results: DiagnosisResult[] = [];
 
-  for (const [key, value] of Object.entries(sampleRow)) {
-    const placeholder = `{{${key}}}`;
-    resolvedUrl = resolvedUrl.replace(placeholder, value);
-    resolvedBody = resolvedBody.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), value);
-  }
+  // Layer 1: Network connectivity
+  results.push(await testNetworkConnectivity());
 
-  console.log('Resolved URL:', resolvedUrl);
-  console.log('Resolved body:', JSON.parse(resolvedBody));
+  // Layer 2: DNS resolution
+  results.push(await testDNSResolution('api.clay.com'));
 
-  const res = await fetch(resolvedUrl, {
-    method,
-    headers: { ...headers, 'Content-Type': 'application/json' },
-    body: method !== 'GET' ? resolvedBody : undefined,
+  // Layer 3: TLS handshake
+  results.push(await testTLSHandshake('api.clay.com'));
+
+  // Layer 4: Authentication
+  results.push(await testAuthentication());
+
+  // Layer 5: API response
+  results.push(await testAPIResponse());
+
+  // Layer 6: Response parsing
+  results.push(await testResponseParsing());
+
+  return { results, firstFailure: results.find(r => !r.success) };
+}
+```
+
+### Minimal Reproduction
+
+```typescript
+// Strip down to absolute minimum
+async function minimalRepro(): Promise<void> {
+  // 1. Fresh client, no customization
+  const client = new ClayClient({
+    apiKey: process.env.CLAY_API_KEY!,
   });
 
-  console.log('Status:', res.status);
-  console.log('Response:', await res.text());
+  // 2. Simplest possible call
+  try {
+    const result = await client.ping();
+    console.log('Ping successful:', result);
+  } catch (error) {
+    console.error('Ping failed:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+  }
 }
-
-// Test with your actual column config and sample row data
-await debugHTTPAPIColumn(
-  'https://api.hubapi.com/crm/v3/objects/contacts',
-  'POST',
-  { 'Authorization': 'Bearer your-hubspot-key' },
-  { email: '{{Work Email}}', firstname: '{{first_name}}' },
-  { 'Work Email': 'test@example.com', 'first_name': 'Jane' },
-);
 ```
 
-### Step 4: Debug Claygent Failures
+## Timing Analysis
 
-Common Claygent issues and diagnosis:
+```typescript
+class TimingAnalyzer {
+  private timings: Map<string, number[]> = new Map();
 
-```yaml
-claygent_debugging:
-  empty_results:
-    symptom: "Claygent returns empty or 'Could not find information'"
-    diagnosis:
-      - Test the prompt manually in Clay's Claygent builder (click cell > edit)
-      - Try the URL in a browser — is the website accessible?
-      - Check if the website blocks bots (CloudFlare challenge page)
-    fixes:
-      - Use Navigator mode for JavaScript-heavy sites
-      - Simplify the prompt to a single question
-      - Add fallback sources: "If not on the website, check LinkedIn/Crunchbase"
+  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    try {
+      return await fn();
+    } finally {
+      const duration = performance.now() - start;
+      const existing = this.timings.get(label) || [];
+      existing.push(duration);
+      this.timings.set(label, existing);
+    }
+  }
 
-  inconsistent_results:
-    symptom: "Same prompt returns different data each time"
-    diagnosis:
-      - Claygent uses web search which can vary
-      - Dynamic website content changes between requests
-    fixes:
-      - Make prompts more specific (exact page URL vs general domain)
-      - Add structured output format: "Return as JSON with keys: funding_amount, date, investors"
-
-  high_credit_cost:
-    symptom: "Claygent consuming too many credits"
-    diagnosis:
-      - Each Claygent call costs credits + 1 action
-      - Running on all rows including low-value ones
-    fixes:
-      - Add conditional run: "Only run if ICP Score >= 60"
-      - Cache results: don't re-run on already-researched companies
+  report(): TimingReport {
+    const report: TimingReport = {};
+    for (const [label, times] of this.timings) {
+      report[label] = {
+        count: times.length,
+        min: Math.min(...times),
+        max: Math.max(...times),
+        avg: times.reduce((a, b) => a + b, 0) / times.length,
+        p95: this.percentile(times, 95),
+      };
+    }
+    return report;
+  }
+}
 ```
 
-### Step 5: Build a Support Escalation Package
+## Memory and Resource Analysis
+
+```typescript
+// Detect memory leaks in Clay client usage
+const heapUsed: number[] = [];
+
+setInterval(() => {
+  const usage = process.memoryUsage();
+  heapUsed.push(usage.heapUsed);
+
+  // Alert on sustained growth
+  if (heapUsed.length > 60) { // 1 hour at 1/min
+    const trend = heapUsed[59] - heapUsed[0];
+    if (trend > 100 * 1024 * 1024) { // 100MB growth
+      console.warn('Potential memory leak in clay integration');
+    }
+  }
+}, 60000);
+```
+
+## Race Condition Detection
+
+```typescript
+// Detect concurrent access issues
+class ClayConcurrencyChecker {
+  private inProgress: Set<string> = new Set();
+
+  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.inProgress.has(key)) {
+      console.warn(`Concurrent access detected for ${key}`);
+    }
+
+    this.inProgress.add(key);
+    try {
+      return await fn();
+    } finally {
+      this.inProgress.delete(key);
+    }
+  }
+}
+```
+
+## Support Escalation Template
 
 ```markdown
 ## Clay Support Escalation
 
-**Account:** [your email]
-**Plan:** [Starter/Explorer/Pro/Enterprise]
-**Date:** [YYYY-MM-DD]
+**Severity:** P[1-4]
+**Request ID:** [from error response]
+**Timestamp:** [ISO 8601]
 
-### Issue Description
-[One paragraph describing what's broken]
-
-### Impact
-- Rows affected: [count]
-- Duration: [how long has this been happening]
-- Credits impacted: [estimated wasted credits]
+### Issue Summary
+[One paragraph description]
 
 ### Steps to Reproduce
 1. [Step 1]
 2. [Step 2]
-3. [Expected result vs actual result]
 
-### Evidence
-- Table URL: [link to affected Clay table]
-- Screenshot of error cells: [attached]
-- Column configuration: [which enrichment, which provider]
-- Sample input data that fails: [3-5 rows]
-- Sample input data that works: [3-5 rows for comparison]
+### Expected vs Actual
+- Expected: [behavior]
+- Actual: [behavior]
 
-### What I've Already Tried
-1. [Reconnected provider API key]
-2. [Tested with different input data]
-3. [Checked Clay status page — no incidents reported]
-4. [Tested provider API independently — works fine]
+### Evidence Attached
+- [ ] Debug bundle (clay-advanced-debug-*.tar.gz)
+- [ ] Minimal reproduction code
+- [ ] Timing analysis
+- [ ] Network capture (if relevant)
 
-### Environment
-- Browser: [Chrome/Firefox/Safari + version]
-- Plan tier: [with credit balance]
-- Provider connections: [list connected providers]
-
-Submit at: https://community.clay.com or support@clay.com
+### Workarounds Attempted
+1. [Workaround 1] - Result: [outcome]
+2. [Workaround 2] - Result: [outcome]
 ```
 
-## Error Handling
+## Instructions
 
+### Step 1: Collect Evidence Bundle
+Run the comprehensive debug script to gather all relevant data.
+
+### Step 2: Systematic Isolation
+Test each layer independently to identify the failure point.
+
+### Step 3: Create Minimal Reproduction
+Strip down to the simplest failing case.
+
+### Step 4: Escalate with Evidence
+Use the support template with all collected evidence.
+
+## Output
+- Comprehensive debug bundle collected
+- Failure layer identified
+- Minimal reproduction created
+- Support escalation submitted
+
+## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Intermittent enrichment failures | Provider rate limiting | Reduce concurrent rows, add delay |
-| All rows failing suddenly | Provider API key expired | Reconnect in Settings > Connections |
-| Partial data returned | Provider has limited coverage | Add waterfall fallback provider |
-| HTTP API column timeout | Target API slow | Increase timeout or process async |
-| Claygent blocked by website | Bot protection | Use Navigator mode or different data source |
+| Can't reproduce | Race condition | Add timing analysis |
+| Intermittent failure | Timing-dependent | Increase sample size |
+| No useful logs | Missing instrumentation | Add debug logging |
+| Memory growth | Resource leak | Use heap profiling |
+
+## Examples
+
+### Quick Layer Test
+```bash
+# Test each layer in sequence
+curl -v https://api.clay.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+```
 
 ## Resources
-
-- [Clay Community Support](https://community.clay.com)
-- [Clay University](https://university.clay.com)
+- [Clay Support Portal](https://support.clay.com)
+- [Clay Status Page](https://status.clay.com)
 
 ## Next Steps
-
-For high-volume scaling, see `clay-load-scale`.
+For load testing, see `clay-load-scale`.

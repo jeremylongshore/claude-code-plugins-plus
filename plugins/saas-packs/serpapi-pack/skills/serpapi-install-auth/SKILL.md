@@ -1,103 +1,92 @@
 ---
 name: serpapi-install-auth
 description: |
-  Install SerpApi client and configure API key authentication.
-  Use when setting up SerpApi for search result scraping, configuring API keys,
-  or initializing the serpapi Python/Node package.
-  Trigger: "install serpapi", "setup serpapi", "serpapi auth", "serpapi API key".
+  Install and configure SerpApi SDK/CLI authentication.
+  Use when setting up a new SerpApi integration, configuring API keys,
+  or initializing SerpApi in your project.
+  Trigger with phrases like "install serpapi", "setup serpapi",
+  "serpapi auth", "configure serpapi API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
 compatible-with: claude-code
+tags: [saas, serpapi]
 ---
 
 # SerpApi Install & Auth
 
 ## Overview
-
-Install the SerpApi client library and configure API key authentication. SerpApi provides structured JSON results from Google, Bing, YouTube, and 15+ search engines. Auth is API-key-based via the `api_key` parameter or `SERPAPI_API_KEY` env var.
+Set up SerpApi SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-
-- SerpApi account at [serpapi.com](https://serpapi.com)
-- API key from [serpapi.com/manage-api-key](https://serpapi.com/manage-api-key)
-- Node.js 18+ or Python 3.8+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- SerpApi account with API access
+- API key from SerpApi dashboard
 
 ## Instructions
 
-### Step 1: Install Client
-
+### Step 1: Install SDK
 ```bash
-# Python (official)
+# Node.js
+npm install @serpapi/sdk
+
+# Python
 pip install serpapi
-
-# Node.js (official)
-npm install serpapi
-
-# Alternative Python package (legacy but widely used)
-pip install google-search-results
 ```
 
-### Step 2: Configure API Key
-
+### Step 2: Configure Authentication
 ```bash
-# .env
-SERPAPI_API_KEY=your-api-key-here
+# Set environment variable
+export SERPAPI_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'SERPAPI_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection (Python)
-
-```python
-import serpapi, os
-
-client = serpapi.Client(api_key=os.environ["SERPAPI_API_KEY"])
-result = client.search(engine="google", q="test", num=1)
-print(f"Connected! Search ID: {result['search_metadata']['id']}")
-```
-
-### Step 4: Verify Connection (Node.js)
-
+### Step 3: Verify Connection
 ```typescript
-import { getJson } from 'serpapi';
-
-const result = await getJson({
-  engine: 'google', q: 'test', num: 1,
-  api_key: process.env.SERPAPI_API_KEY,
-});
-console.log(`Connected! Search ID: ${result.search_metadata.id}`);
-```
-
-### Step 5: Check Account
-
-```bash
-curl "https://serpapi.com/account.json?api_key=$SERPAPI_API_KEY" | jq '{
-  plan: .plan_name, used: .this_month_usage, remaining: .plan_searches_left
-}'
+// Test connection code here
 ```
 
 ## Output
-
-```
-Connected! Search ID: 64a1b2c3d4e5f6
-{ plan: "Developer", used: 42, remaining: 4958 }
-```
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Invalid API key` | Wrong or missing key | Check serpapi.com/manage-api-key |
-| `Your account is disabled` | Exceeded limits | Upgrade or wait for monthly reset |
-| `ModuleNotFoundError` | Not installed | `pip install serpapi` |
+| Invalid API Key | Incorrect or expired key | Verify key in SerpApi dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.serpapi.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { SerpApiClient } from '@serpapi/sdk';
+
+const client = new SerpApiClient({
+  apiKey: process.env.SERPAPI_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from serpapi import SerpApiClient
+
+client = SerpApiClient(
+    api_key=os.environ.get('SERPAPI_API_KEY')
+)
+```
 
 ## Resources
-
-- [SerpApi Dashboard](https://serpapi.com/dashboard)
-- [Python Integration](https://serpapi.com/integrations/python)
-- [Account API](https://serpapi.com/account-api)
+- [SerpApi Documentation](https://docs.serpapi.com)
+- [SerpApi Dashboard](https://api.serpapi.com)
+- [SerpApi Status](https://status.serpapi.com)
 
 ## Next Steps
-
-Proceed to `serpapi-hello-world` for your first search.
+After successful auth, proceed to `serpapi-hello-world` for your first API call.

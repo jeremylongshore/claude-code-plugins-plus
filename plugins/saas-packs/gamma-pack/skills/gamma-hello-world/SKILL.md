@@ -1,190 +1,98 @@
 ---
 name: gamma-hello-world
 description: |
-  Generate your first Gamma presentation via the API.
-  Use when learning the generate-poll-retrieve workflow,
-  testing API connectivity, or creating a minimal example.
-  Trigger: "gamma hello world", "gamma quick start",
-  "first gamma presentation", "gamma example", "gamma test".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*)
+  Create a minimal working Gamma example.
+  Use when starting a new Gamma integration, testing your setup,
+  or learning basic Gamma API patterns.
+  Trigger with phrases like "gamma hello world", "gamma example",
+  "gamma quick start", "simple gamma code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, getting-started]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Hello World
 
 ## Overview
-
-Generate your first presentation using Gamma's async Generate API. The workflow is: POST to create a generation, poll for status, then retrieve results (gammaUrl + exportUrl).
+Minimal working example demonstrating core Gamma functionality.
 
 ## Prerequisites
-
 - Completed `gamma-install-auth` setup
-- Valid `GAMMA_API_KEY` environment variable
-- Pro account with available credits
-
-## The Generate-Poll-Retrieve Pattern
-
-All Gamma generations are asynchronous:
-1. **POST** `/v1.0/generations` — submit content, receive `generationId`
-2. **GET** `/v1.0/generations/{generationId}` — poll every 5s until `completed` or `failed`
-3. **Result** — `gammaUrl` (view in app) + `exportUrl` (download PDF/PPTX/PNG)
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Minimal curl Example
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-```bash
-# Step 1: Create generation
-GENERATION=$(curl -s -X POST \
-  "https://public-api.gamma.app/v1.0/generations" \
-  -H "X-API-KEY: ${GAMMA_API_KEY}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "content": "Create a 5-card presentation about the benefits of AI in business",
-    "outputFormat": "presentation"
-  }')
+### Step 2: Import and Initialize Client
+```typescript
+import { GammaClient } from '@gamma/sdk';
 
-GEN_ID=$(echo "$GENERATION" | jq -r '.generationId')
-echo "Generation started: $GEN_ID"
-
-# Step 2: Poll until complete (every 5 seconds)
-while true; do
-  STATUS=$(curl -s \
-    "https://public-api.gamma.app/v1.0/generations/${GEN_ID}" \
-    -H "X-API-KEY: ${GAMMA_API_KEY}")
-  STATE=$(echo "$STATUS" | jq -r '.status')
-  echo "Status: $STATE"
-  [ "$STATE" = "completed" ] || [ "$STATE" = "failed" ] && break
-  sleep 5
-done
-
-# Step 3: Retrieve results
-echo "$STATUS" | jq '{gammaUrl, exportUrl, creditsUsed}'
+const client = new GammaClient({
+  apiKey: process.env.GAMMA_API_KEY,
+});
 ```
 
-### Node.js / TypeScript Example
-
+### Step 3: Make Your First API Call
 ```typescript
-const GAMMA_BASE = "https://public-api.gamma.app/v1.0";
-const headers = {
-  "X-API-KEY": process.env.GAMMA_API_KEY!,
-  "Content-Type": "application/json",
-};
-
-async function generatePresentation(content: string) {
-  // Step 1: Create generation
-  const createRes = await fetch(`${GAMMA_BASE}/generations`, {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      content,
-      outputFormat: "presentation",
-    }),
-  });
-  if (!createRes.ok) throw new Error(`Create failed: ${createRes.status}`);
-  const { generationId } = await createRes.json();
-  console.log(`Generation started: ${generationId}`);
-
-  // Step 2: Poll for completion
-  while (true) {
-    const pollRes = await fetch(`${GAMMA_BASE}/generations/${generationId}`, { headers });
-    const result = await pollRes.json();
-
-    if (result.status === "completed") {
-      console.log(`View: ${result.gammaUrl}`);
-      console.log(`Download: ${result.exportUrl}`);
-      console.log(`Credits used: ${result.creditsUsed}`);
-      return result;
-    }
-    if (result.status === "failed") {
-      throw new Error(`Generation failed: ${JSON.stringify(result)}`);
-    }
-    console.log(`Status: ${result.status}...`);
-    await new Promise((r) => setTimeout(r, 5000));
-  }
+async function main() {
+  // Your first API call here
 }
 
-// Run it
-await generatePresentation("Create a 5-card intro to machine learning");
+main().catch(console.error);
+```
+
+## Output
+- Working code file with Gamma client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your Gamma connection is working.
+```
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { GammaClient } from '@gamma/sdk';
+
+const client = new GammaClient({
+  apiKey: process.env.GAMMA_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
 ```
 
 ### Python Example
-
 ```python
-import os, time, requests
+from gamma import GammaClient
 
-BASE = "https://public-api.gamma.app/v1.0"
-HEADERS = {
-    "X-API-KEY": os.environ["GAMMA_API_KEY"],
-    "Content-Type": "application/json",
-}
+client = GammaClient()
 
-def generate_presentation(content: str) -> dict:
-    # Step 1: Create
-    resp = requests.post(f"{BASE}/generations", headers=HEADERS, json={
-        "content": content,
-        "outputFormat": "presentation",
-    })
-    resp.raise_for_status()
-    gen_id = resp.json()["generationId"]
-    print(f"Generation started: {gen_id}")
-
-    # Step 2: Poll
-    while True:
-        poll = requests.get(f"{BASE}/generations/{gen_id}", headers=HEADERS)
-        result = poll.json()
-        if result["status"] == "completed":
-            print(f"View: {result['gammaUrl']}")
-            print(f"Download: {result['exportUrl']}")
-            return result
-        if result["status"] == "failed":
-            raise Exception(f"Failed: {result}")
-        print(f"Status: {result['status']}...")
-        time.sleep(5)
-
-generate_presentation("5-card intro to sustainable energy")
+# Your first API call here
 ```
-
-## Expected Output
-
-```json
-{
-  "generationId": "gen_abc123",
-  "status": "completed",
-  "gammaUrl": "https://gamma.app/docs/Benefits-of-AI-abc123",
-  "exportUrl": "https://export.gamma.app/gen_abc123.pdf",
-  "creditsUsed": 42
-}
-```
-
-## Output Formats
-
-| `outputFormat` | Result |
-|----------------|--------|
-| `presentation` | Slide deck (default) |
-| `document` | Long-form document |
-| `webpage` | Web page |
-| `social_post` | Social media content |
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 on POST | Bad API key | Verify `X-API-KEY` header |
-| 422 on POST | Invalid parameters | Check `content` and `outputFormat` values |
-| `status: "failed"` | Generation could not complete | Simplify content or reduce card count |
-| Poll timeout | Very large generation | Increase poll duration beyond 2 minutes |
 
 ## Resources
-
-- [Generate a Gamma](https://developers.gamma.app/reference/generate-a-gamma)
-- [Generate API Parameters](https://developers.gamma.app/guides/generate-api-parameters-explained)
-- [Explore the API](https://developers.gamma.app/get-started/understanding-the-api-options)
+- [Gamma Getting Started](https://docs.gamma.com/getting-started)
+- [Gamma API Reference](https://docs.gamma.com/api)
+- [Gamma Examples](https://docs.gamma.com/examples)
 
 ## Next Steps
-
-Proceed to `gamma-core-workflow-a` for advanced generation with themes, images, and export options.
+Proceed to `gamma-local-dev-loop` for development workflow setup.

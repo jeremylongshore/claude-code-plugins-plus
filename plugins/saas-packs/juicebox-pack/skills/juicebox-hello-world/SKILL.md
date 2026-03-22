@@ -1,67 +1,98 @@
 ---
 name: juicebox-hello-world
 description: |
-  Create a minimal Juicebox people search example.
-  Trigger: "juicebox hello world", "first people search", "test juicebox".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Create a minimal working Juicebox example.
+  Use when starting a new Juicebox integration, testing your setup,
+  or learning basic Juicebox API patterns.
+  Trigger with phrases like "juicebox hello world", "juicebox example",
+  "juicebox quick start", "simple juicebox code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox Hello World
 
 ## Overview
-Three examples: natural language people search, profile enrichment, and contact data from 800M+ profiles.
+Minimal working example demonstrating core Juicebox functionality.
+
+## Prerequisites
+- Completed `juicebox-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Example 1: Natural Language Search
+### Step 1: Create Entry File
+Create a new file for your hello world example.
+
+### Step 2: Import and Initialize Client
 ```typescript
 import { JuiceboxClient } from '@juicebox/sdk';
-const client = new JuiceboxClient({ apiKey: process.env.JUICEBOX_API_KEY });
 
-const results = await client.search({
-  query: 'senior ML engineer at FAANG with PhD in Bay Area',
-  limit: 10,
-  filters: { experience_years: { min: 5 } }
+const client = new JuiceboxClient({
+  apiKey: process.env.JUICEBOX_API_KEY,
 });
-results.profiles.forEach(p =>
-  console.log(`${p.name} | ${p.title} at ${p.company} | ${p.location}`)
-);
 ```
 
-### Example 2: Profile Enrichment
+### Step 3: Make Your First API Call
 ```typescript
-const enriched = await client.enrich({
-  linkedin_url: 'https://linkedin.com/in/example',
-  fields: ['skills', 'experience', 'education', 'contact']
-});
-console.log(`Skills: ${enriched.skills.join(', ')}`);
-if (enriched.tech_profile?.github) {
-  console.log(`GitHub: ${enriched.tech_profile.github.repos} repos`);
+async function main() {
+  // Your first API call here
 }
+
+main().catch(console.error);
 ```
 
-### Example 3: Contact Data (Python)
-```python
-results = client.search(query='PM fintech NYC', limit=5, include_contact=True)
-for p in results.profiles:
-    email = p.contact.email if p.contact else 'N/A'
-    print(f"{p.name} | {p.title} | {email}")
+## Output
+- Working code file with Juicebox client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your Juicebox connection is working.
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Empty results | Query too narrow | Broaden terms or remove filters |
-| Partial contact | Limited coverage | Not all profiles have contact data |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { JuiceboxClient } from '@juicebox/sdk';
+
+const client = new JuiceboxClient({
+  apiKey: process.env.JUICEBOX_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from juicebox import JuiceboxClient
+
+client = JuiceboxClient()
+
+# Your first API call here
+```
 
 ## Resources
-- [Search API](https://docs.juicebox.work/api/search)
-- [PeopleGPT](https://juicebox.ai/peoplegpt)
+- [Juicebox Getting Started](https://docs.juicebox.com/getting-started)
+- [Juicebox API Reference](https://docs.juicebox.com/api)
+- [Juicebox Examples](https://docs.juicebox.com/examples)
 
 ## Next Steps
-Explore `juicebox-sdk-patterns` for production code.
+Proceed to `juicebox-local-dev-loop` for development workflow setup.

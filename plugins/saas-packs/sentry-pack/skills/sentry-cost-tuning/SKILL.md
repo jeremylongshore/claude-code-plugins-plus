@@ -1,232 +1,203 @@
 ---
 name: sentry-cost-tuning
 description: |
-  Optimize Sentry costs and event volume.
-  Use when managing Sentry billing, reducing event volume,
-  or optimizing quota usage.
-  Trigger with phrases like "reduce sentry costs", "sentry billing",
-  "sentry quota", "optimize sentry spend".
-allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*)
+  Optimize Sentry costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Sentry billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "sentry cost", "sentry billing",
+  "reduce sentry costs", "sentry pricing", "sentry expensive", "sentry budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, cost-optimization, billing, quotas]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Cost Tuning
 
+## Overview
+Optimize Sentry costs through smart tier selection, sampling, and usage monitoring.
+
 ## Prerequisites
-- Current Sentry billing plan and quota known
-- Event volume metrics available (sentry.io > Stats)
-- High-volume error sources identified
-- Cost reduction target defined
+- Access to Sentry billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
+
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateSentryCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class SentryUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Sentry budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateSentryCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await sentryClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => sentryClient.get(id)));
+
+// Use batch endpoint (1 call)
+await sentryClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new SentryClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Sentry dashboard
+# Or use API if available:
+# Check Sentry documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM sentry_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### 1. Understand Sentry Billing Categories
+### Step 1: Analyze Current Usage
+Review Sentry dashboard for usage patterns and costs.
 
-Each category is billed independently:
-| Category | What counts | Typical cost driver |
-|----------|------------|-------------------|
-| Errors | `captureException`, `captureMessage`, unhandled errors | Noisy errors, error storms |
-| Transactions | Performance spans/traces | High-traffic API endpoints |
-| Replays | Session recordings | High-traffic frontend apps |
-| Attachments | File uploads with events | Large crash reports |
-| Profiles | Code profiling data | Always-on profiling |
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-### 2. Audit Current Usage
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-```bash
-# Check usage stats for the last 30 days
-curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/stats_v2/?\
-field=sum(quantity)&groupBy=category&interval=1d&statsPeriod=30d" \
-  | python3 -c "
-import json, sys
-data = json.load(sys.stdin)
-for group in data.get('groups', []):
-    category = group['by']['category']
-    total = sum(s['totals']['sum(quantity)'] for s in [group])
-    print(f'{category}: {total:,} events')
-"
-```
-
-### 3. Error Volume Reduction (Biggest Impact)
-
-```typescript
-Sentry.init({
-  // A. Sample non-critical errors
-  sampleRate: 0.5, // 50% error sampling saves 50% cost
-
-  // B. Filter noisy errors that don't need tracking
-  ignoreErrors: [
-    'ResizeObserver loop completed',
-    'Non-Error promise rejection',
-    /Loading chunk \d+ failed/,
-    'Network request failed',
-    'Failed to fetch',
-    'AbortError',
-    /^Script error\.?$/,
-    'TypeError: cancelled',
-    'TypeError: NetworkError',
-  ],
-
-  // C. Block third-party script errors
-  denyUrls: [
-    /extensions\//i,
-    /^chrome:\/\//i,
-    /^moz-extension:\/\//i,
-    /hotjar\.com/,
-    /google-analytics\.com/,
-    /googletagmanager\.com/,
-  ],
-
-  // D. Smart filtering with beforeSend
-  beforeSend(event, hint) {
-    const error = hint?.originalException;
-
-    // Drop browser extension errors
-    if (event.exception?.values?.some(e =>
-      e.stacktrace?.frames?.some(f =>
-        f.filename?.includes('extension')
-      )
-    )) return null;
-
-    // Drop known non-actionable errors
-    if (error?.message?.match(/timeout/i) && error?.message?.match(/health/i)) {
-      return null;
-    }
-
-    return event;
-  },
-});
-```
-
-### 4. Transaction Volume Reduction (Second Biggest Impact)
-
-```typescript
-Sentry.init({
-  // A. Low global rate
-  tracesSampleRate: 0.01, // 1% baseline
-
-  // B. Smart sampling per endpoint
-  tracesSampler: ({ name }) => {
-    // Zero-value: health checks, bots, static
-    if (name?.match(/\/(health|ping|ready|robots\.txt)/)) return 0;
-    if (name?.match(/\.(js|css|png|jpg|ico)/)) return 0;
-
-    // Business-critical: higher rates
-    if (name?.includes('/payment') || name?.includes('/checkout')) return 0.5;
-    if (name?.includes('/api/')) return 0.05;
-
-    return 0.01; // Default 1%
-  },
-});
-```
-
-### 5. Reduce Event Payload Size
-
-```typescript
-Sentry.init({
-  maxBreadcrumbs: 20, // Default 100 — saves bandwidth
-  maxValueLength: 250, // Truncate long strings
-
-  beforeSend(event) {
-    // Truncate large request bodies
-    if (event.request?.data && typeof event.request.data === 'string') {
-      if (event.request.data.length > 1000) {
-        event.request.data = event.request.data.substring(0, 1000) + '...[truncated]';
-      }
-    }
-
-    // Remove unnecessary headers
-    if (event.request?.headers) {
-      const keep = ['content-type', 'user-agent', 'referer'];
-      event.request.headers = Object.fromEntries(
-        Object.entries(event.request.headers)
-          .filter(([k]) => keep.includes(k.toLowerCase()))
-      );
-    }
-
-    return event;
-  },
-});
-```
-
-### 6. Disable Unused Features
-
-```typescript
-Sentry.init({
-  // Disable features you're not using
-  // Each saves quota in its respective category
-
-  // Disable replays if not needed (saves replay quota)
-  replaysSessionSampleRate: 0,
-  replaysOnErrorSampleRate: 0,
-
-  // Disable profiling if not needed (saves profile quota)
-  profilesSampleRate: 0,
-
-  // Disable performance if not needed (saves transaction quota)
-  tracesSampleRate: 0,
-});
-```
-
-### 7. Server-Side Inbound Filters (Free)
-
-These filter events BEFORE they count against quota:
-- **Project Settings > Inbound Filters**
-- Enable: Legacy browsers, browser extensions, localhost, web crawlers
-- Add custom error message filters for patterns you want to ignore
-
-### 8. Set Spend Alerts and Rate Limits
-
-```bash
-# Set project-level rate limit (events per hour)
-# Dashboard: Project Settings > Client Keys > Rate Limiting
-
-# Set organization spend alerts:
-# Settings > Subscription > Spend Allocations
-# Alert at 80% of monthly budget
-
-# Spike protection (Organization Settings > Spike Protection)
-# Automatically rate-limits during sudden spikes
-```
-
-### 9. Cost Projection Template
-
-```
-Current plan: Team ($26/month)
-Included:  50K errors, 100K transactions, 500 replays
-Current:   45K errors, 800K transactions, 0 replays
-Overage:   0 errors, 700K transactions x $0.000025 = $17.50/month
-
-After optimization:
-- tracesSampler: 800K -> 40K transactions (95% reduction)
-- ignoreErrors: 45K -> 30K errors (33% reduction)
-- Projected overage: $0
-- Annual savings: ~$210
-```
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-- Error volume reduced via ignoreErrors, denyUrls, and beforeSend filtering
-- Transaction volume reduced via tracesSampler with endpoint-specific rates
-- Unused features disabled (replays, profiling)
-- Server-side inbound filters enabled (free filtering)
-- Spend alerts and rate limits preventing quota overruns
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Critical errors missed | `sampleRate` too aggressive | Use `beforeSend` to always pass critical errors regardless of sample rate |
-| No performance data | `tracesSampleRate: 0` | Set to at least 0.01 for business-critical endpoints |
-| Overage charges | No rate limits set | Set project rate limits and organization spend alerts |
-| Spike consuming quota | No spike protection | Enable in Organization Settings > Spike Protection |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateSentryCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-- [Quota Management](https://docs.sentry.io/pricing/quotas/)
-- [Manage Error Quota](https://docs.sentry.io/pricing/quotas/manage-event-stream-guide/)
-- [Pricing](https://sentry.io/pricing/)
-- [Filtering](https://docs.sentry.io/platforms/javascript/configuration/filtering/)
+- [Sentry Pricing](https://sentry.com/pricing)
+- [Sentry Billing Dashboard](https://dashboard.sentry.com/billing)
+
+## Next Steps
+For architecture patterns, see `sentry-reference-architecture`.

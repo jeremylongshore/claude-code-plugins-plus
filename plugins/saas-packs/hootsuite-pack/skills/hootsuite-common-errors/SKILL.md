@@ -10,69 +10,104 @@ allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
+tags: [saas, hootsuite]
 ---
 
 # Hootsuite Common Errors
 
-## Error Reference
+## Overview
+Quick reference for the top 10 most common Hootsuite errors and their solutions.
 
-### 401 Unauthorized
-**Cause:** Access token expired (tokens last ~1 hour).
-**Fix:** Refresh token via OAuth:
-```bash
-curl -X POST https://platform.hootsuite.com/oauth2/token \
-  -u "$HOOTSUITE_CLIENT_ID:$HOOTSUITE_CLIENT_SECRET" \
-  -d "grant_type=refresh_token&refresh_token=$HOOTSUITE_REFRESH_TOKEN"
+## Prerequisites
+- Hootsuite SDK installed
+- API credentials configured
+- Access to error logs
+
+## Instructions
+
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
+
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
-### 403 Forbidden
-**Cause:** App lacks required permissions or user doesn't own the resource.
-**Fix:** Check app scopes in developer portal. Ensure user has access to the social profile.
+**Cause:** API key is missing, expired, or invalid.
 
-### 422 Unprocessable Entity — scheduledSendTime
-**Cause:** Scheduled time is in the past or invalid ISO 8601 format.
-**Fix:** Always use future dates in ISO 8601: `new Date(Date.now() + 3600000).toISOString()`
-
-### 422 — socialProfileIds
-**Cause:** Profile ID invalid or disconnected.
-**Fix:** List profiles first: `GET /v1/socialProfiles` and verify IDs.
-
-### 429 Too Many Requests
-**Cause:** Rate limit exceeded.
-**Fix:** Implement exponential backoff. See `hootsuite-rate-limits`.
-
-### Media Upload — State REJECTED
-**Cause:** File too large, wrong format, or exceeds platform limits.
-**Fix:** Check per-platform limits: Twitter images 5MB, Facebook 10MB, video varies.
-
-### invalid_grant — Token Exchange
-**Cause:** Authorization code expired (30 second lifetime) or already used.
-**Fix:** Re-initiate OAuth flow — codes are single-use and expire in 30s.
-
-### redirect_uri_mismatch
-**Cause:** Redirect URI doesn't exactly match app registration.
-**Fix:** Must match character-for-character, including trailing slash.
-
-## Quick Diagnostics
-
+**Solution:**
 ```bash
-# Test token validity
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $HOOTSUITE_ACCESS_TOKEN" \
-  https://platform.hootsuite.com/v1/me
-
-# List profiles (verifies full API access)
-curl -s -H "Authorization: Bearer $HOOTSUITE_ACCESS_TOKEN" \
-  https://platform.hootsuite.com/v1/socialProfiles | python3 -m json.tool
+# Verify API key is set
+echo $HOOTSUITE_API_KEY
 ```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `hootsuite-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Hootsuite status
+curl -s https://status.hootsuite.com
+
+# Verify API connectivity
+curl -I https://api.hootsuite.com
+
+# Check local configuration
+env | grep HOOTSUITE
+```
+
+### Escalation Path
+1. Collect evidence with `hootsuite-debug-bundle`
+2. Check Hootsuite status page
+3. Contact support with request ID
 
 ## Resources
-
-- [Hootsuite API FAQ](https://developer.hootsuite.com/docs/rest-api-faq)
-- [REST API Reference](https://apidocs.hootsuite.com/docs/api/index.html)
+- [Hootsuite Status Page](https://status.hootsuite.com)
+- [Hootsuite Support](https://docs.hootsuite.com/support)
+- [Hootsuite Error Codes](https://docs.hootsuite.com/errors)
 
 ## Next Steps
-
-For debugging tools, see `hootsuite-debug-bundle`.
+For comprehensive debugging, see `hootsuite-debug-bundle`.

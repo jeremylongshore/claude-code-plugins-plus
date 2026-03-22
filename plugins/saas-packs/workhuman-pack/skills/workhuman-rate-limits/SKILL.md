@@ -1,60 +1,151 @@
 ---
 name: workhuman-rate-limits
 description: |
-  Workhuman rate limits for employee recognition and rewards API.
-  Use when integrating Workhuman Social Recognition,
-  or building recognition workflows with HRIS systems.
-  Trigger: "workhuman rate limits".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Implement Workhuman rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Workhuman.
+  Trigger with phrases like "workhuman rate limit", "workhuman throttling",
+  "workhuman 429", "workhuman retry", "workhuman backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
+tags: [saas, workhuman]
 ---
 
 # Workhuman Rate Limits
 
 ## Overview
+Handle Workhuman rate limits gracefully with exponential backoff and idempotency.
 
-Guidance for rate limits with Workhuman Social Recognition and rewards API.
+## Prerequisites
+- Workhuman SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Key Workhuman API Concepts
+### Step 1: Understand Rate Limit Tiers
 
-- **Auth**: OAuth 2.0 client credentials flow
-- **Recognition**: Peer-to-peer and manager nominations with points
-- **Awards**: Configurable levels (bronze, silver, gold, platinum)
-- **Values**: Company values attached to recognitions
-- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
-- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-### Core API Endpoints
+### Step 2: Implement Exponential Backoff with Jitter
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/recognitions` | GET | List recognitions |
-| `/api/v1/recognitions` | POST | Create nomination |
-| `/api/v1/recognitions/:id` | GET | Get recognition status |
-| `/api/v1/users` | GET | List employees |
-| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
-| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
+```typescript
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
+```
+
+### Step 3: Add Idempotency Keys
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+async function idempotentRequest<T>(
+  client: WorkhumanClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
+```
+
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Token expired | Re-authenticate |
-| `403 Forbidden` | Insufficient permissions | Check role/permissions |
-| `422 Validation` | Missing fields | Check required fields |
-| `404 Not Found` | Invalid ID | Verify resource exists |
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-
-- [Workhuman Platform](https://www.workhuman.com/)
-- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
+- [Workhuman Rate Limits](https://docs.workhuman.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
-See related Workhuman skills for more patterns.
+For security configuration, see `workhuman-security-basics`.

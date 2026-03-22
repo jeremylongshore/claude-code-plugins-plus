@@ -1,226 +1,222 @@
 ---
 name: exa-data-handling
 description: |
-  Implement Exa search result processing, content extraction, caching, and RAG context management.
-  Use when handling search results, implementing caching, building citation pipelines,
-  or managing content payloads for LLM context windows.
-  Trigger with phrases like "exa data", "exa results processing",
-  "exa cache", "exa RAG context", "exa content extraction".
+  Implement Exa PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Exa integrations.
+  Trigger with phrases like "exa data", "exa PII",
+  "exa GDPR", "exa data retention", "exa privacy", "exa CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, data, rag, caching]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Data Handling
 
 ## Overview
-Manage search result data from Exa's neural search API. Covers content extraction scope control (text vs highlights vs summary), result caching with TTL, citation deduplication, token budget management for LLM context windows, and structured summary extraction.
+Handle sensitive data correctly when integrating with Exa.
 
 ## Prerequisites
-- `exa-js` SDK installed and configured
-- Optional: `lru-cache` for in-memory caching, `ioredis` for Redis
-- Understanding of Exa content options (text, highlights, summary)
+- Understanding of GDPR/CCPA requirements
+- Exa SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-## Instructions
+## Data Classification
 
-### Step 1: Control Content Extraction Scope
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
 ```typescript
-import Exa from "exa-js";
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
 
-const exa = new Exa(process.env.EXA_API_KEY);
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
 
-// Tier 1: Metadata only (cheapest, fastest)
-async function searchMetadataOnly(query: string) {
-  return exa.search(query, {
-    type: "auto",
-    numResults: 10,
-    // No content options — returns URLs, titles, scores only
-  });
-}
-
-// Tier 2: Highlights only (balanced cost/value)
-async function searchWithHighlights(query: string) {
-  return exa.searchAndContents(query, {
-    numResults: 10,
-    highlights: {
-      maxCharacters: 500,
-      query: query,  // focus highlights on the original query
-    },
-  });
-}
-
-// Tier 3: Full text with character limit
-async function searchWithText(query: string, maxChars = 2000) {
-  return exa.searchAndContents(query, {
-    numResults: 5,
-    text: { maxCharacters: maxChars },
-    highlights: { maxCharacters: 300 },
-  });
-}
-
-// Tier 4: Structured summary (LLM-generated per result)
-async function searchWithSummary(query: string) {
-  return exa.searchAndContents(query, {
-    numResults: 5,
-    summary: { query: query },
-    // summary returns a concise LLM-generated summary per result
-  });
-}
-```
-
-### Step 2: Result Caching with TTL
-```typescript
-import { LRUCache } from "lru-cache";
-import { createHash } from "crypto";
-
-const searchCache = new LRUCache<string, any>({
-  max: 500,
-  ttl: 1000 * 60 * 60, // 1 hour default
-});
-
-function cacheKey(query: string, options: any): string {
-  return createHash("sha256")
-    .update(JSON.stringify({ query, ...options }))
-    .digest("hex");
-}
-
-async function cachedSearch(query: string, options: any = {}, ttlMs?: number) {
-  const key = cacheKey(query, options);
-  const cached = searchCache.get(key);
-  if (cached) return cached;
-
-  const results = await exa.searchAndContents(query, options);
-  searchCache.set(key, results, { ttl: ttlMs });
-  return results;
-}
-```
-
-### Step 3: Token Budget Management for RAG
-```typescript
-interface ProcessedResult {
-  url: string;
-  title: string;
-  score: number;
-  snippet: string;
-  tokenEstimate: number;
-}
-
-function processForRAG(results: any[], maxSnippetLength = 500): ProcessedResult[] {
-  return results.map(r => {
-    const snippet = (r.text || r.highlights?.join(" ") || r.summary || "")
-      .slice(0, maxSnippetLength);
-    return {
-      url: r.url,
-      title: r.title || "Untitled",
-      score: r.score,
-      snippet,
-      tokenEstimate: Math.ceil(snippet.length / 4),
-    };
-  });
-}
-
-function fitToTokenBudget(results: ProcessedResult[], maxTokens: number) {
-  const sorted = [...results].sort((a, b) => b.score - a.score);
-  const selected: ProcessedResult[] = [];
-  let tokenCount = 0;
-
-  for (const result of sorted) {
-    if (tokenCount + result.tokenEstimate > maxTokens) break;
-    selected.push(result);
-    tokenCount += result.tokenEstimate;
-  }
-
-  return { selected, tokenCount, dropped: sorted.length - selected.length };
-}
-
-// Usage: fit search results into a 4K token context window
-const results = await exa.searchAndContents("query", {
-  numResults: 15,
-  text: { maxCharacters: 1500 },
-});
-const processed = processForRAG(results.results);
-const { selected, tokenCount } = fitToTokenBudget(processed, 4000);
-```
-
-### Step 4: Citation Deduplication
-```typescript
-function deduplicateResults(results: any[]): any[] {
-  const seen = new Map<string, any>();
-
-  for (const result of results) {
-    const domain = new URL(result.url).hostname;
-    const key = `${domain}:${result.title}`;
-    if (!seen.has(key) || result.score > seen.get(key).score) {
-      seen.set(key, result);
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
     }
   }
 
-  return Array.from(seen.values());
+  return findings;
 }
 ```
 
-### Step 5: Structured Summary Extraction
+## Data Redaction
+
 ```typescript
-// Use summary.schema for structured data extraction
-const results = await exa.searchAndContents(
-  "YC-backed AI startups Series A 2025",
-  {
-    numResults: 10,
-    category: "company",
-    summary: {
-      query: "company name, funding amount, what they do",
-      // schema can define JSON structure for the summary output
-    },
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
   }
-);
 
-// Each result.summary contains a structured summary
-for (const r of results.results) {
-  console.log(`${r.title}: ${r.summary}`);
+  return redacted;
 }
+
+// Use in logging
+console.log('Exa request:', redactPII(requestData));
 ```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Large response payload | Full text for many URLs | Use highlights or limit `maxCharacters` |
-| Cache stale for news | Default TTL too long | Use 5-minute TTL for time-sensitive queries |
-| Duplicate sources | Same article syndicated | Deduplicate by domain + title |
-| Token budget exceeded | Too much context for LLM | Use `fitToTokenBudget` to trim by score |
-| Missing `.text` field | Content not requested | Use `searchAndContents` not `search` |
+## Data Retention Policy
 
-## Examples
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
 
-### RAG-Optimized Search Pipeline
+### Automatic Cleanup
+
 ```typescript
-async function ragSearch(query: string, tokenBudget = 4000) {
-  const results = await cachedSearch(query, {
-    numResults: 15,
-    type: "neural",
-    text: { maxCharacters: 1500 },
-    highlights: { maxCharacters: 300, query },
-  });
+async function cleanupExaData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
 
-  const deduped = deduplicateResults(results.results);
-  const processed = processForRAG(deduped);
-  const { selected, tokenCount } = fitToTokenBudget(processed, tokenBudget);
+  await db.exaLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupExaData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const exaData = await exaClient.getUserData(userId);
 
   return {
-    context: selected.map((r, i) =>
-      `[${i + 1}] ${r.title} (${r.url})\n${r.snippet}`
-    ).join("\n\n---\n\n"),
-    sources: selected.map(r => ({ title: r.title, url: r.url })),
-    tokenCount,
+    source: 'Exa',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: exaData.profile,
+      activities: exaData.activities,
+      // Include all user-related data
+    },
   };
 }
 ```
 
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Exa
+  await exaClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.exaUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'exa',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await exaClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Exa data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
+
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Exa response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
+
 ## Resources
-- [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
-- [Exa Search Reference](https://docs.exa.ai/reference/search)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Exa Privacy Guide](https://docs.exa.com/privacy)
 
 ## Next Steps
-For rate limit handling, see `exa-rate-limits`. For cost optimization, see `exa-cost-tuning`.
+For enterprise access control, see `exa-enterprise-rbac`.

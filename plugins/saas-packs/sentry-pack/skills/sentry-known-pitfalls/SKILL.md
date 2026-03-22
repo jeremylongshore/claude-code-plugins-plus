@@ -1,295 +1,336 @@
 ---
 name: sentry-known-pitfalls
 description: |
-  Common Sentry pitfalls and how to avoid them.
-  Use when troubleshooting Sentry issues, reviewing configurations,
-  or preventing common mistakes.
-  Trigger with phrases like "sentry mistakes", "sentry pitfalls",
-  "sentry common issues", "sentry anti-patterns".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npm:*)
+  Identify and avoid Sentry anti-patterns and common integration mistakes.
+  Use when reviewing Sentry code for issues, onboarding new developers,
+  or auditing existing Sentry integrations for best practices violations.
+  Trigger with phrases like "sentry mistakes", "sentry anti-patterns",
+  "sentry pitfalls", "sentry what not to do", "sentry code review".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, anti-patterns, troubleshooting, best-practices]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Known Pitfalls
 
+## Overview
+Common mistakes and anti-patterns when integrating with Sentry.
+
 ## Prerequisites
-- Existing Sentry implementation to review
-- Access to SDK configuration code
-- Understanding of current error patterns
-- Codebase access for applying fixes
+- Access to Sentry codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-## Instructions
+## Pitfall #1: Synchronous API Calls in Request Path
 
-### Pitfall 1: Late Initialization
-
-The most common issue. SDK must initialize BEFORE importing any module you want instrumented.
-
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — Express imported before Sentry
-import express from 'express';
-import * as Sentry from '@sentry/node';
-Sentry.init({ dsn: process.env.SENTRY_DSN });
-// Result: Express is NOT instrumented
-
-// RIGHT — Sentry initialized in separate file, loaded first
-// instrument.mjs
-import * as Sentry from '@sentry/node';
-Sentry.init({ dsn: process.env.SENTRY_DSN });
-
-// app.mjs (loaded after instrument.mjs)
-import express from 'express';
-
-// Run with: node --import ./instrument.mjs app.mjs
+// User waits for Sentry API call
+app.post('/checkout', async (req, res) => {
+  const payment = await sentryClient.processPayment(req.body);  // 2-5s latency
+  const notification = await sentryClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
-### Pitfall 2: Capturing Strings Instead of Errors
-
+### ✅ Better Approach
 ```typescript
-// WRONG — no stack trace
-Sentry.captureException('something went wrong');
-// WRONG — no stack trace
-Promise.reject('auth failed');
-// WRONG — no stack trace
-throw 'bad request';
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
 
-// RIGHT — full stack trace preserved
-Sentry.captureException(new Error('something went wrong'));
-Promise.reject(new Error('auth failed'));
-throw new Error('bad request');
-
-// For third-party code that throws non-Error values:
-try {
-  thirdPartyLib.call();
-} catch (error) {
-  Sentry.captureException(
-    error instanceof Error ? error : new Error(String(error))
-  );
+// Background job
+async function processCheckout(data) {
+  const payment = await sentryClient.processPayment(data);
+  await sentryClient.sendEmail(payment);
 }
 ```
 
-### Pitfall 3: beforeSend Returns Undefined
+---
 
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — function implicitly returns undefined, dropping ALL events
-Sentry.init({
-  beforeSend(event) {
-    if (event.level === 'error') {
-      return event; // Only returns for errors
+// Blast requests, crash on 429
+for (const item of items) {
+  await sentryClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => sentryClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new SentryClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new SentryClient({
+  apiKey: process.env.SENTRY_API_KEY,
+});
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+---
+
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await sentryClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await sentryClient.charge(order);  // Charged twice!
+  }
+}
+```
+
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
+
+await sentryClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
+
+---
+
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-sentry-signature'];
+    if (!verifySentrySignature(req.body, signature)) {
+      return res.sendStatus(401);
     }
-    // Falls through — returns undefined — ALL non-error events dropped!
-  },
-});
-
-// RIGHT — always return event or null
-Sentry.init({
-  beforeSend(event) {
-    if (shouldDrop(event)) {
-      return null; // Explicitly drop
-    }
-    return event; // Always return the event
-  },
-});
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
 ```
 
-### Pitfall 4: Multiple Sentry.init() Calls
+---
 
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — calling init() more than once
-// File A:
-Sentry.init({ dsn: DSN_A, environment: 'production' });
-// File B (loaded later):
-Sentry.init({ dsn: DSN_B, environment: 'staging' }); // Overwrites A!
-
-// RIGHT — single init in dedicated file
-// instrument.mjs — THE ONLY file that calls Sentry.init()
-Sentry.init({ dsn: process.env.SENTRY_DSN });
-
-// Diagnosis: search for multiple inits
-// grep -r "Sentry.init" --include="*.ts" --include="*.js" src/
+// Crashes on any error
+const result = await sentryClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
 ```
 
-### Pitfall 5: Hardcoded DSN
-
+### ✅ Better Approach
 ```typescript
-// WRONG — DSN in source code
-Sentry.init({
-  dsn: 'https://abc123@o0.ingest.sentry.io/12345', // NEVER do this
-});
-
-// RIGHT — from environment variable
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-});
-
-// Prevent in CI:
-// grep -r "ingest.sentry.io" --include="*.ts" --include="*.js" src/
+try {
+  const result = await sentryClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof SentryNotFoundError) {
+    return null;
+  }
+  if (error instanceof SentryRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
 ```
 
-### Pitfall 6: Scope Pollution in Async Context
+---
 
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — global scope mutations leak between requests
-app.get('/api/user/:id', async (req, res) => {
-  Sentry.setUser({ id: req.params.id });     // Leaks to other requests!
-  Sentry.setTag('route', '/api/user/:id');     // Leaks!
-  // ... handle request
+const client = new SentryClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.sentry.com',  // Can't change for staging
 });
-
-// RIGHT — use withScope for per-request context
-app.get('/api/user/:id', async (req, res) => {
-  Sentry.withScope((scope) => {
-    scope.setUser({ id: req.params.id });     // Scoped to this request
-    scope.setTag('route', '/api/user/:id');
-    // ... handle request
-  });
-});
-
-// Or use Sentry's Express middleware which handles this automatically
 ```
 
-### Pitfall 7: High-Cardinality Transaction Names
-
+### ✅ Better Approach
 ```typescript
-// WRONG — unique transaction name per request (cardinality explosion)
-Sentry.startSpan({ name: `GET /api/users/${userId}` }, () => {});
-// Creates thousands of unique transactions: GET /api/users/1, GET /api/users/2, ...
-
-// RIGHT — parameterized names (Sentry auto-does this for Express routes)
-Sentry.startSpan({
-  name: 'GET /api/users/:id',
-  attributes: { 'user.id': userId }, // Put dynamic values in attributes
-}, () => {});
+const client = new SentryClient({
+  timeout: parseInt(process.env.SENTRY_TIMEOUT || '30000'),
+  baseUrl: process.env.SENTRY_BASE_URL || 'https://api.sentry.com',
+});
 ```
 
-### Pitfall 8: Not Flushing Before Process Exit
+---
 
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — events may be lost
-process.on('uncaughtException', (error) => {
-  Sentry.captureException(error);
-  process.exit(1); // Events may not have been sent yet!
-});
-
-// RIGHT — flush before exit
-process.on('uncaughtException', async (error) => {
-  Sentry.captureException(error);
-  await Sentry.close(2000); // Wait up to 2s for events to send
-  process.exit(1);
-});
+// When Sentry is down, every request hangs
+for (const user of users) {
+  await sentryClient.sync(user);  // All timeout sequentially
+}
 ```
 
-### Pitfall 9: Source Map URL Prefix Mismatch
-
-```bash
-# Your JS is served at: https://example.com/static/js/main.abc123.js
-# You uploaded with:    --url-prefix="~/js"
-# Sentry looks for:     ~/js/main.abc123.js
-# Actual URL:           ~/static/js/main.abc123.js
-# Result: Source maps don't resolve!
-
-# Fix: match the URL path exactly
-sentry-cli sourcemaps upload \
-  --url-prefix="~/static/js" \  # Must match the URL path
-  ./dist
-
-# Diagnosis: check what URL your JS loads from
-# Browser DevTools > Network tab > look at JS file URLs
-```
-
-### Pitfall 10: sendDefaultPii in Production
-
+### ✅ Better Approach
 ```typescript
-// WRONG — sends IP addresses, cookies, request bodies
-Sentry.init({
-  sendDefaultPii: true, // Fine for dev, DANGEROUS for production
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(sentryClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
 });
 
-// RIGHT — environment-aware PII setting
-Sentry.init({
-  sendDefaultPii: process.env.NODE_ENV !== 'production',
-});
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
 ```
 
-### Pitfall 11: Alert Fatigue
+---
 
-```
-// WRONG: Alert on EVERY event
-// Result: 1000 alerts/day -> team ignores all of them
+## Pitfall #9: Logging Sensitive Data
 
-// RIGHT: Alert on meaningful thresholds
-// Issue Alert: "New issue is created" (not "event occurs")
-// Metric Alert: "Error rate > 50/min" (not "> 1/min")
-// Use: "First seen" not "Every event" for issue alerts
-```
-
-### Pitfall 12: Release Version Mismatch
-
+### ❌ Anti-Pattern
 ```typescript
-// WRONG — SDK release doesn't match CLI release
-// CLI: sentry-cli releases new "1.0.0"
-// SDK: Sentry.init({ release: process.env.npm_package_version })
-// If npm_package_version is "1.0.0-beta", source maps won't resolve
-
-// RIGHT — use the same version source
-const VERSION = process.env.SENTRY_RELEASE || process.env.npm_package_version;
-
-// In SDK:
-Sentry.init({ release: VERSION });
-
-// In CLI:
-// sentry-cli releases new "$VERSION"
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
 ```
 
-### Quick Audit Checklist
-
-Run through this for any existing Sentry setup:
-
-```bash
-# 1. Single init point?
-grep -r "Sentry.init" --include="*.ts" --include="*.js" src/ | wc -l
-# Expected: 1
-
-# 2. No hardcoded DSN?
-grep -r "ingest.sentry.io" --include="*.ts" --include="*.js" src/
-# Expected: 0 results
-
-# 3. sendDefaultPii not true in production?
-grep -r "sendDefaultPii.*true" --include="*.ts" --include="*.js" src/
-# Expected: 0 results or gated behind env check
-
-# 4. beforeSend always returns?
-# Manual review: every code path in beforeSend returns event or null
-
-# 5. Error objects (not strings)?
-grep -r "captureException\s*(" --include="*.ts" --include="*.js" src/
-# Review: should always pass Error objects
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
 ```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Sentry is down
+const recommendations = await sentryClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await sentryClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('sentry', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
 
 ## Output
-- All 12 pitfalls identified and resolved
-- Single initialization point confirmed
-- Proper Error objects in all capture calls
-- beforeSend returning event or null on all paths
-- Source map URL prefix matching production URLs
-- Audit checklist completed for existing setup
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
 
-| Pitfall | Symptom | Fix |
-|---------|---------|-----|
-| Late init | "Express is not instrumented" | Use `--import ./instrument.mjs` |
-| String capture | Missing stack traces | Always use `new Error()` |
-| beforeSend void | Events silently dropped | Always `return event` or `return null` |
-| Multiple init | Inconsistent behavior | Consolidate to single instrument file |
-| Scope pollution | Wrong user/tags on events | Use `withScope()` per request |
-| No flush | Lost events on exit | Add `Sentry.close()` to shutdown handlers |
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
-- [Troubleshooting](https://docs.sentry.io/platforms/javascript/troubleshooting/)
-- [Best Practices](https://docs.sentry.io/product/issues/best-practices/)
-- [Configuration Options](https://docs.sentry.io/platforms/javascript/configuration/options/)
-- [Source Maps](https://docs.sentry.io/platforms/javascript/sourcemaps/)
+- [Sentry Security Guide](https://docs.sentry.com/security)
+- [Sentry Best Practices](https://docs.sentry.com/best-practices)
+
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

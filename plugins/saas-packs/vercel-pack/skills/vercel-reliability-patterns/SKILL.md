@@ -1,329 +1,292 @@
 ---
 name: vercel-reliability-patterns
 description: |
-  Implement reliability patterns for Vercel deployments including circuit breakers, retry logic, and graceful degradation.
-  Use when building fault-tolerant serverless functions, implementing retry strategies,
+  Implement Vercel reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Use when building fault-tolerant Vercel integrations, implementing retry strategies,
   or adding resilience to production Vercel services.
   Trigger with phrases like "vercel reliability", "vercel circuit breaker",
-  "vercel resilience", "vercel fallback", "vercel graceful degradation".
+  "vercel idempotent", "vercel resilience", "vercel fallback", "vercel bulkhead".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, reliability, resilience, patterns]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Reliability Patterns
 
 ## Overview
-Build fault-tolerant Vercel deployments with circuit breakers, retry logic, graceful degradation, and instant rollback integration. Addresses reliability at two levels: function-level resilience (protecting against dependency failures) and deployment-level resilience (protecting against bad deploys).
+Production-grade reliability patterns for Vercel integrations.
 
 ## Prerequisites
-- Vercel project deployed to production
-- Understanding of failure modes in serverless
-- External dependencies (databases, APIs) identified
+- Understanding of circuit breaker pattern
+- opossum or similar library installed
+- Queue infrastructure for DLQ
+- Caching layer for fallbacks
 
-## Instructions
+## Circuit Breaker
 
-### Step 1: Circuit Breaker for External Dependencies
 ```typescript
-// lib/circuit-breaker.ts
-type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN';
+import CircuitBreaker from 'opossum';
 
-class CircuitBreaker {
-  private state: CircuitState = 'CLOSED';
-  private failures = 0;
-  private lastFailure = 0;
-  private readonly threshold: number;
-  private readonly resetTimeMs: number;
-
-  constructor(threshold = 5, resetTimeMs = 30000) {
-    this.threshold = threshold;
-    this.resetTimeMs = resetTimeMs;
+const vercelBreaker = new CircuitBreaker(
+  async (operation: () => Promise<any>) => operation(),
+  {
+    timeout: 10000,
+    errorThresholdPercentage: 50,
+    resetTimeout: 30000,
+    volumeThreshold: 10,
   }
+);
 
-  async call<T>(fn: () => Promise<T>, fallback: () => T): Promise<T> {
-    if (this.state === 'OPEN') {
-      if (Date.now() - this.lastFailure > this.resetTimeMs) {
-        this.state = 'HALF_OPEN';
-      } else {
-        console.warn('Circuit OPEN — returning fallback');
-        return fallback();
-      }
-    }
+// Events
+vercelBreaker.on('open', () => {
+  console.warn('Vercel circuit OPEN - requests failing fast');
+  alertOps('Vercel circuit breaker opened');
+});
 
-    try {
-      const result = await fn();
-      this.onSuccess();
-      return result;
-    } catch (error) {
-      this.onFailure();
-      console.error('Circuit breaker caught error:', error);
-      return fallback();
-    }
-  }
+vercelBreaker.on('halfOpen', () => {
+  console.info('Vercel circuit HALF-OPEN - testing recovery');
+});
 
-  private onSuccess(): void {
-    this.failures = 0;
-    this.state = 'CLOSED';
-  }
+vercelBreaker.on('close', () => {
+  console.info('Vercel circuit CLOSED - normal operation');
+});
 
-  private onFailure(): void {
-    this.failures++;
-    this.lastFailure = Date.now();
-    if (this.failures >= this.threshold) {
-      this.state = 'OPEN';
-      console.warn(`Circuit OPENED after ${this.failures} failures`);
-    }
-  }
-}
-
-// Usage in a serverless function:
-const dbCircuit = new CircuitBreaker(3, 30000);
-
-export default async function handler(req, res) {
-  const users = await dbCircuit.call(
-    () => db.user.findMany({ take: 10 }),
-    () => [] // Fallback: empty array when DB is down
-  );
-  res.json({ users, degraded: users.length === 0 });
+// Usage
+async function safeVercelCall<T>(fn: () => Promise<T>): Promise<T> {
+  return vercelBreaker.fire(fn);
 }
 ```
 
-**Important for serverless:** Circuit breaker state lives in a single function instance. Different instances have independent circuits. For global circuit state, use Vercel KV or Edge Config.
+## Idempotency Keys
 
-### Step 2: Retry with Exponential Backoff
 ```typescript
-// lib/retry.ts
-interface RetryOptions {
-  maxRetries?: number;
-  baseDelayMs?: number;
-  maxDelayMs?: number;
-  retryOn?: (error: unknown) => boolean;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic idempotency key from input
+function generateIdempotencyKey(
+  operation: string,
+  params: Record<string, any>
+): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {}
-): Promise<T> {
-  const { maxRetries = 3, baseDelayMs = 200, maxDelayMs = 5000, retryOn } = options;
+// Or use random key with storage
+class IdempotencyManager {
+  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
 
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error) {
-      if (attempt === maxRetries) throw error;
-      if (retryOn && !retryOn(error)) throw error;
-
-      const delay = Math.min(
-        baseDelayMs * Math.pow(2, attempt) + Math.random() * 200,
-        maxDelayMs
-      );
-      await new Promise(r => setTimeout(r, delay));
+  getOrCreate(operationId: string): string {
+    const existing = this.store.get(operationId);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.key;
     }
+
+    const key = uuidv4();
+    this.store.set(operationId, {
+      key,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return key;
   }
-  throw new Error('Unreachable');
+}
+```
+
+## Bulkhead Pattern
+
+```typescript
+import PQueue from 'p-queue';
+
+// Separate queues for different operations
+const vercelQueues = {
+  critical: new PQueue({ concurrency: 10 }),
+  normal: new PQueue({ concurrency: 5 }),
+  bulk: new PQueue({ concurrency: 2 }),
+};
+
+async function prioritizedVercelCall<T>(
+  priority: 'critical' | 'normal' | 'bulk',
+  fn: () => Promise<T>
+): Promise<T> {
+  return vercelQueues[priority].add(fn);
 }
 
-// Usage:
-const data = await withRetry(
-  () => fetch('https://api.example.com/data').then(r => {
-    if (!r.ok) throw new Error(`HTTP ${r.status}`);
-    return r.json();
-  }),
-  {
-    maxRetries: 3,
-    retryOn: (err) => {
-      // Only retry on network errors and 5xx, not 4xx
-      if (err instanceof TypeError) return true; // network error
-      return err.message?.includes('5');
-    },
-  }
+// Usage
+await prioritizedVercelCall('critical', () =>
+  vercelClient.processPayment(order)
+);
+
+await prioritizedVercelCall('bulk', () =>
+  vercelClient.syncCatalog(products)
 );
 ```
 
-### Step 3: Graceful Degradation with Stale Cache
+## Timeout Hierarchy
+
 ```typescript
-// api/products.ts — serve stale data when primary source is down
-import { get, set } from '@vercel/kv';
+const TIMEOUT_CONFIG = {
+  connect: 5000,      // Initial connection
+  request: 30000,     // Standard requests
+  upload: 120000,     // File uploads
+  longPoll: 300000,   // Webhook long-polling
+};
 
-export default async function handler(req, res) {
-  const cacheKey = 'products:latest';
+async function timedoutVercelCall<T>(
+  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+  fn: () => Promise<T>
+): Promise<T> {
+  const timeout = TIMEOUT_CONFIG[operation];
 
+  return Promise.race([
+    fn(),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Vercel ${operation} timeout`)), timeout)
+    ),
+  ]);
+}
+```
+
+## Graceful Degradation
+
+```typescript
+interface VercelFallback {
+  enabled: boolean;
+  data: any;
+  staleness: 'fresh' | 'stale' | 'very_stale';
+}
+
+async function withVercelFallback<T>(
+  fn: () => Promise<T>,
+  fallbackFn: () => Promise<T>
+): Promise<{ data: T; fallback: boolean }> {
   try {
-    // Try primary data source
-    const freshData = await fetchProductsFromDB();
-
-    // Update cache with fresh data
-    await set(cacheKey, JSON.stringify(freshData), { ex: 3600 });
-
-    res.setHeader('x-data-source', 'live');
-    res.json(freshData);
+    const data = await fn();
+    // Update cache for future fallback
+    await updateFallbackCache(data);
+    return { data, fallback: false };
   } catch (error) {
-    // Primary failed — serve stale cache
-    const cachedData = await get(cacheKey);
+    console.warn('Vercel failed, using fallback:', error.message);
+    const data = await fallbackFn();
+    return { data, fallback: true };
+  }
+}
+```
 
-    if (cachedData) {
-      console.warn('Serving stale cache — primary source unavailable');
-      res.setHeader('x-data-source', 'cache-stale');
-      res.json(JSON.parse(cachedData as string));
-    } else {
-      // No cache available — return degraded response
-      res.setHeader('x-data-source', 'degraded');
-      res.status(503).json({
-        error: 'Service temporarily unavailable',
-        degraded: true,
-      });
+## Dead Letter Queue
+
+```typescript
+interface DeadLetterEntry {
+  id: string;
+  operation: string;
+  payload: any;
+  error: string;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+class VercelDeadLetterQueue {
+  private queue: DeadLetterEntry[] = [];
+
+  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
+    this.queue.push({
+      ...entry,
+      id: uuidv4(),
+      lastAttempt: new Date(),
+    });
+  }
+
+  async processOne(): Promise<boolean> {
+    const entry = this.queue.shift();
+    if (!entry) return false;
+
+    try {
+      await vercelClient[entry.operation](entry.payload);
+      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
+      return true;
+    } catch (error) {
+      entry.attempts++;
+      entry.lastAttempt = new Date();
+
+      if (entry.attempts < 5) {
+        this.queue.push(entry);
+      } else {
+        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
+        await alertOnPermanentFailure(entry);
+      }
+      return false;
     }
   }
 }
 ```
 
-### Step 4: Idempotency Keys for Mutations
+## Health Check with Degraded State
+
 ```typescript
-// api/orders/route.ts — idempotent order creation
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 
-export async function POST(request: NextRequest) {
-  const idempotencyKey = request.headers.get('idempotency-key');
-  if (!idempotencyKey) {
-    return NextResponse.json(
-      { error: 'idempotency-key header required' },
-      { status: 400 }
-    );
-  }
+async function vercelHealthCheck(): Promise<{
+  status: HealthStatus;
+  details: Record<string, any>;
+}> {
+  const checks = {
+    api: await checkApiConnectivity(),
+    circuitBreaker: vercelBreaker.stats(),
+    dlqSize: deadLetterQueue.size(),
+  };
 
-  // Check if this request was already processed
-  const existing = await db.idempotencyRecord.findUnique({
-    where: { key: idempotencyKey },
-  });
+  const status: HealthStatus =
+    !checks.api.connected ? 'unhealthy' :
+    checks.circuitBreaker.state === 'open' ? 'degraded' :
+    checks.dlqSize > 100 ? 'degraded' :
+    'healthy';
 
-  if (existing) {
-    // Return the cached response — same status and body
-    return NextResponse.json(JSON.parse(existing.responseBody), {
-      status: existing.responseStatus,
-      headers: { 'x-idempotent-replay': 'true' },
-    });
-  }
-
-  // Process the order
-  const body = await request.json();
-  const order = await db.order.create({ data: body });
-
-  // Cache the response for idempotency
-  const responseBody = JSON.stringify({ order });
-  await db.idempotencyRecord.create({
-    data: { key: idempotencyKey, responseStatus: 201, responseBody },
-  });
-
-  return NextResponse.json({ order }, { status: 201 });
+  return { status, details: checks };
 }
 ```
 
-### Step 5: Health Check with Dependency Status
-```typescript
-// api/health/route.ts
-export const dynamic = 'force-dynamic';
+## Instructions
 
-interface HealthCheck {
-  name: string;
-  check: () => Promise<boolean>;
-}
+### Step 1: Implement Circuit Breaker
+Wrap Vercel calls with circuit breaker.
 
-const checks: HealthCheck[] = [
-  {
-    name: 'database',
-    check: async () => {
-      await db.$queryRaw`SELECT 1`;
-      return true;
-    },
-  },
-  {
-    name: 'cache',
-    check: async () => {
-      await kv.ping();
-      return true;
-    },
-  },
-  {
-    name: 'external-api',
-    check: async () => {
-      const r = await fetch('https://api.example.com/health', { signal: AbortSignal.timeout(3000) });
-      return r.ok;
-    },
-  },
-];
+### Step 2: Add Idempotency Keys
+Generate deterministic keys for operations.
 
-export async function GET() {
-  const results: Record<string, 'ok' | 'error'> = {};
+### Step 3: Configure Bulkheads
+Separate queues for different priorities.
 
-  await Promise.all(
-    checks.map(async ({ name, check }) => {
-      try {
-        await check();
-        results[name] = 'ok';
-      } catch {
-        results[name] = 'error';
-      }
-    })
-  );
-
-  const healthy = Object.values(results).every(v => v === 'ok');
-  return Response.json(
-    { status: healthy ? 'healthy' : 'degraded', checks: results },
-    { status: healthy ? 200 : 503 }
-  );
-}
-```
-
-### Step 6: Deployment-Level Resilience
-```bash
-# Instant rollback on health check failure (CI integration)
-DEPLOY_URL=$(vercel --prod)
-HEALTH=$(curl -s -o /dev/null -w "%{http_code}" "$DEPLOY_URL/api/health")
-
-if [ "$HEALTH" != "200" ]; then
-  echo "Health check failed ($HEALTH) — rolling back"
-  vercel rollback
-  exit 1
-fi
-echo "Deployment healthy"
-```
-
-## Reliability Patterns Summary
-
-| Pattern | Protects Against | Vercel Implementation |
-|---------|-----------------|----------------------|
-| Circuit breaker | Dependency degradation | In-function state or Edge Config |
-| Retry + backoff | Transient failures | withRetry wrapper |
-| Stale cache | Primary source outage | Vercel KV with TTL |
-| Idempotency | Duplicate mutations | Database record per request |
-| Health checks | Bad deployments | `/api/health` + rollback automation |
-| Instant rollback | Deployment regression | `vercel rollback` in CI |
+### Step 4: Set Up Dead Letter Queue
+Handle permanent failures gracefully.
 
 ## Output
-- Circuit breaker protecting all external dependency calls
-- Retry logic with exponential backoff for transient failures
-- Graceful degradation serving stale data when primary fails
-- Idempotency preventing duplicate mutations
-- Automated health check + rollback pipeline
+- Circuit breaker protecting Vercel calls
+- Idempotency preventing duplicates
+- Bulkhead isolation implemented
+- DLQ for failed operations
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit opens too aggressively | Threshold too low | Increase failure threshold (e.g., 5 → 10) |
-| Retry causes duplicate side effects | No idempotency | Add idempotency-key to mutation endpoints |
-| Stale cache expired | TTL too short or never populated | Increase TTL, seed cache on deploy |
-| Health check false positive | Timeout too short | Increase AbortSignal timeout to 5s |
-| Rollback reverts good deployment | Flaky health check | Add retry to health check before rollback |
+| Circuit stays open | Threshold too low | Adjust error percentage |
+| Duplicate operations | Missing idempotency | Add idempotency key |
+| Queue full | Rate too high | Increase concurrency |
+| DLQ growing | Persistent failures | Investigate root cause |
+
+## Examples
+
+### Quick Circuit Check
+```typescript
+const state = vercelBreaker.stats().state;
+console.log('Vercel circuit:', state);
+```
 
 ## Resources
-- [Vercel Instant Rollback](https://vercel.com/docs/instant-rollback)
-- [Vercel KV](https://vercel.com/docs/storage/vercel-kv)
-- [Edge Config](https://vercel.com/docs/edge-config)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Opossum Documentation](https://nodeshift.dev/opossum/)
+- [Vercel Reliability Guide](https://vercel.com/docs/reliability)
 
 ## Next Steps
-For policy guardrails, see `vercel-policy-guardrails`.
+For policy enforcement, see `vercel-policy-guardrails`.

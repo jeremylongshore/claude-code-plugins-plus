@@ -1,72 +1,71 @@
 ---
 name: onenote-core-workflow-a
 description: |
-  Execute OneNote primary workflow: Notebook & Page Management.
-  Trigger: "onenote notebook & page management", "primary onenote workflow".
+  Execute OneNote primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "onenote main workflow",
+  "primary task with onenote".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
 compatible-with: claude-code
+tags: [saas, onenote]
 ---
 
-# OneNote — Notebook & Page Management
+# OneNote Core Workflow A
 
 ## Overview
-Primary workflow for OneNote integration.
+Primary money-path workflow for OneNote. This is the most common use case.
+
+## Prerequisites
+- Completed `onenote-install-auth` setup
+- Understanding of OneNote core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Create a Notebook
+### Step 1: Initialize
 ```typescript
-const notebook = await client.api('/me/onenote/notebooks').post({
-  displayName: 'Project Notes'
-});
-console.log(`Notebook: ${notebook.id}`);
+// Step 1 implementation
 ```
 
-### Step 2: Create a Section
+### Step 2: Execute
 ```typescript
-const section = await client.api(`/me/onenote/notebooks/${notebook.id}/sections`).post({
-  displayName: 'Sprint 1'
-});
+// Step 2 implementation
 ```
 
-### Step 3: Create a Page with HTML Content
+### Step 3: Finalize
 ```typescript
-// Pages use HTML for content
-const htmlContent = `
-  <!DOCTYPE html>
-  <html>
-  <head><title>Meeting Notes</title></head>
-  <body>
-    <h1>Sprint Planning — March 22, 2026</h1>
-    <p>Attendees: Alice, Bob, Charlie</p>
-    <h2>Action Items</h2>
-    <ul>
-      <li data-tag="to-do">Deploy feature X by Friday</li>
-      <li data-tag="to-do">Review PR #123</li>
-    </ul>
-    <img src="name:diagram" alt="Architecture" />
-  </body>
-  </html>
-`;
-
-const page = await client.api(`/me/onenote/sections/${section.id}/pages`)
-  .header('Content-Type', 'text/html')
-  .post(htmlContent);
-console.log(`Page: ${page.id} — ${page.title}`);
+// Step 3 implementation
 ```
 
-### Step 4: Get Page Content
+## Output
+- Completed Core Workflow A execution
+- Expected results from OneNote API
+- Success confirmation or error details
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
 ```typescript
-const content = await client.api(`/me/onenote/pages/${page.id}/content`).get();
-// Returns HTML content of the page
+// Complete workflow example
 ```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
+- [OneNote Documentation](https://docs.onenote.com)
+- [OneNote API Reference](https://docs.onenote.com/api)
 
 ## Next Steps
-See `onenote-core-workflow-b`.
+For secondary workflow, see `onenote-core-workflow-b`.

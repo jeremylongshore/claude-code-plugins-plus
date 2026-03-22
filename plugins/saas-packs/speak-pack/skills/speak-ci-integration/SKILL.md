@@ -1,88 +1,126 @@
 ---
 name: speak-ci-integration
 description: |
-  GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
-  Use when implementing ci integration,
-  or managing Speak language learning platform operations.
-  Trigger with phrases like "speak ci integration", "speak ci integration".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Configure Speak CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Speak tests into your build process.
+  Trigger with phrases like "speak CI", "speak GitHub Actions",
+  "speak automated tests", "CI speak".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak CI Integration
 
 ## Overview
-GitHub Actions pipeline for Speak integrations with mocked API tests and audio validation.
+Set up CI/CD pipelines for Speak integrations with automated testing.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- GitHub repository with Actions enabled
+- Speak test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: Configuration
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/speak-integration.yml`:
 
-Configure ci integration for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
+```yaml
+name: Speak Integration Tests
 
-```typescript
-// speak_ci_integration_config.ts
-const config = {
-  apiKey: process.env.SPEAK_API_KEY!,
-  appId: process.env.SPEAK_APP_ID!,
-  environment: process.env.NODE_ENV || 'development',
-};
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  SPEAK_API_KEY: ${{ secrets.SPEAK_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      SPEAK_API_KEY: ${{ secrets.SPEAK_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-### Step 2: Implementation
-
-```typescript
-// Core implementation for speak ci integration
-import { SpeakClient } from '@speak/language-sdk';
-
-const client = new SpeakClient(config);
-
-// CI test with mocked responses
-async function runCITests() {
-  const mockClient = new MockSpeakClient();
-  await mockClient.assessPronunciation({ audioPath: "test.wav", targetText: "hello", language: "en" });
-  console.log("CI tests passed");
-}
-```
-
-### Step 3: Verification
-
+### Step 2: Configure Secrets
 ```bash
-npm test
+gh secret set SPEAK_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Speak Integration', () => {
+  it.skipIf(!process.env.SPEAK_API_KEY)('should connect', async () => {
+    const client = getSpeakClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
-- Speak CI Integration configured and verified
-- CI pipeline with mocked Speak API tests
-- Error handling and monitoring in place
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| Connection timeout | Network issue | Check connectivity to api.speak.com |
-| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-For deployment, see `speak-deploy-integration`.
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
 
 ## Examples
 
-**Basic**: Apply ci integration with default settings for a standard Speak integration.
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
 
-**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      SPEAK_API_KEY: ${{ secrets.SPEAK_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Speak production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "speak-integration"
+```
+
+## Resources
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Speak CI Guide](https://docs.speak.com/ci)
+
+## Next Steps
+For deployment patterns, see `speak-deploy-integration`.

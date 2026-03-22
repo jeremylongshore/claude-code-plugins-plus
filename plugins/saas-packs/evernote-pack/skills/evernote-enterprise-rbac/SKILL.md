@@ -1,105 +1,224 @@
 ---
 name: evernote-enterprise-rbac
 description: |
-  Implement enterprise RBAC for Evernote integrations.
-  Use when building multi-tenant systems, implementing
-  role-based access, or handling business accounts.
-  Trigger with phrases like "evernote enterprise", "evernote rbac",
-  "evernote business", "evernote permissions".
-allowed-tools: Read, Write, Edit, Grep
+  Configure Evernote enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Evernote.
+  Trigger with phrases like "evernote SSO", "evernote RBAC",
+  "evernote enterprise", "evernote roles", "evernote permissions", "evernote SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, rbac]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Enterprise RBAC
 
 ## Overview
-Implement role-based access control for Evernote integrations, including Evernote Business account handling, shared notebook permissions, multi-tenant architecture, and authorization middleware.
+Configure enterprise-grade access control for Evernote integrations.
 
 ## Prerequisites
-- Understanding of Evernote Business accounts and shared notebooks
-- Multi-tenant application architecture
-- Authentication/authorization infrastructure
+- Evernote Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: Evernote Permission Model
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-Evernote has built-in sharing permissions for notebooks: `READ_NOTEBOOK`, `MODIFY_NOTEBOOK_PLUS_ACTIVITY`, `READ_NOTEBOOK_PLUS_ACTIVITY`, `GROUP`, `FULL_ACCESS`. Map these to your application's role system.
+## Role Implementation
 
-```javascript
-const EvernotePermissions = {
-  READ: 'READ_NOTEBOOK',
-  WRITE: 'MODIFY_NOTEBOOK_PLUS_ACTIVITY',
-  FULL: 'FULL_ACCESS'
+```typescript
+enum EvernoteRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
+}
+
+interface EvernotePermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<EvernoteRole, EvernotePermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
 };
 
-const AppRoles = {
-  viewer: [EvernotePermissions.READ],
-  editor: [EvernotePermissions.READ, EvernotePermissions.WRITE],
-  admin:  [EvernotePermissions.FULL]
+function checkPermission(
+  role: EvernoteRole,
+  action: keyof EvernotePermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Evernote SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://evernote.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/evernote/callback',
+};
+
+// Map IdP groups to Evernote roles
+const groupRoleMapping: Record<string, EvernoteRole> = {
+  'Engineering': EvernoteRole.Developer,
+  'Platform-Admins': EvernoteRole.Admin,
+  'Data-Team': EvernoteRole.Viewer,
 };
 ```
 
-### Step 2: RBAC Service
+### OAuth2/OIDC Integration
 
-Build a service that checks whether a user has the required permission for an operation. Query shared notebook privileges via `noteStore.listSharedNotebooks()` and `getSharedNotebookByAuth()`.
+```typescript
+import { OAuth2Client } from '@evernote/sdk';
 
-```javascript
-class RBACService {
-  async canAccess(userToken, notebookGuid, requiredPermission) {
-    const noteStore = this.getAuthenticatedNoteStore(userToken);
-    const sharedNotebooks = await noteStore.listSharedNotebooks();
-    const shared = sharedNotebooks.find(sn => sn.notebookGuid === notebookGuid);
-    if (!shared) return false;
-    return this.hasPermission(shared.privilege, requiredPermission);
+const oauthClient = new OAuth2Client({
+  clientId: process.env.EVERNOTE_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.EVERNOTE_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/evernote/callback',
+  scopes: ['read', 'write'],
+});
+```
+
+## Organization Management
+
+```typescript
+interface EvernoteOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: EvernoteRole;
+}
+
+async function createOrganization(
+  config: EvernoteOrganization
+): Promise<void> {
+  await evernoteClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function requireEvernotePermission(
+  requiredPermission: keyof EvernotePermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { evernoteRole: EvernoteRole };
+
+    if (!checkPermission(user.evernoteRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
+
+    next();
+  };
+}
+
+// Usage
+app.delete('/evernote/resource/:id',
+  requireEvernotePermission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface EvernoteAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: EvernoteRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logEvernoteAccess(entry: EvernoteAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
   }
 }
 ```
 
-### Step 3: Authorization Middleware
+## Instructions
 
-Create Express middleware that validates the user's Evernote token and checks permissions before allowing access to protected routes.
+### Step 1: Define Roles
+Map organizational roles to Evernote permissions.
 
-### Step 4: Evernote Business Integration
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
 
-For Evernote Business accounts, use `authenticateToBusiness()` to get a business token. Business notebooks are shared across the organization. Use `getBusinessNotebooks()` to list them.
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
 
-### Step 5: Multi-Tenant Support
-
-Isolate tenant data by scoping all Evernote operations to the tenant's access token. Never mix tokens between tenants. Store tenant-to-token mappings with encryption at rest.
-
-For the full RBAC service, middleware, Business account integration, and multi-tenant architecture, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Evernote permission model mapped to application roles
-- `RBACService` class with permission checking
-- Express authorization middleware for protected routes
-- Evernote Business account integration
-- Multi-tenant token isolation and scoping
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `PERMISSION_DENIED` | User lacks required notebook permission | Verify shared notebook privileges |
-| `INVALID_AUTH` | Business token expired | Re-authenticate with `authenticateToBusiness()` |
-| Tenant data leak | Token scoping error | Validate tenant ID on every request |
-| `LIMIT_REACHED` on sharing | Too many shared notebooks | Clean up unused shares (500 max per notebook) |
-
-## Resources
-- [Sharing and Permissions](https://dev.evernote.com/doc/articles/sharing.php)
-- [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
-- [Evernote Business](https://evernote.com/business)
-- [API Reference - SharedNotebook](https://dev.evernote.com/doc/reference/)
-
-## Next Steps
-For migration strategies, see `evernote-migration-deep-dive`.
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
 
 ## Examples
 
-**Team workspace**: Create a shared notebook for each team. Assign `editor` role to team members and `viewer` role to stakeholders. Use middleware to enforce permissions on all note operations.
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
-**Business account sync**: Authenticate to the business account, list all business notebooks, and sync shared notes to a central dashboard accessible by all organization members.
+## Resources
+- [Evernote Enterprise Guide](https://docs.evernote.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Next Steps
+For major migrations, see `evernote-migration-deep-dive`.

@@ -1,88 +1,216 @@
 ---
 name: speak-performance-tuning
 description: |
-  Optimize Speak API latency with audio preprocessing, response caching, and connection pooling.
-  Use when implementing performance tuning,
-  or managing Speak language learning platform operations.
-  Trigger with phrases like "speak performance tuning", "speak performance tuning".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Optimize Speak API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Speak integrations.
+  Trigger with phrases like "speak performance", "optimize speak",
+  "speak latency", "speak caching", "speak slow", "speak batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Performance Tuning
 
 ## Overview
-Optimize Speak API latency with audio preprocessing, response caching, and connection pooling.
+Optimize Speak API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- Speak SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Configuration
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-Configure performance tuning for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
+## Caching Strategy
 
+### Response Caching
 ```typescript
-// speak_performance_tuning_config.ts
-const config = {
-  apiKey: process.env.SPEAK_API_KEY!,
-  appId: process.env.SPEAK_APP_ID!,
-  environment: process.env.NODE_ENV || 'development',
-};
-```
+import { LRUCache } from 'lru-cache';
 
-### Step 2: Implementation
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
 
-```typescript
-// Core implementation for speak performance tuning
-import { SpeakClient } from '@speak/language-sdk';
+async function cachedSpeakRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-const client = new SpeakClient(config);
-
-// Production-ready implementation
-async function setup() {
-  const health = await client.health.check();
-  console.log("Status:", health.status);
-  return health;
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
 }
 ```
 
-### Step 3: Verification
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-```bash
-curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
 ```
 
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const speakLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Speak
+    const results = await speakClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  speakLoader.load('id-1'),
+  speakLoader.load('id-2'),
+  speakLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new SpeakClient({
+  apiKey: process.env.SPEAK_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedSpeakList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedSpeakList(cursor =>
+  speakClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredSpeakCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical Speak operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
 ## Output
-- Speak Performance Tuning configured and verified
-- Production-ready Speak integration
-- Error handling and monitoring in place
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| Connection timeout | Network issue | Check connectivity to api.speak.com |
-| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-For production checklist, see `speak-prod-checklist`.
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
 ## Examples
 
-**Basic**: Apply performance tuning with default settings for a standard Speak integration.
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredSpeakCall(name, () =>
+    cachedSpeakRequest(`cache:${name}`, fn)
+  );
+```
 
-**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.
+## Resources
+- [Speak Performance Guide](https://docs.speak.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Next Steps
+For cost optimization, see `speak-cost-tuning`.

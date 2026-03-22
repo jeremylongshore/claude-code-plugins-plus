@@ -1,260 +1,222 @@
 ---
 name: ideogram-data-handling
 description: |
-  Manage Ideogram generated image assets, metadata tracking, and lifecycle management.
-  Use when implementing image persistence, tracking generation history,
-  or building asset management for Ideogram outputs.
-  Trigger with phrases like "ideogram data", "ideogram images",
-  "ideogram asset management", "ideogram metadata", "ideogram image storage".
+  Implement Ideogram PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Ideogram integrations.
+  Trigger with phrases like "ideogram data", "ideogram PII",
+  "ideogram GDPR", "ideogram data retention", "ideogram privacy", "ideogram CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, data, asset-management]
-
+compatible-with: claude-code
+tags: [saas, ideogram]
 ---
+
 # Ideogram Data Handling
 
 ## Overview
-Manage generated image assets from Ideogram's API. Critical concern: **Ideogram image URLs expire** (approximately 1 hour). Every generation must be downloaded and persisted immediately. This skill covers metadata tracking, download pipelines, local and cloud storage, lifecycle management, and generation history for reproducibility.
+Handle sensitive data correctly when integrating with Ideogram.
 
 ## Prerequisites
-- `IDEOGRAM_API_KEY` configured
-- Storage solution (local filesystem, S3, or GCS)
-- Database for generation metadata (SQLite, Postgres, or JSON files)
+- Understanding of GDPR/CCPA requirements
+- Ideogram SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-## Instructions
+## Data Classification
 
-### Step 1: Generation Record Schema
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
 ```typescript
-interface GenerationRecord {
-  id: string;                // Unique identifier
-  prompt: string;            // Original prompt
-  expandedPrompt?: string;   // Magic Prompt expansion (from response)
-  negativePrompt?: string;   // Negative prompt used
-  model: string;             // V_2, V_2_TURBO, etc.
-  styleType: string;         // DESIGN, REALISTIC, etc.
-  aspectRatio: string;       // ASPECT_16_9, etc.
-  seed: number;              // For reproducibility
-  resolution: string;        // e.g., "1024x1024"
-  isSafe: boolean;           // is_image_safe from response
-  originalUrl: string;       // Temporary Ideogram URL
-  storedPath: string;        // Local or S3 path
-  createdAt: string;         // ISO timestamp
-  sizeBytes?: number;        // Downloaded file size
-  tags?: string[];           // User-defined tags
-}
-```
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
 
-### Step 2: Generate, Download, and Track
-```typescript
-import { writeFileSync, mkdirSync, statSync } from "fs";
-import { join } from "path";
-import { randomUUID } from "crypto";
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
 
-const STORAGE_DIR = "./generated-images";
-const records: GenerationRecord[] = [];
-
-async function generateAndPersist(
-  prompt: string,
-  options: {
-    model?: string;
-    style_type?: string;
-    aspect_ratio?: string;
-    negative_prompt?: string;
-    seed?: number;
-    tags?: string[];
-  } = {}
-): Promise<GenerationRecord> {
-  // Generate
-  const response = await fetch("https://api.ideogram.ai/generate", {
-    method: "POST",
-    headers: {
-      "Api-Key": process.env.IDEOGRAM_API_KEY!,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      image_request: {
-        prompt,
-        model: options.model ?? "V_2",
-        style_type: options.style_type ?? "AUTO",
-        aspect_ratio: options.aspect_ratio ?? "ASPECT_1_1",
-        magic_prompt_option: "AUTO",
-        negative_prompt: options.negative_prompt,
-        seed: options.seed,
-      },
-    }),
-  });
-
-  if (!response.ok) throw new Error(`Generation failed: ${response.status}`);
-  const result = await response.json();
-  const image = result.data[0];
-
-  // Download IMMEDIATELY (URLs expire ~1 hour)
-  const imgResp = await fetch(image.url);
-  if (!imgResp.ok) throw new Error(`Download failed: ${imgResp.status}`);
-  const buffer = Buffer.from(await imgResp.arrayBuffer());
-
-  mkdirSync(STORAGE_DIR, { recursive: true });
-  const filename = `${image.seed}-${Date.now()}.png`;
-  const storedPath = join(STORAGE_DIR, filename);
-  writeFileSync(storedPath, buffer);
-
-  // Track metadata
-  const record: GenerationRecord = {
-    id: randomUUID(),
-    prompt,
-    expandedPrompt: image.prompt !== prompt ? image.prompt : undefined,
-    negativePrompt: options.negative_prompt,
-    model: options.model ?? "V_2",
-    styleType: image.style_type ?? options.style_type ?? "AUTO",
-    aspectRatio: options.aspect_ratio ?? "ASPECT_1_1",
-    seed: image.seed,
-    resolution: image.resolution,
-    isSafe: image.is_image_safe,
-    originalUrl: image.url,
-    storedPath,
-    createdAt: new Date().toISOString(),
-    sizeBytes: buffer.length,
-    tags: options.tags,
-  };
-
-  records.push(record);
-  saveRecords();
-  return record;
-}
-
-function saveRecords() {
-  writeFileSync(
-    join(STORAGE_DIR, "generations.json"),
-    JSON.stringify(records, null, 2)
-  );
-}
-```
-
-### Step 3: Cloud Storage (S3)
-```typescript
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-
-const s3 = new S3Client({ region: process.env.AWS_REGION });
-
-async function persistToS3(imageUrl: string, seed: number): Promise<string> {
-  const response = await fetch(imageUrl);
-  const buffer = Buffer.from(await response.arrayBuffer());
-  const key = `ideogram/${seed}-${Date.now()}.png`;
-
-  await s3.send(new PutObjectCommand({
-    Bucket: process.env.S3_BUCKET!,
-    Key: key,
-    Body: buffer,
-    ContentType: "image/png",
-    CacheControl: "public, max-age=31536000, immutable",
-    Metadata: { seed: String(seed), source: "ideogram" },
-  }));
-
-  return `https://${process.env.CDN_DOMAIN}/${key}`;
-}
-```
-
-### Step 4: Reproduction from Seed
-```typescript
-// Reproduce an image using the stored seed and prompt
-async function reproduceImage(record: GenerationRecord) {
-  return generateAndPersist(record.prompt, {
-    model: record.model,
-    style_type: record.styleType,
-    aspect_ratio: record.aspectRatio,
-    negative_prompt: record.negativePrompt,
-    seed: record.seed, // Same seed = same image
-    tags: [...(record.tags ?? []), "reproduced"],
-  });
-}
-```
-
-### Step 5: Lifecycle Management
-```typescript
-import { unlinkSync, existsSync, readdirSync, statSync } from "fs";
-
-function cleanupOldAssets(retentionDays: number = 30) {
-  const cutoffMs = Date.now() - retentionDays * 86400000;
-  let deleted = 0;
-  let kept = 0;
-
-  for (const record of records) {
-    const createdMs = new Date(record.createdAt).getTime();
-    if (createdMs < cutoffMs) {
-      if (existsSync(record.storedPath)) {
-        unlinkSync(record.storedPath);
-        deleted++;
-      }
-    } else {
-      kept++;
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
     }
   }
 
-  // Remove expired records
-  const activeRecords = records.filter(
-    r => new Date(r.createdAt).getTime() >= cutoffMs
-  );
-  records.length = 0;
-  records.push(...activeRecords);
-  saveRecords();
-
-  console.log(`Cleanup: deleted ${deleted}, kept ${kept}`);
-}
-
-function storageReport() {
-  const totalBytes = records.reduce((sum, r) => sum + (r.sizeBytes ?? 0), 0);
-  const byModel = Object.groupBy(records, r => r.model);
-
-  console.log("=== Image Storage Report ===");
-  console.log(`Total images: ${records.length}`);
-  console.log(`Total size: ${(totalBytes / 1024 / 1024).toFixed(1)} MB`);
-  for (const [model, recs] of Object.entries(byModel)) {
-    console.log(`  ${model}: ${recs?.length ?? 0} images`);
-  }
+  return findings;
 }
 ```
 
-### Step 6: Search and Query
+## Data Redaction
+
 ```typescript
-function findByPrompt(searchTerm: string): GenerationRecord[] {
-  return records.filter(r =>
-    r.prompt.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
 }
 
-function findBySeed(seed: number): GenerationRecord | undefined {
-  return records.find(r => r.seed === seed);
+// Use in logging
+console.log('Ideogram request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupIdeogramData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.ideogramLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
 }
 
-function findByTags(tags: string[]): GenerationRecord[] {
-  return records.filter(r =>
-    tags.every(t => r.tags?.includes(t))
-  );
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupIdeogramData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const ideogramData = await ideogramClient.getUserData(userId);
+
+  return {
+    source: 'Ideogram',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: ideogramData.profile,
+      activities: ideogramData.activities,
+      // Include all user-related data
+    },
+  };
 }
 ```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Ideogram
+  await ideogramClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.ideogramUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'ideogram',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await ideogramClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Ideogram data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
+
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Expired URL | Downloaded too late | Always download in same function |
-| Disk full | Too many stored images | Run `cleanupOldAssets()` regularly |
-| Missing metadata | Not tracked at generation | Use `generateAndPersist` wrapper |
-| Duplicate prompts | Same prompt run twice | Check by prompt hash before generating |
-| Lost seed | Not recorded | Always store seed from response |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
-## Output
-- Generation records with full metadata tracking
-- Immediate download preventing URL expiration
-- S3 cloud storage with CDN delivery
-- Seed-based reproduction for exact image regeneration
-- Lifecycle management with configurable retention
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Ideogram response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-- [Ideogram API Reference](https://developer.ideogram.ai/api-reference)
-- [Ideogram Image Expiration](https://developer.ideogram.ai/ideogram-api/api-overview)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Ideogram Privacy Guide](https://docs.ideogram.com/privacy)
 
 ## Next Steps
-For access control, see `ideogram-enterprise-rbac`.
+For enterprise access control, see `ideogram-enterprise-rbac`.

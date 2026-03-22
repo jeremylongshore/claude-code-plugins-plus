@@ -1,93 +1,92 @@
 ---
 name: fathom-install-auth
 description: |
-  Configure Fathom AI meeting assistant API access with API key authentication.
-  Use when setting up Fathom API integration, generating API keys,
-  or configuring webhook access for meeting data.
-  Trigger with phrases like "install fathom", "setup fathom api",
-  "fathom auth", "fathom api key", "configure fathom".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Install and configure Fathom SDK/CLI authentication.
+  Use when setting up a new Fathom integration, configuring API keys,
+  or initializing Fathom in your project.
+  Trigger with phrases like "install fathom", "setup fathom",
+  "fathom auth", "configure fathom API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
+tags: [saas, fathom]
 ---
 
 # Fathom Install & Auth
 
 ## Overview
-
-Set up Fathom AI API access for retrieving meeting transcripts, summaries, and action items. The API at `api.fathom.ai/external/v1` uses `X-Api-Key` header authentication with per-user API keys.
+Set up Fathom SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-
-- Fathom account (free or Team plan)
-- API access enabled in Settings
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Fathom account with API access
+- API key from Fathom dashboard
 
 ## Instructions
 
-### Step 1: Generate API Key
-
-1. Log in to https://fathom.video
-2. Navigate to **Settings** > **Integrations** > **API Access**
-3. Click **Generate API Key**
-4. Copy and store the key securely
-
+### Step 1: Install SDK
 ```bash
-export FATHOM_API_KEY="your-api-key-here"
+# Node.js
+npm install @fathom/sdk
 
-# Verify the key works
-curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
-  https://api.fathom.ai/external/v1/meetings?limit=1 | jq .
+# Python
+pip install fathom
 ```
 
-### Step 2: Configure Environment
-
+### Step 2: Configure Authentication
 ```bash
-# .env -- NEVER commit
-FATHOM_API_KEY=your-api-key
-FATHOM_BASE_URL=https://api.fathom.ai/external/v1
+# Set environment variable
+export FATHOM_API_KEY="your-api-key"
 
-# .gitignore
-.env
-.env.local
+# Or create .env file
+echo 'FATHOM_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Test API Connectivity
-
-```bash
-# List recent meetings
-curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
-  "https://api.fathom.ai/external/v1/meetings?limit=5" \
-  | jq '.meetings[] | {id: .id, title: .title, date: .created_at}'
+### Step 3: Verify Connection
+```typescript
+// Test connection code here
 ```
 
-### Step 4: OAuth Setup (For Public Apps)
-
-```bash
-# For building integrations others will use, register an OAuth app
-# at developers.fathom.ai for marketplace listing eligibility
-
-# OAuth apps cannot use include_transcript or include_summary
-# in list requests -- use individual recording endpoints instead
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Regenerate in Settings > API Access |
-| `403 Forbidden` | Key lacks access | API keys access your meetings + team shared |
-| `429 Too Many Requests` | Rate limit (60/min) | Implement backoff |
-| Empty meetings list | No recordings yet | Record a meeting first |
+| Invalid API Key | Incorrect or expired key | Verify key in Fathom dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.fathom.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { FathomClient } from '@fathom/sdk';
+
+const client = new FathomClient({
+  apiKey: process.env.FATHOM_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from fathom import FathomClient
+
+client = FathomClient(
+    api_key=os.environ.get('FATHOM_API_KEY')
+)
+```
 
 ## Resources
-
-- [Fathom API Docs](https://developers.fathom.ai)
-- [Fathom API Quickstart](https://developers.fathom.ai/quickstart)
-- [Fathom Help Center](https://help.fathom.video/en/articles/8368641)
+- [Fathom Documentation](https://docs.fathom.com)
+- [Fathom Dashboard](https://api.fathom.com)
+- [Fathom Status](https://status.fathom.com)
 
 ## Next Steps
-
-Proceed to `fathom-hello-world` to retrieve your first meeting transcript.
+After successful auth, proceed to `fathom-hello-world` for your first API call.

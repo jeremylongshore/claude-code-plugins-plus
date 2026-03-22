@@ -1,198 +1,203 @@
 ---
 name: exa-cost-tuning
 description: |
-  Optimize Exa costs through search type selection, caching, and usage monitoring.
+  Optimize Exa costs through tier selection, sampling, and usage monitoring.
   Use when analyzing Exa billing, reducing API costs,
-  or implementing budget controls and usage alerts.
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "exa cost", "exa billing",
   "reduce exa costs", "exa pricing", "exa expensive", "exa budget".
-allowed-tools: Read, Grep, Bash(curl:*), Bash(node:*)
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Cost Tuning
 
 ## Overview
-Reduce Exa API costs through strategic search type selection, result caching, query deduplication, and usage monitoring. Exa charges per search request with costs varying by search type and content retrieval options.
+Optimize Exa costs through smart tier selection, sampling, and usage monitoring.
 
-## Cost Drivers
+## Prerequisites
+- Access to Exa billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-| Factor | Higher Cost | Lower Cost |
-|--------|-------------|------------|
-| Search type | `deep-reasoning` > `deep` > `neural` | `keyword` < `fast` < `instant` |
-| numResults | 10-100 results | 3-5 results |
-| Content retrieval | Full text + highlights + summary | Metadata only (no content) |
-| Content length | `maxCharacters: 5000` | `maxCharacters: 500` |
-| Live crawling | `livecrawl: "always"` | Cached content (default) |
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateExaCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class ExaUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Exa budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateExaCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await exaClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => exaClient.get(id)));
+
+// Use batch endpoint (1 call)
+await exaClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new ExaClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Exa dashboard
+# Or use API if available:
+# Check Exa documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM exa_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Step 1: Match Search Config to Use Case
-```typescript
-import Exa from "exa-js";
+### Step 1: Analyze Current Usage
+Review Exa dashboard for usage patterns and costs.
 
-const exa = new Exa(process.env.EXA_API_KEY);
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-// Define cost tiers per use case
-const SEARCH_PROFILES = {
-  // Cheapest: metadata-only keyword search
-  "autocomplete": { type: "instant" as const, numResults: 3 },
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-  // Low cost: fast search with minimal content
-  "quick-lookup": { type: "fast" as const, numResults: 3 },
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
-  // Medium: balanced search for RAG
-  "rag-context": {
-    type: "auto" as const,
-    numResults: 5,
-    text: { maxCharacters: 1000 },
-  },
-
-  // Higher cost: deep research
-  "deep-research": {
-    type: "neural" as const,
-    numResults: 10,
-    text: { maxCharacters: 3000 },
-    highlights: { maxCharacters: 500 },
-  },
-};
-
-async function costAwareSearch(
-  query: string,
-  profile: keyof typeof SEARCH_PROFILES
-) {
-  const config = SEARCH_PROFILES[profile];
-  if ("text" in config || "highlights" in config) {
-    return exa.searchAndContents(query, config);
-  }
-  return exa.search(query, config);
-}
-```
-
-### Step 2: Query-Level Caching (40-60% Cost Reduction)
-```typescript
-import { LRUCache } from "lru-cache";
-
-const searchCache = new LRUCache<string, any>({
-  max: 5000,
-  ttl: 3600 * 1000, // 1-hour TTL
-});
-
-async function cachedSearch(query: string, opts: any) {
-  const key = `${query.toLowerCase().trim()}:${opts.type}:${opts.numResults}`;
-  const cached = searchCache.get(key);
-  if (cached) return cached;
-
-  const results = await exa.searchAndContents(query, opts);
-  searchCache.set(key, results);
-  return results;
-}
-// Typical RAG cache hit rate: 40-60%, directly cutting costs in half
-```
-
-### Step 3: Query Deduplication for Batch Jobs
-```typescript
-function deduplicateQueries(queries: string[]): string[] {
-  const seen = new Set<string>();
-  return queries.filter(q => {
-    const normalized = q.toLowerCase().trim().replace(/\s+/g, " ");
-    if (seen.has(normalized)) return false;
-    seen.add(normalized);
-    return true;
-  });
-}
-
-// Before batch processing, deduplicate
-const uniqueQueries = deduplicateQueries(allQueries);
-console.log(`Deduped: ${allQueries.length} → ${uniqueQueries.length} queries`);
-// Typical dedup rate: 20-40% for batch processing
-```
-
-### Step 4: Use Keyword Search When Appropriate
-```typescript
-// Neural search: best for semantic/conceptual queries (more expensive)
-// Keyword search: best for specific terms/names (cheaper, faster)
-
-function selectCostEffectiveType(query: string): "neural" | "keyword" | "auto" {
-  // Use keyword for exact lookups
-  if (query.match(/^https?:\/\//)) return "keyword";     // URL lookup
-  if (query.match(/^[A-Z][a-z]+ [A-Z]/)) return "keyword"; // Proper nouns
-  if (query.includes('"')) return "keyword";               // Quoted terms
-
-  // Use neural for conceptual queries
-  if (query.split(" ").length > 5) return "neural";
-  return "auto"; // Let Exa decide for ambiguous queries
-}
-```
-
-### Step 5: Monitor Usage and Set Budget Alerts
-```bash
-set -euo pipefail
-# Check API key usage
-curl -s https://api.exa.ai/v1/usage \
-  -H "x-api-key: $EXA_API_KEY" | \
-  python3 -c "
-import json, sys
-d = json.load(sys.stdin)
-print(f'Searches today: {d.get(\"searches_today\", \"N/A\")}')
-print(f'Monthly total: {d.get(\"searches_this_month\", \"N/A\")}')
-print(f'Monthly limit: {d.get(\"monthly_limit\", \"N/A\")}')
-" 2>/dev/null || echo "Usage endpoint not available"
-```
-
-```typescript
-// Application-level budget tracking
-class ExaBudgetTracker {
-  private searchCount = 0;
-  private dailyLimit: number;
-
-  constructor(dailyLimit = 1000) {
-    this.dailyLimit = dailyLimit;
-  }
-
-  async search(exa: Exa, query: string, opts: any) {
-    if (this.searchCount >= this.dailyLimit) {
-      throw new Error(`Daily Exa budget exceeded (${this.dailyLimit} searches)`);
-    }
-    this.searchCount++;
-    return exa.search(query, opts);
-  }
-
-  getUsage() {
-    return {
-      used: this.searchCount,
-      remaining: this.dailyLimit - this.searchCount,
-      utilization: `${((this.searchCount / this.dailyLimit) * 100).toFixed(1)}%`,
-    };
-  }
-}
-```
-
-## Cost Optimization Checklist
-- [ ] Use `keyword` or `fast` for exact lookups instead of `neural`
-- [ ] Reduce `numResults` to 3-5 for most use cases (default is 10)
-- [ ] Use `highlights` instead of full `text` when snippets suffice
-- [ ] Implement query-level caching (LRU or Redis)
-- [ ] Deduplicate queries in batch pipelines
-- [ ] Set application-level budget limits
-- [ ] Monitor daily/monthly usage against budget
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Monthly limit hit early | Uncached batch queries | Add caching (40%+ savings) |
-| High cost per result | `numResults` too high | Reduce to 3-5 for most use cases |
-| Budget spike from batch | No deduplication | Deduplicate before batch execution |
-| `402 NO_MORE_CREDITS` | Account balance exhausted | Top up at dashboard.exa.ai |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateExaCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-- [Exa Pricing](https://exa.ai/pricing)
-- [Exa API Usage](https://dashboard.exa.ai)
-- [Exa Search Types](https://docs.exa.ai/reference/search)
+- [Exa Pricing](https://exa.com/pricing)
+- [Exa Billing Dashboard](https://dashboard.exa.com/billing)
 
 ## Next Steps
-For performance optimization, see `exa-performance-tuning`. For reliability, see `exa-reliability-patterns`.
+For architecture patterns, see `exa-reference-architecture`.

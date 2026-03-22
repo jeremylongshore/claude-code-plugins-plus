@@ -1,85 +1,73 @@
 ---
 name: retellai-core-workflow-b
 description: |
-  Retell AI core workflow b — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell core workflow b", "retellai-core-workflow-b", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Execute Retell AI secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "retellai secondary workflow",
+  "secondary task with retellai".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
 # Retell AI Core Workflow B
 
 ## Overview
-Manage phone calls: outbound campaigns, call transfers, recordings, and concurrent call handling.
+Secondary workflow for Retell AI. Complements the primary workflow.
 
 ## Prerequisites
-- Completed `retellai-core-workflow-a`
+- Completed `retellai-install-auth` setup
+- Familiarity with `retellai-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Outbound Call Campaign
+### Step 1: Setup
 ```typescript
-const phoneNumbers = ['+14155551001', '+14155551002', '+14155551003'];
-
-for (const number of phoneNumbers) {
-  try {
-    const call = await retell.call.createPhoneCall({
-      from_number: process.env.RETELL_PHONE_NUMBER!,
-      to_number: number,
-      override_agent_id: agentId,
-      metadata: { campaign: 'appointment-reminder', date: '2026-04-01' },
-    });
-    console.log(`Called ${number}: ${call.call_id}`);
-  } catch (err) {
-    console.error(`Failed to call ${number}: ${err.message}`);
-  }
-  // Rate limit: space calls apart
-  await new Promise(r => setTimeout(r, 2000));
-}
+// Step 1 implementation
 ```
 
-### Step 2: List and Filter Calls
+### Step 2: Process
 ```typescript
-const calls = await retell.call.list({
-  sort_order: 'descending',
-  limit: 20,
-});
-for (const call of calls) {
-  console.log(`${call.call_id}: ${call.call_status} — ${call.end_timestamp - call.start_timestamp}ms`);
-}
+// Step 2 implementation
 ```
 
-### Step 3: Get Call Recording and Transcript
+### Step 3: Complete
 ```typescript
-const callDetail = await retell.call.retrieve(callId);
-if (callDetail.recording_url) {
-  console.log(`Recording: ${callDetail.recording_url}`);
-}
-if (callDetail.transcript) {
-  console.log(`Transcript:\n${callDetail.transcript}`);
-}
+// Step 3 implementation
 ```
 
 ## Output
-- Outbound call campaign with rate limiting
-- Call listing with status and duration
-- Recordings and transcripts retrieved
+- Completed Core Workflow B execution
+- Results from Retell AI API
+- Success confirmation or error details
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Call fails immediately | Bad phone number format | Use E.164 format |
-| No recording | Recording not enabled | Enable in agent settings |
-| Concurrent limit | Too many active calls | Upgrade plan or queue calls |
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-- [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)
 - [Retell AI Documentation](https://docs.retellai.com)
+- [Retell AI API Reference](https://docs.retellai.com/api)
 
 ## Next Steps
-Handle call events: `retellai-webhooks-events`
+For common errors, see `retellai-common-errors`.

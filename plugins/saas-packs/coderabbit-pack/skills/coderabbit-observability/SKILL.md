@@ -1,264 +1,252 @@
 ---
 name: coderabbit-observability
 description: |
-  Monitor CodeRabbit review effectiveness with metrics, dashboards, and alerts.
-  Use when tracking review coverage, measuring comment acceptance rates,
-  or building dashboards for CodeRabbit adoption across your organization.
+  Set up comprehensive observability for CodeRabbit integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for CodeRabbit operations, setting up dashboards,
+  or configuring alerting for CodeRabbit integration health.
   Trigger with phrases like "coderabbit monitoring", "coderabbit metrics",
-  "coderabbit observability", "monitor coderabbit", "coderabbit alerts", "coderabbit dashboard".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(node:*)
+  "coderabbit observability", "monitor coderabbit", "coderabbit alerts", "coderabbit tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, monitoring, observability, metrics]
-
+compatible-with: claude-code
+tags: [saas, coderabbit]
 ---
+
 # CodeRabbit Observability
 
 ## Overview
-Monitor CodeRabbit AI code review effectiveness, review latency, and team adoption. Key metrics include time-to-first-review (how fast CodeRabbit posts after PR creation), comment acceptance rate (comments resolved vs dismissed), review coverage (percentage of PRs reviewed), and per-repository review volume.
+Set up comprehensive observability for CodeRabbit integrations.
 
 ## Prerequisites
-- CodeRabbit installed on GitHub/GitLab organization
-- GitHub CLI (`gh`) authenticated with org access
-- Access to CodeRabbit dashboard at app.coderabbit.ai
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Key Metrics
+## Metrics Collection
 
-| Metric | Target | Why It Matters |
-|--------|--------|----------------|
-| Review coverage | > 90% | PRs without review = blind spots |
-| Time-to-review | < 5 min | Fast feedback keeps developers in flow |
-| Comment acceptance | > 40% | Low acceptance = noisy reviews |
-| Comments per PR | 3-8 | Too many = fatigue, too few = not useful |
-| Review state: APPROVED | > 60% | High approval = clean code culture |
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `coderabbit_requests_total` | Counter | Total API requests |
+| `coderabbit_request_duration_seconds` | Histogram | Request latency |
+| `coderabbit_errors_total` | Counter | Error count by type |
+| `coderabbit_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'coderabbit_requests_total',
+  help: 'Total CodeRabbit API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'coderabbit_request_duration_seconds',
+  help: 'CodeRabbit request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'coderabbit_errors_total',
+  help: 'CodeRabbit errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('coderabbit-client');
+
+async function tracedCodeRabbitCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`coderabbit.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'coderabbit',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logCodeRabbitOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'coderabbit',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# coderabbit_alerts.yaml
+groups:
+  - name: coderabbit_alerts
+    rules:
+      - alert: CodeRabbitHighErrorRate
+        expr: |
+          rate(coderabbit_errors_total[5m]) /
+          rate(coderabbit_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CodeRabbit error rate > 5%"
+
+      - alert: CodeRabbitHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(coderabbit_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CodeRabbit P95 latency > 2s"
+
+      - alert: CodeRabbitDown
+        expr: up{job="coderabbit"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CodeRabbit integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "CodeRabbit Request Rate",
+      "targets": [{
+        "expr": "rate(coderabbit_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "CodeRabbit Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(coderabbit_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### Step 1: Measure Review Coverage
-```bash
-#!/bin/bash
-# coderabbit-coverage.sh - Review coverage for a repo
-set -euo pipefail
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-ORG="${1:?Usage: $0 <org> <repo> [days]}"
-REPO="${2:?Usage: $0 <org> <repo> [days]}"
-DAYS="${3:-30}"
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-echo "=== CodeRabbit Review Coverage ==="
-echo "Repository: $ORG/$REPO"
-echo "Period: Last $DAYS days"
-echo ""
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-TOTAL=0
-REVIEWED=0
-APPROVED=0
-CHANGES_REQUESTED=0
-
-SINCE=$(date -d "$DAYS days ago" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || date -v-${DAYS}d +%Y-%m-%dT%H:%M:%SZ)
-
-for PR_NUM in $(gh api "repos/$ORG/$REPO/pulls?state=all&per_page=50&sort=created&direction=desc" \
-  --jq ".[] | select(.created_at > \"$SINCE\") | .number"); do
-
-  TOTAL=$((TOTAL + 1))
-
-  CR_STATE=$(gh api "repos/$ORG/$REPO/pulls/$PR_NUM/reviews" \
-    --jq '[.[] | select(.user.login=="coderabbitai[bot]")] | last | .state // "none"' 2>/dev/null || echo "none")
-
-  if [ "$CR_STATE" != "none" ] && [ "$CR_STATE" != "null" ]; then
-    REVIEWED=$((REVIEWED + 1))
-    [ "$CR_STATE" = "APPROVED" ] && APPROVED=$((APPROVED + 1))
-    [ "$CR_STATE" = "CHANGES_REQUESTED" ] && CHANGES_REQUESTED=$((CHANGES_REQUESTED + 1))
-  fi
-done
-
-if [ "$TOTAL" -gt 0 ]; then
-  echo "Total PRs: $TOTAL"
-  echo "Reviewed by CodeRabbit: $REVIEWED ($(( REVIEWED * 100 / TOTAL ))%)"
-  echo "  Approved: $APPROVED"
-  echo "  Changes Requested: $CHANGES_REQUESTED"
-else
-  echo "No PRs found in the last $DAYS days"
-fi
-```
-
-### Step 2: Track Comment Volume and Acceptance
-```bash
-set -euo pipefail
-ORG="${1:-your-org}"
-REPO="${2:-your-repo}"
-
-echo "=== CodeRabbit Comment Analysis ==="
-echo ""
-
-TOTAL_COMMENTS=0
-PR_COUNT=0
-
-for PR_NUM in $(gh api "repos/$ORG/$REPO/pulls?state=closed&per_page=20" --jq '.[].number'); do
-  COMMENTS=$(gh api "repos/$ORG/$REPO/pulls/$PR_NUM/comments" \
-    --jq '[.[] | select(.user.login=="coderabbitai[bot]")] | length' 2>/dev/null || echo "0")
-
-  if [ "$COMMENTS" -gt 0 ]; then
-    TOTAL_COMMENTS=$((TOTAL_COMMENTS + COMMENTS))
-    PR_COUNT=$((PR_COUNT + 1))
-    echo "PR #$PR_NUM: $COMMENTS comments"
-  fi
-done
-
-if [ "$PR_COUNT" -gt 0 ]; then
-  echo ""
-  echo "Average comments per PR: $(( TOTAL_COMMENTS / PR_COUNT ))"
-  echo ""
-  echo "Healthy ranges:"
-  echo "  1-3 comments/PR → Profile may be too chill"
-  echo "  3-8 comments/PR → Good signal-to-noise ratio"
-  echo "  10+ comments/PR → Consider switching to chill profile"
-fi
-```
-
-### Step 3: Build a GitHub Actions Dashboard
-```yaml
-# .github/workflows/coderabbit-metrics.yml
-name: CodeRabbit Weekly Metrics
-
-on:
-  schedule:
-    - cron: '0 9 * * 1'    # Every Monday at 9 AM UTC
-  workflow_dispatch:         # Manual trigger
-
-jobs:
-  metrics:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            const { data: pulls } = await github.rest.pulls.list({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'closed',
-              per_page: 50,
-              sort: 'updated',
-              direction: 'desc',
-            });
-
-            let reviewed = 0;
-            let approved = 0;
-            let changesRequested = 0;
-            let totalComments = 0;
-
-            for (const pr of pulls) {
-              const { data: reviews } = await github.rest.pulls.listReviews({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-              });
-
-              const crReview = reviews.find(r => r.user.login === 'coderabbitai[bot]');
-              if (crReview) {
-                reviewed++;
-                if (crReview.state === 'APPROVED') approved++;
-                if (crReview.state === 'CHANGES_REQUESTED') changesRequested++;
-              }
-
-              const { data: comments } = await github.rest.pulls.listReviewComments({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-              });
-              totalComments += comments.filter(c => c.user.login === 'coderabbitai[bot]').length;
-            }
-
-            const summary = [
-              `## CodeRabbit Weekly Metrics`,
-              `- **Coverage**: ${reviewed}/${pulls.length} PRs reviewed (${Math.round(reviewed/pulls.length*100)}%)`,
-              `- **Approved**: ${approved}`,
-              `- **Changes Requested**: ${changesRequested}`,
-              `- **Avg Comments/PR**: ${reviewed > 0 ? Math.round(totalComments/reviewed) : 0}`,
-            ].join('\n');
-
-            core.summary.addRaw(summary).write();
-            core.info(summary);
-```
-
-### Step 4: Set Up Alerts for Review Gaps
-```yaml
-# .github/workflows/coderabbit-alert.yml
-name: CodeRabbit Review Alert
-
-on:
-  pull_request:
-    types: [opened]
-
-jobs:
-  check-review-expected:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Wait for CodeRabbit review
-        uses: actions/github-script@v7
-        with:
-          script: |
-            // Wait 10 minutes, then check if CodeRabbit reviewed
-            await new Promise(r => setTimeout(r, 600000));
-
-            const { data: reviews } = await github.rest.pulls.listReviews({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.issue.number,
-            });
-
-            const crReview = reviews.find(r => r.user.login === 'coderabbitai[bot]');
-
-            if (!crReview) {
-              core.warning(
-                'CodeRabbit has not reviewed this PR after 10 minutes. ' +
-                'Check: App installation, .coderabbit.yaml, base_branches config.'
-              );
-            }
-```
-
-### Step 5: CodeRabbit Dashboard Summary
-```markdown
-# Build a summary dashboard with these data points:
-
-## Weekly Dashboard Template
-
-| Metric | This Week | Last Week | Trend |
-|--------|-----------|-----------|-------|
-| PRs opened | | | |
-| PRs reviewed by CR | | | |
-| Coverage % | | | |
-| Avg comments/PR | | | |
-| Approval rate | | | |
-| Time to first review | | | |
-
-## Action Items:
-- Coverage < 90%: Check App installation, base_branches config
-- Avg comments > 10: Switch to "chill" profile
-- Avg comments < 2: Switch to "assertive" profile
-- Approval rate < 50%: Review path_instructions for relevance
-```
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- Review coverage metrics calculated per repository
-- Comment volume and acceptance rate tracked
-- Weekly metrics GitHub Action workflow
-- Alert workflow for missing reviews
-- Dashboard template for team reporting
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Coverage below 90% | Some PRs not reviewed | Check `base_branches` and `ignore_title_keywords` |
-| Low acceptance rate | Too many false positives | Tune `path_instructions` and switch to `chill` |
-| No metrics data | No closed PRs in period | Extend the time window |
-| API rate limited | Too many `gh api` calls | Add pagination and caching |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [CodeRabbit Dashboard](https://app.coderabbit.ai)
-- [GitHub REST API - Pulls](https://docs.github.com/en/rest/pulls)
-- [GitHub Actions Job Summaries](https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions#adding-a-job-summary)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [CodeRabbit Observability Guide](https://docs.coderabbit.com/observability)
 
 ## Next Steps
 For incident response, see `coderabbit-incident-runbook`.

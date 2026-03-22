@@ -1,88 +1,201 @@
 ---
 name: speak-webhooks-events
 description: |
-  Handle Speak lesson completion events, progress webhooks, and achievement notifications.
-  Use when implementing webhooks events,
-  or managing Speak language learning platform operations.
-  Trigger with phrases like "speak webhooks events", "speak webhooks events".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Implement Speak webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Speak event notifications securely.
+  Trigger with phrases like "speak webhook", "speak events",
+  "speak webhook signature", "handle speak events", "speak notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Webhooks & Events
 
 ## Overview
-Handle Speak lesson completion events, progress webhooks, and achievement notifications.
+Securely handle Speak webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- Speak webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Configuration
-
-Configure webhooks events for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
-
+### Express.js
 ```typescript
-// speak_webhooks_events_config.ts
-const config = {
-  apiKey: process.env.SPEAK_API_KEY!,
-  appId: process.env.SPEAK_APP_ID!,
-  environment: process.env.NODE_ENV || 'development',
-};
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/speak',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-speak-signature'] as string;
+    const timestamp = req.headers['x-speak-timestamp'] as string;
+
+    if (!verifySpeakSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleSpeakEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
 ```
 
-### Step 2: Implementation
+## Signature Verification
 
 ```typescript
-// Core implementation for speak webhooks & events
-import { SpeakClient } from '@speak/language-sdk';
+function verifySpeakSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.SPEAK_WEBHOOK_SECRET!;
 
-const client = new SpeakClient(config);
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
 
-// Production-ready implementation
-async function setup() {
-  const health = await client.health.check();
-  console.log("Status:", health.status);
-  return health;
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
 }
 ```
 
-### Step 3: Verification
+## Event Handler Pattern
 
-```bash
-curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
+```typescript
+type SpeakEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface SpeakEvent {
+  id: string;
+  type: SpeakEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<SpeakEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleSpeakEvent(event: SpeakEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
 ```
 
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `speak:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `speak:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Speak CLI to send test events
+speak webhooks trigger resource.created --url http://localhost:3000/webhooks/speak
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Speak dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
 ## Output
-- Speak Webhooks & Events configured and verified
-- Production-ready Speak integration
-- Error handling and monitoring in place
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| Connection timeout | Network issue | Check connectivity to api.speak.com |
-| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-For production checklist, see `speak-prod-checklist`.
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-**Basic**: Apply webhooks events with default settings for a standard Speak integration.
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
 
-**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/speak \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
+
+## Resources
+- [Speak Webhooks Guide](https://docs.speak.com/webhooks)
+- [Webhook Security Best Practices](https://docs.speak.com/webhooks/security)
+
+## Next Steps
+For performance optimization, see `speak-performance-tuning`.

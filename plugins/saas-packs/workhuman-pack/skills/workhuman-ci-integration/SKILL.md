@@ -1,60 +1,126 @@
 ---
 name: workhuman-ci-integration
 description: |
-  Workhuman ci integration for employee recognition and rewards API.
-  Use when integrating Workhuman Social Recognition,
-  or building recognition workflows with HRIS systems.
-  Trigger: "workhuman ci integration".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Configure Workhuman CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Workhuman tests into your build process.
+  Trigger with phrases like "workhuman CI", "workhuman GitHub Actions",
+  "workhuman automated tests", "CI workhuman".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
+tags: [saas, workhuman]
 ---
 
-# Workhuman Ci Integration
+# Workhuman CI Integration
 
 ## Overview
+Set up CI/CD pipelines for Workhuman integrations with automated testing.
 
-Guidance for ci integration with Workhuman Social Recognition and rewards API.
+## Prerequisites
+- GitHub repository with Actions enabled
+- Workhuman test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Key Workhuman API Concepts
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/workhuman-integration.yml`:
 
-- **Auth**: OAuth 2.0 client credentials flow
-- **Recognition**: Peer-to-peer and manager nominations with points
-- **Awards**: Configurable levels (bronze, silver, gold, platinum)
-- **Values**: Company values attached to recognitions
-- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
-- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
+```yaml
+name: Workhuman Integration Tests
 
-### Core API Endpoints
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/recognitions` | GET | List recognitions |
-| `/api/v1/recognitions` | POST | Create nomination |
-| `/api/v1/recognitions/:id` | GET | Get recognition status |
-| `/api/v1/users` | GET | List employees |
-| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
-| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
+env:
+  WORKHUMAN_API_KEY: ${{ secrets.WORKHUMAN_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      WORKHUMAN_API_KEY: ${{ secrets.WORKHUMAN_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set WORKHUMAN_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Workhuman Integration', () => {
+  it.skipIf(!process.env.WORKHUMAN_API_KEY)('should connect', async () => {
+    const client = getWorkhumanClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
+
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Token expired | Re-authenticate |
-| `403 Forbidden` | Insufficient permissions | Check role/permissions |
-| `422 Validation` | Missing fields | Check required fields |
-| `404 Not Found` | Invalid ID | Verify resource exists |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      WORKHUMAN_API_KEY: ${{ secrets.WORKHUMAN_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Workhuman production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "workhuman-integration"
+```
 
 ## Resources
-
-- [Workhuman Platform](https://www.workhuman.com/)
-- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Workhuman CI Guide](https://docs.workhuman.com/ci)
 
 ## Next Steps
-
-See related Workhuman skills for more patterns.
+For deployment patterns, see `workhuman-deploy-integration`.

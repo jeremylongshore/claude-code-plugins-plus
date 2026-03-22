@@ -1,236 +1,246 @@
 ---
 name: granola-migration-deep-dive
 description: |
-  Migrate to Granola from Otter.ai, Fireflies, Fathom, tl;dv, or manual note-taking.
-  Covers data export from source tools, parallel-run strategy, team transition,
-  and historical data preservation.
-  Trigger: "migrate to granola", "switch to granola", "granola from otter",
-  "granola from fireflies", "replace meeting tool with granola".
-allowed-tools: Read, Write, Edit, Bash(python3:*)
+  Execute Granola major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Granola, performing major version upgrades,
+  or re-platforming existing integrations to Granola.
+  Trigger with phrases like "migrate granola", "granola migration",
+  "switch to granola", "granola replatform", "granola upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, migration]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
+
 # Granola Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to Granola from competing meeting note tools. Covers source-specific export procedures, historical data preservation, parallel-run strategy, team transition, and cutover execution. Granola's key differentiator — no bot joins meetings — means the migration also changes the user experience fundamentally.
+Comprehensive guide for migrating to or from Granola, or major version upgrades.
 
 ## Prerequisites
-- Access to source tool with export capability
-- Granola workspace configured (see `granola-install-auth`)
-- Migration timeline agreed with stakeholders
-- Budget approved for Granola licenses
+- Current system documentation
+- Granola SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "granola" > granola-files.txt
+
+# Count integration points
+wc -l granola-files.txt
+
+# Identify dependencies
+npm list | grep granola
+pip freeze | grep granola
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessGranolaMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Granola   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Granola SDK
+npm install @granola/sdk
+
+# Configure credentials
+cp .env.example .env.granola
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@granola/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/granola.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class GranolaAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const granolaData = this.transform(data);
+    return granolaClient.create(granolaData);
+  }
+
+  private transform(data: CreateInput): GranolaInput {
+    // Map from old format to Granola format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateGranolaData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await granolaClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const granolaPercentage = getFeatureFlag('granola_migration_percentage');
+
+  if (Math.random() * 100 < granolaPercentage) {
+    return new GranolaAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app GRANOLA_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.granola'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateGranolaMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1 — Assess Migration Scope
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-```markdown
-## Migration Assessment
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-Source tool: [Otter.ai / Fireflies / Fathom / tl;dv / Manual / Other]
-Total meetings in source: [____]
-Date range: [____] to [____]
-Active users to migrate: [____]
-Integrations to recreate: [Slack, Notion, CRM, etc.]
-Historical data priority: [Archive all / Selective / Fresh start]
-Target cutover date: [____]
-Parallel run duration: [1 week / 2 weeks]
-```
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-### Step 2 — Source-Specific Export
-
-#### From Otter.ai
-- **Export format:** TXT, SRT (subtitles), PDF
-- **Bulk export:** Otter Pro/Business: Settings > Export > Download All
-- **Limitations:** Free plan only exports individual notes
-- **Key data:** Transcripts with timestamps, speaker labels, action items
-
-#### From Fireflies.ai
-- **Export format:** TXT, JSON, PDF, SRT
-- **Bulk export:** Admin > Data Management > Export
-- **Limitations:** Custom fields may not export
-- **Key data:** Transcripts, AI summaries, custom topics
-
-#### From Fathom
-- **Export format:** Markdown, CSV, video clips
-- **Bulk export:** Settings > Data > Export All
-- **Limitations:** Video clips don't transfer
-- **Key data:** Meeting summaries, action items, highlights
-
-#### From tl;dv
-- **Export format:** TXT, video recordings
-- **Bulk export:** Settings > Data Export
-- **Limitations:** AI highlights may not transfer
-- **Key data:** Transcripts, timestamps, meeting recordings
-
-#### From Manual Notes (Google Docs, Notion, Confluence)
-- Already in accessible format
-- No export needed — archive in place
-- Focus on establishing the Granola workflow going forward
-
-### Step 3 — Choose Migration Strategy
-
-| Strategy | When to Use | Data Handling | Effort |
-|----------|------------|--------------|--------|
-| **Fresh Start** | <100 historical meetings, or meetings have low reference value | Archive source data externally, start fresh in Granola | Low |
-| **Selective Migration** | 100-1000 meetings, some have ongoing reference value | Export key meetings (client calls, decisions, contracts) | Medium |
-| **Full Archive** | Enterprise with compliance requirements, everything must be searchable | Export all data, archive in Notion/Drive/cloud storage | High |
-
-**Recommended for most teams:** Fresh Start or Selective. Granola doesn't import historical data from other tools — there's no import feature. Historical data lives in your archive (Notion, Google Drive, local files).
-
-### Step 4 — Archive Historical Data
-
-For important historical meetings, archive before cutting over:
-
-```python
-#!/usr/bin/env python3
-"""Organize exported meeting notes for archival."""
-import os
-from pathlib import Path
-
-EXPORT_DIR = Path("~/Downloads/otter-export").expanduser()  # Adjust for your source
-ARCHIVE_DIR = Path("~/Documents/meeting-archive").expanduser()
-
-# Create organized archive structure
-categories = {
-    "client": ["client", "customer", "deal", "sales", "demo"],
-    "engineering": ["sprint", "standup", "architecture", "review", "retro"],
-    "product": ["product", "prd", "design", "feedback", "roadmap"],
-    "leadership": ["all-hands", "board", "strategy", "planning"],
-    "general": [],  # catch-all
-}
-
-ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
-for cat in categories:
-    (ARCHIVE_DIR / cat).mkdir(exist_ok=True)
-
-for file in EXPORT_DIR.glob("*.txt"):
-    filename_lower = file.name.lower()
-    placed = False
-    for cat, keywords in categories.items():
-        if any(kw in filename_lower for kw in keywords):
-            dest = ARCHIVE_DIR / cat / file.name
-            file.rename(dest)
-            placed = True
-            break
-    if not placed:
-        (ARCHIVE_DIR / "general" / file.name).rename(file)
-
-print(f"Archived to {ARCHIVE_DIR}")
-```
-
-Alternatively, upload the archive to Notion or Google Drive for team-wide searchability.
-
-### Step 5 — Parallel Run (2 Weeks)
-
-Run both tools simultaneously to build confidence:
-
-**Week 1: Dual recording**
-- Keep source tool active (bot still joins or captures)
-- Enable Granola on all meetings (system audio capture)
-- Compare output quality daily:
-
-| Metric | Source Tool | Granola | Winner |
-|--------|-----------|---------|--------|
-| Transcription accuracy | ___% | ___% | |
-| Action item detection | ___/total | ___/total | |
-| Summary quality | ___/5 | ___/5 | |
-| Processing time | ___ min | ___ min | |
-| User experience (no bot) | N/A | Yes | Granola |
-
-**Week 2: Granola primary**
-- Keep source tool as backup only (disable auto-record if possible)
-- All sharing and distribution via Granola integrations
-- Team members report any quality issues
-
-### Step 6 — Cutover Execution
-
-**Cutover day checklist:**
-- [ ] Final export from source tool (last day of data)
-- [ ] Verify archive is complete and accessible
-- [ ] Disable source tool recording/bot
-- [ ] Remove source tool bot from calendar (if applicable)
-- [ ] Cancel source tool subscription (save on unused billing)
-- [ ] Announce to team via email/Slack:
-
-```markdown
-Subject: Meeting Notes Migration Complete — Granola is Now Primary
-
-Team,
-
-As of today, we've completed our migration to Granola for meeting notes.
-
-What's changed:
-- No more [Otter/Fireflies/etc.] bot joining meetings
-- Granola captures audio directly from your device (no bot visible to participants)
-- Notes are auto-enhanced with AI summaries and action items
-
-What you need to do:
-1. Ensure Granola is running on your device
-2. Verify your calendar is connected (Settings > Calendar)
-3. Check that microphone + Screen & System Audio permissions are granted
-
-Historical notes: Archived at [Notion link / Drive folder]
-Support: Post in #granola-support
-
-Thank you for the smooth transition!
-```
-
-- [ ] Monitor for 3 days:
-  - Capture rate (% of meetings recorded)
-  - Support ticket volume
-  - User feedback
-  - Integration sync health
-
-### Step 7 — Post-Migration Optimization
-
-After 1 week on Granola exclusively:
-- [ ] Configure templates for each meeting type (see `granola-core-workflow-a`)
-- [ ] Set up Zapier automation for recurring workflows
-- [ ] Create custom recipes for team-specific post-meeting tasks
-- [ ] Establish folder structure matching team workflow
-- [ ] Delete source tool accounts and data (if no longer needed)
-
-## Key Differences from Bot-Based Tools
-
-| Feature | Bot-Based (Otter, Fireflies, tl;dv) | Granola |
-|---------|--------------------------------------|---------|
-| Meeting join | Bot joins as participant | No bot — system audio capture |
-| Participant awareness | "Bot is recording" banner | No banner (still announce recording for consent) |
-| Platform support | Platform-specific integrations | Any platform (captures system audio) |
-| Typed notes | Separate app | Built-in notepad merges with transcript |
-| Enhancement | Auto-generated | User-controlled (click Enhance) |
-| Templates | Limited | 29 built-in + custom |
-| Chat | Limited or none | Full Granola Chat with Recipes |
-| Built-in CRM | No | People & Companies |
+### Step 4: Shift Traffic
+Gradually route traffic to new Granola integration.
 
 ## Output
-- Source data exported and archived
-- Parallel run completed with quality validation
-- Team migrated and recording in Granola
-- Source tool deactivated and subscription cancelled
-- Historical data accessible in archive
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Granola
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Source export incomplete | Free plan limits bulk export | Upgrade source plan temporarily for export, then cancel |
-| Team resistance to change | Comfort with existing tool | Share quality comparison data from parallel run |
-| Missing historical context | No import feature in Granola | Point team to archived data (Notion/Drive) |
-| Audio quality different than bot | System audio vs. platform API | Optimize audio setup (see `granola-performance-tuning`) |
-| Low adoption post-migration | Setup issues | Run drop-in support sessions, share quick-start guide |
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateGranolaMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
 ## Resources
-- [Granola Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
-- [Granola vs Otter Comparison](https://www.granola.ai/compare)
-- [Granola Free Trial](https://www.granola.ai/blog/granola-free-trial-get-started)
-- [Granola for Sales Teams](https://www.granola.ai/blog/sales-ai-notetaker-integration-guide-salesforce-hubspot)
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Granola Migration Guide](https://docs.granola.com/migration)
 
-## Next Steps
-After migration, explore `granola-performance-tuning` to optimize output quality.
+## Flagship+ Skills
+For advanced troubleshooting, see `granola-advanced-troubleshooting`.

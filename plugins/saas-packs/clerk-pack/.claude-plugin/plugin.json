@@ -1,7 +1,7 @@
 {
   "name": "clerk-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Clerk authentication (24 skills)",
+  "description": "Claude Code skill pack for Clerk (24 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,7 +9,7 @@
   "license": "MIT",
   "keywords": [
     "clerk",
-    "authentication",
+    "clerk",
     "saas",
     "sdk",
     "integration"

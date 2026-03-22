@@ -1,167 +1,222 @@
 ---
 name: vastai-data-handling
 description: |
-  Manage training data and model artifacts securely on Vast.ai GPU instances.
-  Use when transferring data to instances, managing checkpoints,
-  or implementing secure data lifecycle on rented hardware.
-  Trigger with phrases like "vastai data", "vastai upload data",
-  "vastai checkpoints", "vastai data security", "vastai artifacts".
-allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(ssh:*), Bash(scp:*)
+  Implement Vast.ai PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Vast.ai integrations.
+  Trigger with phrases like "vastai data", "vastai PII",
+  "vastai GDPR", "vastai data retention", "vastai privacy", "vastai CCPA".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, compliance, data]
-
+compatible-with: claude-code
+tags: [saas, vastai]
 ---
+
 # Vast.ai Data Handling
 
 ## Overview
-Manage training data and model artifacts securely on Vast.ai GPU instances. Covers data transfer, encryption, checkpoint management, and cleanup. Critical consideration: Vast.ai instances run on shared hardware operated by third-party hosts.
+Handle sensitive data correctly when integrating with Vast.ai.
 
 ## Prerequisites
-- Vast.ai instance with SSH access
-- Cloud storage (S3, GCS) for persistent artifacts
-- Understanding of data sensitivity classification
+- Understanding of GDPR/CCPA requirements
+- Vast.ai SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Vast.ai request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupVast.aiData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.vastaiLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupVast.aiData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const vastaiData = await vastaiClient.getUserData(userId);
+
+  return {
+    source: 'Vast.ai',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: vastaiData.profile,
+      activities: vastaiData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Vast.ai
+  await vastaiClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.vastaiUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'vastai',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await vastaiClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Data Transfer Patterns
+### Step 1: Classify Data
+Categorize all Vast.ai data by sensitivity level.
 
-```bash
-# Small datasets (<5GB): Direct SCP
-scp -P $PORT -r ./data/ root@$HOST:/workspace/data/
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-# Large datasets (5-50GB): Compressed transfer
-tar czf - ./data/ | ssh -p $PORT root@$HOST "tar xzf - -C /workspace/"
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-# Very large datasets (>50GB): Cloud storage staging
-# Upload to S3/GCS first, then download on instance
-ssh -p $PORT root@$HOST "aws s3 sync s3://bucket/dataset/ /workspace/data/"
-```
-
-### Step 2: Encrypted Data Transfer
-
-```python
-import subprocess, os
-
-def encrypt_and_upload(local_path, host, port, remote_path, passphrase):
-    """Encrypt data before transferring to Vast.ai instance."""
-    encrypted = f"{local_path}.enc"
-    # Encrypt with AES-256
-    subprocess.run([
-        "openssl", "enc", "-aes-256-cbc", "-salt", "-pbkdf2",
-        "-in", local_path, "-out", encrypted,
-        "-pass", f"pass:{passphrase}",
-    ], check=True)
-
-    # Transfer encrypted file
-    subprocess.run([
-        "scp", "-P", str(port), encrypted,
-        f"root@{host}:{remote_path}.enc",
-    ], check=True)
-
-    # Decrypt on instance
-    subprocess.run([
-        "ssh", "-p", str(port), f"root@{host}",
-        f"openssl enc -aes-256-cbc -d -pbkdf2 "
-        f"-in {remote_path}.enc -out {remote_path} "
-        f"-pass pass:{passphrase} && rm {remote_path}.enc"
-    ], check=True)
-
-    os.remove(encrypted)
-```
-
-### Step 3: Checkpoint to Cloud Storage
-
-```python
-import torch, boto3, os
-
-class CloudCheckpointManager:
-    def __init__(self, s3_bucket, prefix, save_every=500):
-        self.s3 = boto3.client("s3")
-        self.bucket = s3_bucket
-        self.prefix = prefix
-        self.save_every = save_every
-
-    def save(self, model, optimizer, step, loss):
-        if step % self.save_every != 0:
-            return
-        local_path = f"/tmp/ckpt-{step}.pt"
-        torch.save({
-            "step": step, "loss": loss,
-            "model": model.state_dict(),
-            "optimizer": optimizer.state_dict(),
-        }, local_path)
-        self.s3.upload_file(local_path, self.bucket,
-                           f"{self.prefix}/ckpt-{step}.pt")
-        os.remove(local_path)
-        print(f"Checkpoint saved: step {step}, loss {loss:.4f}")
-
-    def load_latest(self):
-        resp = self.s3.list_objects_v2(Bucket=self.bucket, Prefix=self.prefix)
-        if not resp.get("Contents"):
-            return None
-        latest = sorted(resp["Contents"], key=lambda o: o["Key"])[-1]
-        self.s3.download_file(self.bucket, latest["Key"], "/tmp/latest.pt")
-        return torch.load("/tmp/latest.pt")
-```
-
-### Step 4: Secure Cleanup Before Destroy
-
-```bash
-# ALWAYS clean sensitive data before destroying an instance
-ssh -p $PORT root@$HOST << 'CLEANUP'
-# Remove training data and checkpoints
-rm -rf /workspace/data /workspace/checkpoints /workspace/*.pt
-
-# Clear command history
-history -c && rm -f ~/.bash_history
-
-# Overwrite sensitive files (optional, for high-security)
-find /workspace -name "*.env" -exec shred -u {} \;
-
-echo "Cleanup complete"
-CLEANUP
-
-# Then destroy
-vastai destroy instance $INSTANCE_ID
-```
-
-### Step 5: Data Lifecycle Policy
-
-| Data Type | On Instance | After Job | Retention |
-|-----------|-------------|-----------|-----------|
-| Training data | Decrypt on use | Delete before destroy | Source system only |
-| Checkpoints | Local + cloud sync | Keep in cloud storage | 30 days |
-| Final model | Local | Upload to model registry | Permanent |
-| Logs | Local | Upload to logging service | 90 days |
-| Temp files | /tmp | Auto-deleted on destroy | None |
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- Data transfer patterns (SCP, compressed, cloud-staged)
-- Encrypted transfer for sensitive datasets
-- Cloud checkpoint manager with S3 integration
-- Secure cleanup script before instance destruction
-- Data lifecycle policy
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| SCP timeout | Large file or slow network | Use compressed transfer or cloud staging |
-| Checkpoint upload fails | S3 credentials not on instance | Pass AWS creds via env vars at instance creation |
-| Disk full during training | Insufficient disk allocation | Increase `--disk` or clean old checkpoints |
-| Data left after destroy | Skipped cleanup | Always run cleanup script before `vastai destroy` |
-
-## Resources
-- [Vast.ai Instance Management](https://docs.vast.ai/api-reference/instances/create-instance)
-- [AWS S3 CLI](https://docs.aws.amazon.com/cli/latest/reference/s3/)
-
-## Next Steps
-For enterprise access control, see `vastai-enterprise-rbac`.
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
 ## Examples
 
-**Sensitive data workflow**: Encrypt dataset locally, SCP encrypted file to instance, decrypt on-instance, train, save checkpoints to S3, clean and destroy.
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
 
-**Resume after preemption**: Load latest checkpoint from S3 on new instance, continue training from last saved step.
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Vast.ai response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
+
+## Resources
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Vast.ai Privacy Guide](https://docs.vastai.com/privacy)
+
+## Next Steps
+For enterprise access control, see `vastai-enterprise-rbac`.

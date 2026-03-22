@@ -1,75 +1,92 @@
 ---
 name: oraclecloud-install-auth
 description: |
-  Install and configure Oracle Cloud SDK/API authentication.
-  Use when setting up a new Oracle Cloud integration.
-  Trigger: "install oraclecloud", "setup oraclecloud", "oraclecloud auth".
+  Install and configure Oracle Cloud SDK/CLI authentication.
+  Use when setting up a new Oracle Cloud integration, configuring API keys,
+  or initializing Oracle Cloud in your project.
+  Trigger with phrases like "install oraclecloud", "setup oraclecloud",
+  "oraclecloud auth", "configure oraclecloud API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, infrastructure]
 compatible-with: claude-code
+tags: [saas, oraclecloud]
 ---
 
 # Oracle Cloud Install & Auth
 
 ## Overview
-Set up Oracle Cloud Infrastructure (OCI) SDK for compute, storage, networking, and database management.
+Set up Oracle Cloud SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- Oracle Cloud account and API access
-- API key/credentials from Oracle Cloud dashboard
-- Node.js 18+ or Python 3.8+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Oracle Cloud account with API access
+- API key from Oracle Cloud dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-pip install oci
-# or: npm install oci-sdk
-# Configure: oci setup config
+# Node.js
+npm install @oraclecloud/sdk
+
+# Python
+pip install oraclecloud
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-export OCI_CONFIG_FILE="your-api-key-here"
-echo 'OCI_CONFIG_FILE=your-api-key' >> .env
+# Set environment variable
+export ORACLECLOUD_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'ORACLECLOUD_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection (TypeScript)
+### Step 3: Verify Connection
 ```typescript
-import * as oci from 'oci-sdk';
-
-const provider = new oci.ConfigFileAuthenticationDetailsProvider();
-const computeClient = new oci.core.ComputeClient({ authenticationDetailsProvider: provider });
-
-const instances = await computeClient.listInstances({
-  compartmentId: process.env.OCI_COMPARTMENT_ID!
-});
-console.log(`Found ${instances.items.length} compute instances`);
+// Test connection code here
 ```
 
-### Step 4: Verify Connection (Python)
-```python
-import oci
-
-config = oci.config.from_file()  # Reads ~/.oci/config
-compute = oci.core.ComputeClient(config)
-
-instances = compute.list_instances(compartment_id=config['tenancy'])
-print(f'Found {len(instances.data)} compute instances')
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-| Error | Code | Solution |
-|-------|------|----------|
-| Invalid API key | 401 | Verify credentials in dashboard |
-| Permission denied | 403 | Check API scopes/permissions |
-| Rate limited | 429 | Implement backoff |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Incorrect or expired key | Verify key in Oracle Cloud dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.oraclecloud.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { OracleCloudClient } from '@oraclecloud/sdk';
+
+const client = new OracleCloudClient({
+  apiKey: process.env.ORACLECLOUD_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from oraclecloud import OracleCloudClient
+
+client = OracleCloudClient(
+    api_key=os.environ.get('ORACLECLOUD_API_KEY')
+)
+```
 
 ## Resources
-- [Oracle Cloud Documentation](https://docs.oracle.com/en-us/iaas/api/)
+- [Oracle Cloud Documentation](https://docs.oraclecloud.com)
+- [Oracle Cloud Dashboard](https://api.oraclecloud.com)
+- [Oracle Cloud Status](https://status.oraclecloud.com)
 
 ## Next Steps
-After auth, proceed to `oraclecloud-hello-world`.
+After successful auth, proceed to `oraclecloud-hello-world` for your first API call.

@@ -1,226 +1,119 @@
 ---
 name: firecrawl-local-dev-loop
 description: |
-  Configure Firecrawl local development with self-hosted Docker, mocking, and testing.
-  Use when setting up a development environment, running Firecrawl locally to save credits,
-  or configuring test workflows with vitest.
+  Configure FireCrawl local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with FireCrawl.
   Trigger with phrases like "firecrawl dev setup", "firecrawl local development",
-  "firecrawl docker", "firecrawl self-hosted dev", "firecrawl test setup".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(docker:*), Grep
+  "firecrawl dev environment", "develop with firecrawl".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, testing, workflow]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Local Dev Loop
+
+# FireCrawl Local Dev Loop
 
 ## Overview
-Set up a fast development workflow for Firecrawl integrations. Use self-hosted Firecrawl via Docker to avoid burning API credits during development, mock the SDK for unit tests, and run integration tests against the local instance.
+Set up a fast, reproducible local development workflow for FireCrawl.
 
 ## Prerequisites
+- Completed `firecrawl-install-auth` setup
 - Node.js 18+ with npm/pnpm
-- Docker + Docker Compose (for self-hosted Firecrawl)
-- `@mendable/firecrawl-js` installed
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Project Structure
+### Step 1: Create Project Structure
 ```
 my-firecrawl-project/
 ├── src/
-│   ├── scraper.ts          # Firecrawl business logic
-│   └── config.ts           # Environment-aware config
+│   ├── firecrawl/
+│   │   ├── client.ts       # FireCrawl client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
 ├── tests/
-│   ├── scraper.test.ts     # Unit tests (mocked SDK)
-│   └── integration.test.ts # Integration tests (real API)
-├── docker-compose.yml      # Self-hosted Firecrawl
-├── .env.local              # Dev secrets (git-ignored)
+│   └── firecrawl.test.ts
+├── .env.local              # Local secrets (git-ignored)
 ├── .env.example            # Template for team
 └── package.json
 ```
 
-### Step 2: Self-Hosted Firecrawl for Zero-Credit Dev
-```yaml
-# docker-compose.yml
-services:
-  firecrawl:
-    image: mendableai/firecrawl:latest
-    ports:
-      - "3002:3002"
-    environment:
-      - PORT=3002
-      - USE_DB_AUTHENTICATION=false
-      - REDIS_URL=redis://redis:6379
-      - NUM_WORKERS_PER_QUEUE=1
-      - BULL_AUTH_KEY=devonly
-    depends_on:
-      redis:
-        condition: service_healthy
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-```
-
+### Step 2: Configure Environment
 ```bash
-set -euo pipefail
-# Start local Firecrawl
-docker compose up -d
+# Copy environment template
+cp .env.example .env.local
 
-# Verify it's running
-curl -s http://localhost:3002/health | jq .
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-### Step 3: Environment-Aware Configuration
-```typescript
-// src/config.ts
-import FirecrawlApp from "@mendable/firecrawl-js";
-
-export function getFirecrawl(): FirecrawlApp {
-  const isDev = process.env.NODE_ENV !== "production";
-
-  return new FirecrawlApp({
-    apiKey: process.env.FIRECRAWL_API_KEY || "fc-dev",
-    // Point to local Docker instance in dev
-    ...(isDev && process.env.FIRECRAWL_API_URL
-      ? { apiUrl: process.env.FIRECRAWL_API_URL }
-      : {}),
-  });
-}
-```
-
-```bash
-# .env.local (for development — zero API credits used)
-FIRECRAWL_API_KEY=fc-localdev
-FIRECRAWL_API_URL=http://localhost:3002
-NODE_ENV=development
-```
-
-### Step 4: Unit Tests with Mocked SDK
-```typescript
-// tests/scraper.test.ts
-import { describe, it, expect, vi, beforeEach } from "vitest";
-
-// Mock the SDK
-vi.mock("@mendable/firecrawl-js", () => ({
-  default: vi.fn().mockImplementation(() => ({
-    scrapeUrl: vi.fn().mockResolvedValue({
-      success: true,
-      markdown: "# Hello World\n\nSample content from mock",
-      metadata: { title: "Hello World", sourceURL: "https://example.com" },
-    }),
-    crawlUrl: vi.fn().mockResolvedValue({
-      success: true,
-      data: [
-        {
-          markdown: "# Page 1",
-          metadata: { sourceURL: "https://example.com/page1" },
-        },
-      ],
-    }),
-    mapUrl: vi.fn().mockResolvedValue({
-      success: true,
-      links: ["https://example.com/a", "https://example.com/b"],
-    }),
-  })),
-}));
-
-import { scrapeAndProcess } from "../src/scraper";
-
-describe("Scraper", () => {
-  it("returns cleaned markdown", async () => {
-    const result = await scrapeAndProcess("https://example.com");
-    expect(result.markdown).toContain("Hello World");
-    expect(result.metadata.title).toBe("Hello World");
-  });
-});
-```
-
-### Step 5: Integration Tests Against Local Instance
-```typescript
-// tests/integration.test.ts
-import { describe, it, expect } from "vitest";
-import FirecrawlApp from "@mendable/firecrawl-js";
-
-const FIRECRAWL_URL = process.env.FIRECRAWL_API_URL || "http://localhost:3002";
-
-describe.skipIf(!process.env.FIRECRAWL_API_URL)("Firecrawl Integration", () => {
-  const firecrawl = new FirecrawlApp({
-    apiKey: "fc-test",
-    apiUrl: FIRECRAWL_URL,
-  });
-
-  it("scrapes a page to markdown", async () => {
-    const result = await firecrawl.scrapeUrl("https://example.com", {
-      formats: ["markdown"],
-    });
-    expect(result.success).toBe(true);
-    expect(result.markdown).toBeDefined();
-    expect(result.markdown!.length).toBeGreaterThan(50);
-  }, 30000);
-});
-```
-
-### Step 6: Dev Scripts
+### Step 3: Setup Hot Reload
 ```json
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
-    "test:watch": "vitest --watch",
-    "test:integration": "FIRECRAWL_API_URL=http://localhost:3002 vitest run tests/integration",
-    "firecrawl:up": "docker compose up -d",
-    "firecrawl:down": "docker compose down",
-    "firecrawl:logs": "docker compose logs -f firecrawl"
+    "test:watch": "vitest --watch"
   }
 }
 ```
 
+### Step 4: Configure Testing
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { FireCrawlClient } from '../src/firecrawl/client';
+
+describe('FireCrawl Client', () => {
+  it('should initialize with API key', () => {
+    const client = new FireCrawlClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
+```
+
 ## Output
-- Self-hosted Firecrawl running on `localhost:3002`
-- Unit tests with mocked SDK (zero API calls)
-- Integration tests against local instance
-- Hot-reload dev server with `tsx watch`
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for FireCrawl development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Docker `ECONNREFUSED` | Container not running | `docker compose up -d` |
-| Redis connection refused | Redis not healthy yet | Wait for healthcheck, retry |
-| `MODULE_NOT_FOUND` | Missing dependency | `npm install @mendable/firecrawl-js` |
-| Integration test timeout | Self-hosted Firecrawl slow | Increase vitest timeout to 30s |
-| Port 3002 in use | Another process | `lsof -i :3002` and kill, or change port |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
 
 ## Examples
 
-### Quick Scrape Script for Dev
+### Mock FireCrawl Responses
 ```typescript
-// scripts/dev-scrape.ts
-import { getFirecrawl } from "../src/config";
-
-const firecrawl = getFirecrawl();
-const result = await firecrawl.scrapeUrl(process.argv[2] || "https://example.com", {
-  formats: ["markdown"],
-});
-console.log(result.markdown);
+vi.mock('@firecrawl/sdk', () => ({
+  FireCrawlClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
 ```
 
+### Debug Mode
 ```bash
-npx tsx scripts/dev-scrape.ts https://docs.firecrawl.dev
+# Enable verbose logging
+DEBUG=FIRECRAWL=* npm run dev
 ```
 
 ## Resources
-- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
+- [FireCrawl SDK Reference](https://docs.firecrawl.com/sdk)
 - [Vitest Documentation](https://vitest.dev/)
-- [tsx (TypeScript Execute)](https://github.com/privatenumber/tsx)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
 See `firecrawl-sdk-patterns` for production-ready code patterns.

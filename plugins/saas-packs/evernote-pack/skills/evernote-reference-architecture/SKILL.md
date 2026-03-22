@@ -1,111 +1,240 @@
 ---
 name: evernote-reference-architecture
 description: |
-  Reference architecture for Evernote integrations.
-  Use when designing system architecture, planning integrations,
-  or building scalable Evernote applications.
-  Trigger with phrases like "evernote architecture", "design evernote system",
-  "evernote integration pattern", "evernote scale".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Evernote reference architecture with best-practice project layout.
+  Use when designing new Evernote integrations, reviewing project structure,
+  or establishing architecture standards for Evernote applications.
+  Trigger with phrases like "evernote architecture", "evernote best practices",
+  "evernote project structure", "how to organize evernote", "evernote layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, scaling]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for building scalable, maintainable Evernote integrations. Covers service layer design, caching strategy, sync architecture, and deployment topology.
+Production-ready architecture patterns for Evernote integrations.
 
 ## Prerequisites
-- Understanding of microservices or modular monolith architecture
-- Cloud platform familiarity (AWS, GCP, or Azure)
-- Knowledge of message queues and caching
+- Understanding of layered architecture
+- Evernote SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Instructions
-
-### Architecture Layers
+## Project Structure
 
 ```
-Client Layer    [Web App / Mobile / CLI]
-                        |
-API Layer       [Express/Fastify REST API]
-                        |
-Service Layer   [NoteService | SearchService | SyncService]
-                        |
-Integration     [EvernoteClient (rate-limited, instrumented)]
-                        |
-Infrastructure  [Redis Cache | PostgreSQL | Message Queue]
+my-evernote-project/
+├── src/
+│   ├── evernote/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── evernote/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── evernote/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── evernote/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── evernote/
+│   └── integration/
+│       └── evernote/
+├── config/
+│   ├── evernote.development.json
+│   ├── evernote.staging.json
+│   └── evernote.production.json
+└── docs/
+    └── evernote/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-### Service Layer Design
+## Layer Architecture
 
-Separate concerns into focused services:
-- **NoteService**: CRUD operations, ENML formatting, tag management
-- **SearchService**: Query building, pagination, result enrichment
-- **SyncService**: Webhook handling, incremental sync, conflict resolution
-- **AuthService**: OAuth flow, token storage, refresh logic
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Evernote Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
 
-```javascript
-// services/index.js - Service registry
-class ServiceRegistry {
-  constructor(noteStore, cache, db) {
-    this.notes = new NoteService(noteStore);
-    this.search = new SearchService(noteStore, cache);
-    this.sync = new SyncService(noteStore, db);
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/evernote/client.ts
+export class EvernoteService {
+  private client: EvernoteClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: EvernoteConfig) {
+    this.client = new EvernoteClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('evernote');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
   }
 }
 ```
 
-### Caching Strategy
+### Step 2: Error Boundary
+```typescript
+// src/evernote/errors.ts
+export class EvernoteServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'EvernoteServiceError';
+  }
+}
 
-Cache at two levels: in-memory LRU for hot data (note metadata, user info) and Redis for shared state (notebook lists, tag lists, sync checkpoints). Invalidate on webhook notification.
+export function wrapEvernoteError(error: unknown): EvernoteServiceError {
+  // Transform SDK errors to application errors
+}
+```
 
-### Sync Architecture
+### Step 3: Health Check
+```typescript
+// src/evernote/health.ts
+export async function checkEvernoteHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await evernoteClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
 
-Use webhooks as the primary change notification channel. Fall back to polling when webhooks are unavailable. Process changes through a message queue for reliability and retry. Store sync state (USN) in the database for crash recovery.
+## Data Flow Diagram
 
 ```
-Evernote Webhook → API Gateway → Message Queue → Sync Worker → Database
-                                                      ↓
-                                              Evernote API (fetch changes)
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Evernote    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Evernote    │
+│   API       │
+└─────────────┘
 ```
 
-### Database Schema
+## Configuration Management
 
-Store mirrored Evernote data locally for fast reads. Key tables: `users` (token, expiration), `notebooks`, `notes` (content, metadata), `tags`, `resources` (metadata, file path), `sync_state` (user_id, last_usn).
+```typescript
+// config/evernote.ts
+export interface EvernoteConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
 
-For the complete architecture diagrams, service implementations, database schema, and scaling guidelines, see [Implementation Guide](references/implementation-guide.md).
+export function loadEvernoteConfig(): EvernoteConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./evernote.${env}.json`);
+}
+```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Evernote operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Evernote connectivity.
 
 ## Output
-- Layered architecture with clear separation of concerns
-- Service registry pattern for dependency management
-- Two-level caching strategy (in-memory + Redis)
-- Webhook-first sync architecture with polling fallback
-- Database schema for local data mirroring
-- Message queue integration for reliable event processing
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-| Failure Mode | Impact | Mitigation |
-|-------------|--------|------------|
-| Evernote API outage | All sync stops | Circuit breaker, serve cached data |
-| Redis down | Increased API call rate | Fall through to direct API, in-memory fallback |
-| Database failure | Cannot persist sync state | Queue events, replay after recovery |
-| Message queue failure | Webhook events lost | Polling fallback, periodic full sync |
-
-## Resources
-- [Twelve-Factor App](https://12factor.net/)
-- [Evernote API Reference](https://dev.evernote.com/doc/reference/)
-- [Evernote Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
-- [Redis Documentation](https://redis.io/documentation)
-
-## Next Steps
-For multi-environment setup, see `evernote-multi-env-setup`.
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Evernote types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-**Note-taking SaaS**: Build a web app where users connect their Evernote account via OAuth, sync notes to a local database, provide full-text search via PostgreSQL, and push changes back to Evernote.
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/evernote/{handlers} src/services/evernote src/api/evernote
+touch src/evernote/{client,config,types,errors}.ts
+touch src/services/evernote/{index,sync,cache}.ts
+```
 
-**Team dashboard**: Aggregate notes from multiple Evernote Business users into a shared dashboard. Use the sync architecture to keep data fresh. Cache notebook/tag lookups for sub-100ms response times.
+## Resources
+- [Evernote SDK Documentation](https://docs.evernote.com/sdk)
+- [Evernote Best Practices](https://docs.evernote.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `evernote-multi-env-setup`.

@@ -1,125 +1,121 @@
 ---
 name: evernote-prod-checklist
 description: |
-  Production readiness checklist for Evernote integrations.
-  Use when preparing to deploy Evernote integration to production,
-  or auditing production readiness.
+  Execute Evernote production deployment checklist and rollback procedures.
+  Use when deploying Evernote integrations to production, preparing for launch,
+  or implementing go-live procedures.
   Trigger with phrases like "evernote production", "deploy evernote",
-  "evernote go live", "production checklist evernote".
-allowed-tools: Read, Write, Edit, Grep
+  "evernote go-live", "evernote launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment, golang, audit]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Production Checklist
 
 ## Overview
-Comprehensive checklist for deploying Evernote integrations to production, covering API key activation, security hardening, rate limit handling, monitoring, and go-live verification.
+Complete checklist for deploying Evernote integrations to production.
 
 ## Prerequisites
-- Completed development and testing in sandbox
-- Production API key approved by Evernote (requires review process)
-- Production infrastructure provisioned
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### API Key & Authentication
-- [ ] Production API key requested and approved by Evernote
-- [ ] `EVERNOTE_SANDBOX=false` in production config
-- [ ] Consumer key and secret stored in secrets manager (not env files)
-- [ ] OAuth callback URL uses HTTPS on production domain
-- [ ] Token expiration tracking implemented (`edam_expires`)
-- [ ] Token refresh/re-auth flow tested end-to-end
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-### Security
-- [ ] Access tokens encrypted at rest (AES-256-GCM)
-- [ ] CSRF protection on OAuth flow
-- [ ] API credentials not in source control (`.env` in `.gitignore`)
-- [ ] Log output redacts tokens and PII
-- [ ] Input validation on all user-supplied content (ENML sanitization)
-- [ ] Rate limit handling prevents API key suspension
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Evernote error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-### Rate Limits & Performance
-- [ ] Exponential backoff on `RATE_LIMIT_REACHED` errors
-- [ ] Minimum delay between API calls (100-200ms)
-- [ ] Response caching for `listNotebooks()` and `listTags()` (5-10 min TTL)
-- [ ] `findNotesMetadata()` used instead of `findNotes()` for listings
-- [ ] Batch operations use sequential processing with delays
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Evernote connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-### Monitoring & Alerting
-- [ ] Health check endpoint verifies Evernote API connectivity
-- [ ] Metrics tracked: API call count, latency, error rate, rate limits
-- [ ] Alerts configured for rate limits, auth failures, and high error rates
-- [ ] Structured logging with correlation IDs
-- [ ] Quota usage monitoring with threshold alerts (75%, 90%)
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-### Data Integrity
-- [ ] ENML validation before every `createNote`/`updateNote` call
-- [ ] Note titles sanitized (max 255 chars, no newlines)
-- [ ] Tag names validated (max 100 chars, no commas)
-- [ ] Resource hashes verified (MD5 match)
-- [ ] Sync state (USN) tracked and persisted for incremental sync
-
-### Deployment
-- [ ] Production Docker image built with multi-stage build
-- [ ] `NODE_ENV=production` set in container
-- [ ] Graceful shutdown handles in-flight API calls
-- [ ] Rollback plan documented and tested
-- [ ] Deployment verification script runs post-deploy
-
-### Verification Script
-
+### Step 5: Deploy with Gradual Rollout
 ```bash
-#!/bin/bash
-set -euo pipefail
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.evernote.com
 
-echo "Verifying Evernote production deployment..."
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/evernote-integration app=image:new --record
+kubectl rollout pause deployment/evernote-integration
 
-# 1. Health check
-curl -sf "$APP_URL/health" | jq '.evernoteApi' | grep -q '"connected"'
-echo "  Health check: PASS"
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-# 2. Create test note
-GUID=$(curl -sf "$APP_URL/api/test-note" | jq -r '.guid')
-echo "  Note creation: PASS (GUID: $GUID)"
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/evernote-integration
+kubectl rollout pause deployment/evernote-integration
+sleep 300
 
-# 3. Clean up test note
-curl -sf -X DELETE "$APP_URL/api/notes/$GUID"
-echo "  Cleanup: PASS"
-
-echo "All checks passed."
+# Complete rollout to 100%
+kubectl rollout resume deployment/evernote-integration
+kubectl rollout status deployment/evernote-integration
 ```
 
-For the complete checklist details and verification scripts, see [Implementation Guide](references/implementation-guide.md).
-
 ## Output
-- Production readiness checklist (API keys, security, performance, monitoring)
-- Verification script for post-deployment testing
-- Security audit checklist for credential and token management
-- Monitoring setup verification
+- Deployed Evernote integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `INVALID_AUTH` in production | Using sandbox token with production endpoint | Verify `EVERNOTE_SANDBOX=false` matches production key |
-| Verification script fails | Service not healthy after deploy | Check logs, rollback if needed |
-| Rate limits on launch | Burst of API calls at startup | Add startup delay, warm caches gradually |
-| `PERMISSION_DENIED` | Production key missing permissions | Contact Evernote developer support |
-
-## Resources
-- [Evernote Developer Portal](https://dev.evernote.com/)
-- [API Key Request](https://dev.evernote.com/support/)
-- [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [OAuth Documentation](https://dev.evernote.com/doc/articles/authentication.php)
-
-## Next Steps
-For version upgrades, see `evernote-upgrade-migration`.
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
 ## Examples
 
-**Go-live checklist**: Walk through each section, check off items, run the verification script, and sign off with the team before switching DNS to the production deployment.
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; evernote: any }> {
+  const start = Date.now();
+  try {
+    await evernoteClient.ping();
+    return { status: 'healthy', evernote: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', evernote: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
 
-**Security audit**: Review encrypted token storage, verify log redaction, confirm CSRF protection, and test token expiration handling before the production launch.
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/evernote-integration
+kubectl rollout status deployment/evernote-integration
+```
+
+## Resources
+- [Evernote Status](https://status.evernote.com)
+- [Evernote Support](https://docs.evernote.com/support)
+
+## Next Steps
+For version upgrades, see `evernote-upgrade-migration`.

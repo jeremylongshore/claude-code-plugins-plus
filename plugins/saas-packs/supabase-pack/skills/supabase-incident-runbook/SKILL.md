@@ -1,223 +1,205 @@
 ---
 name: supabase-incident-runbook
 description: |
-  Execute Supabase incident response: triage, platform vs. application isolation,
-  mitigation, and postmortem procedures.
-  Use when responding to Supabase outages, investigating errors,
-  or running post-incident reviews.
+  Execute Supabase incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Supabase-related outages, investigating errors,
+  or running post-incident reviews for Supabase integration failures.
   Trigger with phrases like "supabase incident", "supabase outage",
   "supabase down", "supabase on-call", "supabase emergency", "supabase broken".
-allowed-tools: Read, Grep, Bash(curl:*), Bash(supabase:*)
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, incident-response]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Incident Runbook
 
 ## Overview
-Step-by-step incident response for Supabase-related outages. Quickly determine if the issue is platform-side (Supabase infrastructure) or application-side (your code/config), apply mitigation, communicate status, and run a postmortem.
+Rapid incident response procedures for Supabase-related outages.
 
 ## Prerequisites
-- Access to Supabase Dashboard and logs
-- Supabase CLI installed
-- Access to application monitoring
+- Access to Supabase dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Supabase API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Supabase status
+curl -s https://status.supabase.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.supabase'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(supabase_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=supabase-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Supabase API returning errors?
+├─ YES: Is status.supabase.com showing incident?
+│   ├─ YES → Wait for Supabase to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret supabase-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Supabase dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic supabase-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/supabase-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.supabase.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/supabase-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Supabase for limit increase
+```
+
+### 500/503 - Supabase Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/supabase-integration SUPABASE_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Supabase status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Supabase Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Supabase Integration Issue
+
+We're experiencing issues with our Supabase integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/supabase-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=supabase-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=supabase_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Supabase [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1: Quick Triage (First 5 Minutes)
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-```bash
-# 1. Check Supabase platform status
-curl -s https://status.supabase.com/api/v2/status.json | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-print(f'Status: {d[\"status\"][\"description\"]}')
-print(f'Indicator: {d[\"status\"][\"indicator\"]}')
-"
+### Step 2: Follow Decision Tree
+Determine if the issue is Supabase-side or internal.
 
-# 2. Check your project health
-curl -s -o /dev/null -w "HTTP %{http_code}, %{time_total}s\n" \
-  "https://<project-ref>.supabase.co/rest/v1/" \
-  -H "apikey: $SUPABASE_ANON_KEY"
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-# 3. Test database connectivity
-supabase db query "SELECT 1 as health_check" --linked 2>&1 || echo "DB unreachable"
-```
-
-### Step 2: Decision Tree
-
-```
-Is status.supabase.com reporting an incident?
-├── YES → Platform issue
-│   ├── Monitor status page for updates
-│   ├── Enable circuit breaker / fallback mode
-│   └── Communicate to users: "Service provider experiencing issues"
-│
-└── NO → Application issue
-    ├── Check recent deployments (git log --oneline -5)
-    ├── Check recent migration changes
-    ├── Review application error logs
-    └── Continue to Step 3
-```
-
-### Step 3: Diagnose Application Issues
-
-```sql
--- Check for connection exhaustion
-select state, count(*)
-from pg_stat_activity
-where datname = current_database()
-group by state;
--- If "active" count is near your pool limit, you have a connection leak
-
--- Check for long-running queries
-select pid, age(now(), query_start) as duration, query
-from pg_stat_activity
-where state = 'active' and query_start < now() - interval '30 seconds'
-order by query_start;
-
--- Kill a stuck query if needed
--- select pg_cancel_backend(<pid>);
-
--- Check for lock contention
-select blocked.pid as blocked_pid,
-       blocked.query as blocked_query,
-       blocking.pid as blocking_pid,
-       blocking.query as blocking_query
-from pg_stat_activity blocked
-join pg_locks bl on bl.pid = blocked.pid
-join pg_locks kl on kl.locktype = bl.locktype
-  and kl.relation = bl.relation
-  and kl.pid != bl.pid
-join pg_stat_activity blocking on blocking.pid = kl.pid
-where not bl.granted;
-```
-
-### Step 4: Common Incident Scenarios
-
-**Scenario: All API requests returning 401**
-```
-Root cause: JWT expired or key rotated
-Fix: Check SUPABASE_ANON_KEY matches Dashboard > Settings > API
-     Restart application to pick up new env vars
-```
-
-**Scenario: Database connection timeout**
-```
-Root cause: Connection pool exhausted
-Fix: Switch to pooled connection string (port 6543 via Supavisor)
-     Kill long-running queries
-     Restart application to release stale connections
-```
-
-**Scenario: RLS suddenly blocking all requests**
-```
-Root cause: Migration added restrictive policy or disabled a permissive one
-Fix: Check recent migrations for policy changes
-     Verify with service role key (bypasses RLS)
-     Roll back the problematic migration if needed
-```
-
-**Scenario: Realtime subscriptions not receiving events**
-```
-Root cause: Table not in the supabase_realtime publication
-Fix: Dashboard > Database > Replication > enable table
-     Or: ALTER PUBLICATION supabase_realtime ADD TABLE public.your_table;
-```
-
-**Scenario: Storage uploads failing with 413**
-```
-Root cause: File exceeds bucket size limit
-Fix: Increase bucket file_size_limit in Dashboard > Storage
-     Or: use TUS resumable uploads for large files
-```
-
-### Step 5: Mitigation Actions
-
-```typescript
-// Enable graceful degradation mode
-const CIRCUIT_OPEN = process.env.SUPABASE_CIRCUIT_OPEN === 'true'
-
-async function fetchWithFallback<T>(
-  primary: () => Promise<T>,
-  fallback: T
-): Promise<T> {
-  if (CIRCUIT_OPEN) {
-    console.warn('[CIRCUIT_OPEN] Returning fallback response')
-    return fallback
-  }
-
-  try {
-    return await primary()
-  } catch (err) {
-    console.error('[SUPABASE_DOWN] Using fallback:', err)
-    return fallback
-  }
-}
-
-// Usage during incident
-const todos = await fetchWithFallback(
-  () => TodoService.list({ userId }),
-  []  // return empty list during outage
-)
-```
-
-### Step 6: Communication Template
-
-```
-Subject: [INCIDENT] Supabase connectivity degraded
-
-Status: Investigating / Identified / Mitigated / Resolved
-Impact: [Description of user-facing impact]
-Start time: YYYY-MM-DDTHH:MM:SSZ
-Current time: YYYY-MM-DDTHH:MM:SSZ
-
-Root cause: [Brief description or "under investigation"]
-Mitigation: [What we're doing to reduce impact]
-ETA to resolution: [Estimate or "unknown"]
-
-Next update: [Time of next update]
-```
-
-### Step 7: Postmortem Template
-
-```markdown
-## Incident Postmortem: [Title]
-
-**Date**: YYYY-MM-DD
-**Duration**: X hours Y minutes
-**Severity**: P1/P2/P3
-**Impact**: [Users affected, operations disrupted]
-
-### Timeline
-- HH:MM - Issue detected via [monitoring/user report]
-- HH:MM - Investigation started
-- HH:MM - Root cause identified
-- HH:MM - Mitigation applied
-- HH:MM - Full resolution confirmed
-
-### Root Cause
-[Detailed technical explanation]
-
-### Action Items
-- [ ] [Preventive action 1] — Owner: [name] — Due: [date]
-- [ ] [Preventive action 2] — Owner: [name] — Due: [date]
-```
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Platform vs. application issue identified within 5 minutes
-- Root cause determined with diagnostic queries
-- Mitigation applied (circuit breaker, fallback, connection cleanup)
-- Stakeholders notified with structured updates
-- Postmortem completed with preventive action items
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.supabase.status' || echo "UNHEALTHY"
+```
 
 ## Resources
 - [Supabase Status Page](https://status.supabase.com)
-- [Supabase Support](https://supabase.com/support)
-- [Database Health Monitoring](https://supabase.com/docs/guides/database/inspect)
+- [Supabase Support](https://support.supabase.com)
 
 ## Next Steps
-For data compliance, see `supabase-data-handling`.
+For data handling, see `supabase-data-handling`.

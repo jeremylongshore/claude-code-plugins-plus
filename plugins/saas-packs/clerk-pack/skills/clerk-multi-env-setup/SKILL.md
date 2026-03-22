@@ -1,217 +1,224 @@
 ---
 name: clerk-multi-env-setup
 description: |
-  Configure Clerk for multiple environments (dev, staging, production).
-  Use when setting up environment-specific configurations,
-  managing multiple Clerk instances, or implementing environment promotion.
+  Configure Clerk across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Clerk configurations.
   Trigger with phrases like "clerk environments", "clerk staging",
-  "clerk dev prod", "clerk multi-environment".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  "clerk dev prod", "clerk environment setup", "clerk config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, clerk-multi]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Multi-Environment Setup
 
 ## Overview
-Configure Clerk across development, staging, and production environments with separate instances, environment-aware configuration, and safe promotion workflows.
+Configure Clerk across development, staging, and production environments.
 
 ## Prerequisites
-- Clerk account (one instance per environment recommended)
-- CI/CD pipeline (GitHub Actions, Vercel, etc.)
-- Environment variable management in place
+- Separate Clerk accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
+
+## Environment Strategy
+
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── clerk/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${CLERK_API_KEY}",
+  "baseUrl": "https://api-sandbox.clerk.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${CLERK_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.clerk.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${CLERK_API_KEY_PROD}",
+  "baseUrl": "https://api.clerk.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/clerk/config.ts
+import baseConfig from '../../config/clerk/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getClerkConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/clerk/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+CLERK_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  CLERK_API_KEY: ${{ secrets.CLERK_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id clerk/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=clerk-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/clerk/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getClerkConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[clerk] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
 
 ## Instructions
 
-### Step 1: Create Clerk Instances
-Create separate Clerk instances in the Dashboard for each environment:
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-| Environment | Instance | Key Prefix | Domain |
-|-------------|----------|------------|--------|
-| Development | my-app-dev | `pk_test_` / `sk_test_` | localhost:3000 |
-| Staging | my-app-staging | `pk_test_` / `sk_test_` | staging.myapp.com |
-| Production | my-app-prod | `pk_live_` / `sk_live_` | myapp.com |
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-### Step 2: Environment Configuration Files
-```bash
-# .env.local (development - git-ignored)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_dev...
-CLERK_SECRET_KEY=sk_test_dev...
-CLERK_WEBHOOK_SECRET=whsec_dev...
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-# .env.staging (staging)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_staging...
-CLERK_SECRET_KEY=sk_test_staging...
-CLERK_WEBHOOK_SECRET=whsec_staging...
-
-# .env.production (production)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_prod...
-CLERK_SECRET_KEY=sk_live_prod...
-CLERK_WEBHOOK_SECRET=whsec_prod...
-```
-
-### Step 3: Environment-Aware Configuration
-```typescript
-// lib/clerk-config.ts
-type ClerkEnv = 'development' | 'staging' | 'production'
-
-function getClerkEnv(): ClerkEnv {
-  const key = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
-  if (key.startsWith('pk_live_')) return 'production'
-  if (process.env.VERCEL_ENV === 'preview') return 'staging'
-  return 'development'
-}
-
-export const clerkConfig = {
-  env: getClerkEnv(),
-  get isDev() { return this.env === 'development' },
-  get isProd() { return this.env === 'production' },
-
-  signInUrl: '/sign-in',
-  signUpUrl: '/sign-up',
-  afterSignInUrl: '/dashboard',
-
-  get allowedRedirectOrigins() {
-    switch (this.env) {
-      case 'production': return ['https://myapp.com']
-      case 'staging': return ['https://staging.myapp.com']
-      default: return ['http://localhost:3000']
-    }
-  },
-}
-```
-
-### Step 4: Startup Validation
-```typescript
-// lib/validate-env.ts
-export function validateClerkEnv() {
-  const required = [
-    'NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY',
-    'CLERK_SECRET_KEY',
-  ]
-
-  const missing = required.filter((key) => !process.env[key])
-  if (missing.length > 0) {
-    throw new Error(`Missing Clerk env vars: ${missing.join(', ')}`)
-  }
-
-  const pk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY!
-  const sk = process.env.CLERK_SECRET_KEY!
-
-  // Prevent key mismatch (test keys with live keys)
-  const pkIsLive = pk.startsWith('pk_live_')
-  const skIsLive = sk.startsWith('sk_live_')
-  if (pkIsLive !== skIsLive) {
-    throw new Error('Clerk key mismatch: publishable and secret keys must be from same environment')
-  }
-
-  // Warn if using live keys in development
-  if (pkIsLive && process.env.NODE_ENV === 'development') {
-    console.warn('WARNING: Using production Clerk keys in development mode')
-  }
-}
-```
-
-Call at app startup:
-```typescript
-// app/layout.tsx
-import { validateClerkEnv } from '@/lib/validate-env'
-validateClerkEnv()
-```
-
-### Step 5: Webhook Configuration Per Environment
-```typescript
-// app/api/webhooks/clerk/route.ts
-import { headers } from 'next/headers'
-import { Webhook } from 'svix'
-
-export async function POST(req: Request) {
-  // Each environment uses its own webhook secret
-  const secret = process.env.CLERK_WEBHOOK_SECRET
-  if (!secret) {
-    console.error('CLERK_WEBHOOK_SECRET not configured for this environment')
-    return new Response('Server error', { status: 500 })
-  }
-
-  // Verification logic (same across environments)
-  const headerPayload = await headers()
-  const wh = new Webhook(secret)
-  const body = await req.text()
-
-  try {
-    const evt = wh.verify(body, {
-      'svix-id': headerPayload.get('svix-id')!,
-      'svix-timestamp': headerPayload.get('svix-timestamp')!,
-      'svix-signature': headerPayload.get('svix-signature')!,
-    })
-    // Handle event...
-    return new Response('OK', { status: 200 })
-  } catch {
-    return new Response('Invalid signature', { status: 400 })
-  }
-}
-```
-
-### Step 6: CI/CD Environment Promotion
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
-on:
-  push:
-    branches: [main, staging]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set environment
-        run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "DEPLOY_ENV=production" >> $GITHUB_ENV
-          else
-            echo "DEPLOY_ENV=staging" >> $GITHUB_ENV
-          fi
-
-      - name: Deploy to Vercel
-        env:
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets[format('CLERK_PK_{0}', env.DEPLOY_ENV)] }}
-          CLERK_SECRET_KEY: ${{ secrets[format('CLERK_SK_{0}', env.DEPLOY_ENV)] }}
-        run: vercel deploy --prod
-```
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
 ## Output
-- Separate Clerk instances per environment (dev, staging, production)
-- Environment-aware configuration with key validation
-- Startup checks preventing key mismatches
-- Per-environment webhook secrets
-- CI/CD pipeline deploying correct keys per branch
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Key mismatch error | `pk_test_` with `sk_live_` | Ensure both keys from same Clerk instance |
-| Webhook signature fails | Wrong secret for environment | Verify `CLERK_WEBHOOK_SECRET` matches instance |
-| User not found | Querying wrong environment | Check you are hitting correct Clerk instance |
-| OAuth redirect fails | Domain not configured | Add environment domain in Clerk Dashboard |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
 ## Examples
 
-### Vercel Preview Environment Setup
-```bash
-# Set env vars for Vercel preview deployments
-vercel env add NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY preview
-vercel env add CLERK_SECRET_KEY preview
+### Quick Environment Check
+```typescript
+const env = getClerkConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
 ```
 
 ## Resources
-- [Clerk Deployment Environments](https://clerk.com/docs/deployments/overview)
-- [Preview Environment Setup](https://clerk.com/docs/deployments/set-up-preview-environment)
-- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Clerk Environments Guide](https://docs.clerk.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-Proceed to `clerk-observability` for monitoring and logging.
+For observability setup, see `clerk-observability`.

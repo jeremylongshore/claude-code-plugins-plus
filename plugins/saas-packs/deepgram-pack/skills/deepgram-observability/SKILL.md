@@ -1,209 +1,115 @@
 ---
 name: deepgram-observability
 description: |
-  Set up comprehensive observability for Deepgram integrations.
-  Use when implementing monitoring, setting up dashboards,
+  Set up comprehensive observability for Deepgram integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Deepgram operations, setting up dashboards,
   or configuring alerting for Deepgram integration health.
-  Trigger: "deepgram monitoring", "deepgram metrics", "deepgram observability",
-  "monitor deepgram", "deepgram alerts", "deepgram dashboard".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Trigger with phrases like "deepgram monitoring", "deepgram metrics",
+  "deepgram observability", "monitor deepgram", "deepgram alerts", "deepgram tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, monitoring, observability, prometheus]
-
+compatible-with: claude-code
+tags: [saas, deepgram]
 ---
+
 # Deepgram Observability
 
 ## Overview
-Full observability stack for Deepgram: Prometheus metrics (request counts, latency histograms, audio processed, cost tracking), OpenTelemetry distributed tracing, structured JSON logging with Pino, Grafana dashboard JSON, and AlertManager rules.
+Set up comprehensive observability for Deepgram integrations.
 
-## Four Pillars
+## Prerequisites
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-| Pillar | Tool | What It Tracks |
-|--------|------|----------------|
-| Metrics | Prometheus | Request rate, latency, error rate, audio minutes, estimated cost |
-| Traces | OpenTelemetry | End-to-end request flow, Deepgram API span timing |
-| Logs | Pino (JSON) | Request details, errors, audit trail |
-| Alerts | AlertManager | Error rate >5%, P95 latency >10s, rate limit hits |
+## Metrics Collection
 
-## Instructions
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `deepgram_requests_total` | Counter | Total API requests |
+| `deepgram_request_duration_seconds` | Histogram | Request latency |
+| `deepgram_errors_total` | Counter | Error count by type |
+| `deepgram_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-### Step 1: Prometheus Metrics Definition
+### Prometheus Metrics
 
 ```typescript
-import { Counter, Histogram, Gauge, Registry, collectDefaultMetrics } from 'prom-client';
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
 const registry = new Registry();
-collectDefaultMetrics({ register: registry });
 
-// Request metrics
-const requestsTotal = new Counter({
+const requestCounter = new Counter({
   name: 'deepgram_requests_total',
   help: 'Total Deepgram API requests',
-  labelNames: ['method', 'model', 'status'] as const,
+  labelNames: ['method', 'status'],
   registers: [registry],
 });
 
-const latencyHistogram = new Histogram({
+const requestDuration = new Histogram({
   name: 'deepgram_request_duration_seconds',
-  help: 'Deepgram API request duration',
-  labelNames: ['method', 'model'] as const,
-  buckets: [0.1, 0.5, 1, 2, 5, 10, 30, 60],
+  help: 'Deepgram request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
   registers: [registry],
 });
 
-// Usage metrics
-const audioProcessedSeconds = new Counter({
-  name: 'deepgram_audio_processed_seconds_total',
-  help: 'Total audio seconds processed',
-  labelNames: ['model'] as const,
+const errorCounter = new Counter({
+  name: 'deepgram_errors_total',
+  help: 'Deepgram errors by type',
+  labelNames: ['error_type'],
   registers: [registry],
 });
-
-const estimatedCostDollars = new Counter({
-  name: 'deepgram_estimated_cost_dollars_total',
-  help: 'Estimated cost in USD',
-  labelNames: ['model', 'method'] as const,
-  registers: [registry],
-});
-
-// Operational metrics
-const activeConnections = new Gauge({
-  name: 'deepgram_active_websocket_connections',
-  help: 'Currently active WebSocket connections',
-  registers: [registry],
-});
-
-const rateLimitHits = new Counter({
-  name: 'deepgram_rate_limit_hits_total',
-  help: 'Number of 429 rate limit responses',
-  registers: [registry],
-});
-
-export { registry, requestsTotal, latencyHistogram, audioProcessedSeconds,
-         estimatedCostDollars, activeConnections, rateLimitHits };
 ```
 
-### Step 2: Instrumented Deepgram Client
+### Instrumented Client
 
 ```typescript
-import { createClient, DeepgramClient } from '@deepgram/sdk';
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
-class InstrumentedDeepgram {
-  private client: DeepgramClient;
-  private costPerMinute: Record<string, number> = {
-    'nova-3': 0.0043, 'nova-2': 0.0043, 'base': 0.0048, 'whisper-large': 0.0048,
-  };
-
-  constructor(apiKey: string) {
-    this.client = createClient(apiKey);
-  }
-
-  async transcribeUrl(url: string, options: Record<string, any> = {}) {
-    const model = options.model ?? 'nova-3';
-    const timer = latencyHistogram.startTimer({ method: 'prerecorded', model });
-
-    try {
-      const { result, error } = await this.client.listen.prerecorded.transcribeUrl(
-        { url }, { model, smart_format: true, ...options }
-      );
-
-      const status = error ? 'error' : 'success';
-      timer();
-      requestsTotal.inc({ method: 'prerecorded', model, status });
-
-      if (error) {
-        if ((error as any).status === 429) rateLimitHits.inc();
-        throw error;
-      }
-
-      // Track usage
-      const duration = result.metadata.duration;
-      audioProcessedSeconds.inc({ model }, duration);
-      estimatedCostDollars.inc(
-        { model, method: 'prerecorded' },
-        (duration / 60) * (this.costPerMinute[model] ?? 0.0043)
-      );
-
-      return result;
-    } catch (err) {
-      timer();
-      requestsTotal.inc({ method: 'prerecorded', model, status: 'error' });
-      throw err;
-    }
-  }
-
-  // Live transcription with connection tracking
-  connectLive(options: Record<string, any>) {
-    const model = options.model ?? 'nova-3';
-    activeConnections.inc();
-
-    const connection = this.client.listen.live(options);
-
-    const originalFinish = connection.finish.bind(connection);
-    connection.finish = () => {
-      activeConnections.dec();
-      return originalFinish();
-    };
-
-    return connection;
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
   }
 }
 ```
 
-### Step 3: OpenTelemetry Tracing
+## Distributed Tracing
+
+### OpenTelemetry Setup
 
 ```typescript
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { Resource } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
-import { trace } from '@opentelemetry/api';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-const sdk = new NodeSDK({
-  resource: new Resource({
-    [SEMRESATTRS_SERVICE_NAME]: 'deepgram-service',
-    'deployment.environment': process.env.NODE_ENV ?? 'development',
-  }),
-  traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318/v1/traces',
-  }),
-  instrumentations: [
-    getNodeAutoInstrumentations({
-      '@opentelemetry/instrumentation-http': {
-        ignoreIncomingPaths: ['/health', '/metrics'],
-      },
-    }),
-  ],
-});
+const tracer = trace.getTracer('deepgram-client');
 
-sdk.start();
-
-// Add custom spans for Deepgram operations
-const tracer = trace.getTracer('deepgram');
-
-async function tracedTranscribe(url: string, model: string) {
-  return tracer.startActiveSpan('deepgram.transcribe', async (span) => {
-    span.setAttribute('deepgram.model', model);
-    span.setAttribute('deepgram.audio_url', url.substring(0, 100));
-
+async function tracedDeepgramCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`deepgram.${operationName}`, async (span) => {
     try {
-      const instrumented = new InstrumentedDeepgram(process.env.DEEPGRAM_API_KEY!);
-      const result = await instrumented.transcribeUrl(url, { model });
-
-      span.setAttribute('deepgram.duration_seconds', result.metadata.duration);
-      span.setAttribute('deepgram.request_id', result.metadata.request_id);
-      span.setAttribute('deepgram.confidence',
-        result.results.channels[0].alternatives[0].confidence);
-
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
       return result;
-    } catch (err: any) {
-      span.recordException(err);
-      span.setStatus({ code: 2, message: err.message });
-      throw err;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
     } finally {
       span.end();
     }
@@ -211,164 +117,136 @@ async function tracedTranscribe(url: string, model: string) {
 }
 ```
 
-### Step 4: Structured Logging with Pino
+## Logging Strategy
+
+### Structured Logging
 
 ```typescript
 import pino from 'pino';
 
 const logger = pino({
-  level: process.env.LOG_LEVEL ?? 'info',
-  formatters: {
-    level: (label) => ({ level: label }),
-  },
-  timestamp: pino.stdTimeFunctions.isoTime,
-  base: {
-    service: 'deepgram-integration',
-    env: process.env.NODE_ENV,
-  },
+  name: 'deepgram',
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-// Child loggers per component
-const transcriptionLog = logger.child({ component: 'transcription' });
-const metricsLog = logger.child({ component: 'metrics' });
-
-// Usage:
-transcriptionLog.info({
-  action: 'transcribe',
-  model: 'nova-3',
-  audioUrl: url.substring(0, 100),
-  requestId: result.metadata.request_id,
-  duration: result.metadata.duration,
-  confidence: result.results.channels[0].alternatives[0].confidence,
-}, 'Transcription completed');
-
-transcriptionLog.error({
-  action: 'transcribe',
-  model: 'nova-3',
-  error: err.message,
-  statusCode: err.status,
-}, 'Transcription failed');
+function logDeepgramOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'deepgram',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
 ```
 
-### Step 5: Grafana Dashboard Panels
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# deepgram_alerts.yaml
+groups:
+  - name: deepgram_alerts
+    rules:
+      - alert: DeepgramHighErrorRate
+        expr: |
+          rate(deepgram_errors_total[5m]) /
+          rate(deepgram_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Deepgram error rate > 5%"
+
+      - alert: DeepgramHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(deepgram_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Deepgram P95 latency > 2s"
+
+      - alert: DeepgramDown
+        expr: up{job="deepgram"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Deepgram integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
 
 ```json
 {
-  "title": "Deepgram Observability",
   "panels": [
     {
-      "title": "Request Rate",
-      "type": "timeseries",
-      "targets": [{ "expr": "rate(deepgram_requests_total[5m])" }]
+      "title": "Deepgram Request Rate",
+      "targets": [{
+        "expr": "rate(deepgram_requests_total[5m])"
+      }]
     },
     {
-      "title": "P95 Latency",
-      "type": "gauge",
-      "targets": [{ "expr": "histogram_quantile(0.95, rate(deepgram_request_duration_seconds_bucket[5m]))" }]
-    },
-    {
-      "title": "Error Rate %",
-      "type": "stat",
-      "targets": [{ "expr": "rate(deepgram_requests_total{status='error'}[5m]) / rate(deepgram_requests_total[5m]) * 100" }]
-    },
-    {
-      "title": "Audio Processed (min/hr)",
-      "type": "timeseries",
-      "targets": [{ "expr": "rate(deepgram_audio_processed_seconds_total[1h]) / 60" }]
-    },
-    {
-      "title": "Estimated Daily Cost",
-      "type": "stat",
-      "targets": [{ "expr": "increase(deepgram_estimated_cost_dollars_total[24h])" }]
-    },
-    {
-      "title": "Active WebSocket Connections",
-      "type": "gauge",
-      "targets": [{ "expr": "deepgram_active_websocket_connections" }]
+      "title": "Deepgram Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(deepgram_request_duration_seconds_bucket[5m]))"
+      }]
     }
   ]
 }
 ```
 
-### Step 6: AlertManager Rules
+## Instructions
 
-```yaml
-groups:
-  - name: deepgram-alerts
-    rules:
-      - alert: DeepgramHighErrorRate
-        expr: >
-          rate(deepgram_requests_total{status="error"}[5m])
-          / rate(deepgram_requests_total[5m]) > 0.05
-        for: 5m
-        labels: { severity: critical }
-        annotations:
-          summary: "Deepgram error rate > 5% for 5 minutes"
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-      - alert: DeepgramHighLatency
-        expr: >
-          histogram_quantile(0.95,
-            rate(deepgram_request_duration_seconds_bucket[5m])
-          ) > 10
-        for: 5m
-        labels: { severity: warning }
-        annotations:
-          summary: "Deepgram P95 latency > 10 seconds"
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-      - alert: DeepgramRateLimited
-        expr: rate(deepgram_rate_limit_hits_total[1h]) > 10
-        for: 10m
-        labels: { severity: warning }
-        annotations:
-          summary: "Deepgram rate limit hits > 10/hour"
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-      - alert: DeepgramCostSpike
-        expr: >
-          increase(deepgram_estimated_cost_dollars_total[24h])
-          > 2 * increase(deepgram_estimated_cost_dollars_total[24h] offset 1d)
-        for: 30m
-        labels: { severity: warning }
-        annotations:
-          summary: "Deepgram daily cost > 2x yesterday"
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
-      - alert: DeepgramZeroRequests
-        expr: rate(deepgram_requests_total[15m]) == 0
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "No Deepgram requests for 15 minutes"
-```
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
-## Metrics Endpoint
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
+## Examples
+
+### Quick Metrics Endpoint
 ```typescript
-import express from 'express';
-const app = express();
-
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', registry.contentType);
   res.send(await registry.metrics());
 });
 ```
 
-## Output
-- Prometheus metrics (6 metrics covering requests, latency, usage, cost)
-- Instrumented Deepgram client with auto-tracking
-- OpenTelemetry distributed tracing with custom spans
-- Structured JSON logging (Pino)
-- Grafana dashboard panel definitions
-- AlertManager rules (5 alerts)
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Metrics not appearing | Registry not exported | Check `/metrics` endpoint |
-| High cardinality | Too many label values | Limit labels to known set |
-| Alert storms | Thresholds too sensitive | Add `for:` duration, tune values |
-| Missing traces | OTEL exporter not configured | Set `OTEL_EXPORTER_OTLP_ENDPOINT` |
-
 ## Resources
-- [Prometheus Client](https://github.com/siimon/prom-client)
-- [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
-- [Pino Logger](https://getpino.io/)
-- [Grafana Dashboards](https://grafana.com/grafana/dashboards/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Deepgram Observability Guide](https://docs.deepgram.com/observability)
+
+## Next Steps
+For incident response, see `deepgram-incident-runbook`.

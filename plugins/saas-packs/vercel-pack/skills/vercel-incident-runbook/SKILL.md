@@ -1,227 +1,205 @@
 ---
 name: vercel-incident-runbook
 description: |
-  Vercel incident response procedures with triage, instant rollback, and postmortem.
-  Use when responding to Vercel-related outages, investigating production errors,
-  or running post-incident reviews for deployment failures.
+  Execute Vercel incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Vercel-related outages, investigating errors,
+  or running post-incident reviews for Vercel integration failures.
   Trigger with phrases like "vercel incident", "vercel outage",
   "vercel down", "vercel on-call", "vercel emergency", "vercel broken".
-allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*)
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, incident-response, runbook]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Incident Runbook
 
 ## Overview
-Step-by-step incident response for Vercel deployment failures, function errors, and platform outages. Covers rapid triage, instant rollback, communication templates, and postmortem procedures.
+Rapid incident response procedures for Vercel-related outages.
 
 ## Prerequisites
-- Access to Vercel dashboard and CLI
-- Access to Vercel status page (vercel-status.com)
-- Communication channels (Slack, PagerDuty) configured
-- Log drain or runtime log access
+- Access to Vercel dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Vercel API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Vercel status
+curl -s https://www.vercel-status.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.vercel'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(vercel_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=vercel-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Vercel API returning errors?
+├─ YES: Is status.vercel.com showing incident?
+│   ├─ YES → Wait for Vercel to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret vercel-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Vercel dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic vercel-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/vercel-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.vercel.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/vercel-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Vercel for limit increase
+```
+
+### 500/503 - Vercel Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/vercel-integration VERCEL_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Vercel status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Vercel Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Vercel Integration Issue
+
+We're experiencing issues with our Vercel integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/vercel-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=vercel-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=vercel_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Vercel [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1: Rapid Triage (First 5 Minutes)
-```bash
-# 1. Check if it's a Vercel platform issue
-curl -s "https://www.vercel-status.com/api/v2/summary.json" \
-  | jq '.status.description, [.components[] | select(.status != "operational") | {name, status}]'
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-# 2. Check current production deployment status
-vercel ls --prod
-vercel inspect $(vercel ls --prod --json | jq -r '.[0].url')
+### Step 2: Follow Decision Tree
+Determine if the issue is Vercel-side or internal.
 
-# 3. Check recent deployments — did a deploy just happen?
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v6/deployments?target=production&limit=5&projectId=prj_xxx" \
-  | jq '.deployments[] | {uid, state, createdAt: (.createdAt/1000 | todate), url}'
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-# 4. Check function logs for errors
-vercel logs $(vercel ls --prod --json | jq -r '.[0].url') --level=error --limit=20
-```
-
-### Step 2: Decision Tree
-```
-Is vercel-status.com showing an incident?
-├── YES → Vercel platform issue
-│   ├── Subscribe to updates on status page
-│   ├── Post internal status: "Vercel platform incident — monitoring"
-│   └── No action needed from us — wait for Vercel resolution
-│
-└── NO → Issue is in our deployment
-    ├── Did a deployment happen in the last 30 minutes?
-    │   ├── YES → Likely deployment regression
-    │   │   └── ROLLBACK immediately (Step 3)
-    │   └── NO → Application-level issue
-    │       ├── Check function logs for new errors
-    │       ├── Check external dependency status (DB, APIs)
-    │       └── Investigate and hotfix (Step 4)
-    │
-    └── Is the issue region-specific?
-        ├── YES → Check function regions, possible edge issue
-        └── NO → Global issue, check code and env vars
-```
-
-### Step 3: Instant Rollback (< 30 Seconds)
-```bash
-# Option A: Rollback to previous production deployment (fastest)
-vercel rollback
-# This instantly swaps production traffic — no rebuild needed
-
-# Option B: Rollback to a specific known-good deployment
-vercel rollback dpl_xxxxxxxxxxxx
-
-# Option C: Via API (for automation/PagerDuty integration)
-curl -X POST "https://api.vercel.com/v9/projects/my-app/promote" \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"deploymentId": "dpl_known_good_id"}'
-
-# Verify rollback succeeded
-vercel ls --prod
-curl -s https://yourdomain.com/api/health | jq .
-```
-
-### Step 4: Investigate Root Cause
-```bash
-# Collect evidence while it's fresh
-mkdir incident-$(date +%Y%m%d)
-cd incident-$(date +%Y%m%d)
-
-# Function logs around the incident time
-vercel logs https://yourdomain.com --limit=200 > function-logs.txt
-
-# Deployment diff — what changed?
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v13/deployments/dpl_broken" \
-  | jq '.meta' > broken-deployment-meta.json
-
-# Compare env vars between working and broken deployments
-vercel env ls > env-vars.txt
-
-# Check git diff between last good and broken commit
-git log --oneline -10
-git diff dpl_good_commit..dpl_broken_commit -- api/ src/
-```
-
-### Step 5: Enable Maintenance Page (If Needed)
-```json
-// vercel.json — temporary maintenance mode via rewrite
-{
-  "rewrites": [
-    {
-      "source": "/((?!_next|api/health).*)",
-      "destination": "/maintenance.html"
-    }
-  ]
-}
-```
-
-```html
-<!-- public/maintenance.html -->
-<!DOCTYPE html>
-<html>
-<head><title>Maintenance</title></head>
-<body>
-  <h1>We'll be right back</h1>
-  <p>We're performing scheduled maintenance. Please check back shortly.</p>
-</body>
-</html>
-```
-
-### Step 6: Communication Templates
-
-**Internal — Slack (Incident Start)**
-```
-:rotating_light: INCIDENT: [Project Name] production issue detected
-Status: Investigating
-Impact: [Description of user impact]
-Start time: [UTC timestamp]
-On-call: @[engineer]
-Thread: replies here
-```
-
-**Internal — Slack (Mitigation)**
-```
-:white_check_mark: MITIGATED: [Project Name]
-Action: Rolled back to deployment dpl_xxx
-Impact duration: [X minutes]
-Root cause: [Brief description]
-Postmortem: [link] scheduled for [date]
-```
-
-**External — Status Page**
-```
-Title: Degraded performance on [service]
-Body: We are investigating reports of [issue]. Some users may experience
-[impact]. Our team is actively working on a resolution.
-Update: The issue has been resolved. [Brief root cause].
-```
-
-### Step 7: Postmortem Template
-```markdown
-# Incident Postmortem: [Title]
-
-## Summary
-- Duration: [start] to [end] ([X minutes])
-- Impact: [users/requests affected]
-- Severity: [P1/P2/P3]
-
-## Timeline (UTC)
-- HH:MM — [event]
-- HH:MM — Alert fired
-- HH:MM — On-call acknowledged
-- HH:MM — Root cause identified
-- HH:MM — Rollback executed
-- HH:MM — Service restored
-
-## Root Cause
-[What broke and why]
-
-## Resolution
-[What was done to fix it]
-
-## Action Items
-- [ ] [Preventive action] — Owner: @xxx — Due: [date]
-- [ ] [Detection improvement] — Owner: @xxx — Due: [date]
-- [ ] [Process improvement] — Owner: @xxx — Due: [date]
-```
-
-## Incident Severity Levels
-
-| Severity | Definition | Response Time | Rollback? |
-|----------|-----------|---------------|-----------|
-| P1 | Production down, all users affected | < 5 min | Immediate |
-| P2 | Degraded, some users affected | < 15 min | If not fixable in 30 min |
-| P3 | Minor issue, workaround exists | < 1 hour | No |
-| P4 | Cosmetic or non-urgent | Next business day | No |
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Incident categorized and triaged within 5 minutes
-- Instant rollback executed if deployment regression detected
-- Communication sent to internal and external stakeholders
-- Postmortem scheduled with action items
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-| Scenario | Action |
-|----------|--------|
-| Vercel status page shows incident | Monitor, communicate, no deployment changes |
-| `vercel rollback` fails | Use API promotion: POST to `/v9/projects/.../promote` |
-| Rollback deployment also broken | Deploy from a known-good git tag |
-| Cannot access Vercel dashboard | Use CLI with saved VERCEL_TOKEN |
-| Log retention expired | Check external log drain provider |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.vercel.status' || echo "UNHEALTHY"
+```
 
 ## Resources
 - [Vercel Status Page](https://www.vercel-status.com)
-- [Instant Rollback](https://vercel.com/docs/instant-rollback)
-- [Vercel Support](https://vercel.com/support)
-- [Vercel Logs CLI](https://vercel.com/docs/cli/logs)
+- [Vercel Support](https://support.vercel.com)
 
 ## Next Steps
-For data handling and compliance, see `vercel-data-handling`.
+For data handling, see `vercel-data-handling`.

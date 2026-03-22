@@ -6,264 +6,109 @@ description: |
   or migrating to new API versions.
   Trigger with phrases like "upgrade lokalise", "lokalise migration",
   "lokalise breaking changes", "update lokalise SDK", "analyze lokalise version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(git:*), Bash(node:*), Bash(grep:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lokalise, api, migration]
-
+compatible-with: claude-code
+tags: [saas, lokalise]
 ---
-# Lokalise Upgrade Migration
 
-## Current State
-!`npm list @lokalise/node-api 2>/dev/null | grep lokalise || echo 'SDK not installed'`
-!`lokalise2 --version 2>/dev/null || echo 'CLI not installed'`
-!`node --version 2>/dev/null || echo 'Node.js not available'`
-!`cat package.json 2>/dev/null | grep -E '"type"|"module"' || echo 'No package.json type field'`
+# Lokalise Upgrade & Migration
 
 ## Overview
-
-Upgrade the `@lokalise/node-api` SDK between major versions with full breaking change detection, automated code transformation, and verification. The most significant migration is v8 (CommonJS) to v9+ (ESM-only), which requires changes to imports, module configuration, and potentially your build pipeline.
+Guide for upgrading Lokalise SDK versions and handling breaking changes.
 
 ## Prerequisites
-
-- Existing project using `@lokalise/node-api` (any version 6.x through 9.x)
-- Node.js 18+ for SDK v9 (Node.js 14+ for v8 and below)
-- Git repository with clean working tree (for safe rollback)
-- Test suite that exercises Lokalise API calls
+- Current Lokalise SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Assess Current Version and Target
-
+### Step 1: Check Current Version
 ```bash
-set -euo pipefail
-echo "=== Current SDK Version ==="
-CURRENT=$(npm list @lokalise/node-api --json 2>/dev/null | node -e "
-  const d = JSON.parse(require('fs').readFileSync(0,'utf8'));
-  const v = d.dependencies?.['@lokalise/node-api']?.version || 'not found';
-  console.log(v);
-")
-echo "Installed: ${CURRENT}"
-
-echo -e "\n=== Latest Available ==="
-LATEST=$(npm view @lokalise/node-api version)
-echo "Latest: ${LATEST}"
-
-echo -e "\n=== All Major Versions ==="
-npm view @lokalise/node-api versions --json | node -e "
-  const versions = JSON.parse(require('fs').readFileSync(0,'utf8'));
-  const majors = {};
-  versions.forEach(v => { const m = v.split('.')[0]; majors[m] = v; });
-  Object.entries(majors).forEach(([m, v]) => console.log('  v' + m + '.x latest: ' + v));
-"
+npm list @lokalise/sdk
+npm view @lokalise/sdk version
 ```
 
-### Step 2: Review Breaking Changes by Version
-
-| Version | Node.js | Module System | Key Breaking Changes |
-|---------|---------|---------------|---------------------|
-| **9.x** | 18+ | ESM only | `require()` removed, `import` only. Pagination returns typed cursors. `ApiError` export path changed. |
-| **8.x** | 14+ | CJS + ESM | Last version supporting `require()`. Constructor accepts `apiKey` (not `token`). |
-| **7.x** | 14+ | CJS | Cursor pagination introduced. `list()` methods return paginated objects. |
-| **6.x** | 12+ | CJS | TypeScript rewrite. Method signatures changed from callbacks to promises. |
-
-### Step 3: Migrate Imports (v8 CJS to v9 ESM)
-
-This is the most impactful change. Every `require()` call must become an `import`.
-
-**Find all Lokalise imports in your codebase:**
-
+### Step 2: Review Changelog
 ```bash
-set -euo pipefail
-grep -rn "require.*lokalise\|from.*lokalise" --include="*.ts" --include="*.js" --include="*.mjs" . || echo "No imports found"
+open https://github.com/lokalise/sdk/releases
 ```
 
-**Transform patterns:**
-
-```typescript
-// BEFORE (v8 CommonJS)
-const { LokaliseApi } = require('@lokalise/node-api');
-const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN });
-
-// AFTER (v9 ESM)
-import { LokaliseApi } from '@lokalise/node-api';
-const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN });
-```
-
-**Update `package.json` for ESM:**
-
-```json
-{
-  "type": "module"
-}
-```
-
-**Update `tsconfig.json` if using TypeScript:**
-
-```json
-{
-  "compilerOptions": {
-    "module": "ES2022",
-    "moduleResolution": "bundler",
-    "target": "ES2022"
-  }
-}
-```
-
-### Step 4: Update Pagination Code (v6/v7 to v9)
-
-```typescript
-// BEFORE (v6 offset pagination)
-const keys = await lok.keys().list({
-  project_id: projectId,
-  page: 2,
-  limit: 100,
-});
-
-// AFTER (v9 cursor pagination — preferred for large datasets)
-const keys = await lok.keys().list({
-  project_id: projectId,
-  limit: 500,
-  pagination: 'cursor',
-  cursor: previousCursor,
-});
-// Access next cursor: keys.nextCursor
-// Check for more: keys.hasNextCursor()
-```
-
-### Step 5: Update Error Handling
-
-```typescript
-// BEFORE (v8)
-const { ApiError } = require('@lokalise/node-api');
-try {
-  await lok.projects().get(projectId);
-} catch (e) {
-  if (e instanceof ApiError) {
-    console.error(e.message, e.code);
-  }
-}
-
-// AFTER (v9 — ApiError import path unchanged, but must use import)
-import { ApiError } from '@lokalise/node-api';
-try {
-  await lok.projects().get(projectId);
-} catch (e) {
-  if (e instanceof ApiError) {
-    console.error(e.message, e.code);
-  }
-}
-```
-
-### Step 6: Install and Verify
-
+### Step 3: Create Upgrade Branch
 ```bash
-set -euo pipefail
-# Create a safety branch
-git checkout -b upgrade/lokalise-sdk-v9
-
-# Install the target version
-npm install @lokalise/node-api@latest
-
-# Run TypeScript compilation check
-npx tsc --noEmit 2>&1 | head -40 || true
-
-# Run tests
+git checkout -b upgrade/lokalise-sdk-vX.Y.Z
+npm install @lokalise/sdk@latest
 npm test
 ```
 
-### Step 7: Verify API Compatibility
-
-```typescript
-// Quick smoke test after upgrade
-import { LokaliseApi } from '@lokalise/node-api';
-
-const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
-
-// Test basic operations still work
-const projects = await lok.projects().list({ limit: 1 });
-console.log('API connection OK:', projects.items[0]?.name ?? 'no projects');
-
-const keys = await lok.keys().list({
-  project_id: projects.items[0].project_id,
-  limit: 5,
-  pagination: 'cursor',
-});
-console.log('Cursor pagination OK:', keys.items.length, 'keys fetched');
-```
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
-
-- Updated `@lokalise/node-api` to target version
-- All `require()` calls converted to ESM `import` (if upgrading to v9)
-- `package.json` and `tsconfig.json` updated for ESM compatibility
-- Pagination code migrated to cursor-based pattern
-- Tests passing against the new SDK version
-- Git branch with all changes for review
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `ERR_REQUIRE_ESM` | Using `require()` with v9 SDK | Convert to `import` syntax and set `"type": "module"` in package.json |
-| `SyntaxError: Cannot use import` | Node.js file not recognized as ESM | Rename `.js` to `.mjs` or add `"type": "module"` |
-| `TypeError: lok.keys is not a function` | API changed between major versions | Check SDK changelog for renamed methods |
-| `ERR_UNKNOWN_FILE_EXTENSION .ts` | TypeScript not configured for ESM | Use `tsx` runner or configure `ts-node` with `"esm": true` |
-| Tests fail after upgrade | Breaking API changes | Check test against the version-specific migration notes above |
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
 ## Examples
 
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@lokalise/sdk';
+
+// After (v2.x)
+import { LokaliseClient } from '@lokalise/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new LokaliseClient({
+  apiKey: 'xxx',
+});
+```
+
 ### Rollback Procedure
-
 ```bash
-set -euo pipefail
-# If the upgrade causes issues, revert immediately
-git stash  # Save any work in progress
-npm install @lokalise/node-api@8  # Last CJS version
-git checkout HEAD -- tsconfig.json package.json
-npm test
-echo "Rolled back to v8. Investigate failures before retrying."
+npm install @lokalise/sdk@1.x.x --save-exact
 ```
 
-### CLI Upgrade (Separate from SDK)
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Lokalise]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
 
-```bash
-set -euo pipefail
-# macOS
-brew upgrade lokalise2
-
-# Linux — download latest release binary
-LATEST_CLI=$(curl -s https://api.github.com/repos/lokalise/lokalise-cli-2-go/releases/latest | grep -oP '"tag_name": "\K[^"]+')
-curl -sL "https://github.com/lokalise/lokalise-cli-2-go/releases/download/${LATEST_CLI}/lokalise2_linux_x86_64.tar.gz" | tar xz
-sudo mv lokalise2 /usr/local/bin/
-
-# Verify
-lokalise2 --version
-```
-
-### Check for Deprecated API Usage
-
-```bash
-set -euo pipefail
-# Patterns that indicate outdated SDK usage
-echo "=== Deprecated Patterns ==="
-grep -rn "\.page\s*:" --include="*.ts" --include="*.js" . && echo "^ Offset pagination — migrate to cursor" || echo "No offset pagination found"
-grep -rn "require.*lokalise" --include="*.ts" --include="*.js" . && echo "^ CommonJS require — migrate to ESM import" || echo "No CJS requires found"
-grep -rn "new LokaliseApi.*token:" --include="*.ts" --include="*.js" . && echo "^ Old constructor — use apiKey instead of token" || echo "No old constructor pattern found"
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
-
-- [Node SDK Changelog](https://lokalise.github.io/node-lokalise-api/additional_info/changelog.html)
-- [Node SDK GitHub](https://github.com/lokalise/node-lokalise-api)
-- [API Changelog](https://developers.lokalise.com/docs/api-changelog)
-- [CLI Releases](https://github.com/lokalise/lokalise-cli-2-go/releases)
-- [ESM Migration Guide (Node.js)](https://nodejs.org/api/esm.html)
+- [Lokalise Changelog](https://github.com/lokalise/sdk/releases)
+- [Lokalise Migration Guide](https://docs.lokalise.com/migration)
 
 ## Next Steps
-
-- For CI pipeline changes needed after ESM migration, see `lokalise-ci-integration`.
-- For performance improvements with the new cursor pagination, see `lokalise-performance-tuning`.
-- Run `lokalise-debug-bundle` if the upgrade causes unexpected API errors.
+For CI integration during upgrades, see `lokalise-ci-integration`.

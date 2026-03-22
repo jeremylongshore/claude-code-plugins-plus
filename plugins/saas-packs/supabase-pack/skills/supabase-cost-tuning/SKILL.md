@@ -1,225 +1,203 @@
 ---
 name: supabase-cost-tuning
 description: |
-  Optimize Supabase costs through plan selection, usage monitoring, storage cleanup,
-  and Edge Function optimization.
-  Use when analyzing Supabase billing, reducing costs,
-  or implementing usage tracking and budget alerts.
+  Optimize Supabase costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Supabase billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "supabase cost", "supabase billing",
   "reduce supabase costs", "supabase pricing", "supabase expensive", "supabase budget".
-allowed-tools: Read, Write, Edit, Grep, Bash(supabase:*)
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Cost Tuning
 
 ## Overview
-Understand Supabase pricing, identify cost drivers, and implement optimizations across database, storage, bandwidth, and Edge Functions to stay within budget.
+Optimize Supabase costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
-- Access to Supabase Dashboard billing page
+- Access to Supabase billing dashboard
 - Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
+
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 500MB database, 1GB storage, 50K MAUs | N/A |
+| Pro | $25 | 8GB database, 100GB storage, 100K MAUs | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateSupabaseCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 25 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 25 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class SupabaseUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Supabase budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateSupabaseCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await supabaseClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => supabaseClient.get(id)));
+
+// Use batch endpoint (1 call)
+await supabaseClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new SupabaseClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Supabase dashboard
+# Or use API if available:
+# Check Supabase documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM supabase_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Supabase Pricing Breakdown
+### Step 1: Analyze Current Usage
+Review Supabase dashboard for usage patterns and costs.
 
-| Resource | Free Tier | Pro ($25/mo) | Team ($599/mo) |
-|----------|-----------|-------------|----------------|
-| Database | 500 MB | 8 GB included, $0.125/GB | 8 GB included |
-| Storage | 1 GB | 100 GB included, $0.021/GB | 100 GB included |
-| Bandwidth | 5 GB | 250 GB included, $0.09/GB | 250 GB included |
-| Edge Functions | 500K invocations | 2M invocations, $2/M | 2M invocations |
-| Realtime | 200 concurrent | 500 concurrent | 500 concurrent |
-| Auth MAU | 50,000 | 100,000 | 100,000 |
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-### Step 1: Audit Current Usage
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-```sql
--- Database size by table
-select
-  relname as table_name,
-  pg_size_pretty(pg_total_relation_size(relid)) as total_size,
-  pg_size_pretty(pg_relation_size(relid)) as table_size,
-  pg_size_pretty(pg_total_relation_size(relid) - pg_relation_size(relid)) as index_size,
-  n_live_tup as rows
-from pg_stat_user_tables
-order by pg_total_relation_size(relid) desc;
-
--- Total database size
-select pg_size_pretty(pg_database_size(current_database())) as total_db_size;
-
--- Find large unused indexes
-select
-  indexrelname,
-  pg_size_pretty(pg_relation_size(indexrelid)) as size,
-  idx_scan as scans_since_reset
-from pg_stat_user_indexes
-where idx_scan = 0
-order by pg_relation_size(indexrelid) desc
-limit 10;
-```
-
-### Step 2: Reduce Database Size
-
-```sql
--- Remove old soft-deleted records
-delete from public.orders
-where status = 'deleted' and updated_at < now() - interval '90 days';
-
--- Archive old data to a separate table
-create table public.orders_archive (like public.orders including all);
-
-insert into public.orders_archive
-select * from public.orders
-where created_at < now() - interval '1 year';
-
-delete from public.orders
-where created_at < now() - interval '1 year';
-
--- Vacuum to reclaim space (runs automatically, but can trigger manually)
-vacuum (verbose, analyze) public.orders;
-
--- Drop unused indexes to save space
-drop index if exists idx_never_used;
-```
-
-### Step 3: Optimize Storage Costs
-
-```typescript
-// List storage usage per bucket
-const { data: buckets } = await supabaseAdmin.storage.listBuckets()
-
-for (const bucket of buckets ?? []) {
-  const { data: files } = await supabaseAdmin.storage
-    .from(bucket.name)
-    .list('', { limit: 1000 })
-
-  const totalSize = files?.reduce((sum, f) => sum + (f.metadata?.size || 0), 0) ?? 0
-  console.log(`${bucket.name}: ${(totalSize / 1024 / 1024).toFixed(1)} MB`)
-}
-
-// Clean up orphaned files (uploaded but never associated with a record)
-const { data: orphans } = await supabaseAdmin
-  .from('storage.objects')
-  .select('name, created_at')
-  .eq('bucket_id', 'uploads')
-  .lt('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
-
-// Delete orphaned files
-if (orphans?.length) {
-  await supabaseAdmin.storage
-    .from('uploads')
-    .remove(orphans.map(o => o.name))
-}
-```
-
-### Step 4: Reduce Bandwidth
-
-```typescript
-// Select only needed columns (reduces response size)
-// BAD: transfers entire row
-const { data } = await supabase.from('products').select('*')
-
-// GOOD: transfers only needed fields
-const { data } = await supabase.from('products').select('id, name, price')
-
-// Use count queries instead of fetching data you don't display
-const { count } = await supabase
-  .from('orders')
-  .select('*', { count: 'exact', head: true })  // head: true = no data transferred
-
-// Paginate large result sets
-const { data } = await supabase
-  .from('logs')
-  .select('id, message, created_at')
-  .order('created_at', { ascending: false })
-  .range(0, 49)  // 50 rows per page
-```
-
-### Step 5: Optimize Edge Functions
-
-```typescript
-// Minimize cold starts by keeping functions lightweight
-// BAD: importing heavy libraries at the top level
-import { parse } from 'some-huge-csv-library'
-
-// GOOD: dynamic import only when needed
-serve(async (req) => {
-  if (needsCsvParsing) {
-    const { parse } = await import('some-huge-csv-library')
-  }
-})
-
-// Cache expensive computations across invocations
-// Edge Functions reuse the same isolate for ~60 seconds
-const _cache: Map<string, { data: any; ts: number }> = new Map()
-
-function cached<T>(key: string, ttl: number, fn: () => T): T {
-  const entry = _cache.get(key)
-  if (entry && Date.now() - entry.ts < ttl) return entry.data
-  const data = fn()
-  _cache.set(key, { data, ts: Date.now() })
-  return data
-}
-```
-
-### Step 6: Usage Monitoring
-
-```typescript
-// Track API usage with a lightweight counter table
-// supabase/migrations/<ts>_create_usage_tracking.sql
-```
-
-```sql
-create table public.api_usage (
-  id bigint generated always as identity primary key,
-  endpoint text not null,
-  method text not null,
-  user_id uuid references auth.users(id),
-  created_at timestamptz default now()
-);
-
--- Create a summary view for daily usage
-create materialized view public.daily_usage as
-select
-  date_trunc('day', created_at) as day,
-  endpoint,
-  count(*) as requests
-from public.api_usage
-group by 1, 2;
-
--- Refresh daily via a cron job (pg_cron extension)
-select cron.schedule('refresh-usage', '0 1 * * *',
-  'refresh materialized view public.daily_usage;'
-);
-```
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-- Database size audit with table-level breakdown
-- Unused indexes identified and removed
-- Storage cleanup for orphaned files
-- Bandwidth reduced through column selection and pagination
-- Edge Function cold starts minimized
-- Usage monitoring table and daily summary view
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected bandwidth spike | `select *` on large tables | Use specific column lists |
-| Storage costs growing | Orphaned uploads | Implement cleanup job |
-| Database approaching limit | Data growth without archival | Archive old records |
-| Edge Function billing spike | Infinite retry loop | Add circuit breaker; cap retries |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateSupabaseCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
 - [Supabase Pricing](https://supabase.com/pricing)
-- [Spend Cap Settings](https://supabase.com/docs/guides/platform/going-into-prod#spend-cap)
-- [Database Size Management](https://supabase.com/docs/guides/database/inspect)
+- [Supabase Billing Dashboard](https://dashboard.supabase.com/billing)
 
 ## Next Steps
 For architecture patterns, see `supabase-reference-architecture`.

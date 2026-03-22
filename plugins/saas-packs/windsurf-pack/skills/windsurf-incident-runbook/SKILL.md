@@ -1,162 +1,145 @@
 ---
 name: windsurf-incident-runbook
 description: |
-  Execute Windsurf incident response when AI features fail or cause production issues.
-  Use when Cascade breaks code, Windsurf service is down, AI-generated code causes
-  production incidents, or team needs emergency Windsurf troubleshooting.
+  Execute Windsurf incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Windsurf-related outages, investigating errors,
+  or running post-incident reviews for Windsurf integration failures.
   Trigger with phrases like "windsurf incident", "windsurf outage",
-  "windsurf broke production", "cascade caused bug", "windsurf emergency".
-allowed-tools: Read, Grep, Bash(git:*), Bash(curl:*)
+  "windsurf down", "windsurf on-call", "windsurf emergency", "windsurf broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, incident-response, runbook, troubleshooting]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Incident Runbook
 
 ## Overview
-Incident response procedures for Windsurf-related issues: Cascade service outages, AI-generated code causing bugs, and team workflow disruptions.
+Rapid incident response procedures for Windsurf-related outages.
 
 ## Prerequisites
 - Access to Windsurf dashboard and status page
-- Git access to affected repositories
-- Team communication channel (Slack, Teams)
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Production broken by AI code | < 15 min | Cascade-generated code deployed with critical bug |
-| P2 | Team workflow blocked | < 1 hour | Windsurf service outage, all Cascade down |
-| P3 | Degraded AI features | < 4 hours | Slow Cascade, Supercomplete intermittent |
-| P4 | Minor inconvenience | Next business day | Specific model unavailable, feature regression |
+| P1 | Complete outage | < 15 min | Windsurf API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
 
-## Quick Triage Decision Tree
+## Quick Triage
 
-```
-Is Windsurf service itself down?
-├─ YES: Check https://status.windsurf.com
-│   ├─ Status page shows incident → WAIT for Windsurf to resolve
-│   │   Action: Switch to manual coding, notify team
-│   └─ Status page green → Local issue
-│       Action: Restart Windsurf, check internet, re-authenticate
-│
-└─ NO: Did AI-generated code cause a production issue?
-    ├─ YES → P1 INCIDENT
-    │   1. Revert the deployment immediately
-    │   2. Identify the Cascade-generated commit(s)
-    │   3. Fix manually or with targeted Cascade prompt
-    │   4. Post-incident: update review policy
-    │
-    └─ NO: Is Cascade giving bad suggestions?
-        ├─ YES → Check .windsurfrules, start fresh Cascade session
-        └─ NO → See windsurf-common-errors
-```
-
-## P1 Playbook: AI Code Caused Production Bug
-
-### Step 1: Immediate Mitigation
 ```bash
-set -euo pipefail
-# Revert the deployment
-git log --oneline -10  # Find the bad commit(s)
+# 1. Check Windsurf status
+curl -s https://status.windsurf.com | jq
 
-# If tagged with [cascade]:
-git revert HEAD --no-edit  # Revert most recent commit
-git push origin main       # Deploy revert
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.windsurf'
 
-# If multiple Cascade commits:
-git revert --no-commit HEAD~3..HEAD  # Revert last 3 commits
-git commit -m "revert: undo cascade changes causing [issue]"
-git push origin main
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(windsurf_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=windsurf-integration --since=5m | grep -i error | tail -20
 ```
 
-### Step 2: Identify Root Cause
+## Decision Tree
+
+```
+Windsurf API returning errors?
+├─ YES: Is status.windsurf.com showing incident?
+│   ├─ YES → Wait for Windsurf to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
 ```bash
-# Find all Cascade-generated commits
-git log --all --oneline --grep="cascade" --since="1 week ago"
-git log --all --oneline --grep="\[cascade\]" --since="1 week ago"
+# Verify API key is set
+kubectl get secret windsurf-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# Compare before/after
-git diff [last-good-commit]..HEAD -- src/
+# Check if key was rotated
+# → Verify in Windsurf dashboard
 
-# Common root causes:
-# 1. Cascade modified shared utility used by many modules
-# 2. Cascade changed error handling (swallowed exceptions)
-# 3. Cascade "optimized" code that had intentional behavior
-# 4. Cascade introduced dependency on newer API version
+# Remediation: Update secret and restart pods
+kubectl create secret generic windsurf-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/windsurf-integration
 ```
 
-### Step 3: Fix and Validate
+### 429 - Rate Limited
 ```bash
-set -euo pipefail
-git checkout -b fix/cascade-revert
-# Make targeted fix
-npm test
-npm run typecheck
-# Deploy to staging first
+# Check rate limit headers
+curl -v https://api.windsurf.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/windsurf-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Windsurf for limit increase
 ```
 
-## P2 Playbook: Windsurf Service Outage
-
-### Step 1: Confirm and Communicate
+### 500/503 - Windsurf Errors
 ```bash
-# Check Windsurf status
-curl -sf https://status.windsurf.com || echo "Status page unreachable"
+# Enable graceful degradation
+kubectl set env deployment/windsurf-integration WINDSURF_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Windsurf status for resolution
 ```
 
-### Step 2: Team Notification
+## Communication Templates
+
+### Internal (Slack)
 ```
-Team notification template:
-
-Windsurf AI features are currently unavailable.
-Status: https://status.windsurf.com
-
-Impact: Cascade and Supercomplete are not working.
-Workaround: Continue coding manually. Windsurf still works as a
-standard VS Code editor — only AI features are affected.
-
-ETA: Monitoring status page for updates.
+🔴 P1 INCIDENT: Windsurf Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
 ```
 
-### Step 3: Workarounds During Outage
-```markdown
-1. Windsurf still works as VS Code (file editing, terminal, git)
-2. Extensions still work (ESLint, Prettier, debugger)
-3. Only Cascade, Supercomplete, and Command mode are down
-4. Continue coding manually until service restores
-5. Do NOT switch to a different editor mid-task (context loss)
+### External (Status Page)
+```
+Windsurf Integration Issue
+
+We're experiencing issues with our Windsurf integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
 ```
 
-## P3 Playbook: Degraded AI Features
-
-```markdown
-Symptoms and fixes:
-
-Slow Cascade → Start fresh session, reduce workspace size
-No Supercomplete → Check status bar widget, verify enabled
-Wrong model → Check credit balance, switch to available model
-MCP disconnected → Restart MCP servers (Command Palette)
-Indexing stuck → Reset indexing (Command Palette > "Codeium: Reset Indexing")
-```
-
-## Post-Incident Actions
+## Post-Incident
 
 ### Evidence Collection
 ```bash
-set -euo pipefail
-# Collect relevant data
-mkdir incident-$(date +%Y%m%d)
-git log --since="1 day ago" --stat > incident-$(date +%Y%m%d)/commits.txt
-cp .windsurfrules incident-$(date +%Y%m%d)/ 2>/dev/null || true
-# See windsurf-debug-bundle for full diagnostic collection
+# Generate debug bundle
+./scripts/windsurf-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=windsurf-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=windsurf_errors_total&start=2h" > metrics.json
 ```
 
 ### Postmortem Template
 ```markdown
-## Incident: [Title]
+## Incident: Windsurf [Error Type]
 **Date:** YYYY-MM-DD
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
@@ -165,48 +148,58 @@ cp .windsurfrules incident-$(date +%Y%m%d)/ 2>/dev/null || true
 [1-2 sentence description]
 
 ### Timeline
-- HH:MM — [Event]
-- HH:MM — [Event]
+- HH:MM - [Event]
+- HH:MM - [Event]
 
 ### Root Cause
-[Was this an AI-generated code issue? Windsurf service issue? Config issue?]
+[Technical explanation]
 
-### What Went Wrong
-- [ ] AI-generated code not reviewed thoroughly
-- [ ] Missing tests for AI-modified code
-- [ ] .windsurfrules didn't prevent the bad pattern
-- [ ] Cascade modified shared code without constraint
+### Impact
+- Users affected: N
+- Revenue impact: $X
 
 ### Action Items
-- [ ] Update .windsurfrules to prevent this pattern
-- [ ] Add test coverage for affected module
-- [ ] Update team Cascade usage policy
-- [ ] Add CI gate for AI-modified code
+- [ ] [Preventive measure] - Owner - Due date
 ```
 
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Windsurf-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
 ## Error Handling
-| Issue | Immediate Action | Long-Term Fix |
-|-------|-----------------|---------------|
-| AI code in prod broke feature | Git revert + redeploy | Enforce test gates for Cascade commits |
-| Windsurf service down | Code manually | No action needed — external service |
-| AI modified protected files | Git revert those files | Add to .codeiumignore |
-| Team lost work from Cascade | Recover from git history | Enforce pre-Cascade git commit policy |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
 ## Examples
 
-### Quick Health Check
+### One-Line Health Check
 ```bash
-curl -sf https://status.windsurf.com | head -5 || echo "WINDSURF STATUS UNREACHABLE"
-```
-
-### Find Recent Cascade Commits
-```bash
-git log --all --oneline --since="7 days ago" | grep -i cascade
+curl -sf https://api.yourapp.com/health | jq '.services.windsurf.status' || echo "UNHEALTHY"
 ```
 
 ## Resources
 - [Windsurf Status Page](https://status.windsurf.com)
-- [Windsurf GitHub Issues](https://github.com/Exafunction/codeium/issues)
+- [Windsurf Support](https://support.windsurf.com)
 
 ## Next Steps
-For data handling compliance, see `windsurf-data-handling`.
+For data handling, see `windsurf-data-handling`.

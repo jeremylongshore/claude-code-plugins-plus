@@ -1,199 +1,240 @@
 ---
 name: castai-reference-architecture
 description: |
-  CAST AI reference architecture for multi-cluster Kubernetes cost optimization.
-  Use when designing CAST AI deployment across environments, planning
-  Terraform module structure, or establishing team standards.
-  Trigger with phrases like "cast ai architecture", "cast ai best practices",
-  "cast ai multi-cluster", "cast ai terraform structure".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Cast AI reference architecture with best-practice project layout.
+  Use when designing new Cast AI integrations, reviewing project structure,
+  or establishing architecture standards for Cast AI applications.
+  Trigger with phrases like "castai architecture", "castai best practices",
+  "castai project structure", "how to organize castai", "castai layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
+tags: [saas, castai]
 ---
 
-# CAST AI Reference Architecture
+# Cast AI Reference Architecture
 
 ## Overview
-
-Production-grade architecture for managing CAST AI across multiple Kubernetes clusters. Covers Terraform module layout, per-environment policies, API key management, and observability integration.
+Production-ready architecture patterns for Cast AI integrations.
 
 ## Prerequisites
+- Understanding of layered architecture
+- Cast AI SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-- Multiple Kubernetes clusters (dev, staging, production)
-- Terraform for infrastructure management
-- Centralized secrets management
-- Monitoring stack (Prometheus, Grafana, or Datadog)
-
-## Terraform Module Structure
+## Project Structure
 
 ```
-infrastructure/
-├── modules/
-│   └── castai-cluster/
-│       ├── main.tf              # CAST AI provider resources
-│       ├── variables.tf         # Cluster-specific inputs
-│       ├── outputs.tf           # Cluster ID, savings metrics
-│       ├── policies.tf          # Autoscaler policy configuration
-│       ├── node-templates.tf    # Node template definitions
-│       └── security.tf          # Kvisor, RBAC
-├── environments/
-│   ├── dev/
-│   │   ├── main.tf              # Dev cluster onboarding
-│   │   ├── terraform.tfvars     # Dev-specific values
-│   │   └── backend.tf           # State storage
-│   ├── staging/
-│   │   ├── main.tf
-│   │   ├── terraform.tfvars
-│   │   └── backend.tf
-│   └── prod/
-│       ├── main.tf
-│       ├── terraform.tfvars
-│       └── backend.tf
-└── shared/
-    ├── api-keys.tf              # Key management
-    └── monitoring.tf            # Alerting rules
+my-castai-project/
+├── src/
+│   ├── castai/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── castai/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── castai/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── castai/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── castai/
+│   └── integration/
+│       └── castai/
+├── config/
+│   ├── castai.development.json
+│   ├── castai.staging.json
+│   └── castai.production.json
+└── docs/
+    └── castai/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-## Reusable Module
+## Layer Architecture
 
-```hcl
-# modules/castai-cluster/main.tf
-variable "cluster_name" { type = string }
-variable "cluster_id" { type = string }
-variable "environment" { type = string }
-variable "api_token" { type = string; sensitive = true }
-variable "provider_type" { type = string }  # eks, gke, aks
-variable "max_cpu_cores" { type = number; default = 100 }
-variable "spot_enabled" { type = bool; default = true }
-variable "hibernation_enabled" { type = bool; default = false }
-variable "evictor_aggressive" { type = bool; default = false }
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Cast AI Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
 
-resource "castai_autoscaler" "this" {
-  cluster_id = var.cluster_id
+## Key Components
 
-  autoscaler_policies_json = jsonencode({
-    enabled = true
-    unschedulablePods = {
-      enabled = true
-      headroom = {
-        enabled          = true
-        cpuPercentage    = var.environment == "prod" ? 15 : 5
-        memoryPercentage = var.environment == "prod" ? 15 : 5
-      }
-    }
-    nodeDownscaler = {
-      enabled = true
-      emptyNodes = {
-        enabled      = true
-        delaySeconds = var.environment == "prod" ? 300 : 60
-      }
-    }
-    spotInstances = {
-      enabled              = var.spot_enabled
-      spotDiversityEnabled = true
-    }
-    clusterLimits = {
-      enabled = true
-      cpu     = { minCores = 2, maxCores = var.max_cpu_cores }
-    }
-  })
-}
+### Step 1: Client Wrapper
+```typescript
+// src/castai/client.ts
+export class Cast AIService {
+  private client: CastAIClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-resource "castai_node_template" "default_spot" {
-  cluster_id = var.cluster_id
-  name       = "${var.environment}-spot-workers"
-  is_enabled = var.spot_enabled
+  constructor(config: Cast AIConfig) {
+    this.client = new CastAIClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('castai');
+  }
 
-  constraints {
-    spot               = true
-    use_spot_fallbacks = true
-    architectures      = ["amd64"]
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
   }
 }
 ```
 
-## Per-Environment Configuration
+### Step 2: Error Boundary
+```typescript
+// src/castai/errors.ts
+export class Cast AIServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'Cast AIServiceError';
+  }
+}
 
-```hcl
-# environments/dev/terraform.tfvars
-environment          = "dev"
-max_cpu_cores        = 16
-spot_enabled         = true
-hibernation_enabled  = true   # Hibernate off-hours
-evictor_aggressive   = true   # Fast consolidation OK
-
-# environments/prod/terraform.tfvars
-environment          = "prod"
-max_cpu_cores        = 200
-spot_enabled         = true
-hibernation_enabled  = false  # Never hibernate production
-evictor_aggressive   = false  # Conservative eviction
+export function wrapCast AIError(error: unknown): Cast AIServiceError {
+  // Transform SDK errors to application errors
+}
 ```
 
-## Architecture Diagram
-
-```
-                    ┌─────────────────────┐
-                    │   CAST AI Console    │
-                    │  console.cast.ai     │
-                    └──────────┬──────────┘
-                               │ API
-              ┌────────────────┼────────────────┐
-              │                │                │
-     ┌────────▼──────┐ ┌──────▼────────┐ ┌─────▼───────┐
-     │   Dev (EKS)   │ │ Staging (GKE) │ │  Prod (EKS) │
-     │  Spot: 100%   │ │  Spot: 80%    │ │  Spot: 60%  │
-     │  Hibernate: Y │ │  Hibernate: N │ │  Hibernate:N│
-     │  Max: 16 CPU  │ │  Max: 50 CPU  │ │  Max:200CPU │
-     └───────────────┘ └───────────────┘ └─────────────┘
-              │                │                │
-     ┌────────▼──────┐ ┌──────▼────────┐ ┌─────▼───────┐
-     │  Terraform    │ │  Terraform    │ │  Terraform  │
-     │  dev/         │ │  staging/     │ │  prod/      │
-     └───────────────┘ └───────────────┘ └─────────────┘
+### Step 3: Health Check
+```typescript
+// src/castai/health.ts
+export async function checkCast AIHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await castaiClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
 ```
 
-## Monitoring Integration
+## Data Flow Diagram
 
-```yaml
-# Prometheus alert rules for CAST AI
-groups:
-  - name: castai
-    rules:
-      - alert: CastAIAgentDown
-        expr: kube_pod_status_ready{namespace="castai-agent", pod=~"castai-agent.*"} == 0
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "CAST AI agent is down on {{ $labels.cluster }}"
-
-      - alert: CastAIHighSpotInterruptions
-        expr: increase(castai_spot_interruptions_total[1h]) > 5
-        labels:
-          severity: warning
-        annotations:
-          summary: "High spot interruption rate on {{ $labels.cluster }}"
 ```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Cast AI    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Cast AI    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/castai.ts
+export interface Cast AIConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadCast AIConfig(): Cast AIConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./castai.${env}.json`);
+}
+```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Cast AI operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Cast AI connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| State drift between envs | Manual console changes | Enforce Terraform-only policy |
-| Module version mismatch | Independent env upgrades | Pin module versions |
-| Cross-env key leak | Shared tfvars | Separate state and secrets per env |
-| Monitoring gaps | Missing scrape config | Add castai-agent namespace to Prometheus |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Cast AI types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/castai/{handlers} src/services/castai src/api/castai
+touch src/castai/{client,config,types,errors}.ts
+touch src/services/castai/{index,sync,cache}.ts
+```
 
 ## Resources
+- [Cast AI SDK Documentation](https://docs.castai.com/sdk)
+- [Cast AI Best Practices](https://docs.castai.com/best-practices)
 
-- [CAST AI Terraform Provider](https://registry.terraform.io/providers/castai/castai/latest/docs)
-- [CAST AI Architecture Docs](https://docs.cast.ai/docs/getting-started)
-- [Terraform Module Best Practices](https://developer.hashicorp.com/terraform/language/modules/develop)
-
-## Next Steps
-
-This completes the CAST AI skill pack. Start with `castai-install-auth` for new clusters.
+## Flagship Skills
+For multi-environment setup, see `castai-multi-env-setup`.

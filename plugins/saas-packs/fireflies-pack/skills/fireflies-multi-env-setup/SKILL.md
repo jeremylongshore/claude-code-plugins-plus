@@ -1,231 +1,224 @@
 ---
 name: fireflies-multi-env-setup
 description: |
-  Configure Fireflies.ai across dev, staging, and production with isolated API keys.
-  Use when setting up multi-environment deployments, managing per-env secrets,
-  or implementing environment-specific Fireflies configurations.
+  Configure Fireflies.ai across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Fireflies.ai configurations.
   Trigger with phrases like "fireflies environments", "fireflies staging",
   "fireflies dev prod", "fireflies environment setup", "fireflies config by env".
-allowed-tools: Read, Write, Edit, Bash(gcloud:*)
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, deployment]
-
+compatible-with: claude-code
+tags: [saas, fireflies]
 ---
+
 # Fireflies.ai Multi-Environment Setup
 
 ## Overview
-Configure Fireflies.ai with isolated API keys, webhook URLs, and settings per environment. Each environment gets its own Fireflies workspace or API key to prevent cross-environment data leakage.
+Configure Fireflies.ai across development, staging, and production environments.
+
+## Prerequisites
+- Separate Fireflies.ai accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
 ## Environment Strategy
 
-| Environment | API Key | Webhook URL | Settings |
-|-------------|---------|-------------|----------|
-| Development | `FIREFLIES_API_KEY_DEV` | localhost (ngrok) | Debug logs, no cache |
-| Staging | `FIREFLIES_API_KEY_STAGING` | staging.app.com/webhooks | Prod-like, short cache |
-| Production | `FIREFLIES_API_KEY_PROD` | app.com/webhooks | Hardened, long cache |
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
 
-## Instructions
+## Configuration Structure
 
-### Step 1: Environment Configuration Module
-```typescript
-// config/fireflies.ts
-interface FirefliesConfig {
-  apiKey: string;
-  apiUrl: string;
-  webhookSecret: string;
-  cache: { enabled: boolean; ttlSeconds: number };
-  debug: boolean;
-  timeout: number;
-  maxRetries: number;
-}
+```
+config/
+├── fireflies/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
 
-const configs: Record<string, Partial<FirefliesConfig>> = {
-  development: {
-    apiKey: process.env.FIREFLIES_API_KEY_DEV || "",
-    webhookSecret: process.env.FIREFLIES_WEBHOOK_SECRET_DEV || "dev-secret-16char",
-    cache: { enabled: false, ttlSeconds: 60 },
-    debug: true,
-    timeout: 30000,
-    maxRetries: 1,
-  },
-  staging: {
-    apiKey: process.env.FIREFLIES_API_KEY_STAGING || "",
-    webhookSecret: process.env.FIREFLIES_WEBHOOK_SECRET_STAGING || "",
-    cache: { enabled: true, ttlSeconds: 300 },
-    debug: false,
-    timeout: 15000,
-    maxRetries: 3,
-  },
-  production: {
-    apiKey: process.env.FIREFLIES_API_KEY_PROD || "",
-    webhookSecret: process.env.FIREFLIES_WEBHOOK_SECRET_PROD || "",
-    cache: { enabled: true, ttlSeconds: 3600 },
-    debug: false,
-    timeout: 10000,
-    maxRetries: 5,
-  },
-};
-
-function detectEnvironment(): string {
-  if (process.env.NODE_ENV === "production") return "production";
-  if (process.env.NODE_ENV === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getFirefliesConfig(): FirefliesConfig {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config?.apiKey) {
-    throw new Error(`FIREFLIES_API_KEY not configured for environment: ${env}`);
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
   }
-
-  return {
-    apiUrl: "https://api.fireflies.ai/graphql",
-    ...config,
-  } as FirefliesConfig;
 }
 ```
 
-### Step 2: Environment-Aware Client
-```typescript
-// lib/fireflies-client.ts
-import { getFirefliesConfig } from "../config/fireflies";
+### development.json
+```json
+{
+  "apiKey": "${FIREFLIES_API_KEY}",
+  "baseUrl": "https://api-sandbox.fireflies.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
 
-export function createFirefliesClient() {
-  const config = getFirefliesConfig();
+### staging.json
+```json
+{
+  "apiKey": "${FIREFLIES_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.fireflies.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${FIREFLIES_API_KEY_PROD}",
+  "baseUrl": "https://api.fireflies.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/fireflies/config.ts
+import baseConfig from '../../config/fireflies/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getFireflies.aiConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/fireflies/${env}.json`);
 
   return {
-    async query(gql: string, variables?: Record<string, any>) {
-      if (config.debug) {
-        console.log(`[Fireflies:${detectEnvironment()}] Query:`, gql.slice(0, 100));
-      }
-
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), config.timeout);
-
-      try {
-        const res = await fetch(config.apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${config.apiKey}`,
-          },
-          body: JSON.stringify({ query: gql, variables }),
-          signal: controller.signal,
-        });
-
-        const json = await res.json();
-        if (json.errors) throw new Error(json.errors[0].message);
-        return json.data;
-      } finally {
-        clearTimeout(timeout);
-      }
-    },
-
-    getConfig() {
-      return { environment: detectEnvironment(), ...config, apiKey: "[REDACTED]" };
-    },
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
   };
 }
 ```
 
-### Step 3: Secret Management by Platform
+## Secret Management by Environment
 
-**Local Development:**
+### Local Development
 ```bash
 # .env.local (git-ignored)
-FIREFLIES_API_KEY_DEV=your-dev-key
-FIREFLIES_WEBHOOK_SECRET_DEV=your-dev-secret-16ch
+FIREFLIES_API_KEY=sk_test_dev_***
 ```
 
-**GitHub Actions:**
+### CI/CD (GitHub Actions)
 ```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      FIREFLIES_API_KEY_STAGING: ${{ secrets.FIREFLIES_API_KEY_STAGING }}
-      FIREFLIES_WEBHOOK_SECRET_STAGING: ${{ secrets.FIREFLIES_WEBHOOK_SECRET_STAGING }}
-
-  deploy-production:
-    environment: production
-    needs: deploy-staging
-    env:
-      FIREFLIES_API_KEY_PROD: ${{ secrets.FIREFLIES_API_KEY_PROD }}
-      FIREFLIES_WEBHOOK_SECRET_PROD: ${{ secrets.FIREFLIES_WEBHOOK_SECRET_PROD }}
+env:
+  FIREFLIES_API_KEY: ${{ secrets.FIREFLIES_API_KEY_${{ matrix.environment }} }}
 ```
 
-**GCP Secret Manager:**
+### Production (Vault/Secrets Manager)
 ```bash
-set -euo pipefail
-# Store secrets
-echo -n "your-prod-key" | gcloud secrets create fireflies-api-key-prod --data-file=-
-echo -n "your-webhook-secret" | gcloud secrets create fireflies-webhook-secret-prod --data-file=-
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id fireflies/production/api-key
 
-# Grant access to Cloud Run service
-gcloud secrets add-iam-policy-binding fireflies-api-key-prod \
-  --member="serviceAccount:your-sa@project.iam.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=fireflies-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/fireflies/production
 ```
 
-### Step 4: Startup Validation
+## Environment Isolation
+
 ```typescript
-import { z } from "zod";
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getFireflies.aiConfig();
 
-const FirefliesConfigSchema = z.object({
-  apiKey: z.string().min(10, "API key too short"),
-  apiUrl: z.string().url(),
-  webhookSecret: z.string().min(16, "Webhook secret must be 16+ chars"),
-  timeout: z.number().positive(),
-});
-
-// Validate on startup -- fail fast
-export function validateConfig() {
-  const config = getFirefliesConfig();
-  const result = FirefliesConfigSchema.safeParse(config);
-
-  if (!result.success) {
-    console.error("Fireflies config validation failed:");
-    for (const issue of result.error.issues) {
-      console.error(`  ${issue.path.join(".")}: ${issue.message}`);
-    }
-    process.exit(1);
+  if (config.environment !== 'production') {
+    console.warn(`[fireflies] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
   }
+}
 
-  console.log(`Fireflies config valid for ${detectEnvironment()}`);
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
 }
 ```
 
-### Step 5: Per-Environment Webhook Registration
-Each environment needs its own webhook URL registered in Fireflies:
-- **Dev:** Use ngrok or similar for local testing
-- **Staging:** `https://staging.yourapp.com/api/webhooks/fireflies`
-- **Production:** `https://yourapp.com/api/webhooks/fireflies`
+## Feature Flags by Environment
 
-Register each in the corresponding Fireflies workspace at app.fireflies.ai/settings > Developer settings.
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
+
+## Instructions
+
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
+
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
+
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment detected | Missing `NODE_ENV` | Set in deployment platform |
-| Secret not found | Wrong env var name | Check naming convention per platform |
-| Cross-env data leak | Shared API key | Use separate Fireflies workspaces |
-| Startup crash | Missing config | Zod validation catches at boot |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
-## Output
-- Environment-aware Fireflies configuration with type safety
-- Secret management across local, CI, and cloud platforms
-- Startup validation preventing misconfigured deployments
-- Per-environment webhook URL strategy
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getFireflies.aiConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-- [Fireflies API Docs](https://docs.fireflies.ai/)
-- [GCP Secret Manager](https://cloud.google.com/secret-manager)
+- [Fireflies.ai Environments Guide](https://docs.fireflies.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-For deployment, see `fireflies-deploy-integration`.
+For observability setup, see `fireflies-observability`.

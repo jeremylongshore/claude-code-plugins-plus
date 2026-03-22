@@ -10,72 +10,105 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
 compatible-with: claude-code
+tags: [saas, framer]
 ---
 
 # Framer Upgrade & Migration
 
 ## Overview
+Guide for upgrading Framer SDK versions and handling breaking changes.
 
-Guide for upgrading Framer plugin SDK, Server API, and migrating between Framer platform versions. Check the Framer Developer Changelog for breaking changes before upgrading.
+## Prerequisites
+- Current Framer SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Check Current Versions
-
+### Step 1: Check Current Version
 ```bash
-npm list framer-plugin framer-api framer
-npm view framer-plugin version
-npm view framer-api version
+npm list @framer/sdk
+npm view @framer/sdk version
 ```
 
 ### Step 2: Review Changelog
-
-Visit https://www.framer.com/developers/changelog for breaking changes.
-
-Key migrations:
-- **Plugin API 3.x**: Introduced Managed Collections, Code File APIs
-- **Server API beta**: WebSocket-based programmatic access
-- **Code Components v2**: Updated property control types
-
-### Step 3: Upgrade Plugin SDK
-
 ```bash
-git checkout -b upgrade/framer-plugin
-npm install framer-plugin@latest
-npm run build  # Check for type errors
-npm test       # Run tests
+open https://github.com/framer/sdk/releases
 ```
 
-### Step 4: Common Migration Patterns
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/framer-sdk-vX.Y.Z
+npm install @framer/sdk@latest
+npm test
+```
 
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
+
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
+
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
 ```typescript
-// Plugin API 2.x → 3.x: Collection APIs changed
-// BEFORE: framer.createCollection(...)
-// AFTER: framer.createManagedCollection(...)
+// Before (v1.x)
+import { Client } from '@framer/sdk';
 
-// Code components: ControlType changes
-// BEFORE: ControlType.FusedNumber
-// AFTER: ControlType.Number (with min/max/step)
-
-// Overrides: import path
-// BEFORE: import { Override } from 'framer'
-// AFTER: import { Override } from 'framer' (unchanged, but check type shape)
+// After (v2.x)
+import { FramerClient } from '@framer/sdk';
 ```
 
-### Step 5: Rollback
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
 
+// After (v2.x)
+const client = new FramerClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
 ```bash
-# Pin to previous version
-npm install framer-plugin@3.x.x --save-exact
+npm install @framer/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Framer]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
-
-- [Framer Changelog](https://www.framer.com/developers/changelog)
-- [Framer Upgrading Guide](https://www.framer.com/developers/upgrading)
+- [Framer Changelog](https://github.com/framer/sdk/releases)
+- [Framer Migration Guide](https://docs.framer.com/migration)
 
 ## Next Steps
-
-For CI integration, see `framer-ci-integration`.
+For CI integration during upgrades, see `framer-ci-integration`.

@@ -2,7 +2,7 @@
 name: notion-incident-runbook
 description: |
   Execute Notion incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Notion API outages, investigating errors,
+  Use when responding to Notion-related outages, investigating errors,
   or running post-incident reviews for Notion integration failures.
   Trigger with phrases like "notion incident", "notion outage",
   "notion down", "notion on-call", "notion emergency", "notion broken".
@@ -10,168 +10,134 @@ allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
 compatible-with: claude-code
+tags: [saas, notion]
 ---
 
 # Notion Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Notion API failures: triage, mitigation, communication, and postmortem.
+Rapid incident response procedures for Notion-related outages.
 
 ## Prerequisites
-- Access to application monitoring and logs
-- Notion token for diagnostic API calls
+- Access to Notion dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
 - Communication channels (Slack, PagerDuty)
 
-## Instructions
+## Severity Levels
 
-### Step 1: Quick Triage (< 5 minutes)
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Notion API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
 ```bash
-#!/bin/bash
-echo "=== Notion Incident Triage ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+# 1. Check Notion status
+curl -s https://status.notion.com | jq
 
-# 1. Is Notion itself down?
-echo -e "\n--- Notion Platform Status ---"
-STATUS=$(curl -s https://status.notion.com/api/v2/status.json | jq -r '.status.description')
-echo "Notion Status: $STATUS"
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.notion'
 
-INCIDENTS=$(curl -s https://status.notion.com/api/v2/incidents/unresolved.json | jq '.incidents | length')
-echo "Active Incidents: $INCIDENTS"
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(notion_errors_total[5m])
 
-# 2. Can our integration authenticate?
-echo -e "\n--- Integration Auth ---"
-AUTH_RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
-  https://api.notion.com/v1/users/me \
-  -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28")
-echo "Auth HTTP: $AUTH_RESULT"
-
-# 3. Can we query a database?
-echo -e "\n--- API Responsiveness ---"
-if [ -n "$NOTION_TEST_DATABASE_ID" ]; then
-  API_RESULT=$(curl -s -o /dev/null -w "%{http_code} %{time_total}s" \
-    -X POST "https://api.notion.com/v1/databases/${NOTION_TEST_DATABASE_ID}/query" \
-    -H "Authorization: Bearer ${NOTION_TOKEN}" \
-    -H "Notion-Version: 2022-06-28" \
-    -H "Content-Type: application/json" \
-    -d '{"page_size": 1}')
-  echo "Query: $API_RESULT"
-fi
+# 4. Recent error logs
+kubectl logs -l app=notion-integration --since=5m | grep -i error | tail -20
 ```
 
-### Step 2: Decision Tree
+## Decision Tree
+
 ```
-Is Notion status page showing an incident?
-├─ YES → Notion-side issue
-│   ├─ Enable fallback/cached mode
-│   ├─ Notify users of degraded service
-│   └─ Monitor status.notion.com for resolution
-│
-└─ NO → Our integration issue
-    ├─ Auth returning 401?
-    │   ├─ YES → Token expired or revoked
-    │   │   └─ Regenerate at notion.so/my-integrations
-    │   └─ NO → Continue
-    │
-    ├─ Getting 429 rate limits?
-    │   ├─ YES → Too many requests
-    │   │   └─ Check for runaway loops, reduce concurrency
-    │   └─ NO → Continue
-    │
-    ├─ Getting 404 on specific resources?
-    │   ├─ YES → Pages unshared or deleted
-    │   │   └─ Re-share pages with integration
-    │   └─ NO → Continue
-    │
-    └─ Getting 400 validation errors?
-        ├─ YES → Schema changed in Notion
-        │   └─ Check if properties were renamed/removed
-        └─ NO → Investigate application code
+Notion API returning errors?
+├─ YES: Is status.notion.com showing incident?
+│   ├─ YES → Wait for Notion to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
-### Step 3: Immediate Mitigation by Error Type
+## Immediate Actions by Error Type
 
-**Token Expired (401):**
+### 401/403 - Authentication
 ```bash
-# Regenerate token at notion.so/my-integrations
-# Update in secret manager
-aws secretsmanager update-secret --secret-id notion-token --secret-string "ntn_new_xxx"
-# Or: gcloud secrets versions add notion-token --data-file=-
+# Verify API key is set
+kubectl get secret notion-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# Restart application to pick up new token
-# Platform-specific restart command
+# Check if key was rotated
+# → Verify in Notion dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic notion-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/notion-integration
 ```
 
-**Rate Limited (429):**
-```typescript
-// Temporary: reduce request concurrency
-// In application code or environment variable:
-process.env.NOTION_MAX_CONCURRENCY = '1'; // Reduce from default
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.notion.com 2>&1 | grep -i rate
 
-// Check for request loops
-// Look for patterns like:
-// - Webhook handler that triggers another webhook
-// - Polling that creates pages (which triggers more polling)
-// - Retry logic without backoff
+# Enable request queuing
+kubectl set env deployment/notion-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Notion for limit increase
 ```
 
-**Notion Down (502/503):**
-```typescript
-// Enable cached/fallback mode
-async function getDatabaseWithFallback(dbId: string) {
-  try {
-    const result = await notion.databases.query({ database_id: dbId });
-    await updateCache(dbId, result);
-    return { data: result, source: 'live' };
-  } catch (error) {
-    const cached = await getCache(dbId);
-    if (cached) {
-      return { data: cached, source: 'cache' };
-    }
-    throw error;
-  }
-}
+### 500/503 - Notion Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/notion-integration NOTION_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Notion status for resolution
 ```
 
-**Schema Changed (400 validation_error):**
-```typescript
-// Re-fetch database schema to see what changed
-const db = await notion.databases.retrieve({ database_id: dbId });
-console.log('Current schema:');
-for (const [name, prop] of Object.entries(db.properties)) {
-  console.log(`  ${name}: ${prop.type}`);
-}
-// Compare with expected schema and update code
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Notion Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
 ```
 
-### Step 4: Communication Templates
-
-**Internal (Slack):**
+### External (Status Page)
 ```
-P[1-4] INCIDENT: Notion Integration
-Status: [INVESTIGATING | MITIGATING | RESOLVED]
-Impact: [specific user impact]
-Root Cause: [Notion outage | Token expired | Rate limited | Schema change]
-Action: [what's being done]
-ETA: [estimated resolution time]
-```
+Notion Integration Issue
 
-**External (Status Page):**
-```
-Notion Integration Disruption
+We're experiencing issues with our Notion integration.
+Some users may experience [specific impact].
 
-We're experiencing [brief description]. [Specific feature] may be
-unavailable or show stale data.
+We're actively investigating and will provide updates.
 
-Workaround: [if any]
-Next update: [time]
-
-[timestamp]
+Last updated: [timestamp]
 ```
 
-### Step 5: Postmortem Template
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/notion-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=notion-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=notion_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
 ```markdown
 ## Incident: Notion [Error Type]
 **Date:** YYYY-MM-DD
@@ -182,54 +148,58 @@ Next update: [time]
 [1-2 sentence description]
 
 ### Timeline
-- HH:MM UTC — First alert
-- HH:MM UTC — Investigation began
-- HH:MM UTC — Root cause identified
-- HH:MM UTC — Mitigation applied
-- HH:MM UTC — Fully resolved
+- HH:MM - [Event]
+- HH:MM - [Event]
 
 ### Root Cause
-[Technical explanation — e.g., "Token was regenerated in Notion dashboard
-without updating the secret manager"]
+[Technical explanation]
 
 ### Impact
 - Users affected: N
-- Duration of degraded service: X minutes
+- Revenue impact: $X
 
 ### Action Items
-- [ ] [Preventive measure] — Owner — Due date
-- [ ] [Detection improvement] — Owner — Due date
+- [ ] [Preventive measure] - Owner - Due date
 ```
 
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Notion-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
 ## Output
-- Issue triaged within 5 minutes
-- Root cause category identified
-- Mitigation applied (fallback, token rotation, rate reduction)
+- Issue identified and categorized
+- Remediation applied
 - Stakeholders notified
 - Evidence collected for postmortem
 
 ## Error Handling
-| Scenario | Triage Signal | Action |
-|----------|--------------|--------|
-| Notion outage | status.notion.com incident | Enable fallback mode |
-| Token expired | All requests return 401 | Rotate token |
-| Rate limited | 429 errors spiking | Reduce concurrency |
-| Schema change | 400 errors on specific operations | Re-fetch schema |
-| Network issue | Timeouts, no response | Check DNS, firewall |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
 ## Examples
 
 ### One-Line Health Check
 ```bash
-curl -sf https://api.notion.com/v1/users/me \
-  -H "Authorization: Bearer ${NOTION_TOKEN}" \
-  -H "Notion-Version: 2022-06-28" | jq .name || echo "UNHEALTHY"
+curl -sf https://api.yourapp.com/health | jq '.services.notion.status' || echo "UNHEALTHY"
 ```
 
 ## Resources
 - [Notion Status Page](https://status.notion.com)
-- [Notion API Error Codes](https://developers.notion.com/reference/request-limits)
-- [Notion Developer Community](https://developers.notion.com)
+- [Notion Support](https://support.notion.com)
 
 ## Next Steps
-For data handling compliance, see `notion-data-handling`.
+For data handling, see `notion-data-handling`.

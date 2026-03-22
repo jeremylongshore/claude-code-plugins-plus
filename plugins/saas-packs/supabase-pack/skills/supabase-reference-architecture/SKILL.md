@@ -1,248 +1,240 @@
 ---
 name: supabase-reference-architecture
 description: |
-  Implement Supabase reference architecture with layered project structure,
-  typed client wrapper, service layer, and health checks.
-  Use when designing a new Supabase project, reviewing project structure,
-  or establishing architecture standards for a team.
-  Trigger with phrases like "supabase architecture", "supabase project structure",
-  "how to organize supabase", "supabase best practices layout".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Supabase reference architecture with best-practice project layout.
+  Use when designing new Supabase integrations, reviewing project structure,
+  or establishing architecture standards for Supabase applications.
+  Trigger with phrases like "supabase architecture", "supabase best practices",
+  "supabase project structure", "how to organize supabase", "supabase layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, architecture, patterns]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Reference Architecture
 
 ## Overview
-A battle-tested project layout for Supabase applications that separates client initialization, data access, business logic, and API layers. Designed for testability, maintainability, and easy onboarding.
+Production-ready architecture patterns for Supabase integrations.
 
 ## Prerequisites
-- TypeScript project with `@supabase/supabase-js` v2
-- Supabase CLI for local development
 - Understanding of layered architecture
+- Supabase SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
+```
+my-supabase-project/
+├── src/
+│   ├── supabase/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── supabase/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── supabase/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── supabase/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── supabase/
+│   └── integration/
+│       └── supabase/
+├── config/
+│   ├── supabase.development.json
+│   ├── supabase.staging.json
+│   └── supabase.production.json
+└── docs/
+    └── supabase/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Supabase Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/supabase/client.ts
+export class SupabaseService {
+  private client: SupabaseClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: SupabaseConfig) {
+    this.client = new SupabaseClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('supabase');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/supabase/errors.ts
+export class SupabaseServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'SupabaseServiceError';
+  }
+}
+
+export function wrapSupabaseError(error: unknown): SupabaseServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/supabase/health.ts
+export async function checkSupabaseHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await supabaseClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Supabase    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Supabase    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/supabase.ts
+export interface SupabaseConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadSupabaseConfig(): SupabaseConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./supabase.${env}.json`);
+}
+```
 
 ## Instructions
 
-### Recommended Project Structure
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```
-my-app/
-├── supabase/
-│   ├── migrations/          # SQL migrations (version controlled)
-│   ├── seed.sql             # Development seed data
-│   ├── functions/           # Edge Functions (Deno)
-│   │   ├── process-order/index.ts
-│   │   └── send-email/index.ts
-│   └── config.toml          # Supabase CLI config
-├── lib/
-│   ├── supabase.ts          # Client singleton (anon key)
-│   ├── supabase-admin.ts    # Admin client (service role, server only)
-│   ├── database.types.ts    # Auto-generated types
-│   └── errors.ts            # Custom error classes
-├── services/
-│   ├── auth-service.ts      # Auth operations
-│   ├── todo-service.ts      # Todo CRUD
-│   ├── storage-service.ts   # File operations
-│   └── realtime-service.ts  # Subscription management
-├── hooks/                   # React hooks (if applicable)
-│   ├── use-auth.ts
-│   ├── use-todos.ts
-│   └── use-realtime.ts
-├── api/                     # API routes / server handlers
-│   ├── health.ts
-│   └── webhooks.ts
-└── tests/
-    ├── services/
-    └── supabase/            # pgTAP tests
-```
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-### Layer 1: Client Initialization
+### Step 3: Add Error Handling
+Implement custom error classes for Supabase operations.
 
-```typescript
-// lib/supabase.ts — Browser/Client singleton
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
-
-let browserClient: SupabaseClient<Database> | null = null
-
-export function getSupabase(): SupabaseClient<Database> {
-  if (!browserClient) {
-    browserClient = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-  }
-  return browserClient
-}
-
-// lib/supabase-admin.ts — Server-only admin client
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
-
-export function getSupabaseAdmin() {
-  return createClient<Database>(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
-}
-```
-
-### Layer 2: Service Layer
-
-```typescript
-// services/todo-service.ts
-import { getSupabase } from '../lib/supabase'
-import { SupabaseServiceError } from '../lib/errors'
-import type { Database } from '../lib/database.types'
-
-type Todo = Database['public']['Tables']['todos']['Row']
-type TodoInsert = Database['public']['Tables']['todos']['Insert']
-
-export const TodoService = {
-  async list(opts: { userId: string; limit?: number; offset?: number }): Promise<Todo[]> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .select('id, title, is_complete, inserted_at')
-      .eq('user_id', opts.userId)
-      .order('inserted_at', { ascending: false })
-      .range(opts.offset ?? 0, (opts.offset ?? 0) + (opts.limit ?? 50) - 1)
-
-    if (error) throw new SupabaseServiceError('TodoService.list', error)
-    return data
-  },
-
-  async create(todo: TodoInsert): Promise<Todo> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .insert(todo)
-      .select()
-      .single()
-
-    if (error) throw new SupabaseServiceError('TodoService.create', error)
-    return data
-  },
-
-  async toggleComplete(id: number, isComplete: boolean): Promise<Todo> {
-    const { data, error } = await getSupabase()
-      .from('todos')
-      .update({ is_complete: isComplete })
-      .eq('id', id)
-      .select()
-      .single()
-
-    if (error) throw new SupabaseServiceError('TodoService.toggle', error)
-    return data
-  },
-}
-```
-
-### Layer 3: React Hooks (Optional)
-
-```typescript
-// hooks/use-todos.ts
-import { useState, useEffect } from 'react'
-import { TodoService } from '../services/todo-service'
-import { getSupabase } from '../lib/supabase'
-
-export function useTodos(userId: string) {
-  const [todos, setTodos] = useState<Todo[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    TodoService.list({ userId }).then(setTodos).finally(() => setLoading(false))
-
-    // Subscribe to real-time changes
-    const channel = getSupabase()
-      .channel('todos')
-      .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'todos', filter: `user_id=eq.${userId}` },
-        (payload) => {
-          if (payload.eventType === 'INSERT') setTodos(prev => [payload.new as Todo, ...prev])
-          if (payload.eventType === 'UPDATE') setTodos(prev =>
-            prev.map(t => t.id === (payload.new as Todo).id ? payload.new as Todo : t)
-          )
-          if (payload.eventType === 'DELETE') setTodos(prev =>
-            prev.filter(t => t.id !== (payload.old as Todo).id)
-          )
-        }
-      )
-      .subscribe()
-
-    return () => { getSupabase().removeChannel(channel) }
-  }, [userId])
-
-  return { todos, loading }
-}
-```
-
-### Layer 4: Error Handling
-
-```typescript
-// lib/errors.ts
-import { PostgrestError } from '@supabase/supabase-js'
-
-export class SupabaseServiceError extends Error {
-  code: string
-  operation: string
-
-  constructor(operation: string, pgError: PostgrestError) {
-    super(`[${operation}] ${pgError.message}`)
-    this.name = 'SupabaseServiceError'
-    this.code = pgError.code
-    this.operation = operation
-  }
-
-  toJSON() {
-    return {
-      error: this.message,
-      code: this.code,
-      operation: this.operation,
-    }
-  }
-}
-```
-
-### Layer 5: Health Check
-
-```typescript
-// api/health.ts
-import { getSupabaseAdmin } from '../lib/supabase-admin'
-
-export async function healthCheck() {
-  const checks: Record<string, { ok: boolean; latency_ms: number }> = {}
-
-  // Database connectivity
-  const dbStart = Date.now()
-  const { error: dbError } = await getSupabaseAdmin().rpc('version')
-  checks.database = { ok: !dbError, latency_ms: Date.now() - dbStart }
-
-  // Storage connectivity
-  const storageStart = Date.now()
-  const { error: storageError } = await getSupabaseAdmin().storage.listBuckets()
-  checks.storage = { ok: !storageError, latency_ms: Date.now() - storageStart }
-
-  const allHealthy = Object.values(checks).every(c => c.ok)
-  return { status: allHealthy ? 'healthy' : 'degraded', checks }
-}
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for Supabase connectivity.
 
 ## Output
-- Layered project structure with clear separation of concerns
-- Typed client singletons for browser and server
-- Service layer abstracting all Supabase operations
-- React hooks with built-in Realtime subscriptions
-- Custom error classes for consistent error handling
-- Health check endpoint covering database and storage
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Supabase types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/supabase/{handlers} src/services/supabase src/api/supabase
+touch src/supabase/{client,config,types,errors}.ts
+touch src/services/supabase/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Supabase Architecture](https://supabase.com/docs/guides/getting-started/architecture)
-- [TypeScript Support](https://supabase.com/docs/reference/javascript/typescript-support)
-- [Generating Types](https://supabase.com/docs/guides/api/rest/generating-types)
+- [Supabase SDK Documentation](https://supabase.com/docs/sdk)
+- [Supabase Best Practices](https://supabase.com/docs/best-practices)
 
-## Next Steps
-For multi-environment configuration, see `supabase-multi-env-setup`.
+## Flagship Skills
+For multi-environment setup, see `supabase-multi-env-setup`.

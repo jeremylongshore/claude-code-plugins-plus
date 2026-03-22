@@ -1,280 +1,211 @@
 ---
 name: webflow-deploy-integration
 description: |
-  Deploy Webflow-powered applications to Vercel, Fly.io, and Google Cloud Run
-  with proper secrets management and Webflow-specific health checks.
+  Deploy Webflow integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Webflow-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy webflow", "webflow Vercel",
   "webflow production deploy", "webflow Cloud Run", "webflow Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
 compatible-with: claude-code
+tags: [saas, webflow]
 ---
 
 # Webflow Deploy Integration
 
 ## Overview
-
-Deploy Webflow Data API v2 integrations to Vercel, Fly.io, or Google Cloud Run
-with secure token management, health checks, and webhook endpoint configuration.
+Deploy Webflow-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
+- Webflow API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-- Working Webflow integration (tested locally)
-- Production API token with minimal scopes
-- Platform CLI installed (`vercel`, `fly`, or `gcloud`)
+## Vercel Deployment
 
-## Instructions
-
-### Vercel Deployment
-
+### Environment Setup
 ```bash
-# Store Webflow secrets in Vercel
-vercel env add WEBFLOW_API_TOKEN production
-vercel env add WEBFLOW_SITE_ID production
-vercel env add WEBFLOW_WEBHOOK_SECRET production
+# Add Webflow secrets to Vercel
+vercel secrets add webflow_api_key sk_live_***
+vercel secrets add webflow_webhook_secret whsec_***
 
-# Link and deploy
+# Link to project
 vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
 vercel --prod
 ```
 
+### vercel.json Configuration
 ```json
-// vercel.json
 {
   "env": {
-    "WEBFLOW_API_TOKEN": "@webflow-api-token",
-    "WEBFLOW_SITE_ID": "@webflow-site-id"
+    "WEBFLOW_API_KEY": "@webflow_api_key"
   },
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30
     }
-  },
-  "headers": [
-    {
-      "source": "/api/webhooks/webflow",
-      "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "https://api.webflow.com" }
-      ]
-    }
-  ]
+  }
 }
 ```
 
-Vercel serverless function for webhook endpoint:
+## Fly.io Deployment
 
-```typescript
-// api/webhooks/webflow.ts (Vercel Edge/Serverless)
-import type { VercelRequest, VercelResponse } from "@vercel/node";
-import crypto from "crypto";
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  // Verify webhook signature
-  const signature = req.headers["x-webflow-signature"] as string;
-  const rawBody = JSON.stringify(req.body);
-  const expected = crypto
-    .createHmac("sha256", process.env.WEBFLOW_WEBHOOK_SECRET!)
-    .update(rawBody)
-    .digest("hex");
-
-  if (signature !== expected) {
-    return res.status(401).json({ error: "Invalid signature" });
-  }
-
-  const { triggerType, payload } = req.body;
-  console.log(`Webhook received: ${triggerType}`);
-
-  // Handle different trigger types
-  switch (triggerType) {
-    case "form_submission":
-      await handleFormSubmission(payload);
-      break;
-    case "ecomm_new_order":
-      await handleNewOrder(payload);
-      break;
-    case "site_publish":
-      await handleSitePublish(payload);
-      break;
-  }
-
-  res.status(200).json({ received: true });
-}
-```
-
-### Fly.io Deployment
-
+### fly.toml
 ```toml
-# fly.toml
 app = "my-webflow-app"
 primary_region = "iad"
 
 [env]
   NODE_ENV = "production"
-  PORT = "3000"
 
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = "suspend"
+  auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 1
-
-  [[http_service.checks]]
-    grace_period = "10s"
-    interval = "30s"
-    method = "GET"
-    path = "/api/health"
-    timeout = "5s"
 ```
 
+### Secrets
 ```bash
 # Set Webflow secrets
-fly secrets set WEBFLOW_API_TOKEN=your-prod-token
-fly secrets set WEBFLOW_SITE_ID=your-site-id
-fly secrets set WEBFLOW_WEBHOOK_SECRET=your-webhook-secret
+fly secrets set WEBFLOW_API_KEY=sk_live_***
+fly secrets set WEBFLOW_WEBHOOK_SECRET=whsec_***
 
 # Deploy
 fly deploy
-fly status
 ```
 
-### Google Cloud Run Deployment
+## Google Cloud Run
 
+### Dockerfile
 ```dockerfile
-# Dockerfile
-FROM node:20-slim AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-
 FROM node:20-slim
 WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-
-EXPOSE 3000
-CMD ["node", "dist/index.js"]
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
 ```
 
+### Deploy Script
 ```bash
-# Store secrets in GCP Secret Manager
-echo -n "your-prod-token" | \
-  gcloud secrets create webflow-api-token --data-file=-
+#!/bin/bash
+# deploy-cloud-run.sh
 
-echo -n "your-site-id" | \
-  gcloud secrets create webflow-site-id --data-file=-
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="webflow-service"
+REGION="us-central1"
 
-# Build and deploy
-gcloud builds submit --tag gcr.io/$PROJECT_ID/webflow-service
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-gcloud run deploy webflow-service \
-  --image gcr.io/$PROJECT_ID/webflow-service \
-  --region us-central1 \
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
   --platform managed \
   --allow-unauthenticated \
-  --set-secrets="WEBFLOW_API_TOKEN=webflow-api-token:latest,WEBFLOW_SITE_ID=webflow-site-id:latest" \
-  --min-instances=1 \
-  --max-instances=10
+  --set-secrets=WEBFLOW_API_KEY=webflow-api-key:latest
 ```
 
-### Register Webhook After Deployment
-
-Once deployed, register your webhook URL with Webflow:
-
-```bash
-# Get your deployed URL
-WEBHOOK_URL="https://your-app.vercel.app/api/webhooks/webflow"
-
-# Register webhooks for the events you need
-for TRIGGER in form_submission site_publish ecomm_new_order; do
-  curl -X POST "https://api.webflow.com/v2/sites/$WEBFLOW_SITE_ID/webhooks" \
-    -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
-    -H "Content-Type: application/json" \
-    -d "{
-      \"triggerType\": \"$TRIGGER\",
-      \"url\": \"$WEBHOOK_URL\"
-    }"
-  echo " -> Registered $TRIGGER"
-done
-
-# Verify webhooks registered
-curl -s "https://api.webflow.com/v2/sites/$WEBFLOW_SITE_ID/webhooks" \
-  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" | jq '.webhooks[].triggerType'
-```
-
-### Health Check Endpoint
+## Environment Configuration Pattern
 
 ```typescript
-// api/health.ts — works on all platforms
-import { WebflowClient } from "webflow-api";
+// config/webflow.ts
+interface WebflowConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-export async function healthCheck() {
-  const checks: Record<string, any> = {};
-  const start = Date.now();
-
-  // Webflow API connectivity
-  try {
-    const webflow = new WebflowClient({
-      accessToken: process.env.WEBFLOW_API_TOKEN!,
-    });
-    const { sites } = await webflow.sites.list();
-    checks.webflow = {
-      status: "connected",
-      sites: sites?.length,
-      latencyMs: Date.now() - start,
-    };
-  } catch (error: any) {
-    checks.webflow = {
-      status: "disconnected",
-      error: error.statusCode,
-      latencyMs: Date.now() - start,
-    };
-  }
+export function getWebflowConfig(): WebflowConfig {
+  const env = process.env.NODE_ENV || 'development';
 
   return {
-    status: checks.webflow.status === "connected" ? "healthy" : "degraded",
-    services: checks,
-    env: process.env.NODE_ENV,
-    timestamp: new Date().toISOString(),
+    apiKey: process.env.WEBFLOW_API_KEY!,
+    environment: env as WebflowConfig['environment'],
+    webhookSecret: process.env.WEBFLOW_WEBHOOK_SECRET,
   };
 }
 ```
 
-## Output
+## Health Check Endpoint
 
-- Application deployed to chosen platform
-- Webflow API token securely stored as platform secret
-- Webhook endpoints registered and verified
-- Health check endpoint monitoring Webflow connectivity
-- HTTPS enforced on all endpoints
+```typescript
+// api/health.ts
+export async function GET() {
+  const webflowStatus = await checkWebflowConnection();
+
+  return Response.json({
+    status: webflowStatus ? 'healthy' : 'degraded',
+    services: {
+      webflow: webflowStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Webflow API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Webflow integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Webflow connectivity.
+
+## Output
+- Application deployed to production
+- Webflow secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found at runtime | Wrong secret name | Verify with `fly secrets list` or `vercel env ls` |
-| Webhook 401 | Signature mismatch | Check WEBFLOW_WEBHOOK_SECRET matches |
-| Cold start timeout | Webflow API slow on first call | Set min instances > 0 |
-| Health check fails | Token not loaded | Verify secret mounting in container |
-| Deploy timeout | Large image | Use multi-stage Docker build |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add webflow_api_key "$WEBFLOW_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set WEBFLOW_API_KEY="$WEBFLOW_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-
-- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
-- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
-- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
-- [Webflow Webhooks](https://developers.webflow.com/data/docs/working-with-webhooks)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Webflow Deploy Guide](https://docs.webflow.com/deploy)
 
 ## Next Steps
-
-For webhook handling patterns, see `webflow-webhooks-events`.
+For webhook handling, see `webflow-webhooks-events`.

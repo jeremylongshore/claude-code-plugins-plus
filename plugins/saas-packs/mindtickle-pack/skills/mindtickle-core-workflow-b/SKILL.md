@@ -1,59 +1,73 @@
 ---
 name: mindtickle-core-workflow-b
 description: |
-  Execute MindTickle secondary workflow: Rep Performance & Readiness.
-  Trigger: "mindtickle rep performance & readiness", "secondary mindtickle workflow".
+  Execute Mindtickle secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "mindtickle secondary workflow",
+  "secondary task with mindtickle".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
 compatible-with: claude-code
+tags: [saas, mindtickle]
 ---
 
-# MindTickle — Rep Performance & Readiness
+# Mindtickle Core Workflow B
 
 ## Overview
-Secondary workflow complementing the primary workflow.
+Secondary workflow for Mindtickle. Complements the primary workflow.
+
+## Prerequisites
+- Completed `mindtickle-install-auth` setup
+- Familiarity with `mindtickle-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Get Readiness Scores
+### Step 1: Setup
 ```typescript
-const readiness = await client.readiness.scores({
-  team_id: 'team_sales_west',
-  period: 'last_quarter'
-});
-readiness.reps.forEach(r =>
-  console.log(`${r.name}: ${r.readiness_score}/100 | Certifications: ${r.certs_complete}/${r.certs_total}`)
-);
+// Step 1 implementation
 ```
 
-### Step 2: Analyze Call Performance
+### Step 2: Process
 ```typescript
-const calls = await client.callai.analyze({
-  rep_id: 'rep_123',
-  period: 'last_30_days'
-});
-console.log(`Calls: ${calls.total}`);
-console.log(`Avg talk ratio: ${calls.avg_talk_ratio}%`);
-console.log(`Key topics: ${calls.top_topics.join(', ')}`);
-console.log(`Coaching opportunities: ${calls.coaching_flags.length}`);
+// Step 2 implementation
 ```
 
-### Step 3: Generate Coaching Report
+### Step 3: Complete
 ```typescript
-const report = await client.reports.create({
-  type: 'coaching_summary',
-  rep_id: 'rep_123',
-  period: 'last_quarter',
-  include: ['readiness_trend', 'completion_gaps', 'call_analysis']
-});
-console.log(`Report URL: ${report.url}`);
+// Step 3 implementation
+```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Mindtickle API
+- Success confirmation or error details
+
+## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
 ```
 
 ## Resources
-- [MindTickle Docs](https://www.mindtickle.com/platform/integrations/)
+- [Mindtickle Documentation](https://docs.mindtickle.com)
+- [Mindtickle API Reference](https://docs.mindtickle.com/api)
 
 ## Next Steps
-See `mindtickle-common-errors`.
+For common errors, see `mindtickle-common-errors`.

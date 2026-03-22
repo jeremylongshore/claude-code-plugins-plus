@@ -1,51 +1,51 @@
 ---
 name: gamma-deploy-integration
 description: |
-  Deploy Gamma-integrated applications to production environments.
-  Use when deploying to Vercel, AWS, GCP, or other cloud platforms
-  with proper secret management and configuration.
-  Trigger with phrases like "gamma deploy", "gamma production",
-  "gamma vercel", "gamma AWS", "gamma cloud deployment".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(aws:*), Bash(gcloud:*)
+  Deploy Gamma integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Gamma-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy gamma", "gamma Vercel",
+  "gamma production deploy", "gamma Cloud Run", "gamma Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, deployment]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Deploy Integration
 
 ## Overview
-Deploy Gamma-integrated applications to various cloud platforms with proper configuration and secret management.
+Deploy Gamma-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Completed CI integration
-- Cloud platform account (Vercel, AWS, or GCP)
-- Production Gamma API key
+- Gamma API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Vercel Deployment
-
-#### Step 1: Configure Vercel Project
+### Environment Setup
 ```bash
-set -euo pipefail
-# Install Vercel CLI
-npm i -g vercel
+# Add Gamma secrets to Vercel
+vercel secrets add gamma_api_key sk_live_***
+vercel secrets add gamma_webhook_secret whsec_***
 
-# Link project
+# Link to project
 vercel link
 
-# Set environment variable
-vercel env add GAMMA_API_KEY production
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
 ```
 
-#### Step 2: Create vercel.json
+### vercel.json Configuration
 ```json
 {
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
   "env": {
     "GAMMA_API_KEY": "@gamma_api_key"
   },
@@ -57,150 +57,155 @@ vercel env add GAMMA_API_KEY production
 }
 ```
 
-#### Step 3: Deploy
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-gamma-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
 ```bash
-# Preview deployment
-vercel
+# Set Gamma secrets
+fly secrets set GAMMA_API_KEY=sk_live_***
+fly secrets set GAMMA_WEBHOOK_SECRET=whsec_***
 
-# Production deployment
-vercel --prod
+# Deploy
+fly deploy
 ```
 
-### AWS Lambda Deployment
+## Google Cloud Run
 
-#### Step 1: Store Secret in AWS Secrets Manager
-```bash
-aws secretsmanager create-secret \
-  --name gamma/api-key \
-  --secret-string '{"apiKey":"your-gamma-api-key"}'
-```
-
-#### Step 2: Lambda Configuration
-```typescript
-// lambda/gamma-handler.ts
-import { SecretsManager } from '@aws-sdk/client-secrets-manager';
-import { GammaClient } from '@gamma/sdk';
-
-const secretsManager = new SecretsManager({ region: 'us-east-1' });
-let gamma: GammaClient;
-
-async function getGammaClient() {
-  if (!gamma) {
-    const secret = await secretsManager.getSecretValue({
-      SecretId: 'gamma/api-key',
-    });
-    const { apiKey } = JSON.parse(secret.SecretString!);
-    gamma = new GammaClient({ apiKey });
-  }
-  return gamma;
-}
-
-export async function handler(event: any) {
-  const client = await getGammaClient();
-  const result = await client.presentations.create({
-    title: event.title,
-    prompt: event.prompt,
-  });
-  return { statusCode: 200, body: JSON.stringify(result) };  # HTTP 200 OK
-}
-```
-
-#### Step 3: SAM Template
-```yaml
-# template.yaml
-AWSTemplateFormatVersion: '2010-09-09'  # 2010 = configured value
-Transform: AWS::Serverless-2016-10-31  # 2016 = configured value
-
-Resources:
-  GammaFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: dist/gamma-handler.handler
-      Runtime: nodejs20.x
-      Timeout: 30
-      MemorySize: 256  # 256 bytes
-      Policies:
-        - SecretsManagerReadWrite
-      Environment:
-        Variables:
-          NODE_ENV: production
-```
-
-### Google Cloud Run Deployment
-
-#### Step 1: Store Secret
-```bash
-echo -n "your-gamma-api-key" | \
-  gcloud secrets create gamma-api-key --data-file=-
-```
-
-#### Step 2: Dockerfile
+### Dockerfile
 ```dockerfile
-FROM node:20-alpine
+FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
-COPY dist ./dist
-CMD ["node", "dist/server.js"]
+COPY . .
+CMD ["npm", "start"]
 ```
 
-#### Step 3: Deploy
+### Deploy Script
 ```bash
-set -euo pipefail
-gcloud run deploy gamma-service \
-  --image gcr.io/$PROJECT_ID/gamma-service \
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="gamma-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
   --platform managed \
-  --region us-central1 \
-  --set-secrets GAMMA_API_KEY=gamma-api-key:latest \
-  --allow-unauthenticated
+  --allow-unauthenticated \
+  --set-secrets=GAMMA_API_KEY=gamma-api-key:latest
 ```
 
-### GitHub Actions Deployment
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
+## Environment Configuration Pattern
 
-on:
-  push:
-    branches: [main]
+```typescript
+// config/gamma.ts
+interface GammaConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+export function getGammaConfig(): GammaConfig {
+  const env = process.env.NODE_ENV || 'development';
 
-      - name: Build
-        run: npm ci && npm run build
-
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+  return {
+    apiKey: process.env.GAMMA_API_KEY!,
+    environment: env as GammaConfig['environment'],
+    webhookSecret: process.env.GAMMA_WEBHOOK_SECRET,
+  };
+}
 ```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const gammaStatus = await checkGammaConnection();
+
+  return Response.json({
+    status: gammaStatus ? 'healthy' : 'degraded',
+    services: {
+      gamma: gammaStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Gamma API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Gamma integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Gamma connectivity.
 
 ## Output
-- Production deployment on chosen platform
-- Secrets securely stored
-- Environment variables configured
-- Automated deployment pipeline
+- Application deployed to production
+- Gamma secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing secret | Create secret in platform |
-| Timeout | Function too slow | Increase timeout limit |
-| Cold start | Lambda initialization | Use provisioned concurrency |
-| Permission denied | IAM misconfigured | Update IAM policies |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add gamma_api_key "$GAMMA_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set GAMMA_API_KEY="$GAMMA_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)
-- [AWS Lambda Documentation](https://docs.aws.amazon.com/lambda/)
-- [Google Cloud Run](https://cloud.google.com/run/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Gamma Deploy Guide](https://docs.gamma.com/deploy)
 
 ## Next Steps
-
-Proceed to `gamma-webhooks-events` for event handling.
+For webhook handling, see `gamma-webhooks-events`.

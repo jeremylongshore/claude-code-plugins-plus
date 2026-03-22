@@ -1,253 +1,286 @@
 ---
 name: supabase-architecture-variants
 description: |
-  Choose and implement Supabase architecture blueprints for different scales:
-  monolith, modular monolith, service layer, and microservices.
-  Use when designing new Supabase applications, choosing architecture patterns,
-  or planning migration paths between architecture tiers.
+  Choose and implement Supabase validated architecture blueprints for different scales.
+  Use when designing new Supabase integrations, choosing between monolith/service/microservice
+  architectures, or planning migration paths for Supabase applications.
   Trigger with phrases like "supabase architecture", "supabase blueprint",
-  "supabase monolith vs microservices", "supabase project layout", "supabase scale design".
-allowed-tools: Read, Write, Edit, Grep
+  "how to structure supabase", "supabase project layout", "supabase microservice".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, architecture, scaling]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Supabase applications, with clear criteria for choosing each and migration paths between them. Start simple, scale when evidence demands it.
+Three validated architecture blueprints for Supabase integrations.
 
 ## Prerequisites
-- Understanding of team size and traffic requirements
-- Supabase project with `@supabase/supabase-js`
-- Clear growth projections
+- Understanding of team size and DAU requirements
+- Knowledge of deployment infrastructure
+- Clear SLA requirements
+- Growth projections available
+
+## Variant A: Monolith (Simple)
+
+**Best for:** MVPs, small teams, < 10K daily active users
+
+```
+my-app/
+├── src/
+│   ├── supabase/
+│   │   ├── client.ts          # Singleton client
+│   │   ├── types.ts           # Types
+│   │   └── middleware.ts      # Express middleware
+│   ├── routes/
+│   │   └── api/
+│   │       └── supabase.ts    # API routes
+│   └── index.ts
+├── tests/
+│   └── supabase.test.ts
+└── package.json
+```
+
+### Key Characteristics
+- Single deployment unit
+- Synchronous Supabase calls in request path
+- In-memory caching
+- Simple error handling
+
+### Code Pattern
+```typescript
+// Direct integration in route handler
+app.post('/api/create', async (req, res) => {
+  try {
+    const result = await supabaseClient.create(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+```
+
+---
+
+## Variant B: Service Layer (Moderate)
+
+**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+
+```
+my-app/
+├── src/
+│   ├── services/
+│   │   ├── supabase/
+│   │   │   ├── client.ts      # Client wrapper
+│   │   │   ├── service.ts     # Business logic
+│   │   │   ├── repository.ts  # Data access
+│   │   │   └── types.ts
+│   │   └── index.ts           # Service exports
+│   ├── controllers/
+│   │   └── supabase.ts
+│   ├── routes/
+│   ├── middleware/
+│   ├── queue/
+│   │   └── supabase-processor.ts  # Async processing
+│   └── index.ts
+├── config/
+│   └── supabase/
+└── package.json
+```
+
+### Key Characteristics
+- Separation of concerns
+- Background job processing
+- Redis caching
+- Circuit breaker pattern
+- Structured error handling
+
+### Code Pattern
+```typescript
+// Service layer abstraction
+class SupabaseService {
+  constructor(
+    private client: SupabaseClient,
+    private cache: CacheService,
+    private queue: QueueService
+  ) {}
+
+  async createResource(data: CreateInput): Promise<Resource> {
+    // Business logic before API call
+    const validated = this.validate(data);
+
+    // Check cache
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
+    // API call with retry
+    const result = await this.withRetry(() =>
+      this.client.create(validated)
+    );
+
+    // Cache result
+    await this.cache.set(cacheKey, result, 300);
+
+    // Async follow-up
+    await this.queue.enqueue('supabase.post-create', result);
+
+    return result;
+  }
+}
+```
+
+---
+
+## Variant C: Microservice (Complex)
+
+**Best for:** Enterprise, 100K+ DAU, strict SLAs
+
+```
+supabase-service/              # Dedicated microservice
+├── src/
+│   ├── api/
+│   │   ├── grpc/
+│   │   │   └── supabase.proto
+│   │   └── rest/
+│   │       └── routes.ts
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── events/
+│   │   └── services/
+│   ├── infrastructure/
+│   │   ├── supabase/
+│   │   │   ├── client.ts
+│   │   │   ├── mapper.ts
+│   │   │   └── circuit-breaker.ts
+│   │   ├── cache/
+│   │   ├── queue/
+│   │   └── database/
+│   └── index.ts
+├── config/
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+└── package.json
+
+other-services/
+├── order-service/       # Calls supabase-service
+├── payment-service/
+└── notification-service/
+```
+
+### Key Characteristics
+- Dedicated Supabase microservice
+- gRPC for internal communication
+- Event-driven architecture
+- Database per service
+- Kubernetes autoscaling
+- Distributed tracing
+- Circuit breaker per service
+
+### Code Pattern
+```typescript
+// Event-driven with domain isolation
+class SupabaseAggregate {
+  private events: DomainEvent[] = [];
+
+  process(command: SupabaseCommand): void {
+    // Domain logic
+    const result = this.execute(command);
+
+    // Emit domain event
+    this.events.push(new SupabaseProcessedEvent(result));
+  }
+
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this.events];
+  }
+}
+
+// Event handler
+@EventHandler(SupabaseProcessedEvent)
+class SupabaseEventHandler {
+  async handle(event: SupabaseProcessedEvent): Promise<void> {
+    // Saga orchestration
+    await this.sagaOrchestrator.continue(event);
+  }
+}
+```
+
+---
+
+## Decision Matrix
+
+| Factor | Monolith | Service Layer | Microservice |
+|--------|----------|---------------|--------------|
+| Team Size | 1-5 | 5-20 | 20+ |
+| DAU | < 10K | 10K-100K | 100K+ |
+| Deployment Frequency | Weekly | Daily | Continuous |
+| Failure Isolation | None | Partial | Full |
+| Operational Complexity | Low | Medium | High |
+| Time to Market | Fastest | Moderate | Slowest |
+
+## Migration Path
+
+```
+Monolith → Service Layer:
+1. Extract Supabase code to service/
+2. Add caching layer
+3. Add background processing
+
+Service Layer → Microservice:
+1. Create dedicated supabase-service repo
+2. Define gRPC contract
+3. Add event bus
+4. Deploy to Kubernetes
+5. Migrate traffic gradually
+```
 
 ## Instructions
 
-### Decision Matrix
+### Step 1: Assess Requirements
+Use the decision matrix to identify appropriate variant.
 
-| Factor | Monolith | Modular Monolith | Service Layer |
-|--------|----------|------------------|---------------|
-| Team size | 1-3 devs | 3-8 devs | 8+ devs |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deploy frequency | Weekly | Daily | Multiple/day |
-| DB tables | < 20 | 20-50 | 50+ (split by domain) |
-| Supabase projects | 1 | 1 | Multiple (per service) |
-| When to choose | MVP, startup, prototype | Growth stage, feature teams | Enterprise, strict domain boundaries |
+### Step 2: Choose Architecture
+Select Monolith, Service Layer, or Microservice based on needs.
 
-### Variant 1: Monolith (Start Here)
+### Step 3: Implement Structure
+Set up project layout following the chosen blueprint.
 
-```
-my-app/
-├── supabase/
-│   ├── migrations/
-│   ├── functions/
-│   └── seed.sql
-├── src/
-│   ├── lib/supabase.ts          # Single client
-│   ├── services/                 # All services in one directory
-│   │   ├── auth.ts
-│   │   ├── todos.ts
-│   │   └── payments.ts
-│   ├── components/
-│   └── pages/
-└── tests/
-```
-
-```typescript
-// src/lib/supabase.ts — single client for everything
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
-
-export const supabase = createClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
-// All services import from the same client
-// src/services/todos.ts
-export const TodoService = {
-  list: (userId: string) =>
-    supabase.from('todos').select('*').eq('user_id', userId),
-  create: (todo: TodoInsert) =>
-    supabase.from('todos').insert(todo).select().single(),
-}
-```
-
-**When to upgrade**: Code changes in one domain frequently break another. Deployment contention between teams. Single test suite takes > 10 minutes.
-
-### Variant 2: Modular Monolith
-
-```
-my-app/
-├── supabase/
-│   ├── migrations/
-│   └── functions/
-├── modules/
-│   ├── auth/
-│   │   ├── services/
-│   │   ├── hooks/
-│   │   └── types.ts
-│   ├── billing/
-│   │   ├── services/
-│   │   ├── hooks/
-│   │   └── types.ts
-│   ├── projects/
-│   │   ├── services/
-│   │   ├── hooks/
-│   │   └── types.ts
-│   └── shared/
-│       ├── lib/supabase.ts
-│       ├── lib/errors.ts
-│       └── lib/cache.ts
-└── tests/
-    ├── auth/
-    ├── billing/
-    └── projects/
-```
-
-```typescript
-// modules/shared/lib/supabase.ts
-import { createClient } from '@supabase/supabase-js'
-import type { Database } from './database.types'
-
-export const supabase = createClient<Database>(url, anonKey)
-export const supabaseAdmin = createClient<Database>(url, serviceRoleKey, {
-  auth: { autoRefreshToken: false, persistSession: false },
-})
-
-// modules/billing/services/subscription-service.ts
-// Each module owns its Supabase queries and types
-import { supabase } from '../../shared/lib/supabase'
-
-type Subscription = Database['public']['Tables']['subscriptions']['Row']
-
-export const SubscriptionService = {
-  async getByOrg(orgId: string): Promise<Subscription | null> {
-    const { data } = await supabase
-      .from('subscriptions')
-      .select('id, plan, status, current_period_end')
-      .eq('organization_id', orgId)
-      .single()
-    return data
-  },
-
-  // Module boundary: billing module does NOT query projects table directly
-  // Instead, it exposes events or APIs that the projects module consumes
-}
-
-// modules/projects/services/project-service.ts
-import { supabase } from '../../shared/lib/supabase'
-import { SubscriptionService } from '../../billing/services/subscription-service'
-
-export const ProjectService = {
-  async create(orgId: string, project: ProjectInsert) {
-    // Cross-module call through service interface, NOT direct table query
-    const subscription = await SubscriptionService.getByOrg(orgId)
-    if (subscription?.plan === 'free') {
-      const { count } = await supabase
-        .from('projects')
-        .select('*', { count: 'exact', head: true })
-        .eq('organization_id', orgId)
-      if ((count ?? 0) >= 3) throw new Error('Free plan limited to 3 projects')
-    }
-
-    return supabase.from('projects').insert(project).select().single()
-  },
-}
-```
-
-**Module rules**:
-- Each module owns its tables and services
-- Cross-module access goes through service interfaces, never direct table queries
-- Shared module provides infrastructure (client, errors, cache)
-- Tests are organized by module
-
-**When to upgrade**: Modules need independent deployment. Teams have conflicting scaling needs. Database becomes a bottleneck at > 500 tables.
-
-### Variant 3: Service Layer (Multi-Project)
-
-```
-platform/
-├── services/
-│   ├── auth-service/           # Own Supabase project
-│   │   ├── supabase/
-│   │   ├── src/
-│   │   └── package.json
-│   ├── billing-service/        # Own Supabase project
-│   │   ├── supabase/
-│   │   ├── src/
-│   │   └── package.json
-│   └── projects-service/       # Own Supabase project
-│       ├── supabase/
-│       ├── src/
-│       └── package.json
-├── gateway/                    # API gateway / BFF
-│   └── src/
-└── shared/
-    ├── types/
-    └── contracts/              # Service interface definitions
-```
-
-```typescript
-// services/billing-service/src/supabase.ts
-// Each service has its own Supabase project and types
-import { createClient } from '@supabase/supabase-js'
-import type { BillingDatabase } from './database.types'
-
-export const supabase = createClient<BillingDatabase>(
-  process.env.BILLING_SUPABASE_URL!,
-  process.env.BILLING_SUPABASE_KEY!
-)
-
-// gateway/src/routes/projects.ts
-// Gateway aggregates across services
-import { BillingClient } from '../clients/billing'
-import { ProjectsClient } from '../clients/projects'
-
-export async function createProject(req: Request) {
-  const subscription = await BillingClient.getSubscription(req.orgId)
-  if (!subscription.canCreateProject) {
-    return Response.json({ error: 'Plan limit reached' }, { status: 403 })
-  }
-
-  const project = await ProjectsClient.create(req.body)
-  return Response.json(project)
-}
-```
-
-**When to choose**: Only when you have clear domain boundaries, independent teams per domain, and empirical evidence that a single database is a bottleneck.
-
-### Migration Path: Monolith → Modular Monolith
-
-1. Identify domain boundaries (auth, billing, projects, etc.)
-2. Create module directories; move files without changing functionality
-3. Enforce module boundaries: no cross-module direct table access
-4. Add service interfaces for cross-module communication
-5. Split tests by module
-6. Verify all tests pass after restructuring
+### Step 4: Plan Migration Path
+Document upgrade path for future scaling.
 
 ## Output
-- Architecture variant selected based on team and scale criteria
-- Project structure implemented following the chosen blueprint
-- Module boundaries defined with clear dependency rules
-- Migration path documented for future scaling needs
+- Architecture variant selected
+- Project structure implemented
+- Migration path documented
+- Appropriate patterns applied
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependency between modules | Missing abstraction | Extract shared interface or use events |
-| Performance degradation after modularization | Extra indirection layers | Profile and optimize hot paths; consider denormalization |
-| Multi-project sync drift | Migrations not coordinated | Use shared migration CI pipeline |
+| Over-engineering | Wrong variant choice | Start simpler |
+| Performance issues | Wrong layer | Add caching/async |
+| Team friction | Complex architecture | Simplify or train |
+| Deployment complexity | Microservice overhead | Consider service layer |
+
+## Examples
+
+### Quick Variant Check
+```bash
+# Count team size and DAU to select variant
+echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
+echo "DAU: Check analytics dashboard"
+```
 
 ## Resources
 - [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Modular Monolith](https://www.kamilgrzybek.com/design/modular-monolith-primer/)
-- [Supabase Architecture](https://supabase.com/docs/guides/getting-started/architecture)
+- [Microservices Guide](https://martinfowler.com/microservices/)
+- [Supabase Architecture Guide](https://supabase.com/docs/architecture)
 
 ## Next Steps
 For common anti-patterns, see `supabase-known-pitfalls`.

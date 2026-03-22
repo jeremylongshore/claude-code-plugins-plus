@@ -2,189 +2,112 @@
 name: supabase-debug-bundle
 description: |
   Collect Supabase debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support escalations,
-  or gathering diagnostic data from a Supabase project.
+  Use when encountering persistent issues, preparing support tickets,
+  or collecting diagnostic information for Supabase problems.
   Trigger with phrases like "supabase debug", "supabase support bundle",
-  "collect supabase logs", "supabase diagnostic", "supabase support ticket".
-allowed-tools: Read, Bash(supabase:*), Bash(curl:*), Bash(node:*), Bash(tar:*), Grep
+  "collect supabase logs", "supabase diagnostic".
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, debugging, support]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Debug Bundle
 
 ## Overview
-Collect a comprehensive, redacted debug bundle for Supabase support tickets. Gathers environment info, SDK versions, connection status, recent logs, and database health metrics into a single archive.
-
-## Current State
-!`node --version 2>/dev/null || echo 'Node.js not found'`
-!`supabase --version 2>/dev/null || echo 'Supabase CLI not found'`
-!`npm list @supabase/supabase-js 2>/dev/null | grep supabase || echo '@supabase/supabase-js not installed'`
+Collect all necessary diagnostic information for Supabase support tickets.
 
 ## Prerequisites
-- Supabase CLI installed and project linked
+- Supabase SDK installed
 - Access to application logs
-- Permission to query database health views
+- Permission to collect environment info
 
 ## Instructions
 
-### Step 1: Gather Environment Info
-
+### Step 1: Create Debug Bundle Script
 ```bash
 #!/bin/bash
-set -euo pipefail
+# supabase-debug-bundle.sh
+
 BUNDLE_DIR="supabase-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
 
-# Environment summary
-cat > "$BUNDLE_DIR/environment.txt" << EOF
-Date: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
-Node: $(node --version 2>/dev/null || echo 'N/A')
-OS: $(uname -a)
-Supabase CLI: $(supabase --version 2>/dev/null || echo 'N/A')
-SDK Version: $(npm list @supabase/supabase-js 2>/dev/null | grep supabase || echo 'N/A')
-Docker: $(docker --version 2>/dev/null || echo 'N/A')
-EOF
+echo "=== Supabase Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 2: Check Project Status
-
+### Step 2: Collect Environment Info
 ```bash
-# Project status (local)
-supabase status > "$BUNDLE_DIR/supabase-status.txt" 2>&1 || true
-
-# Check Supabase platform status
-curl -s https://status.supabase.com/api/v2/status.json \
-  | python3 -m json.tool > "$BUNDLE_DIR/platform-status.json" 2>/dev/null || true
+# Environment info
+echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+echo "SUPABASE_API_KEY: ${SUPABASE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 3: Collect Database Health
-
-```sql
--- Run in Supabase SQL Editor or via supabase db query
-
--- Active connections
-select count(*) as active_connections,
-       state,
-       wait_event_type
-from pg_stat_activity
-group by state, wait_event_type;
-
--- Slow queries (top 10)
-select query,
-       calls,
-       mean_exec_time::numeric(10,2) as avg_ms,
-       total_exec_time::numeric(10,2) as total_ms
-from pg_stat_statements
-order by mean_exec_time desc
-limit 10;
-
--- Table sizes
-select relname as table_name,
-       pg_size_pretty(pg_total_relation_size(relid)) as total_size,
-       n_live_tup as live_rows,
-       n_dead_tup as dead_rows
-from pg_stat_user_tables
-order by pg_total_relation_size(relid) desc
-limit 20;
-
--- Index usage
-select schemaname, relname as table_name, indexrelname as index_name,
-       idx_scan as scans, idx_tup_read as tuples_read
-from pg_stat_user_indexes
-order by idx_scan asc
-limit 10;  -- least-used indexes
-
--- RLS policies on all tables
-select tablename, policyname, cmd, qual
-from pg_policies
-where schemaname = 'public'
-order by tablename;
-```
-
-### Step 4: Collect Application Logs (Redacted)
-
-```typescript
-// scripts/collect-debug-logs.ts
-import { createClient } from '@supabase/supabase-js'
-import { writeFileSync } from 'fs'
-
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  { auth: { autoRefreshToken: false, persistSession: false } }
-)
-
-async function collectDebugInfo() {
-  const results: Record<string, any> = {}
-
-  // Test connectivity
-  const start = Date.now()
-  const { error } = await supabase.from('_health_check').select('*').limit(1)
-  results.connectivity = {
-    latency_ms: Date.now() - start,
-    status: error ? `error: ${error.code}` : 'ok',
-  }
-
-  // Auth health
-  const { data: { user } } = await supabase.auth.getUser()
-  results.auth = { user_id: user?.id ? '[REDACTED]' : 'none' }
-
-  // Storage buckets
-  const { data: buckets } = await supabase.storage.listBuckets()
-  results.storage = {
-    bucket_count: buckets?.length ?? 0,
-    buckets: buckets?.map(b => ({ name: b.name, public: b.public })),
-  }
-
-  // Redact any secrets
-  const output = JSON.stringify(results, null, 2)
-    .replace(/eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/g, '[JWT_REDACTED]')
-    .replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
-
-  writeFileSync('supabase-debug-app.json', output)
-  console.log('Debug info collected and redacted')
-}
-
-collectDebugInfo()
-```
-
-### Step 5: Package the Bundle
-
+### Step 3: Gather SDK and Logs
 ```bash
-# Archive everything
-tar czf "${BUNDLE_DIR}.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: ${BUNDLE_DIR}.tar.gz"
+# SDK version
+npm list @supabase/supabase-js 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
 
-# Verify no secrets leaked
-if grep -rqE 'eyJ[A-Za-z0-9_-]{20,}' "$BUNDLE_DIR/"; then
-  echo "WARNING: Possible JWT tokens found in bundle. Review before sharing."
-fi
+# Recent logs (redacted)
+grep -i "supabase" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" https://api.supabase.com/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
+```
+
+### Step 4: Package Bundle
+```bash
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ## Output
-- `supabase-debug-<timestamp>.tar.gz` archive containing:
-  - `environment.txt` - Node, CLI, OS, SDK versions
-  - `supabase-status.txt` - Local project status
-  - `platform-status.json` - Supabase platform health
-  - Database health queries (connections, slow queries, table sizes)
-  - `supabase-debug-app.json` - Redacted application diagnostics
+- `supabase-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
+  - `summary.txt` - Environment and SDK info
+  - `logs.txt` - Recent redacted logs
+  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
+| Item | Purpose | Included |
+|------|---------|----------|
+| Environment versions | Compatibility check | ✓ |
+| SDK version | Version-specific bugs | ✓ |
+| Error logs (redacted) | Root cause analysis | ✓ |
+| Config (redacted) | Configuration issues | ✓ |
+| Network test | Connectivity issues | ✓ |
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `supabase status` fails | Not in a Supabase project dir | Run from project root with `supabase/` dir |
-| `pg_stat_statements` empty | Extension not enabled | Enable via Dashboard > Database > Extensions |
-| Permission denied on logs | Service role key not set | Use `SUPABASE_SERVICE_ROLE_KEY` for admin queries |
+## Examples
+
+### Sensitive Data Handling
+**ALWAYS REDACT:**
+- API keys and tokens
+- Passwords and secrets
+- PII (emails, names, IDs)
+
+**Safe to Include:**
+- Error messages
+- Stack traces (redacted)
+- SDK/runtime versions
+
+### Submit to Support
+1. Create bundle: `bash supabase-debug-bundle.sh`
+2. Review for sensitive data
+3. Upload to Supabase support portal
 
 ## Resources
-- [Supabase Support](https://supabase.com/support)
-- [Supabase Status Page](https://status.supabase.com)
-- [Performance Advisor](https://supabase.com/docs/guides/database/inspect)
+- [Supabase Support](https://supabase.com/docs/support)
+- [Supabase Status](https://status.supabase.com)
 
 ## Next Steps
-For rate-limit-specific issues, see `supabase-rate-limits`.
+For rate limit issues, see `supabase-rate-limits`.

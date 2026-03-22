@@ -1,100 +1,98 @@
 ---
 name: wispr-hello-world
 description: |
-  Wispr Flow hello world for voice-to-text API integration.
-  Use when integrating Wispr Flow dictation, WebSocket streaming,
-  or building voice-powered applications.
-  Trigger: "wispr hello world".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Create a minimal working Wispr example.
+  Use when starting a new Wispr integration, testing your setup,
+  or learning basic Wispr API patterns.
+  Trigger with phrases like "wispr hello world", "wispr example",
+  "wispr quick start", "simple wispr code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
+tags: [saas, wispr]
 ---
 
-# Wispr Flow Hello World
+# Wispr Hello World
 
 ## Overview
+Minimal working example demonstrating core Wispr functionality.
 
-Stream audio to Wispr Flow and receive real-time transcription. Wispr specializes in developer-context-aware dictation -- it understands code terms, CLI commands, and technical jargon.
+## Prerequisites
+- Completed `wispr-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Record and Transcribe (REST)
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-```python
-import requests, os
+### Step 2: Import and Initialize Client
+```typescript
+import { WisprClient } from '@wispr/sdk';
 
-# Transcribe an audio file
-with open("voice-memo.wav", "rb") as audio:
-    response = requests.post(
-        "https://api.wisprflow.ai/api/v1/transcribe",
-        headers={"Authorization": f"Bearer {os.environ['WISPR_API_KEY']}"},
-        files={"audio": audio},
-        data={"language": "en", "context": "programming"},
-    )
-
-result = response.json()
-print(f"Text: {result['text']}")
-print(f"Confidence: {result.get('confidence', 'N/A')}")
+const client = new WisprClient({
+  apiKey: process.env.WISPR_API_KEY,
+});
 ```
 
-### Step 2: Real-Time Streaming (WebSocket)
-
+### Step 3: Make Your First API Call
 ```typescript
-// Stream microphone audio to Wispr Flow
-const ws = new WebSocket('wss://api.wisprflow.ai/api/v1/ws');
+async function main() {
+  // Your first API call here
+}
 
-// Browser audio capture
-const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-const context = new AudioContext({ sampleRate: 16000 });
-const source = context.createMediaStreamSource(stream);
-
-const processor = context.createScriptProcessor(4096, 1, 1);
-source.connect(processor);
-processor.connect(context.destination);
-
-processor.onaudioprocess = (event) => {
-  const audioData = event.inputBuffer.getChannelData(0);
-  // Convert Float32Array to Int16Array for transmission
-  const int16 = new Int16Array(audioData.length);
-  for (let i = 0; i < audioData.length; i++) {
-    int16[i] = Math.max(-32768, Math.min(32767, audioData[i] * 32768));
-  }
-  ws.send(int16.buffer);
-};
-
-ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.type === 'partial') {
-    console.log(`Partial: ${data.text}`);
-  } else if (data.type === 'final') {
-    console.log(`Final: ${data.text}`);
-  }
-};
+main().catch(console.error);
 ```
 
 ## Output
-
+- Working code file with Wispr client initialization
+- Successful API response confirming connection
+- Console output showing:
 ```
-Partial: implement a function that
-Final: Implement a function that calculates the Fibonacci sequence using dynamic programming.
+Success! Your Wispr connection is working.
 ```
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Garbled text | Wrong sample rate | Use 16kHz mono PCM |
-| No results | Silence or noise | Check microphone input |
-| High latency | REST endpoint | Use WebSocket for streaming |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { WisprClient } from '@wispr/sdk';
+
+const client = new WisprClient({
+  apiKey: process.env.WISPR_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from wispr import WisprClient
+
+client = WisprClient()
+
+# Your first API call here
+```
 
 ## Resources
-
-- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
-- [Wispr Flow for Developers](https://wisprflow.ai/developers)
+- [Wispr Getting Started](https://docs.wispr.com/getting-started)
+- [Wispr API Reference](https://docs.wispr.com/api)
+- [Wispr Examples](https://docs.wispr.com/examples)
 
 ## Next Steps
-
-Proceed to `wispr-local-dev-loop` for development workflow.
+Proceed to `wispr-local-dev-loop` for development workflow setup.

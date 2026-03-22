@@ -1,226 +1,252 @@
 ---
 name: windsurf-observability
 description: |
-  Monitor Windsurf AI adoption, feature usage, and team productivity metrics.
-  Use when tracking AI feature usage, measuring ROI, setting up dashboards,
-  or analyzing Cascade effectiveness across your team.
+  Set up comprehensive observability for Windsurf integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Windsurf operations, setting up dashboards,
+  or configuring alerting for Windsurf integration health.
   Trigger with phrases like "windsurf monitoring", "windsurf metrics",
-  "windsurf analytics", "windsurf usage", "windsurf adoption".
+  "windsurf observability", "monitor windsurf", "windsurf alerts", "windsurf tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, monitoring, analytics, team-management]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Observability
 
 ## Overview
-Monitor Windsurf AI IDE adoption, feature usage, and productivity impact across your team. Covers Admin Dashboard analytics, custom tracking via extensions, and ROI measurement.
+Set up comprehensive observability for Windsurf integrations.
 
 ## Prerequisites
-- Windsurf Teams or Enterprise plan
-- Admin dashboard access at windsurf.com/dashboard
-- Team members actively using Windsurf
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `windsurf_requests_total` | Counter | Total API requests |
+| `windsurf_request_duration_seconds` | Histogram | Request latency |
+| `windsurf_errors_total` | Counter | Error count by type |
+| `windsurf_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'windsurf_requests_total',
+  help: 'Total Windsurf API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'windsurf_request_duration_seconds',
+  help: 'Windsurf request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'windsurf_errors_total',
+  help: 'Windsurf errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('windsurf-client');
+
+async function tracedWindsurfCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`windsurf.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'windsurf',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logWindsurfOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'windsurf',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# windsurf_alerts.yaml
+groups:
+  - name: windsurf_alerts
+    rules:
+      - alert: WindsurfHighErrorRate
+        expr: |
+          rate(windsurf_errors_total[5m]) /
+          rate(windsurf_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Windsurf error rate > 5%"
+
+      - alert: WindsurfHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(windsurf_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Windsurf P95 latency > 2s"
+
+      - alert: WindsurfDown
+        expr: up{job="windsurf"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Windsurf integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Windsurf Request Rate",
+      "targets": [{
+        "expr": "rate(windsurf_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Windsurf Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(windsurf_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### Step 1: Access Admin Dashboard Analytics
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-Navigate to Admin Dashboard > Analytics for team-wide metrics:
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-```yaml
-# Key metrics available in Windsurf Admin Dashboard
-core_metrics:
-  adoption:
-    active_users_daily: "Unique developers using Windsurf per day"
-    seat_utilization: "Active users / total seats (target: >80%)"
-    feature_adoption: "Which AI features each user uses"
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-  quality:
-    completion_acceptance_rate: "Supercomplete suggestions accepted vs shown"
-    cascade_flow_success_rate: "Cascade tasks completed vs failed"
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
-  consumption:
-    credits_consumed_per_user: "Monthly credit usage per team member"
-    credits_by_model: "Which AI models consume the most credits"
-
-  efficiency:
-    tasks_per_session: "Average Cascade interactions per session"
-    time_saved_estimate: "Based on task complexity and completion speed"
-```
-
-### Step 2: Set Up Usage Alerts
-
-Monitor for underutilization and overuse:
-
-```yaml
-# Alert thresholds for team management
-alerts:
-  low_adoption:
-    condition: "seat_utilization < 50% for 7 days"
-    action: "Schedule team training session"
-
-  low_acceptance_rate:
-    condition: "completion_acceptance_rate < 20% for 7 days"
-    action: "Review .windsurfrules — AI suggestions not matching project patterns"
-
-  high_cascade_failures:
-    condition: "cascade_success_rate < 50% for 3 days"
-    action: "Check workspace config — .codeiumignore may be too aggressive"
-
-  credit_overspend:
-    condition: "team_credits > 80% consumed before month half"
-    action: "Review per-user usage, coach on credit conservation"
-
-  inactive_seats:
-    condition: "user has <10 interactions in 30 days"
-    action: "Offer training or downgrade to Free tier"
-```
-
-### Step 3: Build Custom Extension for Detailed Tracking
-
-```typescript
-// windsurf-analytics-extension/src/extension.ts
-import * as vscode from "vscode";
-
-interface UsageEvent {
-  event: string;
-  timestamp: string;
-  userId: string;
-  file?: string;
-  metadata?: Record<string, unknown>;
-}
-
-const events: UsageEvent[] = [];
-
-export function activate(context: vscode.ExtensionContext) {
-  // Track Cascade usage patterns
-  const cascadeListener = vscode.workspace.onDidSaveTextDocument((doc) => {
-    events.push({
-      event: "file_save_after_cascade",
-      timestamp: new Date().toISOString(),
-      userId: vscode.env.machineId,
-      file: doc.fileName,
-      metadata: { languageId: doc.languageId, lineCount: doc.lineCount },
-    });
-  });
-
-  // Flush events periodically
-  setInterval(() => {
-    if (events.length > 0) {
-      const batch = events.splice(0);
-      sendToAnalytics(batch);
-    }
-  }, 60000); // Flush every minute
-
-  context.subscriptions.push(cascadeListener);
-}
-
-async function sendToAnalytics(batch: UsageEvent[]) {
-  const endpoint = vscode.workspace
-    .getConfiguration("windsurf-analytics")
-    .get<string>("endpoint");
-  if (!endpoint) return;
-
-  await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ events: batch }),
-  }).catch(() => {}); // Silently fail — analytics should never block work
-}
-```
-
-### Step 4: Measure Productivity Impact
-
-```yaml
-# Weekly team productivity report template
-productivity_report:
-  period: "Week of YYYY-MM-DD"
-  team_size: 10
-  active_windsurf_users: 8
-
-  ai_metrics:
-    total_cascade_tasks: 150
-    cascade_success_rate: "78%"
-    completion_acceptance_rate: "32%"
-    credits_consumed: 1200
-
-  productivity_proxies:
-    commits_per_developer: 12       # vs baseline 8 pre-Windsurf
-    pr_turnaround_hours: 6          # vs baseline 12 pre-Windsurf
-    code_review_comments: 45        # quality indicator
-
-  estimated_time_saved:
-    per_developer_per_week: "3 hours"
-    total_team_per_week: "24 hours"
-    monthly_value: "$7,200"         # 24hrs * 4wks * $75/hr
-
-  roi_calculation:
-    monthly_windsurf_cost: "$300"   # 10 seats * $30
-    monthly_value_generated: "$7,200"
-    roi: "2,300%"
-```
-
-### Step 5: Dashboard Visualization
-
-Track these metrics over time in your preferred dashboard tool:
-
-```markdown
-## Recommended Dashboard Panels
-
-1. Daily Active Users vs Total Seats (line chart)
-   - Shows adoption trend
-   - Alert when utilization drops below 70%
-
-2. Completion Acceptance Rate (line chart, 7-day rolling avg)
-   - Higher = better .windsurfrules quality
-   - Drop = rules need updating or team needs training
-
-3. Cascade Success Rate (bar chart, weekly)
-   - Tracks agentic task effectiveness
-   - Low rate = prompts too vague or workspace too large
-
-4. Credits per Developer (bar chart, monthly)
-   - Identifies power users vs underutilizers
-   - Guides seat tier decisions
-
-5. Top Workflows Used (table)
-   - Shows which automated workflows team uses most
-   - Identifies candidates for new workflows
-```
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Low acceptance rate | AI suggestions don't match project style | Update .windsurfrules with project conventions |
-| Cascade flow failures | Insufficient tool permissions or context | Check workspace config, .codeiumignore |
-| Seat utilization low | Team not adopted | Training session, share productivity data |
-| Analytics data missing | Not on Teams/Enterprise plan | Upgrade for admin analytics |
-| Custom extension conflicts | Extension interferes with Cascade | Ensure extension doesn't register completions |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
 ## Examples
 
-### Quick Adoption Check
-```
-Admin Dashboard > Analytics > Overview
-Look for: active users, acceptance rate, credit usage
-```
-
-### Monthly Seat Optimization
-```yaml
-steps:
-  1. Export member usage from Admin Dashboard
-  2. Sort by credits consumed (ascending)
-  3. Bottom 20%: offer training or downgrade to Free
-  4. Top 10%: interview for best practices to share
-  5. Reallocate freed seats to new team members
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
 ```
 
 ## Resources
-- [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
-- [Windsurf Enterprise](https://windsurf.com/enterprise)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Windsurf Observability Guide](https://docs.windsurf.com/observability)
 
 ## Next Steps
-For incident response procedures, see `windsurf-incident-runbook`.
+For incident response, see `windsurf-incident-runbook`.

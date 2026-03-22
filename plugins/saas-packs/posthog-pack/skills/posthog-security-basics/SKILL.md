@@ -1,44 +1,36 @@
 ---
 name: posthog-security-basics
 description: |
-  Secure PostHog integration: API key management, project key vs personal key
-  separation, secret rotation, scoped keys, and git-leak prevention.
-  Trigger: "posthog security", "posthog secrets", "secure posthog",
-  "posthog API key security", "posthog key rotation".
+  Apply PostHog security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing PostHog security configuration.
+  Trigger with phrases like "posthog security", "posthog secrets",
+  "secure posthog", "posthog API key security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, security, audit]
+compatible-with: claude-code
+tags: [saas, posthog]
 ---
 
 # PostHog Security Basics
 
 ## Overview
-
-Secure PostHog API key management, least-privilege access, and secret rotation. PostHog has two key types with very different security profiles: the Project API Key (`phc_...`) is intentionally public and safe to include in frontend bundles, while the Personal API Key (`phx_...`) grants admin access and must never be exposed.
+Security best practices for PostHog API keys, tokens, and access control.
 
 ## Prerequisites
-
-- PostHog account with admin access
-- Understanding of environment variable management
-- `.gitignore` configured
+- PostHog SDK installed
+- Understanding of environment variables
+- Access to PostHog dashboard
 
 ## Instructions
 
-### Step 1: Understand Key Security Profiles
-
-| Key Type | Prefix | Exposure Risk | Capabilities |
-|----------|--------|--------------|-------------|
-| Project API Key | `phc_` | **Low** (designed to be public) | Capture events, evaluate flags, identify users |
-| Personal API Key | `phx_` | **Critical** (full admin access) | CRUD flags, read persons, query insights, delete data |
-
+### Step 1: Configure Environment Variables
 ```bash
-# .env (NEVER commit)
-NEXT_PUBLIC_POSTHOG_KEY=phc_abc123   # Safe for frontend (NEXT_PUBLIC_ prefix)
-POSTHOG_PERSONAL_API_KEY=phx_xyz789  # Server-only — NEVER in frontend code
-POSTHOG_PROJECT_ID=12345
+# .env (NEVER commit to git)
+POSTHOG_API_KEY=sk_live_***
+POSTHOG_SECRET=***
 
 # .gitignore
 .env
@@ -46,135 +38,105 @@ POSTHOG_PROJECT_ID=12345
 .env.*.local
 ```
 
-### Step 2: Create Scoped Personal API Keys
-
+### Step 2: Implement Secret Rotation
 ```bash
-set -euo pipefail
-# Create a read-only key for BI dashboards
-curl -X POST "https://app.posthog.com/api/personal_api_keys/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "label": "bi-dashboard-readonly",
-    "scopes": ["insight:read", "dashboard:read", "query:read"]
-  }'
-
-# Create a key scoped to feature flags only
-curl -X POST "https://app.posthog.com/api/personal_api_keys/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "label": "feature-flag-service",
-    "scopes": ["feature_flag:read", "feature_flag:write"]
-  }'
-```
-
-### Step 3: Rotate Personal API Keys
-
-```bash
-set -euo pipefail
-# 1. Create new key in PostHog Settings > Personal API Keys
-# 2. Update secret in your deployment platform
-# Vercel:
-vercel env rm POSTHOG_PERSONAL_API_KEY production
-vercel env add POSTHOG_PERSONAL_API_KEY production
-
-# GitHub Actions:
-gh secret set POSTHOG_PERSONAL_API_KEY --body "phx_new_key_here"
+# 1. Generate new key in PostHog dashboard
+# 2. Update environment variable
+export POSTHOG_API_KEY="new_key_here"
 
 # 3. Verify new key works
-curl -s "https://app.posthog.com/api/projects/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | jq '.[0].name'
+curl -H "Authorization: Bearer ${POSTHOG_API_KEY}" \
+  https://api.posthog.com/health
 
-# 4. Delete old key in PostHog dashboard
+# 4. Revoke old key in dashboard
 ```
 
-### Step 4: Prevent Key Leaks
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
-```bash
-# Git pre-commit hook to catch PostHog personal keys
-# .git/hooks/pre-commit (or use husky)
-#!/bin/bash
-if git diff --cached --diff-filter=ACM | grep -qE 'phx_[a-zA-Z0-9]{20,}'; then
-  echo "ERROR: PostHog personal API key (phx_) detected in staged files!"
-  echo "Remove it and use environment variables instead."
-  exit 1
-fi
-```
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
-```yaml
-# .github/secret-scanning.yml (or use GitHub's built-in secret scanning)
-patterns:
-  - name: PostHog Personal API Key
-    regex: 'phx_[a-zA-Z0-9]{20,}'
-    severity: critical
-```
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
-### Step 5: Server-Side Key Isolation
+## Examples
 
+### Service Account Pattern
 ```typescript
-// lib/posthog-server.ts — Personal key never leaves the server
-import { PostHog } from 'posthog-node';
+const clients = {
+  reader: new PostHogClient({
+    apiKey: process.env.POSTHOG_READ_KEY,
+  }),
+  writer: new PostHogClient({
+    apiKey: process.env.POSTHOG_WRITE_KEY,
+  }),
+};
+```
 
-const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  host: 'https://us.i.posthog.com',
-  // personalApiKey ONLY used server-side for local flag evaluation
-  personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
-});
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
 
-// API routes that proxy admin operations
-// Never expose the personal key to the client
-export async function getFeatureFlagsForUser(userId: string) {
-  return posthog.getAllFlags(userId);
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
 
-### Step 6: Audit API Key Usage
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
 
-```bash
-set -euo pipefail
-# Check activity log for API key operations
-curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/activity_log/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '[.results[] | select(.scope == "PersonalAPIKey") | {
-    user: .user.email,
-    activity: .activity,
-    created_at
-  }]'
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to PostHog analytics
+  await posthogClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'posthog.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
 ```
 
-## Security Checklist
-
-- [ ] Project key (`phc_`) used for all frontend/capture code
-- [ ] Personal key (`phx_`) only on server, never in frontend bundles
-- [ ] `.env` files in `.gitignore`
-- [ ] Separate keys per environment (dev/staging/prod)
-- [ ] Scoped personal keys (not full admin for every service)
-- [ ] Git pre-commit hook scanning for `phx_` keys
-- [ ] Key rotation documented and scheduled (quarterly)
-
-## Error Handling
-
-| Issue | Detection | Fix |
-|-------|-----------|-----|
-| Personal key in git history | GitHub secret scanning alert | Rotate key immediately, revoke old one |
-| Wrong key type | 401 on admin API | Use `phx_` for admin, `phc_` for capture |
-| Overprivileged key | Audit log shows unexpected operations | Create scoped key, revoke broad one |
-| Key exposed in logs | Log scrubbing finds `phx_` | Redact logs, rotate key |
-
-## Output
-
-- Environment-specific API key configuration
-- Scoped personal API keys for least privilege
-- Key rotation procedure
-- Git pre-commit hook for leak prevention
-- Audit log queries for key usage monitoring
-
 ## Resources
-
-- [PostHog API Overview](https://posthog.com/docs/api)
-- [PostHog Privacy & Security](https://posthog.com/docs/privacy)
+- [PostHog Security Guide](https://docs.posthog.com/security)
+- [PostHog API Scopes](https://docs.posthog.com/scopes)
 
 ## Next Steps
-
 For production deployment, see `posthog-prod-checklist`.

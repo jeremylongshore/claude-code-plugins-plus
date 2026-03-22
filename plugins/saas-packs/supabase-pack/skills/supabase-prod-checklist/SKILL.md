@@ -1,185 +1,121 @@
 ---
 name: supabase-prod-checklist
 description: |
-  Execute Supabase production deployment checklist covering security, performance,
-  monitoring, and rollback procedures.
-  Use when deploying to production, preparing for launch,
-  or auditing a live Supabase project.
-  Trigger with phrases like "supabase production", "supabase go-live",
-  "supabase launch checklist", "supabase prod ready", "deploy supabase".
-allowed-tools: Read, Bash(supabase:*), Bash(curl:*), Grep
+  Execute Supabase production deployment checklist and rollback procedures.
+  Use when deploying Supabase integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "supabase production", "deploy supabase",
+  "supabase go-live", "supabase launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, production]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
-# Supabase Prod Checklist
+
+# Supabase Production Checklist
 
 ## Overview
-A comprehensive checklist for taking a Supabase project to production, based on Supabase's official production guide. Covers security hardening, performance optimization, monitoring, backup strategy, and rollback procedures.
+Complete checklist for deploying Supabase integrations to production.
 
 ## Prerequisites
 - Staging environment tested and verified
-- Production Supabase project created (separate from development)
-- Domain and DNS configured
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Security Checklist
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Supabase error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
+
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Supabase connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
+
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
 ```bash
-# 1. Verify RLS on all tables
-supabase inspect db table-sizes --linked  # shows all tables
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.supabase.com
 
-# In SQL Editor, check RLS status:
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/supabase-integration app=image:new --record
+kubectl rollout pause deployment/supabase-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/supabase-integration
+kubectl rollout pause deployment/supabase-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/supabase-integration
+kubectl rollout status deployment/supabase-integration
 ```
 
-```sql
-select schemaname, tablename, rowsecurity
-from pg_tables
-where schemaname = 'public' and rowsecurity = false;
--- This query should return ZERO rows in production
-```
+## Output
+- Deployed Supabase integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
-- [ ] RLS enabled on every public table
-- [ ] SSL enforcement enabled (Dashboard > Database > Settings > SSL)
-- [ ] Database password changed from default
-- [ ] Service role key only in server-side environments
-- [ ] Email confirmation enabled for Auth
-- [ ] OAuth redirect URLs restricted to production domains
-- [ ] Custom SMTP configured for auth emails (so users see your domain)
-- [ ] Unused auth providers disabled
-- [ ] API rate limiting configured
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-### Performance Checklist
+## Examples
 
-```sql
--- Check for missing indexes on foreign keys
-select
-  tc.table_name, kcu.column_name,
-  case when i.indexname is null then 'MISSING INDEX' else i.indexname end
-from information_schema.table_constraints tc
-join information_schema.key_column_usage kcu
-  on tc.constraint_name = kcu.constraint_name
-left join pg_indexes i
-  on i.tablename = tc.table_name
-  and i.indexdef like '%' || kcu.column_name || '%'
-where tc.constraint_type = 'FOREIGN KEY'
-  and tc.table_schema = 'public';
-
--- Review slow queries
-select query, calls, mean_exec_time::numeric(10,2) as avg_ms
-from pg_stat_statements
-order by mean_exec_time desc
-limit 10;
-
--- Check table bloat
-select relname, n_live_tup, n_dead_tup,
-       round(n_dead_tup::numeric / greatest(n_live_tup, 1) * 100, 1) as dead_pct
-from pg_stat_user_tables
-where n_dead_tup > 1000
-order by n_dead_tup desc;
-```
-
-- [ ] Indexes on all foreign keys and frequently filtered columns
-- [ ] `pg_stat_statements` enabled for query monitoring
-- [ ] Connection pooling via Supavisor (use pooled connection string)
-- [ ] Performance Advisor reviewed (Dashboard > Database > Performance)
-- [ ] Computed columns for expensive queries
-- [ ] Appropriate `statement_timeout` set
-
-### Database Configuration
-
-```sql
--- Set timeouts for the authenticated role
-alter role authenticated set statement_timeout = '10s';
-
--- Enable necessary extensions
-create extension if not exists pg_stat_statements;
-create extension if not exists pgcrypto;
-```
-
-### Backup and Recovery
-
-- [ ] Point-in-Time Recovery (PITR) enabled (Pro plan required)
-- [ ] Tested database restore procedure
-- [ ] Daily logical backups verified in Dashboard > Database > Backups
-- [ ] Migration files committed to version control
-- [ ] `supabase db push` tested against a fresh project
-
-### Monitoring
-
-- [ ] Health check endpoint implemented and monitored
-
+### Health Check Implementation
 ```typescript
-// api/health.ts
-export async function GET() {
-  const start = Date.now()
-  const { error } = await supabase.from('_health').select('*').limit(1)
-  const latency = Date.now() - start
-
-  return Response.json({
-    status: error ? 'unhealthy' : 'healthy',
-    latency_ms: latency,
-    timestamp: new Date().toISOString(),
-  }, { status: error ? 503 : 200 })
+async function healthCheck(): Promise<{ status: string; supabase: any }> {
+  const start = Date.now();
+  try {
+    await supabaseClient.ping();
+    return { status: 'healthy', supabase: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', supabase: { connected: false, latencyMs: Date.now() - start } };
+  }
 }
 ```
 
-- [ ] Error tracking configured (Sentry, LogRocket, etc.)
-- [ ] Supabase Log Explorer reviewed (Dashboard > Logs)
-- [ ] Alerts configured for error rate spikes and high latency
-- [ ] Uptime monitoring on health check endpoint
-
-### Rollback Procedure
-
+### Immediate Rollback
 ```bash
-# 1. If a migration causes issues, create a rollback migration
-supabase migration new rollback_bad_change
-
-# 2. For data issues, restore from PITR
-# Dashboard > Database > Backups > Point-in-Time Recovery
-
-# 3. For application issues, revert deployment
-# Your deployment platform handles this (Vercel rollback, etc.)
-
-# 4. For auth issues, disable problematic provider
-# Dashboard > Auth > Providers
+kubectl rollout undo deployment/supabase-integration
+kubectl rollout status deployment/supabase-integration
 ```
 
-### Pre-Launch Final Checks
-
-- [ ] Load test completed on staging (see `supabase-load-scale`)
-- [ ] DNS and custom domain configured
-- [ ] CORS settings match production domain
-- [ ] Environment variables set correctly in deployment platform
-- [ ] Webhook endpoints registered and tested
-- [ ] Storage bucket policies verified
-- [ ] Realtime enabled only on tables that need it
-- [ ] Database connection string uses pooled mode for serverless
-
-## Output
-- All checklist items verified and documented
-- Health check endpoint deployed and monitored
-- Rollback procedure documented and tested
-- Production environment hardened and ready for traffic
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| High latency after launch | Missing indexes | Run Performance Advisor; add indexes |
-| Connection errors under load | Pool exhausted | Switch to pooled connection string via Supavisor |
-| Auth emails not delivered | Default SMTP | Configure custom SMTP provider |
-| RLS blocking legitimate users | Policy too restrictive | Debug with service role key; fix policy |
-
 ## Resources
-- [Production Checklist](https://supabase.com/docs/guides/deployment/going-into-prod)
-- [Maturity Model](https://supabase.com/docs/guides/deployment/maturity-model)
-- [Shared Responsibility Model](https://supabase.com/docs/guides/deployment/shared-responsibility-model)
-- [Performance Advisor](https://supabase.com/docs/guides/database/inspect)
+- [Supabase Status](https://status.supabase.com)
+- [Supabase Support](https://supabase.com/docs/support)
 
 ## Next Steps
-For SDK version upgrades, see `supabase-upgrade-migration`.
+For version upgrades, see `supabase-upgrade-migration`.

@@ -1,39 +1,114 @@
 ---
 name: navan-upgrade-migration
 description: |
-  Upgrade Migration for Navan.
-  Trigger: "navan upgrade migration".
-allowed-tools: Read, Write, Edit
+  Analyze, plan, and execute Navan SDK upgrades with breaking change detection.
+  Use when upgrading Navan SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade navan", "navan migration",
+  "navan breaking changes", "update navan SDK", "analyze navan version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
 compatible-with: claude-code
+tags: [saas, navan]
 ---
 
 # Navan Upgrade & Migration
 
-## Check Version
+## Overview
+Guide for upgrading Navan SDK versions and handling breaking changes.
+
+## Prerequisites
+- Current Navan SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
+
+## Instructions
+
+### Step 1: Check Current Version
 ```bash
-npm list | grep navan
-pip show navan 2>/dev/null
+npm list @navan/sdk
+npm view @navan/sdk version
 ```
 
-## Upgrade
+### Step 2: Review Changelog
 ```bash
-git checkout -b upgrade/navan
-npm update  # or pip install --upgrade
+open https://github.com/navan/sdk/releases
+```
+
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/navan-sdk-vX.Y.Z
+npm install @navan/sdk@latest
 npm test
 ```
 
-## Rollback
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
+
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
+
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@navan/sdk';
+
+// After (v2.x)
+import { NavanClient } from '@navan/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new NavanClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
 ```bash
-git checkout main -- package.json
-npm install
+npm install @navan/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Navan]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
-- [Navan Changelog](https://app.navan.com/app/helpcenter)
+- [Navan Changelog](https://github.com/navan/sdk/releases)
+- [Navan Migration Guide](https://docs.navan.com/migration)
 
 ## Next Steps
-See `navan-ci-integration`.
+For CI integration during upgrades, see `navan-ci-integration`.

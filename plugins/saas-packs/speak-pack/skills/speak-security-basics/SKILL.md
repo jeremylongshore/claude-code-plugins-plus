@@ -1,98 +1,142 @@
 ---
 name: speak-security-basics
 description: |
-  Security best practices for Speak API keys, audio data privacy, student data protection, and COPPA/FERPA compliance.
-  Use when implementing security basics features,
-  or troubleshooting Speak language learning integration issues.
-  Trigger with phrases like "speak security basics", "speak security basics".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Apply Speak security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Speak security configuration.
+  Trigger with phrases like "speak security", "speak secrets",
+  "secure speak", "speak API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Security Basics
 
 ## Overview
-Security best practices for Speak API keys, audio data privacy, student data protection, and COPPA/FERPA compliance.
+Security best practices for Speak API keys, tokens, and access control.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- ffmpeg installed for audio processing
+- Speak SDK installed
+- Understanding of environment variables
+- Access to Speak dashboard
 
 ## Instructions
 
-### API Key Security
+### Step 1: Configure Environment Variables
 ```bash
-# Never commit API keys
-echo '.env' >> .gitignore
-echo '.env.local' >> .gitignore
+# .env (NEVER commit to git)
+SPEAK_API_KEY=sk_live_***
+SPEAK_SECRET=***
 
-# Use secrets manager in production
-export SPEAK_API_KEY="$(aws secretsmanager get-secret-value --secret-id speak/api-key --query SecretString --output text)"
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Audio Data Privacy
-```typescript
-// Speak processes audio on their servers — do NOT store student audio locally
-// unless required by your application
-class PrivacyAwareClient {
-  async assessAndClean(audioPath: string, targetText: string, language: string) {
-    try {
-      const result = await this.client.assessPronunciation({
-        audioPath, targetText, language,
-      });
-      return result;
-    } finally {
-      // Delete local audio file after assessment
-      fs.unlinkSync(audioPath);
-    }
-  }
-}
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Speak dashboard
+# 2. Update environment variable
+export SPEAK_API_KEY="new_key_here"
+
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${SPEAK_API_KEY}" \
+  https://api.speak.com/health
+
+# 4. Revoke old key in dashboard
 ```
 
-### Student Data Protection
-- Never log student audio recordings
-- Redact student names from API logs
-- Store assessment scores, not raw audio
-- Implement data retention policies (delete after N days)
-- COPPA compliance for students under 13: parental consent required
-- FERPA compliance for educational institutions: student data agreements
-
-### Security Checklist
-- [ ] API keys in secrets manager, not code
-- [ ] Audio files deleted after processing
-- [ ] Student PII not logged
-- [ ] HTTPS enforced for all API calls
-- [ ] Rate limiting prevents abuse
-- [ ] Access logs maintained for audit
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
 ## Output
-- Basics implementation complete
-- Speak API integration verified
-- Production-ready patterns applied
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
-| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
-| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
-| Session expired | Timeout after 30 min | Start a new conversation session |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-See `speak-prod-checklist` for production readiness.
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
 ## Examples
 
-**Basic**: Apply security basics with default configuration for a standard Speak integration.
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new SpeakClient({
+    apiKey: process.env.SPEAK_READ_KEY,
+  }),
+  writer: new SpeakClient({
+    apiKey: process.env.SPEAK_WRITE_KEY,
+  }),
+};
+```
 
-**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Speak analytics
+  await speakClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'speak.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
+
+## Resources
+- [Speak Security Guide](https://docs.speak.com/security)
+- [Speak API Scopes](https://docs.speak.com/scopes)
+
+## Next Steps
+For production deployment, see `speak-prod-checklist`.

@@ -1,7 +1,7 @@
 {
   "name": "documenso-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Documenso (24 skills)",
+  "description": "Claude Code skill pack for Documenso (18 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,8 +9,7 @@
   "license": "MIT",
   "keywords": [
     "documenso",
-    "e-signature",
-    "document-signing",
+    "documenso",
     "saas",
     "sdk",
     "integration"

@@ -1,201 +1,151 @@
 ---
 name: openrouter-rate-limits
 description: |
-  Understand and handle OpenRouter rate limits. Use when hitting 429 errors, building high-throughput systems, or implementing retry logic. Triggers: 'openrouter rate limit', 'openrouter 429', 'openrouter throttle', 'rate limiting openrouter'.
-allowed-tools: Read, Write, Edit, Bash, Grep
-version: 2.0.0
+  Implement OpenRouter rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for OpenRouter.
+  Trigger with phrases like "openrouter rate limit", "openrouter throttling",
+  "openrouter 429", "openrouter retry", "openrouter backoff".
+allowed-tools: Read, Write, Edit
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, rate-limits, throttling]
-
+compatible-with: claude-code
+tags: [saas, openrouter]
 ---
+
 # OpenRouter Rate Limits
 
 ## Overview
+Handle OpenRouter rate limits gracefully with exponential backoff and idempotency.
 
-OpenRouter rate limits are per-key, not per-account. Free tier keys get lower limits; paid keys get higher limits that scale with credit balance. The OpenAI SDK has built-in retry with exponential backoff for 429 responses. Check your current limits via `GET /api/v1/auth/key`. Rate limit headers are returned on every response.
+## Prerequisites
+- OpenRouter SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
-## Check Your Rate Limits
+## Instructions
 
-```bash
-# Query current rate limit configuration for your key
-curl -s https://openrouter.ai/api/v1/auth/key \
-  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq '{
-    label: .data.label,
-    rate_limit: .data.rate_limit,
-    is_free_tier: .data.is_free_tier,
-    credits_used: .data.usage,
-    credit_limit: .data.limit
-  }'
-# Example output:
-# {
-#   "label": "my-app-prod",
-#   "rate_limit": {"requests": 200, "interval": "10s"},
-#   "is_free_tier": false,
-#   "credits_used": 12.34,
-#   "credit_limit": 100
-# }
-```
+### Step 1: Understand Rate Limit Tiers
 
-## Rate Limit Tiers
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-| Tier | Requests | Interval | Who |
-|------|----------|----------|-----|
-| Free (no credits) | 20 | 10s | New accounts |
-| Free (with credits) | 200 | 10s | Accounts with any credits |
-| Paid | Higher | Varies | Based on credit balance |
+### Step 2: Implement Exponential Backoff with Jitter
 
-Free models have separate limits: 50 req/day (free users), 1000 req/day (with $10+ credits).
+```typescript
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-## Read Rate Limit Headers
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-```python
-import os
-from openai import OpenAI
-import requests as http_requests
-
-# The OpenAI SDK abstracts headers, so use requests for direct access
-def check_rate_headers():
-    """Make a request and inspect rate limit headers."""
-    resp = http_requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers={
-            "Authorization": f"Bearer {os.environ['OPENROUTER_API_KEY']}",
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://my-app.com",
-        },
-        json={
-            "model": "openai/gpt-4o-mini",
-            "messages": [{"role": "user", "content": "hi"}],
-            "max_tokens": 1,
-        },
-    )
-    return {
-        "status": resp.status_code,
-        "x-ratelimit-limit": resp.headers.get("x-ratelimit-limit"),
-        "x-ratelimit-remaining": resp.headers.get("x-ratelimit-remaining"),
-        "x-ratelimit-reset": resp.headers.get("x-ratelimit-reset"),
-        "retry-after": resp.headers.get("retry-after"),
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
+  }
+  throw new Error('Unreachable');
+}
 ```
 
-## Retry Strategy with OpenAI SDK
+### Step 3: Add Idempotency Keys
 
-```python
-from openai import OpenAI
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-# The SDK handles 429 retries automatically with exponential backoff
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    max_retries=5,           # Default is 2; increase for high-throughput
-    timeout=60.0,            # Per-request timeout
-    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-)
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
-# The SDK will:
-# 1. Catch 429 responses
-# 2. Read Retry-After header
-# 3. Wait with exponential backoff (+ jitter)
-# 4. Retry up to max_retries times
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": "Hello"}],
-    max_tokens=200,
-)
+async function idempotentRequest<T>(
+  client: OpenRouterClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
 ```
 
-## Custom Rate Limiter (Client-Side)
-
-```python
-import time, threading
-from collections import deque
-
-class TokenBucket:
-    """Client-side rate limiter to prevent hitting server limits."""
-
-    def __init__(self, rate: int = 200, interval: float = 10.0):
-        self.rate = rate           # Max requests per interval
-        self.interval = interval
-        self._timestamps = deque()
-        self._lock = threading.Lock()
-
-    def acquire(self, timeout: float = 30.0) -> bool:
-        """Block until a request slot is available."""
-        deadline = time.monotonic() + timeout
-        while time.monotonic() < deadline:
-            with self._lock:
-                now = time.monotonic()
-                # Remove timestamps outside the window
-                while self._timestamps and now - self._timestamps[0] > self.interval:
-                    self._timestamps.popleft()
-
-                if len(self._timestamps) < self.rate:
-                    self._timestamps.append(now)
-                    return True
-
-            time.sleep(0.1)  # Wait and retry
-        return False  # Timed out
-
-limiter = TokenBucket(rate=150, interval=10.0)  # Stay under 200 limit
-
-def rate_limited_completion(messages, **kwargs):
-    """Completion with client-side rate limiting."""
-    if not limiter.acquire(timeout=30):
-        raise TimeoutError("Rate limiter timeout")
-    return client.chat.completions.create(messages=messages, **kwargs)
-```
-
-## Batch Processing with Rate Awareness
-
-```python
-import asyncio
-from openai import AsyncOpenAI
-
-async def batch_with_rate_limit(prompts: list[str], model="openai/gpt-4o-mini",
-                                 max_concurrent=10, delay_between=0.05):
-    """Process a batch of prompts with rate-aware concurrency."""
-    semaphore = asyncio.Semaphore(max_concurrent)
-    aclient = AsyncOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.environ["OPENROUTER_API_KEY"],
-        max_retries=5,
-        default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-    )
-
-    async def process(prompt, idx):
-        await asyncio.sleep(idx * delay_between)  # Stagger requests
-        async with semaphore:
-            response = await aclient.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=200,
-            )
-            return response.choices[0].message.content
-
-    return await asyncio.gather(*[process(p, i) for i, p in enumerate(prompts)])
-```
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| 429 Too Many Requests | Exceeded requests per interval | SDK auto-retries; increase `max_retries` |
-| Retry storm | Multiple clients retrying simultaneously | Add random jitter (0-1s) to retry delay |
-| Silent throttling | Responses slow down before 429 | Monitor latency; proactively reduce rate |
-| Free tier limit hit | 50 req/day on free models | Add credits ($10+) for 1000 req/day limit |
+## Examples
 
-## Enterprise Considerations
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
 
-- Rate limits are per-key: use multiple keys to multiply effective throughput
-- The OpenAI SDK handles 429 retries automatically -- configure `max_retries` (default 2)
-- Implement client-side rate limiting to stay under limits proactively (cheaper than retries)
-- Free models have daily limits separate from the per-key rate limit
-- Monitor `x-ratelimit-remaining` headers to detect approaching limits before hitting 429
-- For batch workloads, use staggered concurrent requests rather than burst patterns
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
 
-## References
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Rate Limits](https://openrouter.ai/docs/api/limits) | [Auth/Key API](https://openrouter.ai/docs/api/reference/authentication)
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
+
+## Resources
+- [OpenRouter Rate Limits](https://docs.openrouter.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+## Next Steps
+For security configuration, see `openrouter-security-basics`.

@@ -1,318 +1,240 @@
 ---
 name: deepgram-reference-architecture
 description: |
-  Implement Deepgram reference architecture for scalable transcription systems.
-  Use when designing transcription pipelines, building production architectures,
-  or planning Deepgram integration at scale.
-  Trigger: "deepgram architecture", "transcription pipeline", "deepgram system design",
-  "deepgram at scale", "enterprise deepgram", "deepgram queue".
-allowed-tools: Read, Write, Edit, Bash(npm:*)
+  Implement Deepgram reference architecture with best-practice project layout.
+  Use when designing new Deepgram integrations, reviewing project structure,
+  or establishing architecture standards for Deepgram applications.
+  Trigger with phrases like "deepgram architecture", "deepgram best practices",
+  "deepgram project structure", "how to organize deepgram", "deepgram layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, architecture, scaling]
-
+compatible-with: claude-code
+tags: [saas, deepgram]
 ---
+
 # Deepgram Reference Architecture
 
 ## Overview
-Four reference architectures for Deepgram transcription at scale: synchronous REST for short files, async queue (BullMQ) for batch processing, WebSocket proxy for real-time streaming, and a hybrid router that auto-selects the best pattern based on audio duration.
+Production-ready architecture patterns for Deepgram integrations.
 
-## Architecture Selection Guide
+## Prerequisites
+- Understanding of layered architecture
+- Deepgram SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-| Pattern | Best For | Latency | Throughput | Complexity |
-|---------|----------|---------|------------|------------|
-| Sync REST | Files <60s, low volume | Low | Low | Simple |
-| Async Queue | Batch, files >60s | Medium | High | Medium |
-| WebSocket Proxy | Live audio, real-time | Real-time | Medium | Medium |
-| Hybrid Router | Mixed workloads | Varies | High | High |
-| Callback | Files >5min, fire-and-forget | N/A | Very High | Low |
+## Project Structure
+
+```
+my-deepgram-project/
+├── src/
+│   ├── deepgram/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── deepgram/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── deepgram/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── deepgram/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── deepgram/
+│   └── integration/
+│       └── deepgram/
+├── config/
+│   ├── deepgram.development.json
+│   ├── deepgram.staging.json
+│   └── deepgram.production.json
+└── docs/
+    └── deepgram/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Deepgram Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/deepgram/client.ts
+export class DeepgramService {
+  private client: DeepgramClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: DeepgramConfig) {
+    this.client = new DeepgramClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('deepgram');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/deepgram/errors.ts
+export class DeepgramServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'DeepgramServiceError';
+  }
+}
+
+export function wrapDeepgramError(error: unknown): DeepgramServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/deepgram/health.ts
+export async function checkDeepgramHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await deepgramClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Deepgram    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Deepgram    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/deepgram.ts
+export interface DeepgramConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadDeepgramConfig(): DeepgramConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./deepgram.${env}.json`);
+}
+```
 
 ## Instructions
 
-### Step 1: Synchronous REST Pattern
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```typescript
-import express from 'express';
-import { createClient } from '@deepgram/sdk';
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-const app = express();
-app.use(express.json());
+### Step 3: Add Error Handling
+Implement custom error classes for Deepgram operations.
 
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
-
-// Direct API call — best for short files (<60s)
-app.post('/api/transcribe', async (req, res) => {
-  const { url, model = 'nova-3', diarize = false } = req.body;
-
-  try {
-    const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
-      { url },
-      { model, smart_format: true, diarize, utterances: diarize }
-    );
-    if (error) return res.status(502).json({ error: error.message });
-
-    res.json({
-      transcript: result.results.channels[0].alternatives[0].transcript,
-      confidence: result.results.channels[0].alternatives[0].confidence,
-      duration: result.metadata.duration,
-      request_id: result.metadata.request_id,
-      utterances: diarize ? result.results.utterances : undefined,
-    });
-  } catch (err: any) {
-    res.status(500).json({ error: err.message });
-  }
-});
-```
-
-### Step 2: Async Queue Pattern (BullMQ)
-
-```typescript
-import { Queue, Worker, Job } from 'bullmq';
-import { createClient } from '@deepgram/sdk';
-import Redis from 'ioredis';
-
-const connection = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379');
-
-// Producer: submit transcription jobs
-const transcriptionQueue = new Queue('transcription', { connection });
-
-async function submitJob(audioUrl: string, options: Record<string, any> = {}) {
-  const job = await transcriptionQueue.add('transcribe', {
-    audioUrl,
-    model: options.model ?? 'nova-3',
-    diarize: options.diarize ?? false,
-    submittedAt: new Date().toISOString(),
-  }, {
-    attempts: 3,
-    backoff: { type: 'exponential', delay: 5000 },
-    removeOnComplete: { age: 86400 },  // Keep for 24h
-  });
-
-  console.log(`Job submitted: ${job.id}`);
-  return job.id;
-}
-
-// Consumer: process transcription jobs
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
-
-const worker = new Worker('transcription', async (job: Job) => {
-  const { audioUrl, model, diarize } = job.data;
-  console.log(`Processing job ${job.id}: ${audioUrl}`);
-
-  const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
-    { url: audioUrl },
-    { model, smart_format: true, diarize, utterances: diarize }
-  );
-
-  if (error) throw new Error(`Deepgram error: ${error.message}`);
-
-  const output = {
-    transcript: result.results.channels[0].alternatives[0].transcript,
-    confidence: result.results.channels[0].alternatives[0].confidence,
-    duration: result.metadata.duration,
-    request_id: result.metadata.request_id,
-  };
-
-  // Store result (database, S3, etc.)
-  console.log(`Job ${job.id} complete: ${output.duration}s audio`);
-  return output;
-}, {
-  connection,
-  concurrency: 10,     // Process 10 jobs simultaneously
-  limiter: {
-    max: 50,           // Max 50 per time window
-    duration: 60000,   // Per minute
-  },
-});
-
-worker.on('completed', (job) => console.log(`Completed: ${job.id}`));
-worker.on('failed', (job, err) => console.error(`Failed: ${job?.id}`, err.message));
-```
-
-### Step 3: WebSocket Proxy for Real-Time
-
-```typescript
-import { WebSocketServer, WebSocket } from 'ws';
-import { createClient, LiveTranscriptionEvents } from '@deepgram/sdk';
-
-const wss = new WebSocketServer({ port: 8080 });
-
-wss.on('connection', (clientWs: WebSocket) => {
-  console.log('Client connected');
-
-  const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
-  const dgConnection = deepgram.listen.live({
-    model: 'nova-3',
-    smart_format: true,
-    interim_results: true,
-    utterance_end_ms: 1000,
-    encoding: 'linear16',
-    sample_rate: 16000,
-    channels: 1,
-  });
-
-  // Forward Deepgram transcripts to client
-  dgConnection.on(LiveTranscriptionEvents.Transcript, (data) => {
-    const transcript = data.channel.alternatives[0]?.transcript;
-    if (transcript && clientWs.readyState === WebSocket.OPEN) {
-      clientWs.send(JSON.stringify({
-        type: 'transcript',
-        text: transcript,
-        is_final: data.is_final,
-        speech_final: data.speech_final,
-      }));
-    }
-  });
-
-  dgConnection.on(LiveTranscriptionEvents.UtteranceEnd, () => {
-    if (clientWs.readyState === WebSocket.OPEN) {
-      clientWs.send(JSON.stringify({ type: 'utterance_end' }));
-    }
-  });
-
-  // Forward client audio to Deepgram
-  clientWs.on('message', (data: Buffer) => {
-    if (dgConnection.getReadyState() === 1) {
-      dgConnection.send(data);
-    }
-  });
-
-  // Cleanup on disconnect
-  clientWs.on('close', () => {
-    dgConnection.finish();
-    console.log('Client disconnected');
-  });
-
-  dgConnection.on(LiveTranscriptionEvents.Error, (err) => {
-    console.error('Deepgram error:', err.message);
-    clientWs.close();
-  });
-});
-
-console.log('WebSocket proxy on ws://localhost:8080');
-```
-
-### Step 4: Hybrid Router
-
-```typescript
-import { createClient } from '@deepgram/sdk';
-
-class TranscriptionRouter {
-  private client: ReturnType<typeof createClient>;
-  private queue: typeof transcriptionQueue;
-
-  constructor(apiKey: string, queue: any) {
-    this.client = createClient(apiKey);
-    this.queue = queue;
-  }
-
-  async route(audioUrl: string, options: {
-    mode?: 'sync' | 'async' | 'callback' | 'auto';
-    estimatedDuration?: number;  // seconds
-    callbackUrl?: string;
-    model?: string;
-    diarize?: boolean;
-  } = {}) {
-    const mode = options.mode ?? 'auto';
-    const duration = options.estimatedDuration ?? 0;
-
-    // Auto-select based on duration
-    const selectedMode = mode === 'auto'
-      ? duration > 300 ? 'callback'   // >5 min: use callback
-        : duration > 60 ? 'async'     // >60s: use queue
-        : 'sync'                       // <60s: direct API
-      : mode;
-
-    console.log(`Routing: ${selectedMode} (est. ${duration}s)`);
-
-    switch (selectedMode) {
-      case 'sync':
-        return this.syncTranscribe(audioUrl, options);
-      case 'async':
-        return this.asyncTranscribe(audioUrl, options);
-      case 'callback':
-        return this.callbackTranscribe(audioUrl, options);
-    }
-  }
-
-  private async syncTranscribe(url: string, opts: any) {
-    const { result, error } = await this.client.listen.prerecorded.transcribeUrl(
-      { url },
-      { model: opts.model ?? 'nova-3', smart_format: true, diarize: opts.diarize }
-    );
-    if (error) throw error;
-    return { mode: 'sync', result };
-  }
-
-  private async asyncTranscribe(url: string, opts: any) {
-    const jobId = await submitJob(url, opts);
-    return { mode: 'async', jobId };
-  }
-
-  private async callbackTranscribe(url: string, opts: any) {
-    const { result } = await this.client.listen.prerecorded.transcribeUrl(
-      { url },
-      { model: opts.model ?? 'nova-3', smart_format: true, callback: opts.callbackUrl }
-    );
-    return { mode: 'callback', requestId: result.metadata.request_id };
-  }
-}
-```
-
-### Step 5: Architecture Diagram
-
-```
-                    ┌──────────────┐
-                    │   Client     │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │   API Gateway │
-                    │  /transcribe  │
-                    └──────┬───────┘
-                           │
-                    ┌──────▼───────┐
-                    │ Hybrid Router │
-                    └──┬───┬───┬───┘
-                       │   │   │
-           ┌───────────┘   │   └───────────┐
-           ▼               ▼               ▼
-    ┌──────────┐   ┌──────────┐   ┌──────────┐
-    │   Sync   │   │  Queue   │   │ Callback │
-    │  (<60s)  │   │ (BullMQ) │   │  (>5min) │
-    └────┬─────┘   └────┬─────┘   └────┬─────┘
-         │              │              │
-         └──────────┬───┘──────────────┘
-                    │
-            ┌───────▼──────┐
-            │  Deepgram    │
-            │  API         │
-            └───────┬──────┘
-                    │
-            ┌───────▼──────┐
-            │   Results    │
-            │   Store      │
-            └──────────────┘
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for Deepgram connectivity.
 
 ## Output
-- Sync REST endpoint for short files
-- BullMQ queue with workers for batch processing
-- WebSocket proxy for real-time streaming
-- Hybrid router with auto-mode selection
-- Architecture diagram
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Sync timeout on large file | Wrong pattern selected | Use async queue or callback |
-| Queue backlog growing | Workers overloaded | Scale workers, increase concurrency |
-| WebSocket disconnects | Network instability | Auto-reconnect with backoff |
-| Callback not received | Endpoint unreachable | Check HTTPS, verify callback URL |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Deepgram types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/deepgram/{handlers} src/services/deepgram src/api/deepgram
+touch src/deepgram/{client,config,types,errors}.ts
+touch src/services/deepgram/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Deepgram Architecture Guide](https://developers.deepgram.com/docs/architecture)
-- [BullMQ Documentation](https://docs.bullmq.io/)
-- [WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
+- [Deepgram SDK Documentation](https://docs.deepgram.com/sdk)
+- [Deepgram Best Practices](https://docs.deepgram.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `deepgram-multi-env-setup`.

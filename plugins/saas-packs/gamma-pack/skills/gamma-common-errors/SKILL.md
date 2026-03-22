@@ -1,179 +1,113 @@
 ---
 name: gamma-common-errors
 description: |
-  Debug and resolve common Gamma API errors.
-  Use when encountering authentication failures, rate limits,
-  generation errors, or unexpected API responses.
-  Trigger with phrases like "gamma error", "gamma not working",
-  "gamma API error", "gamma debug", "gamma troubleshoot".
-allowed-tools: Read, Write, Edit, Grep
+  Diagnose and fix Gamma common errors and exceptions.
+  Use when encountering Gamma errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "gamma error", "fix gamma",
+  "gamma not working", "debug gamma".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, debugging, authentication]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Common Errors
 
 ## Overview
-Reference guide for debugging and resolving common Gamma API errors.
+Quick reference for the top 10 most common Gamma errors and their solutions.
 
 ## Prerequisites
-- Active Gamma integration
-- Access to logs and error messages
-- Understanding of HTTP status codes
+- Gamma SDK installed
+- API credentials configured
+- Access to error logs
 
-## Error Reference
+## Instructions
 
-### Authentication Errors (401/403)
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-```typescript
-// Error: Invalid API Key
-{
-  "error": "unauthorized",
-  "message": "Invalid or expired API key"
-}
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
-**Solutions:**
-1. Verify API key in Gamma dashboard
-2. Check environment variable is set: `echo $GAMMA_API_KEY`
-3. Ensure key hasn't been rotated
-4. Check for trailing whitespace in key
+**Cause:** API key is missing, expired, or invalid.
 
-### Rate Limit Errors (429)
-
-```typescript
-// Error: Rate Limited
-{
-  "error": "rate_limited",
-  "message": "Too many requests",
-  "retry_after": 60
-}
+**Solution:**
+```bash
+# Verify API key is set
+echo $GAMMA_API_KEY
 ```
 
-**Solutions:**
-1. Implement exponential backoff
-2. Check rate limit headers: `X-RateLimit-Remaining`
-3. Upgrade plan for higher limits
-4. Queue requests with delays
+---
 
-```typescript
-async function withRetry(fn: () => Promise<any>, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (err) {
-      if (err.code === 'rate_limited' && i < maxRetries - 1) {
-        const delay = (err.retryAfter || Math.pow(2, i)) * 1000;  # 1000: 1 second in ms
-        await new Promise(r => setTimeout(r, delay));
-        continue;
-      }
-      throw err;
-    }
-  }
-}
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
 ```
 
-### Generation Errors (400/500)
+**Cause:** Too many requests in a short period.
 
-```typescript
-// Error: Generation Failed
-{
-  "error": "generation_failed",
-  "message": "Unable to generate presentation",
-  "details": "Content too complex"
-}
+**Solution:**
+Implement exponential backoff. See `gamma-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
 ```
 
-**Solutions:**
-1. Simplify prompt or reduce slide count
-2. Remove special characters from content
-3. Check content length limits
-4. Try different style setting
+**Cause:** Network connectivity or server latency issues.
 
-### Timeout Errors
-
+**Solution:**
 ```typescript
-// Error: Request Timeout
-{
-  "error": "timeout",
-  "message": "Request timed out after 30000ms"
-}
+// Increase timeout
+const client = new Client({ timeout: 60000 });
 ```
 
-**Solutions:**
-1. Increase client timeout setting
-2. Use async job pattern for large presentations
-3. Check network connectivity
-4. Reduce request complexity
+## Examples
 
-```typescript
-const gamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY,
-  timeout: 60000, // 60 seconds  # 60000: 1 minute in ms
-});
+### Quick Diagnostic Commands
+```bash
+# Check Gamma status
+curl -s https://status.gamma.com
+
+# Verify API connectivity
+curl -I https://api.gamma.com
+
+# Check local configuration
+env | grep GAMMA
 ```
 
-### Export Errors
-
-```typescript
-// Error: Export Failed
-{
-  "error": "export_failed",
-  "message": "Unable to export presentation",
-  "format": "pdf"
-}
-```
-
-**Solutions:**
-1. Verify presentation exists and is complete
-2. Check supported export formats
-3. Ensure no pending generation jobs
-4. Try exporting with lower quality setting
-
-## Debugging Tools
-
-### Enable Debug Logging
-```typescript
-const gamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY,
-  debug: true, // Logs all requests/responses
-});
-```
-
-### Check API Status
-```typescript
-const status = await gamma.status();
-console.log('API Status:', status.healthy ? 'OK' : 'Issues');
-console.log('Services:', status.services);
-```
-
-## Error Handling Pattern
-```typescript
-import { GammaError, RateLimitError, AuthError } from '@gamma/sdk';
-
-try {
-  const result = await gamma.presentations.create({ ... });
-} catch (err) {
-  if (err instanceof AuthError) {
-    console.error('Check your API key');
-  } else if (err instanceof RateLimitError) {
-    console.error(`Retry after ${err.retryAfter}s`);
-  } else if (err instanceof GammaError) {
-    console.error('API Error:', err.message);
-  } else {
-    throw err;
-  }
-}
-```
+### Escalation Path
+1. Collect evidence with `gamma-debug-bundle`
+2. Check Gamma status page
+3. Contact support with request ID
 
 ## Resources
-- [Gamma Status Page](https://status.gamma.app)
-- [Gamma Error Codes](https://gamma.app/docs/errors)
-- [Gamma Support](https://gamma.app/support)
+- [Gamma Status Page](https://status.gamma.com)
+- [Gamma Support](https://docs.gamma.com/support)
+- [Gamma Error Codes](https://docs.gamma.com/errors)
 
 ## Next Steps
-
-Proceed to `gamma-debug-bundle` for comprehensive debugging tools.
+For comprehensive debugging, see `gamma-debug-bundle`.

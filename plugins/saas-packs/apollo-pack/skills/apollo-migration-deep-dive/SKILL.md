@@ -1,260 +1,246 @@
 ---
 name: apollo-migration-deep-dive
 description: |
-  Comprehensive Apollo.io migration strategies.
-  Use when migrating from other CRMs to Apollo, consolidating data sources,
-  or executing large-scale data migrations.
-  Trigger with phrases like "apollo migration", "migrate to apollo",
-  "apollo data import", "crm to apollo", "apollo migration strategy".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
+  Execute Apollo major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Apollo, performing major version upgrades,
+  or re-platforming existing integrations to Apollo.
+  Trigger with phrases like "migrate apollo", "apollo migration",
+  "switch to apollo", "apollo replatform", "apollo upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, migration, scaling]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -10`
-
 ## Overview
-Migrate contact and company data into Apollo.io from other CRMs (Salesforce, HubSpot) or CSV sources. Uses Apollo's **Contacts API** for creating/updating contacts and **Bulk Create Contacts** endpoint for high-throughput imports (up to 100 contacts per call). Covers field mapping, assessment, batch processing, reconciliation, and rollback.
+Comprehensive guide for migrating to or from Apollo, or major version upgrades.
 
 ## Prerequisites
-- Apollo master API key (Contacts API requires master key)
-- Node.js 18+
-- Source CRM export in CSV or JSON format
+- Current system documentation
+- Apollo SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "apollo" > apollo-files.txt
+
+# Count integration points
+wc -l apollo-files.txt
+
+# Identify dependencies
+npm list | grep apollo
+pip freeze | grep apollo
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessApolloMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Apollo   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Apollo SDK
+npm install @apollo/sdk
+
+# Configure credentials
+cp .env.example .env.apollo
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@apollo/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/apollo.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class ApolloAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const apolloData = this.transform(data);
+    return apolloClient.create(apolloData);
+  }
+
+  private transform(data: CreateInput): ApolloInput {
+    // Map from old format to Apollo format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateApolloData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await apolloClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const apolloPercentage = getFeatureFlag('apollo_migration_percentage');
+
+  if (Math.random() * 100 < apolloPercentage) {
+    return new ApolloAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app APOLLO_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.apollo'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateApolloMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1: Define Field Mappings
-```typescript
-// src/migration/field-map.ts
-interface FieldMapping {
-  source: string;
-  target: string;        // Apollo Contacts API field
-  transform?: (v: any) => any;
-  required: boolean;
-}
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-// Salesforce -> Apollo
-const salesforceMap: FieldMapping[] = [
-  { source: 'FirstName', target: 'first_name', required: true },
-  { source: 'LastName', target: 'last_name', required: true },
-  { source: 'Email', target: 'email', required: true },
-  { source: 'Title', target: 'title', required: false },
-  { source: 'Phone', target: 'phone_number', required: false },
-  { source: 'Company', target: 'organization_name', required: false },
-  { source: 'Website', target: 'website_url', required: false,
-    transform: (url: string) => url?.startsWith('http') ? url : `https://${url}` },
-  { source: 'LinkedIn', target: 'linkedin_url', required: false },
-];
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-// HubSpot -> Apollo
-const hubspotMap: FieldMapping[] = [
-  { source: 'firstname', target: 'first_name', required: true },
-  { source: 'lastname', target: 'last_name', required: true },
-  { source: 'email', target: 'email', required: true },
-  { source: 'jobtitle', target: 'title', required: false },
-  { source: 'phone', target: 'phone_number', required: false },
-  { source: 'company', target: 'organization_name', required: false },
-  { source: 'website', target: 'website_url', required: false },
-];
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-function mapRecord(record: Record<string, any>, mappings: FieldMapping[]): Record<string, any> {
-  const mapped: Record<string, any> = {};
-  for (const m of mappings) {
-    let value = record[m.source];
-    if (m.required && !value) throw new Error(`Missing: ${m.source}`);
-    if (value && m.transform) value = m.transform(value);
-    if (value) mapped[m.target] = value;
-  }
-  return mapped;
-}
-```
-
-### Step 2: Pre-Migration Assessment
-```typescript
-// src/migration/assessment.ts
-import fs from 'fs';
-import { parse } from 'csv-parse/sync';
-
-async function assess(csvPath: string, mappings: FieldMapping[]) {
-  const records = parse(fs.readFileSync(csvPath, 'utf-8'), { columns: true, skip_empty_lines: true });
-
-  const stats = { total: records.length, valid: 0, invalid: 0,
-    missing: {} as Record<string, number>, duplicateEmails: 0, errors: [] as string[] };
-  const emails = new Set<string>();
-
-  for (const record of records) {
-    try {
-      mapRecord(record, mappings);
-      const email = record.Email ?? record.email;
-      if (emails.has(email)) stats.duplicateEmails++;
-      else emails.add(email);
-      stats.valid++;
-    } catch (err: any) {
-      stats.invalid++;
-      const field = err.message.replace('Missing: ', '');
-      stats.missing[field] = (stats.missing[field] ?? 0) + 1;
-      if (stats.errors.length < 5) stats.errors.push(err.message);
-    }
-  }
-
-  console.log(`Total: ${stats.total}, Valid: ${stats.valid}, Invalid: ${stats.invalid}, Dupes: ${stats.duplicateEmails}`);
-  if (Object.keys(stats.missing).length) console.log('Missing fields:', stats.missing);
-  return stats;
-}
-```
-
-### Step 3: Batch Migration Using Bulk Create
-Apollo's Bulk Create Contacts endpoint creates up to 100 contacts per call with intelligent deduplication.
-
-```typescript
-// src/migration/batch-worker.ts
-import axios from 'axios';
-
-const client = axios.create({
-  baseURL: 'https://api.apollo.io/api/v1',
-  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
-});
-
-interface MigrationResult {
-  total: number; created: number; existing: number; failed: number;
-  createdIds: string[];
-  errors: Array<{ record: any; error: string }>;
-}
-
-async function migrateBatch(records: Record<string, any>[], batchSize: number = 100): Promise<MigrationResult> {
-  const result: MigrationResult = { total: records.length, created: 0, existing: 0, failed: 0,
-    createdIds: [], errors: [] };
-
-  for (let i = 0; i < records.length; i += batchSize) {
-    const batch = records.slice(i, i + batchSize);
-
-    try {
-      // Bulk create endpoint handles deduplication
-      const { data } = await client.post('/contacts/bulk_create', {
-        contacts: batch,
-      });
-
-      const newContacts = data.contacts ?? [];
-      const existingContacts = data.existing_contacts ?? [];
-      result.created += newContacts.length;
-      result.existing += existingContacts.length;
-      result.createdIds.push(...newContacts.map((c: any) => c.id));
-    } catch (err: any) {
-      // Fall back to individual creates
-      for (const record of batch) {
-        try {
-          const { data } = await client.post('/contacts', record);
-          result.created++;
-          result.createdIds.push(data.contact.id);
-        } catch (e: any) {
-          result.failed++;
-          result.errors.push({ record, error: e.response?.data?.message ?? e.message });
-        }
-      }
-    }
-
-    // Rate limit: 100 requests/min for contacts
-    if (i + batchSize < records.length) {
-      await new Promise((r) => setTimeout(r, 1000));
-    }
-
-    console.log(`Progress: ${Math.min(i + batchSize, records.length)}/${records.length}`);
-  }
-
-  return result;
-}
-```
-
-### Step 4: Post-Migration Reconciliation
-```typescript
-async function reconcile(sourceRecords: Record<string, any>[]) {
-  let matched = 0, missing = 0, mismatched = 0;
-
-  for (const source of sourceRecords.slice(0, 100)) {  // Sample reconciliation
-    const { data } = await client.post('/contacts/search', {
-      q_keywords: source.email, per_page: 1,
-    });
-
-    const contact = data.contacts?.[0];
-    if (!contact) { missing++; continue; }
-
-    const nameMatch = contact.first_name === source.first_name && contact.last_name === source.last_name;
-    if (nameMatch) matched++;
-    else { mismatched++; console.warn(`Mismatch: ${source.email}`); }
-  }
-
-  console.log(`Reconciliation: ${matched} matched, ${missing} missing, ${mismatched} mismatched`);
-  return { matched, missing, mismatched };
-}
-```
-
-### Step 5: Rollback
-```typescript
-async function rollback(contactIds: string[]) {
-  console.log(`Rolling back ${contactIds.length} contacts...`);
-  let deleted = 0;
-
-  for (let i = 0; i < contactIds.length; i += 50) {
-    const batch = contactIds.slice(i, i + 50);
-    for (const id of batch) {
-      try { await client.delete(`/contacts/${id}`); deleted++; }
-      catch (err: any) { console.error(`Failed: ${id}: ${err.message}`); }
-    }
-    await new Promise((r) => setTimeout(r, 500));
-    console.log(`Rollback: ${Math.min(i + 50, contactIds.length)}/${contactIds.length}`);
-  }
-
-  console.log(`Rolled back ${deleted}/${contactIds.length} contacts`);
-}
-```
+### Step 4: Shift Traffic
+Gradually route traffic to new Apollo integration.
 
 ## Output
-- Field mappings for Salesforce and HubSpot to Apollo Contacts API
-- Pre-migration assessment with validation, duplicates, and missing fields
-- Batch migration via `POST /contacts/bulk_create` (100 per call)
-- Post-migration reconciliation sampling
-- Rollback procedure deleting created contacts
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Apollo
 
 ## Error Handling
-| Issue | Resolution |
-|-------|------------|
-| 403 on create | Contacts API requires master key |
-| Bulk create fails | Falls back to individual `POST /contacts` calls |
-| Duplicate contacts | Apollo's bulk_create handles dedup — returns `existing_contacts` |
-| Field mapping error | Review source field names, check for case sensitivity |
-| Rate limited | Increase delay between batches |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
 
 ## Examples
 
-### Full Migration Pipeline
+### Quick Migration Status
 ```typescript
-const assessment = await assess('./salesforce-export.csv', salesforceMap);
-if (assessment.invalid > assessment.total * 0.1) {
-  console.error('Too many invalid records (>10%). Clean data first.');
-  process.exit(1);
-}
-
-const records = parseCsv('./salesforce-export.csv').map((r) => mapRecord(r, salesforceMap));
-const result = await migrateBatch(records, 100);
-console.log(`Created: ${result.created}, Existing: ${result.existing}, Failed: ${result.failed}`);
-
-// Save contact IDs for potential rollback
-fs.writeFileSync('migration-ids.json', JSON.stringify(result.createdIds));
-
-await reconcile(records);
+const status = await validateApolloMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
 ```
 
 ## Resources
-- [Create a Contact](https://docs.apollo.io/reference/create-a-contact)
-- [Bulk Create Contacts](https://docs.apollo.io/reference/bulk-create-contacts)
-- [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
-- [Update a Contact](https://docs.apollo.io/reference/update-a-contact)
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Apollo Migration Guide](https://docs.apollo.com/migration)
 
-## Next Steps
-After migration, verify data with `apollo-prod-checklist`.
+## Flagship+ Skills
+For advanced troubleshooting, see `apollo-advanced-troubleshooting`.

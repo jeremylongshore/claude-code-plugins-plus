@@ -1,224 +1,286 @@
 ---
 name: windsurf-architecture-variants
 description: |
-  Choose workspace architectures for different project scales in Windsurf.
-  Use when deciding how to structure Windsurf workspaces for monorepos,
-  multi-service setups, or polyglot codebases.
-  Trigger with phrases like "windsurf workspace strategy", "windsurf monorepo",
-  "windsurf project layout", "windsurf multi-service", "windsurf workspace size".
+  Choose and implement Windsurf validated architecture blueprints for different scales.
+  Use when designing new Windsurf integrations, choosing between monolith/service/microservice
+  architectures, or planning migration paths for Windsurf applications.
+  Trigger with phrases like "windsurf architecture", "windsurf blueprint",
+  "how to structure windsurf", "windsurf project layout", "windsurf microservice".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, architecture, workspace, monorepo]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Architecture Variants
 
 ## Overview
-How you structure your Windsurf workspace directly impacts Cascade's effectiveness. Large monorepos, multi-service setups, polyglot codebases, and different team sizes each require different approaches. This skill covers workspace strategies from solo projects to 100+ developer organizations.
+Three validated architecture blueprints for Windsurf integrations.
 
 ## Prerequisites
-- Windsurf installed
-- Understanding of Cascade's workspace indexing model
-- Git workflow established
+- Understanding of team size and DAU requirements
+- Knowledge of deployment infrastructure
+- Clear SLA requirements
+- Growth projections available
 
-## Instructions
+## Variant A: Monolith (Simple)
 
-### Variant 1: Single Project (Solo / Small Team)
-
-**Best for:** 1-3 developers, single service, <10K files.
+**Best for:** MVPs, small teams, < 10K daily active users
 
 ```
-my-project/
-├── .windsurfrules          # Full project context
-├── .codeiumignore          # Exclude build artifacts
+my-app/
 ├── src/
+│   ├── windsurf/
+│   │   ├── client.ts          # Singleton client
+│   │   ├── types.ts           # Types
+│   │   └── middleware.ts      # Express middleware
+│   ├── routes/
+│   │   └── api/
+│   │       └── windsurf.ts    # API routes
+│   └── index.ts
 ├── tests/
-├── package.json
-└── README.md
+│   └── windsurf.test.ts
+└── package.json
 ```
 
-**Configuration:**
-- Open entire project as workspace
-- Cascade indexes everything — no partitioning needed
-- `.windsurfrules` contains complete stack and architecture details
+### Key Characteristics
+- Single deployment unit
+- Synchronous Windsurf calls in request path
+- In-memory caching
+- Simple error handling
 
-### Variant 2: Focused Monorepo Windows (Medium Team)
+### Code Pattern
+```typescript
+// Direct integration in route handler
+app.post('/api/create', async (req, res) => {
+  try {
+    const result = await windsurfClient.create(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+```
 
-**Best for:** 3-15 developers, monorepo with 2-10 packages.
+---
+
+## Variant B: Service Layer (Moderate)
+
+**Best for:** Growing startups, 10K-100K DAU, multiple integrations
 
 ```
-monorepo/
-├── .windsurfrules          # Brief shared conventions
-├── .codeiumignore          # Aggressive exclusions at root
-├── packages/
+my-app/
+├── src/
+│   ├── services/
+│   │   ├── windsurf/
+│   │   │   ├── client.ts      # Client wrapper
+│   │   │   ├── service.ts     # Business logic
+│   │   │   ├── repository.ts  # Data access
+│   │   │   └── types.ts
+│   │   └── index.ts           # Service exports
+│   ├── controllers/
+│   │   └── windsurf.ts
+│   ├── routes/
+│   ├── middleware/
+│   ├── queue/
+│   │   └── windsurf-processor.ts  # Async processing
+│   └── index.ts
+├── config/
+│   └── windsurf/
+└── package.json
+```
+
+### Key Characteristics
+- Separation of concerns
+- Background job processing
+- Redis caching
+- Circuit breaker pattern
+- Structured error handling
+
+### Code Pattern
+```typescript
+// Service layer abstraction
+class WindsurfService {
+  constructor(
+    private client: WindsurfClient,
+    private cache: CacheService,
+    private queue: QueueService
+  ) {}
+
+  async createResource(data: CreateInput): Promise<Resource> {
+    // Business logic before API call
+    const validated = this.validate(data);
+
+    // Check cache
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
+    // API call with retry
+    const result = await this.withRetry(() =>
+      this.client.create(validated)
+    );
+
+    // Cache result
+    await this.cache.set(cacheKey, result, 300);
+
+    // Async follow-up
+    await this.queue.enqueue('windsurf.post-create', result);
+
+    return result;
+  }
+}
+```
+
+---
+
+## Variant C: Microservice (Complex)
+
+**Best for:** Enterprise, 100K+ DAU, strict SLAs
+
+```
+windsurf-service/              # Dedicated microservice
+├── src/
 │   ├── api/
-│   │   ├── .windsurfrules  # API-specific rules
-│   │   └── .codeiumignore
-│   ├── web/
-│   │   ├── .windsurfrules  # Frontend-specific rules
-│   │   └── .codeiumignore
-│   └── shared/
-│       ├── .windsurfrules  # Library conventions
-│       └── .codeiumignore
-└── .windsurf/
-    └── workflows/          # Shared workflows
+│   │   ├── grpc/
+│   │   │   └── windsurf.proto
+│   │   └── rest/
+│   │       └── routes.ts
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── events/
+│   │   └── services/
+│   ├── infrastructure/
+│   │   ├── windsurf/
+│   │   │   ├── client.ts
+│   │   │   ├── mapper.ts
+│   │   │   └── circuit-breaker.ts
+│   │   ├── cache/
+│   │   ├── queue/
+│   │   └── database/
+│   └── index.ts
+├── config/
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+└── package.json
+
+other-services/
+├── order-service/       # Calls windsurf-service
+├── payment-service/
+└── notification-service/
 ```
 
-**Strategy:**
-```bash
-# Each developer opens their package directory:
-windsurf packages/api/        # Backend dev
-windsurf packages/web/        # Frontend dev
-windsurf packages/shared/     # Library maintainer
+### Key Characteristics
+- Dedicated Windsurf microservice
+- gRPC for internal communication
+- Event-driven architecture
+- Database per service
+- Kubernetes autoscaling
+- Distributed tracing
+- Circuit breaker per service
 
-# NOT: windsurf monorepo/     # Too broad!
+### Code Pattern
+```typescript
+// Event-driven with domain isolation
+class WindsurfAggregate {
+  private events: DomainEvent[] = [];
+
+  process(command: WindsurfCommand): void {
+    // Domain logic
+    const result = this.execute(command);
+
+    // Emit domain event
+    this.events.push(new WindsurfProcessedEvent(result));
+  }
+
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this.events];
+  }
+}
+
+// Event handler
+@EventHandler(WindsurfProcessedEvent)
+class WindsurfEventHandler {
+  async handle(event: WindsurfProcessedEvent): Promise<void> {
+    // Saga orchestration
+    await this.sagaOrchestrator.continue(event);
+  }
+}
 ```
 
-### Variant 3: Multi-Window Team Workflow (Large Team)
-
-**Best for:** 15+ developers, microservices, 50K+ total files.
-
-```
-Developer A: Windsurf → services/auth/        (auth service)
-Developer B: Windsurf → services/payments/    (payments)
-Developer C: Windsurf → services/notifications/ (notifications)
-Developer D: Windsurf → shared/libs/          (shared libraries)
-
-Each developer gets focused Cascade context per workspace window.
-```
-
-**Team conventions:**
-```markdown
-1. One Windsurf window per service/package
-2. Every service has its own .windsurfrules and .codeiumignore
-3. Cascade tasks scoped to current workspace only
-4. Cross-service changes: open both workspaces side by side
-5. Tag cascade commits: git commit -m "[cascade] description"
-6. Use shared workflows from central config repo
-```
-
-### Variant 4: Polyglot / Multi-Language
-
-**Best for:** Projects with multiple languages (TypeScript + Python + Go).
-
-```
-# Each language has different .windsurfrules
-services/
-├── ts-api/
-│   └── .windsurfrules     # TypeScript patterns, Fastify, Vitest
-├── python-ml/
-│   └── .windsurfrules     # Python patterns, FastAPI, pytest
-└── go-gateway/
-    └── .windsurfrules     # Go patterns, chi router, go test
-```
-
-```markdown
-<!-- .windsurfrules for Python service -->
-# Project: ML Pipeline
-
-## Stack
-- Language: Python 3.11
-- Framework: FastAPI
-- ML: scikit-learn, pandas
-- Testing: pytest with fixtures
-- Type checking: mypy (strict)
-
-## Conventions
-- Use pydantic for all data models
-- Async endpoints with asyncio
-- Type hints on all functions
-- No print() — use logging module
-```
-
-### Variant 5: Frontend-Heavy (Design System)
-
-**Best for:** UI-heavy projects with design system, Storybook, component library.
-
-```markdown
-<!-- .windsurfrules for design system -->
-# Project: Design System
-
-## Stack
-- Framework: React 18 + Next.js 14
-- Styling: Tailwind CSS + custom tokens
-- Components: Radix UI primitives
-- Docs: Storybook 8
-- Testing: Vitest + Testing Library
-
-## Component Conventions
-- One component per file (ComponentName.tsx)
-- Co-located tests: ComponentName.test.tsx
-- Co-located stories: ComponentName.stories.tsx
-- Props interface exported: ComponentNameProps
-- Use forwardRef for all components
-- Use CVA (class-variance-authority) for variants
-
-## Design Tokens
-- Colors: use design-system/tokens, never raw Tailwind colors
-- Spacing: use space-* scale (4px base)
-- Typography: use text-* presets
-```
-
-**Cascade integration:** Use Previews to iterate on UI components:
-```
-"Preview the Button component with all variants"
-Click elements in Preview → send to Cascade for refinement
-```
+---
 
 ## Decision Matrix
 
-| Factor | Solo | Focused Mono | Multi-Window | Polyglot |
-|--------|------|-------------|-------------|----------|
-| Team Size | 1-3 | 3-15 | 15+ | Any |
-| Codebase | <10K files | 10K-50K | 50K+ | Mixed |
-| Cascade Speed | Fast | Fast (per window) | Fast (per window) | Fast (per window) |
-| Setup Effort | Minimal | .codeiumignore + rules | Per-service config | Per-language rules |
-| Context Quality | Excellent | Good | Good | Good (per lang) |
+| Factor | Monolith | Service Layer | Microservice |
+|--------|----------|---------------|--------------|
+| Team Size | 1-5 | 5-20 | 20+ |
+| DAU | < 10K | 10K-100K | 100K+ |
+| Deployment Frequency | Weekly | Daily | Continuous |
+| Failure Isolation | None | Partial | Full |
+| Operational Complexity | Low | Medium | High |
+| Time to Market | Fastest | Moderate | Slowest |
+
+## Migration Path
+
+```
+Monolith → Service Layer:
+1. Extract Windsurf code to service/
+2. Add caching layer
+3. Add background processing
+
+Service Layer → Microservice:
+1. Create dedicated windsurf-service repo
+2. Define gRPC contract
+3. Add event bus
+4. Deploy to Kubernetes
+5. Migrate traffic gradually
+```
+
+## Instructions
+
+### Step 1: Assess Requirements
+Use the decision matrix to identify appropriate variant.
+
+### Step 2: Choose Architecture
+Select Monolith, Service Layer, or Microservice based on needs.
+
+### Step 3: Implement Structure
+Set up project layout following the chosen blueprint.
+
+### Step 4: Plan Migration Path
+Document upgrade path for future scaling.
+
+## Output
+- Architecture variant selected
+- Project structure implemented
+- Migration path documented
+- Appropriate patterns applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cascade is slow | Too many files indexed | Open smaller workspace, add .codeiumignore |
-| Wrong file context | Monorepo root open | Open specific service directory |
-| Conflicting edits | Multiple devs, same files | Feature branches per Cascade session |
-| Wrong language patterns | Multi-language workspace | Separate .windsurfrules per language directory |
-| Stale suggestions | Index out of date | Command Palette > "Codeium: Reset Indexing" |
+| Over-engineering | Wrong variant choice | Start simpler |
+| Performance issues | Wrong layer | Add caching/async |
+| Team friction | Complex architecture | Simplify or train |
+| Deployment complexity | Microservice overhead | Consider service layer |
 
 ## Examples
 
-### Optimized .codeiumignore (Universal)
-```gitignore
-node_modules/
-dist/
-build/
-.next/
-coverage/
-*.min.js
-*.map
-__pycache__/
-.venv/
-target/
-vendor/
-*.log
-*.sqlite
-```
-
-### Workspace Health Check
+### Quick Variant Check
 ```bash
-set -euo pipefail
-FILE_COUNT=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)
-echo "Indexed files: ~$FILE_COUNT"
-[ "$FILE_COUNT" -gt 10000 ] && echo "WARNING: Consider opening a subdirectory"
-[ -f .windsurfrules ] && echo "Rules: $(wc -c < .windsurfrules) chars" || echo "Rules: MISSING"
-[ -f .codeiumignore ] && echo "Ignore: $(wc -l < .codeiumignore) patterns" || echo "Ignore: MISSING"
+# Count team size and DAU to select variant
+echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
+echo "DAU: Check analytics dashboard"
 ```
 
 ## Resources
-- [Windsurf Context Awareness](https://docs.windsurf.com/context-awareness/overview)
-- [Windsurf Ignore](https://docs.windsurf.com/context-awareness/windsurf-ignore)
+- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
+- [Microservices Guide](https://martinfowler.com/microservices/)
+- [Windsurf Architecture Guide](https://docs.windsurf.com/architecture)
 
 ## Next Steps
-For known pitfalls and anti-patterns, see `windsurf-known-pitfalls`.
+For common anti-patterns, see `windsurf-known-pitfalls`.

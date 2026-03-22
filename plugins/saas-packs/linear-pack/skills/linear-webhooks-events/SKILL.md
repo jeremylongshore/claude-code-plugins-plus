@@ -1,271 +1,201 @@
 ---
 name: linear-webhooks-events
 description: |
-  Configure and handle Linear webhooks for real-time event processing.
-  Use when setting up webhooks, handling issue/project/cycle events,
-  or building real-time integrations with Linear.
-  Trigger: "linear webhooks", "linear events", "linear real-time",
-  "handle linear webhook", "linear webhook setup", "linear webhook payload".
-allowed-tools: Read, Write, Edit, Bash(ngrok:*), Grep
+  Implement Linear webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Linear event notifications securely.
+  Trigger with phrases like "linear webhook", "linear events",
+  "linear webhook signature", "handle linear events", "linear notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, webhooks]
-
+compatible-with: claude-code
+tags: [saas, linear]
 ---
+
 # Linear Webhooks & Events
 
 ## Overview
-Set up and handle Linear webhooks for real-time event processing. Linear sends HTTP POST requests for data changes on Issues, Comments, Issue Attachments, Documents, Emoji Reactions, Projects, Project Updates, Cycles, Labels, Users, and Issue SLAs.
-
-**Webhook headers:**
-- `Linear-Signature` — HMAC-SHA256 hex digest of the raw body
-- `Linear-Delivery` — Unique delivery ID for deduplication
-- `Linear-Event` — Event type (e.g., "Issue")
-- `Content-Type: application/json; charset=utf-8`
-
-**Payload body includes:** `action`, `type`, `data`, `url`, `actor`, `updatedFrom` (previous values on update), `createdAt`, `webhookTimestamp` (UNIX ms).
+Securely handle Linear webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Linear workspace admin access (required for webhook creation)
-- Public HTTPS endpoint for webhook delivery
-- Webhook signing secret (generated in Linear Settings > API > Webhooks)
+- Linear webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Build Webhook Receiver with Signature Verification
+### Express.js
 ```typescript
-import express from "express";
-import crypto from "crypto";
+import express from 'express';
+import crypto from 'crypto';
 
 const app = express();
 
-// CRITICAL: use raw body parser — JSON parsing destroys the original for signature verification
-app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
-  const signature = req.headers["linear-signature"] as string;
-  const delivery = req.headers["linear-delivery"] as string;
-  const eventType = req.headers["linear-event"] as string;
-  const rawBody = req.body.toString();
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/linear',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-linear-signature'] as string;
+    const timestamp = req.headers['x-linear-timestamp'] as string;
 
-  // 1. Verify HMAC-SHA256 signature
-  const expected = crypto
-    .createHmac("sha256", process.env.LINEAR_WEBHOOK_SECRET!)
-    .update(rawBody)
-    .digest("hex");
+    if (!verifyLinearSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
 
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-    console.error(`Invalid signature for delivery ${delivery}`);
-    return res.status(401).json({ error: "Invalid signature" });
+    const event = JSON.parse(req.body.toString());
+    await handleLinearEvent(event);
+
+    res.status(200).json({ received: true });
   }
-
-  // 2. Parse and verify timestamp (guard against replay attacks)
-  const event = JSON.parse(rawBody);
-  const age = Date.now() - event.webhookTimestamp;
-  if (age > 60000) {
-    return res.status(400).json({ error: "Webhook expired" });
-  }
-
-  // 3. Respond 200 immediately, process asynchronously
-  res.json({ received: true });
-  processEvent(event, delivery).catch(err =>
-    console.error(`Failed processing ${delivery}:`, err)
-  );
-});
-
-app.listen(3000, () => console.log("Webhook server on :3000"));
+);
 ```
 
-### Step 2: Event Type Definition
+## Signature Verification
+
 ```typescript
-interface LinearWebhookPayload {
-  action: "create" | "update" | "remove";
-  type: string; // "Issue", "Comment", "Project", "Cycle", "IssueLabel", etc.
-  data: Record<string, any>;
-  url: string;
-  actor?: {
-    id: string;
-    type: string; // "user", "application"
-    name?: string;
-  };
-  updatedFrom?: Record<string, any>; // Only contains fields that changed
-  createdAt: string;
-  webhookTimestamp: number;
+function verifyLinearSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.LINEAR_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
 }
 ```
 
-### Step 3: Event Router
-```typescript
-type Handler = (event: LinearWebhookPayload) => Promise<void>;
+## Event Handler Pattern
 
-const handlers: Record<string, Record<string, Handler>> = {
-  Issue: {
-    create: async (e) => {
-      console.log(`New issue: ${e.data.identifier} — ${e.data.title}`);
-      console.log(`  Priority: ${e.data.priority}, Team: ${e.data.team?.key}`);
-      // e.g., notify Slack, sync to external system
-    },
-    update: async (e) => {
-      // updatedFrom contains ONLY the fields that changed
-      if (e.updatedFrom?.stateId) {
-        console.log(`${e.data.identifier} state -> ${e.data.state?.name}`);
-        if (e.data.state?.type === "completed") {
-          await notifySlack(`Done: ${e.data.identifier} ${e.data.title}`);
-        }
-      }
-      if (e.updatedFrom?.assigneeId) {
-        console.log(`${e.data.identifier} assigned to ${e.data.assignee?.name}`);
-      }
-      if (e.updatedFrom?.priority !== undefined) {
-        console.log(`${e.data.identifier} priority changed to ${e.data.priority}`);
-      }
-    },
-    remove: async (e) => {
-      console.log(`Issue deleted: ${e.data.identifier}`);
-    },
-  },
-  Comment: {
-    create: async (e) => {
-      console.log(`Comment on ${e.data.issue?.identifier}: ${e.data.body?.substring(0, 100)}`);
-    },
-  },
-  Project: {
-    update: async (e) => {
-      if (e.updatedFrom?.state) {
-        console.log(`Project "${e.data.name}" -> ${e.data.state}`);
-      }
-    },
-  },
-  Cycle: {
-    update: async (e) => {
-      if (e.updatedFrom?.completedAt && e.data.completedAt) {
-        console.log(`Cycle "${e.data.name}" completed`);
-      }
-    },
-  },
-  ProjectUpdate: {
-    create: async (e) => {
-      // e.data includes diffMarkdown showing changes since last update
-      console.log(`Project update: ${e.data.body?.substring(0, 100)}`);
-    },
-  },
+```typescript
+type LinearEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface LinearEvent {
+  id: string;
+  type: LinearEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<LinearEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
 };
 
-async function processEvent(event: LinearWebhookPayload, deliveryId: string): Promise<void> {
-  const handler = handlers[event.type]?.[event.action];
-  if (handler) {
-    await handler(event);
-  } else {
-    console.log(`Unhandled: ${event.type}.${event.action} (delivery: ${deliveryId})`);
+async function handleLinearEvent(event: LinearEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
   }
 }
 ```
 
-### Step 4: Idempotent Processing
-Linear may retry failed deliveries. Deduplicate using the `Linear-Delivery` header.
+## Idempotency Handling
 
 ```typescript
-// In-memory for simple apps; use Redis/DB for distributed systems
-const processedDeliveries = new Set<string>();
-const MAX_TRACKED = 10000;
+import { Redis } from 'ioredis';
 
-function isDuplicate(deliveryId: string): boolean {
-  if (processedDeliveries.has(deliveryId)) return true;
-  processedDeliveries.add(deliveryId);
-  if (processedDeliveries.size > MAX_TRACKED) {
-    const entries = [...processedDeliveries];
-    entries.slice(0, MAX_TRACKED / 2).forEach(id => processedDeliveries.delete(id));
-  }
-  return false;
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `linear:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
 }
 
-// In webhook handler, after signature verification:
-if (isDuplicate(delivery)) {
-  return res.json({ status: "duplicate, skipped" });
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `linear:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
 }
 ```
 
-### Step 5: Register Webhook
-```bash
-# Via Linear UI:
-# Settings > API > Webhooks > New webhook
-# URL: https://your-app.com/webhooks/linear
-# Resource types: Issues, Comments, Projects, Cycles
-# Teams: All public teams (or select specific ones)
+## Webhook Testing
 
-# Via GraphQL API:
-curl -X POST https://api.linear.app/graphql \
-  -H "Authorization: $LINEAR_API_KEY" \
+```bash
+# Use Linear CLI to send test events
+linear webhooks trigger resource.created --url http://localhost:3000/webhooks/linear
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
   -H "Content-Type: application/json" \
-  -d '{
-    "query": "mutation { webhookCreate(input: { url: \"https://your-app.com/webhooks/linear\", resourceTypes: [\"Issue\", \"Comment\", \"Project\", \"Cycle\"], allPublicTeams: true }) { success webhook { id enabled secret } } }"
-  }'
+  -d '{"type": "resource.created", "data": {}}'
 ```
 
-### Step 6: List and Manage Webhooks via SDK
-```typescript
-import { LinearClient } from "@linear/sdk";
+## Instructions
 
-const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Linear dashboard.
 
-// List all webhooks
-const webhooks = await client.webhooks();
-for (const wh of webhooks.nodes) {
-  console.log(`${wh.url} — enabled: ${wh.enabled}, types: ${wh.resourceTypes?.join(", ")}`);
-}
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-// Disable a webhook
-await client.updateWebhook("webhook-id", { enabled: false });
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-// Delete a webhook
-await client.deleteWebhook("webhook-id");
-```
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
-### Step 7: Local Development with ngrok
-```bash
-# Terminal 1: Start webhook server
-npm run dev
-
-# Terminal 2: Expose port 3000
-ngrok http 3000
-# Copy the https://xxxx.ngrok-free.app URL
-
-# Register in Linear Settings > API > Webhooks > New webhook
-# URL: https://xxxx.ngrok-free.app/webhooks/linear
-```
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Invalid signature | Wrong secret or body parsed as JSON | Use `express.raw()`, verify secret matches Linear |
-| Webhook not received | URL not publicly accessible | Check HTTPS, firewall rules, ngrok tunnel |
-| Duplicate processing | Linear retried delivery | Deduplicate using `Linear-Delivery` header |
-| Handler timeout | Processing takes too long | Respond 200 immediately, process async |
-| Missing `updatedFrom` | Field didn't change | `updatedFrom` only contains changed field keys |
-| `actor` is null | System-triggered event | Check `actor.type` before accessing `.name` |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-### Slack Notification on Issue Completion
-```typescript
-async function notifySlack(message: string) {
-  await fetch(process.env.SLACK_WEBHOOK_URL!, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text: message }),
-  });
-}
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
 
-// In Issue.update handler:
-if (e.updatedFrom?.stateId && e.data.state?.type === "completed") {
-  await notifySlack(
-    `*${e.data.identifier}* completed by ${e.actor?.name ?? "system"}\n${e.data.title}`
-  );
-}
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/linear \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
 ```
 
 ## Resources
-- [Linear Webhooks Documentation](https://linear.app/developers/webhooks)
-- [Webhook Payload Format](https://developers.linear.app/docs/graphql/webhooks)
-- [ngrok Documentation](https://ngrok.com/docs)
+- [Linear Webhooks Guide](https://docs.linear.com/webhooks)
+- [Webhook Security Best Practices](https://docs.linear.com/webhooks/security)
+
+## Next Steps
+For performance optimization, see `linear-performance-tuning`.

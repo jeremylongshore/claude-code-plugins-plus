@@ -1,245 +1,246 @@
 ---
 name: sentry-migration-deep-dive
 description: |
-  Migrate to Sentry from other error tracking tools.
-  Use when migrating from Rollbar, Bugsnag, Raygun,
-  or other error tracking solutions.
-  Trigger with phrases like "migrate to sentry", "sentry migration",
-  "switch from rollbar to sentry", "replace bugsnag with sentry".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(node:*), Grep
+  Execute Sentry major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Sentry, performing major version upgrades,
+  or re-platforming existing integrations to Sentry.
+  Trigger with phrases like "migrate sentry", "sentry migration",
+  "switch to sentry", "sentry replatform", "sentry upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, migration, rollbar, bugsnag]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | grep -iE "sentry|rollbar|bugsnag|raygun|airbrake|honeybadger" || echo 'No error tracking packages found'`
+## Overview
+Comprehensive guide for migrating to or from Sentry, or major version upgrades.
 
 ## Prerequisites
-- Current error tracking tool access and API credentials
-- Sentry project created with DSN
-- Parallel run timeline established (2-4 weeks recommended)
-- Feature mapping document prepared
+- Current system documentation
+- Sentry SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "sentry" > sentry-files.txt
+
+# Count integration points
+wc -l sentry-files.txt
+
+# Identify dependencies
+npm list | grep sentry
+pip freeze | grep sentry
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessSentryMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Sentry   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Sentry SDK
+npm install @sentry/sdk
+
+# Configure credentials
+cp .env.example .env.sentry
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@sentry/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/sentry.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class SentryAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const sentryData = this.transform(data);
+    return sentryClient.create(sentryData);
+  }
+
+  private transform(data: CreateInput): SentryInput {
+    // Map from old format to Sentry format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateSentryData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await sentryClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const sentryPercentage = getFeatureFlag('sentry_migration_percentage');
+
+  if (Math.random() * 100 < sentryPercentage) {
+    return new SentryAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app SENTRY_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.sentry'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateSentryMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### 1. Feature Mapping: Old Tool to Sentry
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-| Feature | Rollbar | Bugsnag | Sentry Equivalent |
-|---------|---------|---------|-------------------|
-| Error capture | `Rollbar.error()` | `Bugsnag.notify()` | `Sentry.captureException()` |
-| Message | `Rollbar.info()` | `Bugsnag.notify(msg)` | `Sentry.captureMessage()` |
-| User context | `Rollbar.configure({person})` | `Bugsnag.setUser()` | `Sentry.setUser()` |
-| Tags/metadata | `Rollbar.configure({custom})` | `bugsnag.addMetadata()` | `Sentry.setTag()` / `setContext()` |
-| Breadcrumbs | `Rollbar.log()` | `Bugsnag.leaveBreadcrumb()` | `Sentry.addBreadcrumb()` |
-| Release | `Rollbar.configure({code_version})` | `Bugsnag.start({appVersion})` | `Sentry.init({release})` |
-| Environment | `Rollbar.configure({environment})` | `Bugsnag.start({releaseStage})` | `Sentry.init({environment})` |
-| Filtering | `checkIgnore` callback | `onError` callback | `beforeSend` callback |
-| Performance | N/A | `@bugsnag/plugin-*` | Built-in `tracesSampleRate` |
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-### 2. Phase 1 — Parallel Installation
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-Install Sentry alongside existing tool:
-
-```typescript
-// instrument.mjs — Sentry initialization
-import * as Sentry from '@sentry/node';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.NODE_ENV,
-  release: process.env.APP_VERSION,
-  tracesSampleRate: 0.1,
-  sendDefaultPii: false,
-});
-```
-
-```typescript
-// error-handler.ts — dual reporting during migration
-import * as Sentry from '@sentry/node';
-import Rollbar from 'rollbar'; // or bugsnag, etc.
-
-const rollbar = new Rollbar({ accessToken: process.env.ROLLBAR_TOKEN });
-
-export function captureError(error: Error, context?: Record<string, unknown>) {
-  // Report to BOTH during parallel run
-  Sentry.withScope((scope) => {
-    if (context) scope.setContext('app', context);
-    Sentry.captureException(error);
-  });
-
-  // Keep old tool running
-  rollbar.error(error, context);
-}
-```
-
-### 3. Phase 2 — Migrate API Calls
-
-**From Rollbar:**
-```typescript
-// BEFORE: Rollbar
-import Rollbar from 'rollbar';
-const rollbar = new Rollbar({
-  accessToken: process.env.ROLLBAR_TOKEN,
-  environment: process.env.NODE_ENV,
-  codeVersion: process.env.APP_VERSION,
-});
-rollbar.error('Payment failed', { orderId: '123' });
-rollbar.configure({ person: { id: user.id, email: user.email } });
-
-// AFTER: Sentry
-import * as Sentry from '@sentry/node';
-Sentry.captureException(new Error('Payment failed'));
-Sentry.setContext('order', { orderId: '123' });
-Sentry.setUser({ id: user.id });
-```
-
-**From Bugsnag:**
-```typescript
-// BEFORE: Bugsnag
-import Bugsnag from '@bugsnag/node';
-Bugsnag.start({
-  apiKey: process.env.BUGSNAG_KEY,
-  releaseStage: process.env.NODE_ENV,
-  appVersion: process.env.APP_VERSION,
-});
-Bugsnag.notify(error, (event) => {
-  event.addMetadata('order', { id: orderId });
-  event.setUser(user.id, user.email, user.name);
-});
-Bugsnag.leaveBreadcrumb('User clicked checkout');
-
-// AFTER: Sentry
-import * as Sentry from '@sentry/node';
-Sentry.withScope((scope) => {
-  scope.setContext('order', { id: orderId });
-  scope.setUser({ id: user.id });
-  Sentry.captureException(error);
-});
-Sentry.addBreadcrumb({ category: 'ui', message: 'User clicked checkout' });
-```
-
-### 4. Phase 3 — Migrate Alert Rules
-
-Map existing alert rules to Sentry:
-
-```
-Old tool alerts:
-  "New error in production" -> Slack #errors
-  "Error rate > 100/min" -> PagerDuty
-
-Sentry alert rules:
-  Issue Alert: "A new issue is created"
-    Filter: environment:production
-    Action: Send Slack notification to #errors
-
-  Metric Alert: "Error count > 100 in 1 minute"
-    Filter: environment:production
-    Action: Send PagerDuty notification
-    Resolve: When < 10 for 5 minutes
-```
-
-### 5. Phase 4 — Validate Parity
-
-Compare error capture between tools during parallel run:
-
-```bash
-# Compare error counts between old tool and Sentry
-# Old tool API (Rollbar example):
-curl -H "X-Rollbar-Access-Token: $ROLLBAR_TOKEN" \
-  "https://api.rollbar.com/api/1/reports/top_recent_items"
-
-# Sentry API:
-curl -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/projects/$SENTRY_ORG/$SENTRY_PROJECT/stats/"
-```
-
-**Parity checklist:**
-- [ ] Error count within 10% between tools
-- [ ] Stack traces resolve correctly (source maps)
-- [ ] User context appears in Sentry events
-- [ ] Breadcrumbs appear in event detail
-- [ ] Alert rules fire correctly
-- [ ] Release tracking shows deploy markers
-- [ ] Performance data appears (if using tracing)
-
-### 6. Phase 5 — Remove Old Tool
-
-```bash
-# Remove old SDK
-npm uninstall rollbar          # or @bugsnag/node, raygun4js, etc.
-npm uninstall @bugsnag/node
-npm uninstall @bugsnag/plugin-express
-
-# Remove old configuration
-rm rollbar.js                   # or bugsnag.js
-# Remove old env vars from .env, CI secrets
-
-# Search for remaining references
-grep -r "rollbar\|bugsnag\|raygun\|airbrake" \
-  --include="*.ts" --include="*.js" --include="*.env*" \
-  --exclude-dir=node_modules src/
-```
-
-### 7. Post-Migration Verification
-
-```typescript
-// Full verification after removing old tool
-import * as Sentry from '@sentry/node';
-
-async function verifyMigration() {
-  // Error capture
-  const errorId = Sentry.captureException(new Error('Migration verification'));
-  console.log('Error captured:', errorId ? 'PASS' : 'FAIL');
-
-  // Message capture
-  Sentry.captureMessage('Migration complete', 'info');
-
-  // Performance span
-  await Sentry.startSpan({ name: 'migration.verify', op: 'test' }, async () => {
-    await new Promise(r => setTimeout(r, 100));
-  });
-
-  // Flush
-  const flushed = await Sentry.flush(5000);
-  console.log('All events sent:', flushed ? 'PASS' : 'FAIL');
-}
-
-verifyMigration();
-```
-
-## Migration Timeline
-
-```
-Week 1:   Install Sentry alongside old tool, configure SDK
-Week 2:   Migrate all captureException/notify calls to dual-report
-Week 3:   Verify parity, migrate alert rules
-Week 4:   Remove old tool, verify Sentry-only operation
-Week 5:   Cancel old tool subscription, close migration
-```
+### Step 4: Shift Traffic
+Gradually route traffic to new Sentry integration.
 
 ## Output
-- Sentry SDK installed and configured as primary error tracker
-- Feature mapping document translating old API to Sentry API
-- Alert rules migrated and verified
-- Parallel run validated error capture parity
-- Old SDK removed and references cleaned up
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Sentry
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Error count mismatch | Different sampling rates | Align `sampleRate` with old tool's settings during comparison |
-| Missing stack traces | Source maps not uploaded to Sentry | Set up `sentry-cli sourcemaps upload` in CI |
-| Old tool references remain | Incomplete code cleanup | Run grep for old tool names across entire codebase |
-| Alert rules not matching | Different alert logic | Re-test alert conditions with synthetic errors |
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
+
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateSentryMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
 ## Resources
-- [SDK Documentation](https://docs.sentry.io/platforms/)
-- [Migration Guide](https://docs.sentry.io/product/accounts/migration/)
-- [Sentry vs Rollbar](https://sentry.io/vs/rollbar/)
-- [Sentry vs Bugsnag](https://sentry.io/vs/bugsnag/)
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Sentry Migration Guide](https://docs.sentry.com/migration)
+
+## Flagship+ Skills
+For advanced troubleshooting, see `sentry-advanced-troubleshooting`.

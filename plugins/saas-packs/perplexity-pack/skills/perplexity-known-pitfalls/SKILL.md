@@ -2,207 +2,335 @@
 name: perplexity-known-pitfalls
 description: |
   Identify and avoid Perplexity anti-patterns and common integration mistakes.
-  Use when reviewing Perplexity code, onboarding new developers,
-  or auditing existing integrations for best practices violations.
+  Use when reviewing Perplexity code for issues, onboarding new developers,
+  or auditing existing Perplexity integrations for best practices violations.
   Trigger with phrases like "perplexity mistakes", "perplexity anti-patterns",
-  "perplexity pitfalls", "perplexity code review", "perplexity gotchas".
+  "perplexity pitfalls", "perplexity what not to do", "perplexity code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, audit]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Known Pitfalls
 
 ## Overview
-Real gotchas when integrating Perplexity Sonar API. Perplexity uses an OpenAI-compatible chat endpoint but performs live web searches -- a fundamentally different paradigm from standard LLM completions. These pitfalls come from treating it like a regular chatbot.
+Common mistakes and anti-patterns when integrating with Perplexity.
 
 ## Prerequisites
-- Perplexity API key configured
-- Understanding of OpenAI-compatible chat API format
+- Access to Perplexity codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-## Pitfalls
+## Pitfall #1: Synchronous API Calls in Request Path
 
-### 1. Using It as a Generic Chatbot
-Perplexity searches the web per request. Using it for tasks that don't need web search wastes money.
-
-```python
-# BAD: general chatbot (wastes a search query)
-response = call_perplexity("Write me a haiku about cats")
-# Costs $0.005+ for something any LLM can do offline
-
-# GOOD: leverage web search capability
-response = call_perplexity(
-    "What are the latest Next.js 15 features released this month?",
-    search_recency_filter="month"
-)
-```
-
-### 2. Ignoring Citations
-Perplexity returns `[1]`, `[2]` markers in text with a separate `citations` array. Ignoring them loses the key value prop.
-
-```python
-data = response.model_dump()  # or response.json() for raw HTTP
-answer = data["choices"][0]["message"]["content"]
-citations = data.get("citations", [])  # NOT in choices — top-level field
-
-# BAD: displaying raw markers
-print(answer)  # "According to [1], Node.js 22 adds..."
-
-# GOOD: replace markers with links
-import re
-for i, url in enumerate(citations, 1):
-    answer = answer.replace(f"[{i}]", f"[{i}]({url})")
-```
-
-### 3. Using Wrong SDK Import
-There is no `@perplexity/sdk` or `perplexity` Python package. Use the standard OpenAI client.
-
+### ❌ Anti-Pattern
 ```typescript
-// BAD — this package doesn't exist
-import { PerplexityClient } from "@perplexity/sdk";
+// User waits for Perplexity API call
+app.post('/checkout', async (req, res) => {
+  const payment = await perplexityClient.processPayment(req.body);  // 2-5s latency
+  const notification = await perplexityClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
+```
 
-// GOOD — use OpenAI client with Perplexity base URL
-import OpenAI from "openai";
-const client = new OpenAI({
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
+
+// Background job
+async function processCheckout(data) {
+  const payment = await perplexityClient.processPayment(data);
+  await perplexityClient.sendEmail(payment);
+}
+```
+
+---
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await perplexityClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => perplexityClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new PerplexityClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new PerplexityClient({
   apiKey: process.env.PERPLEXITY_API_KEY,
-  baseURL: "https://api.perplexity.ai",
 });
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### 4. Not Setting max_tokens
-Without `max_tokens`, responses can be arbitrarily long, increasing costs unpredictably.
+---
 
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
 ```typescript
-// BAD: no token limit — output cost can spike
-await client.chat.completions.create({
-  model: "sonar-pro",  // $15/M output tokens!
-  messages: [{ role: "user", content: "Tell me about AI" }],
-});
-
-// GOOD: always set max_tokens
-await client.chat.completions.create({
-  model: "sonar-pro",
-  messages: [{ role: "user", content: "Tell me about AI" }],
-  max_tokens: 1024,
-});
+// Network error on response = duplicate charge!
+try {
+  await perplexityClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await perplexityClient.charge(order);  // Charged twice!
+  }
+}
 ```
 
-### 5. No Recency Filter for Time-Sensitive Queries
-Without `search_recency_filter`, Perplexity may cite outdated articles.
-
-```python
-# BAD: may return articles from any time period
-response = call_perplexity("current Bitcoin price")
-
-# GOOD: constrain to recent results
-response = call_perplexity(
-    "current Bitcoin price",
-    search_recency_filter="day"  # hour | day | week | month
-)
-```
-
-### 6. Sending Full Conversation History
-Each message in the conversation may trigger new search queries. Sending 20 turns of history is expensive and slow.
-
-```python
-# BAD: 20 turns of history = many search queries
-messages = long_history + [{"role": "user", "content": "summarize"}]
-
-# GOOD: summarize context, send focused query
-messages = [
-    {"role": "system", "content": "Answer based on web search."},
-    {"role": "user", "content": f"Context: {summary}\nQuestion: {question}"}
-]
-```
-
-### 7. Using sonar-pro for Simple Queries
-`sonar-pro` costs 3-15x more than `sonar`. Using it for simple factual lookups wastes budget.
-
+### ✅ Better Approach
 ```typescript
-// BAD: sonar-pro for a trivial question
-await client.chat.completions.create({
-  model: "sonar-pro",  // $3 input + $15 output per M tokens
-  messages: [{ role: "user", content: "What is the capital of France?" }],
-});
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
 
-// GOOD: match model to complexity
-const model = isComplexQuery(query) ? "sonar-pro" : "sonar";
-```
-
-### 8. Mixing Allowlist and Denylist in Domain Filter
-`search_domain_filter` supports either allowlist (include) or denylist (exclude with `-` prefix), but not both in the same request.
-
-```typescript
-// BAD: mixing modes
-search_domain_filter: ["python.org", "-reddit.com"]  // ERROR
-
-// GOOD: pick one mode
-search_domain_filter: ["python.org", "docs.python.org"]  // Allowlist
-// OR
-search_domain_filter: ["-reddit.com", "-quora.com"]  // Denylist
-```
-
-### 9. Not Caching Search Results
-Every uncached call performs a web search. At scale, duplicate queries burn budget.
-
-```typescript
-// BAD: same query hits API every time
-app.get("/search", (req, res) => {
-  const result = await client.chat.completions.create({ ... });
-  res.json(result);
-});
-
-// GOOD: cache by query hash
-const cache = new LRUCache({ max: 1000, ttl: 3600_000 });
-app.get("/search", (req, res) => {
-  const key = hash(req.query.q);
-  if (cache.has(key)) return res.json(cache.get(key));
-  const result = await client.chat.completions.create({ ... });
-  cache.set(key, result);
-  res.json(result);
+await perplexityClient.charge(order, {
+  idempotencyKey,  // Safe to retry
 });
 ```
 
-### 10. Wrong Base URL
-The API is at `api.perplexity.ai`, not `api.perplexity.com`.
+---
 
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
 ```typescript
-// BAD
-baseURL: "https://api.perplexity.com"  // Wrong domain
-
-// GOOD
-baseURL: "https://api.perplexity.ai"   // Correct
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
 ```
 
-## Code Review Checklist
-- [ ] Uses `openai` package, not fake `@perplexity/sdk`
-- [ ] Base URL is `https://api.perplexity.ai`
-- [ ] `max_tokens` set on every request
-- [ ] Citations parsed from `response.citations` array
-- [ ] `search_recency_filter` used for time-sensitive queries
-- [ ] Caching implemented for repeated queries
-- [ ] Model routing: sonar for simple, sonar-pro for complex
-- [ ] Conversation history trimmed before sending
-- [ ] PII sanitized from queries
-- [ ] Domain filter uses only allowlist OR denylist, not both
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-perplexity-signature'];
+    if (!verifyPerplexitySignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
 
-## Error Handling
-| Pitfall | Impact | Detection |
-|---------|--------|-----------|
-| No caching | 3-5x cost overrun | Check cache hit rate metric |
-| Wrong model | Budget waste | Grep for `sonar-pro` in simple query paths |
-| No max_tokens | Unpredictable costs | Grep for `create()` calls without `max_tokens` |
-| PII in queries | Privacy violation | Run sanitization check in CI |
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await perplexityClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await perplexityClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof PerplexityNotFoundError) {
+    return null;
+  }
+  if (error instanceof PerplexityRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new PerplexityClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.perplexity.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new PerplexityClient({
+  timeout: parseInt(process.env.PERPLEXITY_TIMEOUT || '30000'),
+  baseUrl: process.env.PERPLEXITY_BASE_URL || 'https://api.perplexity.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Perplexity is down, every request hangs
+for (const user of users) {
+  await perplexityClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(perplexityClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Perplexity is down
+const recommendations = await perplexityClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await perplexityClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('perplexity', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
 
 ## Output
-- Identified anti-patterns in existing code
-- Applied fixes for each pitfall
-- Code review checklist for ongoing quality
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
-- [Perplexity API Documentation](https://docs.perplexity.ai)
-- [Perplexity Model Guide](https://docs.perplexity.ai/getting-started/models)
-- [OpenAI Compatibility](https://docs.perplexity.ai/guides/chat-completions-guide)
+- [Perplexity Security Guide](https://docs.perplexity.com/security)
+- [Perplexity Best Practices](https://docs.perplexity.com/best-practices)
+
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

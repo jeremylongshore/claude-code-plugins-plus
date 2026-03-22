@@ -1,205 +1,205 @@
 ---
 name: sentry-incident-runbook
 description: |
-  Incident response procedures using Sentry.
-  Use when investigating production issues, triaging errors,
-  or creating incident response workflows.
-  Trigger with phrases like "sentry incident response", "sentry triage",
-  "investigate sentry error", "sentry runbook".
-allowed-tools: Read, Write, Edit, Grep, Bash(curl:*), Bash(node:*)
+  Execute Sentry incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Sentry-related outages, investigating errors,
+  or running post-incident reviews for Sentry integration failures.
+  Trigger with phrases like "sentry incident", "sentry outage",
+  "sentry down", "sentry on-call", "sentry emergency", "sentry broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, workflow, incident-response, triage]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Incident Runbook
 
+## Overview
+Rapid incident response procedures for Sentry-related outages.
+
 ## Prerequisites
-- Sentry account with access to project issues
-- Alert rules configured for critical errors
-- Team notification channels set up (Slack, PagerDuty)
-- Access to Sentry API with auth token
+- Access to Sentry dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Sentry API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Sentry status
+curl -s https://status.sentry.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.sentry'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(sentry_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=sentry-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Sentry API returning errors?
+├─ YES: Is status.sentry.com showing incident?
+│   ├─ YES → Wait for Sentry to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret sentry-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Sentry dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic sentry-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/sentry-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.sentry.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/sentry-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Sentry for limit increase
+```
+
+### 500/503 - Sentry Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/sentry-integration SENTRY_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Sentry status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Sentry Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Sentry Integration Issue
+
+We're experiencing issues with our Sentry integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/sentry-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=sentry-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=sentry_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Sentry [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### 1. Severity Classification
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-| Severity | Criteria | Response Time | Escalation |
-|----------|----------|--------------|------------|
-| **P0 — Critical** | Crash-free rate < 95%, payment failures, data loss | 15 min | PagerDuty on-call |
-| **P1 — Major** | New error affecting > 100 users/hr, core feature broken | 1 hour | Slack #alerts-critical |
-| **P2 — Minor** | New error affecting < 100 users/hr, workaround exists | Same day | Slack #alerts-production |
-| **P3 — Low** | Edge case, cosmetic, staging-only | Next sprint | Backlog |
+### Step 2: Follow Decision Tree
+Determine if the issue is Sentry-side or internal.
 
-### 2. Initial Triage Checklist
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-When an alert fires:
-
-```
-[ ] 1. Open Sentry issue link from alert
-[ ] 2. Check error frequency graph — is it spiking or steady?
-[ ] 3. Check "First Seen" and "Last Seen" — is this new or recurring?
-[ ] 4. Check affected users count
-[ ] 5. Check environment — production, staging, or dev?
-[ ] 6. Check release — which deployment introduced this?
-[ ] 7. Read stack trace — identify the failing line
-[ ] 8. Check breadcrumbs — what happened before the error?
-[ ] 9. Check "Suspect Commits" — which commit likely caused it?
-[ ] 10. Classify severity and communicate status
-```
-
-### 3. Sentry API for Incident Investigation
-
-```bash
-# Get issue details
-curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/issues/$ISSUE_ID/" \
-  | python3 -c "
-import json, sys
-issue = json.load(sys.stdin)
-print(f\"Title: {issue['title']}\")
-print(f\"First Seen: {issue['firstSeen']}\")
-print(f\"Last Seen: {issue['lastSeen']}\")
-print(f\"Events: {issue['count']}\")
-print(f\"Users: {issue['userCount']}\")
-print(f\"Level: {issue['level']}\")
-print(f\"Status: {issue['status']}\")
-"
-
-# Get latest events for the issue
-curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/issues/$ISSUE_ID/events/?per_page=5" \
-  | python3 -c "
-import json, sys
-events = json.load(sys.stdin)
-for e in events:
-    print(f\"Event: {e['eventID']} | {e.get('dateCreated', 'N/A')} | Release: {e.get('release', {}).get('version', 'N/A')}\")
-"
-```
-
-### 4. Error Pattern Identification
-
-Common patterns and their likely causes:
-
-**Deployment-related (error starts at deploy time):**
-```
-Diagnostic: Check "First Seen" time vs. latest deploy time
-Fix: Rollback to previous release
-  sentry-cli releases deploys "$PREVIOUS_VERSION" new --env production
-```
-
-**Third-party failure (external service errors):**
-```
-Diagnostic: Check error message for external hostnames
-Check: Breadcrumbs showing failed HTTP calls
-Fix: Enable circuit breaker, add retry logic, alert on dependency health
-```
-
-**Data corruption (validation/parsing errors):**
-```
-Diagnostic: Check event context for malformed data samples
-Fix: Add input validation, fix data pipeline, backfill corrupted records
-```
-
-**Resource exhaustion (OOM, connection pool, timeouts):**
-```
-Diagnostic: Check error rate correlation with traffic
-Fix: Scale resources, add connection pooling, implement rate limiting
-```
-
-### 5. Incident Communication Templates
-
-**Initial Alert (within 15 min of P0):**
-```
-:rotating_light: INCIDENT — [Service Name]
-Status: Investigating
-Impact: [What users are experiencing]
-Started: [Timestamp]
-Sentry: [Link to issue]
-Lead: @[on-call engineer]
-Next update: 30 minutes
-```
-
-**Status Update (every 30 min for P0):**
-```
-UPDATE — [Service Name] Incident
-Status: [Investigating | Identified | Monitoring | Resolved]
-Root cause: [Brief description or "still investigating"]
-Actions taken: [What's been done]
-Next steps: [What's planned]
-ETA: [When we expect resolution]
-```
-
-**Resolution:**
-```
-:white_check_mark: RESOLVED — [Service Name]
-Duration: [X hours Y minutes]
-Root cause: [What caused it]
-Fix: [What was done]
-Postmortem: [Link — due within 48 hours]
-```
-
-### 6. Resolving Issues in Sentry
-
-```bash
-# Mark issue as resolved
-curl -X PUT \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"status": "resolved"}' \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/issues/$ISSUE_ID/"
-
-# Resolve in next release (auto-reopens if it regresses)
-curl -X PUT \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"status": "resolved", "statusDetails": {"inNextRelease": true}}' \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/issues/$ISSUE_ID/"
-
-# Ignore issue (snooze — won't alert again)
-curl -X PUT \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"status": "ignored", "statusDetails": {"ignoreCount": 100}}' \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/issues/$ISSUE_ID/"
-```
-
-### 7. Postmortem Checklist
-
-After resolution, complete within 48 hours:
-
-```
-[ ] Timeline of events (when detected, when mitigated, when resolved)
-[ ] Root cause analysis (5 Whys)
-[ ] Impact assessment (users affected, duration, revenue impact)
-[ ] What went well (detection, response, communication)
-[ ] What could improve (monitoring gaps, process issues)
-[ ] Action items with owners and deadlines
-[ ] Sentry configuration changes (new alerts, better grouping)
-[ ] Prevention measures (tests, validation, monitoring)
-```
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Severity classification framework (P0-P3)
-- Triage checklist for rapid incident assessment
-- API commands for investigating issues programmatically
-- Communication templates for stakeholder updates
-- Issue resolution via API (resolve, ignore, snooze)
-- Postmortem checklist for continuous improvement
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Alert fatigue | Too many P2/P3 alerts | Tune alert thresholds, use "New issue" not "Every event" |
-| Can't find root cause | Missing context in events | Add breadcrumbs, tags, and user context to SDK config |
-| Issue keeps regressing | Resolved in current release but root cause not fixed | Use "Resolve in next release" to detect regressions |
-| Suspect commits wrong | Commit association not configured | Set up `sentry-cli releases set-commits --auto` |
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.sentry.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-- [Issue Details](https://docs.sentry.io/product/issues/issue-details/)
-- [Alerts](https://docs.sentry.io/product/alerts/)
-- [Issues API](https://docs.sentry.io/api/events/)
-- [Ownership Rules](https://docs.sentry.io/product/issues/ownership-rules/)
+- [Sentry Status Page](https://status.sentry.com)
+- [Sentry Support](https://support.sentry.com)
+
+## Next Steps
+For data handling, see `sentry-data-handling`.

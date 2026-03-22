@@ -1,105 +1,92 @@
 ---
 name: together-install-auth
 description: |
-  Install Together AI SDK and configure API key for inference and fine-tuning.
-  Use when setting up Together AI, configuring the OpenAI-compatible API,
-  or initializing the together Python package.
-  Trigger: "install together, setup together ai, together API key".
+  Install and configure Together AI SDK/CLI authentication.
+  Use when setting up a new Together AI integration, configuring API keys,
+  or initializing Together AI in your project.
+  Trigger with phrases like "install together", "setup together",
+  "together auth", "configure together API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, inference, together]
 compatible-with: claude-code
+tags: [saas, together]
 ---
 
 # Together AI Install & Auth
 
 ## Overview
-
-Together AI provides an OpenAI-compatible API for open-source model inference and fine-tuning. Base URL: `https://api.together.xyz/v1`. Works with the official `together` Python SDK or any OpenAI-compatible client.
+Set up Together AI SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-
-- Together AI account at [api.together.xyz](https://api.together.xyz)
-- API key from Settings > API Keys
-- Python 3.8+ or Node.js 18+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Together AI account with API access
+- API key from Together AI dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
-
 ```bash
-# Python (official)
+# Node.js
+npm install @together/sdk
+
+# Python
 pip install together
-
-# Node.js (use OpenAI SDK with custom base URL)
-npm install openai
 ```
 
-### Step 2: Configure API Key
-
+### Step 2: Configure Authentication
 ```bash
-# .env
-TOGETHER_API_KEY=your-api-key-here
+# Set environment variable
+export TOGETHER_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'TOGETHER_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection (Python)
-
-```python
-from together import Together
-
-client = Together(api_key=os.environ["TOGETHER_API_KEY"])
-response = client.chat.completions.create(
-    model="meta-llama/Llama-3.3-70B-Instruct-Turbo",
-    messages=[{"role": "user", "content": "Say hello"}],
-    max_tokens=10,
-)
-print(f"Connected! Response: {response.choices[0].message.content}")
-```
-
-### Step 4: Verify with OpenAI Client (Node.js)
-
+### Step 3: Verify Connection
 ```typescript
-import OpenAI from 'openai';
-
-const client = new OpenAI({
-  apiKey: process.env.TOGETHER_API_KEY,
-  baseURL: 'https://api.together.xyz/v1',
-});
-
-const response = await client.chat.completions.create({
-  model: 'meta-llama/Llama-3.3-70B-Instruct-Turbo',
-  messages: [{ role: 'user', content: 'Say hello' }],
-  max_tokens: 10,
-});
-console.log(`Connected! ${response.choices[0].message.content}`);
+// Test connection code here
 ```
 
-### Step 5: List Available Models
-
-```python
-models = client.models.list()
-for m in models.data[:5]:
-    print(f"{m.id} ({m.type})")
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Check key at api.together.xyz |
-| `Model not found` | Wrong model ID | Use `client.models.list()` to verify |
-| `ModuleNotFoundError` | SDK not installed | `pip install together` |
-| `429 Too Many Requests` | Rate limit | Back off and retry |
+| Invalid API Key | Incorrect or expired key | Verify key in Together AI dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.together.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { TogetherAIClient } from '@together/sdk';
+
+const client = new TogetherAIClient({
+  apiKey: process.env.TOGETHER_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from together import TogetherAIClient
+
+client = TogetherAIClient(
+    api_key=os.environ.get('TOGETHER_API_KEY')
+)
+```
 
 ## Resources
-
-- [Together AI Docs](https://docs.together.ai/)
-- [Quickstart](https://docs.together.ai/docs/quickstart)
-- [OpenAI Compatibility](https://docs.together.ai/docs/openai-api-compatibility)
-- [Supported Models](https://docs.together.ai/docs/inference-models)
+- [Together AI Documentation](https://docs.together.com)
+- [Together AI Dashboard](https://api.together.com)
+- [Together AI Status](https://status.together.com)
 
 ## Next Steps
-
-Proceed to `together-hello-world` for inference examples.
+After successful auth, proceed to `together-hello-world` for your first API call.

@@ -1,114 +1,216 @@
 ---
 name: evernote-performance-tuning
 description: |
-  Optimize Evernote integration performance.
-  Use when improving response times, reducing API calls,
-  or scaling Evernote integrations.
+  Optimize Evernote API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Evernote integrations.
   Trigger with phrases like "evernote performance", "optimize evernote",
-  "evernote speed", "evernote caching".
-allowed-tools: Read, Write, Edit, Grep
+  "evernote latency", "evernote caching", "evernote slow", "evernote batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, performance, scaling]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Performance Tuning
 
 ## Overview
-Optimize Evernote API integration performance through response caching, efficient data retrieval, request batching, connection management, and performance monitoring.
+Optimize Evernote API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Working Evernote integration
-- Understanding of API rate limits
-- Caching infrastructure (Redis recommended, in-memory for simpler setups)
+- Evernote SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Response Caching
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-Cache frequently accessed data (notebook lists, tag lists, note metadata) with TTL-based expiration. Notebook and tag lists change rarely -- cache for 5-15 minutes. Note metadata can be cached for 1-5 minutes.
+## Caching Strategy
 
-```javascript
-class EvernoteCache {
-  constructor(redis) {
-    this.redis = redis;
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedEvernoteRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const evernoteLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Evernote
+    const results = await evernoteClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
   }
+);
 
-  async getOrFetch(key, fetcher, ttlSeconds = 300) {
-    const cached = await this.redis.get(key);
-    if (cached) return JSON.parse(cached);
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  evernoteLoader.load('id-1'),
+  evernoteLoader.load('id-2'),
+  evernoteLoader.load('id-3'),
+]);
+```
 
-    const data = await fetcher();
-    await this.redis.setex(key, ttlSeconds, JSON.stringify(data));
-    return data;
-  }
+## Connection Optimization
 
-  async listNotebooks(noteStore) {
-    return this.getOrFetch('notebooks', () => noteStore.listNotebooks(), 600);
-  }
+```typescript
+import { Agent } from 'https';
 
-  async listTags(noteStore) {
-    return this.getOrFetch('tags', () => noteStore.listTags(), 600);
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new EvernoteClient({
+  apiKey: process.env.EVERNOTE_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedEvernoteList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedEvernoteList(cursor =>
+  evernoteClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredEvernoteCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
   }
 }
 ```
 
-### Step 2: Efficient Data Retrieval
+## Instructions
 
-Use `findNotesMetadata()` instead of `findNotes()` to avoid transferring full note content. Only request needed fields in `NotesMetadataResultSpec`. Fetch full content only when the user explicitly opens a note.
+### Step 1: Establish Baseline
+Measure current latency for critical Evernote operations.
 
-```javascript
-// BAD: Fetches full content for all notes
-const notes = await noteStore.findNotes(filter, 0, 100);
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-// GOOD: Fetches only metadata (title, dates, tags)
-const metadata = await noteStore.findNotesMetadata(filter, 0, 100, spec);
-// Fetch content only for the specific note user opens
-const fullNote = await noteStore.getNote(guid, true, false, false, false);
-```
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-### Step 3: Request Batching
-
-Batch multiple operations using sync chunks instead of individual API calls. Use `getSyncChunk()` to fetch up to 100 changed notes in a single call instead of 100 `getNote()` calls.
-
-### Step 4: Connection Optimization
-
-Reuse the Evernote client instance across requests. The NoteStore maintains an HTTP connection that benefits from keep-alive. Create one client per user session, not per request.
-
-### Step 5: Performance Monitoring
-
-Track API call counts, response times (p50, p95, p99), cache hit rates, and rate limit occurrences. Alert on degradation.
-
-For the complete caching layer, batching strategies, monitoring setup, and benchmark examples, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
-- Redis-based response caching with TTL management
-- Metadata-only query patterns (avoid unnecessary content transfer)
-- Sync chunk batching for bulk operations
-- Client instance reuse for connection optimization
-- Performance monitoring with latency percentiles and cache hit rates
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `RATE_LIMIT_REACHED` | Too many API calls | Increase cache TTL, batch operations |
-| Stale cache data | Cache not invalidated on update | Invalidate cache on webhook notification |
-| Redis connection failure | Cache infrastructure down | Fall through to direct API call |
-| Slow responses | Large note content in response | Use `findNotesMetadata()` for listings |
-
-## Resources
-- [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [Synchronization (bulk fetch)](https://dev.evernote.com/doc/articles/synchronization.php)
-- [API Reference](https://dev.evernote.com/doc/reference/)
-- [Redis Documentation](https://redis.io/documentation)
-
-## Next Steps
-For cost optimization, see `evernote-cost-tuning`.
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
 ## Examples
 
-**Cache notebook lookups**: Cache `listNotebooks()` for 10 minutes. On 100 requests/minute, this reduces API calls from 100 to 1 per 10-minute window (99% reduction).
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredEvernoteCall(name, () =>
+    cachedEvernoteRequest(`cache:${name}`, fn)
+  );
+```
 
-**Lazy content loading**: Show note titles from cached metadata. Fetch full ENML content only when user clicks to read. Reduces average response time from 500ms to 50ms for list views.
+## Resources
+- [Evernote Performance Guide](https://docs.evernote.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Next Steps
+For cost optimization, see `evernote-cost-tuning`.

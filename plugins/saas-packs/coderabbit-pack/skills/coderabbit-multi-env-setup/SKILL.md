@@ -1,276 +1,224 @@
 ---
 name: coderabbit-multi-env-setup
 description: |
-  Configure CodeRabbit review behavior per branch and environment using path instructions and base branches.
-  Use when setting different review profiles per branch, configuring stricter reviews for release branches,
-  or customizing CodeRabbit behavior across dev/staging/prod workflows.
+  Configure CodeRabbit across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific CodeRabbit configurations.
   Trigger with phrases like "coderabbit environments", "coderabbit staging",
-  "coderabbit per-branch config", "coderabbit release review", "coderabbit environment setup".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
+  "coderabbit dev prod", "coderabbit environment setup", "coderabbit config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, environments, branching]
-
+compatible-with: claude-code
+tags: [saas, coderabbit]
 ---
+
 # CodeRabbit Multi-Environment Setup
 
 ## Overview
-Configure CodeRabbit review behavior based on branch targets and environments. CodeRabbit reads `.coderabbit.yaml` from the PR's base branch, allowing different review configurations per branch. This enables stricter reviews for production branches, relaxed reviews for development, and custom instructions per environment.
+Configure CodeRabbit across development, staging, and production environments.
 
 ## Prerequisites
-- CodeRabbit GitHub App installed on repository
-- Branch strategy defined (e.g., GitFlow, trunk-based, GitHub Flow)
-- `.coderabbit.yaml` committed to each relevant branch
+- Separate CodeRabbit accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
-## How Branch-Based Config Works
+## Environment Strategy
+
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
 ```
-Developer opens PR: feature/auth → develop
-  CodeRabbit reads: .coderabbit.yaml from develop branch
-  Profile: "chill" (development, quick iteration)
+config/
+├── coderabbit/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
 
-Developer opens PR: develop → main
-  CodeRabbit reads: .coderabbit.yaml from main branch
-  Profile: "assertive" (production, thorough review)
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
 
-Developer opens PR: hotfix/fix → release/v2.1
-  CodeRabbit reads: .coderabbit.yaml from release/v2.1 branch
-  Profile: "assertive" + security-focused instructions
+### development.json
+```json
+{
+  "apiKey": "${CODERABBIT_API_KEY}",
+  "baseUrl": "https://api-sandbox.coderabbit.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${CODERABBIT_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.coderabbit.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${CODERABBIT_API_KEY_PROD}",
+  "baseUrl": "https://api.coderabbit.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/coderabbit/config.ts
+import baseConfig from '../../config/coderabbit/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getCodeRabbitConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/coderabbit/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+CODERABBIT_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  CODERABBIT_API_KEY: ${{ secrets.CODERABBIT_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id coderabbit/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=coderabbit-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/coderabbit/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getCodeRabbitConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[coderabbit] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
 ```
 
 ## Instructions
 
-### Step 1: Configure Development Branch (Relaxed)
-```yaml
-# .coderabbit.yaml on develop branch
-language: "en-US"
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-reviews:
-  profile: "chill"                     # Fewer comments for rapid iteration
-  request_changes_workflow: false      # Don't block merges to develop
-  high_level_summary: true
-  sequence_diagrams: false             # Skip diagrams for dev PRs
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-  auto_review:
-    enabled: true
-    drafts: false
-    base_branches:
-      - develop
-    ignore_title_keywords:
-      - "WIP"
-      - "DO NOT MERGE"
-      - "experiment"
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-  path_filters:
-    - "!**/*.lock"
-    - "!**/*.snap"
-    - "!dist/**"
-    - "!**/*.generated.*"
-
-  path_instructions:
-    - path: "**"
-      instructions: |
-        Development branch review:
-        - Only flag bugs, security issues, and obvious errors
-        - Do NOT comment on code style, naming, or formatting
-        - Do NOT suggest refactoring unless it fixes a bug
-
-chat:
-  auto_reply: true
-```
-
-### Step 2: Configure Production Branch (Strict)
-```yaml
-# .coderabbit.yaml on main branch
-language: "en-US"
-
-reviews:
-  profile: "assertive"                 # Thorough review for production
-  request_changes_workflow: true       # Block merge on issues
-  high_level_summary: true
-  high_level_summary_in_walkthrough: true
-  sequence_diagrams: true
-  review_status: true
-
-  auto_review:
-    enabled: true
-    drafts: false
-    base_branches:
-      - main
-
-  path_filters:
-    - "!**/*.lock"
-    - "!**/*.snap"
-    - "!dist/**"
-    - "!vendor/**"
-
-  path_instructions:
-    - path: "**"
-      instructions: |
-        Production review checklist:
-        1. Flag any hardcoded secrets, API keys, or credentials
-        2. Check error handling: no empty catch blocks, proper error propagation
-        3. Verify input validation on all API endpoints
-        4. Check for proper logging (structured, no PII)
-
-    - path: "src/api/**"
-      instructions: |
-        API review (production):
-        - Verify proper HTTP status codes
-        - Check auth middleware is applied to protected routes
-        - Validate request bodies with schema validation
-        - Ensure error responses follow RFC 7807 format
-        - Flag missing rate limiting
-
-    - path: "src/db/**"
-      instructions: |
-        Database review (production):
-        - All queries MUST use parameterized statements
-        - Transactions required for multi-table mutations
-        - Check for N+1 query patterns
-        - Verify index usage for complex queries
-        - Flag any raw SQL string concatenation
-
-    - path: ".github/workflows/**"
-      instructions: |
-        CI/CD review (production):
-        - Pin ALL action versions to SHA (not tags)
-        - Never echo or log secrets
-        - Include timeout-minutes on all jobs
-        - Use OIDC for cloud provider authentication
-
-chat:
-  auto_reply: true
-```
-
-### Step 3: Configure Release Branch (Security-Focused)
-```yaml
-# .coderabbit.yaml on release/* branches
-language: "en-US"
-
-reviews:
-  profile: "assertive"
-  request_changes_workflow: true       # Block merges on issues
-
-  auto_review:
-    enabled: true
-    drafts: false
-    base_branches:
-      - "release/*"
-
-  path_instructions:
-    - path: "**"
-      instructions: |
-        RELEASE BRANCH - Security and stability focus:
-        1. Flag ANY security vulnerability (priority over all other feedback)
-        2. Check for backward compatibility
-        3. Verify no debug code (console.log, debugger statements)
-        4. Ensure proper error messages (no stack traces exposed to users)
-        5. Check for feature flags guarding unreleased features
-        Only provide feedback on bugs and security. Skip style comments entirely.
-
-    - path: "src/auth/**"
-      instructions: |
-        CRITICAL PATH for release. Check:
-        - Token validation and expiry
-        - Session management security
-        - CSRF protection
-        - No auth bypass vulnerabilities
-
-chat:
-  auto_reply: true
-```
-
-### Step 4: Maintain Branch Configs with a Script
-```bash
-#!/bin/bash
-# update-coderabbit-configs.sh - Keep branch configs in sync
-set -euo pipefail
-
-CURRENT_BRANCH=$(git branch --show-current)
-
-# Update develop branch config
-git checkout develop 2>/dev/null || git checkout -b develop
-cp configs/coderabbit-develop.yaml .coderabbit.yaml
-git add .coderabbit.yaml
-git diff --cached --quiet || git commit -m "chore: update CodeRabbit config for develop"
-
-# Update main branch config
-git checkout main
-cp configs/coderabbit-main.yaml .coderabbit.yaml
-git add .coderabbit.yaml
-git diff --cached --quiet || git commit -m "chore: update CodeRabbit config for main"
-
-# Return to original branch
-git checkout "$CURRENT_BRANCH"
-
-echo "CodeRabbit configs updated on develop and main"
-echo "Push both branches to apply: git push origin develop main"
-```
-
-### Step 5: Verify Per-Branch Configuration
-```markdown
-# On a PR targeting develop:
-@coderabbitai configuration
-# Should show: profile: "chill", request_changes_workflow: false
-
-# On a PR targeting main:
-@coderabbitai configuration
-# Should show: profile: "assertive", request_changes_workflow: true
-
-# If both show the same config, the branch-specific .coderabbit.yaml
-# is not committed to the base branch. Verify with:
-# git show main:.coderabbit.yaml
-# git show develop:.coderabbit.yaml
-```
-
-### Step 6: Branch Protection per Environment
-```bash
-set -euo pipefail
-OWNER="your-org"
-REPO="your-repo"
-
-# Main: require CodeRabbit approval
-gh api "repos/$OWNER/$REPO/branches/main/protection" \
-  --method PUT \
-  --field 'required_status_checks={"strict":true,"contexts":["coderabbitai"]}' \
-  --field 'required_pull_request_reviews={"required_approving_review_count":1}' \
-  --field 'enforce_admins=true' \
-  --field 'restrictions=null'
-
-# Develop: CodeRabbit review optional (not required)
-gh api "repos/$OWNER/$REPO/branches/develop/protection" \
-  --method PUT \
-  --field 'required_status_checks={"strict":false,"contexts":[]}' \
-  --field 'required_pull_request_reviews={"required_approving_review_count":0}' \
-  --field 'enforce_admins=false' \
-  --field 'restrictions=null'
-
-echo "Branch protection configured"
-echo "  main: CodeRabbit required"
-echo "  develop: CodeRabbit optional"
-```
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
 ## Output
-- Branch-specific `.coderabbit.yaml` configs committed
-- Development branch with relaxed review profile
-- Production branch with strict review and security instructions
-- Release branches with security-focused review
-- Branch protection rules aligned with review policies
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Same review profile on all branches | Config only on one branch | Commit different `.coderabbit.yaml` to each base branch |
-| Config changes not applied | YAML not on the base branch | Merge config changes to the target branch first |
-| PR to main gets "chill" review | `.coderabbit.yaml` on main has wrong profile | Check config with `git show main:.coderabbit.yaml` |
-| Release branch not reviewed | `base_branches` doesn't include `release/*` | Add glob pattern `release/*` to base_branches |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getCodeRabbitConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-- [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
-- [CodeRabbit Branch-Based Config](https://docs.coderabbit.ai/guides/review-instructions)
-- [GitHub Branch Protection](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository)
+- [CodeRabbit Environments Guide](https://docs.coderabbit.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-For deployment and org-wide rollout, see `coderabbit-deploy-integration`.
+For observability setup, see `coderabbit-observability`.

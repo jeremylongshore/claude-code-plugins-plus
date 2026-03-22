@@ -1,264 +1,149 @@
 ---
 name: notion-sdk-patterns
 description: |
-  Apply production-ready @notionhq/client SDK patterns for TypeScript and Python.
+  Apply production-ready Notion SDK patterns for TypeScript and Python.
   Use when implementing Notion integrations, refactoring SDK usage,
   or establishing team coding standards for Notion.
   Trigger with phrases like "notion SDK patterns", "notion best practices",
-  "notion code patterns", "idiomatic notion", "notion typescript".
+  "notion code patterns", "idiomatic notion".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
 compatible-with: claude-code
+tags: [saas, notion]
 ---
 
 # Notion SDK Patterns
 
 ## Overview
-Production-ready patterns for `@notionhq/client` usage: typed error handling, singleton client, pagination helpers, and response extraction utilities.
+Production-ready patterns for Notion SDK usage in TypeScript and Python.
 
 ## Prerequisites
-- `@notionhq/client` installed
-- TypeScript 5+ with strict mode
+- Completed `notion-install-auth` setup
 - Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1: Singleton Client with Configuration
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
 // src/notion/client.ts
-import { Client, LogLevel } from '@notionhq/client';
+import { NotionClient } from '@notion/sdk';
 
-let instance: Client | null = null;
+let instance: NotionClient | null = null;
 
-export function getNotionClient(): Client {
+export function getNotionClient(): NotionClient {
   if (!instance) {
-    if (!process.env.NOTION_TOKEN) {
-      throw new Error('NOTION_TOKEN environment variable is required');
-    }
-    instance = new Client({
-      auth: process.env.NOTION_TOKEN,
-      logLevel: process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.WARN,
-      timeoutMs: 60_000,
-      // Built-in retry with exponential backoff
-      // Defaults: maxRetries=2, initialRetryDelayMs=1000, maxRetryDelayMs=60000
+    instance = new NotionClient({
+      apiKey: process.env.NOTION_API_KEY!,
+      // Additional options
     });
   }
   return instance;
 }
 ```
 
-### Step 2: Type-Safe Error Handling
+### Step 2: Add Error Handling Wrapper
 ```typescript
-import { Client, isNotionClientError, APIErrorCode, ClientErrorCode } from '@notionhq/client';
+import { NotionError } from '@notion/sdk';
 
 async function safeNotionCall<T>(
   operation: () => Promise<T>
-): Promise<{ data: T | null; error: string | null }> {
+): Promise<{ data: T | null; error: Error | null }> {
   try {
     const data = await operation();
     return { data, error: null };
-  } catch (error: unknown) {
-    if (isNotionClientError(error)) {
-      switch (error.code) {
-        case APIErrorCode.Unauthorized:
-          return { data: null, error: 'Invalid API token. Regenerate at notion.so/my-integrations.' };
-        case APIErrorCode.ObjectNotFound:
-          return { data: null, error: 'Resource not found. Ensure page is shared with integration.' };
-        case APIErrorCode.RateLimited:
-          return { data: null, error: `Rate limited. Retry after ${error.headers?.['retry-after']}s.` };
-        case APIErrorCode.ValidationError:
-          return { data: null, error: `Validation error: ${error.message}` };
-        case APIErrorCode.ConflictError:
-          return { data: null, error: 'Conflict. Resource was modified by another request.' };
-        case ClientErrorCode.RequestTimeout:
-          return { data: null, error: 'Request timed out. Increase timeoutMs.' };
-        default:
-          return { data: null, error: `Notion API error [${error.code}]: ${error.message}` };
-      }
+  } catch (err) {
+    if (err instanceof NotionError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
     }
-    return { data: null, error: `Unexpected error: ${String(error)}` };
+    return { data: null, error: err as Error };
   }
 }
 ```
 
-### Step 3: Generic Pagination Helper
+### Step 3: Implement Retry Logic
 ```typescript
-type PaginatedFn<T> = (args: { start_cursor?: string }) => Promise<{
-  results: T[];
-  has_more: boolean;
-  next_cursor: string | null;
-}>;
-
-async function collectPaginated<T>(fn: PaginatedFn<T>): Promise<T[]> {
-  const all: T[] = [];
-  let cursor: string | undefined;
-
-  do {
-    const response = await fn({ start_cursor: cursor });
-    all.push(...response.results);
-    cursor = response.has_more && response.next_cursor
-      ? response.next_cursor
-      : undefined;
-  } while (cursor);
-
-  return all;
-}
-
-// Usage
-const notion = getNotionClient();
-const allPages = await collectPaginated((args) =>
-  notion.databases.query({ database_id: 'db-id', ...args })
-);
-```
-
-### Step 4: Property Value Extractors
-```typescript
-// Type-safe property extraction from page results
-import type {
-  PageObjectResponse,
-  RichTextItemResponse,
-} from '@notionhq/client/build/src/api-endpoints';
-
-function getTitle(page: PageObjectResponse, propertyName: string): string {
-  const prop = page.properties[propertyName];
-  if (prop?.type === 'title') {
-    return prop.title.map(t => t.plain_text).join('');
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
   }
-  return '';
+  throw new Error('Unreachable');
 }
-
-function getRichText(page: PageObjectResponse, propertyName: string): string {
-  const prop = page.properties[propertyName];
-  if (prop?.type === 'rich_text') {
-    return prop.rich_text.map(t => t.plain_text).join('');
-  }
-  return '';
-}
-
-function getSelect(page: PageObjectResponse, propertyName: string): string | null {
-  const prop = page.properties[propertyName];
-  return prop?.type === 'select' ? prop.select?.name ?? null : null;
-}
-
-function getMultiSelect(page: PageObjectResponse, propertyName: string): string[] {
-  const prop = page.properties[propertyName];
-  return prop?.type === 'multi_select' ? prop.multi_select.map(s => s.name) : [];
-}
-
-function getNumber(page: PageObjectResponse, propertyName: string): number | null {
-  const prop = page.properties[propertyName];
-  return prop?.type === 'number' ? prop.number : null;
-}
-
-function getCheckbox(page: PageObjectResponse, propertyName: string): boolean {
-  const prop = page.properties[propertyName];
-  return prop?.type === 'checkbox' ? prop.checkbox : false;
-}
-
-function getDate(page: PageObjectResponse, propertyName: string): string | null {
-  const prop = page.properties[propertyName];
-  return prop?.type === 'date' ? prop.date?.start ?? null : null;
-}
-```
-
-### Step 5: Rich Text Builder
-```typescript
-type RichTextInput = {
-  text: { content: string; link?: { url: string } | null };
-  annotations?: Partial<{
-    bold: boolean; italic: boolean; strikethrough: boolean;
-    underline: boolean; code: boolean;
-    color: 'default' | 'red' | 'blue' | 'green' | 'yellow' | 'purple';
-  }>;
-};
-
-function richText(content: string, opts?: {
-  bold?: boolean; italic?: boolean; code?: boolean;
-  link?: string; color?: string;
-}): RichTextInput {
-  return {
-    text: {
-      content,
-      link: opts?.link ? { url: opts.link } : null,
-    },
-    annotations: {
-      bold: opts?.bold ?? false,
-      italic: opts?.italic ?? false,
-      code: opts?.code ?? false,
-      color: (opts?.color as any) ?? 'default',
-    },
-  };
-}
-
-// Usage
-await notion.blocks.children.append({
-  block_id: pageId,
-  children: [{
-    paragraph: {
-      rich_text: [
-        richText('Check out '),
-        richText('the docs', { bold: true, link: 'https://developers.notion.com' }),
-        richText(' for details.'),
-      ],
-    },
-  }],
-});
 ```
 
 ## Output
-- Type-safe client singleton with lazy initialization
-- Robust error handling using SDK error codes
-- Reusable pagination helper for all list endpoints
-- Property extractors for every common property type
-- Fluent rich text builder
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| `isNotionClientError` | All API calls | Type-safe error discrimination |
-| `collectPaginated` | Any list endpoint | No missed results |
-| Property extractors | Reading pages | No `undefined` crashes |
-| Rich text builder | Creating content | Correct annotation structure |
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
 ## Examples
 
-### Factory Pattern (Multi-Workspace)
+### Factory Pattern (Multi-tenant)
 ```typescript
-const clients = new Map<string, Client>();
+const clients = new Map<string, NotionClient>();
 
-function getClientForWorkspace(workspaceId: string, token: string): Client {
-  if (!clients.has(workspaceId)) {
-    clients.set(workspaceId, new Client({ auth: token }));
+export function getClientForTenant(tenantId: string): NotionClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new NotionClient({ apiKey }));
   }
-  return clients.get(workspaceId)!;
+  return clients.get(tenantId)!;
 }
 ```
 
-### Python Equivalent
+### Python Context Manager
 ```python
-from notion_client import Client, APIResponseError
+from contextlib import asynccontextmanager
+from notion import NotionClient
 
-notion = Client(auth=os.environ["NOTION_TOKEN"])
+@asynccontextmanager
+async def get_notion_client():
+    client = NotionClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
 
-try:
-    results = notion.databases.query(database_id=db_id)
-except APIResponseError as e:
-    if e.code == "object_not_found":
-        print("Database not found or not shared with integration")
-    elif e.code == "rate_limited":
-        print(f"Rate limited. Retry after {e.headers.get('retry-after')}s")
-    else:
-        raise
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const notionResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
 ```
 
 ## Resources
-- [@notionhq/client npm](https://www.npmjs.com/package/@notionhq/client)
-- [GitHub: notion-sdk-js](https://github.com/makenotion/notion-sdk-js)
-- [API Error Codes](https://developers.notion.com/reference/request-limits)
-- [Notion API Types](https://developers.notion.com/reference/intro)
+- [Notion SDK Reference](https://docs.notion.com/sdk)
+- [Notion API Types](https://docs.notion.com/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
 Apply patterns in `notion-core-workflow-a` for real-world usage.

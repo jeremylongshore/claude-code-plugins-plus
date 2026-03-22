@@ -1,31 +1,71 @@
 ---
 name: appfolio-core-workflow-a
 description: |
-  Build property management dashboard with AppFolio API data.
-  Trigger: "appfolio property dashboard".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Execute AppFolio primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "appfolio main workflow",
+  "primary task with appfolio".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, property-management, appfolio, real-estate]
 compatible-with: claude-code
+tags: [saas, appfolio]
 ---
 
-# AppFolio Core Workflow A — Property Management Dashboard
+# AppFolio Core Workflow A
+
+## Overview
+Primary money-path workflow for AppFolio. This is the most common use case.
+
+## Prerequisites
+- Completed `appfolio-install-auth` setup
+- Understanding of AppFolio core concepts
+- Valid API credentials configured
+
+## Instructions
+
+### Step 1: Initialize
+```typescript
+// Step 1 implementation
+```
+
+### Step 2: Execute
+```typescript
+// Step 2 implementation
+```
+
+### Step 3: Finalize
+```typescript
+// Step 3 implementation
+```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from AppFolio API
+- Success confirmation or error details
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid credentials | Verify client_id/secret |
-| `404 Not Found` | Wrong endpoint | Check API version in URL |
-| `422 Unprocessable` | Invalid request body | Validate required fields |
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-
-- [AppFolio Stack APIs](https://www.appfolio.com/stack/partners/api)
-- [AppFolio Engineering Blog](https://engineering.appfolio.com)
+- [AppFolio Documentation](https://docs.appfolio.com)
+- [AppFolio API Reference](https://docs.appfolio.com/api)
 
 ## Next Steps
-
-Continue with the next skill in the AppFolio pack sequence.
+For secondary workflow, see `appfolio-core-workflow-b`.

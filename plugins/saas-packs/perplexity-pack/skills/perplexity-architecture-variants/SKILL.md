@@ -1,233 +1,286 @@
 ---
 name: perplexity-architecture-variants
 description: |
-  Choose and implement Perplexity architecture blueprints for different scales:
-  direct search widget, cached research layer, and multi-query pipeline.
+  Choose and implement Perplexity validated architecture blueprints for different scales.
+  Use when designing new Perplexity integrations, choosing between monolith/service/microservice
+  architectures, or planning migration paths for Perplexity applications.
   Trigger with phrases like "perplexity architecture", "perplexity blueprint",
-  "how to structure perplexity", "perplexity project layout".
+  "how to structure perplexity", "perplexity project layout", "perplexity microservice".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, migration, scaling, microservices]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Architecture Variants
 
 ## Overview
-Three validated architectures for Perplexity Sonar API at different scales. Each builds on the previous, adding caching and orchestration as volume grows.
+Three validated architecture blueprints for Perplexity integrations.
+
+## Prerequisites
+- Understanding of team size and DAU requirements
+- Knowledge of deployment infrastructure
+- Clear SLA requirements
+- Growth projections available
+
+## Variant A: Monolith (Simple)
+
+**Best for:** MVPs, small teams, < 10K daily active users
+
+```
+my-app/
+├── src/
+│   ├── perplexity/
+│   │   ├── client.ts          # Singleton client
+│   │   ├── types.ts           # Types
+│   │   └── middleware.ts      # Express middleware
+│   ├── routes/
+│   │   └── api/
+│   │       └── perplexity.ts    # API routes
+│   └── index.ts
+├── tests/
+│   └── perplexity.test.ts
+└── package.json
+```
+
+### Key Characteristics
+- Single deployment unit
+- Synchronous Perplexity calls in request path
+- In-memory caching
+- Simple error handling
+
+### Code Pattern
+```typescript
+// Direct integration in route handler
+app.post('/api/create', async (req, res) => {
+  try {
+    const result = await perplexityClient.create(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+```
+
+---
+
+## Variant B: Service Layer (Moderate)
+
+**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+
+```
+my-app/
+├── src/
+│   ├── services/
+│   │   ├── perplexity/
+│   │   │   ├── client.ts      # Client wrapper
+│   │   │   ├── service.ts     # Business logic
+│   │   │   ├── repository.ts  # Data access
+│   │   │   └── types.ts
+│   │   └── index.ts           # Service exports
+│   ├── controllers/
+│   │   └── perplexity.ts
+│   ├── routes/
+│   ├── middleware/
+│   ├── queue/
+│   │   └── perplexity-processor.ts  # Async processing
+│   └── index.ts
+├── config/
+│   └── perplexity/
+└── package.json
+```
+
+### Key Characteristics
+- Separation of concerns
+- Background job processing
+- Redis caching
+- Circuit breaker pattern
+- Structured error handling
+
+### Code Pattern
+```typescript
+// Service layer abstraction
+class PerplexityService {
+  constructor(
+    private client: PerplexityClient,
+    private cache: CacheService,
+    private queue: QueueService
+  ) {}
+
+  async createResource(data: CreateInput): Promise<Resource> {
+    // Business logic before API call
+    const validated = this.validate(data);
+
+    // Check cache
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
+    // API call with retry
+    const result = await this.withRetry(() =>
+      this.client.create(validated)
+    );
+
+    // Cache result
+    await this.cache.set(cacheKey, result, 300);
+
+    // Async follow-up
+    await this.queue.enqueue('perplexity.post-create', result);
+
+    return result;
+  }
+}
+```
+
+---
+
+## Variant C: Microservice (Complex)
+
+**Best for:** Enterprise, 100K+ DAU, strict SLAs
+
+```
+perplexity-service/              # Dedicated microservice
+├── src/
+│   ├── api/
+│   │   ├── grpc/
+│   │   │   └── perplexity.proto
+│   │   └── rest/
+│   │       └── routes.ts
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── events/
+│   │   └── services/
+│   ├── infrastructure/
+│   │   ├── perplexity/
+│   │   │   ├── client.ts
+│   │   │   ├── mapper.ts
+│   │   │   └── circuit-breaker.ts
+│   │   ├── cache/
+│   │   ├── queue/
+│   │   └── database/
+│   └── index.ts
+├── config/
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+└── package.json
+
+other-services/
+├── order-service/       # Calls perplexity-service
+├── payment-service/
+└── notification-service/
+```
+
+### Key Characteristics
+- Dedicated Perplexity microservice
+- gRPC for internal communication
+- Event-driven architecture
+- Database per service
+- Kubernetes autoscaling
+- Distributed tracing
+- Circuit breaker per service
+
+### Code Pattern
+```typescript
+// Event-driven with domain isolation
+class PerplexityAggregate {
+  private events: DomainEvent[] = [];
+
+  process(command: PerplexityCommand): void {
+    // Domain logic
+    const result = this.execute(command);
+
+    // Emit domain event
+    this.events.push(new PerplexityProcessedEvent(result));
+  }
+
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this.events];
+  }
+}
+
+// Event handler
+@EventHandler(PerplexityProcessedEvent)
+class PerplexityEventHandler {
+  async handle(event: PerplexityProcessedEvent): Promise<void> {
+    // Saga orchestration
+    await this.sagaOrchestrator.continue(event);
+  }
+}
+```
+
+---
 
 ## Decision Matrix
 
-| Factor | Direct Widget | Cached Layer | Research Pipeline |
-|--------|--------------|--------------|-------------------|
-| Volume | <500/day | 500-5K/day | 5K+/day |
-| Latency (p50) | 2-5s | 50ms (cached) / 2-5s (miss) | 10-30s |
-| Model | `sonar` | `sonar` + cache | `sonar` + `sonar-pro` |
-| Monthly Cost | <$150 | $50-$300 | $300+ |
-| Complexity | Minimal | Moderate | High |
+| Factor | Monolith | Service Layer | Microservice |
+|--------|----------|---------------|--------------|
+| Team Size | 1-5 | 5-20 | 20+ |
+| DAU | < 10K | 10K-100K | 100K+ |
+| Deployment Frequency | Weekly | Daily | Continuous |
+| Failure Isolation | None | Partial | Full |
+| Operational Complexity | Low | Medium | High |
+| Time to Market | Fastest | Moderate | Slowest |
+
+## Migration Path
+
+```
+Monolith → Service Layer:
+1. Extract Perplexity code to service/
+2. Add caching layer
+3. Add background processing
+
+Service Layer → Microservice:
+1. Create dedicated perplexity-service repo
+2. Define gRPC contract
+3. Add event bus
+4. Deploy to Kubernetes
+5. Migrate traffic gradually
+```
 
 ## Instructions
 
-### Variant 1: Direct Search Widget (<500 queries/day)
+### Step 1: Assess Requirements
+Use the decision matrix to identify appropriate variant.
 
-Best for: Adding AI search to an existing app. No cache needed at this scale.
+### Step 2: Choose Architecture
+Select Monolith, Service Layer, or Microservice based on needs.
 
-```typescript
-// Simple endpoint — add to any Express/Next.js app
-import OpenAI from "openai";
+### Step 3: Implement Structure
+Set up project layout following the chosen blueprint.
 
-const perplexity = new OpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY!,
-  baseURL: "https://api.perplexity.ai",
-});
+### Step 4: Plan Migration Path
+Document upgrade path for future scaling.
 
-app.post("/api/search", async (req, res) => {
-  try {
-    const response = await perplexity.chat.completions.create({
-      model: "sonar",
-      messages: [{ role: "user", content: req.body.query }],
-      max_tokens: 1024,
-    });
-
-    res.json({
-      answer: response.choices[0].message.content,
-      citations: (response as any).citations || [],
-    });
-  } catch (err: any) {
-    if (err.status === 429) {
-      res.status(429).json({ error: "Rate limited. Try again shortly." });
-    } else {
-      res.status(500).json({ error: "Search unavailable" });
-    }
-  }
-});
-```
-
-### Variant 2: Cached Research Layer (500-5K queries/day)
-
-Best for: Repeated queries, knowledge base search, FAQ bots. Cache eliminates duplicate API calls.
-
-```typescript
-import { createHash } from "crypto";
-import { LRUCache } from "lru-cache";
-
-const cache = new LRUCache<string, any>({
-  max: 5000,
-  ttl: 4 * 3600_000,  // 4-hour TTL
-});
-
-class CachedSearchService {
-  constructor(private client: OpenAI) {}
-
-  async search(query: string, model = "sonar") {
-    const key = this.cacheKey(query, model);
-    const cached = cache.get(key);
-    if (cached) return { ...cached, cached: true };
-
-    const response = await this.client.chat.completions.create({
-      model,
-      messages: [{ role: "user", content: query }],
-      max_tokens: 1024,
-    });
-
-    const result = {
-      answer: response.choices[0].message.content || "",
-      citations: (response as any).citations || [],
-      model: response.model,
-    };
-
-    cache.set(key, result);
-    return { ...result, cached: false };
-  }
-
-  private cacheKey(query: string, model: string): string {
-    return createHash("sha256")
-      .update(`${model}:${query.toLowerCase().trim()}`)
-      .digest("hex");
-  }
-
-  get stats() {
-    return { size: cache.size, max: 5000 };
-  }
-}
-```
-
-### Variant 3: Multi-Query Research Pipeline (5K+ queries/day)
-
-Best for: Automated research, report generation, competitive intelligence. Uses job queue for rate limiting and sonar-pro for deep analysis.
-
-```typescript
-import PQueue from "p-queue";
-
-class ResearchPipeline {
-  private queue: PQueue;
-  private cache: CachedSearchService;
-
-  constructor(private client: OpenAI) {
-    this.queue = new PQueue({
-      concurrency: 3,
-      interval: 60_000,
-      intervalCap: 40,  // 40 RPM (safety margin)
-    });
-    this.cache = new CachedSearchService(client);
-  }
-
-  async researchTopic(topic: string): Promise<{
-    overview: string;
-    sections: Array<{ question: string; answer: string; citations: string[] }>;
-    bibliography: string[];
-  }> {
-    // Phase 1: Decompose (sonar, fast)
-    const decomposition = await this.cache.search(
-      `Break "${topic}" into 4 focused research questions. One per line.`,
-      "sonar"
-    );
-    const questions = decomposition.answer.split("\n").filter((q) => q.trim().length > 10);
-
-    // Phase 2: Deep research each question (sonar-pro, queued)
-    const sections = await Promise.all(
-      questions.slice(0, 5).map((q) =>
-        this.queue.add(async () => {
-          const result = await this.cache.search(q.trim(), "sonar-pro");
-          return { question: q.trim(), ...result };
-        })
-      )
-    );
-
-    // Phase 3: Compile
-    const allCitations = new Set<string>();
-    for (const s of sections) {
-      if (s) s.citations.forEach((url: string) => allCitations.add(url));
-    }
-
-    return {
-      overview: decomposition.answer,
-      sections: sections.filter(Boolean).map((s) => ({
-        question: s!.question,
-        answer: s!.answer,
-        citations: s!.citations,
-      })),
-      bibliography: [...allCitations],
-    };
-  }
-}
-```
-
-### Python Variant (Direct Widget)
-```python
-from flask import Flask, request, jsonify
-from openai import OpenAI
-import os
-
-app = Flask(__name__)
-client = OpenAI(api_key=os.environ["PERPLEXITY_API_KEY"], base_url="https://api.perplexity.ai")
-
-@app.route("/api/search", methods=["POST"])
-def search():
-    query = request.json["query"]
-    response = client.chat.completions.create(
-        model="sonar",
-        messages=[{"role": "user", "content": query}],
-        max_tokens=1024,
-    )
-    raw = response.model_dump()
-    return jsonify({
-        "answer": response.choices[0].message.content,
-        "citations": raw.get("citations", []),
-    })
-```
-
-## Choosing the Right Variant
-
-```
-How many queries per day?
-├─ <500 → Variant 1 (Direct Widget)
-│   └─ Add retry with backoff
-├─ 500-5K → Variant 2 (Cached Layer)
-│   └─ Add LRU cache with 4-hour TTL
-└─ 5K+ → Variant 3 (Research Pipeline)
-    └─ Add job queue + sonar-pro for deep queries
-```
+## Output
+- Architecture variant selected
+- Project structure implemented
+- Migration path documented
+- Appropriate patterns applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow in UI | No caching | Add Variant 2 cache layer |
-| High cost | sonar-pro for all queries | Route simple queries to sonar |
-| Rate limited | Burst traffic | Add PQueue rate limiter |
-| Stale answers | Long cache TTL | Reduce TTL for time-sensitive queries |
+| Over-engineering | Wrong variant choice | Start simpler |
+| Performance issues | Wrong layer | Add caching/async |
+| Team friction | Complex architecture | Simplify or train |
+| Deployment complexity | Microservice overhead | Consider service layer |
 
-## Output
-- Selected architecture variant matching your scale
-- Implementation code for chosen variant
-- Cache strategy if applicable
-- Queue configuration if applicable
+## Examples
+
+### Quick Variant Check
+```bash
+# Count team size and DAU to select variant
+echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
+echo "DAU: Check analytics dashboard"
+```
 
 ## Resources
-- [Perplexity API Documentation](https://docs.perplexity.ai)
-- [Perplexity Model Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
+- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
+- [Microservices Guide](https://martinfowler.com/microservices/)
+- [Perplexity Architecture Guide](https://docs.perplexity.com/architecture)
 
 ## Next Steps
-For common pitfalls, see `perplexity-known-pitfalls`.
+For common anti-patterns, see `perplexity-known-pitfalls`.

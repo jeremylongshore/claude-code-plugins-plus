@@ -1,213 +1,203 @@
 ---
 name: abridge-cost-tuning
 description: |
-  Optimize Abridge clinical AI costs through tier selection, session management,
-  and usage monitoring for healthcare organizations.
-  Use when analyzing Abridge billing, optimizing encounter volume,
-  or right-sizing your Abridge contract for provider count.
-  Trigger: "abridge cost", "abridge pricing", "abridge billing",
-  "abridge budget", "abridge ROI".
-allowed-tools: Read, Write, Edit, Bash(npm:*)
+  Optimize Abridge costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Abridge billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "abridge cost", "abridge billing",
+  "reduce abridge costs", "abridge pricing", "abridge expensive", "abridge budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, healthcare, ai, abridge, cost-optimization]
 compatible-with: claude-code
+tags: [saas, abridge]
 ---
 
 # Abridge Cost Tuning
 
 ## Overview
+Optimize Abridge costs through smart tier selection, sampling, and usage monitoring.
 
-Abridge pricing is enterprise, sales-led, and per-provider. Cost optimization focuses on maximizing provider adoption (to justify per-provider cost), reducing wasted sessions, and choosing the right tier for your org size.
+## Prerequisites
+- Access to Abridge billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## Pricing Model (Enterprise)
+## Pricing Tiers
 
-| Factor | Impact | Optimization Lever |
-|--------|--------|-------------------|
-| Provider count | Primary cost driver | Only enroll active providers |
-| EHR depth | Integration complexity premium | Start with basic, upgrade incrementally |
-| Specialty count | Some specialties cost more | Phase specialty rollout |
-| Session volume | Included in per-provider pricing | No per-session cost concern |
-| Patient summaries | May be add-on | Enable only for portal-integrated sites |
-| Languages | Included (28+ languages) | No incremental cost |
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateAbridgeCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class AbridgeUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Abridge budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateAbridgeCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await abridgeClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => abridgeClient.get(id)));
+
+// Use batch endpoint (1 call)
+await abridgeClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new AbridgeClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Abridge dashboard
+# Or use API if available:
+# Check Abridge documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM abridge_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Step 1: Provider Utilization Tracking
+### Step 1: Analyze Current Usage
+Review Abridge dashboard for usage patterns and costs.
 
-```typescript
-// src/cost/provider-utilization.ts
-interface ProviderUsage {
-  providerId: string;
-  enrolledDate: Date;
-  sessionsThisMonth: number;
-  lastSessionDate: Date | null;
-  adoptionStatus: 'active' | 'low_usage' | 'dormant' | 'never_used';
-}
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-function classifyProviderUsage(provider: ProviderUsage): string {
-  if (provider.sessionsThisMonth === 0 && !provider.lastSessionDate) return 'never_used';
-  if (provider.sessionsThisMonth === 0) return 'dormant';
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-  const daysSinceEnrolled = (Date.now() - provider.enrolledDate.getTime()) / 86400000;
-  const sessionsPerDay = provider.sessionsThisMonth / Math.min(daysSinceEnrolled, 30);
-
-  if (sessionsPerDay < 1) return 'low_usage';
-  return 'active';
-}
-
-function generateUtilizationReport(providers: ProviderUsage[]): {
-  total: number;
-  active: number;
-  lowUsage: number;
-  dormant: number;
-  neverUsed: number;
-  wastedLicenseCost: string;
-} {
-  const classified = providers.map(p => ({ ...p, status: classifyProviderUsage(p) }));
-
-  const active = classified.filter(p => p.status === 'active').length;
-  const lowUsage = classified.filter(p => p.status === 'low_usage').length;
-  const dormant = classified.filter(p => p.status === 'dormant').length;
-  const neverUsed = classified.filter(p => p.status === 'never_used').length;
-  const wastedPercent = ((dormant + neverUsed) / providers.length * 100).toFixed(1);
-
-  return {
-    total: providers.length,
-    active,
-    lowUsage,
-    dormant,
-    neverUsed,
-    wastedLicenseCost: `${wastedPercent}% of licenses are unused`,
-  };
-}
-```
-
-### Step 2: Session Waste Detection
-
-```typescript
-// src/cost/session-waste.ts
-interface SessionMetrics {
-  sessionId: string;
-  durationSeconds: number;
-  segmentCount: number;
-  noteGenerated: boolean;
-  noteAccepted: boolean;
-  noteEdited: boolean;
-}
-
-function detectSessionWaste(sessions: SessionMetrics[]): {
-  totalSessions: number;
-  wastedSessions: number;
-  wasteReasons: Record<string, number>;
-} {
-  const wasteReasons: Record<string, number> = {
-    abandoned: 0,           // Session started but no note generated
-    too_short: 0,           // < 30 seconds of content
-    rejected: 0,            // Note generated but clinician rejected it
-    duplicate: 0,           // Multiple sessions for same encounter
-  };
-
-  for (const session of sessions) {
-    if (!session.noteGenerated && session.segmentCount > 0) wasteReasons.abandoned++;
-    if (session.durationSeconds < 30) wasteReasons.too_short++;
-    if (session.noteGenerated && !session.noteAccepted) wasteReasons.rejected++;
-  }
-
-  const wastedSessions = Object.values(wasteReasons).reduce((a, b) => a + b, 0);
-
-  return { totalSessions: sessions.length, wastedSessions, wasteReasons };
-}
-```
-
-### Step 3: ROI Calculator
-
-```typescript
-// src/cost/roi-calculator.ts
-interface RoiInputs {
-  providerCount: number;
-  avgEncountersPerProviderPerDay: number;
-  avgMinutesSavedPerEncounter: number;  // Abridge claims 2-3 hours/day savings
-  providerHourlyRate: number;           // Loaded cost including benefits
-  abridgeAnnualCost: number;            // Total contract value
-  workingDaysPerYear: number;
-}
-
-function calculateRoi(inputs: RoiInputs): {
-  annualTimeSavedHours: number;
-  annualLaborSavings: number;
-  netSavings: number;
-  roiPercent: number;
-  paybackMonths: number;
-} {
-  const dailyMinutesSaved = inputs.avgEncountersPerProviderPerDay * inputs.avgMinutesSavedPerEncounter;
-  const annualHoursSaved = (dailyMinutesSaved / 60) * inputs.workingDaysPerYear * inputs.providerCount;
-  const annualLaborSavings = annualHoursSaved * inputs.providerHourlyRate;
-  const netSavings = annualLaborSavings - inputs.abridgeAnnualCost;
-  const roiPercent = (netSavings / inputs.abridgeAnnualCost) * 100;
-  const paybackMonths = (inputs.abridgeAnnualCost / annualLaborSavings) * 12;
-
-  return {
-    annualTimeSavedHours: Math.round(annualHoursSaved),
-    annualLaborSavings: Math.round(annualLaborSavings),
-    netSavings: Math.round(netSavings),
-    roiPercent: Math.round(roiPercent),
-    paybackMonths: Math.round(paybackMonths * 10) / 10,
-  };
-}
-
-// Example: 50 providers, 15 encounters/day, 5 min saved each, $150/hr loaded
-// ROI = significant positive return within first year
-```
-
-### Step 4: Cost Optimization Recommendations
-
-```typescript
-// src/cost/recommendations.ts
-function generateCostRecommendations(
-  utilization: ReturnType<typeof generateUtilizationReport>,
-  waste: ReturnType<typeof detectSessionWaste>,
-): string[] {
-  const recs: string[] = [];
-
-  if (utilization.neverUsed > 0) {
-    recs.push(`Remove ${utilization.neverUsed} never-used provider licenses`);
-  }
-  if (utilization.dormant > 0) {
-    recs.push(`Re-engage or remove ${utilization.dormant} dormant providers`);
-  }
-  if (waste.wasteReasons.abandoned > waste.totalSessions * 0.1) {
-    recs.push('Investigate high abandoned session rate — may indicate training gap');
-  }
-  if (waste.wasteReasons.rejected > waste.totalSessions * 0.2) {
-    recs.push('High note rejection rate — review note templates with clinical leads');
-  }
-
-  return recs;
-}
-```
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-
-- Provider utilization report with waste identification
-- Session waste detection with categorized reasons
-- ROI calculator for contract justification
-- Actionable cost optimization recommendations
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Usage data unavailable | API doesn't expose metrics | Request usage reports from Abridge CSM |
-| ROI negative | Low adoption | Focus on provider training before renewal |
-| High waste rate | Poor onboarding | Invest in provider change management |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateAbridgeCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-
-- [Abridge Pricing](https://www.abridge.com/)
-- [Abridge ROI Studies](https://www.abridge.com/platform)
+- [Abridge Pricing](https://abridge.com/pricing)
+- [Abridge Billing Dashboard](https://dashboard.abridge.com/billing)
 
 ## Next Steps
-
-For architecture design, see `abridge-reference-architecture`.
+For architecture patterns, see `abridge-reference-architecture`.

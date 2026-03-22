@@ -1,245 +1,222 @@
 ---
 name: vercel-data-handling
 description: |
-  Implement data handling, PII protection, and GDPR/CCPA compliance for Vercel deployments.
-  Use when handling sensitive data in serverless functions, implementing data redaction,
-  or ensuring privacy compliance on Vercel.
+  Implement Vercel PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Vercel integrations.
   Trigger with phrases like "vercel data", "vercel PII",
-  "vercel GDPR", "vercel data retention", "vercel privacy", "vercel compliance".
+  "vercel GDPR", "vercel data retention", "vercel privacy", "vercel CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, compliance, privacy, security]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Data Handling
 
 ## Overview
-Handle sensitive data correctly on Vercel: PII redaction in logs, GDPR-compliant data processing in serverless functions, secure cookie management, and data residency configuration. Covers both what Vercel stores and what your application should protect.
+Handle sensitive data correctly when integrating with Vercel.
 
 ## Prerequisites
 - Understanding of GDPR/CCPA requirements
-- Vercel Pro or Enterprise (for data residency options)
-- Logging infrastructure with PII awareness
+- Vercel SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Vercel request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupVercelData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.vercelLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupVercelData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const vercelData = await vercelClient.getUserData(userId);
+
+  return {
+    source: 'Vercel',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: vercelData.profile,
+      activities: vercelData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Vercel
+  await vercelClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.vercelUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'vercel',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await vercelClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Understand What Vercel Stores
+### Step 1: Classify Data
+Categorize all Vercel data by sensitivity level.
 
-| Data Type | Where | Retention | Control |
-|-----------|-------|-----------|---------|
-| Runtime logs | Vercel servers | 1hr (free), 30d (Plus) | Log drains |
-| Build logs | Vercel servers | 30 days | Automatic |
-| Analytics data | Vercel | Aggregated, no PII | Disable in dashboard |
-| Deployment source | Vercel | Until deleted | Manual deletion |
-| Environment variables | Vercel (encrypted) | Until deleted | Scoped access |
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-### Step 2: PII Redaction in Logs
-```typescript
-// lib/redact.ts — redact PII before logging
-const PII_PATTERNS: [RegExp, string][] = [
-  [/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, '[EMAIL]'],
-  [/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE]'],
-  [/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN]'],
-  [/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, '[CARD]'],
-  [/\b(?:Bearer|token|key|secret|password)\s*[:=]\s*\S+/gi, '[CREDENTIAL]'],
-];
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-export function redact(text: string): string {
-  let result = text;
-  for (const [pattern, replacement] of PII_PATTERNS) {
-    result = result.replace(pattern, replacement);
-  }
-  return result;
-}
-
-// Usage — always redact before console.log
-import { redact } from '@/lib/redact';
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  console.log('Request received:', redact(JSON.stringify(body)));
-  // Process safely...
-}
-```
-
-### Step 3: GDPR-Compliant API Routes
-```typescript
-// api/users/[id]/route.ts — data subject request handlers
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
-
-// Right to Access (GDPR Art. 15)
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const user = await db.user.findUnique({
-    where: { id: params.id },
-    include: { posts: true, preferences: true },
-  });
-
-  if (!user) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-
-  return NextResponse.json({
-    personalData: {
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-      posts: user.posts,
-      preferences: user.preferences,
-    },
-    exportedAt: new Date().toISOString(),
-  });
-}
-
-// Right to Erasure (GDPR Art. 17)
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  // Soft delete — anonymize instead of hard delete for audit trail
-  await db.user.update({
-    where: { id: params.id },
-    data: {
-      email: `deleted-${params.id}@redacted.local`,
-      name: '[DELETED]',
-      deletedAt: new Date(),
-    },
-  });
-
-  // Also delete from log drain provider if applicable
-  console.log(`GDPR deletion completed for user ${params.id}`);
-  return NextResponse.json({ deleted: true });
-}
-```
-
-### Step 4: Secure Cookie Management
-```typescript
-// lib/cookies.ts — GDPR-aware cookie handling
-import { cookies } from 'next/headers';
-
-export function setSessionCookie(token: string): void {
-  cookies().set('session', token, {
-    httpOnly: true,       // Not accessible via JavaScript
-    secure: true,         // HTTPS only
-    sameSite: 'lax',      // CSRF protection
-    maxAge: 60 * 60 * 24, // 24 hours
-    path: '/',
-  });
-}
-
-export function setConsentCookie(consent: Record<string, boolean>): void {
-  cookies().set('consent', JSON.stringify(consent), {
-    httpOnly: false,  // Needs client-side access
-    secure: true,
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 365, // 1 year
-    path: '/',
-  });
-}
-
-// Middleware — block analytics if consent not given
-export function middleware(request: Request) {
-  const consent = request.headers.get('cookie')?.includes('consent');
-  if (!consent) {
-    // Strip analytics query params, skip tracking middleware
-  }
-}
-```
-
-### Step 5: Data Residency Configuration
-Vercel allows configuring where your serverless functions execute:
-
-```json
-// vercel.json — restrict function execution to EU regions
-{
-  "regions": ["cdg1", "lhr1"],
-  "functions": {
-    "api/**/*.ts": {
-      "regions": ["cdg1"]
-    }
-  }
-}
-```
-
-EU regions for GDPR data residency:
-| Region | Location | Code |
-|--------|----------|------|
-| Paris | France | `cdg1` |
-| London | UK | `lhr1` |
-| Frankfurt | Germany | `fra1` |
-
-### Step 6: Audit Logging
-```typescript
-// lib/audit-log.ts — track data access for compliance
-interface AuditEntry {
-  action: 'read' | 'create' | 'update' | 'delete' | 'export';
-  resource: string;
-  resourceId: string;
-  userId: string;
-  ip: string;
-  timestamp: string;
-}
-
-export async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const record: AuditEntry = {
-    ...entry,
-    timestamp: new Date().toISOString(),
-  };
-
-  // Write to database audit table
-  await db.auditLog.create({ data: record });
-
-  // Also log for log drain capture (structured JSON)
-  console.log(JSON.stringify({ type: 'audit', ...record }));
-}
-
-// Usage in API route:
-export async function GET(request: NextRequest) {
-  await auditLog({
-    action: 'read',
-    resource: 'user',
-    resourceId: params.id,
-    userId: session.userId,
-    ip: request.headers.get('x-forwarded-for') ?? 'unknown',
-  });
-}
-```
-
-## Data Classification Guide
-
-| Category | Examples | Handling on Vercel |
-|----------|----------|-------------------|
-| PII | Email, name, phone, IP | Redact from logs, encrypt at rest |
-| Secrets | API keys, tokens, passwords | Use `type: sensitive` env vars, never log |
-| Financial | Card numbers, bank info | Never process in functions — use Stripe/payment provider |
-| Health | Medical records | Requires BAA — contact Vercel Enterprise |
-| Business | Metrics, usage stats | Aggregate before logging |
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- PII redaction applied to all log output
-- GDPR data subject request endpoints implemented
-- Secure cookie handling with consent management
-- Data residency configured via function regions
-- Audit logging for compliance trail
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in Vercel logs | Not redacting before console.log | Use `redact()` wrapper on all log calls |
-| GDPR data request timeout | Large data export in function | Paginate or use background processing |
-| Cookies not secure | Missing `secure: true` flag | Always set httpOnly and secure flags |
-| Function running in wrong region | Region not set in vercel.json | Specify `regions` per function |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Vercel response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-- [Vercel Privacy Policy](https://vercel.com/legal/privacy-policy)
-- [Vercel Data Processing Agreement](https://vercel.com/legal/dpa)
-- [GDPR Overview](https://gdpr.eu/)
-- [Vercel Function Regions](https://vercel.com/docs/functions/configuring-functions)
-- [Vercel Security](https://vercel.com/security)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Vercel Privacy Guide](https://vercel.com/docs/privacy)
 
 ## Next Steps
-For enterprise RBAC, see `vercel-enterprise-rbac`.
+For enterprise access control, see `vercel-enterprise-rbac`.

@@ -1,199 +1,121 @@
 ---
 name: clerk-prod-checklist
 description: |
-  Production readiness checklist for Clerk deployment.
-  Use when preparing to deploy, reviewing production configuration,
-  or auditing Clerk implementation before launch.
-  Trigger with phrases like "clerk production", "clerk deploy checklist",
-  "clerk go-live", "clerk launch ready".
-allowed-tools: Read, Write, Edit, Grep, Bash(npm:*)
+  Execute Clerk production deployment checklist and rollback procedures.
+  Use when deploying Clerk integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "clerk production", "deploy clerk",
+  "clerk go-live", "clerk launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, deployment, audit]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Production Checklist
 
 ## Overview
-Complete checklist to ensure your Clerk integration is production-ready. Covers environment config, security hardening, monitoring, error handling, and compliance.
+Complete checklist for deploying Clerk integrations to production.
 
 ## Prerequisites
-- Clerk integration working in development
-- Production environment and domain configured
-- CI/CD pipeline ready
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Step 1: Environment Configuration Checklist
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-| Check | Status | Action |
-|-------|--------|--------|
-| Using `pk_live_` keys | [ ] | Switch from test to live keys |
-| `CLERK_SECRET_KEY` is `sk_live_` | [ ] | Never use test keys in production |
-| `.env.local` in `.gitignore` | [ ] | Prevent accidental secret commits |
-| `CLERK_WEBHOOK_SECRET` set | [ ] | Required for webhook verification |
-| Production domain in Clerk Dashboard | [ ] | Dashboard > Domains |
-| Sign-in/sign-up URLs configured | [ ] | Set `NEXT_PUBLIC_CLERK_SIGN_IN_URL` etc. |
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Clerk error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-### Step 2: Validation Script
-```typescript
-// scripts/prod-readiness.ts
-import { createClerkClient } from '@clerk/backend'
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Clerk connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-async function validateProduction() {
-  const checks: { name: string; pass: boolean; detail: string }[] = []
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-  // 1. Live keys check
-  const pk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY || ''
-  const sk = process.env.CLERK_SECRET_KEY || ''
-  checks.push({
-    name: 'Live publishable key',
-    pass: pk.startsWith('pk_live_'),
-    detail: pk.startsWith('pk_live_') ? 'Using live key' : `Using ${pk.slice(0, 8)}... (should be pk_live_)`,
-  })
-  checks.push({
-    name: 'Live secret key',
-    pass: sk.startsWith('sk_live_'),
-    detail: sk.startsWith('sk_live_') ? 'Using live key' : 'Should be sk_live_ for production',
-  })
-
-  // 2. API connectivity
-  try {
-    const clerk = createClerkClient({ secretKey: sk })
-    await clerk.users.getUserList({ limit: 1 })
-    checks.push({ name: 'API connectivity', pass: true, detail: 'Backend API reachable' })
-  } catch (err: any) {
-    checks.push({ name: 'API connectivity', pass: false, detail: err.message })
-  }
-
-  // 3. Webhook secret
-  checks.push({
-    name: 'Webhook secret configured',
-    pass: !!process.env.CLERK_WEBHOOK_SECRET,
-    detail: process.env.CLERK_WEBHOOK_SECRET ? 'Set' : 'CLERK_WEBHOOK_SECRET missing',
-  })
-
-  // 4. Middleware exists
-  const fs = await import('fs')
-  const hasMiddleware = fs.existsSync('middleware.ts') || fs.existsSync('src/middleware.ts')
-  checks.push({
-    name: 'Middleware present',
-    pass: hasMiddleware,
-    detail: hasMiddleware ? 'Found' : 'middleware.ts not found at project root',
-  })
-
-  // Print results
-  console.log('\n=== Clerk Production Readiness ===\n')
-  for (const check of checks) {
-    const icon = check.pass ? 'PASS' : 'FAIL'
-    console.log(`[${icon}] ${check.name}: ${check.detail}`)
-  }
-
-  const allPass = checks.every((c) => c.pass)
-  console.log(`\nResult: ${allPass ? 'READY for production' : 'NOT READY — fix failing checks'}`)
-  process.exit(allPass ? 0 : 1)
-}
-
-validateProduction()
-```
-
-Run with:
+### Step 5: Deploy with Gradual Rollout
 ```bash
-npx tsx scripts/prod-readiness.ts
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.clerk.com
+
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/clerk-integration app=image:new --record
+kubectl rollout pause deployment/clerk-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/clerk-integration
+kubectl rollout pause deployment/clerk-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/clerk-integration
+kubectl rollout status deployment/clerk-integration
 ```
-
-### Step 3: Security Checklist
-
-| Check | Status | Action |
-|-------|--------|--------|
-| Middleware protects all routes | [ ] | Verify non-public routes require auth |
-| API routes check `userId` | [ ] | Return 401 if `userId` is null |
-| Webhook signatures verified | [ ] | Use `svix` library for verification |
-| CORS configured correctly | [ ] | Only allow production domain |
-| Rate limiting on sensitive endpoints | [ ] | Use `@upstash/ratelimit` or similar |
-| CSP headers set | [ ] | Add Clerk domains to Content-Security-Policy |
-| No secret keys in client code | [ ] | `CLERK_SECRET_KEY` never exposed |
-
-### Step 4: Monitoring Checklist
-
-| Check | Status | Action |
-|-------|--------|--------|
-| Health check endpoint | [ ] | `/api/health` monitoring Clerk API |
-| Error tracking (Sentry) | [ ] | Clerk user context in error reports |
-| Auth event logging | [ ] | Log sign-in, sign-out, permission denied |
-| Webhook monitoring | [ ] | Alert on failed webhook deliveries |
-| Uptime monitoring | [ ] | External monitor hitting health endpoint |
-
-### Step 5: Error Handling Checklist
-
-| Check | Status | Action |
-|-------|--------|--------|
-| Custom error pages | [ ] | `/not-found`, `/error` pages handle auth errors |
-| Graceful auth failures | [ ] | Redirect to sign-in, don't show stack traces |
-| Webhook retry handling | [ ] | Idempotency keys prevent duplicate processing |
-| Session expiry UX | [ ] | Show "session expired" prompt, not blank page |
-
-```typescript
-// app/error.tsx — global error boundary with auth context
-'use client'
-import { useAuth } from '@clerk/nextjs'
-
-export default function Error({ error, reset }: { error: Error; reset: () => void }) {
-  const { isSignedIn } = useAuth()
-
-  return (
-    <div>
-      <h2>Something went wrong</h2>
-      <p>{error.message}</p>
-      <button onClick={reset}>Try again</button>
-      {!isSignedIn && <a href="/sign-in">Sign in</a>}
-    </div>
-  )
-}
-```
-
-### Step 6: Performance Checklist
-
-| Check | Status | Action |
-|-------|--------|--------|
-| Middleware matcher excludes static files | [ ] | Don't auth-check images, fonts, CSS |
-| User data cached (`React.cache()`) | [ ] | Deduplicate within request |
-| Auth components lazy loaded | [ ] | `dynamic()` for `UserButton`, `SignInButton` |
-| Edge Runtime for middleware | [ ] | Faster cold starts on Vercel |
 
 ## Output
-- Environment configuration verified (live keys, webhook secret, domain)
-- Automated validation script (run in CI or before deploy)
-- Security, monitoring, error handling, and performance checklists
-- Global error boundary component with auth context
+- Deployed Clerk integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Validation script fails | Test keys in production | Switch to `pk_live_` / `sk_live_` keys |
-| API connectivity check fails | Wrong secret key | Verify key in Clerk Dashboard > API Keys |
-| Middleware not found | File in wrong location | Place `middleware.ts` at project root (not inside `app/`) |
-| Health check returns 503 | Clerk API unreachable | Check network, verify key, check status.clerk.com |
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
 ## Examples
 
-### CI Production Gate
-```yaml
-# .github/workflows/deploy.yml — add as pre-deploy step
-- name: Clerk production readiness
-  run: npx tsx scripts/prod-readiness.ts
-  env:
-    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PK_PROD }}
-    CLERK_SECRET_KEY: ${{ secrets.CLERK_SK_PROD }}
-    CLERK_WEBHOOK_SECRET: ${{ secrets.CLERK_WEBHOOK_SECRET_PROD }}
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; clerk: any }> {
+  const start = Date.now();
+  try {
+    await clerkClient.ping();
+    return { status: 'healthy', clerk: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', clerk: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/clerk-integration
+kubectl rollout status deployment/clerk-integration
 ```
 
 ## Resources
-- [Clerk Production Checklist](https://clerk.com/docs/deployments/overview)
-- [Clerk Security Best Practices](https://clerk.com/docs/security/overview)
-- [Clerk Domain Setup](https://clerk.com/docs/deployments/set-up-your-domain)
+- [Clerk Status](https://status.clerk.com)
+- [Clerk Support](https://docs.clerk.com/support)
 
 ## Next Steps
-Proceed to `clerk-upgrade-migration` for SDK version upgrades.
+For version upgrades, see `clerk-upgrade-migration`.

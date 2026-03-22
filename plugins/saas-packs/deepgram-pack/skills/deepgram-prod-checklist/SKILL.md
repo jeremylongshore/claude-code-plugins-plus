@@ -1,268 +1,121 @@
 ---
 name: deepgram-prod-checklist
 description: |
-  Execute Deepgram production deployment checklist.
-  Use when preparing for production launch, auditing production readiness,
-  or verifying deployment configurations.
-  Trigger: "deepgram production", "deploy deepgram", "deepgram prod checklist",
-  "deepgram go-live", "production ready deepgram".
-allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
+  Execute Deepgram production deployment checklist and rollback procedures.
+  Use when deploying Deepgram integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "deepgram production", "deploy deepgram",
+  "deepgram go-live", "deepgram launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, deployment, production]
-
+compatible-with: claude-code
+tags: [saas, deepgram]
 ---
+
 # Deepgram Production Checklist
 
 ## Overview
-Comprehensive go-live checklist for Deepgram integrations. Covers singleton client, health checks, Prometheus metrics, alert rules, error handling, and a phased go-live timeline.
+Complete checklist for deploying Deepgram integrations to production.
 
-## Production Readiness Matrix
-
-| Category | Item | Status |
-|----------|------|--------|
-| **Auth** | Production API key with scoped permissions | [ ] |
-| **Auth** | Key stored in secret manager (not env file) | [ ] |
-| **Auth** | Key rotation schedule (90-day) configured | [ ] |
-| **Auth** | Fallback key provisioned and tested | [ ] |
-| **Resilience** | Retry with exponential backoff on 429/5xx | [ ] |
-| **Resilience** | Circuit breaker for cascade failure prevention | [ ] |
-| **Resilience** | Request timeout set (30s pre-recorded, 10s TTS) | [ ] |
-| **Resilience** | Graceful degradation when API unavailable | [ ] |
-| **Performance** | Singleton client (not creating per-request) | [ ] |
-| **Performance** | Concurrency limited (50-80% of plan limit) | [ ] |
-| **Performance** | Audio preprocessed (16kHz mono for best results) | [ ] |
-| **Performance** | Large files use callback URL (async) | [ ] |
-| **Monitoring** | Health check endpoint testing Deepgram API | [ ] |
-| **Monitoring** | Prometheus metrics: latency, error rate, usage | [ ] |
-| **Monitoring** | Alerts: error rate >5%, latency >10s, circuit open | [ ] |
-| **Security** | PII redaction enabled if handling sensitive audio | [ ] |
-| **Security** | Audio URLs validated (HTTPS, no private IPs) | [ ] |
-| **Security** | Audit logging on all operations | [ ] |
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Step 1: Production Singleton Client
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-```typescript
-import { createClient, DeepgramClient } from '@deepgram/sdk';
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Deepgram error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-class ProductionDeepgram {
-  private static client: DeepgramClient | null = null;
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Deepgram connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-  static getClient(): DeepgramClient {
-    if (!this.client) {
-      const key = process.env.DEEPGRAM_API_KEY;
-      if (!key) throw new Error('DEEPGRAM_API_KEY required for production');
-      this.client = createClient(key);
-    }
-    return this.client;
-  }
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-  // Force re-init (for key rotation)
-  static reset() { this.client = null; }
-}
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.deepgram.com
+
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/deepgram-integration app=image:new --record
+kubectl rollout pause deployment/deepgram-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/deepgram-integration
+kubectl rollout pause deployment/deepgram-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/deepgram-integration
+kubectl rollout status deployment/deepgram-integration
 ```
-
-### Step 2: Health Check Endpoint
-
-```typescript
-import express from 'express';
-import { createClient } from '@deepgram/sdk';
-
-const app = express();
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
-
-app.get('/health', async (req, res) => {
-  const start = Date.now();
-  try {
-    // Test API connectivity by listing projects
-    const { error } = await deepgram.manage.getProjects();
-    const latency = Date.now() - start;
-
-    if (error) {
-      return res.status(503).json({
-        status: 'unhealthy',
-        deepgram: 'error',
-        error: error.message,
-        latency_ms: latency,
-      });
-    }
-
-    res.json({
-      status: 'healthy',
-      deepgram: 'connected',
-      latency_ms: latency,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (err: any) {
-    res.status(503).json({
-      status: 'unhealthy',
-      deepgram: 'unreachable',
-      error: err.message,
-      latency_ms: Date.now() - start,
-    });
-  }
-});
-```
-
-### Step 3: Prometheus Metrics
-
-```typescript
-import { Counter, Histogram, Gauge, Registry } from 'prom-client';
-
-const registry = new Registry();
-
-const transcriptionRequests = new Counter({
-  name: 'deepgram_requests_total',
-  help: 'Total Deepgram API requests',
-  labelNames: ['method', 'model', 'status'],
-  registers: [registry],
-});
-
-const transcriptionLatency = new Histogram({
-  name: 'deepgram_latency_seconds',
-  help: 'Deepgram API request latency',
-  labelNames: ['method', 'model'],
-  buckets: [0.5, 1, 2, 5, 10, 30],
-  registers: [registry],
-});
-
-const audioProcessed = new Counter({
-  name: 'deepgram_audio_seconds_total',
-  help: 'Total audio seconds processed',
-  labelNames: ['model'],
-  registers: [registry],
-});
-
-const activeConnections = new Gauge({
-  name: 'deepgram_active_connections',
-  help: 'Active WebSocket connections',
-  registers: [registry],
-});
-
-// Instrumented transcription
-async function instrumentedTranscribe(url: string, model = 'nova-3') {
-  const timer = transcriptionLatency.startTimer({ method: 'prerecorded', model });
-  try {
-    const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
-      { url }, { model, smart_format: true }
-    );
-    timer();
-    transcriptionRequests.inc({ method: 'prerecorded', model, status: error ? 'error' : 'ok' });
-    if (result?.metadata?.duration) {
-      audioProcessed.inc({ model }, result.metadata.duration);
-    }
-    if (error) throw error;
-    return result;
-  } catch (err) {
-    timer();
-    transcriptionRequests.inc({ method: 'prerecorded', model, status: 'error' });
-    throw err;
-  }
-}
-
-// Expose metrics endpoint
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-```
-
-### Step 4: Alert Rules (Prometheus/AlertManager)
-
-```yaml
-groups:
-  - name: deepgram
-    rules:
-      - alert: DeepgramHighErrorRate
-        expr: rate(deepgram_requests_total{status="error"}[5m]) / rate(deepgram_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Deepgram error rate > 5%"
-
-      - alert: DeepgramHighLatency
-        expr: histogram_quantile(0.95, rate(deepgram_latency_seconds_bucket[5m])) > 10
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Deepgram P95 latency > 10s"
-
-      - alert: DeepgramHealthCheckFailed
-        expr: up{job="deepgram-service"} == 0
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Deepgram health check failed for 2+ minutes"
-```
-
-### Step 5: Error Handling Wrapper
-
-```typescript
-async function safeTranscribe(url: string, options: Record<string, any> = {}) {
-  const timeout = options.timeout ?? 30000;
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout);
-
-  try {
-    const result = await Promise.race([
-      instrumentedTranscribe(url, options.model ?? 'nova-3'),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Transcription timeout')), timeout)
-      ),
-    ]);
-    clearTimeout(timeoutId);
-    return result;
-  } catch (err: any) {
-    clearTimeout(timeoutId);
-    // Log structured error
-    console.error(JSON.stringify({
-      level: 'error',
-      service: 'deepgram',
-      message: err.message,
-      url: url.substring(0, 100),
-      timestamp: new Date().toISOString(),
-    }));
-    throw err;
-  }
-}
-```
-
-### Step 6: Go-Live Timeline
-
-| Phase | When | Actions |
-|-------|------|---------|
-| D-7 | 1 week before | Load test at 2x expected volume, security review |
-| D-3 | 3 days before | Smoke test with production key, verify all alerts fire |
-| D-1 | Day before | Confirm on-call rotation, validate dashboards |
-| D-0 | Launch | Shadow mode (10% traffic), monitoring open |
-| D+1 | Day after | Review error rate, latency, verify no anomalies |
-| D+7 | 1 week after | Full traffic, tune alert thresholds based on baselines |
 
 ## Output
-- Singleton client with reset capability
-- Health check endpoint with latency reporting
-- Prometheus metrics (requests, latency, audio, connections)
-- AlertManager rules for error rate, latency, availability
-- Timeout-safe transcription wrapper
-- Phased go-live timeline
+- Deployed Deepgram integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Health check 503 | API key expired | Rotate key, check secret manager |
-| Metrics not scraped | Wrong port/path | Verify Prometheus target config |
-| Alert storms | Thresholds too tight | Add `for:` duration, tune values |
-| Timeout on large files | Sync mode too slow | Switch to `callback` URL pattern |
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; deepgram: any }> {
+  const start = Date.now();
+  try {
+    await deepgramClient.ping();
+    return { status: 'healthy', deepgram: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', deepgram: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/deepgram-integration
+kubectl rollout status deployment/deepgram-integration
+```
 
 ## Resources
-- [Deepgram Production Guide](https://developers.deepgram.com/docs/production-guide)
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/)
-- [Deepgram SLA](https://deepgram.com/sla)
+- [Deepgram Status](https://status.deepgram.com)
+- [Deepgram Support](https://docs.deepgram.com/support)
+
+## Next Steps
+For version upgrades, see `deepgram-upgrade-migration`.

@@ -1,252 +1,246 @@
 ---
 name: clerk-migration-deep-dive
 description: |
-  Migrate from other authentication providers to Clerk.
-  Use when migrating from Auth0, Firebase, Supabase Auth, NextAuth,
-  or custom authentication solutions.
-  Trigger with phrases like "migrate to clerk", "clerk migration",
-  "switch to clerk", "auth0 to clerk", "firebase auth to clerk".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Execute Clerk major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Clerk, performing major version upgrades,
+  or re-platforming existing integrations to Clerk.
+  Trigger with phrases like "migrate clerk", "clerk migration",
+  "switch to clerk", "clerk replatform", "clerk upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, migration, authentication]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Migration Deep Dive
 
-## Current State
-!`npm list @auth0/nextjs-auth0 next-auth @supabase/auth-helpers-nextjs firebase 2>/dev/null | grep -E "auth0|next-auth|supabase|firebase" || echo 'No auth providers detected'`
-
 ## Overview
-Comprehensive guide to migrating from Auth0, Firebase Auth, Supabase Auth, or NextAuth to Clerk. Covers user data export, bulk import, parallel running, and phased migration.
+Comprehensive guide for migrating to or from Clerk, or major version upgrades.
 
 ## Prerequisites
-- Current auth provider access with admin/export permissions
-- Clerk account with API keys
-- Git repository with clean working state
-- Migration timeline planned (recommend 2-4 weeks)
+- Current system documentation
+- Clerk SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "clerk" > clerk-files.txt
+
+# Count integration points
+wc -l clerk-files.txt
+
+# Identify dependencies
+npm list | grep clerk
+pip freeze | grep clerk
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessClerkMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Clerk   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Clerk SDK
+npm install @clerk/sdk
+
+# Configure credentials
+cp .env.example .env.clerk
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@clerk/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/clerk.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class ClerkAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const clerkData = this.transform(data);
+    return clerkClient.create(clerkData);
+  }
+
+  private transform(data: CreateInput): ClerkInput {
+    // Map from old format to Clerk format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateClerkData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await clerkClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const clerkPercentage = getFeatureFlag('clerk_migration_percentage');
+
+  if (Math.random() * 100 < clerkPercentage) {
+    return new ClerkAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app CLERK_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.clerk'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateClerkMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1: Export Users from Current Provider
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-**Auth0 Export:**
-```bash
-# Export users via Auth0 Management API
-curl -s -H "Authorization: Bearer $AUTH0_TOKEN" \
-  "https://$AUTH0_DOMAIN/api/v2/users?per_page=100&page=0" \
-  | jq '[.[] | {email: .email, name: .name, picture: .picture, created_at: .created_at}]' \
-  > auth0-users.json
-```
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-**NextAuth (Prisma) Export:**
-```typescript
-// scripts/export-nextauth-users.ts
-const users = await prisma.user.findMany({
-  include: { accounts: true },
-})
-const exported = users.map((u) => ({
-  email: u.email,
-  name: u.name,
-  image: u.image,
-  provider: u.accounts[0]?.provider,
-  createdAt: u.createdAt,
-}))
-await fs.writeFile('nextauth-users.json', JSON.stringify(exported, null, 2))
-```
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-### Step 2: Import Users to Clerk
-```typescript
-// scripts/import-to-clerk.ts
-import { createClerkClient } from '@clerk/backend'
-import users from './auth0-users.json'
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
-
-interface MigrationResult {
-  email: string
-  status: 'created' | 'exists' | 'error'
-  clerkId?: string
-  error?: string
-}
-
-async function importUsers(): Promise<MigrationResult[]> {
-  const results: MigrationResult[] = []
-
-  for (const user of users) {
-    try {
-      const created = await clerk.users.createUser({
-        emailAddress: [user.email],
-        firstName: user.name?.split(' ')[0],
-        lastName: user.name?.split(' ').slice(1).join(' '),
-        skipPasswordRequirement: true, // User will set password on first sign-in
-      })
-      results.push({ email: user.email, status: 'created', clerkId: created.id })
-      console.log(`Created: ${user.email} -> ${created.id}`)
-    } catch (err: any) {
-      if (err.status === 422) {
-        results.push({ email: user.email, status: 'exists' })
-      } else {
-        results.push({ email: user.email, status: 'error', error: err.message })
-      }
-    }
-
-    // Respect rate limits
-    await new Promise((resolve) => setTimeout(resolve, 100))
-  }
-
-  return results
-}
-
-importUsers().then((results) => {
-  const summary = {
-    total: results.length,
-    created: results.filter((r) => r.status === 'created').length,
-    exists: results.filter((r) => r.status === 'exists').length,
-    errors: results.filter((r) => r.status === 'error').length,
-  }
-  console.log('Migration summary:', summary)
-  fs.writeFileSync('migration-results.json', JSON.stringify(results, null, 2))
-})
-```
-
-### Step 3: Update Database References
-```typescript
-// scripts/update-db-references.ts
-import { createClerkClient } from '@clerk/backend'
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
-
-async function updateDatabaseReferences() {
-  // Get all users from your database
-  const dbUsers = await db.user.findMany()
-
-  for (const dbUser of dbUsers) {
-    // Find corresponding Clerk user by email
-    const clerkUsers = await clerk.users.getUserList({
-      emailAddress: [dbUser.email],
-    })
-
-    if (clerkUsers.totalCount > 0) {
-      const clerkUser = clerkUsers.data[0]
-      await db.user.update({
-        where: { id: dbUser.id },
-        data: {
-          clerkId: clerkUser.id,
-          // Keep old auth ID for rollback
-          legacyAuthId: dbUser.authProviderId,
-        },
-      })
-      console.log(`Mapped: ${dbUser.email} -> ${clerkUser.id}`)
-    }
-  }
-}
-```
-
-### Step 4: Replace Auth Code (NextAuth to Clerk Example)
-```typescript
-// BEFORE: NextAuth
-// import { getServerSession } from 'next-auth'
-// import { authOptions } from '@/lib/auth'
-// const session = await getServerSession(authOptions)
-// const userId = session?.user?.id
-
-// AFTER: Clerk
-import { auth } from '@clerk/nextjs/server'
-const { userId } = await auth()
-```
-
-```typescript
-// BEFORE: NextAuth client hook
-// import { useSession } from 'next-auth/react'
-// const { data: session } = useSession()
-
-// AFTER: Clerk client hook
-import { useUser } from '@clerk/nextjs'
-const { user, isLoaded } = useUser()
-```
-
-```typescript
-// BEFORE: NextAuth middleware
-// export { default } from 'next-auth/middleware'
-// export const config = { matcher: ['/dashboard(.*)'] }
-
-// AFTER: Clerk middleware
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-const isProtected = createRouteMatcher(['/dashboard(.*)'])
-export default clerkMiddleware(async (auth, req) => {
-  if (isProtected(req)) await auth.protect()
-})
-```
-
-### Step 5: Parallel Running (Optional Safety Net)
-```typescript
-// lib/auth-bridge.ts — run both auth systems during transition
-import { auth as clerkAuth } from '@clerk/nextjs/server'
-
-export async function getAuthUser() {
-  // Try Clerk first (new system)
-  const { userId: clerkUserId } = await clerkAuth()
-  if (clerkUserId) {
-    return { provider: 'clerk', userId: clerkUserId }
-  }
-
-  // Fall back to legacy system during migration window
-  // const legacySession = await getLegacySession()
-  // if (legacySession) return { provider: 'legacy', userId: legacySession.userId }
-
-  return null
-}
-```
-
-### Step 6: Cleanup After Migration
-```bash
-# After migration is verified (2+ weeks in production):
-npm uninstall next-auth @auth0/nextjs-auth0  # Remove old auth packages
-# Delete old auth files: pages/api/auth/[...nextauth].ts, lib/auth.ts
-# Remove legacy database columns after confirming all users migrated
-```
+### Step 4: Shift Traffic
+Gradually route traffic to new Clerk integration.
 
 ## Output
-- User export from current auth provider (Auth0, NextAuth, Firebase)
-- Bulk import script with rate limiting and error handling
-- Database reference mapping (old auth IDs to Clerk IDs)
-- Code migration examples (NextAuth to Clerk)
-- Parallel running bridge for safe transition
-- Cleanup checklist for removing old auth code
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Clerk
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Duplicate email on import | User already exists in Clerk | Skip (status: 'exists') or merge |
-| Invalid email format | Dirty data from export | Clean/validate before import |
-| Rate limited during import | Too many API calls | Add 100ms delay between creates |
-| Password can't be migrated | Passwords are hashed | Use `skipPasswordRequirement`, user sets new password |
-| OAuth accounts | Social login tokens non-transferable | Users re-link OAuth accounts on first Clerk sign-in |
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
 
 ## Examples
 
-### Migration Verification Script
+### Quick Migration Status
 ```typescript
-// scripts/verify-migration.ts
-async function verifyMigration() {
-  const dbUsers = await db.user.findMany({ where: { clerkId: { not: null } } })
-  const unmapped = await db.user.findMany({ where: { clerkId: null } })
-
-  console.log(`Mapped: ${dbUsers.length}, Unmapped: ${unmapped.length}`)
-
-  if (unmapped.length > 0) {
-    console.log('Unmapped users:', unmapped.map((u) => u.email))
-  }
-}
+const status = await validateClerkMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
 ```
 
 ## Resources
-- [Clerk Migration Overview](https://clerk.com/docs/deployments/migrate-overview)
-- [Migrate from Auth0](https://clerk.com/docs/deployments/migrate-from-auth0)
-- [Migrate from NextAuth](https://clerk.com/docs/deployments/migrate-from-nextauth)
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Clerk Migration Guide](https://docs.clerk.com/migration)
 
-## Next Steps
-After migration, review `clerk-prod-checklist` for production readiness.
+## Flagship+ Skills
+For advanced troubleshooting, see `clerk-advanced-troubleshooting`.

@@ -1,97 +1,119 @@
 ---
 name: persona-local-dev-loop
 description: |
-  Local development with Persona sandbox, ngrok for webhooks, mock verifications.
-  Use when working with Persona identity verification.
-  Trigger with phrases like "persona local-dev-loop", "persona local-dev-loop".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 2.0.0
+  Configure Persona local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Persona.
+  Trigger with phrases like "persona dev setup", "persona local development",
+  "persona dev environment", "develop with persona".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, persona]
 ---
 
-# persona local dev loop | sed 's/\b\(.\)/\u\1/g'
+# Persona Local Dev Loop
 
 ## Overview
-Sandbox testing with test inquiry templates, ngrok tunnel for webhook testing, mock API responses for CI.
+Set up a fast, reproducible local development workflow for Persona.
 
 ## Prerequisites
 - Completed `persona-install-auth` setup
-- Valid Persona API key (sandbox or production)
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Set Up Sandbox Environment
-```bash
-set -euo pipefail
-# Use sandbox API key for all development
-echo 'PERSONA_API_KEY=persona_sandbox_xxxxxxxx' > .env
-echo 'PERSONA_API_VERSION=2023-01-05' >> .env
+### Step 1: Create Project Structure
+```
+my-persona-project/
+├── src/
+│   ├── persona/
+│   │   ├── client.ts       # Persona client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── persona.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-### Step 2: Expose Local Webhooks with ngrok
+### Step 2: Configure Environment
 ```bash
-# Terminal 1: Start your webhook server
-npm run dev  # localhost:3000
+# Copy environment template
+cp .env.example .env.local
 
-# Terminal 2: Tunnel with ngrok
-ngrok http 3000
-# Copy the HTTPS URL and configure in Persona Dashboard > Webhooks
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-### Step 3: Create Test Inquiries
-```python
-import os, requests
-
-HEADERS = {
-    "Authorization": f"Bearer {os.environ['PERSONA_API_KEY']}",
-    "Persona-Version": "2023-01-05",
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
 }
-
-# Create inquiry with sandbox template
-resp = requests.post("https://withpersona.com/api/v1/inquiries", headers=HEADERS, json={
-    "data": {
-        "attributes": {
-            "inquiry-template-id": "itmpl_YOUR_SANDBOX_TEMPLATE",
-            "reference-id": f"test-{int(time.time())}",
-        }
-    }
-})
-print(f"Test inquiry: {resp.json()['data']['id']}")
 ```
 
-### Step 4: Mock API Responses for CI
+### Step 4: Configure Testing
 ```typescript
-import { vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { PersonaClient } from '../src/persona/client';
 
-const mockPersonaApi = {
-  createInquiry: vi.fn().mockResolvedValue({
-    data: { id: 'inq_test_123', attributes: { status: 'created', 'session-token': 'tok_xxx' } },
-  }),
-  getInquiry: vi.fn().mockResolvedValue({
-    data: { id: 'inq_test_123', attributes: { status: 'completed' } },
-  }),
-};
+describe('Persona Client', () => {
+  it('should initialize with API key', () => {
+    const client = new PersonaClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
 ```
 
 ## Output
-- Sandbox environment configured for development
-- ngrok tunnel for webhook testing
-- Test inquiry creation workflow
-- Mock API responses for unit tests
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Persona development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Webhook not received | ngrok URL not configured | Update webhook URL in Dashboard |
-| Sandbox key rejected | Using production key | Verify key starts with `persona_sandbox_` |
-| Template not found | Wrong environment | Templates are per-environment |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Persona Responses
+```typescript
+vi.mock('@persona/sdk', () => ({
+  PersonaClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=PERSONA=* npm run dev
+```
 
 ## Resources
-- [Persona API Quickstart](https://docs.withpersona.com/api-quickstart-tutorial)
-- [ngrok Documentation](https://ngrok.com/docs)
+- [Persona SDK Reference](https://docs.persona.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-Apply SDK patterns: `persona-sdk-patterns`
+See `persona-sdk-patterns` for production-ready code patterns.

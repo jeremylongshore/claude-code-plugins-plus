@@ -1,235 +1,203 @@
 ---
 name: miro-cost-tuning
 description: |
-  Optimize Miro API costs through credit monitoring, request reduction,
-  and plan selection based on the credit-based rate limiting model.
+  Optimize Miro costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Miro billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "miro cost", "miro billing",
-  "reduce miro costs", "miro pricing", "miro credits usage".
+  "reduce miro costs", "miro pricing", "miro expensive", "miro budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro, cost-optimization, billing]
 compatible-with: claude-code
+tags: [saas, miro]
 ---
 
 # Miro Cost Tuning
 
 ## Overview
+Optimize Miro costs through smart tier selection, sampling, and usage monitoring.
 
-Miro's API pricing is based on your plan tier (Free, Business, Enterprise), not per-API-call billing. However, the **credit-based rate limiting** system (100,000 credits/minute) effectively caps throughput. Cost optimization means minimizing API calls to stay within your plan's rate limits and reduce the need for higher-tier upgrades.
+## Prerequisites
+- Access to Miro billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## Miro Plan Comparison
+## Pricing Tiers
 
-| Feature | Free | Business | Enterprise |
-|---------|------|----------|------------|
-| Price | $0/user | $12-20/user/mo | Custom |
-| Boards | 3 editable | Unlimited | Unlimited |
-| API access | Yes | Yes | Yes |
-| Rate limit | 100K credits/min | 100K credits/min | Higher (negotiable) |
-| OAuth scopes | All standard | All standard | All + enterprise scopes |
-| SCIM provisioning | No | No | Yes |
-| Audit logs API | No | No | Yes |
-| SSO/SAML | No | No | Yes |
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-## Credit Usage Tracking
+## Cost Estimation
 
 ```typescript
-class MiroUsageTracker {
-  private minuteCredits = 0;
-  private dailyRequests = 0;
-  private minuteStart = Date.now();
-  private dailyStart = Date.now();
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
 
-  trackRequest(response: Response): void {
-    // Reset minute window
-    if (Date.now() - this.minuteStart > 60_000) {
-      this.minuteCredits = 0;
-      this.minuteStart = Date.now();
-    }
-
-    // Reset daily window
-    if (Date.now() - this.dailyStart > 86_400_000) {
-      this.dailyRequests = 0;
-      this.dailyStart = Date.now();
-    }
-
-    const limit = parseInt(response.headers.get('X-RateLimit-Limit') ?? '100000');
-    const remaining = parseInt(response.headers.get('X-RateLimit-Remaining') ?? '100000');
-    this.minuteCredits = limit - remaining;
-    this.dailyRequests++;
+function estimateMiroCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
   }
 
-  getReport(): UsageReport {
-    return {
-      currentMinuteCredits: this.minuteCredits,
-      creditUtilizationPercent: Math.round((this.minuteCredits / 100000) * 100),
-      dailyRequests: this.dailyRequests,
-      projectedMonthlyRequests: this.dailyRequests * 30,
-      recommendation: this.getRecommendation(),
-    };
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
   }
 
-  private getRecommendation(): string {
-    if (this.minuteCredits > 80000) {
-      return 'CRITICAL: >80% credit usage. Reduce request rate or upgrade to Enterprise.';
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class MiroUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Miro budget limit');
     }
-    if (this.minuteCredits > 50000) {
-      return 'WARNING: >50% credit usage. Consider caching and batching.';
-    }
-    return 'Healthy credit usage.';
+  }
+
+  estimatedCost(): number {
+    return estimateMiroCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
   }
 }
 ```
 
 ## Cost Reduction Strategies
 
-### Strategy 1: Reduce Read Requests with Caching
-
-The biggest cost saver. Most Miro board reads return data that changes infrequently.
-
+### Step 1: Request Sampling
 ```typescript
-// EXPENSIVE: Fetching board on every page load
-app.get('/dashboard', async (req, res) => {
-  const board = await miroFetch(`/v2/boards/${boardId}`);        // 1 credit per load
-  const items = await miroFetch(`/v2/boards/${boardId}/items`);  // 1 credit per load
-  res.render('dashboard', { board, items });
-});
-
-// OPTIMIZED: Cache board data for 2 minutes
-app.get('/dashboard', async (req, res) => {
-  const board = await getCachedBoard(boardId);    // Cache hit = 0 credits
-  const items = await getCachedItems(boardId);    // Cache hit = 0 credits
-  res.render('dashboard', { board, items });
-});
-
-// With webhook-driven invalidation, cache hits can be 95%+
-// That is a 20x reduction in API calls
-```
-
-### Strategy 2: Filter Items by Type
-
-Don't fetch all items if you only need sticky notes.
-
-```typescript
-// EXPENSIVE: Fetch all items, filter client-side
-const allItems = await miroFetch(`/v2/boards/${boardId}/items?limit=50`);
-const notes = allItems.data.filter(i => i.type === 'sticky_note');
-
-// OPTIMIZED: Server-side type filter
-const notes = await miroFetch(`/v2/boards/${boardId}/items?type=sticky_note&limit=50`);
-// Fewer items returned = smaller response = faster
-```
-
-### Strategy 3: Batch Writes with Controlled Concurrency
-
-```typescript
-// EXPENSIVE: Sequential writes (slow + same credits)
-for (const note of notes) {
-  await createStickyNote(boardId, note);  // 200ms * 50 = 10 seconds
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
 }
 
-// OPTIMIZED: Parallel with concurrency control (same credits, 5x faster)
-import PQueue from 'p-queue';
-const queue = new PQueue({ concurrency: 5 });
-for (const note of notes) {
-  queue.add(() => createStickyNote(boardId, note));
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await miroClient.trackEvent(event);
 }
-await queue.onIdle();  // ~2 seconds
 ```
 
-### Strategy 4: Use Webhooks Instead of Polling
-
+### Step 2: Batching Requests
 ```typescript
-// EXPENSIVE: Poll every 10 seconds (8,640 requests/day)
-setInterval(async () => {
-  const items = await miroFetch(`/v2/boards/${boardId}/items`);
-  detectChanges(items);
-}, 10_000);
+// Instead of N individual calls
+await Promise.all(ids.map(id => miroClient.get(id)));
 
-// OPTIMIZED: Webhook subscription (0 polling requests)
-// Miro pushes changes to your endpoint in real-time
-// See miro-webhooks-events for setup
+// Use batch endpoint (1 call)
+await miroClient.batchGet(ids);
 ```
 
-### Strategy 5: Smart Pagination Limits
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
 
+### Step 4: Compression
 ```typescript
-// WASTEFUL: Small page size = more round trips
-let cursor;
-do {
-  const page = await miroFetch(`/v2/boards/${boardId}/items?limit=10&cursor=${cursor ?? ''}`);
-  // 10 items per page = 10 requests for 100 items
-} while (cursor);
-
-// OPTIMIZED: Max page size
-let cursor;
-do {
-  const page = await miroFetch(`/v2/boards/${boardId}/items?limit=50&cursor=${cursor ?? ''}`);
-  // 50 items per page = 2 requests for 100 items
-} while (cursor);
-```
-
-## Usage Dashboard Query
-
-If you track API calls in a database:
-
-```sql
-SELECT
-  DATE_TRUNC('hour', created_at) AS hour,
-  endpoint,
-  COUNT(*) AS requests,
-  AVG(duration_ms) AS avg_latency_ms,
-  COUNT(*) FILTER (WHERE status = 429) AS rate_limited
-FROM miro_api_logs
-WHERE created_at >= NOW() - INTERVAL '24 hours'
-GROUP BY 1, 2
-ORDER BY requests DESC;
+const client = new MiroClient({
+  compression: true, // Enable gzip
+});
 ```
 
 ## Budget Alerts
 
+```bash
+# Set up billing alerts in Miro dashboard
+# Or use API if available:
+# Check Miro documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM miro_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Miro dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
 ```typescript
-// Alert when approaching credit limit
-const tracker = new MiroUsageTracker();
-
-// After each API call
-tracker.trackRequest(response);
-
-const report = tracker.getReport();
-if (report.creditUtilizationPercent > 80) {
-  await sendSlackAlert({
-    channel: '#engineering-alerts',
-    text: `Miro API credit usage at ${report.creditUtilizationPercent}%. ${report.recommendation}`,
-  });
+// Estimate monthly cost for your usage
+const estimate = estimateMiroCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
 }
 ```
 
-## When to Upgrade to Enterprise
-
-Consider Enterprise if you need:
-- Higher rate limits (negotiated per account)
-- SCIM API for automated user provisioning
-- Audit logs API for compliance
-- Organization-level management endpoints
-- SSO/SAML integration APIs
-- Dedicated support for API issues
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Hitting 429 frequently | Too many requests | Implement caching + webhooks |
-| Credit spikes | Runaway polling loops | Audit all `setInterval` calls |
-| Unnecessary full-board fetches | No type filtering | Add `?type=` parameter |
-| Small page sizes | Low `limit` parameter | Use `limit=50` (maximum) |
-
 ## Resources
-
-- [Miro Pricing](https://miro.com/pricing/)
-- [Rate Limiting](https://developers.miro.com/reference/rate-limiting)
-- [Miro Enterprise](https://miro.com/enterprise/)
+- [Miro Pricing](https://miro.com/pricing)
+- [Miro Billing Dashboard](https://dashboard.miro.com/billing)
 
 ## Next Steps
-
 For architecture patterns, see `miro-reference-architecture`.

@@ -1,118 +1,246 @@
 ---
 name: evernote-migration-deep-dive
 description: |
-  Deep dive into Evernote data migration strategies.
-  Use when migrating to/from Evernote, bulk data transfers,
-  or complex migration scenarios.
-  Trigger with phrases like "migrate to evernote", "migrate from evernote",
-  "evernote data transfer", "bulk evernote migration".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Execute Evernote major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Evernote, performing major version upgrades,
+  or re-platforming existing integrations to Evernote.
+  Trigger with phrases like "migrate evernote", "evernote migration",
+  "switch to evernote", "evernote replatform", "evernote upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, migration]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -5`
-
 ## Overview
-Comprehensive guide for migrating data to and from Evernote, including ENEX export/import, bulk API operations, format conversions (ENML to Markdown, HTML to ENML), and data integrity verification.
+Comprehensive guide for migrating to or from Evernote, or major version upgrades.
 
 ## Prerequisites
-- Understanding of Evernote data model (Notes, Notebooks, Tags, Resources)
-- Source/target system access credentials
-- Sufficient API quota for migration volume
-- Backup strategy in place before starting
+- Current system documentation
+- Evernote SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "evernote" > evernote-files.txt
+
+# Count integration points
+wc -l evernote-files.txt
+
+# Identify dependencies
+npm list | grep evernote
+pip freeze | grep evernote
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessEvernoteMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Evernote   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Evernote SDK
+npm install @evernote/sdk
+
+# Configure credentials
+cp .env.example .env.evernote
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@evernote/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/evernote.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class EvernoteAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const evernoteData = this.transform(data);
+    return evernoteClient.create(evernoteData);
+  }
+
+  private transform(data: CreateInput): EvernoteInput {
+    // Map from old format to Evernote format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateEvernoteData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await evernoteClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const evernotePercentage = getFeatureFlag('evernote_migration_percentage');
+
+  if (Math.random() * 100 < evernotePercentage) {
+    return new EvernoteAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app EVERNOTE_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.evernote'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateEvernoteMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1: Migration Planning
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-Assess the migration scope: count notes, notebooks, tags, and total resource size. Estimate API call count and quota consumption. Plan for rate limits (add delays between operations).
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-```javascript
-async function assessMigration(noteStore) {
-  const notebooks = await noteStore.listNotebooks();
-  const tags = await noteStore.listTags();
-  let totalNotes = 0;
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-  for (const nb of notebooks) {
-    const filter = new Evernote.NoteStore.NoteFilter({ notebookGuid: nb.guid });
-    const spec = new Evernote.NoteStore.NotesMetadataResultSpec({});
-    const result = await noteStore.findNotesMetadata(filter, 0, 1, spec);
-    totalNotes += result.totalNotes;
-  }
-
-  return {
-    notebooks: notebooks.length,
-    tags: tags.length,
-    totalNotes,
-    estimatedApiCalls: totalNotes * 2 + notebooks.length + tags.length,
-    estimatedTimeMinutes: Math.ceil((totalNotes * 2 * 200) / 60000) // 200ms per call
-  };
-}
-```
-
-### Step 2: Export from Evernote
-
-Export notes in three formats: ENEX (Evernote's XML format, preserves everything including resources), JSON (structured data for programmatic use), or Markdown (human-readable, loses some formatting).
-
-```javascript
-async function exportToMarkdown(noteStore, noteGuid) {
-  const note = await noteStore.getNote(noteGuid, true, true, false, false);
-  const text = enmlToMarkdown(note.content);
-
-  return {
-    title: note.title,
-    content: text,
-    tags: note.tagNames || [],
-    created: new Date(note.created).toISOString(),
-    resources: (note.resources || []).map(r => ({
-      filename: r.attributes.fileName,
-      mime: r.mime,
-      size: r.data.size
-    }))
-  };
-}
-```
-
-### Step 3: Import to Evernote
-
-Convert source data to ENML format, create notebooks to match source structure, and bulk-create notes with rate limit handling. Verify each import by comparing note counts and content hashes.
-
-### Step 4: Migration Runner
-
-Build a migration runner with progress tracking, checkpointing (resume from failure), and verification. Log every operation for audit trail.
-
-For the full migration planner, ENEX parser, format converters, migration runner, and verification tools, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Shift Traffic
+Gradually route traffic to new Evernote integration.
 
 ## Output
-- Migration assessment tool (note count, estimated time, quota needs)
-- ENEX, JSON, and Markdown exporters
-- ENML importer with format conversion
-- Migration runner with progress tracking and checkpoint/resume
-- Post-migration verification (count comparison, content hash check)
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Evernote
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `QUOTA_REACHED` | Upload quota exceeded during import | Wait for quota reset or upgrade account tier |
-| `RATE_LIMIT_REACHED` | Too many API calls during bulk migration | Increase delay between operations, use checkpointing |
-| `BAD_DATA_FORMAT` | Source content not valid ENML | Validate and sanitize content before import |
-| Lost resources | Attachments not migrated | Verify resource hashes match after migration |
-
-## Resources
-- [Evernote Export Format (ENEX)](https://dev.evernote.com/doc/articles/enex.php)
-- [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
-- [API Reference](https://dev.evernote.com/doc/reference/)
-- [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
 
 ## Examples
 
-**Export all notes to Markdown**: Iterate through all notebooks, export each note as a Markdown file with frontmatter (title, tags, date), save resources to `assets/` directory, preserving notebook-as-folder structure.
+### Quick Migration Status
+```typescript
+const status = await validateEvernoteMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
-**Import from Notion**: Parse Notion export (Markdown + CSV), convert to ENML, create matching notebooks, and bulk-import with checkpoint/resume for large exports (10,000+ pages).
+## Resources
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Evernote Migration Guide](https://docs.evernote.com/migration)
+
+## Flagship+ Skills
+For advanced troubleshooting, see `evernote-advanced-troubleshooting`.

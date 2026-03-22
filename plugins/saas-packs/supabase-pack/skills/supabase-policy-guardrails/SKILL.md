@@ -1,275 +1,259 @@
 ---
 name: supabase-policy-guardrails
 description: |
-  Implement Supabase guardrails: ESLint rules for Supabase anti-patterns,
-  pre-commit hooks blocking secrets, CI policy checks for RLS,
-  and runtime safety guards for production.
+  Implement Supabase lint rules, policy enforcement, and automated guardrails.
+  Use when setting up code quality rules for Supabase integrations, implementing
+  pre-commit hooks, or configuring CI policy checks for Supabase best practices.
   Trigger with phrases like "supabase policy", "supabase lint",
-  "supabase guardrails", "supabase eslint", "supabase pre-commit".
-allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(npm:*), Grep
+  "supabase guardrails", "supabase best practices check", "supabase eslint".
+allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, code-quality, guardrails]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
-# Supabase Policy Guardrails
+
+# Supabase Policy & Guardrails
 
 ## Overview
-Defense-in-depth guardrails for Supabase: lint rules catching anti-patterns at code time, pre-commit hooks preventing secret leaks, CI checks enforcing RLS, and runtime guards preventing accidental destructive operations.
+Automated policy enforcement and guardrails for Supabase integrations.
 
 ## Prerequisites
 - ESLint configured in project
-- Husky or similar pre-commit hook tool
-- CI/CD pipeline (GitHub Actions)
+- Pre-commit hooks infrastructure
+- CI/CD pipeline with policy checks
 - TypeScript for type enforcement
 
-## Instructions
+## ESLint Rules
 
-### Guardrail 1: ESLint Rules for Supabase
-
+### Custom Supabase Plugin
 ```javascript
-// eslint-rules/no-select-star.js
+// eslint-plugin-supabase/rules/no-hardcoded-keys.js
 module.exports = {
   meta: {
     type: 'problem',
-    docs: { description: 'Disallow .select("*") in Supabase queries' },
-    messages: {
-      noSelectStar: 'Specify column names instead of select("*") to reduce bandwidth and prevent leaking sensitive columns.',
+    docs: {
+      description: 'Disallow hardcoded Supabase API keys',
     },
+    fixable: 'code',
   },
   create(context) {
     return {
-      CallExpression(node) {
-        if (
-          node.callee.property?.name === 'select' &&
-          node.arguments[0]?.value === '*'
-        ) {
-          context.report({ node, messageId: 'noSelectStar' })
-        }
-      },
-    }
-  },
-}
-
-// eslint-rules/no-service-key-client.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: { description: 'Prevent service role key in client-side code' },
-    messages: {
-      serviceKeyInClient: 'SUPABASE_SERVICE_ROLE_KEY must not be used in client-side code. Use SUPABASE_ANON_KEY instead.',
-    },
-  },
-  create(context) {
-    const filename = context.getFilename()
-    const isClientSide = filename.includes('/src/') ||
-                          filename.includes('/components/') ||
-                          filename.includes('/pages/') ||
-                          filename.includes('/app/')
-
-    return {
-      MemberExpression(node) {
-        if (isClientSide && node.property?.name === 'SUPABASE_SERVICE_ROLE_KEY') {
-          context.report({ node, messageId: 'serviceKeyInClient' })
-        }
-      },
       Literal(node) {
-        if (isClientSide && typeof node.value === 'string' &&
-            node.value.includes('SERVICE_ROLE_KEY')) {
-          context.report({ node, messageId: 'serviceKeyInClient' })
+        if (typeof node.value === 'string') {
+          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+            context.report({
+              node,
+              message: 'Hardcoded Supabase API key detected',
+            });
+          }
         }
       },
-    }
+    };
   },
-}
+};
 ```
 
+### ESLint Configuration
 ```javascript
-// .eslintrc.js — register the rules
+// .eslintrc.js
 module.exports = {
-  rules: {
-    'supabase/no-select-star': 'error',
-    'supabase/no-service-key-client': 'error',
-  },
   plugins: ['supabase'],
-}
+  rules: {
+    'supabase/no-hardcoded-keys': 'error',
+    'supabase/require-error-handling': 'warn',
+    'supabase/use-typed-client': 'warn',
+  },
+};
 ```
 
-### Guardrail 2: Pre-Commit Hook for Secrets
-
-```bash
-# Install husky
-npx husky install
-
-# Add pre-commit hook
-npx husky add .husky/pre-commit 'bash scripts/check-secrets.sh'
-```
-
-```bash
-#!/bin/bash
-# scripts/check-secrets.sh
-set -euo pipefail
-
-echo "Checking for Supabase secrets in staged files..."
-
-# Pattern: Supabase keys start with eyJ (base64 JWT)
-# Exclude .env files, test fixtures, and lock files
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | \
-  grep -v '.env' | grep -v 'package-lock.json' | grep -v 'pnpm-lock.yaml' || true)
-
-if [ -z "$STAGED_FILES" ]; then
-  exit 0
-fi
-
-# Check for JWT-like strings (Supabase keys)
-if echo "$STAGED_FILES" | xargs grep -lE 'eyJ[A-Za-z0-9_-]{50,}\.' 2>/dev/null; then
-  echo ""
-  echo "ERROR: Possible Supabase API key found in staged files."
-  echo "Use environment variables instead of hardcoded keys."
-  echo "If this is a false positive, use git commit --no-verify"
-  exit 1
-fi
-
-# Check for Supabase connection strings
-if echo "$STAGED_FILES" | xargs grep -lE 'postgres://postgres\.[a-z]+:' 2>/dev/null; then
-  echo ""
-  echo "ERROR: Supabase connection string found in staged files."
-  echo "Use DATABASE_URL environment variable instead."
-  exit 1
-fi
-
-echo "No secrets detected."
-```
-
-### Guardrail 3: CI RLS Policy Check
+## Pre-Commit Hooks
 
 ```yaml
-# .github/workflows/supabase-guardrails.yml
-name: Supabase Guardrails
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: supabase-secrets-check
+        name: Check for Supabase secrets
+        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
 
-on: [pull_request]
+      - id: supabase-config-validate
+        name: Validate Supabase configuration
+        entry: node scripts/validate-supabase-config.js
+        language: node
+        files: '\.supabase\.json$'
+```
+
+## TypeScript Strict Patterns
+
+```typescript
+// Enforce typed configuration
+interface SupabaseStrictConfig {
+  apiKey: string;  // Required
+  environment: 'development' | 'staging' | 'production';  // Enum
+  timeout: number;  // Required number, not optional
+  retries: number;
+}
+
+// Disallow any in Supabase code
+// @ts-expect-error - Using any is forbidden
+const client = new Client({ apiKey: any });
+
+// Prefer this
+const client = new SupabaseClient(config satisfies SupabaseStrictConfig);
+```
+
+## Architecture Decision Records
+
+### ADR Template
+```markdown
+# ADR-001: Supabase Client Initialization
+
+## Status
+Accepted
+
+## Context
+We need to decide how to initialize the Supabase client across our application.
+
+## Decision
+We will use the singleton pattern with lazy initialization.
+
+## Consequences
+- Pro: Single client instance, connection reuse
+- Pro: Easy to mock in tests
+- Con: Global state requires careful lifecycle management
+
+## Enforcement
+- ESLint rule: supabase/use-singleton-client
+- CI check: grep for "new SupabaseClient(" outside allowed files
+```
+
+## Policy-as-Code (OPA)
+
+```rego
+# supabase-policy.rego
+package supabase
+
+# Deny production API keys in non-production environments
+deny[msg] {
+  input.environment != "production"
+  startswith(input.apiKey, "sk_live_")
+  msg := "Production API keys not allowed in non-production environment"
+}
+
+# Require minimum timeout
+deny[msg] {
+  input.timeout < 10000
+  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
+}
+
+# Require retry configuration
+deny[msg] {
+  not input.retries
+  msg := "Retry configuration is required"
+}
+```
+
+## CI Policy Checks
+
+```yaml
+# .github/workflows/supabase-policy.yml
+name: Supabase Policy Check
+
+on: [push, pull_request]
 
 jobs:
-  check-rls:
+  policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
 
-      - name: Start local Supabase
-        run: supabase start
-
-      - name: Apply migrations
-        run: supabase db reset
-
-      - name: Check RLS enabled on all tables
+      - name: Check for hardcoded secrets
         run: |
-          MISSING_RLS=$(supabase db query "
-            SELECT tablename FROM pg_tables
-            WHERE schemaname = 'public'
-            AND rowsecurity = false
-            AND tablename NOT LIKE '\_%'
-          " --output csv | tail -n +2)
-
-          if [ -n "$MISSING_RLS" ]; then
-            echo "::error::Tables missing RLS: $MISSING_RLS"
+          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+            echo "ERROR: Hardcoded Supabase keys found"
             exit 1
           fi
-          echo "All public tables have RLS enabled"
 
-      - name: Check no destructive migrations without annotation
+      - name: Validate configuration schema
         run: |
-          for file in supabase/migrations/*.sql; do
-            if grep -qi 'DROP TABLE\|TRUNCATE\|DELETE FROM.*WHERE.*true' "$file"; then
-              if ! grep -qi '-- APPROVED-DESTRUCTIVE' "$file"; then
-                echo "::error::Destructive operation in $file without -- APPROVED-DESTRUCTIVE annotation"
-                exit 1
-              fi
-            fi
-          done
-          echo "Migration safety check passed"
+          npx ajv validate -s supabase-config.schema.json -d config/supabase/*.json
 
-      - name: Stop Supabase
-        if: always()
-        run: supabase stop
+      - name: Run ESLint Supabase rules
+        run: npx eslint --plugin supabase --rule 'supabase/no-hardcoded-keys: error' src/
 ```
 
-### Guardrail 4: Runtime Safety Guards
+## Runtime Guardrails
 
 ```typescript
-// lib/safety-guards.ts
-import { getEnvironment } from './config'
+// Prevent dangerous operations in production
+const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
 
-export function guardBulkDelete(table: string, filter: Record<string, any>) {
-  if (getEnvironment() === 'production') {
-    const filterKeys = Object.keys(filter)
-    if (filterKeys.length === 0) {
-      throw new Error(`[SAFETY] Bulk delete on ${table} without filters blocked in production`)
-    }
+function guardSupabaseOperation(operation: string): void {
+  const isProd = process.env.NODE_ENV === 'production';
+
+  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
+    throw new Error(`Operation '${operation}' blocked in production`);
   }
 }
 
-export function guardServiceKeyUsage(context: string) {
-  if (typeof window !== 'undefined') {
-    throw new Error(`[SAFETY] Service role key used in browser context: ${context}`)
+// Rate limit protection
+function guardRateLimits(requestsInWindow: number): void {
+  const limit = parseInt(process.env.SUPABASE_RATE_LIMIT || '100');
+
+  if (requestsInWindow > limit * 0.9) {
+    console.warn('Approaching Supabase rate limit');
+  }
+
+  if (requestsInWindow >= limit) {
+    throw new Error('Supabase rate limit exceeded - request blocked');
   }
 }
-
-// Usage in service layer
-async function deleteCompletedTodos(userId: string) {
-  guardBulkDelete('todos', { user_id: userId, is_complete: true })
-
-  const { error } = await supabase
-    .from('todos')
-    .delete()
-    .eq('user_id', userId)
-    .eq('is_complete', true)
-
-  if (error) throw error
-}
 ```
 
-### Guardrail 5: Migration Naming Convention Check
+## Instructions
 
-```bash
-#!/bin/bash
-# scripts/check-migration-names.sh
-# Enforce naming: <timestamp>_<verb>_<description>.sql
+### Step 1: Create ESLint Rules
+Implement custom lint rules for Supabase patterns.
 
-for file in supabase/migrations/*.sql; do
-  basename=$(basename "$file")
-  if ! echo "$basename" | grep -qE '^[0-9]{14}_(create|alter|drop|add|remove|update|fix|seed)_[a-z_]+\.sql$'; then
-    echo "ERROR: Migration '$basename' doesn't match naming convention"
-    echo "Expected: <timestamp>_<verb>_<description>.sql"
-    echo "Example: 20240101000000_create_users_table.sql"
-    exit 1
-  fi
-done
+### Step 2: Configure Pre-Commit Hooks
+Set up hooks to catch issues before commit.
 
-echo "All migration names follow convention."
-```
+### Step 3: Add CI Policy Checks
+Implement policy-as-code in CI pipeline.
+
+### Step 4: Enable Runtime Guardrails
+Add production safeguards for dangerous operations.
 
 ## Output
-- ESLint rules catching `select("*")` and service key in client code
-- Pre-commit hooks blocking hardcoded Supabase secrets
-- CI check verifying RLS on all tables and safe migrations
-- Runtime guards blocking bulk deletes and browser service key usage
-- Migration naming convention enforcement
+- ESLint plugin with Supabase rules
+- Pre-commit hooks blocking secrets
+- CI policy checks passing
+- Runtime guardrails active
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule false positive | Legitimate `select('*')` needed | Use `// eslint-disable-next-line` with explanation |
-| Pre-commit blocks test data | Test fixture contains JWT-like strings | Add test file to exclusion pattern |
-| CI RLS check fails | New table missing RLS | Add `alter table ... enable row level security` to migration |
+| ESLint rule not firing | Wrong config | Check plugin registration |
+| Pre-commit skipped | --no-verify | Enforce in CI |
+| Policy false positive | Regex too broad | Narrow pattern match |
+| Guardrail triggered | Actual issue | Fix or whitelist |
+
+## Examples
+
+### Quick ESLint Check
+```bash
+npx eslint --plugin supabase --rule 'supabase/no-hardcoded-keys: error' src/
+```
 
 ## Resources
-- [ESLint Custom Rules](https://eslint.org/docs/latest/extend/plugins)
-- [Husky](https://typicode.github.io/husky/)
-- [Supabase Security Guide](https://supabase.com/docs/guides/security)
+- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Pre-commit Framework](https://pre-commit.com/)
+- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
-For architecture variants, see `supabase-architecture-variants`.
+For architecture blueprints, see `supabase-architecture-variants`.

@@ -1,6 +1,17 @@
 {
   "name": "openrouter-pack",
   "version": "1.0.0",
-  "description": "Flagship+ skill pack for OpenRouter - 30 skills for multi-model routing, fallbacks, and LLM gateway mastery",
-  "author": "Jeremy Longshore <jeremy@intentsolutions.io>"
+  "description": "Claude Code skill pack for OpenRouter (30 skills)",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "keywords": [
+    "openrouter",
+    "openrouter",
+    "saas",
+    "sdk",
+    "integration"
+  ]
 }

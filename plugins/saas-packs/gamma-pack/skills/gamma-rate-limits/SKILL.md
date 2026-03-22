@@ -1,170 +1,151 @@
 ---
 name: gamma-rate-limits
 description: |
-  Understand and manage Gamma API rate limits effectively.
-  Use when hitting rate limits, optimizing API usage,
-  or implementing request queuing systems.
-  Trigger with phrases like "gamma rate limit", "gamma quota",
-  "gamma 429", "gamma throttle", "gamma request limits".
+  Implement Gamma rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Gamma.
+  Trigger with phrases like "gamma rate limit", "gamma throttling",
+  "gamma 429", "gamma retry", "gamma backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Rate Limits
 
 ## Overview
-Understand Gamma API rate limits and implement effective strategies for high-volume usage.
+Handle Gamma rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-- Active Gamma API integration
-- Understanding of HTTP headers
-- Basic queuing concepts
-
-## Rate Limit Tiers
-
-| Plan | Requests/min | Presentations/day | Exports/hour |
-|------|-------------|-------------------|--------------|
-| Free | 10 | 5 | 10 |
-| Pro | 60 | 50 | 100 |
-| Team | 200 | 200 | 500 |
-| Enterprise | Custom | Custom | Custom |
+- Gamma SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Check Rate Limit Headers
-```typescript
-const response = await gamma.presentations.list();
+### Step 1: Understand Rate Limit Tiers
 
-// Rate limit headers
-const headers = response.headers;
-console.log('Limit:', headers['x-ratelimit-limit']);
-console.log('Remaining:', headers['x-ratelimit-remaining']);
-console.log('Reset:', new Date(headers['x-ratelimit-reset'] * 1000));  # 1000: 1 second in ms
-```
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-### Step 2: Implement Exponential Backoff
+### Step 2: Implement Exponential Backoff with Jitter
+
 ```typescript
-async function withBackoff<T>(
-  fn: () => Promise<T>,
-  options = { maxRetries: 5, baseDelay: 1000 }  # 1000: 1 second in ms
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  for (let attempt = 0; attempt < options.maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await fn();
-    } catch (err) {
-      if (err.status !== 429 || attempt === options.maxRetries - 1) {  # HTTP 429 Too Many Requests
-        throw err;
-      }
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      const delay = err.retryAfter
-        ? err.retryAfter * 1000  # 1 second in ms
-        : options.baseDelay * Math.pow(2, attempt);
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      console.log(`Rate limited. Retrying in ${delay}ms...`);
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Max retries exceeded');
+  throw new Error('Unreachable');
 }
-
-// Usage
-const result = await withBackoff(() =>
-  gamma.presentations.create({ title: 'My Deck', prompt: 'AI overview' })
-);
 ```
 
-### Step 3: Request Queue
+### Step 3: Add Idempotency Keys
+
 ```typescript
-class RateLimitedQueue {
-  private queue: Array<() => Promise<any>> = [];
-  private processing = false;
-  private requestsPerMinute: number;
-  private interval: number;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-  constructor(requestsPerMinute = 60) {
-    this.requestsPerMinute = requestsPerMinute;
-    this.interval = 60000 / requestsPerMinute;  # 60000: 1 minute in ms
-  }
-
-  async add<T>(fn: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      this.queue.push(async () => {
-        try {
-          resolve(await fn());
-        } catch (err) {
-          reject(err);
-        }
-      });
-      this.process();
-    });
-  }
-
-  private async process() {
-    if (this.processing) return;
-    this.processing = true;
-
-    while (this.queue.length > 0) {
-      const fn = this.queue.shift()!;
-      await fn();
-      await new Promise(r => setTimeout(r, this.interval));
-    }
-
-    this.processing = false;
-  }
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-// Usage
-const queue = new RateLimitedQueue(30); // 30 req/min
-
-const results = await Promise.all([
-  queue.add(() => gamma.presentations.create({ ... })),
-  queue.add(() => gamma.presentations.create({ ... })),
-  queue.add(() => gamma.presentations.create({ ... })),
-]);
-```
-
-### Step 4: Monitor Usage
-```typescript
-async function getRateLimitStatus() {
-  const status = await gamma.rateLimit.status();
-
-  return {
-    limit: status.limit,
-    remaining: status.remaining,
-    percentUsed: ((status.limit - status.remaining) / status.limit * 100).toFixed(1),
-    resetAt: new Date(status.reset * 1000),  # 1000: 1 second in ms
-    resetIn: Math.ceil((status.reset * 1000 - Date.now()) / 1000),  # 1 second in ms
-  };
+async function idempotentRequest<T>(
+  client: GammaClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
-
-// Usage
-const status = await getRateLimitStatus();
-console.log(`Used ${status.percentUsed}% of rate limit`);
-console.log(`Resets in ${status.resetIn} seconds`);
 ```
 
 ## Output
-- Rate limit aware API calls
-- Automatic retry with backoff
-- Request queuing system
-- Usage monitoring dashboard
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
-| Scenario | Strategy | Implementation |
-|----------|----------|----------------|
-| Occasional 429 | Exponential backoff | `withBackoff()` wrapper |
-| Consistent 429 | Request queue | `RateLimitedQueue` class |
-| Near limit | Preemptive throttle | Check remaining before call |
-| Burst traffic | Token bucket | Implement token bucket algorithm |
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
+
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-- [Gamma Rate Limits](https://gamma.app/docs/rate-limits)
-- [Rate Limit Best Practices](https://gamma.app/docs/best-practices)
+- [Gamma Rate Limits](https://docs.gamma.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
-Proceed to `gamma-security-basics` for security best practices.
+For security configuration, see `gamma-security-basics`.

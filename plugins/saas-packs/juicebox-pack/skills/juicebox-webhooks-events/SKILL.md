@@ -1,43 +1,201 @@
 ---
 name: juicebox-webhooks-events
 description: |
-  Handle Juicebox webhooks and events.
-  Trigger: "juicebox webhooks", "juicebox events".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Juicebox webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Juicebox event notifications securely.
+  Trigger with phrases like "juicebox webhook", "juicebox events",
+  "juicebox webhook signature", "handle juicebox events", "juicebox notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox Webhooks & Events
 
-## Webhook Setup
-Configure at app.juicebox.ai > Settings > Webhooks.
+## Overview
+Securely handle Juicebox webhooks with signature validation and replay protection.
 
-## Event Handling
+## Prerequisites
+- Juicebox webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
 ```typescript
-app.post('/webhooks/juicebox', (req, res) => {
-  const sig = req.headers['x-juicebox-signature'];
-  if (!verifySignature(req.body, sig, WEBHOOK_SECRET)) return res.status(401).end();
-  switch (req.body.type) {
-    case 'outreach.replied': handleReply(req.body.data); break;
-    case 'enrichment.complete': handleEnrichment(req.body.data); break;
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/juicebox',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-juicebox-signature'] as string;
+    const timestamp = req.headers['x-juicebox-timestamp'] as string;
+
+    if (!verifyJuiceboxSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleJuiceboxEvent(event);
+
+    res.status(200).json({ received: true });
   }
-  res.status(200).send('OK');
-});
+);
 ```
 
-## Events
-| Event | Use |
-|-------|-----|
-| `outreach.replied` | Alert recruiter |
-| `enrichment.complete` | Update record |
-| `search.alert` | New candidate matches |
+## Signature Verification
+
+```typescript
+function verifyJuiceboxSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.JUICEBOX_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type JuiceboxEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface JuiceboxEvent {
+  id: string;
+  type: JuiceboxEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<JuiceboxEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleJuiceboxEvent(event: JuiceboxEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `juicebox:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `juicebox:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Juicebox CLI to send test events
+juicebox webhooks trigger resource.created --url http://localhost:3000/webhooks/juicebox
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Juicebox dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
+
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/juicebox \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Webhooks](https://docs.juicebox.work/webhooks)
+- [Juicebox Webhooks Guide](https://docs.juicebox.com/webhooks)
+- [Webhook Security Best Practices](https://docs.juicebox.com/webhooks/security)
 
 ## Next Steps
-See `juicebox-performance-tuning`.
+For performance optimization, see `juicebox-performance-tuning`.

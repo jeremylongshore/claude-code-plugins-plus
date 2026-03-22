@@ -1,224 +1,222 @@
 ---
 name: windsurf-data-handling
 description: |
-  Control what code and data Windsurf AI can access and process in your workspace.
-  Use when handling sensitive data, implementing data exclusion patterns,
-  or ensuring compliance with privacy regulations in Windsurf environments.
-  Trigger with phrases like "windsurf data privacy", "windsurf PII",
-  "windsurf GDPR", "windsurf compliance", "codeium data", "windsurf telemetry".
+  Implement Windsurf PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Windsurf integrations.
+  Trigger with phrases like "windsurf data", "windsurf PII",
+  "windsurf GDPR", "windsurf data retention", "windsurf privacy", "windsurf CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, privacy, compliance, data-handling]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Data Handling
 
 ## Overview
-Control what code and data Windsurf's AI (Cascade, Supercomplete) can access. Covers file exclusion patterns, telemetry controls, Codeium's data processing model, and compliance configuration for regulated environments.
+Handle sensitive data correctly when integrating with Windsurf.
 
 ## Prerequisites
-- Windsurf IDE installed
-- Understanding of Codeium's data processing model
-- Identified sensitive files and directories in workspace
+- Understanding of GDPR/CCPA requirements
+- Windsurf SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Windsurf request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupWindsurfData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.windsurfLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupWindsurfData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const windsurfData = await windsurfClient.getUserData(userId);
+
+  return {
+    source: 'Windsurf',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: windsurfData.profile,
+      activities: windsurfData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Windsurf
+  await windsurfClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.windsurfUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'windsurf',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await windsurfClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Understand Codeium's Data Model
+### Step 1: Classify Data
+Categorize all Windsurf data by sensitivity level.
 
-```yaml
-# What happens with your code in Windsurf
-data_flow:
-  indexed_locally:
-    what: "File contents, structure, dependencies"
-    where: "Local machine only"
-    purpose: "Supercomplete context, Cascade awareness"
-    retention: "Persists until re-indexed"
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-  sent_to_cloud:
-    what: "Cascade prompts, code snippets around cursor"
-    where: "Codeium cloud (or self-hosted for Enterprise)"
-    purpose: "AI model inference"
-    retention: "Zero-data retention for ALL paid plans"
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-  never_processed:
-    what: "Files in .codeiumignore, .gitignore, node_modules"
-    where: "N/A"
-    purpose: "N/A"
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
-  compliance:
-    certifications: ["SOC 2 Type II", "FedRAMP High"]
-    hipaa: "BAA available for Enterprise customers"
-    data_retention: "Zero for paid plans, configurable for Enterprise"
-    deployment: "Cloud, Hybrid, or Self-Hosted options"
-```
-
-### Step 2: Configure .codeiumignore for Data Protection
-
-```gitignore
-# .codeiumignore — files Windsurf AI will NEVER see or index
-# Uses gitignore syntax. Default: .gitignore and node_modules excluded.
-
-# ===== SECRETS =====
-.env
-.env.*
-.env.local
-credentials.json
-serviceAccountKey.json
-*.pem
-*.key
-*.p12
-*.pfx
-.aws/
-.gcloud/
-.azure/
-vault-config.*
-
-# ===== CUSTOMER DATA =====
-data/customers/
-data/exports/
-data/backups/
-*.sql
-*.sql.gz
-*.dump
-fixtures/production-*
-
-# ===== INFRASTRUCTURE SECRETS =====
-terraform.tfstate
-terraform.tfstate.backup
-*.tfvars
-*.auto.tfvars
-ansible/vault*
-
-# ===== COMPLIANCE BOUNDARIES =====
-# PCI zone — credit card processing code
-src/pci/
-
-# HIPAA zone — health data processing
-src/hipaa/
-
-# Financial data
-reports/financial/
-```
-
-### Step 3: Disable Telemetry (Regulated Environments)
-
-```json
-// settings.json — maximum privacy configuration
-{
-  "codeium.enableTelemetry": false,
-  "codeium.enableSnippetTelemetry": false,
-  "telemetry.telemetryLevel": "off",
-  "update.showReleaseNotes": false
-}
-```
-
-### Step 4: Configure Autocomplete Data Boundaries
-
-```json
-// Disable Supercomplete for sensitive file types
-{
-  "codeium.autocomplete.languages": {
-    "plaintext": false,
-    "env": false,
-    "dotenv": false,
-    "properties": false,
-    "ini": false,
-    "yaml": false,
-    "json": false
-  }
-}
-```
-
-**Rationale:** YAML and JSON files often contain configuration with secrets. Disabling Supercomplete for these types prevents the AI from seeing or suggesting content based on config files.
-
-### Step 5: Safe Cascade Usage with Sensitive Code
-
-```markdown
-## Rules for using Cascade in regulated codebases
-
-1. NEVER paste secrets into Cascade chat
-   - BAD: "My API key is sk-abc123, why isn't it working?"
-   - GOOD: "I'm getting auth errors. The key is set in .env as API_KEY."
-
-2. NEVER ask Cascade to read excluded files
-   - BAD: "Read .env and tell me what's configured"
-   - GOOD: "What environment variables does src/config.ts expect?"
-
-3. Use .windsurfrules to enforce safety patterns
-   - "Always use process.env for secrets, never hardcode"
-   - "Never log PII fields: email, phone, ssn, creditCard"
-
-4. Mark compliance boundaries in .windsurfrules
-   - "Files in src/pci/ handle credit card data — extra review required"
-   - "Files in src/hipaa/ handle health data — never log patient info"
-```
-
-### Step 6: Enterprise Self-Hosted Deployment
-
-For maximum data control:
-
-```yaml
-# Enterprise deployment options
-deployment_modes:
-  cloud:
-    data_flow: "Code snippets → Codeium cloud → AI response"
-    retention: "Zero-data retention (default for paid plans)"
-    suitable_for: "Most teams"
-
-  hybrid:
-    data_flow: "Code stays on-prem, only prompts sent to cloud"
-    retention: "Configurable"
-    suitable_for: "Teams with data residency requirements"
-
-  self_hosted:
-    data_flow: "Everything on-prem or in your cloud"
-    retention: "You control"
-    suitable_for: "Highly regulated (finance, healthcare, government)"
-    requires: "Enterprise plan + infrastructure team"
-```
-
-## Data Privacy Audit Checklist
-
-- [ ] `.codeiumignore` covers all secret files and customer data
-- [ ] Telemetry disabled (if required by policy)
-- [ ] Autocomplete disabled for secret-containing file types
-- [ ] `.windsurfrules` includes data handling coding standards
-- [ ] Team trained: never paste secrets into Cascade
-- [ ] Enterprise: deployment mode matches compliance requirements
-- [ ] Enterprise: SSO configured, personal accounts blocked
-- [ ] Regular audit: verify no new sensitive files outside ignore patterns
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| AI suggests hardcoded secrets | Secret was in indexed file | Add to `.codeiumignore`, rotate secret |
-| PII appears in AI suggestions | Customer data in indexed directory | Exclude data directories |
-| Telemetry still sending | Setting not applied | Verify in Settings UI, restart Windsurf |
-| Compliance audit finding | Missing ignore patterns | Audit with `find` for exposed file types |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
 ## Examples
 
-### Quick Privacy Audit
-```bash
-set -euo pipefail
-echo "=== Windsurf Data Privacy Audit ==="
-echo "Has .codeiumignore: $([ -f .codeiumignore ] && echo 'YES' || echo 'NO')"
-echo "Potential exposed secrets:"
-find . -type f \
-  -not -path '*/node_modules/*' -not -path '*/.git/*' \
-  \( -name '*.env*' -o -name '*.key' -o -name '*.pem' -o -name 'credentials*' \) \
-  2>/dev/null | while read f; do
-    grep -q "$(basename "$f")" .codeiumignore 2>/dev/null && echo "  $f: PROTECTED" || echo "  $f: EXPOSED"
-  done
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Windsurf response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
 ```
 
 ## Resources
-- [Codeium Privacy Policy](https://codeium.com/privacy-policy)
-- [Windsurf Security](https://windsurf.com/security)
-- [Windsurf Ignore Docs](https://docs.windsurf.com/context-awareness/windsurf-ignore)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Windsurf Privacy Guide](https://docs.windsurf.com/privacy)
 
 ## Next Steps
-For enterprise access controls, see `windsurf-enterprise-rbac`.
+For enterprise access control, see `windsurf-enterprise-rbac`.

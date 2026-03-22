@@ -1,121 +1,119 @@
 ---
 name: evernote-local-dev-loop
 description: |
-  Set up efficient local development workflow for Evernote integrations.
-  Use when configuring dev environment, setting up sandbox testing,
-  or optimizing development iteration speed.
+  Configure Evernote local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Evernote.
   Trigger with phrases like "evernote dev setup", "evernote local development",
-  "evernote sandbox", "test evernote locally".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
+  "evernote dev environment", "develop with evernote".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, testing, workflow]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Local Dev Loop
 
 ## Overview
-Configure an efficient local development environment for Evernote API integration with sandbox testing, hot reload, ENML helpers, and a local Express server for OAuth testing.
+Set up a fast, reproducible local development workflow for Evernote.
 
 ## Prerequisites
 - Completed `evernote-install-auth` setup
-- Node.js 18+ or Python 3.10+
-- Evernote sandbox account at https://sandbox.evernote.com
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Project Structure
-
-Organize your project with clear separation of concerns:
-
+### Step 1: Create Project Structure
 ```
-evernote-app/
-  src/
-    services/       # NoteService, SearchService, etc.
-    utils/          # ENML helpers, query builder
-    middleware/     # Auth, rate limiting
-  test/             # Unit and integration tests
-  scripts/          # Dev utilities (test-connection, seed-data)
-  .env.development  # Sandbox credentials
-  .env.production   # Production credentials (gitignored)
+my-evernote-project/
+├── src/
+│   ├── evernote/
+│   │   ├── client.ts       # Evernote client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── evernote.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-### Step 2: Environment Configuration
-
-Create `.env.development` with sandbox credentials. Use a Developer Token for quick iteration (skip OAuth during development). Add `.env*` to `.gitignore`.
-
+### Step 2: Configure Environment
 ```bash
-# .env.development
-EVERNOTE_CONSUMER_KEY=your-sandbox-key
-EVERNOTE_CONSUMER_SECRET=your-sandbox-secret
-EVERNOTE_DEV_TOKEN=your-developer-token
-EVERNOTE_SANDBOX=true
-NODE_ENV=development
-PORT=3000
+# Copy environment template
+cp .env.example .env.local
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-### Step 3: Evernote Client Wrapper
-
-Create a client factory that switches between Developer Token (for scripts and tests) and OAuth (for the web app) based on environment configuration.
-
-```javascript
-function createClient() {
-  if (process.env.EVERNOTE_DEV_TOKEN) {
-    return new Evernote.Client({
-      token: process.env.EVERNOTE_DEV_TOKEN,
-      sandbox: true
-    });
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   }
-  return new Evernote.Client({
-    consumerKey: process.env.EVERNOTE_CONSUMER_KEY,
-    consumerSecret: process.env.EVERNOTE_CONSUMER_SECRET,
-    sandbox: process.env.EVERNOTE_SANDBOX === 'true'
-  });
 }
 ```
 
-### Step 4: ENML Utility Helpers
+### Step 4: Configure Testing
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { EvernoteClient } from '../src/evernote/client';
 
-Build helper functions: `wrapInENML(html)`, `textToENML(text)`, `htmlToENML(html)` (strip forbidden elements), and `validateENML(content)`. These prevent `BAD_DATA_FORMAT` errors during development.
-
-### Step 5: Express Server with OAuth
-
-Set up a local Express server with session management for OAuth flow testing. Include routes for `/auth/start` (get request token), `/auth/callback` (exchange for access token), and `/dashboard` (authenticated operations).
-
-### Step 6: Quick Test Script
-
-Create a `scripts/test-connection.js` that verifies SDK setup by calling `userStore.getUser()` and `noteStore.listNotebooks()`. Run with `node scripts/test-connection.js`.
-
-For the full project setup, Express server, ENML utilities, and test scripts, see [Implementation Guide](references/implementation-guide.md).
+describe('Evernote Client', () => {
+  it('should initialize with API key', () => {
+    const client = new EvernoteClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
+```
 
 ## Output
-- Project structure with services, utils, and middleware directories
-- Environment configuration for sandbox and production
-- Client factory with Developer Token and OAuth support
-- ENML utility library (wrap, convert, validate)
-- Express server with OAuth flow for local testing
-- Connection test script for quick verification
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Evernote development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `EVERNOTE_DEV_TOKEN not set` | Missing dev token | Get from `sandbox.evernote.com/api/DeveloperToken.action` |
-| `Invalid consumer key` | Wrong sandbox vs production key | Verify `EVERNOTE_SANDBOX` matches your key type |
-| `Session undefined` | Missing express-session middleware | Install and configure `express-session` |
-| Port already in use | Another process on port 3000 | Change `PORT` in `.env` or kill the process |
-
-## Resources
-- [Sandbox Environment](https://sandbox.evernote.com)
-- [Developer Tokens](https://dev.evernote.com/doc/articles/dev_tokens.php)
-- [OAuth Guide](https://dev.evernote.com/doc/articles/authentication.php)
-
-## Next Steps
-Proceed to `evernote-sdk-patterns` for advanced SDK usage patterns.
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
 
 ## Examples
 
-**Quick sandbox test**: Set `EVERNOTE_DEV_TOKEN`, run `node scripts/test-connection.js` to verify authentication, then create a test note using the Developer Token shortcut.
+### Mock Evernote Responses
+```typescript
+vi.mock('@evernote/sdk', () => ({
+  EvernoteClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
 
-**Full OAuth loop**: Start the Express server, navigate to `http://localhost:3000/auth/start`, complete the Evernote authorization, and verify the access token is stored in the session.
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=EVERNOTE=* npm run dev
+```
+
+## Resources
+- [Evernote SDK Reference](https://docs.evernote.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+## Next Steps
+See `evernote-sdk-patterns` for production-ready code patterns.

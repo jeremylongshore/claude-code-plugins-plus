@@ -1,121 +1,114 @@
 ---
 name: klingai-upgrade-migration
 description: |
-  Migrate between Kling AI model versions safely. Use when upgrading from v1.x to v2.x or
-  adopting new features. Trigger with phrases like 'klingai upgrade', 'kling ai migrate',
-  'klingai version update', 'upgrade kling model'.
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Analyze, plan, and execute Kling AI SDK upgrades with breaking change detection.
+  Use when upgrading Kling AI SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade klingai", "klingai migration",
+  "klingai breaking changes", "update klingai SDK", "analyze klingai version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, migration, upgrade]
-
+compatible-with: claude-code
+tags: [saas, klingai]
 ---
+
 # Kling AI Upgrade & Migration
 
 ## Overview
+Guide for upgrading Kling AI SDK versions and handling breaking changes.
 
-Guide for migrating between Kling AI model versions. Covers breaking changes, parameter differences, feature availability, and parallel testing strategies.
+## Prerequisites
+- Current Kling AI SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
-## Version History
+## Instructions
 
-| Version | Release | Key Changes |
-|---------|---------|-------------|
-| v1.0 | 2024-06 | Initial T2V + I2V |
-| v1.5 | 2024-09 | 1080p, motion brush, I2V-only model |
-| v1.6 | 2024-11 | Lip sync, camera paths, effects API |
-| v2.0 | 2025-03 | Quality leap, `kling-v2-master` |
-| v2.1 | 2025-06 | Optimized I2V, `kling-v2-1-master` for T2V |
-| v2.5 Turbo | 2025-09 | 40% faster, best speed/quality ratio |
-| v2.6 | 2025-12 | Native audio, 30-48 FPS, highest quality |
+### Step 1: Check Current Version
+```bash
+npm list @klingai/sdk
+npm view @klingai/sdk version
+```
 
-## Migration: v1.x to v2.x
+### Step 2: Review Changelog
+```bash
+open https://github.com/klingai/sdk/releases
+```
 
-```python
-# v1.x request
-body = {
-    "model_name": "kling-v1-6",
-    "prompt": "A sunset over mountains",
-    "duration": "5",
-    "mode": "standard",
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/klingai-sdk-vX.Y.Z
+npm install @klingai/sdk@latest
+npm test
+```
+
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
+
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
+
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@klingai/sdk';
+
+// After (v2.x)
+import { KlingAIClient } from '@klingai/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new KlingAIClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @klingai/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Kling AI]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
 }
 
-# v2.x -- only model_name changes
-body["model_name"] = "kling-v2-master"
-```
-
-**Breaking changes:**
-- `kling-v2-1` is I2V-only (no text-to-video support)
-- Camera control intensities produce different results at same values
-- Generation times differ (v2.x generally slower, higher quality)
-
-## Migration: v2.x to v2.6 with Audio
-
-```python
-body["model_name"] = "kling-v2-6"
-body["motion_has_audio"] = True  # NEW: synchronized audio
-
-# Cost impact: audio multiplies credits 5x
-# 5s standard: 10 -> 50 credits
-```
-
-## Feature Availability Matrix
-
-| Feature | v1.0 | v1.5 | v1.6 | v2.0 | v2.1 | v2.5T | v2.6 |
-|---------|------|------|------|------|------|-------|------|
-| Text-to-video | Y | Y | Y | Y | I2V only | Y | Y |
-| Image-to-video | Y | Y | Y | Y | Y | Y | Y |
-| Camera control | - | - | Y | Y | Y | Y | Y |
-| Motion brush | - | Y | Y | Y | Y | Y | Y |
-| Lip sync | - | - | Y | Y | Y | Y | Y |
-| Effects | - | - | Y | Y | Y | Y | Y |
-| Native audio | - | - | - | - | - | - | Y |
-| 1080p | - | Y | Y | Y | Y | Y | Y |
-
-## Parallel A/B Comparison
-
-```python
-def compare_models(prompt, models):
-    """Generate same prompt across models for comparison."""
-    results = {}
-    for model in models:
-        r = requests.post(f"{BASE}/videos/text2video", headers=get_headers(), json={
-            "model_name": model, "prompt": prompt, "duration": "5", "mode": "standard",
-        }).json()
-        results[model] = {"task_id": r["data"]["task_id"], "start": time.time()}
-
-    # Poll all
-    while any("url" not in r for r in results.values()):
-        for model, info in results.items():
-            if "url" in info or "error" in info:
-                continue
-            r = requests.get(
-                f"{BASE}/videos/text2video/{info['task_id']}", headers=get_headers()
-            ).json()
-            if r["data"]["task_status"] == "succeed":
-                info["url"] = r["data"]["task_result"]["videos"][0]["url"]
-                info["time"] = round(time.time() - info["start"])
-            elif r["data"]["task_status"] == "failed":
-                info["error"] = r["data"].get("task_status_msg")
-        time.sleep(10)
-
-    for model, info in results.items():
-        print(f"{model}: {info.get('url', info.get('error'))} ({info.get('time', '?')}s)")
-    return results
-```
-
-## Rollback Strategy
-
-```python
-# Feature flag for instant rollback
-KLING_MODEL = os.environ.get("KLING_MODEL_VERSION", "kling-v2-master")
-body["model_name"] = KLING_MODEL
-
-# To rollback: export KLING_MODEL_VERSION=kling-v1-6
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
+- [Kling AI Changelog](https://github.com/klingai/sdk/releases)
+- [Kling AI Migration Guide](https://docs.klingai.com/migration)
 
-- [Model Documentation](https://app.klingai.com/global/dev/document-api/apiReference/model/skillsMap)
-- [Developer Portal](https://app.klingai.com/global/dev)
+## Next Steps
+For CI integration during upgrades, see `klingai-ci-integration`.

@@ -1,53 +1,73 @@
 ---
 name: lucidchart-core-workflow-b
 description: |
-  Execute Lucidchart secondary workflow: Data-Linked Diagrams.
-  Trigger: "lucidchart data-linked diagrams", "secondary lucidchart workflow".
+  Execute Lucidchart secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "lucidchart secondary workflow",
+  "secondary task with lucidchart".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
+tags: [saas, lucidchart]
 ---
 
-# Lucidchart — Data-Linked Diagrams
+# Lucidchart Core Workflow B
 
 ## Overview
-Secondary workflow complementing the primary workflow.
+Secondary workflow for Lucidchart. Complements the primary workflow.
+
+## Prerequisites
+- Completed `lucidchart-install-auth` setup
+- Familiarity with `lucidchart-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Import CSV Data
+### Step 1: Setup
 ```typescript
-// Create data-linked diagram from CSV
-const data = [
-  { name: 'Service A', status: 'healthy', latency: '45ms' },
-  { name: 'Service B', status: 'degraded', latency: '200ms' },
-  { name: 'Service C', status: 'healthy', latency: '30ms' }
-];
-
-await client.dataSources.import(doc.documentId, {
-  format: 'json',
-  data: data,
-  mapping: {
-    shapeText: 'name',
-    shapeColor: { field: 'status', values: { healthy: '#4CAF50', degraded: '#FF9800' } }
-  }
-});
+// Step 1 implementation
 ```
 
-### Step 2: Share and Collaborate
+### Step 2: Process
 ```typescript
-await client.documents.share(doc.documentId, {
-  email: 'team@example.com',
-  role: 'editor',  // viewer, commenter, editor
-  message: 'Please review this architecture diagram'
-});
+// Step 2 implementation
+```
+
+### Step 3: Complete
+```typescript
+// Step 3 implementation
+```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Lucidchart API
+- Success confirmation or error details
+
+## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
 ```
 
 ## Resources
-- [Lucidchart Docs](https://developer.lucid.co/reference/overview)
+- [Lucidchart Documentation](https://docs.lucidchart.com)
+- [Lucidchart API Reference](https://docs.lucidchart.com/api)
 
 ## Next Steps
-See `lucidchart-common-errors`.
+For common errors, see `lucidchart-common-errors`.

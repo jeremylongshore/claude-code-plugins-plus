@@ -1,49 +1,73 @@
 ---
 name: wispr-core-workflow-b
 description: |
-  Wispr Flow core workflow b for voice-to-text API integration.
-  Use when integrating Wispr Flow dictation, WebSocket streaming,
-  or building voice-powered applications.
-  Trigger: "wispr core workflow b".
+  Execute Wispr secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "wispr secondary workflow",
+  "secondary task with wispr".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
+tags: [saas, wispr]
 ---
 
-# Wispr Flow Core Workflow B
+# Wispr Core Workflow B
 
 ## Overview
+Secondary workflow for Wispr. Complements the primary workflow.
 
-Guidance for core workflow b with Wispr Flow voice-to-text API.
+## Prerequisites
+- Completed `wispr-install-auth` setup
+- Familiarity with `wispr-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Key Wispr Flow Concepts
+### Step 1: Setup
+```typescript
+// Step 1 implementation
+```
 
-- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
-- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
-- **Auth**: API key (backend) or access token (client-side)
-- **Audio format**: 16kHz mono PCM preferred
-- **Context awareness**: Understands code, CLI commands, dev jargon
-- **Platforms**: Mac, Windows, iOS, browser API
+### Step 2: Process
+```typescript
+// Step 2 implementation
+```
+
+### Step 3: Complete
+```typescript
+// Step 3 implementation
+```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Wispr API
+- Success confirmation or error details
 
 ## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
-| WebSocket closed | Network issue | Reconnect with backoff |
-| Poor accuracy | Wrong context | Set context to 'programming' for code |
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [Wispr Flow Developers](https://wisprflow.ai/developers)
-- [API Docs](https://api-docs.wisprflow.ai/introduction)
-- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
+- [Wispr Documentation](https://docs.wispr.com)
+- [Wispr API Reference](https://docs.wispr.com/api)
 
 ## Next Steps
-
-See related Wispr Flow skills for more patterns.
+For common errors, see `wispr-common-errors`.

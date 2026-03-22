@@ -1,267 +1,151 @@
 ---
 name: maintainx-rate-limits
 description: |
-  Implement MaintainX API rate limiting, pagination, and backoff patterns.
+  Implement MaintainX rate limiting, backoff, and idempotency patterns.
   Use when handling rate limit errors, implementing retry logic,
   or optimizing API request throughput for MaintainX.
   Trigger with phrases like "maintainx rate limit", "maintainx throttling",
-  "maintainx 429", "maintainx retry", "maintainx backoff", "maintainx pagination".
+  "maintainx 429", "maintainx retry", "maintainx backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, api]
-
+compatible-with: claude-code
+tags: [saas, maintainx]
 ---
+
 # MaintainX Rate Limits
 
 ## Overview
-Handle MaintainX API rate limits gracefully with exponential backoff, cursor-based pagination, and request queuing to maximize throughput without triggering 429 errors.
+Handle MaintainX rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-- MaintainX API access configured
-- Node.js 18+ with `axios`
+- MaintainX SDK installed
 - Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Rate-Limited Client Wrapper
+### Step 1: Understand Rate Limit Tiers
+
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
+
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-// src/rate-limited-client.ts
-import axios, { AxiosInstance, AxiosError } from 'axios';
-
-export class RateLimitedClient {
-  private http: AxiosInstance;
-  private requestQueue: Array<() => void> = [];
-  private activeRequests = 0;
-  private maxConcurrent = 5;
-  private minDelayMs = 100;  // 10 requests/second max
-
-  constructor(apiKey?: string) {
-    const key = apiKey || process.env.MAINTAINX_API_KEY;
-    if (!key) throw new Error('MAINTAINX_API_KEY required');
-
-    this.http = axios.create({
-      baseURL: 'https://api.getmaintainx.com/v1',
-      headers: {
-        Authorization: `Bearer ${key}`,
-        'Content-Type': 'application/json',
-      },
-      timeout: 30_000,
-    });
-  }
-
-  private async throttle(): Promise<void> {
-    if (this.activeRequests >= this.maxConcurrent) {
-      await new Promise<void>((resolve) => this.requestQueue.push(resolve));
-    }
-    this.activeRequests++;
-    await new Promise((r) => setTimeout(r, this.minDelayMs));
-  }
-
-  private release() {
-    this.activeRequests--;
-    const next = this.requestQueue.shift();
-    if (next) next();
-  }
-
-  async request<T>(method: string, url: string, data?: any, params?: any): Promise<T> {
-    await this.throttle();
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      const response = await this.retryWithBackoff(
-        () => this.http.request<T>({ method, url, data, params }),
-      );
-      return response.data;
-    } finally {
-      this.release();
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
-
-  private async retryWithBackoff<T>(
-    fn: () => Promise<T>,
-    maxRetries = 3,
-    baseDelay = 1000, // 1 second initial backoff delay
-  ): Promise<T> {
-    for (let attempt = 0; attempt <= maxRetries; attempt++) {
-      try {
-        return await fn();
-      } catch (err) {
-        const axiosErr = err as AxiosError;
-        const status = axiosErr.response?.status;
-
-        if (status !== 429 && !(status && status >= 500) || attempt === maxRetries) {
-          throw err;
-        }
-
-        // Honor Retry-After header
-        const retryAfter = axiosErr.response?.headers?.['retry-after'];
-        const delayMs = retryAfter
-          ? parseInt(retryAfter) * 1000
-          : baseDelay * Math.pow(2, attempt) + Math.random() * 500;
-
-        console.warn(
-          `Rate limited (HTTP ${status}). Retry ${attempt + 1}/${maxRetries} in ${Math.round(delayMs)}ms`,
-        );
-        await new Promise((r) => setTimeout(r, delayMs));
-      }
-    }
-    throw new Error('Unreachable');
-  }
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 2: Cursor-Based Pagination
-
-MaintainX returns a `cursor` field in list responses. Pass it as a query parameter to fetch the next page.
+### Step 3: Add Idempotency Keys
 
 ```typescript
-async function paginateAll<T>(
-  client: RateLimitedClient,
-  endpoint: string,
-  resultKey: string,
-  params?: Record<string, any>,
-): Promise<T[]> {
-  const allItems: T[] = [];
-  let cursor: string | undefined;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-  do {
-    const response: any = await client.request('GET', endpoint, undefined, {
-      ...params,
-      limit: 100,
-      cursor,
-    });
-    const items = response[resultKey] as T[];
-    allItems.push(...items);
-    cursor = response.cursor ?? undefined;
-
-    // Log progress for long-running operations
-    if (allItems.length % 500 === 0) {
-      console.log(`  Fetched ${allItems.length} items so far...`);
-    }
-  } while (cursor);
-
-  return allItems;
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-// Usage
-const allWorkOrders = await paginateAll(client, '/workorders', 'workOrders', {
-  status: 'OPEN',
-});
-console.log(`Total: ${allWorkOrders.length} open work orders`);
-```
-
-### Step 3: Batch Operations with p-queue
-
-```typescript
-import PQueue from 'p-queue';
-
-// 5 concurrent requests, max 10 per second
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000, // 1 second window for rate cap
-  intervalCap: 10,
-});
-
-async function batchUpdate(
-  client: RateLimitedClient,
-  updates: Array<{ id: number; data: any }>,
-) {
-  const results = await Promise.allSettled(
-    updates.map((update) =>
-      queue.add(() =>
-        client.request('PATCH', `/workorders/${update.id}`, update.data),
-      ),
-    ),
-  );
-
-  const succeeded = results.filter((r) => r.status === 'fulfilled').length;
-  const failed = results.filter((r) => r.status === 'rejected').length;
-  console.log(`Batch update: ${succeeded} succeeded, ${failed} failed`);
-  return results;
-}
-
-// Close 100 completed work orders
-const completedOrders = await paginateAll(
-  client, '/workorders', 'workOrders', { status: 'COMPLETED' },
-);
-
-await batchUpdate(
-  client,
-  completedOrders.map((wo: any) => ({ id: wo.id, data: { status: 'CLOSED' } })),
-);
-```
-
-### Step 4: Rate Limit Monitoring
-
-```typescript
-// src/rate-monitor.ts
-class RateMonitor {
-  private requests: number[] = [];
-  private windowMs = 60_000; // 1 minute window
-
-  record() {
-    this.requests.push(Date.now());
-    this.cleanup();
-  }
-
-  cleanup() {
-    const cutoff = Date.now() - this.windowMs;
-    this.requests = this.requests.filter((t) => t > cutoff);
-  }
-
-  getRate(): number {
-    this.cleanup();
-    return this.requests.length;
-  }
-
-  report() {
-    const rate = this.getRate();
-    const status = rate > 50 ? 'WARNING' : 'OK';
-    console.log(`[RateMonitor] ${rate} req/min - ${status}`);
-    return { rate, status };
-  }
+async function idempotentRequest<T>(
+  client: MaintainXClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
 ```
 
 ## Output
-- Rate-limited client wrapper with built-in throttling and retry
-- Cursor-based pagination utility collecting all results
-- Batch operations with controlled concurrency via `p-queue`
-- Rate monitoring to track and alert on API usage
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
-| Scenario | Strategy |
-|----------|----------|
-| 429 Too Many Requests | Exponential backoff with jitter, honor `Retry-After` header |
-| `Retry-After` header present | Wait the specified number of seconds before retrying |
-| Burst of requests | Queue with `p-queue` (concurrency: 5, intervalCap: 10/sec) |
-| Large data sets (1000+ items) | Paginate with `limit: 100`, delay between pages |
-
-## Resources
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
-- [p-queue](https://github.com/sindresorhus/p-queue) -- Promise queue with concurrency control
-- [Exponential Backoff](https://cloud.google.com/storage/docs/exponential-backoff)
-
-## Next Steps
-For security configuration, see `maintainx-security-basics`.
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
 ## Examples
 
-**Adaptive rate limiting based on response headers**:
-
+### Queue-Based Rate Limiting
 ```typescript
-// Adjust concurrency dynamically based on remaining quota
-function adaptRate(headers: Record<string, string>, queue: PQueue) {
-  const remaining = parseInt(headers['x-ratelimit-remaining'] || '100');
-  if (remaining < 10) {
-    queue.concurrency = 1;
-    console.warn('Approaching rate limit, reducing concurrency to 1');
-  } else if (remaining < 50) {
-    queue.concurrency = 3;
-  } else {
-    queue.concurrency = 5;
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
   }
 }
 ```
+
+## Resources
+- [MaintainX Rate Limits](https://docs.maintainx.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+## Next Steps
+For security configuration, see `maintainx-security-basics`.

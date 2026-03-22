@@ -1,203 +1,336 @@
 ---
 name: clay-known-pitfalls
 description: |
-  Identify and avoid the top Clay anti-patterns, gotchas, and integration mistakes.
-  Use when reviewing Clay integrations for issues, onboarding new team members,
-  or auditing existing Clay table configurations.
+  Identify and avoid Clay anti-patterns and common integration mistakes.
+  Use when reviewing Clay code for issues, onboarding new developers,
+  or auditing existing Clay integrations for best practices violations.
   Trigger with phrases like "clay mistakes", "clay anti-patterns",
-  "clay pitfalls", "clay what not to do", "clay gotchas", "clay code review".
+  "clay pitfalls", "clay what not to do", "clay code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, audit]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Known Pitfalls
 
 ## Overview
-
-Real gotchas when using Clay's data enrichment platform. These are the mistakes that cost credits, waste time, or break integrations -- learned from production experience. Each pitfall includes the exact symptom, root cause, and fix.
+Common mistakes and anti-patterns when integrating with Clay.
 
 ## Prerequisites
+- Access to Clay codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-- Active Clay account with tables configured
-- Understanding of Clay's credit and enrichment model
-- Experience with at least one Clay enrichment workflow
+## Pitfall #1: Synchronous API Calls in Request Path
+
+### ❌ Anti-Pattern
+```typescript
+// User waits for Clay API call
+app.post('/checkout', async (req, res) => {
+  const payment = await clayClient.processPayment(req.body);  // 2-5s latency
+  const notification = await clayClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
+```
+
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
+
+// Background job
+async function processCheckout(data) {
+  const payment = await clayClient.processPayment(data);
+  await clayClient.sendEmail(payment);
+}
+```
+
+---
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await clayClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => clayClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new ClayClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new ClayClient({
+  apiKey: process.env.CLAY_API_KEY,
+});
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+---
+
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await clayClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await clayClient.charge(order);  // Charged twice!
+  }
+}
+```
+
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
+
+await clayClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
+
+---
+
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-clay-signature'];
+    if (!verifyClaySignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await clayClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await clayClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof ClayNotFoundError) {
+    return null;
+  }
+  if (error instanceof ClayRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new ClayClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.clay.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new ClayClient({
+  timeout: parseInt(process.env.CLAY_TIMEOUT || '30000'),
+  baseUrl: process.env.CLAY_BASE_URL || 'https://api.clay.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Clay is down, every request hangs
+for (const user of users) {
+  await clayClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(clayClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Clay is down
+const recommendations = await clayClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await clayClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('clay', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
 
 ## Instructions
 
-### Pitfall 1: Webhook 50K Limit Surprise
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
 
-**Symptom:** Webhook silently stops accepting new data. No error, no notification. New rows simply don't appear.
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
 
-**Root cause:** Each Clay webhook has a hard 50,000 submission lifetime limit. This limit persists even after deleting rows from the table.
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
 
-**Fix:**
-- Monitor webhook submission count in your application
-- Create a new webhook on the same table when approaching 45K
-- Use the `WebhookRotator` pattern from `clay-load-scale`
-- Set up an alert at 40K submissions
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
 
----
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
 
-### Pitfall 2: Waterfall Burns Credits Without "Stop on First Result"
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
 
-**Symptom:** Credits consumed at 3-5x the expected rate on waterfall enrichment columns.
+## Examples
 
-**Root cause:** By default, waterfall enrichment may query ALL providers even after the first one finds data. You must explicitly enable "stop on first result."
-
-**Fix:** In each waterfall column's settings, ensure the stop condition is configured. Without it, a 5-provider email waterfall costs 10-15 credits per row instead of 2-3.
-
----
-
-### Pitfall 3: Personal Email Domains Waste Credits
-
-**Symptom:** Company enrichment returns empty for 30-50% of rows.
-
-**Root cause:** Rows contain gmail.com, yahoo.com, hotmail.com domains. Clay's company enrichment can't match personal email domains to companies.
-
-**Fix:**
-```typescript
-const PERSONAL_DOMAINS = new Set([
-  'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com',
-  'icloud.com', 'aol.com', 'protonmail.com', 'mail.com',
-]);
-
-function filterBeforeEnrichment(rows: any[]) {
-  return rows.filter(r => {
-    const domain = r.domain?.toLowerCase();
-    if (PERSONAL_DOMAINS.has(domain)) {
-      console.log(`Filtered: ${domain} (personal email domain)`);
-      return false;
-    }
-    return true;
-  });
-}
-// Apply BEFORE sending to Clay. Typical savings: 20-40% of credits.
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
 ```
-
----
-
-### Pitfall 4: Auto-Update Re-Enriches Entire Table
-
-**Symptom:** Thousands of credits consumed overnight. Enrichment columns re-ran on rows that were already enriched.
-
-**Root cause:** Table-level auto-update was ON, and a column edit or provider reconnection triggered re-enrichment of all existing rows.
-
-**Fix:**
-- Turn off table-level auto-update before editing column configuration
-- Use conditional run rules: `ISEMPTY(Work Email)` to skip already-enriched rows
-- Only enable auto-update for tables with active webhook inflow
-
----
-
-### Pitfall 5: CSV Header Case Sensitivity
-
-**Symptom:** Imported CSV data appears in wrong columns or creates new columns instead of mapping to existing ones.
-
-**Root cause:** Clay maps CSV columns by exact header name. "Company Name" does not match "company_name" or "company name."
-
-**Fix:**
-```typescript
-// Normalize CSV headers before import
-function normalizeCSVHeaders(headers: string[]): string[] {
-  return headers.map(h => h.trim()); // Only trim whitespace
-  // Do NOT lowercase or change case — match the exact Clay column name
-}
-
-// Better: rename your Clay columns to match your CSV format
-// Or: use Clay's column mapping UI during CSV import to manually map
-```
-
----
-
-### Pitfall 6: Reading Data Immediately After Webhook Write
-
-**Symptom:** Checking the table via API or UI shows the row but enrichment columns are empty.
-
-**Root cause:** Enrichment runs asynchronously after the row is created. Depending on provider speed and table queue, enrichment can take 5-60 seconds.
-
-**Fix:** Use HTTP API columns to push enriched data back to your application rather than polling. If you must poll, wait at least 30 seconds and check for populated enrichment columns before reading.
-
----
-
-### Pitfall 7: Claygent Prompts That Are Too Vague
-
-**Symptom:** Claygent returns "Could not find information" or generic/wrong data.
-
-**Root cause:** Prompt says "Research this company" instead of specific, directed questions.
-
-**Bad prompt:** "Research {{Company Name}}"
-**Good prompt:** "Go to {{domain}}/about and find the CEO's name. Then check {{domain}}/pricing for the starting price. Return: CEO Name, Starting Price."
-
-**Fix:**
-- Be specific about what page to check
-- Ask for specific data points, not general research
-- Add fallback instructions: "If not on website, check LinkedIn"
-- Use Navigator mode for JavaScript-heavy sites
-
----
-
-### Pitfall 8: Not Connecting Your Own API Keys
-
-**Symptom:** Monthly Clay bill much higher than expected. Credits consumed at 2-13 per enrichment.
-
-**Root cause:** Using Clay's managed provider accounts instead of your own API keys. Every provider lookup costs Clay credits when using managed accounts.
-
-**Fix:** Go to **Settings > Connections** and add your own API keys for Apollo, Clearbit, Hunter, etc. Result: 0 Clay data credits consumed per enrichment (only 1 Action consumed).
-
-**Savings comparison for 10K enrichments/month:**
-
-| Setup | Credits Used | Approximate Cost Impact |
-|-------|-------------|----------------------|
-| All managed | ~60K credits | Full credit consumption |
-| Own API keys | 0 data credits + 10K actions | 70-80% savings |
-
----
-
-### Pitfall 9: No Conditional Run on Expensive Columns
-
-**Symptom:** Claygent and AI columns run on every row including low-quality leads, burning expensive credits.
-
-**Root cause:** Claygent and AI columns are set to auto-run on all new rows without qualification criteria.
-
-**Fix:** Add "Only run if" conditions:
-- Claygent: `ICP Score >= 60 AND ISNOTEMPTY(Company Name)`
-- AI personalization: `ICP Score >= 70 AND ISNOTEMPTY(Work Email)`
-- Phone lookup: `ICP Score >= 80 AND ISNOTEMPTY(Work Email)`
-
-This ensures expensive operations only run on qualified prospects.
-
----
-
-### Pitfall 10: Formula Column References Break on Rename
-
-**Symptom:** Formula column shows `#ERROR` or `#REF` after renaming another column.
-
-**Root cause:** Clay formulas reference columns by display name (case-sensitive). Renaming a referenced column breaks the formula.
-
-**Fix:** After renaming any column, review all formula columns and update their references. Consider establishing a column naming convention and documenting it so names don't change unexpectedly.
-
-## Quick Reference Anti-Pattern Checklist
-
-| Anti-Pattern | Cost Impact | Fix Difficulty |
-|-------------|-------------|----------------|
-| No "stop on first result" | 3-5x credit waste | Easy (toggle) |
-| Personal domains not filtered | 20-40% credit waste | Easy (pre-filter) |
-| No own API keys | 70-80% higher cost | Easy (paste keys) |
-| Auto-update re-enrichment | Thousands of credits | Medium (conditions) |
-| Vague Claygent prompts | Low hit rate, wasted credits | Medium (rewrite) |
-| No conditional run rules | Expensive columns run on all | Easy (add conditions) |
-| Webhook 50K limit hit | Data loss | Medium (rotation) |
 
 ## Resources
+- [Clay Security Guide](https://docs.clay.com/security)
+- [Clay Best Practices](https://docs.clay.com/best-practices)
 
-- [Clay University -- Table Management Settings](https://university.clay.com/docs/table-management-settings)
-- [Clay University -- Actions & Data Credits](https://university.clay.com/docs/actions-data-credits)
-- [Clay Community](https://community.clay.com)
+## Quick Reference Card
 
-## Next Steps
-
-For comprehensive debugging when things go wrong, see `clay-advanced-troubleshooting`.
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

@@ -1,8 +1,8 @@
 ---
 name: canva-multi-env-setup
 description: |
-  Configure Canva Connect API across development, staging, and production environments.
-  Use when setting up multi-environment deployments, managing OAuth credentials per environment,
+  Configure Canva across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
   or implementing environment-specific Canva configurations.
   Trigger with phrases like "canva environments", "canva staging",
   "canva dev prod", "canva environment setup", "canva config by env".
@@ -10,170 +10,215 @@ allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
 compatible-with: claude-code
+tags: [saas, canva]
 ---
 
 # Canva Multi-Environment Setup
 
 ## Overview
+Configure Canva across development, staging, and production environments.
 
-Configure Canva Connect API integrations across development, staging, and production. Each environment needs separate OAuth integrations registered in the Canva developer portal with distinct redirect URIs.
+## Prerequisites
+- Separate Canva accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
 ## Environment Strategy
 
-| Environment | Canva Integration | Redirect URI | Data |
-|-------------|------------------|--------------|------|
-| Development | `my-app-dev` | `http://localhost:3000/auth/canva/callback` | Test account |
-| Staging | `my-app-staging` | `https://staging.myapp.com/auth/canva/callback` | Staging account |
-| Production | `my-app-prod` | `https://myapp.com/auth/canva/callback` | Real users |
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
 
-**Important:** Register a separate Canva integration per environment. Each gets its own client ID and secret.
+## Configuration Structure
 
-## Configuration
+```
+config/
+├── canva/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
 
-```typescript
-// src/config/canva.ts
-interface CanvaEnvConfig {
-  clientId: string;
-  clientSecret: string;
-  redirectUri: string;
-  baseUrl: string;  // Always api.canva.com — Canva has no sandbox API
-  scopes: string[];
-  debug: boolean;
-}
-
-const configs: Record<string, CanvaEnvConfig> = {
-  development: {
-    clientId: process.env.CANVA_CLIENT_ID!,
-    clientSecret: process.env.CANVA_CLIENT_SECRET!,
-    redirectUri: 'http://localhost:3000/auth/canva/callback',
-    baseUrl: 'https://api.canva.com/rest/v1', // No sandbox exists
-    scopes: ['design:content:write', 'design:content:read', 'design:meta:read', 'asset:write', 'asset:read'],
-    debug: true,
-  },
-  staging: {
-    clientId: process.env.CANVA_CLIENT_ID!,
-    clientSecret: process.env.CANVA_CLIENT_SECRET!,
-    redirectUri: process.env.CANVA_REDIRECT_URI!,
-    baseUrl: 'https://api.canva.com/rest/v1',
-    scopes: ['design:content:write', 'design:content:read', 'design:meta:read', 'asset:write', 'asset:read'],
-    debug: false,
-  },
-  production: {
-    clientId: process.env.CANVA_CLIENT_ID!,
-    clientSecret: process.env.CANVA_CLIENT_SECRET!,
-    redirectUri: process.env.CANVA_REDIRECT_URI!,
-    baseUrl: 'https://api.canva.com/rest/v1',
-    scopes: ['design:content:write', 'design:content:read', 'design:meta:read'],
-    debug: false,
-  },
-};
-
-export function getCanvaConfig(): CanvaEnvConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return configs[env] || configs.development;
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
 }
 ```
 
-## Secret Management
+### development.json
+```json
+{
+  "apiKey": "${CANVA_API_KEY}",
+  "baseUrl": "https://api-sandbox.canva.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${CANVA_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.canva.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${CANVA_API_KEY_PROD}",
+  "baseUrl": "https://api.canva.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/canva/config.ts
+import baseConfig from '../../config/canva/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getCanvaConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/canva/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
 
 ### Local Development
-
 ```bash
 # .env.local (git-ignored)
-CANVA_CLIENT_ID=OCA_dev_xxxxxxxx
-CANVA_CLIENT_SECRET=dev_xxxxxxxx
+CANVA_API_KEY=sk_test_dev_***
 ```
 
-### GitHub Actions / CI
-
-```bash
-# Per-environment secrets
-gh secret set CANVA_CLIENT_ID --env staging --body "OCA_staging_xxx"
-gh secret set CANVA_CLIENT_SECRET --env staging --body "staging_xxx"
-gh secret set CANVA_CLIENT_ID --env production --body "OCA_prod_xxx"
-gh secret set CANVA_CLIENT_SECRET --env production --body "prod_xxx"
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  CANVA_API_KEY: ${{ secrets.CANVA_API_KEY_${{ matrix.environment }} }}
 ```
 
-### Production — Cloud Secret Managers
-
+### Production (Vault/Secrets Manager)
 ```bash
-# GCP Secret Manager
-gcloud secrets create canva-client-id-prod --data-file=-
-gcloud secrets create canva-client-secret-prod --data-file=-
-
 # AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name canva/production/client-id \
-  --secret-string "OCA_prod_xxx"
+aws secretsmanager get-secret-value --secret-id canva/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=canva-api-key
 
 # HashiCorp Vault
-vault kv put secret/canva/production \
-  client_id="OCA_prod_xxx" \
-  client_secret="prod_xxx"
+vault kv get -field=api_key secret/canva/production
 ```
 
-## Environment Isolation Guards
+## Environment Isolation
 
 ```typescript
-// Prevent accidental cross-environment operations
-function assertEnvironment(expected: string): void {
-  const actual = process.env.NODE_ENV || 'development';
-  if (actual !== expected) {
-    throw new Error(`Expected ${expected} environment, got ${actual}`);
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getCanvaConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[canva] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
   }
 }
 
-// Guard destructive operations
-async function deleteAllUserDesigns(userId: string, token: string) {
-  assertEnvironment('development'); // Block in staging/production
-  // ...
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
 }
 ```
 
-## Token Storage per Environment
+## Feature Flags by Environment
 
 ```typescript
-// Development: file-based for convenience
-// Staging/Production: encrypted database
-
-function getTokenStore(): TokenStore {
-  const env = process.env.NODE_ENV || 'development';
-
-  if (env === 'development') {
-    return new FileTokenStore('.canva-tokens.json'); // git-ignored
-  }
-
-  return new DatabaseTokenStore({
-    connectionString: process.env.DATABASE_URL!,
-    encryptionKey: process.env.TOKEN_ENCRYPTION_KEY!,
-  });
-}
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
 ```
 
-## Canva-Specific Considerations
+## Instructions
 
-1. **No sandbox API** — Canva has no separate sandbox environment. All environments hit `api.canva.com/rest/v1`. Use separate Canva accounts for dev/staging.
-2. **Separate integrations** — Each environment should be a distinct integration in the Canva developer portal to avoid redirect URI conflicts.
-3. **Scope differences** — Use broader scopes in dev for testing, minimal scopes in production.
-4. **Token isolation** — Never share tokens across environments. Refresh tokens are single-use.
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
+
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
+
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong redirect URI | Environment mismatch | Use per-environment integration |
-| Missing secret | Not deployed to env | Add via secret manager |
-| Token cross-contamination | Shared token store | Isolate by environment prefix |
-| Production guard triggered | Wrong NODE_ENV | Set correct environment variable |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getCanvaConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-
-- [Canva Creating Integrations](https://www.canva.dev/docs/connect/creating-integrations/)
-- [Canva Authentication](https://www.canva.dev/docs/connect/authentication/)
+- [Canva Environments Guide](https://docs.canva.com/environments)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-
 For observability setup, see `canva-observability`.

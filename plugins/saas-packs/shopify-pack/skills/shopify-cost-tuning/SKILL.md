@@ -1,229 +1,203 @@
 ---
 name: shopify-cost-tuning
 description: |
-  Optimize Shopify app costs through plan selection, API usage monitoring,
-  and Shopify Plus upgrade analysis.
+  Optimize Shopify costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Shopify billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "shopify cost", "shopify billing",
-  "shopify pricing", "shopify Plus worth it", "shopify API usage", "reduce shopify costs".
+  "reduce shopify costs", "shopify pricing", "shopify expensive", "shopify budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
 compatible-with: claude-code
+tags: [saas, shopify]
 ---
 
 # Shopify Cost Tuning
 
 ## Overview
-
-Optimize Shopify app and API costs through plan analysis, API usage monitoring, and strategies to minimize billable API calls. Covers Shopify store plans, Partner app billing, and API efficiency.
+Optimize Shopify costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
+- Access to Shopify billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-- Access to Shopify Partner Dashboard for app billing
-- Understanding of current API usage patterns
-- Knowledge of merchant's Shopify plan
+## Pricing Tiers
 
-## Instructions
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-### Step 1: Understand Shopify Plan Rate Limits
-
-API rate limits are determined by the **merchant's** plan, not your app:
-
-| Merchant Plan | REST Bucket | REST Leak Rate | GraphQL Points | GraphQL Restore |
-|--------------|-------------|----------------|----------------|-----------------|
-| Basic Shopify | 40 requests | 2/second | 1,000 points | 50/second |
-| Shopify | 40 requests | 2/second | 1,000 points | 50/second |
-| Advanced | 40 requests | 2/second | 1,000 points | 50/second |
-| Shopify Plus | 80 requests | 4/second | 2,000 points | 100/second |
-
-**Key insight:** Upgrading from Basic to Advanced doesn't help rate limits. Only Plus doubles them.
-
-### Step 2: App Billing API
-
-If your app charges merchants, use the GraphQL App Billing API:
+## Cost Estimation
 
 ```typescript
-// Create a recurring charge
-const CREATE_SUBSCRIPTION = `
-  mutation appSubscriptionCreate(
-    $name: String!,
-    $lineItems: [AppSubscriptionLineItemInput!]!,
-    $returnUrl: URL!,
-    $test: Boolean
-  ) {
-    appSubscriptionCreate(
-      name: $name,
-      lineItems: $lineItems,
-      returnUrl: $returnUrl,
-      test: $test
-    ) {
-      appSubscription {
-        id
-        status
-      }
-      confirmationUrl
-      userErrors { field message }
-    }
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateShopifyCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
   }
-`;
 
-const response = await client.request(CREATE_SUBSCRIPTION, {
-  variables: {
-    name: "Pro Plan",
-    returnUrl: "https://your-app.com/billing/callback",
-    test: process.env.NODE_ENV !== "production", // test charges in dev
-    lineItems: [
-      {
-        plan: {
-          appRecurringPricingDetails: {
-            price: { amount: 9.99, currencyCode: "USD" },
-            interval: "EVERY_30_DAYS",
-          },
-        },
-      },
-    ],
-  },
-});
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
 
-// Redirect merchant to confirmationUrl to approve the charge
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
 ```
 
-### Step 3: Monitor API Usage
+## Usage Monitoring
 
 ```typescript
-class ShopifyUsageTracker {
-  private graphqlCosts: number[] = [];
-  private restCalls: number = 0;
-  private startOfPeriod: Date = new Date();
+class ShopifyUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
 
-  trackGraphqlCost(extensions: any): void {
-    if (extensions?.cost?.actualQueryCost) {
-      this.graphqlCosts.push(extensions.cost.actualQueryCost);
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Shopify budget limit');
     }
   }
 
-  trackRestCall(): void {
-    this.restCalls++;
+  estimatedCost(): number {
+    return estimateShopifyCost(this.requestCount).estimatedCost;
   }
 
-  getReport(): UsageReport {
-    const totalGraphqlCost = this.graphqlCosts.reduce((a, b) => a + b, 0);
-    const avgCost = totalGraphqlCost / (this.graphqlCosts.length || 1);
-
-    return {
-      period: {
-        start: this.startOfPeriod,
-        end: new Date(),
-      },
-      graphql: {
-        totalQueries: this.graphqlCosts.length,
-        totalCost: totalGraphqlCost,
-        averageCost: Math.round(avgCost),
-        maxSingleCost: Math.max(...this.graphqlCosts, 0),
-      },
-      rest: {
-        totalCalls: this.restCalls,
-      },
-      recommendation: avgCost > 500
-        ? "High average query cost — optimize field selection"
-        : avgCost > 100
-        ? "Moderate cost — consider bulk operations for large queries"
-        : "Efficient usage",
-    };
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
   }
 }
 ```
 
-### Step 4: Cost Reduction Strategies
+## Cost Reduction Strategies
 
-**Strategy 1: Replace REST with GraphQL** (get only what you need)
-
+### Step 1: Request Sampling
 ```typescript
-// REST returns ALL fields — 5KB+ per product
-// GET /admin/api/2024-10/products/123.json
-// Returns: title, body_html, vendor, product_type, handle, template_suffix,
-//          published_scope, tags, admin_graphql_api_id, variants[], images[],
-//          options[], ... (everything)
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
 
-// GraphQL returns ONLY requested fields — 200 bytes
-const response = await client.request(`{
-  product(id: "gid://shopify/Product/123") {
-    title
-    status
-    totalInventory
-  }
-}`);
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await shopifyClient.trackEvent(event);
+}
 ```
 
-**Strategy 2: Use Bulk Operations for exports**
-
+### Step 2: Batching Requests
 ```typescript
-// Instead of 200 paginated queries (200 * ~100 cost = 20,000 points):
-// Use 1 bulk operation (minimal cost, runs in background)
-await client.request(`
-  mutation { bulkOperationRunQuery(query: """
-    { products { edges { node { id title } } } }
-  """) { bulkOperation { id status } userErrors { message } } }
-`);
+// Instead of N individual calls
+await Promise.all(ids.map(id => shopifyClient.get(id)));
+
+// Use batch endpoint (1 call)
+await shopifyClient.batchGet(ids);
 ```
 
-**Strategy 3: Cache and invalidate via webhooks**
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
 
+### Step 4: Compression
 ```typescript
-// Instead of re-querying products every request:
-// Cache products, invalidate only when products/update webhook fires
-// Saves: hundreds of queries per hour for read-heavy apps
+const client = new ShopifyClient({
+  compression: true, // Enable gzip
+});
 ```
 
-**Strategy 4: Use Storefront API for public data**
+## Budget Alerts
 
-```typescript
-// Storefront API has separate rate limits
-// Use it for: product listings, collections, search
-// Keep Admin API for: order management, customer data, fulfillments
+```bash
+# Set up billing alerts in Shopify dashboard
+# Or use API if available:
+# Check Shopify documentation for billing APIs
 ```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM shopify_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Shopify dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-
-- API usage monitored with cost tracking
-- Rate limit-efficient query patterns
-- App billing configured (if charging merchants)
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
 - Cost reduction strategies applied
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Frequent throttling | High query cost | Reduce fields, use bulk ops |
-| High hosting costs | Too many API calls | Cache responses, use webhooks |
-| App billing rejection | Test mode not set | Use `test: true` in development |
-| Merchant cancels | Unexpected charges | Clear billing in app onboarding |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
 
 ## Examples
 
-### Quick Usage Check
-
+### Quick Cost Check
 ```typescript
-// After every GraphQL call, log the cost
-const response = await client.request(query);
-const cost = response.extensions?.cost;
-if (cost) {
-  console.log(
-    `Query cost: ${cost.actualQueryCost}/${cost.throttleStatus.maximumAvailable} ` +
-    `(${cost.throttleStatus.currentlyAvailable} available)`
-  );
+// Estimate monthly cost for your usage
+const estimate = estimateShopifyCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
 }
 ```
 
 ## Resources
-
-- [Shopify API Rate Limits](https://shopify.dev/docs/api/usage/rate-limits)
-- [App Billing API](https://shopify.dev/docs/apps/build/billing)
-- [Shopify Pricing](https://www.shopify.com/pricing)
-- [Shopify Plus Rate Limits](https://shopify.dev/changelog/increased-admin-api-rate-limits-for-shopify-plus)
+- [Shopify Pricing](https://shopify.com/pricing)
+- [Shopify Billing Dashboard](https://dashboard.shopify.com/billing)
 
 ## Next Steps
-
 For architecture patterns, see `shopify-reference-architecture`.

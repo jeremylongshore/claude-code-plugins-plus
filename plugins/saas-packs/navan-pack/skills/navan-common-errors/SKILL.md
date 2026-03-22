@@ -1,45 +1,113 @@
 ---
 name: navan-common-errors
 description: |
-  Diagnose and fix Navan common errors.
-  Trigger: "navan error", "fix navan", "debug navan".
+  Diagnose and fix Navan common errors and exceptions.
+  Use when encountering Navan errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "navan error", "fix navan",
+  "navan not working", "debug navan".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
 compatible-with: claude-code
+tags: [saas, navan]
 ---
 
 # Navan Common Errors
 
 ## Overview
-Quick reference for Navan API errors with solutions.
+Quick reference for the top 10 most common Navan errors and their solutions.
 
-### 401 — Authentication Failed
-**Fix:** Verify API key at Navan Admin > Integrations.
+## Prerequisites
+- Navan SDK installed
+- API credentials configured
+- Access to error logs
 
-### 403 — Company Access Denied
-**Fix:** Check company_id matches your organization.
+## Instructions
 
-### 404 — Trip/Expense Not Found
-**Fix:** Verify resource ID exists.
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-### 429 — Rate Limited
-**Fix:** Navan API: 120 requests/minute. Implement backoff.
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-### 409 — Conflict
-**Fix:** Duplicate booking or expense. Check idempotency key.
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
 
-## Quick Diagnostic
-```bash
-# Check API connectivity
-curl -s -w "\nHTTP %{http_code}" https://api.navan.com/v1/health 2>/dev/null || echo "Endpoint check needed"
-echo $NAVAN_API_KEY | head -c 10
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
+```bash
+# Verify API key is set
+echo $NAVAN_API_KEY
+```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `navan-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Navan status
+curl -s https://status.navan.com
+
+# Verify API connectivity
+curl -I https://api.navan.com
+
+# Check local configuration
+env | grep NAVAN
+```
+
+### Escalation Path
+1. Collect evidence with `navan-debug-bundle`
+2. Check Navan status page
+3. Contact support with request ID
+
 ## Resources
-- [Navan Docs](https://app.navan.com/app/helpcenter)
+- [Navan Status Page](https://status.navan.com)
+- [Navan Support](https://docs.navan.com/support)
+- [Navan Error Codes](https://docs.navan.com/errors)
 
 ## Next Steps
-See `navan-debug-bundle`.
+For comprehensive debugging, see `navan-debug-bundle`.

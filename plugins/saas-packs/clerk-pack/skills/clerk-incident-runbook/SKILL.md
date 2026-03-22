@@ -1,225 +1,205 @@
 ---
 name: clerk-incident-runbook
 description: |
-  Manage incident response for Clerk authentication issues.
-  Use when handling auth outages, security incidents,
-  or production authentication problems.
+  Execute Clerk incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Clerk-related outages, investigating errors,
+  or running post-incident reviews for Clerk integration failures.
   Trigger with phrases like "clerk incident", "clerk outage",
-  "clerk down", "auth not working", "clerk emergency".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  "clerk down", "clerk on-call", "clerk emergency", "clerk broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, security, authentication, incident-response]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Incident Runbook
 
 ## Overview
-Procedures for responding to Clerk-related incidents in production. Covers triage, emergency auth bypass, recovery scripts, and post-incident review.
+Rapid incident response procedures for Clerk-related outages.
 
 ## Prerequisites
-- Access to Clerk Dashboard (dashboard.clerk.com)
-- Access to application logs and monitoring
-- Emergency contact list for on-call team
-- Rollback procedures documented
+- Access to Clerk dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Clerk API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Clerk status
+curl -s https://status.clerk.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.clerk'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(clerk_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=clerk-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Clerk API returning errors?
+├─ YES: Is status.clerk.com showing incident?
+│   ├─ YES → Wait for Clerk to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret clerk-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Clerk dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic clerk-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/clerk-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.clerk.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/clerk-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Clerk for limit increase
+```
+
+### 500/503 - Clerk Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/clerk-integration CLERK_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Clerk status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Clerk Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Clerk Integration Issue
+
+We're experiencing issues with our Clerk integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/clerk-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=clerk-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=clerk_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Clerk [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1: Triage — Identify Incident Category
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-| Category | Symptoms | Severity |
-|----------|----------|----------|
-| Clerk outage | status.clerk.com shows incident, all auth fails | Critical |
-| Key compromise | Unauthorized access detected | Critical |
-| Middleware failure | All routes return 500 | High |
-| Session issues | Users randomly logged out | Medium |
-| Webhook backlog | User sync falling behind | Low |
+### Step 2: Follow Decision Tree
+Determine if the issue is Clerk-side or internal.
 
-Quick diagnostic:
-```bash
-#!/bin/bash
-# scripts/clerk-triage.sh
-set -euo pipefail
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-echo "=== Clerk Incident Triage ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-
-# 1. Check Clerk status
-echo -e "\n--- Clerk Status ---"
-curl -s https://status.clerk.com/api/v2/status.json | python3 -c "
-import json,sys
-d=json.load(sys.stdin)
-print(f\"Status: {d['status']['description']}\")" 2>/dev/null || echo "Cannot reach status API"
-
-# 2. Check API connectivity
-echo -e "\n--- API Connectivity ---"
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${CLERK_SECRET_KEY}" \
-  https://api.clerk.com/v1/users?limit=1 2>/dev/null)
-echo "API response: HTTP $HTTP_CODE"
-
-# 3. Check app health
-echo -e "\n--- App Health ---"
-curl -s http://localhost:3000/api/clerk-health 2>/dev/null | python3 -m json.tool || echo "App not reachable"
-```
-
-### Step 2: Emergency Auth Bypass (Clerk Outage Only)
-```typescript
-// middleware.ts — emergency bypass mode
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-import { NextResponse } from 'next/server'
-
-const EMERGENCY_BYPASS = process.env.CLERK_EMERGENCY_BYPASS === 'true'
-
-const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)'])
-
-export default clerkMiddleware(async (auth, req) => {
-  // Emergency bypass: allow all requests when Clerk is down
-  if (EMERGENCY_BYPASS) {
-    console.warn('[EMERGENCY] Auth bypass active — all requests allowed')
-    const response = NextResponse.next()
-    response.headers.set('X-Auth-Bypass', 'true')
-    return response
-  }
-
-  if (!isPublicRoute(req)) {
-    await auth.protect()
-  }
-})
-```
-
-Activate bypass:
-```bash
-# Vercel: set env var and redeploy
-vercel env add CLERK_EMERGENCY_BYPASS production  # Set to "true"
-vercel deploy --prod
-
-# After Clerk recovers: remove bypass
-vercel env rm CLERK_EMERGENCY_BYPASS production
-vercel deploy --prod
-```
-
-### Step 3: Key Rotation (Compromised Secret Key)
-```bash
-#!/bin/bash
-# scripts/rotate-clerk-keys.sh
-set -euo pipefail
-
-echo "=== Clerk Key Rotation ==="
-echo "1. Go to dashboard.clerk.com > API Keys"
-echo "2. Generate new Secret Key"
-echo "3. Update all environments:"
-
-# Update production
-echo "Updating production..."
-# vercel env rm CLERK_SECRET_KEY production
-# vercel env add CLERK_SECRET_KEY production  # Paste new key
-# vercel deploy --prod
-
-echo "4. Verify all endpoints still work"
-echo "5. Monitor for unauthorized access attempts"
-echo "6. File incident report"
-```
-
-### Step 4: Session Recovery (Mass Logout Fix)
-```typescript
-// app/api/admin/refresh-sessions/route.ts
-import { auth, clerkClient } from '@clerk/nextjs/server'
-
-export async function POST() {
-  const { has } = await auth()
-  if (!has({ role: 'org:admin' })) {
-    return Response.json({ error: 'Admin only' }, { status: 403 })
-  }
-
-  // Force-revoke all sessions (users will need to re-authenticate)
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ limit: 500 })
-  let revoked = 0
-
-  for (const user of users.data) {
-    const sessions = await client.sessions.getSessionList({ userId: user.id })
-    for (const session of sessions.data) {
-      if (session.status === 'active') {
-        await client.sessions.revokeSession(session.id)
-        revoked++
-      }
-    }
-  }
-
-  return Response.json({ revoked, message: `Revoked ${revoked} sessions` })
-}
-```
-
-### Step 5: Webhook Replay (Missed Events)
-```bash
-# Check for missed webhooks in Clerk Dashboard:
-# Dashboard > Webhooks > Select endpoint > Message Logs
-# Click "Retry" on failed messages
-
-# Or replay from your audit log:
-echo "Check database for missing user records:"
-echo "SELECT clerk_id FROM users WHERE created_at > NOW() - INTERVAL '1 hour'"
-```
-
-### Step 6: Post-Incident Review Template
-```markdown
-## Incident Report
-
-**Date:** YYYY-MM-DD HH:MM UTC
-**Duration:** X hours Y minutes
-**Severity:** Critical / High / Medium / Low
-**Category:** Clerk Outage / Key Compromise / Config Error / Middleware Failure
-
-### Timeline
-- HH:MM — Incident detected (how: monitoring alert / user report / manual)
-- HH:MM — Triage started, category identified
-- HH:MM — Mitigation applied (emergency bypass / key rotation / rollback)
-- HH:MM — Service restored
-- HH:MM — Post-incident review completed
-
-### Root Cause
-[Description of what caused the incident]
-
-### Impact
-- Users affected: X
-- Duration of auth downtime: Y minutes
-- Data loss: None / Partial / Details
-
-### Action Items
-- [ ] Add monitoring for [specific check]
-- [ ] Update runbook with [new procedure]
-- [ ] Implement [preventive measure]
-```
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Triage script identifying incident category and severity
-- Emergency auth bypass middleware (activate via env var)
-- Key rotation procedure for compromised credentials
-- Session revocation endpoint for mass-logout recovery
-- Post-incident review template
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-| Scenario | Response |
-|----------|----------|
-| Clerk API completely down | Activate emergency bypass, monitor status.clerk.com |
-| Secret key compromised | Rotate keys immediately, revoke all sessions, audit logs |
-| Middleware 500 errors | Check middleware.ts syntax, verify Clerk SDK version |
-| Webhook delivery failures | Retry from Dashboard, check endpoint accessibility |
-| Users randomly logged out | Check session lifetime settings, verify domain config |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
 ## Examples
 
-### Quick Status Check One-Liner
+### One-Line Health Check
 ```bash
-curl -s https://status.clerk.com/api/v2/status.json | python3 -c "import json,sys; print(json.load(sys.stdin)['status']['description'])"
+curl -sf https://api.yourapp.com/health | jq '.services.clerk.status' || echo "UNHEALTHY"
 ```
 
 ## Resources
 - [Clerk Status Page](https://status.clerk.com)
-- [Clerk Support](https://clerk.com/support)
-- [Clerk Discord](https://clerk.com/discord)
+- [Clerk Support](https://support.clerk.com)
 
 ## Next Steps
-After resolving incident, review `clerk-observability` for improved monitoring.
+For data handling, see `clerk-data-handling`.

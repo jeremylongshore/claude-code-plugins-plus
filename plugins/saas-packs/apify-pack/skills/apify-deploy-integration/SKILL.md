@@ -1,314 +1,211 @@
 ---
 name: apify-deploy-integration
 description: |
-  Deploy Apify Actors and integrate scraping into external applications.
-  Use when deploying Actors to the platform, integrating Actor results
-  into web apps, or connecting Apify with external services.
-  Trigger: "deploy apify actor", "apify Vercel integration",
-  "apify production deploy", "integrate apify results", "apify API endpoint".
-allowed-tools: Read, Write, Edit, Bash(apify:*), Bash(npm:*), Bash(vercel:*), Bash(gcloud:*)
+  Deploy Apify integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Apify-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy apify", "apify Vercel",
+  "apify production deploy", "apify Cloud Run", "apify Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, automation, apify]
 compatible-with: claude-code
+tags: [saas, apify]
 ---
 
 # Apify Deploy Integration
 
 ## Overview
-
-Deploy Actors to the Apify platform and integrate their results into external applications. Covers `apify push` deployment, API-triggered runs from web apps, scheduled scraping with data pipelines, and platform-specific integration patterns.
+Deploy Apify-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
+- Apify API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-- Actor tested locally (`apify run`)
-- `apify login` completed
-- Target application ready for integration
+## Vercel Deployment
 
-## Instructions
-
-### Step 1: Deploy Actor to Platform
-
+### Environment Setup
 ```bash
-# Push Actor code to Apify
-apify push
+# Add Apify secrets to Vercel
+vercel secrets add apify_api_key sk_live_***
+vercel secrets add apify_webhook_secret whsec_***
 
-# Push to a specific Actor (creates if doesn't exist)
-apify push username/my-scraper
+# Link to project
+vercel link
 
-# Pull an existing Actor to modify
-apify pull username/existing-actor
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
 ```
 
-### Step 2: Integrate with a Web Application
-
-The most common pattern: trigger an Actor from your app and consume results.
-
-```typescript
-// src/services/apify.ts
-import { ApifyClient } from 'apify-client';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-interface ScrapeResult {
-  url: string;
-  title: string;
-  price: number;
-  inStock: boolean;
-}
-
-/**
- * Run a scraping Actor and return typed results.
- * Blocks until the Actor finishes (synchronous pattern).
- */
-export async function scrapeProducts(urls: string[]): Promise<ScrapeResult[]> {
-  const run = await client.actor('username/product-scraper').call({
-    startUrls: urls.map(url => ({ url })),
-    maxItems: 500,
-  }, {
-    memory: 2048,
-    timeout: 600,  // 10 minutes
-  });
-
-  if (run.status !== 'SUCCEEDED') {
-    throw new Error(`Scrape failed: ${run.status} — ${run.statusMessage}`);
-  }
-
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  return items as ScrapeResult[];
-}
-
-/**
- * Start a scraping Actor without waiting (async pattern).
- * Returns run ID for later polling.
- */
-export async function startScrape(urls: string[]): Promise<string> {
-  const run = await client.actor('username/product-scraper').start({
-    startUrls: urls.map(url => ({ url })),
-  });
-  return run.id;
-}
-
-/**
- * Check if a run has finished and get results.
- */
-export async function getScrapeResults(runId: string): Promise<{
-  status: string;
-  items?: ScrapeResult[];
-}> {
-  const run = await client.run(runId).get();
-
-  if (run.status === 'RUNNING' || run.status === 'READY') {
-    return { status: run.status };
-  }
-
-  if (run.status === 'SUCCEEDED') {
-    const { items } = await client.dataset(run.defaultDatasetId).listItems();
-    return { status: 'SUCCEEDED', items: items as ScrapeResult[] };
-  }
-
-  return { status: run.status };
-}
-```
-
-### Step 3: Next.js API Route Integration
-
-```typescript
-// app/api/scrape/route.ts (Next.js App Router)
-import { NextResponse } from 'next/server';
-import { ApifyClient } from 'apify-client';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-export async function POST(request: Request) {
-  const { urls } = await request.json();
-
-  if (!urls?.length) {
-    return NextResponse.json({ error: 'urls required' }, { status: 400 });
-  }
-
-  try {
-    // Start Actor (non-blocking)
-    const run = await client.actor('username/product-scraper').start({
-      startUrls: urls.map((url: string) => ({ url })),
-      maxItems: 100,
-    });
-
-    return NextResponse.json({
-      runId: run.id,
-      status: run.status,
-      statusUrl: `/api/scrape/${run.id}`,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 500 },
-    );
-  }
-}
-
-// app/api/scrape/[runId]/route.ts
-export async function GET(
-  _req: Request,
-  { params }: { params: { runId: string } },
-) {
-  const run = await client.run(params.runId).get();
-
-  if (run.status === 'SUCCEEDED') {
-    const { items } = await client
-      .dataset(run.defaultDatasetId)
-      .listItems({ limit: 100 });
-    return NextResponse.json({ status: 'SUCCEEDED', items });
-  }
-
-  return NextResponse.json({
-    status: run.status,
-    statusMessage: run.statusMessage,
-  });
-}
-```
-
-### Step 4: Express.js Webhook Receiver
-
-```typescript
-// Receive notifications when an Actor run completes
-import express from 'express';
-import { ApifyClient } from 'apify-client';
-
-const app = express();
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-app.use(express.json());
-
-app.post('/webhooks/apify', async (req, res) => {
-  const { eventType, eventData } = req.body;
-
-  // Verify the webhook (check run exists)
-  const { actorRunId } = eventData;
-  const run = await client.run(actorRunId).get();
-
-  if (!run) {
-    return res.status(400).json({ error: 'Invalid run ID' });
-  }
-
-  switch (eventType) {
-    case 'ACTOR.RUN.SUCCEEDED': {
-      const { items } = await client
-        .dataset(run.defaultDatasetId)
-        .listItems();
-      console.log(`Run succeeded with ${items.length} items`);
-      // Process items: save to DB, send notifications, etc.
-      await processScrapedData(items);
-      break;
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "APIFY_API_KEY": "@apify_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
     }
-
-    case 'ACTOR.RUN.FAILED':
-    case 'ACTOR.RUN.TIMED_OUT':
-      console.error(`Run ${eventType}: ${run.statusMessage}`);
-      // Alert team via Slack, PagerDuty, etc.
-      await sendAlert(`Apify run ${eventType}: ${run.statusMessage}`);
-      break;
   }
-
-  res.json({ received: true });
-});
-```
-
-### Step 5: Scheduled Pipeline with Data Export
-
-```typescript
-// Run daily via cron, schedule, or Apify Schedule
-import { ApifyClient } from 'apify-client';
-import { writeFileSync } from 'fs';
-
-const client = new ApifyClient({ token: process.env.APIFY_TOKEN });
-
-async function dailyScrapeAndExport() {
-  // Run Actor
-  const run = await client.actor('username/product-scraper').call({
-    startUrls: [{ url: 'https://target-store.com/products' }],
-    maxItems: 5000,
-  });
-
-  if (run.status !== 'SUCCEEDED') {
-    throw new Error(`Run failed: ${run.status}`);
-  }
-
-  // Export as CSV
-  const csvBuffer = await client
-    .dataset(run.defaultDatasetId)
-    .downloadItems('csv');
-  writeFileSync(`exports/products-${Date.now()}.csv`, csvBuffer);
-
-  // Also store in a named dataset for historical access
-  const archive = await client.datasets().getOrCreate('product-archive');
-  const { items } = await client.dataset(run.defaultDatasetId).listItems();
-  await client.dataset(archive.id).pushItems(
-    items.map(item => ({ ...item, scrapedDate: new Date().toISOString() })),
-  );
-
-  console.log(`Exported ${items.length} products`);
 }
 ```
 
-### Step 6: Docker Deployment (Self-Hosted Integration)
+## Fly.io Deployment
 
+### fly.toml
+```toml
+app = "my-apify-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Apify secrets
+fly secrets set APIFY_API_KEY=sk_live_***
+fly secrets set APIFY_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
 ```dockerfile
-# Dockerfile for an app that calls Apify
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --only=production
 COPY . .
-CMD ["node", "dist/index.js"]
+CMD ["npm", "start"]
 ```
 
+### Deploy Script
 ```bash
-# Build and deploy
-docker build -t apify-integration .
-docker run -e APIFY_TOKEN=apify_api_xxx apify-integration
+#!/bin/bash
+# deploy-cloud-run.sh
 
-# Or deploy to Cloud Run
-gcloud run deploy apify-service \
-  --source . \
-  --set-secrets=APIFY_TOKEN=apify-token:latest \
-  --region us-central1
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="apify-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=APIFY_API_KEY=apify-api-key:latest
 ```
 
-## Integration Architecture
+## Environment Configuration Pattern
 
+```typescript
+// config/apify.ts
+interface ApifyConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getApifyConfig(): ApifyConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.APIFY_API_KEY!,
+    environment: env as ApifyConfig['environment'],
+    webhookSecret: process.env.APIFY_WEBHOOK_SECRET,
+  };
+}
 ```
-┌────────────────┐     ┌──────────────┐     ┌────────────────┐
-│  Your App      │────▶│  Apify API   │────▶│  Actor Run     │
-│  (apify-client)│     │              │     │  (on Apify     │
-│                │◀────│              │◀────│   platform)    │
-└────────────────┘     └──────────────┘     └────────────────┘
-       │                                           │
-       │  Poll or Webhook                          │
-       ▼                                           ▼
-┌────────────────┐                        ┌────────────────┐
-│  Your DB       │                        │  Dataset       │
-│  (processed)   │                        │  (raw results) │
-└────────────────┘                        └────────────────┘
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const apifyStatus = await checkApifyConnection();
+
+  return Response.json({
+    status: apifyStatus ? 'healthy' : 'degraded',
+    services: {
+      apify: apifyStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
 ```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Apify API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Apify integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Apify connectivity.
+
+## Output
+- Application deployed to production
+- Apify secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `apify push` fails | Auth or build error | Check `apify login` and Dockerfile |
-| Webhook not received | URL unreachable from internet | Use ngrok for dev; verify HTTPS in prod |
-| Timeout in API route | Actor takes too long | Use async pattern (start + poll) |
-| Memory error on platform | Actor needs more RAM | Increase `memory` option |
-| Large dataset download | >100MB results | Use pagination or streaming |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add apify_api_key "$APIFY_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set APIFY_API_KEY="$APIFY_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-
-- [Actor Deployment](https://docs.apify.com/platform/actors/development/deployment)
-- [API Integration Guide](https://docs.apify.com/platform/integrations/api)
-- [Webhook Documentation](https://docs.apify.com/platform/integrations/webhooks)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Apify Deploy Guide](https://docs.apify.com/deploy)
 
 ## Next Steps
-
 For webhook handling, see `apify-webhooks-events`.

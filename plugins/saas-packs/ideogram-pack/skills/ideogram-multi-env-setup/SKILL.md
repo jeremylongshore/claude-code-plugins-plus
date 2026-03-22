@@ -2,206 +2,223 @@
 name: ideogram-multi-env-setup
 description: |
   Configure Ideogram across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment keys,
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
   or implementing environment-specific Ideogram configurations.
   Trigger with phrases like "ideogram environments", "ideogram staging",
-  "ideogram dev prod", "ideogram environment setup", "ideogram multi-env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Grep
+  "ideogram dev prod", "ideogram environment setup", "ideogram config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, ideogram, deployment, environments]
-
+compatible-with: claude-code
+tags: [saas, ideogram]
 ---
+
 # Ideogram Multi-Environment Setup
 
 ## Overview
-Configure Ideogram API access across development, staging, and production with isolated API keys, environment-specific model/speed settings, and proper secret management. Each environment gets its own key and configuration to prevent cross-environment issues.
+Configure Ideogram across development, staging, and production environments.
+
+## Prerequisites
+- Separate Ideogram accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
 ## Environment Strategy
 
-| Environment | API Key Source | Model | Speed | Cache | Billing |
-|-------------|---------------|-------|-------|-------|---------|
-| Development | `.env.local` | V_2_TURBO | TURBO | Disabled | Minimal top-up |
-| Staging | CI/CD secrets | V_2 | DEFAULT | 5 min TTL | Moderate |
-| Production | Secret manager | V_2 or V3 | DEFAULT | 10 min TTL | Full auto top-up |
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── ideogram/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${IDEOGRAM_API_KEY}",
+  "baseUrl": "https://api-sandbox.ideogram.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${IDEOGRAM_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.ideogram.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${IDEOGRAM_API_KEY_PROD}",
+  "baseUrl": "https://api.ideogram.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/ideogram/config.ts
+import baseConfig from '../../config/ideogram/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getIdeogramConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/ideogram/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+IDEOGRAM_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  IDEOGRAM_API_KEY: ${{ secrets.IDEOGRAM_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id ideogram/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=ideogram-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/ideogram/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getIdeogramConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[ideogram] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
 
 ## Instructions
 
-### Step 1: Configuration Structure
-```typescript
-// config/ideogram.ts
-type Environment = "development" | "staging" | "production";
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-interface IdeogramConfig {
-  apiKey: string;
-  defaultModel: string;
-  renderingSpeed: string;
-  timeout: number;
-  maxRetries: number;
-  concurrency: number;
-  cache: { enabled: boolean; ttlSeconds: number };
-  debug: boolean;
-}
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-const configs: Record<Environment, Omit<IdeogramConfig, "apiKey">> = {
-  development: {
-    defaultModel: "V_2_TURBO",
-    renderingSpeed: "TURBO",
-    timeout: 30000,
-    maxRetries: 1,
-    concurrency: 2,
-    cache: { enabled: false, ttlSeconds: 60 },
-    debug: true,
-  },
-  staging: {
-    defaultModel: "V_2",
-    renderingSpeed: "DEFAULT",
-    timeout: 60000,
-    maxRetries: 3,
-    concurrency: 5,
-    cache: { enabled: true, ttlSeconds: 300 },
-    debug: false,
-  },
-  production: {
-    defaultModel: "V_2",
-    renderingSpeed: "DEFAULT",
-    timeout: 60000,
-    maxRetries: 5,
-    concurrency: 8,
-    cache: { enabled: true, ttlSeconds: 600 },
-    debug: false,
-  },
-};
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-export function getIdeogramConfig(): IdeogramConfig {
-  const env = detectEnvironment();
-  const apiKey = getApiKeyForEnv(env);
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
-  if (!apiKey) {
-    throw new Error(`IDEOGRAM_API_KEY not set for environment: ${env}`);
-  }
-
-  return { ...configs[env], apiKey };
-}
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-function getApiKeyForEnv(env: Environment): string {
-  const envVar = {
-    development: "IDEOGRAM_API_KEY_DEV",
-    staging: "IDEOGRAM_API_KEY_STAGING",
-    production: "IDEOGRAM_API_KEY",
-  }[env];
-
-  return process.env[envVar] || process.env.IDEOGRAM_API_KEY || "";
-}
-```
-
-### Step 2: Environment Files
-```bash
-# .env.local (development -- git-ignored)
-IDEOGRAM_API_KEY_DEV=your-dev-key
-NODE_ENV=development
-
-# .env.staging (CI only)
-IDEOGRAM_API_KEY_STAGING=your-staging-key
-NODE_ENV=staging
-
-# Production: use secret manager, never .env files
-```
-
-### Step 3: Secret Management by Platform
-```bash
-set -euo pipefail
-# --- GitHub Actions ---
-gh secret set IDEOGRAM_API_KEY_STAGING --env staging
-gh secret set IDEOGRAM_API_KEY --env production
-
-# --- AWS Secrets Manager ---
-aws secretsmanager create-secret \
-  --name ideogram/staging/api-key \
-  --secret-string "your-staging-key"
-
-aws secretsmanager create-secret \
-  --name ideogram/production/api-key \
-  --secret-string "your-production-key"
-
-# --- GCP Secret Manager ---
-echo -n "your-staging-key" | gcloud secrets create ideogram-api-key-staging --data-file=-
-echo -n "your-production-key" | gcloud secrets create ideogram-api-key-prod --data-file=-
-```
-
-### Step 4: GitHub Actions with Environment Secrets
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    runs-on: ubuntu-latest
-    environment: staging
-    env:
-      IDEOGRAM_API_KEY_STAGING: ${{ secrets.IDEOGRAM_API_KEY_STAGING }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci && npm run build
-      - run: npm run deploy:staging
-
-  deploy-production:
-    runs-on: ubuntu-latest
-    environment: production
-    needs: deploy-staging
-    env:
-      IDEOGRAM_API_KEY: ${{ secrets.IDEOGRAM_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci && npm run build
-      - run: npm run deploy:production
-```
-
-### Step 5: Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(10, "API key too short"),
-  defaultModel: z.enum(["V_1", "V_1_TURBO", "V_2", "V_2_TURBO", "V_2A", "V_2A_TURBO"]),
-  timeout: z.number().min(5000).max(120000),
-  concurrency: z.number().min(1).max(10),
-});
-
-// Validate at application startup
-try {
-  const config = configSchema.parse(getIdeogramConfig());
-  console.log(`Ideogram configured for ${detectEnvironment()} (model: ${config.defaultModel})`);
-} catch (err: any) {
-  console.error("Ideogram config invalid:", err.message);
-  process.exit(1);
-}
-```
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment detected | Missing `NODE_ENV` | Set in deployment platform |
-| Secret not found | Wrong variable name | Check env-specific key name |
-| Cross-env data leak | Shared API key | Create separate keys per env |
-| Staging using prod key | No env isolation | Validate key identity at startup |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
-## Output
-- Environment-aware configuration with separate API keys
-- Secret management for GitHub Actions, AWS, and GCP
-- Startup validation preventing misconfiguration
-- CI/CD pipeline with environment gates
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getIdeogramConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-- [Ideogram API Setup](https://developer.ideogram.ai/ideogram-api/api-setup)
-- [GitHub Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments)
+- [Ideogram Environments Guide](https://docs.ideogram.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-For deployment patterns, see `ideogram-deploy-integration`.
+For observability setup, see `ideogram-observability`.

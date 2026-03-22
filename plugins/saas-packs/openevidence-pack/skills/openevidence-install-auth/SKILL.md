@@ -1,71 +1,92 @@
 ---
 name: openevidence-install-auth
 description: |
-  Install and configure OpenEvidence SDK/API authentication.
-  Use when setting up a new OpenEvidence integration.
-  Trigger: "install openevidence", "setup openevidence", "openevidence auth".
+  Install and configure OpenEvidence SDK/CLI authentication.
+  Use when setting up a new OpenEvidence integration, configuring API keys,
+  or initializing OpenEvidence in your project.
+  Trigger with phrases like "install openevidence", "setup openevidence",
+  "openevidence auth", "configure openevidence API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
 compatible-with: claude-code
+tags: [saas, openevidence]
 ---
 
 # OpenEvidence Install & Auth
 
 ## Overview
-Set up OpenEvidence Medical AI API for clinical decision support and evidence-based queries.
+Set up OpenEvidence SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- OpenEvidence account and API access
-- API key/credentials from OpenEvidence dashboard
-- Node.js 18+ or Python 3.8+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- OpenEvidence account with API access
+- API key from OpenEvidence dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
+# Node.js
 npm install @openevidence/sdk
-# API key from OpenEvidence developer portal
+
+# Python
+pip install openevidence
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-export OPENEVIDENCE_API_KEY="your-api-key-here"
+# Set environment variable
+export OPENEVIDENCE_API_KEY="your-api-key"
+
+# Or create .env file
 echo 'OPENEVIDENCE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection (TypeScript)
+### Step 3: Verify Connection
 ```typescript
-import { OpenEvidenceClient } from '@openevidence/sdk';
-const client = new OpenEvidenceClient({
-  apiKey: process.env.OPENEVIDENCE_API_KEY,
-  organization: process.env.OPENEVIDENCE_ORG_ID
-});
-const result = await client.query({ question: 'What are first-line treatments for Type 2 diabetes?' });
-console.log(`Answer: ${result.answer.substring(0, 100)}...`);
-console.log(`Citations: ${result.citations.length} references`);
+// Test connection code here
 ```
 
-### Step 4: Verify Connection (Python)
-```python
-import openevidence
-client = openevidence.Client(api_key=os.environ['OPENEVIDENCE_API_KEY'])
-result = client.query(question='What are first-line treatments for Type 2 diabetes?')
-print(f'Answer: {result.answer[:100]}...')
-print(f'Citations: {len(result.citations)} references')
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-| Error | Code | Solution |
-|-------|------|----------|
-| Invalid API key | 401 | Verify credentials in dashboard |
-| Permission denied | 403 | Check API scopes/permissions |
-| Rate limited | 429 | Implement backoff |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Incorrect or expired key | Verify key in OpenEvidence dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.openevidence.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { OpenEvidenceClient } from '@openevidence/sdk';
+
+const client = new OpenEvidenceClient({
+  apiKey: process.env.OPENEVIDENCE_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from openevidence import OpenEvidenceClient
+
+client = OpenEvidenceClient(
+    api_key=os.environ.get('OPENEVIDENCE_API_KEY')
+)
+```
 
 ## Resources
-- [OpenEvidence Documentation](https://www.openevidence.com)
+- [OpenEvidence Documentation](https://docs.openevidence.com)
+- [OpenEvidence Dashboard](https://api.openevidence.com)
+- [OpenEvidence Status](https://status.openevidence.com)
 
 ## Next Steps
-After auth, proceed to `openevidence-hello-world`.
+After successful auth, proceed to `openevidence-hello-world` for your first API call.

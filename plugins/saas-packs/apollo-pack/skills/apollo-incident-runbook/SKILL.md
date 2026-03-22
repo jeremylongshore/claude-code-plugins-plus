@@ -1,219 +1,205 @@
 ---
 name: apollo-incident-runbook
 description: |
-  Apollo.io incident response procedures.
-  Use when handling Apollo outages, debugging production issues,
-  or responding to integration failures.
+  Execute Apollo incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Apollo-related outages, investigating errors,
+  or running post-incident reviews for Apollo integration failures.
   Trigger with phrases like "apollo incident", "apollo outage",
-  "apollo down", "apollo production issue", "apollo emergency".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
+  "apollo down", "apollo on-call", "apollo emergency", "apollo broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, debugging, incident-response]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Incident Runbook
 
 ## Overview
-Structured incident response for Apollo.io API failures. Covers severity classification, quick diagnosis, circuit breaker implementation, graceful degradation, and post-incident review. Apollo's public status page is at [status.apollo.io](https://status.apollo.io).
+Rapid incident response procedures for Apollo-related outages.
 
 ## Prerequisites
-- Valid Apollo API key
-- Access to monitoring dashboards
+- Access to Apollo dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Apollo API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Apollo status
+curl -s https://status.apollo.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.apollo'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(apollo_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=apollo-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Apollo API returning errors?
+├─ YES: Is status.apollo.com showing incident?
+│   ├─ YES → Wait for Apollo to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret apollo-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Apollo dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic apollo-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/apollo-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.apollo.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/apollo-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Apollo for limit increase
+```
+
+### 500/503 - Apollo Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/apollo-integration APOLLO_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Apollo status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Apollo Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Apollo Integration Issue
+
+We're experiencing issues with our Apollo integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/apollo-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=apollo-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=apollo_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Apollo [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1: Classify Severity
-```
-Severity | Criteria                                    | Response Time
----------+---------------------------------------------+--------------
-P1       | Apollo API completely unreachable            | 15 min
-         | All enrichments/searches returning 5xx       |
-P2       | Partial failures (>10% error rate)           | 1 hour
-         | Rate limiting blocking critical workflows    |
-P3       | Intermittent errors (<10%), degraded latency | 4 hours
-         | Non-critical endpoint failures               |
-P4       | Cosmetic issues, minor data inconsistencies  | Next sprint
-```
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-### Step 2: Quick Diagnosis Script
-```bash
-#!/bin/bash
-# scripts/apollo-diagnosis.sh
-set -euo pipefail
-echo "=== Apollo Quick Diagnosis $(date -u +%Y-%m-%dT%H:%M:%SZ) ==="
+### Step 2: Follow Decision Tree
+Determine if the issue is Apollo-side or internal.
 
-# 1. Check Apollo status page
-echo -e "\n--- Status Page ---"
-curl -s https://status.apollo.io/api/v2/status.json 2>/dev/null | \
-  python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Status: {d[\"status\"][\"description\"]}')" \
-  2>/dev/null || echo "Could not reach status page"
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-# 2. Test auth
-echo -e "\n--- Auth Check ---"
-curl -s -w "HTTP %{http_code} in %{time_total}s\n" \
-  -H "x-api-key: $APOLLO_API_KEY" \
-  "https://api.apollo.io/api/v1/auth/health" | head -1
-
-# 3. Test people search (free endpoint)
-echo -e "\n--- People Search ---"
-curl -s -w "HTTP %{http_code} in %{time_total}s\n" -o /dev/null \
-  -X POST -H "Content-Type: application/json" -H "x-api-key: $APOLLO_API_KEY" \
-  -d '{"q_organization_domains_list":["apollo.io"],"per_page":1}' \
-  "https://api.apollo.io/api/v1/mixed_people/api_search"
-
-# 4. Check rate limit headers
-echo -e "\n--- Rate Limits ---"
-curl -s -D - -o /dev/null \
-  -X POST -H "Content-Type: application/json" -H "x-api-key: $APOLLO_API_KEY" \
-  -d '{"q_organization_domains_list":["apollo.io"],"per_page":1}' \
-  "https://api.apollo.io/api/v1/mixed_people/api_search" 2>/dev/null | grep -i "x-rate-limit" || echo "No rate limit headers"
-
-# 5. DNS resolution
-echo -e "\n--- DNS ---"
-dig +short api.apollo.io 2>/dev/null || nslookup api.apollo.io 2>/dev/null || echo "DNS lookup failed"
-```
-
-### Step 3: Circuit Breaker
-```typescript
-// src/resilience/circuit-breaker.ts
-type State = 'closed' | 'open' | 'half-open';
-
-export class CircuitBreaker {
-  private state: State = 'closed';
-  private failures = 0;
-  private lastFailure = 0;
-  private halfOpenSuccesses = 0;
-
-  constructor(
-    private failureThreshold: number = 5,
-    private resetTimeoutMs: number = 60_000,
-    private requiredSuccesses: number = 3,
-  ) {}
-
-  async execute<T>(fn: () => Promise<T>, fallback?: () => T): Promise<T> {
-    if (this.state === 'open') {
-      if (Date.now() - this.lastFailure > this.resetTimeoutMs) {
-        this.state = 'half-open';
-        this.halfOpenSuccesses = 0;
-      } else {
-        if (fallback) return fallback();
-        throw new Error(`Circuit OPEN — Apollo calls blocked for ${Math.round((this.resetTimeoutMs - (Date.now() - this.lastFailure)) / 1000)}s`);
-      }
-    }
-
-    try {
-      const result = await fn();
-      if (this.state === 'half-open') {
-        this.halfOpenSuccesses++;
-        if (this.halfOpenSuccesses >= this.requiredSuccesses) {
-          this.state = 'closed';
-          this.failures = 0;
-        }
-      } else {
-        this.failures = 0;
-      }
-      return result;
-    } catch (err) {
-      this.failures++;
-      this.lastFailure = Date.now();
-      if (this.failures >= this.failureThreshold) this.state = 'open';
-      if (fallback) return fallback();
-      throw err;
-    }
-  }
-
-  get status() { return { state: this.state, failures: this.failures }; }
-}
-```
-
-### Step 4: Graceful Degradation by Severity
-```typescript
-import { CircuitBreaker } from './circuit-breaker';
-
-const breaker = new CircuitBreaker(5, 60_000);
-
-// P1: Total outage — serve cached data
-async function handleP1() {
-  console.error('[P1] Apollo API unreachable');
-  return breaker.execute(
-    () => client.post('/mixed_people/api_search', { per_page: 1 }),
-    () => {
-      console.warn('Serving cached search results');
-      return { data: { people: [], source: 'cache', degraded: true } };
-    },
-  );
-}
-
-// P2: Partial failures — reduce load
-async function handleP2() {
-  console.warn('[P2] Apollo degraded — reducing concurrency');
-  // Disable bulk enrichment, reduce search concurrency to 1
-  // Continue serving search from cache where possible
-}
-
-// P3: Intermittent — retry with backoff
-async function handleP3() {
-  console.info('[P3] Intermittent errors — backoff enabled');
-  // Retry with longer delays, log for monitoring
-}
-```
-
-### Step 5: Post-Incident Review Template
-```markdown
-## Post-Incident Review: Apollo Integration
-
-**Incident ID:** INC-YYYY-MM-DD-NNN
-**Severity:** P1 / P2 / P3
-**Duration:** HH:MM start to HH:MM resolved (X minutes)
-**Apollo Status Page:** Reporting outage? Y/N
-
-### Timeline
-| Time (UTC) | Event |
-|------------|-------|
-| HH:MM | First alert fired (source: Prometheus/PagerDuty) |
-| HH:MM | On-call acknowledged |
-| HH:MM | Root cause identified |
-| HH:MM | Mitigation applied (circuit breaker / cache fallback) |
-| HH:MM | Apollo API restored |
-| HH:MM | Circuit breaker closed, normal operations resumed |
-
-### Impact
-- Searches affected: N requests failed / served from cache
-- Enrichments failed: N (credits not consumed)
-- Sequences paused: N contacts delayed
-- Revenue impact: $X (estimated pipeline delay)
-
-### Root Cause
-[Apollo-side outage / rate limiting / key rotation / network issue]
-
-### Action Items
-- [ ] Add/improve circuit breaker coverage (owner, due)
-- [ ] Increase cache TTL for critical data (owner, due)
-- [ ] Add alerting for [specific gap] (owner, due)
-```
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Severity classification matrix (P1-P4) with response times
-- Bash diagnostic script (status page, auth, search, rate limits, DNS)
-- Circuit breaker with closed/open/half-open states
-- Graceful degradation procedures per severity level
-- Post-incident review template
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-| Issue | Escalation |
-|-------|------------|
-| P1 > 15 min | Page on-call, open Apollo support ticket |
-| P2 > 2 hours | Notify engineering management |
-| Recurring P3 | Promote to P2 tracking issue |
-| Apollo outage | Verify at [status.apollo.io](https://status.apollo.io), enable cache fallback |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.apollo.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-- [Apollo Status Page](https://status.apollo.io)
-- [Apollo Support](https://support.apollo.io)
-- [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
+- [Apollo Status Page](https://status.apollo.com)
+- [Apollo Support](https://support.apollo.com)
 
 ## Next Steps
-Proceed to `apollo-data-handling` for data management.
+For data handling, see `apollo-data-handling`.

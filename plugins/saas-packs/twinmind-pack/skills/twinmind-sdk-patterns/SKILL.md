@@ -2,145 +2,148 @@
 name: twinmind-sdk-patterns
 description: |
   Apply production-ready TwinMind SDK patterns for TypeScript and Python.
-  Use when implementing TwinMind integrations, refactoring API usage,
-  or establishing team coding standards for meeting AI integration.
+  Use when implementing TwinMind integrations, refactoring SDK usage,
+  or establishing team coding standards for TwinMind.
   Trigger with phrases like "twinmind SDK patterns", "twinmind best practices",
   "twinmind code patterns", "idiomatic twinmind".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, twinmind, api, python, typescript]
-
+compatible-with: claude-code
+tags: [saas, twinmind]
 ---
+
 # TwinMind SDK Patterns
 
 ## Overview
-Production patterns for TwinMind's AI memory and meeting intelligence REST API. TwinMind captures, organizes, and retrieves contextual memories from conversations and meetings.
+Production-ready patterns for TwinMind SDK usage in TypeScript and Python.
 
 ## Prerequisites
-- TwinMind API key configured
-- Understanding of REST API patterns
-- Familiarity with memory/context retrieval concepts
+- Completed `twinmind-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1: Client Wrapper with Authentication
+### Step 1: Implement Singleton Pattern (Recommended)
+```typescript
+// src/twinmind/client.ts
+import { TwinMindClient } from '@twinmind/sdk';
 
-```python
-import requests
-import os
+let instance: TwinMindClient | null = null;
 
-class TwinMindClient:
-    def __init__(self, api_key: str = None, base_url: str = "https://api.twinmind.com/v1"):
-        self.api_key = api_key or os.environ["TWINMIND_API_KEY"]
-        self.base_url = base_url
-        self.session = requests.Session()
-        self.session.headers.update({
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        })
-
-    def _request(self, method: str, path: str, **kwargs):
-        response = self.session.request(method, f"{self.base_url}{path}", **kwargs)
-        response.raise_for_status()
-        return response.json()
+export function getTwinMindClient(): TwinMindClient {
+  if (!instance) {
+    instance = new TwinMindClient({
+      apiKey: process.env.TWINMIND_API_KEY!,
+      // Additional options
+    });
+  }
+  return instance;
+}
 ```
 
-### Step 2: Memory Storage and Retrieval
+### Step 2: Add Error Handling Wrapper
+```typescript
+import { TwinMindError } from '@twinmind/sdk';
 
-```python
-class TwinMindClient:
-    # ... (continued from Step 1)
-
-    def store_memory(self, content: str, context: dict = None, tags: list = None) -> dict:
-        return self._request("POST", "/memories", json={
-            "content": content,
-            "context": context or {},
-            "tags": tags or [],
-            "timestamp": datetime.utcnow().isoformat()
-        })
-
-    def search_memories(self, query: str, limit: int = 10, tags: list = None) -> list:
-        params = {"q": query, "limit": limit}
-        if tags:
-            params["tags"] = ",".join(tags)
-        return self._request("GET", "/memories/search", params=params)
-
-    def get_memory(self, memory_id: str) -> dict:
-        return self._request("GET", f"/memories/{memory_id}")
+async function safeTwinMindCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof TwinMindError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
+    }
+    return { data: null, error: err as Error };
+  }
+}
 ```
 
-### Step 3: Meeting Context Integration
-
-```python
-    def create_meeting_context(self, meeting_id: str, transcript: str, participants: list) -> dict:
-        return self._request("POST", "/contexts/meeting", json={
-            "meeting_id": meeting_id,
-            "transcript": transcript,
-            "participants": participants,
-            "extract_action_items": True,
-            "extract_decisions": True
-        })
-
-    def get_meeting_insights(self, meeting_id: str) -> dict:
-        return self._request("GET", f"/contexts/meeting/{meeting_id}/insights")
+### Step 3: Implement Retry Logic
+```typescript
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
 ```
 
-### Step 4: Batch Operations with Rate Limiting
-
-```python
-import time
-
-def batch_store_memories(client: TwinMindClient, memories: list, batch_size: int = 20):
-    results = []
-    for i in range(0, len(memories), batch_size):
-        batch = memories[i:i+batch_size]
-        for memory in batch:
-            try:
-                result = client.store_memory(**memory)
-                results.append({"status": "ok", "id": result["id"]})
-            except requests.HTTPError as e:
-                if e.response.status_code == 429:  # HTTP 429 Too Many Requests
-                    time.sleep(int(e.response.headers.get("Retry-After", 5)))
-                    result = client.store_memory(**memory)
-                    results.append({"status": "ok", "id": result["id"]})
-                else:
-                    results.append({"status": "error", "error": str(e)})
-        time.sleep(1)  # rate limit between batches
-    return results
-```
+## Output
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Verify `TWINMIND_API_KEY` |
-| `429 Rate Limited` | Too many requests | Respect `Retry-After` header |
-| `404 Not Found` | Invalid memory/meeting ID | Validate IDs before lookup |
-| Empty search results | Query too specific | Broaden query terms |
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
 ## Examples
 
-### Full Meeting Workflow
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, TwinMindClient>();
+
+export function getClientForTenant(tenantId: string): TwinMindClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new TwinMindClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
 ```python
-client = TwinMindClient()
-# After meeting ends
-ctx = client.create_meeting_context(
-    meeting_id="mtg-123",
-    transcript=transcript_text,
-    participants=["alice@co.com", "bob@co.com"]
-)
-insights = client.get_meeting_insights("mtg-123")
-for item in insights.get("action_items", []):
-    print(f"- [{item['assignee']}] {item['task']}")
+from contextlib import asynccontextmanager
+from twinmind import TwinMindClient
+
+@asynccontextmanager
+async def get_twinmind_client():
+    client = TwinMindClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const twinmindResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
 ```
 
 ## Resources
-- [TwinMind API](https://docs.twinmind.com)
+- [TwinMind SDK Reference](https://docs.twinmind.com/sdk)
+- [TwinMind API Types](https://docs.twinmind.com/types)
+- [Zod Documentation](https://zod.dev/)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+Apply patterns in `twinmind-core-workflow-a` for real-world usage.

@@ -1,194 +1,336 @@
 ---
 name: klingai-known-pitfalls
 description: |
-  Avoid common mistakes when using Kling AI API. Use when troubleshooting or learning best
-  practices. Trigger with phrases like 'klingai pitfalls', 'kling ai mistakes', 'klingai gotchas',
-  'klingai best practices'.
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Identify and avoid Kling AI anti-patterns and common integration mistakes.
+  Use when reviewing Kling AI code for issues, onboarding new developers,
+  or auditing existing Kling AI integrations for best practices violations.
+  Trigger with phrases like "klingai mistakes", "klingai anti-patterns",
+  "klingai pitfalls", "klingai what not to do", "klingai code review".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, troubleshooting, best-practices]
-
+compatible-with: claude-code
+tags: [saas, klingai]
 ---
+
 # Kling AI Known Pitfalls
 
 ## Overview
+Common mistakes and anti-patterns when integrating with Kling AI.
 
-Documented mistakes, gotchas, and anti-patterns from real Kling AI integrations. Each pitfall includes the symptom, root cause, and tested fix.
+## Prerequisites
+- Access to Kling AI codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-## Pitfall 1: Duration as Integer
+## Pitfall #1: Synchronous API Calls in Request Path
 
-**Symptom:** `400 Bad Request` on valid-looking requests.
-
-```python
-# WRONG -- duration as integer
-{"duration": 5}
-
-# CORRECT -- duration as string
-{"duration": "5"}
+### ❌ Anti-Pattern
+```typescript
+// User waits for Kling AI API call
+app.post('/checkout', async (req, res) => {
+  const payment = await klingaiClient.processPayment(req.body);  // 2-5s latency
+  const notification = await klingaiClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
-The API requires `duration` as a string `"5"` or `"10"`, not an integer.
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
 
-## Pitfall 2: JWT Without Explicit Headers
-
-**Symptom:** `401 Unauthorized` even with correct AK/SK.
-
-```python
-# WRONG -- missing headers parameter
-token = jwt.encode(payload, sk, algorithm="HS256")
-
-# CORRECT -- explicit JWT headers
-token = jwt.encode(payload, sk, algorithm="HS256",
-                   headers={"alg": "HS256", "typ": "JWT"})
+// Background job
+async function processCheckout(data) {
+  const payment = await klingaiClient.processPayment(data);
+  await klingaiClient.sendEmail(payment);
+}
 ```
 
-Some JWT libraries don't include `typ: "JWT"` by default. Kling requires it.
+---
 
-## Pitfall 3: Token Generated Once at Import Time
+## Pitfall #2: Not Handling Rate Limits
 
-**Symptom:** Works for 30 minutes, then all requests fail with `401`.
-
-```python
-# WRONG -- token generated once
-TOKEN = generate_token()  # at module import
-headers = {"Authorization": f"Bearer {TOKEN}"}
-
-# CORRECT -- generate fresh token per request (or auto-refresh)
-def get_headers():
-    return {"Authorization": f"Bearer {generate_token()}"}
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await klingaiClient.process(item);  // Will hit rate limit
+}
 ```
 
-JWT tokens expire after 30 minutes. Always implement auto-refresh.
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
 
-## Pitfall 4: Polling Without Timeout
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
 
-**Symptom:** Script hangs forever on a failed task.
-
-```python
-# WRONG -- infinite loop
-while True:
-    result = check_status(task_id)
-    if result["status"] == "succeed":
-        break
-    time.sleep(10)
-
-# CORRECT -- with timeout and failure check
-start = time.monotonic()
-while time.monotonic() - start < 600:  # 10 min max
-    result = check_status(task_id)
-    if result["status"] == "succeed":
-        break
-    elif result["status"] == "failed":
-        raise RuntimeError(result["error"])
-    time.sleep(10)
-else:
-    raise TimeoutError("Generation timed out")
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => klingaiClient.process(item));
+}
 ```
 
-## Pitfall 5: Not Downloading Videos Promptly
+---
 
-**Symptom:** Video URLs return `404` or `403` after a day.
+## Pitfall #3: Leaking API Keys
 
-Kling CDN URLs are **temporary** (24-72 hours). Always download and store on your own infrastructure immediately after generation completes.
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new KlingAIClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
 
-```python
-# WRONG -- storing only the Kling URL
-db.save(video_url=kling_cdn_url)  # will expire
-
-# CORRECT -- download and rehost
-local_path = download_video(kling_cdn_url)
-permanent_url = upload_to_s3(local_path, bucket)
-db.save(video_url=permanent_url)
+// In git history
+git commit -m "add API key"  // Exposed forever
 ```
 
-## Pitfall 6: Mixing Mutually Exclusive Features (I2V)
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new KlingAIClient({
+  apiKey: process.env.KLINGAI_API_KEY,
+});
 
-**Symptom:** `400 Bad Request` on image-to-video with multiple features.
-
-These are **mutually exclusive** for image-to-video:
-- `camera_control`
-- `dynamic_masks` / `static_mask`
-- `image_tail`
-
-You can only use ONE group per request.
-
-## Pitfall 7: Wrong Model for Text-to-Video
-
-**Symptom:** `400` or unexpected behavior.
-
-```python
-# WRONG -- kling-v2-1 is I2V-only
-{"model_name": "kling-v2-1", "prompt": "A sunset..."}  # fails
-
-# CORRECT -- use models that support T2V
-{"model_name": "kling-v2-master", "prompt": "A sunset..."}
-{"model_name": "kling-v2-5-turbo", "prompt": "A sunset..."}
+// Use .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-Check the model catalog: `kling-v1-5` and `kling-v2-1` support image-to-video only.
+---
 
-## Pitfall 8: No Error Handling on Task Status
+## Pitfall #4: Ignoring Idempotency
 
-**Symptom:** Silent failures, missing videos.
-
-```python
-# WRONG -- only check for success
-if result["task_status"] == "succeed":
-    process(result)
-# silently ignores failures
-
-# CORRECT -- handle all terminal states
-if result["task_status"] == "succeed":
-    process(result)
-elif result["task_status"] == "failed":
-    log_failure(result["task_status_msg"])
-    retry_or_alert(task_id)
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await klingaiClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await klingaiClient.charge(order);  // Charged twice!
+  }
+}
 ```
 
-## Pitfall 9: Ignoring Credit Costs with Audio
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
 
-**Symptom:** Credits depleted 5x faster than expected.
-
-Native audio (v2.6, `motion_has_audio: true`) multiplies credit cost by 5x:
-- 5s standard without audio: 10 credits
-- 5s standard WITH audio: 50 credits
-
-Always check `motion_has_audio` in cost estimates.
-
-## Pitfall 10: Vague Prompts
-
-**Symptom:** Low-quality, incoherent video output.
-
-```python
-# WEAK -- too vague
-"A nice video of nature"
-
-# STRONG -- specific and descriptive
-"Close-up of a monarch butterfly landing on a lavender flower, "
-"soft bokeh background, golden hour lighting, macro lens, 4K"
+await klingaiClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
 ```
 
-Good prompts: specific subject, clear action, lighting, camera angle, style.
+---
 
-## Quick Reference
+## Pitfall #5: Not Validating Webhooks
 
-| Pitfall | Fix |
-|---------|-----|
-| Duration as int | Use string: `"5"` |
-| JWT headers missing | Add `headers={"alg":"HS256","typ":"JWT"}` |
-| Token not refreshed | Auto-refresh with 5-min buffer |
-| No poll timeout | Max 600s with failure check |
-| Kling URLs as permanent | Download and rehost immediately |
-| Mixed I2V features | One feature group per request |
-| Wrong model for T2V | Check model supports text-to-video |
-| No failure handling | Check for `"failed"` status |
-| Audio cost surprise | 5x multiplier with `motion_has_audio` |
-| Vague prompts | Specific subject, action, style, lighting |
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-klingai-signature'];
+    if (!verifyKling AISignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await klingaiClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await klingaiClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof Kling AINotFoundError) {
+    return null;
+  }
+  if (error instanceof Kling AIRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new KlingAIClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.klingai.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new KlingAIClient({
+  timeout: parseInt(process.env.KLINGAI_TIMEOUT || '30000'),
+  baseUrl: process.env.KLINGAI_BASE_URL || 'https://api.klingai.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Kling AI is down, every request hangs
+for (const user of users) {
+  await klingaiClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(klingaiClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Kling AI is down
+const recommendations = await klingaiClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await klingaiClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('klingai', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
+- [Kling AI Security Guide](https://docs.klingai.com/security)
+- [Kling AI Best Practices](https://docs.klingai.com/best-practices)
 
-- [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)
-- [Developer Portal](https://app.klingai.com/global/dev)
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

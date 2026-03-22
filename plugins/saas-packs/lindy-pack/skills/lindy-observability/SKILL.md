@@ -1,213 +1,252 @@
 ---
 name: lindy-observability
 description: |
-  Monitor Lindy AI agent health, task success rates, and credit consumption.
-  Use when setting up monitoring, building dashboards, configuring alerts,
-  or tracking agent performance over time.
-  Trigger with phrases like "lindy monitoring", "lindy observability",
-  "lindy metrics", "lindy logging", "lindy dashboard".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Set up comprehensive observability for Lindy integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Lindy operations, setting up dashboards,
+  or configuring alerting for Lindy integration health.
+  Trigger with phrases like "lindy monitoring", "lindy metrics",
+  "lindy observability", "monitor lindy", "lindy alerts", "lindy tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, monitoring, observability, dashboard]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Observability
 
 ## Overview
-Monitor Lindy AI agent execution health, task completion rates, step-level failures,
-trigger frequency, and credit consumption. Lindy provides built-in task history in
-the dashboard. External observability requires webhook callbacks, the Task Completed
-trigger, and application-side metrics collection.
+Set up comprehensive observability for Lindy integrations.
 
 ## Prerequisites
-- Lindy workspace with active agents
-- For external monitoring: webhook receiver + metrics stack (Prometheus/Grafana, Datadog)
-- For alerts: Slack or email integration configured
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Key Observability Signals
+## Metrics Collection
 
-| Signal | Source | Why It Matters |
-|--------|--------|---------------|
-| Task completion rate | Tasks tab / callback | Measures agent reliability |
-| Task duration | Task detail view | Tracks performance over time |
-| Step failure rate | Task detail (red steps) | Identifies broken actions |
-| Credit consumption | Billing dashboard | Budget tracking |
-| Trigger frequency | Task count over time | Detects trigger storms |
-| Agent error rate | Failed tasks / total tasks | Overall health indicator |
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `lindy_requests_total` | Counter | Total API requests |
+| `lindy_request_duration_seconds` | Histogram | Request latency |
+| `lindy_errors_total` | Counter | Error count by type |
+| `lindy_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-## Instructions
-
-### Step 1: Dashboard Monitoring (Built-In)
-Lindy's Tasks tab provides per-agent monitoring:
-1. Open agent > **Tasks** tab
-2. Filter by status: **Completed**, **Failed**, **In Progress**
-3. For failed tasks: click to see which step failed and why
-4. Track patterns: same step failing? same time of day? same trigger type?
-
-### Step 2: Task Completed Trigger (Agent-to-Agent Monitoring)
-Use Lindy's built-in **Task Completed** trigger to build an observability agent:
-
-```
-Monitoring Agent:
-  Trigger: Task Completed (from Production Support Agent)
-  Condition: "Go down this path if the task failed"
-    → Action: Slack Send Channel Message to #ops-alerts
-      Message: "Support Agent task failed: {{task.error}}"
-  Condition: "Go down this path if task duration > 30 seconds"
-    → Action: Slack Send Channel Message to #ops-alerts
-      Message: "Support Agent slow: {{task.duration}}s"
-```
-
-### Step 3: Webhook-Based Metrics Collection
-Configure agents to call your metrics endpoint on task completion:
+### Prometheus Metrics
 
 ```typescript
-// metrics-collector.ts — Receive agent metrics via HTTP Request action
-import express from 'express';
-import { Counter, Histogram, Gauge } from 'prom-client';
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
-const app = express();
-app.use(express.json());
+const registry = new Registry();
 
-// Prometheus metrics
-const taskCounter = new Counter({
-  name: 'lindy_tasks_total',
-  help: 'Total Lindy agent tasks',
-  labelNames: ['agent', 'status'],
+const requestCounter = new Counter({
+  name: 'lindy_requests_total',
+  help: 'Total Lindy API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
 });
 
-const taskDuration = new Histogram({
-  name: 'lindy_task_duration_seconds',
-  help: 'Lindy task execution duration',
-  labelNames: ['agent'],
-  buckets: [1, 2, 5, 10, 30, 60, 120],
+const requestDuration = new Histogram({
+  name: 'lindy_request_duration_seconds',
+  help: 'Lindy request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
 });
 
-const creditGauge = new Gauge({
-  name: 'lindy_credits_consumed',
-  help: 'Credits consumed per task',
-  labelNames: ['agent'],
-});
-
-// Receive metrics from Lindy HTTP Request action
-app.post('/lindy/metrics', (req, res) => {
-  const auth = req.headers.authorization;
-  if (auth !== `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  const { agent, status, duration, credits } = req.body;
-
-  taskCounter.inc({ agent, status });
-  taskDuration.observe({ agent }, duration);
-  creditGauge.set({ agent }, credits);
-
-  res.json({ recorded: true });
-});
-
-// Prometheus scrape endpoint
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', 'text/plain');
-  res.send(await register.metrics());
+const errorCounter = new Counter({
+  name: 'lindy_errors_total',
+  help: 'Lindy errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
 });
 ```
 
-**Lindy agent configuration**:
-Add an HTTP Request action as the last step in each monitored agent:
-- **URL**: `https://monitoring.yourapp.com/lindy/metrics`
-- **Method**: POST
-- **Body** (Set Manually):
-  ```json
-  {
-    "agent": "support-bot",
-    "status": "{{task.status}}",
-    "duration": "{{task.duration}}",
-    "credits": "{{task.credits}}"
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
   }
-  ```
+}
+```
 
-### Step 4: Grafana Dashboard Panels
-Key panels for a Lindy monitoring dashboard:
+## Distributed Tracing
 
-| Panel | Metric | Type |
-|-------|--------|------|
-| Task Success Rate | `rate(lindy_tasks_total{status="completed"}[1h])` | Percentage gauge |
-| Task Failures | `rate(lindy_tasks_total{status="failed"}[1h])` | Counter |
-| Duration p50/p95 | `histogram_quantile(0.95, lindy_task_duration_seconds)` | Time series |
-| Credit Burn Rate | `rate(lindy_credits_consumed[1h])` | Counter |
-| Active Agents | Count of agents with tasks in last 24h | Stat panel |
-| Trigger Frequency | Tasks per hour by agent | Bar chart |
+### OpenTelemetry Setup
 
-### Step 5: Alert Rules
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('lindy-client');
+
+async function tracedLindyCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`lindy.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'lindy',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logLindyOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'lindy',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
 ```yaml
-# Prometheus alert rules
+# lindy_alerts.yaml
 groups:
-  - name: lindy
+  - name: lindy_alerts
     rules:
-      - alert: LindyAgentHighFailureRate
-        expr: rate(lindy_tasks_total{status="failed"}[30m]) > 0.1
-        for: 10m
+      - alert: LindyHighErrorRate
+        expr: |
+          rate(lindy_errors_total[5m]) /
+          rate(lindy_requests_total[5m]) > 0.05
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Lindy agent {{ $labels.agent }} failure rate > 10%"
+          summary: "Lindy error rate > 5%"
 
-      - alert: LindyAgentDown
-        expr: absent(lindy_tasks_total{agent="support-bot"}[1h])
-        for: 30m
+      - alert: LindyHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(lindy_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Lindy P95 latency > 2s"
+
+      - alert: LindyDown
+        expr: up{job="lindy"} == 0
+        for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "No tasks from support-bot in 1 hour"
-
-      - alert: LindyCreditsBurnRate
-        expr: rate(lindy_credits_consumed[1h]) * 720 > 5000
-        for: 15m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Credit burn rate will exhaust monthly budget"
+          summary: "Lindy integration is down"
 ```
 
-### Step 6: Evals (Built-In Quality Monitoring)
-Use Lindy Evals to catch quality regressions:
-1. Click the test tube icon below any agent step
-2. Define scoring criteria (LLM-as-judge):
-   ```
-   Score 1 (pass) if the response is professional, accurate, and under 200 words.
-   Score 0 (fail) if the response contains hallucinations or exceeds 200 words.
-   ```
-3. Run evals against historical task data
-4. Track scores over time to detect quality drift
+## Dashboard
 
-**Note**: Eval runs consume credits but do NOT execute real actions (safe simulation).
+### Grafana Panel Queries
 
-## Observability Maturity Levels
+```json
+{
+  "panels": [
+    {
+      "title": "Lindy Request Rate",
+      "targets": [{
+        "expr": "rate(lindy_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Lindy Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(lindy_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
-| Level | What You Monitor | How |
-|-------|-----------------|-----|
-| L0 | Nothing | Manual dashboard checks |
-| L1 | Task failures | Task Completed trigger + Slack alerts |
-| L2 | Success rate + duration | HTTP Request action + Prometheus |
-| L3 | Credit burn + quality | Evals + Grafana dashboards |
-| L4 | Automated remediation | Monitoring agent auto-restarts failed agents |
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Metrics endpoint down | Monitoring server crashed | Alert on scrape failures |
-| Task Completed not firing | Monitoring agent paused | Check monitoring agent is active |
-| Credit burn alert false positive | Legitimate traffic spike | Tune alert threshold |
-| Eval scores dropping | Prompt drift or model change | Review recent prompt/model changes |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [Lindy Evals](https://docs.lindy.ai/fundamentals/lindy-101/evals)
-- [Lindy Tasks](https://docs.lindy.ai/fundamentals/lindy-101/tasks)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Lindy Observability Guide](https://docs.lindy.com/observability)
 
 ## Next Steps
-Proceed to `lindy-incident-runbook` for incident response procedures.
+For incident response, see `lindy-incident-runbook`.

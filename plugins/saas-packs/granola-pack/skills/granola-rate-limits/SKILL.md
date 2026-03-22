@@ -1,150 +1,151 @@
 ---
 name: granola-rate-limits
 description: |
-  Understand Granola plan limits, usage quotas, and API rate limiting.
-  Use when hitting meeting limits, choosing between plans,
-  or managing Enterprise API rate limits.
-  Trigger: "granola limits", "granola quota", "granola plan",
-  "granola usage", "granola restrictions".
+  Implement Granola rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Granola.
+  Trigger with phrases like "granola rate limit", "granola throttling",
+  "granola 429", "granola retry", "granola backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, monitoring, plans]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
-# Granola Rate Limits & Plan Quotas
+
+# Granola Rate Limits
 
 ## Overview
-Granola has three plan tiers with different feature access and limits. There are no per-meeting minute caps or monthly meeting count limits on paid plans. Limits primarily apply to the free tier and the Enterprise API.
+Handle Granola rate limits gracefully with exponential backoff and idempotency.
 
-## Plan Comparison (Current as of March 2026)
+## Prerequisites
+- Granola SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
-### Basic (Free) — $0
-| Feature | Limit |
-|---------|-------|
-| Meetings | 25 lifetime (not monthly) |
-| Meeting history | Visible for 14 days only |
-| Enhance Notes | Included |
-| Templates | Built-in only |
-| Granola Chat | Included |
-| People & Companies | Included |
-| Integrations | None |
-| API access | None |
+## Instructions
 
-> The free plan is essentially a trial — 25 meetings total, ever. After that, you must upgrade.
+### Step 1: Understand Rate Limit Tiers
 
-### Business — $14/user/month
-| Feature | Availability |
-|---------|-------------|
-| Meetings | Unlimited |
-| Meeting history | Unlimited retention |
-| Templates | Built-in + custom |
-| Granola Chat | Included |
-| People & Companies | Included |
-| Slack integration | Native |
-| Notion integration | Native |
-| CRM (HubSpot, Attio, Affinity) | Native |
-| Zapier | Full access |
-| MCP (AI agent integration) | Included |
-| Team shared folders | Included |
-| Admin controls | Basic |
-| AI training opt-out (org-wide) | Included |
-| Priority support | Included |
-| Public API access | Included |
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-### Enterprise — $35+/user/month
-| Feature | Availability |
-|---------|-------------|
-| Everything in Business | Included |
-| SSO (Okta, Google Workspace) | Included |
-| SCIM provisioning | Included |
-| AI training opt-out (enforced) | Default on |
-| Usage analytics dashboard | Included |
-| Enterprise API (full) | Included |
-| Custom data retention policies | Configurable |
-| SOC 2 Type 2 compliance report | Available |
-| Dedicated account manager | Included |
-| Volume discounts | Negotiable |
+### Step 2: Implement Exponential Backoff with Jitter
 
-## API Rate Limits
+```typescript
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-### Enterprise API
-- Rate limits are applied **per workspace** (not per user)
-- When exceeded: HTTP `429 Too Many Requests` response
-- Retry behavior: respect the `Retry-After` header
-- No published rate numbers — contact Granola for workspace-specific limits
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-### Zapier Integration
-- Zapier task limits are governed by your **Zapier plan**, not Granola
-- Granola does not throttle outbound Zapier triggers
-- For high-volume workspaces, add delay steps between Zap actions to avoid overwhelming downstream apps
-
-## Usage Monitoring
-
-### Check Usage in Granola
-1. Click your avatar (bottom-left) > **Settings**
-2. Navigate to **Account** or **Subscription**
-3. View: current plan, meeting count, team seats, connected integrations
-
-### Free Plan Usage Tracking
-```
-Meetings Used: 18 / 25 lifetime
-History Visible: Last 14 days
-Upgrade Required: After 25 meetings
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
 ```
 
-### API Usage (Enterprise)
-Monitor API usage through response headers:
-```bash
-# Check rate limit headers in API response
-curl -s -I "https://api.granola.ai/v0/notes" \
-  -H "Authorization: Bearer $GRANOLA_API_KEY" \
-  | grep -i "rate-limit\|retry-after"
+### Step 3: Add Idempotency Keys
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+async function idempotentRequest<T>(
+  client: GranolaClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
 ```
 
-## What Happens at Limits
-
-| Limit Hit | Behavior | Resolution |
-|-----------|----------|------------|
-| Free plan 25 meetings | New recordings blocked | Upgrade to Business ($14/mo) |
-| Free plan 14-day history | Older notes hidden (not deleted) | Upgrade to restore access |
-| API rate limit (429) | Requests rejected | Wait for `Retry-After` period, reduce request frequency |
-| Zapier task limit | Zaps paused | Upgrade Zapier plan or reduce trigger frequency |
-| Workspace seat limit | Can't add users | Purchase additional seats or remove inactive users |
-
-## Plan Selection Guide
-
-| Scenario | Recommended Plan |
-|----------|-----------------|
-| Trying Granola (< 25 meetings) | Basic (Free) |
-| Individual user, needs integrations | Business ($14/mo) |
-| Team of 2-10, shared folders + CRM | Business ($14/user/mo) |
-| 10+ users, SSO/SCIM required | Enterprise ($35+/user/mo) |
-| Regulated industry (SOC 2, GDPR) | Enterprise |
-| API access for custom workflows | Business (basic) or Enterprise (full) |
-
-## Billing Details
-- **Annual billing:** Save 10-15% vs monthly
-- **Prorated upgrades:** Upgrade mid-cycle, pay difference
-- **Seat management:** Add/remove seats in Settings > Team
-- **No per-minute charges:** Granola does not charge by meeting duration or transcription minutes
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| "Meeting limit reached" | Free plan exhausted (25 lifetime) | Upgrade to Business |
-| "Subscription expired" | Payment method failed | Update payment in Settings > Billing |
-| API 429 response | Rate limit exceeded | Implement exponential backoff, reduce request frequency |
-| "Feature not available" | Feature requires higher plan | Check plan comparison above and upgrade |
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-- [Granola Pricing](https://www.granola.ai/pricing)
-- [Pricing Blog (ROI Calculator)](https://www.granola.ai/blog/granola-pricing-plans-features-roi)
-- [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
-- [API Changelog](https://docs.granola.ai/api-reference/changelog)
+- [Granola Rate Limits](https://docs.granola.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-Proceed to `granola-security-basics` for security and compliance configuration.
+For security configuration, see `granola-security-basics`.

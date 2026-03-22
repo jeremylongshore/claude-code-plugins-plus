@@ -1,181 +1,119 @@
 ---
 name: vercel-local-dev-loop
 description: |
-  Configure Vercel local development with vercel dev, environment variables, and hot reload.
-  Use when setting up a development environment, testing serverless functions locally,
+  Configure Vercel local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
   or establishing a fast iteration cycle with Vercel.
   Trigger with phrases like "vercel dev setup", "vercel local development",
-  "vercel dev environment", "develop with vercel locally".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*), Grep
+  "vercel dev environment", "develop with vercel".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, development, testing, workflow]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Local Dev Loop
 
 ## Overview
-Run Vercel serverless functions and API routes locally using `vercel dev`. Covers environment variable management, hot reload, local testing patterns, and framework-specific dev servers.
+Set up a fast, reproducible local development workflow for Vercel.
 
 ## Prerequisites
 - Completed `vercel-install-auth` setup
-- Project linked via `vercel link`
 - Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Pull Environment Variables
-```bash
-# Pull env vars from Vercel to local .env files
-vercel env pull .env.development.local
-
-# This creates .env.development.local with all Development-scoped vars:
-# VERCEL="1"
-# VERCEL_ENV="development"
-# DATABASE_URL="postgres://..."
-# API_SECRET="sk-..."
+### Step 1: Create Project Structure
+```
+my-vercel-project/
+├── src/
+│   ├── vercel/
+│   │   ├── client.ts       # Vercel client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── vercel.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-### Step 2: Start Local Dev Server
+### Step 2: Configure Environment
 ```bash
-# vercel dev starts a local server that emulates the Vercel platform
-vercel dev
+# Copy environment template
+cp .env.example .env.local
 
-# Output:
-# Vercel CLI 39.x.x — dev command
-# > Ready on http://localhost:3000
+# Install dependencies
+npm install
 
-# With a specific port
-vercel dev --listen 8080
-
-# With debug logging
-vercel dev --debug
-```
-
-`vercel dev` provides:
-- Serverless function emulation at `/api/*` routes
-- Automatic TypeScript compilation
-- `vercel.json` rewrites, redirects, and headers applied locally
-- Environment variables loaded from `.env*.local` files
-- Framework detection (Next.js, Nuxt, SvelteKit, etc.)
-
-### Step 3: Test Serverless Functions Locally
-```bash
-# Test your API route
-curl http://localhost:3000/api/hello
-# {"message":"Hello from Vercel Serverless Function!"}
-
-# Test with POST body
-curl -X POST http://localhost:3000/api/users \
-  -H "Content-Type: application/json" \
-  -d '{"name":"test","email":"test@example.com"}'
-
-# Test with query parameters
-curl "http://localhost:3000/api/search?q=vercel&limit=10"
-```
-
-### Step 4: Framework-Specific Dev Servers
-For frameworks with their own dev server, use those instead of `vercel dev`:
-
-```bash
-# Next.js — built-in Vercel compatibility
-npx next dev
-# API routes at pages/api/* or app/api/* work identically
-
-# Nuxt
-npx nuxi dev
-
-# SvelteKit
+# Start development server
 npm run dev
-
-# Astro
-npx astro dev
 ```
 
-The framework dev servers handle API routes natively. Use `vercel dev` only for plain serverless function projects without a framework.
-
-### Step 5: Local Environment Variable Management
-```bash
-# Add a new env var for development only
-vercel env add MY_VAR development
-# Prompts for value, stores encrypted on Vercel
-
-# List all env vars
-vercel env ls
-
-# Remove an env var
-vercel env rm MY_VAR development
-
-# Pull updated vars after changes
-vercel env pull .env.development.local
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}
 ```
 
-### Step 6: Testing with Vitest
+### Step 4: Configure Testing
 ```typescript
-// api/__tests__/hello.test.ts
 import { describe, it, expect, vi } from 'vitest';
+import { VercelClient } from '../src/vercel/client';
 
-// Mock the Vercel request/response
-function createMockReq(overrides = {}) {
-  return { method: 'GET', query: {}, body: null, ...overrides };
-}
-
-function createMockRes() {
-  const res: any = {};
-  res.status = vi.fn().mockReturnValue(res);
-  res.json = vi.fn().mockReturnValue(res);
-  res.send = vi.fn().mockReturnValue(res);
-  return res;
-}
-
-describe('GET /api/hello', () => {
-  it('returns 200 with message', async () => {
-    const handler = (await import('../hello')).default;
-    const req = createMockReq();
-    const res = createMockRes();
-
-    handler(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({ message: expect.any(String) })
-    );
+describe('Vercel Client', () => {
+  it('should initialize with API key', () => {
+    const client = new VercelClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
   });
 });
 ```
 
-## `.env` File Hierarchy
-Vercel loads environment files in this order (later files override earlier):
-
-| File | Environment | Git |
-|------|------------|-----|
-| `.env` | All | Commit |
-| `.env.local` | All (local only) | Ignore |
-| `.env.development` | Development | Commit |
-| `.env.development.local` | Development (local only) | Ignore |
-
 ## Output
-- Local dev server running with serverless function emulation
-- Environment variables synced from Vercel to local `.env` files
-- Hot reload on file changes
-- Test suite for serverless function handlers
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Vercel development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `vercel dev` hangs on start | Port already in use | Kill the process on port 3000 or use `--listen 8080` |
-| `Error: No framework detected` | Missing package.json or framework | Add a build framework or use plain functions in `api/` |
-| Env var undefined locally | Not pulled from Vercel | Run `vercel env pull .env.development.local` |
-| `FUNCTION_INVOCATION_TIMEOUT` | Function exceeds 10s locally | Check for unresolved promises or infinite loops |
-| TypeScript errors in `api/` | Missing `@vercel/node` types | `npm install --save-dev @vercel/node` |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Vercel Responses
+```typescript
+vi.mock('vercel', () => ({
+  VercelClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=VERCEL=* npm run dev
+```
 
 ## Resources
-- [Vercel Dev Command](https://vercel.com/docs/cli/dev)
-- [Environment Variables](https://vercel.com/docs/environment-variables)
-- [Vercel Functions](https://vercel.com/docs/functions)
+- [Vercel SDK Reference](https://vercel.com/docs/sdk)
 - [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-Proceed to `vercel-sdk-patterns` for production-ready REST API integration patterns.
+See `vercel-sdk-patterns` for production-ready code patterns.

@@ -1,117 +1,151 @@
 ---
 name: speak-rate-limits
 description: |
-  Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
-  Use when implementing rate limits features,
-  or troubleshooting Speak language learning integration issues.
-  Trigger with phrases like "speak rate limits", "speak rate limits".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Implement Speak rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Speak.
+  Trigger with phrases like "speak rate limit", "speak throttling",
+  "speak 429", "speak retry", "speak backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Rate Limits
 
 ## Overview
-Handle Speak API rate limits with exponential backoff, request queuing, and optimization strategies.
+Handle Speak rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- Speak SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Rate Limit Overview
-| Tier | Assessments/min | Conversations/min | Audio upload/min |
-|------|----------------|-------------------|-----------------|
-| Free | 10 | 5 | 10 |
-| Pro | 60 | 30 | 60 |
-| Enterprise | 300 | 150 | 300 |
+### Step 1: Understand Rate Limit Tiers
 
-### Rate-Limited Client
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
+
+### Step 2: Implement Exponential Backoff with Jitter
+
 ```typescript
-class RateLimitedSpeakClient {
-  private lastRequest = 0;
-  private minDelay: number;
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-  constructor(private client: SpeakClient, requestsPerMinute: number = 60) {
-    this.minDelay = 60000 / requestsPerMinute;
-  }
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-  private async throttle() {
-    const elapsed = Date.now() - this.lastRequest;
-    if (elapsed < this.minDelay) {
-      await new Promise(r => setTimeout(r, this.minDelay - elapsed));
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
-    this.lastRequest = Date.now();
   }
-
-  async assessPronunciation(config: PronunciationConfig) {
-    await this.throttle();
-    return this.retryOn429(() => this.client.assessPronunciation(config));
-  }
-
-  private async retryOn429<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-    for (let i = 0; i < maxRetries; i++) {
-      try {
-        return await fn();
-      } catch (err: any) {
-        if (err.response?.status === 429 && i < maxRetries - 1) {
-          const wait = parseInt(err.response.headers['retry-after'] || String(2 ** i));
-          console.log(`Rate limited. Waiting ${wait}s...`);
-          await new Promise(r => setTimeout(r, wait * 1000));
-          continue;
-        }
-        throw err;
-      }
-    }
-    throw new Error('Max retries exceeded');
-  }
+  throw new Error('Unreachable');
 }
 ```
 
-### Batch Assessment Queue
+### Step 3: Add Idempotency Keys
+
 ```typescript
-async function batchAssess(client: RateLimitedSpeakClient, recordings: Recording[]) {
-  const results = [];
-  for (const rec of recordings) {
-    const result = await client.assessPronunciation({
-      audioPath: rec.path, targetText: rec.text, language: rec.lang,
-    });
-    results.push({ ...rec, score: result.score });
-    console.log(`Assessed "${rec.text}": ${result.score}/100`);
-  }
-  return results;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+async function idempotentRequest<T>(
+  client: SpeakClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
 ```
 
 ## Output
-- Limits implementation complete
-- Speak API integration verified
-- Production-ready patterns applied
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
-| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
-| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
-| Session expired | Timeout after 30 min | Start a new conversation session |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-See `speak-prod-checklist` for production readiness.
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
 ## Examples
 
-**Basic**: Apply rate limits with default configuration for a standard Speak integration.
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
 
-**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
+
+## Resources
+- [Speak Rate Limits](https://docs.speak.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+## Next Steps
+For security configuration, see `speak-security-basics`.

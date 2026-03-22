@@ -1,304 +1,222 @@
 ---
 name: webflow-data-handling
 description: |
-  Implement Webflow data handling — CMS content delivery patterns, PII redaction in
-  form submissions, GDPR/CCPA compliance for ecommerce data, and data retention policies.
-  Trigger with phrases like "webflow data", "webflow PII", "webflow GDPR",
-  "webflow data retention", "webflow privacy", "webflow CCPA", "webflow forms data".
+  Implement Webflow PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Webflow integrations.
+  Trigger with phrases like "webflow data", "webflow PII",
+  "webflow GDPR", "webflow data retention", "webflow privacy", "webflow CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, no-code, webflow]
 compatible-with: claude-code
+tags: [saas, webflow]
 ---
 
 # Webflow Data Handling
 
 ## Overview
-
-Handle sensitive data correctly when working with the Webflow Data API v2. Covers
-PII in form submissions, ecommerce customer data, CMS content classification,
-GDPR/CCPA compliance patterns, and data retention policies.
+Handle sensitive data correctly when integrating with Webflow.
 
 ## Prerequisites
-
 - Understanding of GDPR/CCPA requirements
-- Webflow API token with `forms:read`, `ecommerce:read` scopes
+- Webflow SDK with data export capabilities
 - Database for audit logging
-- Scheduled job infrastructure for data cleanup
+- Scheduled job infrastructure for cleanup
 
-## Webflow Data Classification
+## Data Classification
 
-| Source | Data Type | PII Risk | Handling |
-|--------|-----------|----------|----------|
-| Form submissions | Email, name, phone, message | High | Encrypt at rest, redact in logs |
-| Ecommerce orders | Name, email, address, payment | High | Never log, minimal retention |
-| CMS items | Blog posts, team bios, products | Low-Medium | May contain names/photos |
-| Site analytics | Page views, sessions | Low | Aggregate when possible |
-| API tokens | Access credentials | Critical | Never log, rotate quarterly |
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
 
-## Instructions
-
-### Step 1: PII Detection in Form Submissions
+## PII Detection
 
 ```typescript
 const PII_PATTERNS = [
-  { type: "email", regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: "phone", regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: "ssn", regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: "credit_card", regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
 ];
 
-function detectPII(text: string): Array<{ type: string; found: boolean }> {
-  return PII_PATTERNS.map(p => ({
-    type: p.type,
-    found: p.regex.test(text),
-  })).filter(r => r.found);
-}
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
 
-// Scan form submissions for PII before logging
-async function processFormSubmission(formId: string) {
-  const { formSubmissions } = await webflow.forms.listSubmissions(formId);
-
-  for (const sub of formSubmissions || []) {
-    const rawData = JSON.stringify(sub.formData);
-    const piiFindings = detectPII(rawData);
-
-    if (piiFindings.length > 0) {
-      console.warn(`PII detected in submission ${sub.id}: ${piiFindings.map(f => f.type).join(", ")}`);
-      // Log redacted version only
-      console.log("Form data:", redactPII(sub.formData || {}));
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
     }
   }
+
+  return findings;
 }
 ```
 
-### Step 2: PII Redaction
+## Data Redaction
 
 ```typescript
 function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = new Set([
-    "email", "phone", "telephone", "mobile", "ssn",
-    "password", "credit-card", "card-number", "address",
-    "full-name", "first-name", "last-name",
-  ]);
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
 
-  const redacted: Record<string, any> = {};
-
-  for (const [key, value] of Object.entries(data)) {
-    const normalizedKey = key.toLowerCase().replace(/[\s_]/g, "-");
-
-    if (sensitiveFields.has(normalizedKey)) {
-      redacted[key] = "[REDACTED]";
-    } else if (typeof value === "string") {
-      // Redact inline PII patterns
-      let cleaned = value;
-      for (const pattern of PII_PATTERNS) {
-        cleaned = cleaned.replace(pattern.regex, `[${pattern.type.toUpperCase()}_REDACTED]`);
-      }
-      redacted[key] = cleaned;
-    } else {
-      redacted[key] = value;
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
     }
   }
 
   return redacted;
 }
 
-// Usage in logging
-async function logFormData(formData: Record<string, any>) {
-  console.log("Form submission (redacted):", redactPII(formData));
-}
+// Use in logging
+console.log('Webflow request:', redactPII(requestData));
 ```
 
-### Step 3: Ecommerce Data Handling
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
 
 ```typescript
-// Order data contains high-sensitivity PII
-async function processOrder(siteId: string, orderId: string) {
-  const order = await webflow.orders.get(siteId, orderId);
+async function cleanupWebflowData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
 
-  // NEVER log full customer info
-  const safeOrderLog = {
-    orderId: order.orderId,
-    status: order.status,
-    itemCount: order.purchasedItems?.length,
-    totalCents: order.customerPaid?.value,
-    // Redact customer info
-    customer: {
-      hasEmail: !!order.customerInfo?.email,
-      hasAddress: !!order.shippingAddress,
-      // Never: order.customerInfo?.email
-      // Never: order.shippingAddress?.addressLine1
-    },
-    createdAt: order.acceptedOn,
-  };
-
-  console.log("Order processed:", safeOrderLog);
+  await db.webflowLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
 }
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupWebflowData(30));
 ```
 
-### Step 4: GDPR — Data Subject Access Request (DSAR)
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
 
 ```typescript
-interface DataExport {
-  source: string;
-  exportedAt: string;
-  requestedBy: string;
-  data: {
-    formSubmissions: Array<{ formName: string; submittedAt: string; data: Record<string, any> }>;
-    orders: Array<{ orderId: string; status: string; total: number; items: string[] }>;
-  };
-}
+async function exportUserData(userId: string): Promise<DataExport> {
+  const webflowData = await webflowClient.getUserData(userId);
 
-async function exportUserData(siteId: string, userEmail: string): Promise<DataExport> {
-  const exportData: DataExport = {
-    source: "Webflow",
+  return {
+    source: 'Webflow',
     exportedAt: new Date().toISOString(),
-    requestedBy: userEmail,
-    data: { formSubmissions: [], orders: [] },
+    data: {
+      profile: webflowData.profile,
+      activities: webflowData.activities,
+      // Include all user-related data
+    },
   };
-
-  // 1. Find form submissions by email
-  const { forms } = await webflow.forms.list(siteId);
-  for (const form of forms || []) {
-    const { formSubmissions } = await webflow.forms.listSubmissions(form.id!);
-    for (const sub of formSubmissions || []) {
-      const formData = sub.formData || {};
-      // Check all fields for matching email
-      const hasEmail = Object.values(formData).some(
-        v => typeof v === "string" && v.toLowerCase() === userEmail.toLowerCase()
-      );
-      if (hasEmail) {
-        exportData.data.formSubmissions.push({
-          formName: form.displayName!,
-          submittedAt: sub.submittedAt!,
-          data: formData,
-        });
-      }
-    }
-  }
-
-  // 2. Find orders by email
-  const { orders } = await webflow.orders.list(siteId);
-  for (const order of orders || []) {
-    if (order.customerInfo?.email?.toLowerCase() === userEmail.toLowerCase()) {
-      exportData.data.orders.push({
-        orderId: order.orderId!,
-        status: order.status!,
-        total: (order.customerPaid?.value || 0) / 100,
-        items: order.purchasedItems?.map(i => i.productName || "Unknown") || [],
-      });
-    }
-  }
-
-  return exportData;
 }
 ```
 
-### Step 5: GDPR — Right to Deletion
+### Right to Deletion
 
 ```typescript
-async function deleteUserData(
-  siteId: string,
-  userEmail: string
-): Promise<{ deleted: string[]; retained: string[] }> {
-  const result = { deleted: [] as string[], retained: [] as string[] };
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Webflow
+  await webflowClient.deleteUser(userId);
 
-  // Note: Webflow API does not currently support deleting form submissions
-  // via API. You must delete them through the Webflow dashboard.
-  // However, you can delete your local copies:
+  // 2. Delete local copies
+  await db.webflowUserCache.deleteMany({ userId });
 
-  // 1. Delete local form submission copies
-  await db.formSubmissions.deleteMany({ email: userEmail, source: "webflow" });
-  result.deleted.push("Local form submission copies");
-
-  // 2. Delete local order copies (keep anonymized for accounting)
-  await db.orders.updateMany(
-    { email: userEmail, source: "webflow" },
-    { $set: { email: "[DELETED]", name: "[DELETED]", address: "[DELETED]" } }
-  );
-  result.retained.push("Anonymized order records (legal requirement)");
-
-  // 3. Audit log (required — never delete audit logs)
-  await db.auditLog.insertOne({
-    action: "GDPR_DELETION",
-    email: userEmail,
-    service: "webflow",
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'webflow',
     timestamp: new Date(),
-    deletedSources: result.deleted,
-    retainedSources: result.retained,
   });
-  result.retained.push("Audit log entry");
 
-  return result;
+  return { success: true, deletedAt: new Date() };
 }
 ```
 
-### Step 6: Data Retention Policy
-
-| Data Type | Retention | Reason | Auto-Cleanup |
-|-----------|-----------|--------|--------------|
-| Form submissions | 90 days | Business need | Yes |
-| Order records | 7 years | Tax/accounting | No |
-| API call logs | 30 days | Debugging | Yes |
-| Error logs | 90 days | Root cause analysis | Yes |
-| Audit logs | 7 years | Compliance | No |
-| Cached CMS content | 24 hours | Performance | Yes (TTL) |
+## Data Minimization
 
 ```typescript
-async function cleanupExpiredData() {
-  const now = new Date();
+// Only request needed fields
+const user = await webflowClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
 
-  // Delete form submissions older than 90 days
-  const formCutoff = new Date(now);
-  formCutoff.setDate(formCutoff.getDate() - 90);
-  await db.formSubmissions.deleteMany({
-    source: "webflow",
-    createdAt: { $lt: formCutoff },
-    type: { $nin: ["audit", "compliance"] },
-  });
-
-  // Delete API logs older than 30 days
-  const logCutoff = new Date(now);
-  logCutoff.setDate(logCutoff.getDate() - 30);
-  await db.apiLogs.deleteMany({
-    service: "webflow",
-    createdAt: { $lt: logCutoff },
-  });
-
-  console.log("Data cleanup completed");
-}
-
-// Schedule daily at 3 AM
-// cron: "0 3 * * *"
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
 ```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Webflow data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-
-- PII detection for form submissions and order data
-- Redaction layer for logging sensitive Webflow data
-- GDPR DSAR export (forms + orders by email)
-- Right to deletion with audit trail
-- Data retention policy with automated cleanup
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction wrapper | Wrap all logging with `redactPII()` |
-| DSAR incomplete | Not scanning all forms | Iterate all forms in site |
-| Deletion failed | No API for form deletion | Delete via Webflow dashboard |
-| Audit gap | Missing log entries | Ensure audit logging in all deletion paths |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Webflow response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance](https://oag.ca.gov/privacy/ccpa)
-- [Webflow Forms API](https://developers.webflow.com/data/reference/forms)
-- [Webflow Orders API](https://developers.webflow.com/data/reference/ecommerce)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Webflow Privacy Guide](https://docs.webflow.com/privacy)
 
 ## Next Steps
-
 For enterprise access control, see `webflow-enterprise-rbac`.

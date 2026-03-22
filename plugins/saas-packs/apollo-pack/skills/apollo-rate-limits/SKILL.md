@@ -1,213 +1,151 @@
 ---
 name: apollo-rate-limits
 description: |
-  Implement Apollo.io rate limiting and backoff.
-  Use when handling rate limits, implementing retry logic,
-  or optimizing API request throughput.
-  Trigger with phrases like "apollo rate limit", "apollo 429",
-  "apollo throttling", "apollo backoff", "apollo request limits".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Implement Apollo rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Apollo.
+  Trigger with phrases like "apollo rate limit", "apollo throttling",
+  "apollo 429", "apollo retry", "apollo backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Rate Limits
 
 ## Overview
-Implement robust rate limiting and backoff for the Apollo.io API. Apollo uses **fixed-window rate limiting** with per-endpoint limits. Unlike hourly quotas, Apollo limits are **per minute** with a burst limit per second. Exceeding them returns HTTP 429.
+Handle Apollo rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-- Valid Apollo API key
-- Node.js 18+
+- Apollo SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Understand Apollo's Rate Limit Structure
-Apollo's official rate limits (as of 2025):
+### Step 1: Understand Rate Limit Tiers
 
-```
-Endpoint Category           | Limit/min | Burst/sec | Notes
-----------------------------+-----------+-----------+-------------------------------
-People Search               | 100       | 10        | /mixed_people/api_search (free)
-People Enrichment           | 100       | 10        | /people/match (1 credit each)
-Bulk People Enrichment      | 10        | 2         | /people/bulk_match (up to 10/call)
-Organization Search         | 100       | 10        | /mixed_companies/search
-Organization Enrichment     | 100       | 10        | /organizations/enrich
-Contacts CRUD               | 100       | 10        | /contacts/*
-Sequences                   | 100       | 10        | /emailer_campaigns/*
-Deals                       | 100       | 10        | /opportunities/*
-```
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-Response headers on every successful call:
-- `x-rate-limit-limit` — max requests per window
-- `x-rate-limit-remaining` — requests remaining in current window
-- `retry-after` — seconds to wait (only on 429 responses)
+### Step 2: Implement Exponential Backoff with Jitter
 
-### Step 2: Build a Per-Endpoint Rate Limiter
 ```typescript
-// src/apollo/rate-limiter.ts
-export class SlidingWindowLimiter {
-  private timestamps: number[] = [];
-
-  constructor(
-    private maxRequests: number = 100,
-    private windowMs: number = 60_000,
-  ) {}
-
-  async acquire(): Promise<void> {
-    const now = Date.now();
-    // Remove timestamps outside the window
-    this.timestamps = this.timestamps.filter((t) => now - t < this.windowMs);
-
-    if (this.timestamps.length >= this.maxRequests) {
-      const oldestInWindow = this.timestamps[0];
-      const waitMs = this.windowMs - (now - oldestInWindow) + 100;
-      console.warn(`[RateLimit] At capacity (${this.maxRequests}/${this.windowMs}ms). Waiting ${waitMs}ms`);
-      await new Promise((r) => setTimeout(r, waitMs));
-    }
-
-    this.timestamps.push(Date.now());
-  }
-
-  get remaining(): number {
-    const now = Date.now();
-    this.timestamps = this.timestamps.filter((t) => now - t < this.windowMs);
-    return this.maxRequests - this.timestamps.length;
-  }
-}
-
-// Create limiters per endpoint category
-export const limiters = {
-  search: new SlidingWindowLimiter(100, 60_000),
-  enrichment: new SlidingWindowLimiter(100, 60_000),
-  bulkEnrichment: new SlidingWindowLimiter(10, 60_000),
-  contacts: new SlidingWindowLimiter(100, 60_000),
-  sequences: new SlidingWindowLimiter(100, 60_000),
-};
-```
-
-### Step 3: Exponential Backoff with Retry-After
-```typescript
-// src/apollo/backoff.ts
-export async function withBackoff<T>(
-  fn: () => Promise<T>,
-  opts: { maxRetries?: number; baseMs?: number; maxMs?: number } = {},
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  const { maxRetries = 5, baseMs = 1000, maxMs = 60_000 } = opts;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await fn();
-    } catch (err: any) {
-      const status = err.response?.status;
-      if (status !== 429 && status < 500) throw err;
-      if (attempt === maxRetries) throw err;
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Prefer Retry-After header, fall back to exponential backoff
-      const retryAfter = err.response?.headers?.['retry-after'];
-      const delayMs = retryAfter
-        ? parseInt(retryAfter, 10) * 1000
-        : Math.min(baseMs * 2 ** attempt + Math.random() * 500, maxMs);
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      console.warn(`[Apollo] ${status} attempt ${attempt + 1}/${maxRetries + 1}, retry in ${Math.round(delayMs / 1000)}s`);
-      await new Promise((r) => setTimeout(r, delayMs));
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
   throw new Error('Unreachable');
 }
 ```
 
-### Step 4: Request Queue with Concurrency Control
+### Step 3: Add Idempotency Keys
+
 ```typescript
-// src/apollo/queue.ts
-import PQueue from 'p-queue';
-import { limiters } from './rate-limiter';
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-type EndpointCategory = keyof typeof limiters;
-
-const queues: Record<EndpointCategory, PQueue> = {
-  search: new PQueue({ concurrency: 5, intervalCap: 10, interval: 1000 }),
-  enrichment: new PQueue({ concurrency: 5, intervalCap: 10, interval: 1000 }),
-  bulkEnrichment: new PQueue({ concurrency: 2, intervalCap: 2, interval: 1000 }),
-  contacts: new PQueue({ concurrency: 5, intervalCap: 10, interval: 1000 }),
-  sequences: new PQueue({ concurrency: 3, intervalCap: 5, interval: 1000 }),
-};
-
-export async function queuedRequest<T>(
-  category: EndpointCategory,
-  fn: () => Promise<T>,
-): Promise<T> {
-  await limiters[category].acquire();
-  return queues[category].add(() => fn()) as Promise<T>;
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
-```
 
-### Step 5: Monitor Rate Limit Usage via Response Headers
-```typescript
-// src/apollo/rate-monitor.ts
-import { AxiosInstance, AxiosResponse } from 'axios';
-
-export function attachRateMonitor(client: AxiosInstance) {
-  client.interceptors.response.use((response: AxiosResponse) => {
-    const limit = response.headers['x-rate-limit-limit'];
-    const remaining = response.headers['x-rate-limit-remaining'];
-
-    if (limit && remaining) {
-      const pct = Math.round(((parseInt(limit) - parseInt(remaining)) / parseInt(limit)) * 100);
-      if (pct >= 80) {
-        console.warn(`[Apollo] Rate limit ${pct}% used (${remaining}/${limit} remaining) on ${response.config.url}`);
-      }
-    }
-    return response;
+async function idempotentRequest<T>(
+  client: ApolloClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
   });
 }
 ```
 
 ## Output
-- Per-endpoint sliding window rate limiter matching Apollo's actual limits
-- Exponential backoff respecting `retry-after` headers
-- `PQueue`-based request queue with per-second burst control
-- Response header monitoring with 80% warning threshold
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
-| Scenario | Strategy |
-|----------|----------|
-| 429 with `retry-after` | Wait the specified seconds, then retry |
-| 429 without header | Exponential backoff: 1s, 2s, 4s, 8s, up to 60s |
-| Bulk enrichment limited | Use dedicated queue with 2/sec burst limit |
-| Near quota (>80%) | Log warning, defer non-critical requests |
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
 ## Examples
 
-### Bulk Search with Rate Limiting
+### Queue-Based Rate Limiting
 ```typescript
-import { queuedRequest } from './apollo/queue';
-import { withBackoff } from './apollo/backoff';
+import PQueue from 'p-queue';
 
-const domains = ['stripe.com', 'notion.so', 'linear.app', /* ... */];
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
 
-const results = await Promise.all(
-  domains.map((domain) =>
-    queuedRequest('search', () =>
-      withBackoff(() =>
-        client.post('/mixed_people/api_search', {
-          q_organization_domains_list: [domain],
-          per_page: 25,
-        }),
-      ),
-    ),
-  ),
-);
-console.log(`Searched ${results.length} domains within rate limits`);
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
 ```
 
 ## Resources
-- [Apollo Rate Limits](https://docs.apollo.io/reference/rate-limits)
-- [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
-- [p-queue Library](https://github.com/sindresorhus/p-queue)
+- [Apollo Rate Limits](https://docs.apollo.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-Proceed to `apollo-security-basics` for API security best practices.
+For security configuration, see `apollo-security-basics`.

@@ -5,225 +5,88 @@ description: |
   Use when setting up a new Clerk integration, configuring API keys,
   or initializing Clerk in your project.
   Trigger with phrases like "install clerk", "setup clerk",
-  "clerk auth", "configure clerk API key", "add clerk to project".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  "clerk auth", "configure clerk API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, api, authentication]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Install & Auth
 
 ## Overview
-Set up Clerk SDK and configure authentication for Next.js, React, or Express. This skill covers SDK installation, environment variables, ClerkProvider, middleware, and initial auth verification.
+Set up Clerk SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- Node.js 18+
-- Package manager (npm, pnpm, or yarn)
-- Clerk account at dashboard.clerk.com
-- Publishable Key (`pk_test_*`) and Secret Key (`sk_test_*`) from Clerk Dashboard > API Keys
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Clerk account with API access
+- API key from Clerk dashboard
 
 ## Instructions
 
-### Step 1: Install SDK for Your Framework
+### Step 1: Install SDK
 ```bash
-set -euo pipefail
-# Next.js (App Router or Pages Router)
-npm install @clerk/nextjs
+# Node.js
+npm install @clerk/sdk
 
-# React SPA (Vite, CRA, etc.)
-npm install @clerk/clerk-react
-
-# Express / Node.js backend
-npm install @clerk/express
-
-# Backend-only (Cloudflare Workers, serverless, etc.)
-npm install @clerk/backend
+# Python
+pip install clerk
 ```
 
-### Step 2: Configure Environment Variables
+### Step 2: Configure Authentication
 ```bash
-# .env.local — never commit this file
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+# Set environment variable
+export CLERK_API_KEY="your-api-key"
 
-# Optional: routing URLs
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
-NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
-NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/onboarding
+# Or create .env file
+echo 'CLERK_API_KEY=your-api-key' >> .env
 ```
 
-Ensure `.env.local` is in `.gitignore`:
-```bash
-echo ".env.local" >> .gitignore
-```
-
-### Step 3: Add ClerkProvider (Next.js App Router)
+### Step 3: Verify Connection
 ```typescript
-// app/layout.tsx
-import { ClerkProvider, SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs'
-import './globals.css'
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>
-          <header className="flex justify-between p-4">
-            <SignedOut>
-              <SignInButton />
-            </SignedOut>
-            <SignedIn>
-              <UserButton />
-            </SignedIn>
-          </header>
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
-  )
-}
+// Test connection code here
 ```
 
-### Step 4: Add Middleware
-```typescript
-// middleware.ts (project root, NOT inside app/ or src/app/)
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
-// Define which routes should be publicly accessible
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/api/webhooks(.*)',
-])
-
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
-  }
-})
-
-export const config = {
-  matcher: [
-    // Skip Next.js internals and static files
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
-  ],
-}
-```
-
-### Step 5: Create Sign-In and Sign-Up Pages
-```typescript
-// app/sign-in/[[...sign-in]]/page.tsx
-import { SignIn } from '@clerk/nextjs'
-
-export default function SignInPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignIn />
-    </div>
-  )
-}
-```
-
-```typescript
-// app/sign-up/[[...sign-up]]/page.tsx
-import { SignUp } from '@clerk/nextjs'
-
-export default function SignUpPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <SignUp />
-    </div>
-  )
-}
-```
-
-### Step 6: Verify Connection
-```typescript
-// app/api/health/route.ts
-import { auth } from '@clerk/nextjs/server'
-
-export async function GET() {
-  const { userId } = await auth()
-  return Response.json({
-    clerkConnected: true,
-    authenticated: !!userId,
-    userId: userId || null,
-  })
-}
-```
-
-### React SPA Setup (Vite)
-```typescript
-// src/main.tsx
-import { ClerkProvider } from '@clerk/clerk-react'
-import App from './App'
-
-const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
-
-if (!PUBLISHABLE_KEY) {
-  throw new Error('Missing VITE_CLERK_PUBLISHABLE_KEY in .env')
-}
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-    <App />
-  </ClerkProvider>
-)
-```
-
-### Express Setup
-```typescript
-// server.ts
-import express from 'express'
-import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express'
-
-const app = express()
-
-// Apply Clerk middleware globally — attaches auth to all requests
-app.use(clerkMiddleware())
-
-// Public route
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' })
-})
-
-// Protected route — redirects unauthenticated requests
-app.get('/api/profile', requireAuth(), (req, res) => {
-  const { userId } = getAuth(req)
-  res.json({ userId })
-})
-
-app.listen(3001, () => console.log('Server running on :3001'))
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Missing publishableKey` | Env var not set | Add `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` to `.env.local` |
-| `ClerkProvider must wrap your application` | Hook used outside provider | Ensure `ClerkProvider` wraps root layout |
-| `auth() was called but Clerk can't detect clerkMiddleware()` | Middleware not running | Place `middleware.ts` at project root, check matcher |
-| `Module not found: @clerk/nextjs` | Package not installed | Run `npm install @clerk/nextjs` |
-| 500 error on all pages | `CLERK_SECRET_KEY` missing or wrong | Verify key prefix matches environment (`sk_test_` for dev) |
+| Invalid API Key | Incorrect or expired key | Verify key in Clerk dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.clerk.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
-## Enterprise Considerations
-- Use separate Clerk instances per environment (dev/staging/prod)
-- Store keys in platform secrets (Vercel, AWS Secrets Manager), never in `.env` files committed to git
-- The `CLERK_SECRET_KEY` must never be exposed client-side; only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is safe for browsers
-- For monorepos, install `@clerk/nextjs` only in the app that needs it; use `@clerk/backend` for shared server packages
-- Enable Clerk's "Enhanced email deliverability" in production for reliable transactional emails
+## Examples
+
+### TypeScript Setup
+```typescript
+import { ClerkClient } from '@clerk/sdk';
+
+const client = new ClerkClient({
+  apiKey: process.env.CLERK_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from clerk import ClerkClient
+
+client = ClerkClient(
+    api_key=os.environ.get('CLERK_API_KEY')
+)
+```
 
 ## Resources
-- [Next.js Quickstart](https://clerk.com/docs/nextjs/getting-started/quickstart)
-- [React Quickstart](https://clerk.com/docs/quickstarts/react)
-- [Express Quickstart](https://clerk.com/docs/quickstarts/express)
-- [Clerk Dashboard](https://dashboard.clerk.com)
+- [Clerk Documentation](https://docs.clerk.com)
+- [Clerk Dashboard](https://api.clerk.com)
+- [Clerk Status](https://status.clerk.com)
 
 ## Next Steps
-Proceed to `clerk-hello-world` for your first authenticated request.
+After successful auth, proceed to `clerk-hello-world` for your first API call.

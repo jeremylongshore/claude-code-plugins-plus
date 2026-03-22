@@ -1,189 +1,113 @@
 ---
 name: lindy-debug-bundle
 description: |
-  Comprehensive debugging toolkit for Lindy AI agents.
-  Use when investigating complex agent failures, collecting diagnostics,
-  or preparing support tickets for Lindy support.
-  Trigger with phrases like "lindy debug", "lindy diagnostics",
-  "lindy support bundle", "investigate lindy issue".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Collect Lindy debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent issues, preparing support tickets,
+  or collecting diagnostic information for Lindy problems.
+  Trigger with phrases like "lindy debug", "lindy support bundle",
+  "collect lindy logs", "lindy diagnostic".
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, debugging]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Debug Bundle
 
-## Current State
-!`node --version 2>/dev/null || echo 'Node.js not installed'`
-!`python3 --version 2>/dev/null || echo 'Python not installed'`
-!`curl --version 2>/dev/null | head -1 || echo 'curl not installed'`
-
 ## Overview
-Systematic diagnostics for Lindy AI agent issues. Collects environment info,
-tests API connectivity, reviews agent task history, and generates a support
-bundle for Lindy's support team.
+Collect all necessary diagnostic information for Lindy support tickets.
 
 ## Prerequisites
-- Access to Lindy dashboard (https://app.lindy.ai)
-- curl installed for API testing
-- Agent ID and webhook URLs available
+- Lindy SDK installed
+- Access to application logs
+- Permission to collect environment info
 
 ## Instructions
 
-### Step 1: Collect Environment Info
+### Step 1: Create Debug Bundle Script
 ```bash
-# Local environment diagnostics
-echo "=== Local Environment ==="
-echo "Node: $(node --version 2>/dev/null || echo 'N/A')"
-echo "Python: $(python3 --version 2>/dev/null || echo 'N/A')"
-echo "OS: $(uname -srm)"
-echo "Date: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
-echo "LINDY_API_KEY set: $([ -n "$LINDY_API_KEY" ] && echo 'yes' || echo 'NO')"
-echo "LINDY_WEBHOOK_SECRET set: $([ -n "$LINDY_WEBHOOK_SECRET" ] && echo 'yes' || echo 'NO')"
+#!/bin/bash
+# lindy-debug-bundle.sh
+
+BUNDLE_DIR="lindy-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE_DIR"
+
+echo "=== Lindy Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 2: Test Webhook Connectivity
+### Step 2: Collect Environment Info
 ```bash
-# Test webhook trigger endpoint
-echo "=== Webhook Connectivity ==="
-WEBHOOK_URL="${LINDY_WEBHOOK_URL:-https://public.lindy.ai/api/v1/webhooks/YOUR_ID}"
-
-# Test without auth (expect 401)
-echo "Without auth (expect 401):"
-curl -s -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" \
-  -X POST "$WEBHOOK_URL" \
-  -H "Content-Type: application/json" \
-  -d '{"test": true}'
-
-# Test with auth (expect 200)
-echo "With auth (expect 200):"
-curl -s -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" \
-  -X POST "$WEBHOOK_URL" \
-  -H "Authorization: Bearer $LINDY_WEBHOOK_SECRET" \
-  -H "Content-Type: application/json" \
-  -d '{"test": true, "debug": "bundle-test"}'
+# Environment info
+echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+echo "LINDY_API_KEY: ${LINDY_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 3: Review Agent Task History
-In the Lindy dashboard:
-1. Navigate to the failing agent
-2. Open the **Tasks** tab
-3. Filter by **Failed** status
-4. For each failed task:
-   - Note the timestamp
-   - Click to expand step-by-step execution
-   - Identify the failing step (marked red)
-   - Copy the error message and input/output data
-5. Look for patterns: same step failing? same time of day? same input type?
-
-### Step 4: Check Integration Health
+### Step 3: Gather SDK and Logs
 ```bash
-# Test outbound connectivity to common Lindy integration targets
-echo "=== Integration Targets ==="
-for url in \
-  "https://public.lindy.ai" \
-  "https://slack.com/api/auth.test" \
-  "https://www.googleapis.com/gmail/v1/users/me/profile" \
-  "https://api.notion.com/v1/users/me"
-do
-  status=$(curl -s -o /dev/null -w "%{http_code}" --max-time 5 "$url" 2>/dev/null)
-  echo "$url -> HTTP $status"
-done
+# SDK version
+npm list @lindy/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+
+# Recent logs (redacted)
+grep -i "lindy" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" https://api.lindy.com/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 5: Diagnose Specific Failure Types
-
-**Trigger not firing**:
-- Verify agent status: active (not paused)
-- Check trigger filter conditions
-- For webhooks: test URL with curl
-- For email: re-authorize Gmail/Outlook
-- For schedule: verify timezone settings
-
-**Action failing**:
-- Check integration authorization (re-auth if token expired)
-- Verify field references: `{{step_name.field}}` syntax correct
-- Test the target service independently
-- Check if action is a Premium Action (requires Pro plan)
-
-**Agent step looping**:
-- Review exit conditions — are they achievable?
-- Check credit consumption (rapid drain = looping)
-- Reduce available skills to 2-4 focused ones
-- Add a fallback exit condition
-
-**High credit consumption**:
-- Review model selection: Gemini Flash (cheap) vs GPT-4 (expensive)
-- Check for unnecessary agent steps (use deterministic actions instead)
-- Review loop configurations for unbounded max cycles
-
-### Step 6: Generate Support Bundle
-Compile the following for a support ticket to support@lindy.ai:
-```markdown
-## Lindy Support Bundle
-
-**Account**: [your email]
-**Agent Name**: [agent name]
-**Agent URL**: https://app.lindy.ai/agents/[agent-id]
-**Issue Start**: [date/time UTC]
-**Frequency**: [every time / intermittent / once]
-
-### Environment
-- Browser: [Chrome/Firefox/Safari version]
-- Plan: [Free/Pro/Business/Enterprise]
-- Credit Balance: [remaining credits]
-
-### Reproduction Steps
-1. [step 1]
-2. [step 2]
-
-### Failed Task IDs
-- [task-id-1] at [timestamp]
-- [task-id-2] at [timestamp]
-
-### Error Messages
-[Copy exact error text from task detail view]
-
-### What I Tried
-- [attempt 1]
-- [attempt 2]
+### Step 4: Package Bundle
+```bash
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
-## Diagnostic Decision Tree
-
-```
-Agent not working?
-├── No task created → Check trigger configuration
-│   ├── Webhook? → Test with curl (Step 2)
-│   ├── Email? → Re-authorize + check filters
-│   └── Schedule? → Check timezone + credit balance
-├── Task created but failed → Check task detail view
-│   ├── Trigger step failed → Auth/connectivity issue
-│   ├── Action step failed → Integration auth expired
-│   ├── Condition step failed → Ambiguous condition prompt
-│   └── Agent step looping → Exit conditions unreachable
-└── Task completed but wrong result → Prompt/config issue
-    ├── Wrong output → Refine agent prompt
-    ├── Missing data → Check field references
-    └── Partial execution → Review condition branches
-```
+## Output
+- `lindy-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
+  - `summary.txt` - Environment and SDK info
+  - `logs.txt` - Recent redacted logs
+  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
+| Item | Purpose | Included |
+|------|---------|----------|
+| Environment versions | Compatibility check | ✓ |
+| SDK version | Version-specific bugs | ✓ |
+| Error logs (redacted) | Root cause analysis | ✓ |
+| Config (redacted) | Configuration issues | ✓ |
+| Network test | Connectivity issues | ✓ |
 
-| Symptom | Likely Cause | Resolution |
-|---------|-------------|------------|
-| All agents failing simultaneously | Lindy platform outage | Check status.lindy.ai |
-| Single agent failing | Agent-specific config issue | Review task detail view |
-| Intermittent failures | Rate limits or credit exhaustion | Check usage dashboard |
-| Slow execution | Model too large or too many steps | Switch to Gemini Flash, consolidate steps |
+## Examples
+
+### Sensitive Data Handling
+**ALWAYS REDACT:**
+- API keys and tokens
+- Passwords and secrets
+- PII (emails, names, IDs)
+
+**Safe to Include:**
+- Error messages
+- Stack traces (redacted)
+- SDK/runtime versions
+
+### Submit to Support
+1. Create bundle: `bash lindy-debug-bundle.sh`
+2. Review for sensitive data
+3. Upload to Lindy support portal
 
 ## Resources
-- [Lindy Community](https://community.lindy.ai)
-- [Lindy Documentation](https://docs.lindy.ai)
-- [Lindy Status](https://status.lindy.ai)
+- [Lindy Support](https://docs.lindy.com/support)
+- [Lindy Status](https://status.lindy.com)
 
 ## Next Steps
-Proceed to `lindy-rate-limits` for credit and rate management.
+For rate limit issues, see `lindy-rate-limits`.

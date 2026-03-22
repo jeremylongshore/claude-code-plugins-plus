@@ -1,229 +1,222 @@
 ---
 name: langchain-data-handling
 description: |
-  Implement LangChain RAG pipelines with document loaders, text splitters,
-  embeddings, and vector stores (Chroma, Pinecone, FAISS).
-  Trigger: "langchain RAG", "langchain documents", "langchain vector store",
-  "langchain embeddings", "document loaders", "text splitters", "retrieval".
+  Implement LangChain PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for LangChain integrations.
+  Trigger with phrases like "langchain data", "langchain PII",
+  "langchain GDPR", "langchain data retention", "langchain privacy", "langchain CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, rag, vector-store]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
-# LangChain Data Handling: RAG & Document Processing
+
+# LangChain Data Handling
 
 ## Overview
-
-Build Retrieval-Augmented Generation (RAG) pipelines: load documents, split into chunks, embed with OpenAI/Cohere, store in vector databases (FAISS, Chroma, Pinecone), and query with retrieval chains.
+Handle sensitive data correctly when integrating with LangChain.
 
 ## Prerequisites
+- Understanding of GDPR/CCPA requirements
+- LangChain SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-- `@langchain/core`, `@langchain/openai` installed
-- For vector stores: `npm install @langchain/community` (FAISS) or `npm install @langchain/pinecone @pinecone-database/pinecone`
+## Data Classification
 
-## Step 1: Document Loaders
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
 
 ```typescript
-import { TextLoader } from "langchain/document_loaders/fs/text";
-import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
-import { CSVLoader } from "@langchain/community/document_loaders/fs/csv";
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
 
-// Load a single file
-const textDocs = await new TextLoader("./data/readme.md").load();
-const pdfDocs = await new PDFLoader("./data/manual.pdf").load();
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
 
-// Load entire directory with type-based routing
-const dirLoader = new DirectoryLoader("./data/", {
-  ".txt": (path) => new TextLoader(path),
-  ".pdf": (path) => new PDFLoader(path),
-  ".csv": (path) => new CSVLoader(path),
-});
-const allDocs = await dirLoader.load();
-console.log(`Loaded ${allDocs.length} documents`);
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
 ```
 
-## Step 2: Text Splitting
+## Data Redaction
 
 ```typescript
-import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
 
-const splitter = new RecursiveCharacterTextSplitter({
-  chunkSize: 1000,       // max chars per chunk
-  chunkOverlap: 200,     // overlap between chunks for context continuity
-  separators: ["\n\n", "\n", ". ", " ", ""],  // split priority
-});
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
 
-const chunks = await splitter.splitDocuments(allDocs);
-console.log(`Split into ${chunks.length} chunks`);
-
-// Each chunk preserves metadata from the source document
-// chunk.pageContent = "text content"
-// chunk.metadata = { source: "./data/readme.md", loc: { lines: { from: 1, to: 20 } } }
-```
-
-## Step 3: Embeddings
-
-```typescript
-import { OpenAIEmbeddings } from "@langchain/openai";
-
-const embeddings = new OpenAIEmbeddings({
-  model: "text-embedding-3-small",   // $0.02/1M tokens, 1536 dims
-  // model: "text-embedding-3-large", // $0.13/1M tokens, 3072 dims
-});
-
-// Embed a single query
-const queryVector = await embeddings.embedQuery("What is LCEL?");
-console.log(`Vector dimensions: ${queryVector.length}`); // 1536
-
-// Embed multiple documents
-const docVectors = await embeddings.embedDocuments([
-  "LCEL is LangChain Expression Language",
-  "Runnables are composable components",
-]);
-```
-
-## Step 4: Vector Store (FAISS - Local)
-
-```typescript
-import { FaissStore } from "@langchain/community/vectorstores/faiss";
-import { OpenAIEmbeddings } from "@langchain/openai";
-
-const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
-
-// Create from documents
-const vectorStore = await FaissStore.fromDocuments(chunks, embeddings);
-
-// Save to disk for reuse
-await vectorStore.save("./faiss-index");
-
-// Load from disk
-const loaded = await FaissStore.load("./faiss-index", embeddings);
-
-// Similarity search
-const results = await loaded.similaritySearch("How do agents work?", 3);
-results.forEach((doc) => {
-  console.log(`[${doc.metadata.source}] ${doc.pageContent.slice(0, 100)}...`);
-});
-```
-
-## Step 5: Vector Store (Pinecone - Cloud)
-
-```typescript
-import { PineconeStore } from "@langchain/pinecone";
-import { Pinecone } from "@pinecone-database/pinecone";
-import { OpenAIEmbeddings } from "@langchain/openai";
-
-const pinecone = new Pinecone(); // reads PINECONE_API_KEY from env
-const index = pinecone.Index("my-index");
-
-const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
-
-// Upsert documents
-const vectorStore = await PineconeStore.fromDocuments(chunks, embeddings, {
-  pineconeIndex: index,
-  namespace: "docs-v1",
-});
-
-// Query with metadata filtering
-const results = await vectorStore.similaritySearch("deployment guide", 5, {
-  source: { $eq: "manual.pdf" },
-});
-```
-
-## Step 6: RAG Chain (Full Pipeline)
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-import { RunnablePassthrough, RunnableSequence } from "@langchain/core/runnables";
-
-const model = new ChatOpenAI({ model: "gpt-4o-mini" });
-const retriever = vectorStore.asRetriever({ k: 4 });
-
-const ragPrompt = ChatPromptTemplate.fromTemplate(`
-Answer the question based only on the following context.
-If the answer is not in the context, say "I don't have that information."
-
-Context:
-{context}
-
-Question: {question}
-
-Answer:`);
-
-// Format retrieved docs into a single string
-function formatDocs(docs: any[]) {
-  return docs.map((d) => d.pageContent).join("\n\n");
+  return redacted;
 }
 
-const ragChain = RunnableSequence.from([
-  {
-    context: retriever.pipe(formatDocs),
-    question: new RunnablePassthrough(),
-  },
-  ragPrompt,
-  model,
-  new StringOutputParser(),
-]);
-
-const answer = await ragChain.invoke("How do I deploy to production?");
-console.log(answer);
+// Use in logging
+console.log('LangChain request:', redactPII(requestData));
 ```
 
-## Python RAG Equivalent
+## Data Retention Policy
 
-```python
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
-from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.output_parsers import StrOutputParser
-from langchain_core.runnables import RunnablePassthrough
-from langchain_community.document_loaders import TextLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
 
-# Load + split
-docs = TextLoader("./data/readme.md").load()
-chunks = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200).split_documents(docs)
+### Automatic Cleanup
 
-# Embed + store
-embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
-store = FAISS.from_documents(chunks, embeddings)
-retriever = store.as_retriever(search_kwargs={"k": 4})
+```typescript
+async function cleanupLangChainData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
 
-# RAG chain
-prompt = ChatPromptTemplate.from_template("Context:\n{context}\n\nQuestion: {question}")
-chain = (
-    {"context": retriever | (lambda docs: "\n\n".join(d.page_content for d in docs)),
-     "question": RunnablePassthrough()}
-    | prompt
-    | ChatOpenAI(model="gpt-4o-mini")
-    | StrOutputParser()
-)
+  await db.langchainLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
 
-answer = chain.invoke("How do I deploy?")
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupLangChainData(30));
 ```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const langchainData = await langchainClient.getUserData(userId);
+
+  return {
+    source: 'LangChain',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: langchainData.profile,
+      activities: langchainData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from LangChain
+  await langchainClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.langchainUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'langchain',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await langchainClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all LangChain data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
+
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `FAISS index not found` | Index not saved/wrong path | Call `vectorStore.save()` first |
-| `Dimension mismatch` | Embedding model changed | Rebuild index with same model |
-| `Pinecone 404` | Index doesn't exist | Create index in Pinecone console |
-| Empty retrieval results | Chunks too large or query too vague | Reduce `chunkSize`, improve query |
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('LangChain response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-
-- [RAG Tutorial](https://js.langchain.com/docs/tutorials/rag/)
-- [Document Loaders](https://js.langchain.com/docs/integrations/document_loaders/)
-- [Vector Stores](https://js.langchain.com/docs/integrations/vectorstores/)
-- [Text Splitters](https://js.langchain.com/docs/how_to/recursive_text_splitter/)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [LangChain Privacy Guide](https://docs.langchain.com/privacy)
 
 ## Next Steps
-
-Use `langchain-security-basics` for securing your RAG pipeline.
+For enterprise access control, see `langchain-enterprise-rbac`.

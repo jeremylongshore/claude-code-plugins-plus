@@ -1,201 +1,149 @@
 ---
 name: granola-sdk-patterns
 description: |
-  Zapier automation patterns and Enterprise API integration for Granola.
-  Use when building automated workflows, connecting Granola to 8,000+ apps via Zapier,
-  or querying the Enterprise API for notes and transcripts.
-  Trigger: "granola zapier", "granola automation", "granola API", "granola SDK".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Apply production-ready Granola SDK patterns for TypeScript and Python.
+  Use when implementing Granola integrations, refactoring SDK usage,
+  or establishing team coding standards for Granola.
+  Trigger with phrases like "granola SDK patterns", "granola best practices",
+  "granola code patterns", "idiomatic granola".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, automation, api]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
+
 # Granola SDK Patterns
 
 ## Overview
-Granola does not have a traditional SDK. Integration is achieved through three channels: Zapier (8,000+ app connections), the Enterprise API (REST, workspace-level read access), and native integrations (Slack, Notion, HubSpot, Attio, Affinity). This skill covers automation patterns for all three.
+Production-ready patterns for Granola SDK usage in TypeScript and Python.
 
 ## Prerequisites
-- Granola Business plan ($14/user/month) for Zapier + native CRM
-- Enterprise plan ($35+/user/month) for API access
-- Zapier account for automation workflows
+- Completed `granola-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1 — Understand Zapier Triggers
+### Step 1: Implement Singleton Pattern (Recommended)
+```typescript
+// src/granola/client.ts
+import { GranolaClient } from '@granola/sdk';
 
-Granola provides two Zapier triggers:
+let instance: GranolaClient | null = null;
 
-| Trigger | Fires When | Use Case |
-|---------|-----------|----------|
-| **Note Added to Granola Folder** | A note is placed in a specific folder | Auto-route by meeting type |
-| **Note Shared to Zapier** | You manually share a note to Zapier | Selective sharing for important meetings |
-
-**Webhook payload data available:**
-- `title` — meeting title from calendar
-- `creator_name` / `creator_email` — note creator
-- `attendees[]` — array of `{name, email}` objects
-- `calendar_event_title` — original calendar event name
-- `calendar_event_datetime` — meeting date/time
-- `note_content` — the enhanced note content (Markdown)
-
-### Step 2 — Build Common Zap Patterns
-
-**Pattern 1: Meeting Notes to Notion (auto-archive)**
-```yaml
-Trigger: Note Added to Granola Folder ("All Meetings")
-Action: Notion — Create Database Item
-  Database: Meeting Archive
-  Title: "{{title}}"
-  Date: "{{calendar_event_datetime}}"
-  Content: "{{note_content}}"
-  Attendees: "{{attendees}}"
+export function getGranolaClient(): GranolaClient {
+  if (!instance) {
+    instance = new GranolaClient({
+      apiKey: process.env.GRANOLA_API_KEY!,
+      // Additional options
+    });
+  }
+  return instance;
+}
 ```
 
-**Pattern 2: Action Items to Asana/Linear**
-```yaml
-Trigger: Note Shared to Zapier
-Filter: note_content contains "Action Items"
-Code Step (JavaScript):
-  const lines = inputData.note_content.split('\n');
-  const actions = lines
-    .filter(l => l.match(/^- \[ \]/))
-    .map(l => l.replace('- [ ] ', ''));
-  output = actions.map(a => ({task: a}));
-Action: Linear — Create Issue (for each action)
-  Title: "{{task}}"
-  Team: Engineering
-  Label: "meeting-action"
+### Step 2: Add Error Handling Wrapper
+```typescript
+import { GranolaError } from '@granola/sdk';
+
+async function safeGranolaCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof GranolaError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
+    }
+    return { data: null, error: err as Error };
+  }
+}
 ```
 
-**Pattern 3: Sales Call Summary to Slack + HubSpot**
-```yaml
-Trigger: Note Added to Granola Folder ("Sales Calls")
-Path A — Slack:
-  Action: Post Message to #sales-updates
-  Message: |
-    *New Sales Call:* {{title}}
-    *Attendees:* {{attendees}}
-
-    {{note_content}}
-
-    [View full notes in Granola]
-
-Path B — HubSpot (via Zapier if not using native):
-  Action: Find Contact by Email ({{attendees[0].email}})
-  Action: Create Engagement Note
-    Body: "{{note_content}}"
+### Step 3: Implement Retry Logic
+```typescript
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
 ```
-
-**Pattern 4: Meeting Follow-Up Email**
-```yaml
-Trigger: Note Shared to Zapier
-Action: ChatGPT — Generate Follow-Up Email
-  Prompt: "Write a professional follow-up email based on: {{note_content}}"
-Action: Gmail — Create Draft
-  To: "{{attendees}}"
-  Subject: "Follow-up: {{title}}"
-  Body: "{{chatgpt_response}}"
-Action: Slack — Notify
-  Message: "Follow-up draft ready for: {{title}}"
-```
-
-### Step 3 — Use the Enterprise API
-
-Available on Enterprise plan. API keys generated at Settings > API Keys (up to 5 per workspace).
-
-```bash
-# List all accessible notes (paginated)
-curl -s "https://api.granola.ai/v0/notes" \
-  -H "Authorization: Bearer $GRANOLA_API_KEY" \
-  -H "Content-Type: application/json" | jq '.notes[:3]'
-
-# Get a specific note with transcript
-curl -s "https://api.granola.ai/v0/notes/{note_id}" \
-  -H "Authorization: Bearer $GRANOLA_API_KEY" | jq '{title, summary, action_items}'
-```
-
-**API characteristics:**
-- Bearer token authentication
-- Read-only access to publicly shared notes within your workspace
-- Rate limited per workspace (429 response when exceeded)
-- Pagination for list endpoints
-
-**Reverse-engineered endpoints (unofficial, for reference):**
-```
-POST https://api.granola.ai/v2/get-documents    # List documents (paginated)
-POST https://api.granola.ai/v1/get-document-transcript  # Get transcript
-POST https://api.granola.ai/v1/get-workspaces    # List workspaces
-POST https://api.granola.ai/v1/get-documents-batch  # Bulk fetch by IDs
-```
-Authentication uses WorkOS with refresh token rotation via `POST https://api.workos.com/user_management/authenticate`.
-
-### Step 4 — Multi-Step Automation Chains
-
-```yaml
-Name: Complete Meeting Follow-Up Pipeline
-
-Step 1 — Trigger:
-  Granola: Note Added to Folder ("Client Meetings")
-
-Step 2 — Filter:
-  Only continue if attendees contain external email domains
-
-Step 3 — Action:
-  ChatGPT: Generate structured summary and follow-up email
-
-Step 4 — Action:
-  Gmail: Create draft follow-up email to external attendees
-
-Step 5 — Action:
-  Notion: Create page in Client Meeting Log database
-
-Step 6 — Action:
-  Linear: Create issues from action items with "client" label
-
-Step 7 — Action:
-  Slack: Post summary to #client-updates channel
-
-Step 8 — Action:
-  HubSpot: Log meeting note on matched Contact/Deal
-```
-
-### Step 5 — Folder-Based Routing
-
-Organize Granola folders to drive different Zap behaviors:
-
-| Folder | Zapier Trigger | Actions |
-|--------|---------------|---------|
-| `Sales Calls` | Auto | Slack #sales + HubSpot + follow-up email |
-| `Engineering` | Auto | Linear tasks + Notion wiki |
-| `All Hands` | Auto | Slack #general + Google Drive archive |
-| `Interviews` | Manual share | Greenhouse scorecard + hiring panel Slack |
-| `1-on-1s` | None | Private, no automation |
 
 ## Output
-- Zapier workflows configured for automated note processing
-- API access established for custom integrations
-- Multi-step automation chains routing by meeting type
-- Folder-based routing strategy implemented
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Zapier trigger not firing | Folder trigger misconfigured | Verify the exact folder name in Zapier matches Granola |
-| Missing note content | Note still processing | Add a 2-minute delay step at the start of the Zap |
-| API 429 Too Many Requests | Rate limit exceeded | Add delays between requests, implement backoff |
-| API 401 Unauthorized | Invalid or expired API key | Regenerate key at Settings > API Keys |
-| Attendee data empty | Calendar event has no attendee list | Add attendees to the calendar event |
+## Examples
+
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, GranolaClient>();
+
+export function getClientForTenant(tenantId: string): GranolaClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new GranolaClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from granola import GranolaClient
+
+@asynccontextmanager
+async def get_granola_client():
+    client = GranolaClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const granolaResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
 
 ## Resources
-- [Zapier Granola App](https://zapier.com/apps/granola/integrations)
-- [Automate Granola (4 Ways)](https://zapier.com/blog/automate-granola/)
-- [Granola Enterprise API](https://docs.granola.ai/introduction)
-- [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
+- [Granola SDK Reference](https://docs.granola.com/sdk)
+- [Granola API Types](https://docs.granola.com/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-Proceed to `granola-common-errors` for troubleshooting.
+Apply patterns in `granola-core-workflow-a` for real-world usage.

@@ -2,188 +2,123 @@
 name: klaviyo-incident-runbook
 description: |
   Execute Klaviyo incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Klaviyo-related outages, investigating API errors,
+  Use when responding to Klaviyo-related outages, investigating errors,
   or running post-incident reviews for Klaviyo integration failures.
   Trigger with phrases like "klaviyo incident", "klaviyo outage",
   "klaviyo down", "klaviyo on-call", "klaviyo emergency", "klaviyo broken".
-allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*), Bash(npm:*)
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, klaviyo, email-marketing, cdp]
 compatible-with: claude-code
+tags: [saas, klaviyo]
 ---
 
 # Klaviyo Incident Runbook
 
 ## Overview
+Rapid incident response procedures for Klaviyo-related outages.
 
-Rapid incident response for Klaviyo API outages and integration failures: quick triage, decision trees, mitigation steps, and postmortem templates.
+## Prerequisites
+- Access to Klaviyo dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Example |
-|-------|------------|---------------|---------|
-| P1 | Complete outage | <15 min | All Klaviyo API calls returning 5xx |
-| P2 | Degraded service | <1 hour | 429 rate limiting, high latency |
-| P3 | Minor impact | <4 hours | Webhook delays, single endpoint errors |
-| P4 | No user impact | Next business day | Monitoring gaps, deprecation warnings |
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Klaviyo API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
 
-## Quick Triage (Run Immediately)
+## Quick Triage
 
 ```bash
-#!/bin/bash
-# klaviyo-triage.sh -- run this first during any incident
+# 1. Check Klaviyo status
+curl -s https://status.klaviyo.com | jq
 
-echo "=== Klaviyo Quick Triage ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.klaviyo'
 
-# 1. Is Klaviyo itself down?
-echo ""
-echo "--- Klaviyo Status Page ---"
-curl -s "https://status.klaviyo.com/api/v2/status.json" 2>/dev/null \
-  | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Status: {d[\"status\"][\"description\"]}')" \
-  || echo "Could not reach status page"
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(klaviyo_errors_total[5m])
 
-# 2. Can we authenticate?
-echo ""
-echo "--- API Auth Check ---"
-HTTP_CODE=$(curl -s -w "%{http_code}" -o /tmp/klaviyo-triage.json \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/" 2>/dev/null)
-echo "Auth response: HTTP $HTTP_CODE"
-
-# 3. Rate limit status
-echo ""
-echo "--- Rate Limit Headers ---"
-curl -s -I \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/profiles/?page[size]=1" 2>/dev/null \
-  | grep -iE "ratelimit|retry-after" || echo "No rate limit headers returned"
-
-# 4. Our app health
-echo ""
-echo "--- Application Health ---"
-curl -s "http://localhost:3000/health" 2>/dev/null \
-  | python3 -m json.tool 2>/dev/null || echo "App health check unavailable"
+# 4. Recent error logs
+kubectl logs -l app=klaviyo-integration --since=5m | grep -i error | tail -20
 ```
 
 ## Decision Tree
 
 ```
-Is Klaviyo API returning errors?
-├── YES
-│   ├── status.klaviyo.com shows incident?
-│   │   ├── YES → Klaviyo-side outage
-│   │   │   → Enable fallback mode
-│   │   │   → Monitor status page for resolution
-│   │   │   → Communicate to stakeholders
-│   │   └── NO → Our integration issue
-│   │       ├── 401/403? → API key problem (see below)
-│   │       ├── 429? → Rate limit hit (see below)
-│   │       ├── 400? → Payload validation error
-│   │       └── 5xx? → Likely intermittent, retry with backoff
-│   └── What status code?
-│       ├── 401 → Key revoked/rotated → Verify & rotate
-│       ├── 403 → Missing scope → Check API key scopes
-│       ├── 429 → Rate limited → Reduce concurrency
-│       └── 5xx → Server error → Retry, check status page
-└── NO
-    ├── Is our app healthy?
-    │   ├── YES → Resolved or intermittent → Monitor
-    │   └── NO → Our infrastructure → Check pods, memory, network
-    └── Are webhooks arriving?
-        ├── YES → Partial issue → Check specific endpoint
-        └── NO → Webhook endpoint down → Check route, certificate
+Klaviyo API returning errors?
+├─ YES: Is status.klaviyo.com showing incident?
+│   ├─ YES → Wait for Klaviyo to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
 ## Immediate Actions by Error Type
 
-### 401 -- Authentication Failure
-
+### 401/403 - Authentication
 ```bash
-# 1. Verify API key is set
-echo "Key length: ${#KLAVIYO_PRIVATE_KEY} chars"
-echo "Key prefix: ${KLAVIYO_PRIVATE_KEY:0:3}"
+# Verify API key is set
+kubectl get secret klaviyo-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# 2. Test the key directly
-curl -s -w "\nHTTP %{http_code}\n" \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/"
+# Check if key was rotated
+# → Verify in Klaviyo dashboard
 
-# 3. If key is invalid: generate new key in Klaviyo dashboard
-# Settings > API Keys > Create Private API Key
-
-# 4. Update in deployment platform
-# GCP: echo -n "pk_new_***" | gcloud secrets versions add klaviyo-key --data-file=-
-# AWS: aws secretsmanager update-secret --secret-id klaviyo-key --secret-string "pk_new_***"
-
-# 5. Restart application to pick up new key
+# Remediation: Update secret and restart pods
+kubectl create secret generic klaviyo-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/klaviyo-integration
 ```
 
-### 429 -- Rate Limited
-
+### 429 - Rate Limited
 ```bash
-# 1. Check current rate limit
-curl -s -I \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/profiles/?page[size]=1" 2>/dev/null \
-  | grep -i "ratelimit\|retry-after"
+# Check rate limit headers
+curl -v https://api.klaviyo.com 2>&1 | grep -i rate
 
-# 2. Reduce request volume immediately
-# - Lower queue concurrency
-# - Enable request sampling
-# - Pause non-critical background jobs
+# Enable request queuing
+kubectl set env deployment/klaviyo-integration RATE_LIMIT_MODE=queue
 
-# 3. Check for runaway processes
-# Look for loops making excessive API calls
+# Long-term: Contact Klaviyo for limit increase
 ```
 
-### 5xx -- Klaviyo Server Error
-
+### 500/503 - Klaviyo Errors
 ```bash
-# 1. Check Klaviyo status page
-curl -s "https://status.klaviyo.com/api/v2/status.json" | python3 -m json.tool
+# Enable graceful degradation
+kubectl set env deployment/klaviyo-integration KLAVIYO_FALLBACK=true
 
-# 2. Enable graceful degradation
-# Your app should continue working without Klaviyo
-# Queue failed requests for retry when Klaviyo recovers
+# Notify users of degraded service
+# Update status page
 
-# 3. Monitor for recovery
-watch -n 30 'curl -s -w "%{http_code}" -o /dev/null \
-  -H "Authorization: Klaviyo-API-Key $KLAVIYO_PRIVATE_KEY" \
-  -H "revision: 2024-10-15" \
-  "https://a.klaviyo.com/api/accounts/"'
+# Monitor Klaviyo status for resolution
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
-
 ```
-P[1/2] INCIDENT: Klaviyo Integration
-Status: INVESTIGATING / MITIGATING / RESOLVED
-Impact: [What users are experiencing]
-Root cause: [Klaviyo outage / Our key expired / Rate limit exceeded]
-Current action: [What we're doing right now]
-ETA: [When we expect resolution]
-Incident lead: @[name]
+🔴 P1 INCIDENT: Klaviyo Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
 ```
 
 ### External (Status Page)
-
 ```
-Klaviyo Integration -- Degraded Performance
+Klaviyo Integration Issue
 
-Some features powered by Klaviyo (email subscriptions, event tracking)
-are experiencing delays. Customer data is being queued and will be
-processed once the issue is resolved.
+We're experiencing issues with our Klaviyo integration.
+Some users may experience [specific impact].
 
-No data loss is expected. We are monitoring the situation.
+We're actively investigating and will provide updates.
 
 Last updated: [timestamp]
 ```
@@ -191,71 +126,80 @@ Last updated: [timestamp]
 ## Post-Incident
 
 ### Evidence Collection
-
 ```bash
 # Generate debug bundle
-bash klaviyo-debug-bundle.sh
+./scripts/klaviyo-debug-bundle.sh
 
-# Export application logs
-# (adjust for your logging setup)
-journalctl -u my-app --since "2 hours ago" | grep -i klaviyo > incident-logs.txt
+# Export relevant logs
+kubectl logs -l app=klaviyo-integration --since=1h > incident-logs.txt
 
-# Capture metrics snapshot
-curl -s "localhost:9090/api/v1/query?query=klaviyo_api_errors_total" > metrics-snapshot.json
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=klaviyo_errors_total&start=2h" > metrics.json
 ```
 
 ### Postmortem Template
-
 ```markdown
 ## Incident: Klaviyo [Error Type]
-**Date:** YYYY-MM-DD HH:MM - HH:MM UTC
+**Date:** YYYY-MM-DD
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
-**Incident Lead:** [Name]
 
 ### Summary
-[1-2 sentence description of what happened]
+[1-2 sentence description]
 
-### Timeline (UTC)
-- HH:MM - Alert fired: [description]
-- HH:MM - Incident acknowledged by [name]
-- HH:MM - Root cause identified: [description]
-- HH:MM - Mitigation applied: [what was done]
-- HH:MM - Service restored
-- HH:MM - Monitoring confirmed stable
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
 
 ### Root Cause
 [Technical explanation]
 
 ### Impact
-- Affected users: [number/percentage]
-- Failed API calls: [count]
-- Data queued for retry: [count]
+- Users affected: N
+- Revenue impact: $X
 
 ### Action Items
-- [ ] [Action] - Owner: [name] - Due: [date]
-- [ ] [Action] - Owner: [name] - Due: [date]
-
-### Lessons Learned
-- What went well: [...]
-- What could improve: [...]
+- [ ] [Preventive measure] - Owner - Due date
 ```
 
-## Error Handling
+## Instructions
 
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Klaviyo-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
+## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or check Twitter @klaviyo |
-| Metrics unavailable | Prometheus down | Check direct API with cURL |
-| Key rotation panic | No backup key | Always have a rotation procedure documented |
-| Alert fatigue | Too many false alarms | Tune thresholds based on baseline |
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.klaviyo.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-
 - [Klaviyo Status Page](https://status.klaviyo.com)
 - [Klaviyo Support](https://support.klaviyo.com)
-- [API Error Alerts](https://developers.klaviyo.com/en/docs/review_api_error_alerts)
 
 ## Next Steps
-
 For data handling, see `klaviyo-data-handling`.

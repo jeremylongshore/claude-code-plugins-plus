@@ -1,158 +1,252 @@
 ---
 name: vastai-observability
 description: |
-  Monitor Vast.ai GPU instance health, utilization, and costs.
-  Use when setting up monitoring dashboards, configuring alerts,
-  or tracking GPU utilization and spending.
+  Set up comprehensive observability for Vast.ai integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Vast.ai operations, setting up dashboards,
+  or configuring alerting for Vast.ai integration health.
   Trigger with phrases like "vastai monitoring", "vastai metrics",
-  "vastai observability", "monitor vastai", "vastai alerts".
-allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*)
+  "vastai observability", "monitor vastai", "vastai alerts", "vastai tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, monitoring, observability]
-
+compatible-with: claude-code
+tags: [saas, vastai]
 ---
+
 # Vast.ai Observability
 
 ## Overview
-Monitor Vast.ai GPU instance health, utilization, and costs. Key metrics: GPU utilization (idle GPUs waste $0.20-$4.00/hr), instance uptime, training progress, cost accumulation, and spot preemption events.
+Set up comprehensive observability for Vast.ai integrations.
 
 ## Prerequisites
-- Vast.ai account with active instances
-- `vastai` CLI installed
-- Optional: Prometheus, Grafana, or Datadog for dashboarding
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `vastai_requests_total` | Counter | Total API requests |
+| `vastai_request_duration_seconds` | Histogram | Request latency |
+| `vastai_errors_total` | Counter | Error count by type |
+| `vastai_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'vastai_requests_total',
+  help: 'Total Vast.ai API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'vastai_request_duration_seconds',
+  help: 'Vast.ai request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'vastai_errors_total',
+  help: 'Vast.ai errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('vastai-client');
+
+async function tracedVast.aiCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`vastai.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'vastai',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logVast.aiOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'vastai',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# vastai_alerts.yaml
+groups:
+  - name: vastai_alerts
+    rules:
+      - alert: Vast.aiHighErrorRate
+        expr: |
+          rate(vastai_errors_total[5m]) /
+          rate(vastai_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Vast.ai error rate > 5%"
+
+      - alert: Vast.aiHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(vastai_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Vast.ai P95 latency > 2s"
+
+      - alert: Vast.aiDown
+        expr: up{job="vastai"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vast.ai integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Vast.ai Request Rate",
+      "targets": [{
+        "expr": "rate(vastai_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Vast.ai Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(vastai_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### Step 1: Instance Metrics Collector
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-```python
-import subprocess, json, time
-from datetime import datetime
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-class VastMetricsCollector:
-    def __init__(self, output_file="vast_metrics.jsonl"):
-        self.output_file = output_file
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-    def collect(self):
-        result = subprocess.run(
-            ["vastai", "show", "instances", "--raw"],
-            capture_output=True, text=True)
-        instances = json.loads(result.stdout)
-
-        metrics = {
-            "timestamp": datetime.utcnow().isoformat(),
-            "total_instances": len(instances),
-            "running": 0, "total_hourly_cost": 0,
-            "instances": [],
-        }
-
-        for inst in instances:
-            status = inst.get("actual_status", "unknown")
-            dph = inst.get("dph_total", 0)
-            if status == "running":
-                metrics["running"] += 1
-                metrics["total_hourly_cost"] += dph
-
-            metrics["instances"].append({
-                "id": inst["id"],
-                "gpu": inst.get("gpu_name"),
-                "status": status,
-                "dph": dph,
-                "gpu_util": inst.get("gpu_util", 0),
-                "gpu_temp": inst.get("gpu_temp", 0),
-            })
-
-        with open(self.output_file, "a") as f:
-            f.write(json.dumps(metrics) + "\n")
-
-        return metrics
-
-    def run(self, interval=60):
-        while True:
-            m = self.collect()
-            print(f"[{m['timestamp']}] Running: {m['running']} | "
-                  f"Cost: ${m['total_hourly_cost']:.3f}/hr")
-            time.sleep(interval)
-```
-
-### Step 2: Alert Conditions
-
-```python
-def check_alerts(metrics):
-    alerts = []
-
-    # Idle GPU alert (running but <10% utilization)
-    for inst in metrics["instances"]:
-        if inst["status"] == "running" and inst["gpu_util"] < 10:
-            alerts.append(f"IDLE: Instance {inst['id']} GPU util={inst['gpu_util']}% "
-                         f"(wasting ${inst['dph']:.3f}/hr)")
-
-    # High temperature alert
-    for inst in metrics["instances"]:
-        if inst.get("gpu_temp", 0) > 85:
-            alerts.append(f"HOT: Instance {inst['id']} GPU temp={inst['gpu_temp']}C")
-
-    # Budget alert
-    daily_projection = metrics["total_hourly_cost"] * 24
-    if daily_projection > 100:
-        alerts.append(f"BUDGET: Projected daily cost ${daily_projection:.2f}")
-
-    return alerts
-```
-
-### Step 3: Remote GPU Monitoring
-
-```bash
-# SSH into instance and collect nvidia-smi metrics
-ssh -p $PORT root@$HOST "nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu,power.draw --format=csv,noheader,nounits"
-# Output: 95, 20480, 24576, 72, 285
-```
-
-### Step 4: Prometheus Exporter (Optional)
-
-```python
-from prometheus_client import Gauge, start_http_server
-
-gpu_util = Gauge("vastai_gpu_utilization", "GPU utilization %", ["instance_id", "gpu_name"])
-hourly_cost = Gauge("vastai_hourly_cost", "Total hourly cost USD")
-instance_count = Gauge("vastai_instance_count", "Running instances")
-
-def export_metrics(metrics):
-    instance_count.set(metrics["running"])
-    hourly_cost.set(metrics["total_hourly_cost"])
-    for inst in metrics["instances"]:
-        if inst["status"] == "running":
-            gpu_util.labels(inst["id"], inst["gpu"]).set(inst["gpu_util"])
-
-start_http_server(9090)  # Prometheus scrape target
-```
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- Metrics collector with JSONL output
-- Alert conditions (idle GPU, high temp, budget)
-- Remote GPU monitoring via SSH + nvidia-smi
-- Optional Prometheus exporter for Grafana dashboards
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
-| Alert | Threshold | Response |
-|-------|-----------|----------|
-| Idle GPU | util < 10% for > 10 min | Investigate or destroy instance |
-| High temp | > 85C sustained | Reduce workload or report to host |
-| Budget exceeded | Projected daily > $100 | Destroy non-critical instances |
-| Instance offline | Status changed from running | Trigger auto-recovery |
-
-## Resources
-- [Vast.ai CLI](https://docs.vast.ai/cli/get-started)
-- [NVIDIA nvidia-smi](https://developer.nvidia.com/nvidia-system-management-interface)
-
-## Next Steps
-For incident response procedures, see `vastai-incident-runbook`.
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
 ## Examples
 
-**Quick dashboard**: Run `VastMetricsCollector().run(interval=30)` in tmux on a monitoring server. Pipe alerts to Slack via webhook.
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
-**Cost tracking**: Parse `vast_metrics.jsonl` to plot hourly cost over time and identify spending patterns.
+## Resources
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Vast.ai Observability Guide](https://docs.vastai.com/observability)
+
+## Next Steps
+For incident response, see `vastai-incident-runbook`.

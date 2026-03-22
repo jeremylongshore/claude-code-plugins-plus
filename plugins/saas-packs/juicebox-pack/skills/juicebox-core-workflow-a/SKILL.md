@@ -1,73 +1,71 @@
 ---
 name: juicebox-core-workflow-a
 description: |
-  Execute Juicebox people search with power filters and ATS export.
-  Trigger: "find candidates", "people search", "juicebox search".
+  Execute Juicebox primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "juicebox main workflow",
+  "primary task with juicebox".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
-# Juicebox People Search Workflow
+# Juicebox Core Workflow A
 
 ## Overview
-Complete candidate sourcing: natural language search with power filters, scoring, and export to 41+ ATS systems.
+Primary money-path workflow for Juicebox. This is the most common use case.
+
+## Prerequisites
+- Completed `juicebox-install-auth` setup
+- Understanding of Juicebox core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Power Filter Search
+### Step 1: Initialize
 ```typescript
-const results = await client.search({
-  query: 'backend engineer distributed systems',
-  filters: {
-    location: ['San Francisco', 'Seattle', 'Remote'],
-    experience_years: { min: 3, max: 10 },
-    skills: ['Go', 'Kubernetes', 'distributed systems'],
-    company_size: '100-1000',
-    exclude_companies: ['CurrentEmployer']
-  },
-  sort: 'relevance', limit: 50
-});
+// Step 1 implementation
 ```
 
-### Step 2: Score Candidates
+### Step 2: Execute
 ```typescript
-function scoreCandidate(profile, targetSkills: string[]) {
-  let score = 0;
-  const matched = profile.skills.filter(s =>
-    targetSkills.some(t => s.toLowerCase().includes(t.toLowerCase()))
-  );
-  score += matched.length * 20;
-  if (profile.experience_years >= 5) score += 30;
-  return { profile, score, matchedSkills: matched };
-}
-
-const ranked = results.profiles
-  .map(p => scoreCandidate(p, ['Go', 'Kubernetes']))
-  .sort((a, b) => b.score - a.score);
+// Step 2 implementation
 ```
 
-### Step 3: Export to ATS
+### Step 3: Finalize
 ```typescript
-await client.export({
-  profiles: ranked.slice(0, 20).map(r => r.profile.id),
-  destination: 'greenhouse',  // lever, ashby, recruiterflow, etc.
-  job_id: 'job_abc123'
-});
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from Juicebox API
+- Success confirmation or error details
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Low results | Filters too strict | Relax experience or location |
-| Duplicates | Overlapping searches | Deduplicate by LinkedIn URL |
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [Search Filters](https://docs.juicebox.work/filters)
-- [ATS Integrations](https://juicebox.ai/integrations)
+- [Juicebox Documentation](https://docs.juicebox.com)
+- [Juicebox API Reference](https://docs.juicebox.com/api)
 
 ## Next Steps
-For enrichment, see `juicebox-core-workflow-b`.
+For secondary workflow, see `juicebox-core-workflow-b`.

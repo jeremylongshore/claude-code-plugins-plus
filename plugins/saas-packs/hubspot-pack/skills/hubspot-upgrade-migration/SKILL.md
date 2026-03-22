@@ -1,189 +1,114 @@
 ---
 name: hubspot-upgrade-migration
 description: |
-  Upgrade @hubspot/api-client SDK versions and migrate between API versions.
-  Use when upgrading the HubSpot Node.js SDK, migrating from v1/v2 to v3 APIs,
-  or handling breaking changes in the HubSpot API client.
-  Trigger with phrases like "upgrade hubspot", "hubspot SDK update",
-  "hubspot breaking changes", "migrate hubspot API version", "hubspot v3 migration".
+  Analyze, plan, and execute HubSpot SDK upgrades with breaking change detection.
+  Use when upgrading HubSpot SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade hubspot", "hubspot migration",
+  "hubspot breaking changes", "update hubspot SDK", "analyze hubspot version".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, marketing, hubspot]
 compatible-with: claude-code
+tags: [saas, hubspot]
 ---
 
 # HubSpot Upgrade & Migration
 
 ## Overview
-
-Guide for upgrading `@hubspot/api-client` SDK versions and migrating from legacy HubSpot APIs to the current CRM v3 API.
+Guide for upgrading HubSpot SDK versions and handling breaking changes.
 
 ## Prerequisites
-
-- Current `@hubspot/api-client` installed
+- Current HubSpot SDK installed
 - Git for version control
 - Test suite available
-- Staging environment for validation
+- Staging environment
 
 ## Instructions
 
-### Step 1: Check Current Version and Available Updates
-
+### Step 1: Check Current Version
 ```bash
-# Current version
-npm list @hubspot/api-client
-
-# Latest available
-npm view @hubspot/api-client version
-
-# See changelog
-npm view @hubspot/api-client versions --json | tail -10
+npm list @hubspot/sdk
+npm view @hubspot/sdk version
 ```
 
-### Step 2: Review Breaking Changes
-
-Key breaking changes in `@hubspot/api-client`:
-
-| Version | Breaking Change | Migration |
-|---------|----------------|-----------|
-| v11 -> v12 | Association APIs moved to v4 namespace | `client.crm.associations.v4.basicApi` |
-| v10 -> v11 | Batch API input format changed | Wrap inputs in `{ inputs: [...] }` |
-| v9 -> v10 | `apiKey` auth removed (API keys deprecated) | Use `accessToken` only |
-| v8 -> v9 | TypeScript strict types on all methods | Update type imports |
-
-### Step 3: Create Upgrade Branch and Update
-
+### Step 2: Review Changelog
 ```bash
-git checkout -b chore/upgrade-hubspot-api-client
-npm install @hubspot/api-client@latest
+open https://github.com/hubspot/sdk/releases
+```
+
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/hubspot-sdk-vX.Y.Z
+npm install @hubspot/sdk@latest
 npm test
 ```
 
-### Step 4: Common Migration Patterns
-
-#### API Key to Access Token (v9 -> v10+)
-
-```typescript
-// BEFORE (deprecated -- API keys removed in v10)
-const client = new hubspot.Client({ apiKey: 'your-api-key' });
-
-// AFTER (use private app access token)
-const client = new hubspot.Client({
-  accessToken: process.env.HUBSPOT_ACCESS_TOKEN!,
-});
-```
-
-#### Associations v3 to v4 (v11 -> v12+)
-
-```typescript
-// BEFORE (v3 associations)
-await client.crm.contacts.associationsApi.create(
-  contactId, 'companies', companyId, 'contact_to_company'
-);
-
-// AFTER (v4 associations)
-await client.crm.associations.v4.basicApi.create(
-  'contacts', contactId, 'companies', companyId,
-  [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 1 }]
-);
-```
-
-#### Legacy Contact API to CRM v3
-
-```typescript
-// BEFORE (legacy /contacts/v1/)
-const response = await fetch(
-  `https://api.hubapi.com/contacts/v1/contact/email/${email}/profile`,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
-
-// AFTER (CRM v3 search)
-const result = await client.crm.contacts.searchApi.doSearch({
-  filterGroups: [{
-    filters: [{ propertyName: 'email', operator: 'EQ', value: email }],
-  }],
-  properties: ['firstname', 'lastname', 'email'],
-  limit: 1,
-  after: 0,
-  sorts: [],
-});
-const contact = result.results[0];
-```
-
-#### Legacy Deals API to CRM v3
-
-```typescript
-// BEFORE (legacy /deals/v1/)
-const response = await fetch(
-  `https://api.hubapi.com/deals/v1/deal/${dealId}`,
-  { headers: { Authorization: `Bearer ${token}` } }
-);
-
-// AFTER (CRM v3)
-const deal = await client.crm.deals.basicApi.getById(
-  dealId,
-  ['dealname', 'amount', 'dealstage', 'pipeline', 'closedate']
-);
-```
-
-### Step 5: Validate and Deploy
-
-```bash
-# Run full test suite
-npm test
-
-# Run integration tests against test account
-HUBSPOT_TEST=true npm run test:integration
-
-# If tests pass, merge
-git add package.json package-lock.json src/
-git commit -m "chore: upgrade @hubspot/api-client to vX.Y.Z"
-```
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
-
-- Updated SDK version in package.json
-- Migrated breaking changes (auth, associations, types)
-- All tests passing
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
 - Documented rollback procedure
 
 ## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `apiKey is not a valid option` | SDK v10+ removed API keys | Switch to `accessToken` |
-| `associationsApi is not a function` | Associations moved to v4 | Use `associations.v4.basicApi` |
-| Type errors after upgrade | Stricter TypeScript types | Update imports from `lib/codegen/crm/` |
-| `Cannot find module` | SDK restructured exports | Check the npm package README for new imports |
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
 ## Examples
 
-### Rollback Procedure
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@hubspot/sdk';
 
-```bash
-# If upgrade causes issues
-npm install @hubspot/api-client@PREVIOUS_VERSION --save-exact
-npm test
-git commit -am "revert: rollback @hubspot/api-client to vPREVIOUS"
+// After (v2.x)
+import { HubSpotClient } from '@hubspot/sdk';
 ```
 
-### Check for Deprecated API Usage
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
 
+// After (v2.x)
+const client = new HubSpotClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
 ```bash
-# Search for legacy API endpoints in codebase
-grep -rn "contacts/v1\|deals/v1\|companies/v2\|engagements/v1" src/
-grep -rn "apiKey:" src/  # deprecated auth method
-grep -rn "associationsApi\." src/  # may need v4 migration
+npm install @hubspot/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[HubSpot]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
-
-- [@hubspot/api-client Changelog](https://github.com/HubSpot/hubspot-api-nodejs/blob/master/CHANGELOG.md)
-- [HubSpot API Changelog](https://developers.hubspot.com/changelog)
-- [CRM v3 Migration Guide](https://developers.hubspot.com/docs/guides/crm/understanding-the-crm)
+- [HubSpot Changelog](https://github.com/hubspot/sdk/releases)
+- [HubSpot Migration Guide](https://docs.hubspot.com/migration)
 
 ## Next Steps
-
 For CI integration during upgrades, see `hubspot-ci-integration`.

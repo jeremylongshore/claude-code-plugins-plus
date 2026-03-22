@@ -9,9 +9,7 @@
   "license": "MIT",
   "keywords": [
     "langchain",
-    "llm",
-    "chains",
-    "agents",
+    "langchain",
     "saas",
     "sdk",
     "integration"

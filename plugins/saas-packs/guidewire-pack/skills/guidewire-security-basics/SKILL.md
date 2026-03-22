@@ -1,27 +1,142 @@
 ---
 name: guidewire-security-basics
 description: |
-  Implement Guidewire security: OAuth2 JWT, API roles, Gosu secure coding, and data protection.
-  Trigger: "guidewire security basics", "security-basics".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
+  Apply Guidewire security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Guidewire security configuration.
+  Trigger with phrases like "guidewire security", "guidewire secrets",
+  "secure guidewire", "guidewire API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
 # Guidewire Security Basics
 
 ## Overview
+Security best practices for Guidewire API keys, tokens, and access control.
 
-OAuth2 with short-lived JWTs, API roles in GCC (assign per-endpoint permissions), Gosu security: use gw.api.system.server.ServerUtil for auth, never hardcode credentials in Gosu, encrypt PII in custom entities. SAML SSO for Jutro frontends.
+## Prerequisites
+- Guidewire SDK installed
+- Understanding of environment variables
+- Access to Guidewire dashboard
 
-For detailed implementation, see: [implementation guide](references/implementation-guide.md)
+## Instructions
+
+### Step 1: Configure Environment Variables
+```bash
+# .env (NEVER commit to git)
+GUIDEWIRE_API_KEY=sk_live_***
+GUIDEWIRE_SECRET=***
+
+# .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Guidewire dashboard
+# 2. Update environment variable
+export GUIDEWIRE_API_KEY="new_key_here"
+
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${GUIDEWIRE_API_KEY}" \
+  https://api.guidewire.com/health
+
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
+
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new GuidewireClient({
+    apiKey: process.env.GUIDEWIRE_READ_KEY,
+  }),
+  writer: new GuidewireClient({
+    apiKey: process.env.GUIDEWIRE_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Guidewire analytics
+  await guidewireClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'guidewire.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
+- [Guidewire Security Guide](https://docs.guidewire.com/security)
+- [Guidewire API Scopes](https://docs.guidewire.com/scopes)
 
-- [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com)
-- [Gosu Language Guide](https://gosu-lang.github.io/)
+## Next Steps
+For production deployment, see `guidewire-prod-checklist`.

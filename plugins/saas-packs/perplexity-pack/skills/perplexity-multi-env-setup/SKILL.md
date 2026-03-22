@@ -1,194 +1,224 @@
 ---
 name: perplexity-multi-env-setup
 description: |
-  Configure Perplexity Sonar API across development, staging, and production environments.
-  Use when setting up multi-environment search integrations, managing API keys
-  per environment, or controlling cost through model routing by env.
+  Configure Perplexity across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Perplexity configurations.
   Trigger with phrases like "perplexity environments", "perplexity staging",
-  "perplexity dev prod", "perplexity environment config".
+  "perplexity dev prod", "perplexity environment setup", "perplexity config by env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Multi-Environment Setup
 
 ## Overview
-Configure Perplexity Sonar API across dev/staging/prod. Key decisions per environment: which models are allowed (sonar vs sonar-pro), rate limits, and cost caps. All environments use the same base URL (`https://api.perplexity.ai`) but different API keys with different budget limits.
+Configure Perplexity across development, staging, and production environments.
+
+## Prerequisites
+- Separate Perplexity accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
 ## Environment Strategy
 
-| Environment | Model | Rate Limit | Key Source | Monthly Budget |
-|-------------|-------|-----------|------------|----------------|
-| Development | `sonar` only | 5 RPM self-imposed | `.env.local` | $10 |
-| Staging | `sonar` only | 20 RPM | CI secrets | $50 |
-| Production | `sonar` + `sonar-pro` | 50 RPM | Secret manager | $500+ |
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
 
-## Prerequisites
-- Separate Perplexity API keys per environment
-- `openai` package installed
-- Secret management (env files for dev, vault/KMS for prod)
+## Configuration Structure
 
-## Instructions
-
-### Step 1: Configuration Structure
 ```
 config/
-  perplexity/
-    base.ts           # OpenAI client + base URL
-    development.ts    # Dev: sonar only, low limits
-    staging.ts        # Staging: sonar only, moderate limits
-    production.ts     # Prod: full model access
-    index.ts          # Environment resolver
+├── perplexity/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
 ```
 
-### Step 2: Base Configuration
-```typescript
-// config/perplexity/base.ts
-import OpenAI from "openai";
-
-export const PERPLEXITY_BASE_URL = "https://api.perplexity.ai";
-
-export function createPerplexityClient(apiKey: string): OpenAI {
-  if (!apiKey) throw new Error("Perplexity API key is required");
-  if (!apiKey.startsWith("pplx-")) throw new Error("Invalid Perplexity API key format");
-
-  return new OpenAI({ apiKey, baseURL: PERPLEXITY_BASE_URL });
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
 }
 ```
 
-### Step 3: Environment Configs
-```typescript
-// config/perplexity/development.ts
-export const devConfig = {
-  apiKey: process.env.PERPLEXITY_API_KEY!,
-  defaultModel: "sonar" as const,
-  deepModel: "sonar" as const,       // No sonar-pro in dev (cost)
-  maxTokens: 512,
-  maxConcurrentRequests: 1,
-  cacheTTLMs: 24 * 3600_000,         // Long cache in dev
-};
-
-// config/perplexity/staging.ts
-export const stagingConfig = {
-  apiKey: process.env.PERPLEXITY_API_KEY_STAGING!,
-  defaultModel: "sonar" as const,
-  deepModel: "sonar" as const,       // Keep sonar in staging
-  maxTokens: 1024,
-  maxConcurrentRequests: 2,
-  cacheTTLMs: 4 * 3600_000,
-};
-
-// config/perplexity/production.ts
-export const productionConfig = {
-  apiKey: process.env.PERPLEXITY_API_KEY_PROD!,
-  defaultModel: "sonar" as const,    // Fast queries use sonar
-  deepModel: "sonar-pro" as const,   // Research queries use sonar-pro
-  maxTokens: 4096,
-  maxConcurrentRequests: 10,
-  cacheTTLMs: 1 * 3600_000,          // Shorter cache in prod (freshness)
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/perplexity/index.ts
-import { createPerplexityClient } from "./base";
-import { devConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type SearchDepth = "quick" | "deep";
-
-const configs = {
-  development: devConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function getConfig() {
-  const env = process.env.NODE_ENV || "development";
-  const config = configs[env as keyof typeof configs];
-  if (!config) throw new Error(`Unknown environment: ${env}`);
-  if (!config.apiKey) throw new Error(`PERPLEXITY_API_KEY not set for ${env}`);
-  return config;
-}
-
-export function getClient() {
-  return createPerplexityClient(getConfig().apiKey);
-}
-
-export function getModelForDepth(depth: SearchDepth): string {
-  const cfg = getConfig();
-  return depth === "deep" ? cfg.deepModel : cfg.defaultModel;
+### development.json
+```json
+{
+  "apiKey": "${PERPLEXITY_API_KEY}",
+  "baseUrl": "https://api-sandbox.perplexity.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
 }
 ```
 
-### Step 5: Usage with Environment-Aware Search
+### staging.json
+```json
+{
+  "apiKey": "${PERPLEXITY_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.perplexity.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${PERPLEXITY_API_KEY_PROD}",
+  "baseUrl": "https://api.perplexity.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
 ```typescript
-// lib/search.ts
-import { getClient, getModelForDepth, getConfig } from "../config/perplexity";
+// src/perplexity/config.ts
+import baseConfig from '../../config/perplexity/base.json';
 
-export async function search(query: string, depth: "quick" | "deep" = "quick") {
-  const client = getClient();
-  const model = getModelForDepth(depth);
-  const config = getConfig();
+type Environment = 'development' | 'staging' | 'production';
 
-  const result = await client.chat.completions.create({
-    model,
-    messages: [
-      { role: "system", content: "Provide accurate, well-sourced answers." },
-      { role: "user", content: query },
-    ],
-    max_tokens: depth === "deep" ? config.maxTokens : Math.min(512, config.maxTokens),
-  });
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getPerplexityConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/perplexity/${env}.json`);
 
   return {
-    answer: result.choices[0].message.content,
-    citations: (result as any).citations || [],
-    model,
-    environment: process.env.NODE_ENV,
-    usage: result.usage,
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
   };
 }
 ```
 
-### Step 6: Secret Manager Integration (Production)
-```bash
-set -euo pipefail
-# Google Cloud Secret Manager
-gcloud secrets create perplexity-api-key-prod \
-  --data-file=<(echo -n "$PERPLEXITY_API_KEY_PROD")
+## Secret Management by Environment
 
+### Local Development
+```bash
+# .env.local (git-ignored)
+PERPLEXITY_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  PERPLEXITY_API_KEY: ${{ secrets.PERPLEXITY_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
 # AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name perplexity/api-key-prod \
-  --secret-string "$PERPLEXITY_API_KEY_PROD"
+aws secretsmanager get-secret-value --secret-id perplexity/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=perplexity-api-key
 
 # HashiCorp Vault
-vault kv put secret/perplexity api_key="$PERPLEXITY_API_KEY_PROD"
+vault kv get -field=api_key secret/perplexity/production
 ```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getPerplexityConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[perplexity] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
+
+## Instructions
+
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
+
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
+
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401` in staging | Wrong API key for environment | Verify `PERPLEXITY_API_KEY_STAGING` |
-| `429` in dev | Exceeding self-imposed limit | Add request queuing |
-| sonar-pro in dev | Config not restricting models | Set `deepModel: "sonar"` in dev config |
-| High dev costs | Using production config locally | Ensure `NODE_ENV=development` is set |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
-## Output
-- Environment-specific Perplexity configurations
-- Model routing by environment and query depth
-- Secret manager integration for production keys
-- Cost controls per environment
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getPerplexityConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-- [Perplexity API Documentation](https://docs.perplexity.ai)
-- [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
+- [Perplexity Environments Guide](https://docs.perplexity.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-For deployment configuration, see `perplexity-deploy-integration`.
+For observability setup, see `perplexity-observability`.

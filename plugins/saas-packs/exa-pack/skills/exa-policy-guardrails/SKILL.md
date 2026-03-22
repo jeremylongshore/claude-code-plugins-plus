@@ -1,223 +1,259 @@
 ---
 name: exa-policy-guardrails
 description: |
-  Implement content policy enforcement, domain filtering, and usage guardrails for Exa.
-  Use when setting up content safety rules, restricting search domains,
-  or enforcing query and budget policies for Exa integrations.
-  Trigger with phrases like "exa policy", "exa content filter",
-  "exa guardrails", "exa domain allowlist", "exa content moderation".
+  Implement Exa lint rules, policy enforcement, and automated guardrails.
+  Use when setting up code quality rules for Exa integrations, implementing
+  pre-commit hooks, or configuring CI policy checks for Exa best practices.
+  Trigger with phrases like "exa policy", "exa lint",
+  "exa guardrails", "exa best practices check", "exa eslint".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, policy, content-moderation]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
-# Exa Policy Guardrails
+
+# Exa Policy & Guardrails
 
 ## Overview
-Policy enforcement for Exa neural search integrations. Exa searches the open web, so results may include unreliable sources, competitor content, or inappropriate material. This skill covers domain allowlists/blocklists (via Exa's `includeDomains`/`excludeDomains`), content moderation, query sanitization, freshness policies, and per-user budget enforcement.
+Automated policy enforcement and guardrails for Exa integrations.
 
 ## Prerequisites
-- `exa-js` installed and configured
-- Content policy requirements defined
-- Redis for per-user quota tracking (optional)
+- ESLint configured in project
+- Pre-commit hooks infrastructure
+- CI/CD pipeline with policy checks
+- TypeScript for type enforcement
+
+## ESLint Rules
+
+### Custom Exa Plugin
+```javascript
+// eslint-plugin-exa/rules/no-hardcoded-keys.js
+module.exports = {
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Disallow hardcoded Exa API keys',
+    },
+    fixable: 'code',
+  },
+  create(context) {
+    return {
+      Literal(node) {
+        if (typeof node.value === 'string') {
+          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+            context.report({
+              node,
+              message: 'Hardcoded Exa API key detected',
+            });
+          }
+        }
+      },
+    };
+  },
+};
+```
+
+### ESLint Configuration
+```javascript
+// .eslintrc.js
+module.exports = {
+  plugins: ['exa'],
+  rules: {
+    'exa/no-hardcoded-keys': 'error',
+    'exa/require-error-handling': 'warn',
+    'exa/use-typed-client': 'warn',
+  },
+};
+```
+
+## Pre-Commit Hooks
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: exa-secrets-check
+        name: Check for Exa secrets
+        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
+
+      - id: exa-config-validate
+        name: Validate Exa configuration
+        entry: node scripts/validate-exa-config.js
+        language: node
+        files: '\.exa\.json$'
+```
+
+## TypeScript Strict Patterns
+
+```typescript
+// Enforce typed configuration
+interface ExaStrictConfig {
+  apiKey: string;  // Required
+  environment: 'development' | 'staging' | 'production';  // Enum
+  timeout: number;  // Required number, not optional
+  retries: number;
+}
+
+// Disallow any in Exa code
+// @ts-expect-error - Using any is forbidden
+const client = new Client({ apiKey: any });
+
+// Prefer this
+const client = new ExaClient(config satisfies ExaStrictConfig);
+```
+
+## Architecture Decision Records
+
+### ADR Template
+```markdown
+# ADR-001: Exa Client Initialization
+
+## Status
+Accepted
+
+## Context
+We need to decide how to initialize the Exa client across our application.
+
+## Decision
+We will use the singleton pattern with lazy initialization.
+
+## Consequences
+- Pro: Single client instance, connection reuse
+- Pro: Easy to mock in tests
+- Con: Global state requires careful lifecycle management
+
+## Enforcement
+- ESLint rule: exa/use-singleton-client
+- CI check: grep for "new ExaClient(" outside allowed files
+```
+
+## Policy-as-Code (OPA)
+
+```rego
+# exa-policy.rego
+package exa
+
+# Deny production API keys in non-production environments
+deny[msg] {
+  input.environment != "production"
+  startswith(input.apiKey, "sk_live_")
+  msg := "Production API keys not allowed in non-production environment"
+}
+
+# Require minimum timeout
+deny[msg] {
+  input.timeout < 10000
+  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
+}
+
+# Require retry configuration
+deny[msg] {
+  not input.retries
+  msg := "Retry configuration is required"
+}
+```
+
+## CI Policy Checks
+
+```yaml
+# .github/workflows/exa-policy.yml
+name: Exa Policy Check
+
+on: [push, pull_request]
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+            echo "ERROR: Hardcoded Exa keys found"
+            exit 1
+          fi
+
+      - name: Validate configuration schema
+        run: |
+          npx ajv validate -s exa-config.schema.json -d config/exa/*.json
+
+      - name: Run ESLint Exa rules
+        run: npx eslint --plugin exa --rule 'exa/no-hardcoded-keys: error' src/
+```
+
+## Runtime Guardrails
+
+```typescript
+// Prevent dangerous operations in production
+const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
+
+function guardExaOperation(operation: string): void {
+  const isProd = process.env.NODE_ENV === 'production';
+
+  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
+    throw new Error(`Operation '${operation}' blocked in production`);
+  }
+}
+
+// Rate limit protection
+function guardRateLimits(requestsInWindow: number): void {
+  const limit = parseInt(process.env.EXA_RATE_LIMIT || '100');
+
+  if (requestsInWindow > limit * 0.9) {
+    console.warn('Approaching Exa rate limit');
+  }
+
+  if (requestsInWindow >= limit) {
+    throw new Error('Exa rate limit exceeded - request blocked');
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Domain Filtering (Built-in Exa Feature)
-```typescript
-import Exa from "exa-js";
+### Step 1: Create ESLint Rules
+Implement custom lint rules for Exa patterns.
 
-const exa = new Exa(process.env.EXA_API_KEY);
+### Step 2: Configure Pre-Commit Hooks
+Set up hooks to catch issues before commit.
 
-// Exa supports up to 1200 domains in includeDomains/excludeDomains
-const TRUSTED_SOURCES = {
-  medical: [
-    "pubmed.ncbi.nlm.nih.gov", "who.int", "cdc.gov",
-    "nejm.org", "nature.com", "thelancet.com",
-  ],
-  technical: [
-    "github.com", "stackoverflow.com", "developer.mozilla.org",
-    "docs.python.org", "nodejs.org", "arxiv.org",
-  ],
-  news: [
-    "reuters.com", "apnews.com", "bbc.com",
-    "techcrunch.com", "arstechnica.com",
-  ],
-};
+### Step 3: Add CI Policy Checks
+Implement policy-as-code in CI pipeline.
 
-const BLOCKED_DOMAINS = [
-  "competitor1.com", "competitor2.io",
-  "spam-farm.com", "content-mill.net",
-];
+### Step 4: Enable Runtime Guardrails
+Add production safeguards for dangerous operations.
 
-async function policySearch(
-  query: string,
-  category: keyof typeof TRUSTED_SOURCES | "general"
-) {
-  const opts: any = {
-    type: "auto",
-    numResults: 10,
-    text: { maxCharacters: 1000 },
-    moderation: true,  // Exa's built-in content moderation
-  };
-
-  if (category !== "general" && TRUSTED_SOURCES[category]) {
-    opts.includeDomains = TRUSTED_SOURCES[category];
-  } else {
-    opts.excludeDomains = BLOCKED_DOMAINS;
-  }
-
-  return exa.searchAndContents(query, opts);
-}
-```
-
-### Step 2: Query Content Policy
-```typescript
-const BLOCKED_PATTERNS = [
-  /how to (hack|exploit|attack|ddos)/i,
-  /(buy|purchase|order)\s+(drugs|weapons|firearms)/i,
-  /personal.*(address|phone|ssn|social security)/i,
-  /generate.*(malware|ransomware|virus)/i,
-];
-
-function validateQuery(input: string): string {
-  for (const pattern of BLOCKED_PATTERNS) {
-    if (pattern.test(input)) {
-      throw new PolicyViolation("Query blocked by content policy");
-    }
-  }
-
-  // Sanitize
-  return input
-    .replace(/[<>{}]/g, "")     // strip HTML/template chars
-    .replace(/\0/g, "")         // remove null bytes
-    .trim()
-    .substring(0, 500);         // cap query length
-}
-
-class PolicyViolation extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "PolicyViolation";
-  }
-}
-```
-
-### Step 3: Freshness Policy
-```typescript
-// Enforce minimum recency for time-sensitive use cases
-function applyFreshnessPolicy(
-  opts: any,
-  maxAgeDays: number
-): any {
-  const cutoff = new Date(Date.now() - maxAgeDays * 24 * 60 * 60 * 1000);
-  return {
-    ...opts,
-    startPublishedDate: cutoff.toISOString(),
-  };
-}
-
-// Usage: only return results from the last 90 days
-const results = await exa.searchAndContents("AI regulation updates",
-  applyFreshnessPolicy(
-    { type: "neural", numResults: 10, text: true },
-    90  // max 90 days old
-  )
-);
-```
-
-### Step 4: Per-User Budget Enforcement
-```typescript
-class ExaUsagePolicy {
-  private usage = new Map<string, { count: number; resetAt: number }>();
-  private limits: Record<string, number>;
-
-  constructor(limits: Record<string, number> = {
-    "free": 10,
-    "pro": 100,
-    "enterprise": 1000,
-  }) {
-    this.limits = limits;
-  }
-
-  checkQuota(userId: string, tier: string): void {
-    const limit = this.limits[tier] || this.limits["free"] || 10;
-    const now = Date.now();
-    const hourKey = `${userId}:${new Date().toISOString().substring(0, 13)}`;
-
-    let entry = this.usage.get(hourKey);
-    if (!entry || entry.resetAt < now) {
-      entry = { count: 0, resetAt: now + 3600 * 1000 };
-    }
-
-    if (entry.count >= limit) {
-      throw new PolicyViolation(
-        `Hourly search quota exceeded: ${entry.count}/${limit}`
-      );
-    }
-
-    entry.count++;
-    this.usage.set(hourKey, entry);
-  }
-}
-
-const usagePolicy = new ExaUsagePolicy();
-```
-
-### Step 5: Combined Policy Enforcement
-```typescript
-async function enforcedSearch(
-  userId: string,
-  userTier: string,
-  rawQuery: string,
-  category: keyof typeof TRUSTED_SOURCES | "general" = "general",
-  maxAgeDays?: number
-) {
-  // 1. Check quota
-  usagePolicy.checkQuota(userId, userTier);
-
-  // 2. Validate and sanitize query
-  const query = validateQuery(rawQuery);
-
-  // 3. Build options with domain policy
-  let opts: any = {
-    type: "auto",
-    numResults: 10,
-    text: { maxCharacters: 1000 },
-    moderation: true,
-  };
-
-  if (category !== "general" && TRUSTED_SOURCES[category]) {
-    opts.includeDomains = TRUSTED_SOURCES[category];
-  } else {
-    opts.excludeDomains = BLOCKED_DOMAINS;
-  }
-
-  // 4. Apply freshness policy
-  if (maxAgeDays) {
-    opts = applyFreshnessPolicy(opts, maxAgeDays);
-  }
-
-  // 5. Execute search
-  return exa.searchAndContents(query, opts);
-}
-```
+## Output
+- ESLint plugin with Exa rules
+- Pre-commit hooks blocking secrets
+- CI policy checks passing
+- Runtime guardrails active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Competitor content in results | No domain filtering | Apply `excludeDomains` blocklist |
-| Harmful query accepted | No content policy | Validate queries against blocked patterns |
-| Stale results displayed | No freshness check | Apply `startPublishedDate` filter |
-| API cost overrun | No usage limits | Implement per-user/tier quotas |
-| Blocked policy query | False positive | Review and adjust `BLOCKED_PATTERNS` |
+| ESLint rule not firing | Wrong config | Check plugin registration |
+| Pre-commit skipped | --no-verify | Enforce in CI |
+| Policy false positive | Regex too broad | Narrow pattern match |
+| Guardrail triggered | Actual issue | Fix or whitelist |
+
+## Examples
+
+### Quick ESLint Check
+```bash
+npx eslint --plugin exa --rule 'exa/no-hardcoded-keys: error' src/
+```
 
 ## Resources
-- [Exa Search Reference](https://docs.exa.ai/reference/search)
-- [Exa Domain Filtering](https://docs.exa.ai/reference/search)
+- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Pre-commit Framework](https://pre-commit.com/)
+- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
-For architecture decisions, see `exa-architecture-variants`. For cost control, see `exa-cost-tuning`.
+For architecture blueprints, see `exa-architecture-variants`.

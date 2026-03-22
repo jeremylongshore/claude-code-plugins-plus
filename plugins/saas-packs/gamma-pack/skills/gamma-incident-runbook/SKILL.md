@@ -1,238 +1,205 @@
 ---
 name: gamma-incident-runbook
 description: |
-  Manage incident response for Gamma integration issues.
-  Use when experiencing production incidents, outages,
-  or need systematic troubleshooting procedures.
+  Execute Gamma incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Gamma-related outages, investigating errors,
+  or running post-incident reviews for Gamma integration failures.
   Trigger with phrases like "gamma incident", "gamma outage",
-  "gamma down", "gamma emergency", "gamma runbook".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  "gamma down", "gamma on-call", "gamma emergency", "gamma broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, incident-response]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Incident Runbook
 
 ## Overview
-Systematic procedures for responding to and resolving Gamma integration incidents.
+Rapid incident response procedures for Gamma-related outages.
 
 ## Prerequisites
-- Access to monitoring dashboards
-- Access to application logs
-- On-call responsibilities defined
-- Communication channels established
+- Access to Gamma dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
-## Incident Severity Levels
+## Severity Levels
 
-| Level | Description | Response Time | Escalation |
-|-------|-------------|---------------|------------|
-| P1 | Complete outage, no presentations | < 15 min | Immediate |
-| P2 | Degraded, slow or partial failures | < 30 min | 1 hour |
-| P3 | Minor issues, workaround available | < 2 hours | 4 hours |
-| P4 | Cosmetic or non-urgent | < 24 hours | None |
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Gamma API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
 
-## Quick Diagnostics
+## Quick Triage
 
-### Step 1: Check Gamma Status
 ```bash
-set -euo pipefail
-# Check Gamma status page
-curl -s https://status.gamma.app/api/v2/status.json | jq '.status'
+# 1. Check Gamma status
+curl -s https://status.gamma.com | jq
 
-# Check our integration health
-curl -s https://your-app.com/health/gamma | jq '.'
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.gamma'
 
-# Quick connectivity test
-curl -w "\nTime: %{time_total}s\n" \
-  -H "Authorization: Bearer $GAMMA_API_KEY" \
-  https://api.gamma.app/v1/ping
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(gamma_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=gamma-integration --since=5m | grep -i error | tail -20
 ```
 
-### Step 2: Review Key Metrics
-```bash
-set -euo pipefail
-# Check error rate (Prometheus)
-curl -s 'http://prometheus:9090/api/v1/query?query=rate(gamma_requests_total{status=~"5.."}[5m])' | jq '.data.result'  # 9090: Prometheus port
+## Decision Tree
 
-# Check latency P95
-curl -s 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(gamma_request_duration_seconds_bucket[5m]))' | jq '.data.result'  # Prometheus port
-
-# Check rate limit
-curl -s 'http://prometheus:9090/api/v1/query?query=gamma_rate_limit_remaining' | jq '.data.result'  # Prometheus port
+```
+Gamma API returning errors?
+├─ YES: Is status.gamma.com showing incident?
+│   ├─ YES → Wait for Gamma to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
-### Step 3: Review Recent Logs
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
 ```bash
-# Last 100 error logs
-grep -i "gamma.*error" /var/log/app/gamma-*.log | tail -100
+# Verify API key is set
+kubectl get secret gamma-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# Rate limit hits
-grep "429" /var/log/app/gamma-*.log | wc -l  # HTTP 429 Too Many Requests
+# Check if key was rotated
+# → Verify in Gamma dashboard
 
-# Timeout errors
-grep -i "timeout" /var/log/app/gamma-*.log | tail -50
+# Remediation: Update secret and restart pods
+kubectl create secret generic gamma-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/gamma-integration
 ```
 
-## Incident Response Procedures
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.gamma.com 2>&1 | grep -i rate
 
-### Scenario 1: API Returning 5xx Errors
+# Enable request queuing
+kubectl set env deployment/gamma-integration RATE_LIMIT_MODE=queue
 
-**Symptoms:**
-- High error rate in monitoring
-- Users reporting failed presentations
-- 500/502/503 responses from Gamma
+# Long-term: Contact Gamma for limit increase
+```
 
-**Actions:**
-1. Verify Gamma status: https://status.gamma.app
-2. If Gamma outage confirmed:
-   - Enable degraded mode / show maintenance message
-   - Monitor status page for updates
-   - No action needed on our side
+### 500/503 - Gamma Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/gamma-integration GAMMA_FALLBACK=true
 
-3. If Gamma is operational:
-   ```bash
-   # Check our request patterns
-   grep "5[0-9][0-9]" /var/log/app/gamma-*.log | \
-     awk '{print $1}' | sort | uniq -c | sort -rn
+# Notify users of degraded service
+# Update status page
 
-   # Look for malformed requests
-   grep -B5 "500" /var/log/app/gamma-*.log | grep "request"
-   ```
-
-4. Rollback recent deployments if issue correlates
-
-### Scenario 2: Rate Limit Exceeded (429)
-
-**Symptoms:**
-- 429 responses in logs
-- Rate limit metrics at zero
-- Slow or queued requests
-
-**Actions:**
-1. Immediate mitigation:
-   ```bash
-   # Enable request throttling
-   curl -X POST http://localhost:8080/admin/throttle \
-     -d '{"gamma": {"rps": 10}}'
-   ```
-
-2. Check for runaway processes:
-   ```bash
-   # Find high-volume clients
-   grep "gamma" /var/log/app/*.log | \
-     awk '{print $5}' | sort | uniq -c | sort -rn | head -20
-   ```
-
-3. Enable circuit breaker:
-   ```bash
-   curl -X POST http://localhost:8080/admin/circuit-breaker \
-     -d '{"service": "gamma", "state": "open"}'
-   ```
-
-4. Long-term: Review rate limit tier with Gamma
-
-### Scenario 3: High Latency
-
-**Symptoms:**
-- Slow presentation creation
-- Timeouts in logs
-- P95 latency > 10s
-
-**Actions:**
-1. Check Gamma latency vs our latency:
-   ```bash
-   # Direct Gamma latency
-   for i in {1..5}; do
-     curl -w "%{time_total}\n" -o /dev/null -s \
-       -H "Authorization: Bearer $GAMMA_API_KEY" \
-       https://api.gamma.app/v1/ping
-   done
-   ```
-
-2. If Gamma is slow:
-   - Increase timeouts temporarily
-   - Enable async mode for non-critical operations
-   - Queue heavy operations
-
-3. If our infrastructure is slow:
-   - Check CPU/memory on app servers
-   - Review connection pool settings
-   - Check network connectivity
-
-### Scenario 4: Authentication Failures (401/403)
-
-**Symptoms:**
-- All requests failing with 401
-- "Invalid API key" errors
-- Sudden authentication failures
-
-**Actions:**
-1. Verify API key:
-   ```bash
-   # Test key directly
-   curl -H "Authorization: Bearer $GAMMA_API_KEY" \
-     https://api.gamma.app/v1/ping
-
-   # Check key format
-   echo $GAMMA_API_KEY | head -c 20
-   ```
-
-2. If key is invalid:
-   - Check if key was rotated
-   - Deploy backup key: `GAMMA_API_KEY_SECONDARY`
-   - Generate new key in Gamma dashboard
-
-3. Notify team and update secrets
+# Monitor Gamma status for resolution
+```
 
 ## Communication Templates
 
-### Internal Notification
+### Internal (Slack)
 ```
-INCIDENT: Gamma Integration Issue
-
-Severity: P[X]
-Status: Investigating / Identified / Mitigating / Resolved
-Impact: [Description of user impact]
-Start Time: [ISO timestamp]
-
-Summary: [Brief description]
-
-Current Actions:
-- [Action 1]
-- [Action 2]
-
-Next Update: [Time]
+🔴 P1 INCIDENT: Gamma Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
 ```
 
-### User-Facing Message
+### External (Status Page)
 ```
-We're currently experiencing issues with presentation generation.
-Our team is actively working to resolve this.
+Gamma Integration Issue
 
-Workaround: [If available]
-Status updates: [Link to status page]
-ETA: [If known]
+We're experiencing issues with our Gamma integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
 ```
 
-## Post-Incident Checklist
+## Post-Incident
 
-- [ ] Incident timeline documented
-- [ ] Root cause identified
-- [ ] User impact quantified
-- [ ] Fix verified in production
-- [ ] Monitoring gaps identified
-- [ ] Preventive measures documented
-- [ ] Post-mortem scheduled (for P1/P2)
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/gamma-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=gamma-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=gamma_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Gamma [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
+
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Gamma-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.gamma.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-- [Gamma Status](https://status.gamma.app)
-- [Gamma Support](https://gamma.app/support)
-- [Internal Runbook Wiki]()
-- [On-Call Schedule]()
+- [Gamma Status Page](https://status.gamma.com)
+- [Gamma Support](https://support.gamma.com)
 
 ## Next Steps
-
-Proceed to `gamma-data-handling` for data management.
+For data handling, see `gamma-data-handling`.

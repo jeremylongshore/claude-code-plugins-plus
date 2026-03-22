@@ -1,251 +1,201 @@
 ---
 name: maintainx-webhooks-events
 description: |
-  Implement MaintainX webhook handling and event-driven integrations.
-  Use when setting up webhooks, handling MaintainX events,
-  or building real-time integrations with MaintainX.
+  Implement MaintainX webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling MaintainX event notifications securely.
   Trigger with phrases like "maintainx webhook", "maintainx events",
-  "maintainx notifications", "maintainx real-time", "maintainx triggers".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*)
+  "maintainx webhook signature", "handle maintainx events", "maintainx notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, webhooks]
-
+compatible-with: claude-code
+tags: [saas, maintainx]
 ---
+
 # MaintainX Webhooks & Events
 
 ## Overview
-Build real-time integrations with MaintainX using webhooks for work order updates, asset changes, and maintenance notifications. MaintainX fires webhook events when key resources change.
+Securely handle MaintainX webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- MaintainX account with API access
-- HTTPS endpoint accessible from the internet (ngrok for local dev)
-- `MAINTAINX_API_KEY` environment variable configured
+- MaintainX webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Register a Webhook
-
-```bash
-curl -X POST https://api.getmaintainx.com/v1/webhooks \
-  -H "Authorization: Bearer $MAINTAINX_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://your-app.example.com/webhooks/maintainx",
-    "events": [
-      "workorder.created",
-      "workorder.updated",
-      "workorder.status_changed",
-      "workorder.completed"
-    ]
-  }'
-```
-
-### Step 2: Webhook Receiver (Express)
-
+### Express.js
 ```typescript
-// src/webhook-server.ts
 import express from 'express';
-import crypto from 'node:crypto';
+import crypto from 'crypto';
 
 const app = express();
-app.use(express.json({ limit: '1mb' }));
 
-// Signature verification middleware
-function verifySignature(secret: string) {
-  return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/maintainx',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
     const signature = req.headers['x-maintainx-signature'] as string;
-    if (!signature) {
-      return res.status(401).json({ error: 'Missing signature header' });
-    }
+    const timestamp = req.headers['x-maintainx-timestamp'] as string;
 
-    const expected = crypto
-      .createHmac('sha256', secret)
-      .update(JSON.stringify(req.body))
-      .digest('hex');
-
-    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    if (!verifyMaintainXSignature(req.body, signature, timestamp)) {
       return res.status(401).json({ error: 'Invalid signature' });
     }
-    next();
-  };
-}
 
-const WEBHOOK_SECRET = process.env.MAINTAINX_WEBHOOK_SECRET!;
+    const event = JSON.parse(req.body.toString());
+    await handleMaintainXEvent(event);
 
-app.post(
-  '/webhooks/maintainx',
-  verifySignature(WEBHOOK_SECRET),
-  async (req, res) => {
-    const { event, data, timestamp } = req.body;
-
-    console.log(`[${timestamp}] Event: ${event}, Resource ID: ${data.id}`);
-
-    // Idempotency check
-    const eventId = req.headers['x-maintainx-event-id'] as string;
-    if (await isProcessed(eventId)) {
-      return res.status(200).json({ status: 'already_processed' });
-    }
-
-    try {
-      await routeEvent(event, data);
-      await markProcessed(eventId);
-      res.status(200).json({ status: 'ok' });
-    } catch (err) {
-      console.error('Webhook handler error:', err);
-      res.status(500).json({ error: 'Processing failed' });
-    }
-  },
+    res.status(200).json({ received: true });
+  }
 );
-
-app.listen(3000, () => console.log('Webhook server listening on :3000'));
 ```
 
-### Step 3: Event Router
+## Signature Verification
 
 ```typescript
-// src/event-handlers.ts
+function verifyMaintainXSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.MAINTAINX_WEBHOOK_SECRET!;
 
-type EventHandler = (data: any) => Promise<void>;
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
 
-const handlers: Record<string, EventHandler> = {
-  'workorder.created': async (data) => {
-    console.log(`New work order: #${data.id} "${data.title}"`);
-    // Notify Slack, create ticket, etc.
-    if (data.priority === 'HIGH') {
-      await sendSlackAlert(`High priority WO created: ${data.title}`);
-    }
-  },
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
 
-  'workorder.status_changed': async (data) => {
-    console.log(`WO #${data.id}: ${data.previousStatus} → ${data.status}`);
-    if (data.status === 'COMPLETED') {
-      await syncCompletionToERP(data);
-    }
-  },
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
 
-  'workorder.completed': async (data) => {
-    console.log(`WO #${data.id} completed at ${data.completedAt}`);
-    await generateCompletionReport(data);
-  },
+## Event Handler Pattern
 
-  'workorder.updated': async (data) => {
-    await syncWorkOrderToDataWarehouse(data);
-  },
+```typescript
+type MaintainXEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface MaintainXEvent {
+  id: string;
+  type: MaintainXEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<MaintainXEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
 };
 
-export async function routeEvent(event: string, data: any) {
-  const handler = handlers[event];
-  if (handler) {
-    await handler(data);
-  } else {
-    console.warn(`Unhandled event type: ${event}`);
+async function handleMaintainXEvent(event: MaintainXEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
   }
 }
 ```
 
-### Step 4: Idempotency Store
+## Idempotency Handling
 
 ```typescript
-// src/idempotency.ts
-// Use Redis in production; Map for dev/testing
-const processed = new Map<string, boolean>();
+import { Redis } from 'ioredis';
 
-export async function isProcessed(eventId: string): Promise<boolean> {
-  return processed.has(eventId);
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `maintainx:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
 }
 
-export async function markProcessed(eventId: string): Promise<void> {
-  processed.set(eventId, true);
-  // In production: await redis.setex(`event:${eventId}`, 86400, '1');
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `maintainx:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
 }
 ```
 
-### Step 5: Local Development with ngrok
+## Webhook Testing
 
 ```bash
-# Start your webhook server
-npm run dev
+# Use MaintainX CLI to send test events
+maintainx webhooks trigger resource.created --url http://localhost:3000/webhooks/maintainx
 
-# In another terminal, expose it with ngrok
-ngrok http 3000
-# Copy the https URL (e.g., https://abc123.ngrok-free.app)
-
-# Register the ngrok URL as a webhook
-curl -X POST https://api.getmaintainx.com/v1/webhooks \
-  -H "Authorization: Bearer $MAINTAINX_API_KEY" \
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
   -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://abc123.ngrok-free.app/webhooks/maintainx",
-    "events": ["workorder.created", "workorder.status_changed"]
-  }'
+  -d '{"type": "resource.created", "data": {}}'
 ```
 
-### Step 6: List and Manage Webhooks
+## Instructions
 
-```bash
-# List all registered webhooks
-curl -s https://api.getmaintainx.com/v1/webhooks \
-  -H "Authorization: Bearer $MAINTAINX_API_KEY" | jq .
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the MaintainX dashboard.
 
-# Delete a webhook (replace ID)
-curl -X DELETE https://api.getmaintainx.com/v1/webhooks/456 \
-  -H "Authorization: Bearer $MAINTAINX_API_KEY"
-```
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Webhook endpoint with HMAC signature verification
-- Event router dispatching to type-specific handlers
-- Idempotency guard preventing duplicate processing
-- Local dev setup with ngrok for testing webhooks
-- Webhook registration and management via REST API
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 on webhook registration | Invalid API key | Verify `MAINTAINX_API_KEY` |
-| Webhook not firing | URL not reachable | Ensure HTTPS, check firewall, test with ngrok |
-| Duplicate events | Retries from MaintainX | Implement idempotency with event ID deduplication |
-| Signature mismatch | Wrong secret or body mutation | Verify raw body is used for HMAC, check secret value |
-
-## Resources
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
-- [ngrok Documentation](https://ngrok.com/docs)
-- [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-vulnerabilities-guide)
-
-## Next Steps
-For performance optimization, see `maintainx-performance-tuning`.
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-**Slack notification on high-priority work orders**:
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
 
-```typescript
-async function sendSlackAlert(message: string) {
-  await fetch(process.env.SLACK_WEBHOOK_URL!, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text: `:rotating_light: MaintainX Alert: ${message}`,
-    }),
-  });
-}
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/maintainx \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
 ```
 
-**Polling fallback when webhooks are unavailable**:
+## Resources
+- [MaintainX Webhooks Guide](https://docs.maintainx.com/webhooks)
+- [Webhook Security Best Practices](https://docs.maintainx.com/webhooks/security)
 
-```typescript
-// Poll every 60 seconds for status changes
-async function pollWorkOrders(client: MaintainXClient, since: string) {
-  const { workOrders } = await client.getWorkOrders({
-    updatedAtGte: since,
-    limit: 50,
-  });
-  for (const wo of workOrders) {
-    await routeEvent('workorder.updated', wo);
-  }
-  return new Date().toISOString();
-}
-```
+## Next Steps
+For performance optimization, see `maintainx-performance-tuning`.

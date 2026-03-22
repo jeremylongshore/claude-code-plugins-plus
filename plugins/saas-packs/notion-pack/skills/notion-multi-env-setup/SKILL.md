@@ -1,8 +1,8 @@
 ---
 name: notion-multi-env-setup
 description: |
-  Configure Notion integrations across development, staging, and production environments.
-  Use when setting up multi-environment deployments, managing per-environment tokens,
+  Configure Notion across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
   or implementing environment-specific Notion configurations.
   Trigger with phrases like "notion environments", "notion staging",
   "notion dev prod", "notion environment setup", "notion config by env".
@@ -10,221 +10,215 @@ allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
 compatible-with: claude-code
+tags: [saas, notion]
 ---
 
 # Notion Multi-Environment Setup
 
 ## Overview
-Configure separate Notion integrations and databases for development, staging, and production. Each environment should use its own integration token and target different Notion databases.
+Configure Notion across development, staging, and production environments.
 
 ## Prerequisites
-- Notion workspace(s) for each environment
-- Secret management solution
+- Separate Notion accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
 - CI/CD pipeline with environment variables
+- Environment detection in application
 
-## Instructions
+## Environment Strategy
 
-### Step 1: Create Per-Environment Integrations
-Create separate integrations at https://www.notion.so/my-integrations:
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
 
-| Environment | Integration Name | Capabilities | Purpose |
-|-------------|-----------------|--------------|---------|
-| Development | `my-app-dev` | All (for debugging) | Local development |
-| Staging | `my-app-staging` | Read + Update + Insert | Pre-prod testing |
-| Production | `my-app-prod` | Minimum required | Live traffic |
+## Configuration Structure
 
-### Step 2: Environment Configuration
+```
+config/
+├── notion/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${NOTION_API_KEY}",
+  "baseUrl": "https://api-sandbox.notion.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${NOTION_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.notion.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${NOTION_API_KEY_PROD}",
+  "baseUrl": "https://api.notion.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
 ```typescript
-// src/config/notion.ts
-import { Client, LogLevel } from '@notionhq/client';
+// src/notion/config.ts
+import baseConfig from '../../config/notion/base.json';
 
-interface NotionEnvConfig {
-  token: string;
-  databaseIds: Record<string, string>;
-  logLevel: LogLevel;
-  timeoutMs: number;
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
 }
 
-function getConfig(): NotionEnvConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  const configs: Record<string, Partial<NotionEnvConfig>> = {
-    development: {
-      logLevel: LogLevel.DEBUG,
-      timeoutMs: 60_000,
-    },
-    staging: {
-      logLevel: LogLevel.WARN,
-      timeoutMs: 30_000,
-    },
-    production: {
-      logLevel: LogLevel.ERROR,
-      timeoutMs: 30_000,
-    },
-  };
+export function getNotionConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/notion/${env}.json`);
 
   return {
-    token: process.env.NOTION_TOKEN!,
-    databaseIds: {
-      tasks: process.env.NOTION_TASKS_DB_ID!,
-      users: process.env.NOTION_USERS_DB_ID!,
-      logs: process.env.NOTION_LOGS_DB_ID!,
-    },
-    logLevel: LogLevel.WARN,
-    timeoutMs: 30_000,
-    ...configs[env],
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
   };
 }
-
-export function createNotionClient(): Client {
-  const config = getConfig();
-
-  if (!config.token) {
-    throw new Error(`NOTION_TOKEN not set for ${process.env.NODE_ENV}`);
-  }
-
-  return new Client({
-    auth: config.token,
-    logLevel: config.logLevel,
-    timeoutMs: config.timeoutMs,
-  });
-}
-
-export function getDatabaseId(name: string): string {
-  const config = getConfig();
-  const id = config.databaseIds[name];
-  if (!id) {
-    throw new Error(`Database ID not configured for "${name}". Set NOTION_${name.toUpperCase()}_DB_ID`);
-  }
-  return id;
-}
 ```
 
-### Step 3: Environment Files
+## Secret Management by Environment
+
+### Local Development
 ```bash
-# .env.development
-NOTION_TOKEN=ntn_dev_xxxxx
-NOTION_TASKS_DB_ID=aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee
-NOTION_USERS_DB_ID=ffffffff-gggg-hhhh-iiii-jjjjjjjjjjjj
-
-# .env.staging
-NOTION_TOKEN=ntn_staging_xxxxx
-NOTION_TASKS_DB_ID=11111111-2222-3333-4444-555555555555
-NOTION_USERS_DB_ID=66666666-7777-8888-9999-000000000000
-
-# .env.production (stored in secret manager, NOT as a file)
-# NOTION_TOKEN=ntn_prod_xxxxx
-# NOTION_TASKS_DB_ID=abcdefab-cdef-abcd-efab-cdefabcdefab
+# .env.local (git-ignored)
+NOTION_API_KEY=sk_test_dev_***
 ```
 
-### Step 4: Secret Management
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  NOTION_API_KEY: ${{ secrets.NOTION_API_KEY_${{ matrix.environment }} }}
+```
 
+### Production (Vault/Secrets Manager)
 ```bash
 # AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name notion/production \
-  --secret-string '{"token":"ntn_prod_xxx","tasks_db":"db-id","users_db":"db-id"}'
-
-# Load in application
-# const secrets = JSON.parse(await getSecret('notion/production'));
+aws secretsmanager get-secret-value --secret-id notion/production/api-key
 
 # GCP Secret Manager
-echo -n "ntn_prod_xxx" | gcloud secrets create notion-token-prod --data-file=-
-echo -n "db-id" | gcloud secrets create notion-tasks-db-prod --data-file=-
-
-# Cloud Run deployment
-gcloud run deploy my-service \
-  --set-secrets=NOTION_TOKEN=notion-token-prod:latest,NOTION_TASKS_DB_ID=notion-tasks-db-prod:latest
+gcloud secrets versions access latest --secret=notion-api-key
 
 # HashiCorp Vault
-vault kv put secret/notion/production \
-  token=ntn_prod_xxx \
-  tasks_db_id=db-id
+vault kv get -field=api_key secret/notion/production
 ```
 
-### Step 5: Environment Guards
+## Environment Isolation
+
 ```typescript
-// Prevent dangerous operations in wrong environment
-function requireEnvironment(required: string) {
-  const current = process.env.NODE_ENV || 'development';
-  if (current !== required) {
-    throw new Error(`Operation requires ${required} environment, currently in ${current}`);
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getNotionConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[notion] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
   }
 }
 
 // Usage
-async function migrateAllData() {
-  requireEnvironment('production'); // Block in dev/staging
-  // ... migration logic
-}
-
-async function clearTestData() {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('Cannot clear data in production');
-  }
-  // ... cleanup logic
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
 }
 ```
 
-### Step 6: CI/CD Per-Environment
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    if: github.ref == 'refs/heads/develop'
-    env:
-      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN_STAGING }}
-      NOTION_TASKS_DB_ID: ${{ secrets.NOTION_TASKS_DB_ID_STAGING }}
-    steps:
-      - run: npm test
-      - run: npm run deploy:staging
+## Feature Flags by Environment
 
-  deploy-production:
-    if: github.ref == 'refs/heads/main'
-    env:
-      NOTION_TOKEN: ${{ secrets.NOTION_TOKEN_PROD }}
-      NOTION_TASKS_DB_ID: ${{ secrets.NOTION_TASKS_DB_ID_PROD }}
-    steps:
-      - run: npm test
-      - run: INTEGRATION=true npm run test:integration
-      - run: npm run deploy:production
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
 ```
+
+## Instructions
+
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
+
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
 ## Output
-- Separate Notion integrations per environment
-- Environment-aware configuration loading
-- Secrets stored in platform-appropriate secret managers
-- Guards preventing cross-environment mistakes
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong database in prod | Env var misconfigured | Validate database IDs at startup |
-| Token for wrong env | Secret manager error | Check secret names match environment |
-| Dev data in prod | Missing guard | Add environment checks |
-| Missing env var | Incomplete setup | Validate all required vars at startup |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
 ## Examples
 
-### Startup Validation
+### Quick Environment Check
 ```typescript
-function validateConfig() {
-  const required = ['NOTION_TOKEN', 'NOTION_TASKS_DB_ID'];
-  const missing = required.filter(v => !process.env[v]);
-  if (missing.length > 0) {
-    throw new Error(`Missing environment variables: ${missing.join(', ')}`);
-  }
-  console.log(`Notion configured for ${process.env.NODE_ENV}`);
-}
+const env = getNotionConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
 ```
 
 ## Resources
-- [Notion Create Integrations](https://developers.notion.com/docs/create-a-notion-integration)
+- [Notion Environments Guide](https://docs.notion.com/environments)
 - [12-Factor App Config](https://12factor.net/config)
-- [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/)
-- [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 
 ## Next Steps
 For observability setup, see `notion-observability`.

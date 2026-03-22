@@ -1,6 +1,17 @@
 {
   "name": "cursor-pack",
   "version": "1.0.0",
-  "description": "Flagship+ skill pack for Cursor IDE - 30 skills for AI code completion, composer workflows, and IDE mastery",
-  "author": "Jeremy Longshore <jeremy@intentsolutions.io>"
+  "description": "Claude Code skill pack for Cursor (30 skills)",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "keywords": [
+    "cursor",
+    "cursor",
+    "saas",
+    "sdk",
+    "integration"
+  ]
 }

@@ -1,261 +1,224 @@
 ---
 name: adobe-enterprise-rbac
 description: |
-  Configure Adobe enterprise identity with Admin Console SCIM provisioning,
-  User Management API, product profile-based RBAC, and Federated ID
-  with Azure AD or Google Workspace.
+  Configure Adobe enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Adobe.
   Trigger with phrases like "adobe SSO", "adobe RBAC",
-  "adobe enterprise", "adobe roles", "adobe SCIM", "adobe user management".
+  "adobe enterprise", "adobe roles", "adobe permissions", "adobe SAML".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
 compatible-with: claude-code
+tags: [saas, adobe]
 ---
 
 # Adobe Enterprise RBAC
 
 ## Overview
-
-Configure enterprise-grade access control for Adobe integrations using Admin Console product profiles, User Management API (UMAPI) for programmatic user provisioning, and SCIM-based identity sync with Azure AD or Google Workspace.
+Configure enterprise-grade access control for Adobe integrations.
 
 ## Prerequisites
+- Adobe Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-- Adobe Enterprise or Teams subscription
-- Adobe Admin Console system administrator access
-- Identity Provider (Azure AD, Google Workspace, or Okta) for SSO
-- Understanding of SCIM 2.0 protocol
+## Role Definitions
 
-## Instructions
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-### Step 1: Set Up Federated Identity in Admin Console
-
-1. Go to https://adminconsole.adobe.com > Settings > Identity
-2. Create a Federated ID directory
-3. Configure SSO:
-   - **Azure AD**: Admin Console > Add Azure Sync > Follow SCIM setup
-   - **Google Workspace**: Admin Console > Add Google Sync > SCIM provisioning
-   - **Generic SAML**: Upload IdP metadata XML
-
-```yaml
-# SAML Configuration Values (for your IdP)
-Adobe SP Entity ID: https://federatedid-na1.services.adobe.com/federated/saml/metadata
-ACS URL: https://federatedid-na1.services.adobe.com/federated/saml/SSO
-Name ID Format: urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress
-```
-
-### Step 2: Define Product Profiles (Adobe's RBAC Mechanism)
-
-Product Profiles in Admin Console are Adobe's native RBAC system. Create profiles that map to your application roles:
-
-| Profile Name | Adobe APIs Granted | Application Role |
-|-------------|-------------------|------------------|
-| `API-Developers` | Firefly, PDF Services, Photoshop | Full API access |
-| `API-Viewers` | PDF Services (read-only) | Report viewers |
-| `API-Automation` | PDF Services, Document Generation | CI/CD service accounts |
-| `API-Admin` | All APIs + Admin Console | Platform administrators |
-
-### Step 3: Programmatic User Management via UMAPI
+## Role Implementation
 
 ```typescript
-// src/adobe/user-management.ts
-// Adobe User Management API (UMAPI) — manage users and product profile assignments
-
-const UMAPI_BASE = 'https://usermanagement.adobe.io/v2/usermanagement';
-
-interface UmapiUser {
-  email: string;
-  firstname: string;
-  lastname: string;
-  country: string;
+enum AdobeRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-export async function addUserToProductProfile(
-  user: UmapiUser,
-  productProfile: string
-): Promise<void> {
-  const token = await getAccessToken();
-
-  const response = await fetch(`${UMAPI_BASE}/action/${process.env.ADOBE_IMS_ORG_ID}`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'x-api-key': process.env.ADOBE_CLIENT_ID!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify([{
-      user: user.email,
-      requestID: `req-${Date.now()}`,
-      do: [
-        {
-          addAdobeID: {
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            country: user.country,
-          },
-        },
-        {
-          add: {
-            product: [productProfile],
-          },
-        },
-      ],
-    }]),
-  });
-
-  if (!response.ok) throw new Error(`UMAPI error: ${await response.text()}`);
-  const result = await response.json();
-  console.log(`User ${user.email} added to profile ${productProfile}:`, result);
+interface AdobePermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
 }
 
-export async function removeUserFromProductProfile(
-  email: string,
-  productProfile: string
-): Promise<void> {
-  const token = await getAccessToken();
-
-  const response = await fetch(`${UMAPI_BASE}/action/${process.env.ADOBE_IMS_ORG_ID}`, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'x-api-key': process.env.ADOBE_CLIENT_ID!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify([{
-      user: email,
-      requestID: `req-${Date.now()}`,
-      do: [{
-        remove: {
-          product: [productProfile],
-        },
-      }],
-    }]),
-  });
-
-  if (!response.ok) throw new Error(`UMAPI error: ${await response.text()}`);
-}
-```
-
-### Step 4: Map IdP Groups to Adobe Product Profiles
-
-```typescript
-// src/adobe/group-sync.ts
-// Sync IdP group membership to Adobe Product Profiles
-
-const GROUP_TO_PROFILE: Record<string, string[]> = {
-  'Engineering':        ['API-Developers'],
-  'Data-Science':       ['API-Developers', 'API-Viewers'],
-  'Platform-Admins':    ['API-Admin'],
-  'CI-CD-Services':     ['API-Automation'],
-  'Business-Analysts':  ['API-Viewers'],
+const ROLE_PERMISSIONS: Record<AdobeRole, AdobePermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
 };
 
-export async function syncGroupMembership(
-  userEmail: string,
-  idpGroups: string[]
-): Promise<void> {
-  // Determine which Adobe profiles this user should have
-  const targetProfiles = new Set<string>();
-  for (const group of idpGroups) {
-    const profiles = GROUP_TO_PROFILE[group];
-    if (profiles) profiles.forEach(p => targetProfiles.add(p));
-  }
-
-  // Get current Adobe profile assignments
-  const currentProfiles = await getUserProfiles(userEmail);
-
-  // Add missing profiles
-  for (const profile of targetProfiles) {
-    if (!currentProfiles.includes(profile)) {
-      await addUserToProductProfile(
-        { email: userEmail, firstname: '', lastname: '', country: 'US' },
-        profile
-      );
-    }
-  }
-
-  // Remove stale profiles
-  for (const profile of currentProfiles) {
-    if (!targetProfiles.has(profile)) {
-      await removeUserFromProductProfile(userEmail, profile);
-    }
-  }
+function checkPermission(
+  role: AdobeRole,
+  action: keyof AdobePermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
 }
 ```
 
-### Step 5: Application-Level Permission Check
+## SSO Integration
+
+### SAML Configuration
 
 ```typescript
-// src/middleware/adobe-auth.ts
-// Check that the current user's Adobe profile grants the required permission
-
-interface AdobeUserContext {
-  email: string;
-  profiles: string[];  // Product profiles from SSO token claims
-}
-
-const PROFILE_PERMISSIONS: Record<string, string[]> = {
-  'API-Developers': ['read', 'write', 'generate', 'extract'],
-  'API-Viewers':    ['read', 'extract'],
-  'API-Automation': ['read', 'write', 'extract', 'generate'],
-  'API-Admin':      ['read', 'write', 'generate', 'extract', 'delete', 'admin'],
+// Adobe SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://adobe.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/adobe/callback',
 };
 
-function checkAdobePermission(user: AdobeUserContext, requiredPerm: string): boolean {
-  return user.profiles.some(profile => {
-    const perms = PROFILE_PERMISSIONS[profile];
-    return perms?.includes(requiredPerm);
-  });
+// Map IdP groups to Adobe roles
+const groupRoleMapping: Record<string, AdobeRole> = {
+  'Engineering': AdobeRole.Developer,
+  'Platform-Admins': AdobeRole.Admin,
+  'Data-Team': AdobeRole.Viewer,
+};
+```
+
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from '@adobe/sdk';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.ADOBE_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.ADOBE_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/adobe/callback',
+  scopes: ['read', 'write'],
+});
+```
+
+## Organization Management
+
+```typescript
+interface AdobeOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: AdobeRole;
 }
 
-// Express middleware
-function requireAdobePermission(permission: string) {
-  return (req: any, res: any, next: any) => {
-    if (!checkAdobePermission(req.user, permission)) {
+async function createOrganization(
+  config: AdobeOrganization
+): Promise<void> {
+  await adobeClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function requireAdobePermission(
+  requiredPermission: keyof AdobePermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { adobeRole: AdobeRole };
+
+    if (!checkPermission(user.adobeRole, requiredPermission)) {
       return res.status(403).json({
         error: 'Forbidden',
-        message: `Missing Adobe permission: ${permission}`,
-        requiredProfile: Object.entries(PROFILE_PERMISSIONS)
-          .filter(([_, perms]) => perms.includes(permission))
-          .map(([profile]) => profile),
+        message: `Missing permission: ${requiredPermission}`,
       });
     }
+
     next();
   };
 }
 
 // Usage
-app.post('/api/generate-image', requireAdobePermission('generate'), generateHandler);
-app.delete('/api/assets/:id', requireAdobePermission('delete'), deleteHandler);
+app.delete('/adobe/resource/:id',
+  requireAdobePermission('delete'),
+  deleteResourceHandler
+);
 ```
 
-## Output
+## Audit Trail
 
-- Federated Identity with SSO (SAML/OIDC) configured
-- Product Profiles created for each application role
-- Programmatic user provisioning via UMAPI
-- IdP group-to-profile sync automation
-- Application middleware enforcing Adobe permissions
+```typescript
+interface AdobeAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: AdobeRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logAdobeAccess(entry: AdobeAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Define Roles
+Map organizational roles to Adobe permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
+## Output
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login redirect loop | Wrong ACS URL | Verify SAML config in Admin Console |
-| UMAPI 403 | Missing admin permission | Use system admin credentials for UMAPI |
-| Profile not applied | SCIM sync delay | Wait 5-10min for Azure/Google sync |
-| User can't access API | Missing product profile | Assign profile in Admin Console or via UMAPI |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-
-- [Adobe Admin Console](https://adminconsole.adobe.com)
-- [User Management API](https://adobe.io/apis/experienceplatform/umapi-new.html)
-- [Adobe Admin Console Roles](https://helpx.adobe.com/enterprise/using/roles.html)
-- [Azure AD Sync Setup](https://helpx.adobe.com/enterprise/using/add-azure-sync.html)
-- [Google Workspace Sync](https://helpx.adobe.com/enterprise/using/add-google-sync.html)
+- [Adobe Enterprise Guide](https://docs.adobe.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-
 For major migrations, see `adobe-migration-deep-dive`.

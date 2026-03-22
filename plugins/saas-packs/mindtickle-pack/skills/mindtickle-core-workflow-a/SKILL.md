@@ -1,62 +1,71 @@
 ---
 name: mindtickle-core-workflow-a
 description: |
-  Execute MindTickle primary workflow: Training Content Management.
-  Trigger: "mindtickle training content management", "primary mindtickle workflow".
+  Execute Mindtickle primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "mindtickle main workflow",
+  "primary task with mindtickle".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
 compatible-with: claude-code
+tags: [saas, mindtickle]
 ---
 
-# MindTickle — Training Content Management
+# Mindtickle Core Workflow A
 
 ## Overview
-Primary workflow for MindTickle integration.
+Primary money-path workflow for Mindtickle. This is the most common use case.
+
+## Prerequisites
+- Completed `mindtickle-install-auth` setup
+- Understanding of Mindtickle core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Create Training Module
+### Step 1: Initialize
 ```typescript
-const module = await client.modules.create({
-  title: 'Q1 Product Update Training',
-  type: 'course',
-  description: 'Learn about new product features for Q1',
-  tags: ['product', 'q1-2026'],
-  content: [
-    { type: 'video', url: 'https://videos.example.com/q1-update.mp4', title: 'Overview' },
-    { type: 'quiz', questions: [
-      { text: 'What is the key new feature?', type: 'multiple_choice',
-        options: ['Feature A', 'Feature B', 'Feature C'], correct: 0 }
-    ]}
-  ]
-});
-console.log(`Module created: ${module.id}`);
+// Step 1 implementation
 ```
 
-### Step 2: Assign to Sales Reps
+### Step 2: Execute
 ```typescript
-await client.assignments.create({
-  module_id: module.id,
-  assignees: { type: 'team', team_ids: ['team_sales_west', 'team_sales_east'] },
-  due_date: '2026-04-15',
-  reminder: { enabled: true, days_before: [7, 3, 1] }
-});
+// Step 2 implementation
 ```
 
-### Step 3: Track Completion
+### Step 3: Finalize
 ```typescript
-const progress = await client.analytics.moduleProgress(module.id);
-progress.users.forEach(u =>
-  console.log(`${u.name}: ${u.completion}% | Score: ${u.quiz_score || 'N/A'}`)
-);
-console.log(`Overall: ${progress.completion_rate}% complete`);
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from Mindtickle API
+- Success confirmation or error details
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [MindTickle Docs](https://www.mindtickle.com/platform/integrations/)
+- [Mindtickle Documentation](https://docs.mindtickle.com)
+- [Mindtickle API Reference](https://docs.mindtickle.com/api)
 
 ## Next Steps
-See `mindtickle-core-workflow-b`.
+For secondary workflow, see `mindtickle-core-workflow-b`.

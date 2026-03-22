@@ -1,94 +1,64 @@
 ---
 name: algolia-local-dev-loop
 description: |
-  Configure Algolia local development with separate dev index, mocking, and testing.
+  Configure Algolia local development with hot reload and testing.
   Use when setting up a development environment, configuring test workflows,
   or establishing a fast iteration cycle with Algolia.
-  Trigger: "algolia dev setup", "algolia local development", "algolia dev environment", "test algolia locally".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Bash(npx:*), Grep
+  Trigger with phrases like "algolia dev setup", "algolia local development",
+  "algolia dev environment", "develop with algolia".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
 compatible-with: claude-code
+tags: [saas, algolia]
 ---
 
 # Algolia Local Dev Loop
 
 ## Overview
-
-Set up a fast, reproducible local development workflow for Algolia. Use separate dev indices, mock the client in tests, and iterate without touching production data.
+Set up a fast, reproducible local development workflow for Algolia.
 
 ## Prerequisites
-
 - Completed `algolia-install-auth` setup
 - Node.js 18+ with npm/pnpm
-- Vitest or Jest for testing
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Environment-Based Index Names
-
-```typescript
-// src/algolia/config.ts
-import { algoliasearch } from 'algoliasearch';
-
-const ENV = process.env.NODE_ENV || 'development';
-
-// Each environment gets its own index prefix
-export function indexName(base: string): string {
-  if (ENV === 'production') return base;
-  return `${ENV}_${base}`; // e.g., "development_products"
-}
-
-export const client = algoliasearch(
-  process.env.ALGOLIA_APP_ID!,
-  process.env.ALGOLIA_ADMIN_KEY!
-);
+### Step 1: Create Project Structure
+```
+my-algolia-project/
+├── src/
+│   ├── algolia/
+│   │   ├── client.ts       # Algolia client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── algolia.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-### Step 2: Seed Script for Dev Data
+### Step 2: Configure Environment
+```bash
+# Copy environment template
+cp .env.example .env.local
 
-```typescript
-// scripts/seed-algolia.ts
-import { client, indexName } from '../src/algolia/config';
+# Install dependencies
+npm install
 
-const SEED_DATA = [
-  { objectID: 'prod-1', name: 'Widget A', category: 'tools', price: 29.99 },
-  { objectID: 'prod-2', name: 'Widget B', category: 'tools', price: 49.99 },
-  { objectID: 'prod-3', name: 'Gadget C', category: 'electronics', price: 199.99 },
-];
-
-async function seed() {
-  const idx = indexName('products');
-
-  // replaceAllObjects atomically swaps index content
-  const { taskID } = await client.replaceAllObjects({
-    indexName: idx,
-    objects: SEED_DATA,
-  });
-  await client.waitForTask({ indexName: idx, taskID });
-
-  // Configure settings for the dev index
-  await client.setSettings({
-    indexName: idx,
-    indexSettings: {
-      searchableAttributes: ['name', 'category'],
-      attributesForFaceting: ['category', 'filterOnly(price)'],
-      customRanking: ['asc(price)'],
-    },
-  });
-
-  console.log(`Seeded ${SEED_DATA.length} records into ${idx}`);
-}
-
-seed().catch(console.error);
+# Start development server
+npm run dev
 ```
 
+### Step 3: Setup Hot Reload
 ```json
 {
   "scripts": {
-    "seed:algolia": "npx tsx scripts/seed-algolia.ts",
     "dev": "tsx watch src/index.ts",
     "test": "vitest",
     "test:watch": "vitest --watch"
@@ -96,115 +66,54 @@ seed().catch(console.error);
 }
 ```
 
-### Step 3: Mock Algolia in Unit Tests
-
+### Step 4: Configure Testing
 ```typescript
-// tests/algolia.test.ts
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import { AlgoliaClient } from '../src/algolia/client';
 
-// Mock the entire algoliasearch module
-vi.mock('algoliasearch', () => ({
-  algoliasearch: vi.fn(() => ({
-    searchSingleIndex: vi.fn().mockResolvedValue({
-      hits: [
-        { objectID: '1', name: 'Widget A', _highlightResult: {} },
-      ],
-      nbHits: 1,
-      page: 0,
-      nbPages: 1,
-    }),
-    saveObjects: vi.fn().mockResolvedValue({ taskID: 123 }),
-    waitForTask: vi.fn().mockResolvedValue({}),
-  })),
-}));
-
-import { algoliasearch } from 'algoliasearch';
-
-describe('Product Search', () => {
-  const client = algoliasearch('test-app-id', 'test-api-key');
-
-  it('returns matching products', async () => {
-    const { hits } = await client.searchSingleIndex({
-      indexName: 'development_products',
-      searchParams: { query: 'widget' },
-    });
-    expect(hits).toHaveLength(1);
-    expect(hits[0].name).toBe('Widget A');
+describe('Algolia Client', () => {
+  it('should initialize with API key', () => {
+    const client = new AlgoliaClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
   });
 });
 ```
 
-### Step 4: Integration Test with Real API
-
-```typescript
-// tests/integration/algolia.integration.test.ts
-import { describe, it, expect } from 'vitest';
-import { algoliasearch } from 'algoliasearch';
-
-describe.skipIf(!process.env.ALGOLIA_APP_ID)('Algolia Integration', () => {
-  const client = algoliasearch(
-    process.env.ALGOLIA_APP_ID!,
-    process.env.ALGOLIA_ADMIN_KEY!
-  );
-  const testIndex = `test_${Date.now()}_products`;
-
-  it('indexes and searches records', async () => {
-    // Index
-    const { taskID } = await client.saveObjects({
-      indexName: testIndex,
-      objects: [{ objectID: '1', name: 'Test Product' }],
-    });
-    await client.waitForTask({ indexName: testIndex, taskID });
-
-    // Search
-    const { hits } = await client.searchSingleIndex({
-      indexName: testIndex,
-      searchParams: { query: 'test' },
-    });
-    expect(hits.length).toBeGreaterThan(0);
-
-    // Cleanup
-    await client.deleteIndex({ indexName: testIndex });
-  });
-});
-```
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Algolia development
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Index does not exist` | Dev index not seeded | Run `npm run seed:algolia` |
-| Test pollution | Shared index between tests | Use unique timestamped index names |
-| Stale search results | Indexing not waited | Always `await client.waitForTask()` after writes |
-| Mock not applied | Wrong import order | Ensure `vi.mock()` is before imports |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
 
 ## Examples
 
-### Clean Dev Index on Start
-
+### Mock Algolia Responses
 ```typescript
-// scripts/reset-dev-algolia.ts
-import { client, indexName } from '../src/algolia/config';
+vi.mock('@algolia/sdk', () => ({
+  AlgoliaClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
 
-async function reset() {
-  const idx = indexName('products');
-  try {
-    await client.deleteIndex({ indexName: idx });
-    console.log(`Deleted ${idx}`);
-  } catch (e) {
-    // Index may not exist yet — that's fine
-  }
-}
-
-reset().catch(console.error);
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=ALGOLIA=* npm run dev
 ```
 
 ## Resources
-
-- [Algolia JavaScript v5 Client](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/)
+- [Algolia SDK Reference](https://docs.algolia.com/sdk)
 - [Vitest Documentation](https://vitest.dev/)
-- [tsx (TypeScript execute)](https://github.com/privatenumber/tsx)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-
 See `algolia-sdk-patterns` for production-ready code patterns.

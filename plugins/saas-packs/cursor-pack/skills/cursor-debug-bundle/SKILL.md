@@ -1,188 +1,113 @@
 ---
-name: "cursor-debug-bundle"
+name: cursor-debug-bundle
 description: |
-  Debug AI suggestion quality, context issues, and code generation problems in Cursor. Triggers on
-  "debug cursor ai", "cursor suggestions wrong", "bad cursor completion", "cursor ai debug",
-  "cursor hallucination".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+  Collect Cursor debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent issues, preparing support tickets,
+  or collecting diagnostic information for Cursor problems.
+  Trigger with phrases like "cursor debug", "cursor support bundle",
+  "collect cursor logs", "cursor diagnostic".
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, debugging]
-
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+compatible-with: claude-code
+tags: [saas, cursor]
 ---
+
 # Cursor Debug Bundle
 
-Diagnose and fix AI suggestion quality issues in Cursor. Covers why AI generates wrong code, how to improve context, and systematic debugging workflows.
+## Overview
+Collect all necessary diagnostic information for Cursor support tickets.
 
-## Diagnostic Framework
+## Prerequisites
+- Cursor SDK installed
+- Access to application logs
+- Permission to collect environment info
 
-When AI suggestions are wrong, the cause is almost always one of these:
+## Instructions
 
-```
-┌─ Context Problems (80% of issues) ───────────────────────┐
-│  1. Missing context: AI doesn't have the relevant code   │
-│  2. Wrong context: AI has stale or irrelevant files      │
-│  3. Too much context: context window overflow            │
-│  4. No project rules: AI doesn't know your conventions   │
-└──────────────────────────────────────────────────────────┘
-┌─ Model Problems (15% of issues) ─────────────────────────┐
-│  5. Wrong model for the task                             │
-│  6. Model hallucinating APIs or patterns                 │
-└──────────────────────────────────────────────────────────┘
-┌─ Prompt Problems (5% of issues) ─────────────────────────┐
-│  7. Ambiguous or vague instructions                      │
-│  8. Conflicting requirements in prompt                   │
-└──────────────────────────────────────────────────────────┘
-```
+### Step 1: Create Debug Bundle Script
+```bash
+#!/bin/bash
+# cursor-debug-bundle.sh
 
-## Debugging by Symptom
+BUNDLE_DIR="cursor-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE_DIR"
 
-### AI Uses Wrong API or Library Version
-
-**Symptom:** Generated code uses `React.createClass`, old Express syntax, or deprecated patterns.
-
-**Root cause:** Model training data includes old code. No project rules specifying versions.
-
-**Fix:**
-```yaml
-# .cursor/rules/stack-versions.mdc
----
-description: "Tech stack version pinning"
-globs: ""
-alwaysApply: true
----
-# Stack Versions (ALWAYS use these)
-- React 19 with Server Components (NOT class components)
-- Next.js 15 App Router (NOT Pages Router)
-- TypeScript 5.7 strict mode
-- Prisma 6 (NOT Sequelize or TypeORM)
-- Tailwind CSS 4 (NOT styled-components)
-- Node.js 22 (ESM, NOT CommonJS require())
+echo "=== Cursor Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### AI Generates Code That Doesn't Match Your Patterns
-
-**Symptom:** Generated code uses different naming, structure, or patterns than your codebase.
-
-**Root cause:** AI does not have your existing code as context.
-
-**Fix:** Reference your existing patterns explicitly:
-
-```
-@src/api/users/route.ts
-
-Create src/api/products/route.ts following the EXACT same patterns:
-same error handling, same response format, same validation approach.
+### Step 2: Collect Environment Info
+```bash
+# Environment info
+echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+echo "CURSOR_API_KEY: ${CURSOR_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### AI Hallucinates Non-Existent Functions
+### Step 3: Gather SDK and Logs
+```bash
+# SDK version
+npm list @cursor/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
 
-**Symptom:** AI calls functions or uses imports that do not exist in your project or in the library.
+# Recent logs (redacted)
+grep -i "cursor" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
 
-**Root cause:** Model confuses similar libraries or invents plausible-sounding APIs.
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
 
-**Fix:**
-1. Add `@Docs` context: `@Docs Prisma` gives the AI real API documentation
-2. Verify generated imports: run `npm run build` immediately after applying
-3. Use `@Files` to show the actual module interface: `@src/lib/database.ts`
-
-### AI Ignores Your Instructions
-
-**Symptom:** You ask for one thing, AI does something different.
-
-**Root cause:** Context window overflow -- your instructions get pushed out by file contents.
-
-**Fix:**
-1. Start a **new chat** (Cmd+N) -- conversation history may be using too much context
-2. Use fewer `@` references -- each consumes context budget
-3. Put instructions at the **end** of the prompt (models attend more to recent text)
-4. Use `@Files` instead of `@Codebase` to reduce context volume
-
-### Tab Completion is Repetitive or Wrong
-
-**Symptom:** Tab keeps suggesting the same wrong pattern.
-
-**Root cause:** Tab has limited context compared to Chat/Composer.
-
-**Fix:**
-1. Open related files in editor tabs (Tab reads open tabs)
-2. Add a comment above your cursor describing what you want
-3. Reject bad suggestions with `Esc` (trains the model)
-4. If persistently wrong, use Cmd+K inline edit instead
-
-## Systematic Debug Workflow
-
-When AI output is consistently wrong:
-
-```
-Step 1: Check context
-  - Open Chat, look at context pills at top
-  - Are the right files included?
-  - Are stale files adding noise?
-
-Step 2: Check rules
-  - @Cursor Rules in chat -- what rules are active?
-  - Do rules conflict with each other?
-  - Are glob patterns matching the right files?
-
-Step 3: Test with minimal context
-  - Start new chat
-  - Add ONLY the most relevant file: @src/the-file.ts
-  - Ask your question with explicit constraints
-  - If this works, the issue was context pollution
-
-Step 4: Test with different model
-  - Switch from Sonnet to Opus or GPT-5
-  - If better model gives better results, the task needs more reasoning power
-
-Step 5: Check indexing
-  - Is the codebase indexed? (status bar shows "Indexed")
-  - Is the relevant file excluded by .cursorignore?
-  - Run Cmd+Shift+P > "Cursor: Resync Index"
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" https://api.cursor.com/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-## Logs and Diagnostics
-
-### Opening Developer Tools
-
-`Cmd+Shift+P` > `Developer: Toggle Developer Tools`
-
-Check the Console tab for:
-- API request errors (red)
-- Context assembly logs
-- Extension errors
-
-### Verbose Logging
-
-Enable verbose output: `Cursor Settings` > search "log level" > set to "Debug"
-
-Logs location:
-- macOS: `~/Library/Application Support/Cursor/logs/`
-- Linux: `~/.config/Cursor/logs/`
-
-### Reproducing Issues for Bug Reports
-
-```
-1. Note Cursor version: Help > About
-2. Note model used (from Chat/Composer header)
-3. Copy the exact prompt that produced wrong output
-4. Copy the wrong output
-5. List active extensions: Cmd+Shift+P > "Extensions: Show Installed"
-6. Note if Privacy Mode is on (affects model behavior)
-7. Report at forum.cursor.com or github.com/getcursor/cursor/issues
+### Step 4: Package Bundle
+```bash
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
-## Enterprise Considerations
+## Output
+- `cursor-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
+  - `summary.txt` - Environment and SDK info
+  - `logs.txt` - Recent redacted logs
+  - `config-redacted.txt` - Configuration (secrets removed)
 
-- **Quality baselines**: Track AI suggestion accuracy over time per team/project
-- **Model pinning**: If a model update degrades quality, temporarily switch to a different model while reporting
-- **Rule audits**: Periodically review `.cursor/rules/` for outdated or conflicting rules
-- **Training**: Ensure team knows the difference between context, model, and prompt issues
+## Error Handling
+| Item | Purpose | Included |
+|------|---------|----------|
+| Environment versions | Compatibility check | ✓ |
+| SDK version | Version-specific bugs | ✓ |
+| Error logs (redacted) | Root cause analysis | ✓ |
+| Config (redacted) | Configuration issues | ✓ |
+| Network test | Connectivity issues | ✓ |
+
+## Examples
+
+### Sensitive Data Handling
+**ALWAYS REDACT:**
+- API keys and tokens
+- Passwords and secrets
+- PII (emails, names, IDs)
+
+**Safe to Include:**
+- Error messages
+- Stack traces (redacted)
+- SDK/runtime versions
+
+### Submit to Support
+1. Create bundle: `bash cursor-debug-bundle.sh`
+2. Review for sensitive data
+3. Upload to Cursor support portal
 
 ## Resources
+- [Cursor Support](https://docs.cursor.com/support)
+- [Cursor Status](https://status.cursor.com)
 
-- [Cursor Forum - Troubleshooting](https://forum.cursor.com/c/help)
-- [Cursor GitHub Issues](https://github.com/getcursor/cursor/issues)
-- [Context Management Docs](https://docs.cursor.com/context/@-symbols/overview)
+## Next Steps
+For rate limit issues, see `cursor-rate-limits`.

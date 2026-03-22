@@ -1,234 +1,336 @@
 ---
 name: openrouter-known-pitfalls
 description: |
-  Avoid common OpenRouter integration mistakes and gotchas. Use proactively when starting a new integration or reviewing existing code. Triggers: 'openrouter pitfalls', 'openrouter gotchas', 'openrouter mistakes', 'openrouter best practices'.
-allowed-tools: Read, Write, Edit, Bash, Grep
-version: 2.0.0
+  Identify and avoid OpenRouter anti-patterns and common integration mistakes.
+  Use when reviewing OpenRouter code for issues, onboarding new developers,
+  or auditing existing OpenRouter integrations for best practices violations.
+  Trigger with phrases like "openrouter mistakes", "openrouter anti-patterns",
+  "openrouter pitfalls", "openrouter what not to do", "openrouter code review".
+allowed-tools: Read, Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, best-practices, pitfalls]
-
+compatible-with: claude-code
+tags: [saas, openrouter]
 ---
+
 # OpenRouter Known Pitfalls
 
 ## Overview
+Common mistakes and anti-patterns when integrating with OpenRouter.
 
-A curated list of real-world mistakes developers make when integrating OpenRouter, each with the specific API behavior that causes the problem and the exact fix. These are not theoretical -- they come from production incidents and support requests.
+## Prerequisites
+- Access to OpenRouter codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-## Pitfall 1: Missing Provider Prefix on Model ID
+## Pitfall #1: Synchronous API Calls in Request Path
 
-```python
-# WRONG: Model ID without provider prefix
-response = client.chat.completions.create(
-    model="gpt-4o",  # ← Will fail with 400 "model not found"
-    messages=[{"role": "user", "content": "Hello"}],
-)
-
-# RIGHT: Always include provider/model format
-response = client.chat.completions.create(
-    model="openai/gpt-4o",  # ← Correct
-    messages=[{"role": "user", "content": "Hello"}],
-)
+### ❌ Anti-Pattern
+```typescript
+// User waits for OpenRouter API call
+app.post('/checkout', async (req, res) => {
+  const payment = await openrouterClient.processPayment(req.body);  // 2-5s latency
+  const notification = await openrouterClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
-## Pitfall 2: No max_tokens = Runaway Costs
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
 
-```python
-# WRONG: No max_tokens -- model may generate 4000+ tokens
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",  # $15/1M completion tokens
-    messages=[{"role": "user", "content": "Write a story"}],
-    # No max_tokens → could generate $0.06+ per request
-)
-
-# RIGHT: Always set max_tokens
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": "Write a story"}],
-    max_tokens=500,  # ← Caps cost at ~$0.0075
-)
-```
-
-## Pitfall 3: Hardcoded Model IDs Break When Models Are Renamed
-
-```python
-# WRONG: Hardcoded model ID scattered across codebase
-# When "claude-3-opus" becomes "claude-3-opus-20240229", everything breaks
-
-# RIGHT: Centralize model IDs in config
-MODELS = {
-    "primary": "anthropic/claude-3.5-sonnet",
-    "budget": "openai/gpt-4o-mini",
-    "free": "google/gemma-2-9b-it:free",
+// Background job
+async function processCheckout(data) {
+  const payment = await openrouterClient.processPayment(data);
+  await openrouterClient.sendEmail(payment);
 }
-
-# Validate at startup
-import requests
-available = {m["id"] for m in requests.get("https://openrouter.ai/api/v1/models").json()["data"]}
-for name, model_id in MODELS.items():
-    if model_id not in available:
-        print(f"WARNING: {name} model '{model_id}' not available!")
 ```
 
-## Pitfall 4: Fallbacks Route to Unexpected Providers
+---
 
-```python
-# WRONG: Default allow_fallbacks=True without controlling which providers
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": sensitive_data}],
-    # OpenRouter might fall back to a different provider you didn't approve
-)
+## Pitfall #2: Not Handling Rate Limits
 
-# RIGHT: Control fallback behavior explicitly
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": sensitive_data}],
-    extra_body={
-        "provider": {
-            "order": ["Anthropic"],      # Only approved provider
-            "allow_fallbacks": False,     # No surprise routing
-        },
-    },
-)
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await openrouterClient.process(item);  // Will hit rate limit
+}
 ```
 
-## Pitfall 5: Ignoring the Free Model Daily Limit
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
 
-```python
-# WRONG: Using free models in production
-# Free models have limits: 50 req/day (no credits), 1000 req/day (with credits)
-response = client.chat.completions.create(
-    model="google/gemma-2-9b-it:free",  # Will 429 after daily limit
-    messages=[{"role": "user", "content": "Hello"}],
-)
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
 
-# RIGHT: Use free models only for dev/testing
-# Use paid models with credit limits for production
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => openrouterClient.process(item));
+}
 ```
 
-## Pitfall 6: Not Checking Which Model Actually Served the Request
+---
 
-```python
-# WRONG: Assuming the model you requested is the model that responded
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": "Hello"}],
-)
-print(response.choices[0].message.content)  # Might be from a fallback model!
+## Pitfall #3: Leaking API Keys
 
-# RIGHT: Always check response.model
-response = client.chat.completions.create(
-    model="anthropic/claude-3.5-sonnet",
-    messages=[{"role": "user", "content": "Hello"}],
-)
-print(f"Served by: {response.model}")  # Log this for debugging
-if response.model != "anthropic/claude-3.5-sonnet":
-    log.warning(f"Fallback triggered: requested claude-3.5-sonnet, got {response.model}")
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new OpenRouterClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
 ```
 
-## Pitfall 7: Creating New Client Instance Per Request
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new OpenRouterClient({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
 
-```python
-# WRONG: New client per request (new TCP/TLS handshake each time)
-for prompt in prompts:
-    client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key)
-    client.chat.completions.create(...)  # Slow!
-
-# RIGHT: Reuse single client (connection pooling)
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-)
-for prompt in prompts:
-    client.chat.completions.create(...)  # Reuses HTTP connection
+// Use .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-## Pitfall 8: Storing API Keys in Source Code
+---
 
-```python
-# WRONG: Key in source code
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key="sk-or-v1-abc123...",  # ← Will be committed to git
-)
+## Pitfall #4: Ignoring Idempotency
 
-# RIGHT: Environment variable + secrets manager
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],  # From .env (gitignored) or secrets manager
-)
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await openrouterClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await openrouterClient.charge(order);  // Charged twice!
+  }
+}
 ```
 
-## Pitfall 9: Not Setting Timeouts
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
 
-```python
-# WRONG: No timeout -- request hangs forever if model is slow
-client = OpenAI(base_url="https://openrouter.ai/api/v1", api_key=key)
-
-# RIGHT: Set explicit timeout
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    timeout=30.0,      # 30s per request
-    max_retries=3,     # Retry on 429/5xx
-)
+await openrouterClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
 ```
 
-## Pitfall 10: Caching Non-Deterministic Responses
+---
 
-```python
-# WRONG: Caching responses with temperature > 0
-# Each call produces different output, so cache is meaningless
-cache[key] = client.chat.completions.create(
-    model="openai/gpt-4o-mini",
-    messages=msgs,
-    temperature=0.7,  # ← Non-deterministic!
-)
+## Pitfall #5: Not Validating Webhooks
 
-# RIGHT: Only cache with temperature=0
-if temperature == 0:
-    cache[key] = response
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
 ```
 
-## Quick Checklist
-
-```python
-PITFALL_CHECKLIST = [
-    "Model IDs use provider/model format (e.g., openai/gpt-4o)",
-    "max_tokens set on every request",
-    "API keys in env vars or secrets manager, never in code",
-    "Single client instance reused (not created per request)",
-    "Timeout and max_retries configured",
-    "response.model checked (may differ from requested model)",
-    "Free models NOT used in production",
-    "Fallback behavior explicitly controlled for sensitive data",
-    "Model IDs centralized in config (not scattered in code)",
-    "Only deterministic responses (temp=0) are cached",
-]
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-openrouter-signature'];
+    if (!verifyOpenRouterSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
 ```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await openrouterClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await openrouterClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof OpenRouterNotFoundError) {
+    return null;
+  }
+  if (error instanceof OpenRouterRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new OpenRouterClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.openrouter.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new OpenRouterClient({
+  timeout: parseInt(process.env.OPENROUTER_TIMEOUT || '30000'),
+  baseUrl: process.env.OPENROUTER_BASE_URL || 'https://api.openrouter.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When OpenRouter is down, every request hangs
+for (const user of users) {
+  await openrouterClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(openrouterClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if OpenRouter is down
+const recommendations = await openrouterClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await openrouterClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('openrouter', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
 
-| Pitfall | Symptom | Quick Fix |
-|---------|---------|-----------|
-| Missing provider prefix | 400 `model not found` | Add `openai/`, `anthropic/`, etc. |
-| No max_tokens | Unexpected high costs | Add `max_tokens` to every call |
-| Hardcoded API key | Key exposed in git history | Rotate key; use env vars |
-| No timeout | Hanging requests | Set `timeout=30.0` |
-| Free model in prod | 429 after 50-1000 requests | Use paid models |
+## Examples
 
-## Enterprise Considerations
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
-- Run the pitfall checklist during code review for any OpenRouter integration PR
-- Add pre-commit hooks that scan for hardcoded `sk-or-v1-` patterns
-- Centralize model IDs in a config file and validate against `/api/v1/models` at startup
-- Log `response.model` on every request to catch unexpected fallbacks
-- Set `max_tokens` as a team-wide policy enforced in your client wrapper
+## Resources
+- [OpenRouter Security Guide](https://docs.openrouter.com/security)
+- [OpenRouter Best Practices](https://docs.openrouter.com/best-practices)
 
-## References
+## Quick Reference Card
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Quickstart](https://openrouter.ai/docs/quickstart) | [API Reference](https://openrouter.ai/docs/api/reference/overview)
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

@@ -1,206 +1,121 @@
 ---
 name: sentry-prod-checklist
 description: |
-  Production deployment checklist for Sentry integration.
-  Use when preparing for production deployment, reviewing
-  Sentry configuration, or verifying production readiness.
+  Execute Sentry production deployment checklist and rollback procedures.
+  Use when deploying Sentry integrations to production, preparing for launch,
+  or implementing go-live procedures.
   Trigger with phrases like "sentry production", "deploy sentry",
-  "sentry checklist", "sentry go-live".
-allowed-tools: Read, Grep, Bash(npm:*), Bash(node:*), Bash(curl:*), Bash(sentry-cli:*)
+  "sentry go-live", "sentry launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, deployment, production, checklist]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Production Checklist
 
+## Overview
+Complete checklist for deploying Sentry integrations to production.
+
 ## Prerequisites
-- Sentry account with dedicated production project
-- Production DSN separate from development/staging
-- Build pipeline with source map generation
-- Sentry CLI or bundler plugin configured for source map upload
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### SDK Configuration Checklist
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-```typescript
-// production-ready Sentry.init
-Sentry.init({
-  // [x] DSN from environment variable, never hardcoded
-  dsn: process.env.SENTRY_DSN,
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Sentry error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-  // [x] Environment set explicitly
-  environment: 'production',
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Sentry connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-  // [x] Release matches sentry-cli release version
-  release: process.env.SENTRY_RELEASE,
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-  // [x] Debug disabled in production
-  debug: false,
-
-  // [x] PII collection disabled
-  sendDefaultPii: false,
-
-  // [x] Error sample rate: 100% (capture all errors)
-  sampleRate: 1.0,
-
-  // [x] Transaction sample rate: 5-20% for production
-  tracesSampleRate: 0.1,
-
-  // [x] Max breadcrumbs limited for payload size
-  maxBreadcrumbs: 50,
-
-  // [x] Filtering configured for noisy errors
-  ignoreErrors: [
-    'ResizeObserver loop',
-    'Non-Error promise rejection',
-    /Loading chunk \d+ failed/,
-    'Network request failed',
-  ],
-
-  // [x] beforeSend scrubs sensitive data
-  beforeSend(event, hint) {
-    if (event.request?.headers) {
-      delete event.request.headers['Authorization'];
-      delete event.request.headers['Cookie'];
-    }
-    return event;
-  },
-});
-```
-
-### Pre-Deployment Checklist
-
-**Security:**
-- [ ] `sendDefaultPii: false`
-- [ ] `debug: false`
-- [ ] DSN in environment variables (not in source code)
-- [ ] `beforeSend` scrubs auth headers and sensitive data
-- [ ] Auth tokens use minimal scopes (`project:releases` for CI)
-- [ ] Allowed domains configured for browser projects
-
-**Source Maps:**
-- [ ] Source maps generated during build (`sourcemap: true`)
-- [ ] `sentry-cli sourcemaps upload` or bundler plugin configured
-- [ ] `--url-prefix` matches production asset URLs
-- [ ] `--validate` flag confirms maps are valid
-- [ ] SDK `release` matches CLI release version
-- [ ] Source maps NOT served to clients (only uploaded to Sentry)
-
-**Alerting:**
-- [ ] Issue alert: "New issue in production" -> Slack/PagerDuty
-- [ ] Issue alert: "Regression" -> team channel
-- [ ] Metric alert: "Error rate > X/minute" -> on-call
-- [ ] Metric alert: "P95 latency > threshold" -> performance team
-- [ ] Alert actions route to correct team channels
-
-**Performance:**
-- [ ] `tracesSampleRate` set to 5-20% (not 100%)
-- [ ] `tracesSampler` configured for endpoint-specific rates
-- [ ] High-volume endpoints sampled at lower rates
-- [ ] Health check endpoints excluded from tracing
-- [ ] Transaction names parameterized (`:id` not `12345`)
-
-**Release Management:**
-- [ ] Release created in CI: `sentry-cli releases new $VERSION`
-- [ ] Commits associated: `sentry-cli releases set-commits --auto`
-- [ ] Source maps uploaded before deployment
-- [ ] Release finalized: `sentry-cli releases finalize $VERSION`
-- [ ] Deploy recorded: `sentry-cli releases deploys $VERSION new -e production`
-
-### Verification Script
-
+### Step 5: Deploy with Gradual Rollout
 ```bash
-#!/bin/bash
-# scripts/verify-production-sentry.sh
-set -euo pipefail
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.sentry.com
 
-echo "=== Sentry Production Verification ==="
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/sentry-integration app=image:new --record
+kubectl rollout pause deployment/sentry-integration
 
-# 1. Verify environment variables
-for var in SENTRY_DSN SENTRY_ORG SENTRY_PROJECT SENTRY_AUTH_TOKEN; do
-  if [ -z "${!var:-}" ]; then
-    echo "FAIL: $var not set"
-    exit 1
-  fi
-  echo "OK: $var is set"
-done
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-# 2. Verify CLI auth
-sentry-cli info > /dev/null 2>&1 && echo "OK: CLI authenticated" || echo "FAIL: CLI auth"
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/sentry-integration
+kubectl rollout pause deployment/sentry-integration
+sleep 300
 
-# 3. Verify source maps uploaded
-RELEASE="${SENTRY_RELEASE:-$(git rev-parse --short HEAD)}"
-FILE_COUNT=$(sentry-cli releases files "$RELEASE" list 2>/dev/null | wc -l)
-if [ "$FILE_COUNT" -gt 1 ]; then
-  echo "OK: $FILE_COUNT files uploaded for release $RELEASE"
-else
-  echo "WARN: No source maps found for release $RELEASE"
-fi
-
-# 4. Verify network connectivity
-HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" https://sentry.io/api/0/)
-echo "OK: sentry.io reachable (HTTP $HTTP_CODE)"
-
-# 5. Send test event (optional — remove after first deploy)
-# node -e "require('@sentry/node').init({dsn:process.env.SENTRY_DSN}); \
-#   require('@sentry/node').captureMessage('Production deploy verification')"
-
-echo "=== Verification Complete ==="
-```
-
-### Post-Deploy Monitoring
-
-After deploying, verify in Sentry dashboard:
-
-1. **Issues** tab — check for new errors in the latest release
-2. **Performance** tab — verify transactions appear with correct names
-3. **Releases** tab — confirm release shows with:
-   - Correct version identifier
-   - Associated commits
-   - Source maps (click "Artifacts")
-   - Deploy marker for production environment
-4. **Release Health** — crash-free session rate should be > 99%
-
-### Rollback Procedure
-
-If Sentry causes issues in production:
-
-```typescript
-// Emergency disable: set DSN to empty string
-// Environment variable: SENTRY_DSN=""
-
-// Or disable via beforeSend
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  beforeSend() {
-    return null; // Drop all events
-  },
-});
+# Complete rollout to 100%
+kubectl rollout resume deployment/sentry-integration
+kubectl rollout status deployment/sentry-integration
 ```
 
 ## Output
-- Production-hardened Sentry configuration verified
-- Source maps uploaded and validated for current release
-- Alert rules configured with team routing
-- Release tracking active with commit association
-- Verification script confirming all production requirements met
+- Deployed Sentry integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Stack traces show minified code | Source maps missing or URL prefix wrong | Re-upload with correct `--url-prefix`, verify with `sourcemaps explain` |
-| No release health data | Session tracking not enabled | Ensure `autoSessionTracking: true` (default in v8) |
-| Alerts not firing | Alert rules not configured for production env | Create issue/metric alerts filtered to `environment:production` |
-| Events from wrong environment | `environment` not set in SDK init | Explicitly set `environment: 'production'` |
-| Excessive event volume | No rate limits or filtering | Set project rate limits, add `ignoreErrors`, configure `tracesSampler` |
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; sentry: any }> {
+  const start = Date.now();
+  try {
+    await sentryClient.ping();
+    return { status: 'healthy', sentry: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', sentry: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/sentry-integration
+kubectl rollout status deployment/sentry-integration
+```
 
 ## Resources
-- [Production Checklist](https://docs.sentry.io/product/releases/setup/)
-- [Alerting](https://docs.sentry.io/product/alerts/)
-- [Release Health](https://docs.sentry.io/product/releases/health/)
-- [Source Maps](https://docs.sentry.io/platforms/javascript/sourcemaps/)
+- [Sentry Status](https://status.sentry.com)
+- [Sentry Support](https://docs.sentry.com/support)
+
+## Next Steps
+For version upgrades, see `sentry-upgrade-migration`.

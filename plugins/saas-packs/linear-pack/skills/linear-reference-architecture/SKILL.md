@@ -1,252 +1,240 @@
 ---
 name: linear-reference-architecture
 description: |
-  Production-grade Linear integration architecture patterns.
-  Use when designing system architecture, choosing integration patterns,
-  or reviewing architectural decisions for Linear integrations.
-  Trigger: "linear architecture", "linear system design",
-  "linear integration patterns", "linear best practices architecture".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Linear reference architecture with best-practice project layout.
+  Use when designing new Linear integrations, reviewing project structure,
+  or establishing architecture standards for Linear applications.
+  Trigger with phrases like "linear architecture", "linear best practices",
+  "linear project structure", "how to organize linear", "linear layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, linear-reference]
-
+compatible-with: claude-code
+tags: [saas, linear]
 ---
+
 # Linear Reference Architecture
 
 ## Overview
-Production-grade architectural patterns for Linear integrations. Choose the right pattern based on team size, complexity, and real-time requirements.
+Production-ready architecture patterns for Linear integrations.
 
-## Architecture Decision Matrix
-
-| Pattern | Best For | Complexity | Rate Budget | Example |
-|---------|----------|------------|-------------|---------|
-| Simple | Single app, small team | Low | < 500 req/hr | Internal dashboard |
-| Service-Oriented | Multiple apps, shared state | Medium | 500-2,000 req/hr | Platform with Linear sync |
-| Event-Driven | Real-time needs, many consumers | High | < 500 req/hr + webhooks | Multi-service notification system |
-| CQRS | Audit trails, complex queries | Very High | Minimal API calls | Compliance-grade tracking |
-
-## Architecture 1: Simple Integration
-Direct SDK calls from your application. Best for scripts, internal tools, and prototypes.
-
-```typescript
-// src/linear.ts — single module, shared client
-import { LinearClient } from "@linear/sdk";
-
-const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
-
-// Direct SDK calls from any part of your app
-export async function getOpenIssues(teamKey: string) {
-  return client.issues({
-    first: 50,
-    filter: {
-      team: { key: { eq: teamKey } },
-      state: { type: { nin: ["completed", "canceled"] } },
-    },
-    orderBy: "priority",
-  });
-}
-
-export async function createBugReport(teamId: string, title: string, description: string) {
-  const labels = await client.issueLabels({ filter: { name: { eq: "Bug" } } });
-  return client.createIssue({
-    teamId,
-    title,
-    description,
-    priority: 2,
-    labelIds: labels.nodes.length ? [labels.nodes[0].id] : [],
-  });
-}
-```
-
-## Architecture 2: Service-Oriented with Gateway
-Centralized Linear access through a gateway service with caching and rate limiting.
-
-```typescript
-// src/linear-gateway.ts
-import { LinearClient } from "@linear/sdk";
-
-class LinearGateway {
-  private client: LinearClient;
-  private cache = new Map<string, { data: any; expiresAt: number }>();
-  private requestQueue: Array<{ fn: () => Promise<any>; resolve: Function; reject: Function }> = [];
-  private processing = false;
-
-  constructor(apiKey: string) {
-    this.client = new LinearClient({ apiKey });
-  }
-
-  // Cached reads
-  async getTeams() {
-    return this.cachedQuery("teams", () => this.client.teams().then(r => r.nodes), 600);
-  }
-
-  async getStates(teamId: string) {
-    return this.cachedQuery(`states:${teamId}`, async () => {
-      const team = await this.client.team(teamId);
-      return (await team.states()).nodes;
-    }, 1800);
-  }
-
-  // Rate-limited writes
-  async createIssue(input: any) {
-    return this.enqueue(() => this.client.createIssue(input));
-  }
-
-  async updateIssue(id: string, input: any) {
-    return this.enqueue(() => this.client.updateIssue(id, input));
-  }
-
-  // Custom queries through the gateway
-  async rawQuery(query: string, variables?: any) {
-    return this.enqueue(() => this.client.client.rawRequest(query, variables));
-  }
-
-  // Cache invalidation (called from webhook handler)
-  invalidate(pattern: string) {
-    for (const key of this.cache.keys()) {
-      if (key.startsWith(pattern)) this.cache.delete(key);
-    }
-  }
-
-  private async cachedQuery<T>(key: string, fn: () => Promise<T>, ttlSec: number): Promise<T> {
-    const cached = this.cache.get(key);
-    if (cached && Date.now() < cached.expiresAt) return cached.data;
-    const data = await this.enqueue(fn);
-    this.cache.set(key, { data, expiresAt: Date.now() + ttlSec * 1000 });
-    return data;
-  }
-
-  private async enqueue<T>(fn: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      this.requestQueue.push({ fn, resolve, reject });
-      if (!this.processing) this.processQueue();
-    });
-  }
-
-  private async processQueue() {
-    this.processing = true;
-    while (this.requestQueue.length > 0) {
-      const { fn, resolve, reject } = this.requestQueue.shift()!;
-      try { resolve(await fn()); } catch (e) { reject(e); }
-      if (this.requestQueue.length > 0) {
-        await new Promise(r => setTimeout(r, 100)); // 10 req/sec max
-      }
-    }
-    this.processing = false;
-  }
-}
-
-export const gateway = new LinearGateway(process.env.LINEAR_API_KEY!);
-```
-
-## Architecture 3: Event-Driven
-Webhook-centric architecture. Minimal API calls, real-time processing.
-
-```typescript
-// src/event-processor.ts
-import express from "express";
-import crypto from "crypto";
-import { EventEmitter } from "events";
-
-// Internal event bus
-const bus = new EventEmitter();
-
-// Webhook ingester
-const app = express();
-app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
-  const sig = req.headers["linear-signature"] as string;
-  const body = req.body.toString();
-  const expected = crypto.createHmac("sha256", process.env.LINEAR_WEBHOOK_SECRET!)
-    .update(body).digest("hex");
-
-  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) {
-    return res.status(401).end();
-  }
-
-  const event = JSON.parse(body);
-  res.json({ ok: true });
-
-  // Emit to internal consumers
-  bus.emit(`${event.type}.${event.action}`, event);
-  bus.emit(event.type, event);
-  bus.emit("*", event);
-});
-
-// Consumer: Slack notifications
-bus.on("Issue.update", async (event) => {
-  if (event.updatedFrom?.stateId && event.data.state?.type === "completed") {
-    await notifySlack(`Done: ${event.data.identifier} ${event.data.title}`);
-  }
-});
-
-// Consumer: Database sync
-bus.on("Issue", async (event) => {
-  if (event.action === "create") await db.issues.insert(event.data);
-  if (event.action === "update") await db.issues.update(event.data.id, event.data);
-  if (event.action === "remove") await db.issues.softDelete(event.data.id);
-});
-
-// Consumer: Cache invalidation
-bus.on("*", (event) => {
-  gateway.invalidate(event.type.toLowerCase());
-});
-```
-
-## Architecture 4: CQRS with Local State
-Separate read and write paths. Full local state for complex queries, API for writes.
-
-```typescript
-// Write side: mutations go through Linear API
-async function createIssue(input: any) {
-  const result = await gateway.createIssue(input);
-  // Local state updated via webhook, not here
-  return result;
-}
-
-// Read side: queries against local database (no API calls)
-async function getSprintVelocity(teamKey: string, sprints: number) {
-  return db.query(`
-    SELECT c.name, SUM(i.estimate) as velocity
-    FROM cycles c
-    JOIN issues i ON i.cycle_id = c.id AND i.state_type = 'completed'
-    WHERE c.team_key = ? AND c.completed_at IS NOT NULL
-    ORDER BY c.completed_at DESC
-    LIMIT ?
-  `, [teamKey, sprints]);
-}
-
-// Sync: webhook events keep local state fresh
-// Full sync: daily consistency check (see linear-data-handling)
-```
+## Prerequisites
+- Understanding of layered architecture
+- Linear SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
 ## Project Structure
+
 ```
-src/
-  linear/
-    gateway.ts          # Rate-limited, cached API access
-    webhook-handler.ts  # Signature verification + routing
-    event-bus.ts        # Internal event distribution
-    cache.ts            # TTL cache with invalidation
-  services/
-    issue-service.ts    # Business logic
-    sync-service.ts     # Data synchronization
-  config/
-    linear.ts           # Environment config + validation
+my-linear-project/
+├── src/
+│   ├── linear/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── linear/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── linear/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── linear/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── linear/
+│   └── integration/
+│       └── linear/
+├── config/
+│   ├── linear.development.json
+│   ├── linear.staging.json
+│   └── linear.production.json
+└── docs/
+    └── linear/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Linear Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/linear/client.ts
+export class LinearService {
+  private client: LinearClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: LinearConfig) {
+    this.client = new LinearClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('linear');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/linear/errors.ts
+export class LinearServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'LinearServiceError';
+  }
+}
+
+export function wrapLinearError(error: unknown): LinearServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/linear/health.ts
+export async function checkLinearHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await linearClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Linear    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Linear    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/linear.ts
+export interface LinearConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadLinearConfig(): LinearConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./linear.${env}.json`);
+}
+```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Linear operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Linear connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Rate limit exceeded | Too many direct API calls | Route all calls through gateway |
-| Stale cache | TTL too long, missed webhook | Webhook invalidation + periodic full sync |
-| Event loss | Webhook delivery failure | Idempotent handlers + consistency checks |
-| Schema drift | SDK version mismatch | Pin version, test upgrades in staging |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Linear types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/linear/{handlers} src/services/linear src/api/linear
+touch src/linear/{client,config,types,errors}.ts
+touch src/services/linear/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Linear API Best Practices](https://linear.app/developers/graphql)
-- [Event-Driven Architecture](https://martinfowler.com/articles/201701-event-driven.html)
-- [CQRS Pattern](https://martinfowler.com/bliki/CQRS.html)
+- [Linear SDK Documentation](https://docs.linear.com/sdk)
+- [Linear Best Practices](https://docs.linear.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `linear-multi-env-setup`.

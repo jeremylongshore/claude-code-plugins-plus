@@ -1,281 +1,216 @@
 ---
 name: linear-performance-tuning
 description: |
-  Optimize Linear API queries, caching, and batching for performance.
-  Use when improving response times, reducing API calls,
-  or implementing caching strategies for Linear data.
-  Trigger: "linear performance", "optimize linear", "linear caching",
-  "linear slow queries", "speed up linear", "linear N+1".
-allowed-tools: Read, Write, Edit, Grep
+  Optimize Linear API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Linear integrations.
+  Trigger with phrases like "linear performance", "optimize linear",
+  "linear latency", "linear caching", "linear slow", "linear batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, api, performance]
-
+compatible-with: claude-code
+tags: [saas, linear]
 ---
+
 # Linear Performance Tuning
 
 ## Overview
-Optimize Linear API usage for minimal latency and efficient resource consumption. The three main levers are: (1) query flattening to avoid N+1 and reduce complexity, (2) caching static data with webhook-driven invalidation, and (3) batching mutations into single GraphQL requests.
-
-**Key numbers:**
-- Query complexity budget: 250,000 pts/hour, max 10,000 per query
-- Each property: 0.1 pt, each object: 1 pt, connections: multiply by `first`
-- Best practice: sort by `updatedAt` to get fresh data first
+Optimize Linear API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Working Linear integration with `@linear/sdk`
-- Understanding of GraphQL query structure
-- Optional: Redis for distributed caching
+- Linear SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Eliminate N+1 Queries
-The SDK lazy-loads relations. Accessing `.assignee` on 50 issues makes 50 separate API calls.
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
+## Caching Strategy
+
+### Response Caching
 ```typescript
-import { LinearClient } from "@linear/sdk";
+import { LRUCache } from 'lru-cache';
 
-const client = new LinearClient({ apiKey: process.env.LINEAR_API_KEY! });
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
 
-// BAD: N+1 — 1 query for issues + 50 for assignees + 50 for states = 101 requests
-const issues = await client.issues({ first: 50 });
-for (const i of issues.nodes) {
-  const assignee = await i.assignee;  // API call!
-  const state = await i.state;        // API call!
-  console.log(`${i.identifier}: ${assignee?.name} [${state?.name}]`);
-}
+async function cachedLinearRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-// GOOD: 1 request — use rawRequest with exact field selection
-const response = await client.client.rawRequest(`
-  query TeamDashboard($teamId: String!) {
-    team(id: $teamId) {
-      issues(first: 50, orderBy: updatedAt) {
-        nodes {
-          id identifier title priority estimate updatedAt
-          assignee { name email }
-          state { name type }
-          labels { nodes { name color } }
-          project { name }
-        }
-        pageInfo { hasNextPage endCursor }
-      }
-    }
-  }
-`, { teamId: "team-uuid" });
-// Complexity: ~50 * (10 fields * 0.1 + 4 objects) = ~275 pts
-```
-
-### Step 2: Cache Static Data
-Teams, workflow states, and labels change rarely. Cache them with appropriate TTLs.
-
-```typescript
-interface CacheEntry<T> {
-  data: T;
-  expiresAt: number;
-}
-
-class LinearCache {
-  private store = new Map<string, CacheEntry<any>>();
-
-  get<T>(key: string): T | null {
-    const entry = this.store.get(key);
-    if (!entry || Date.now() > entry.expiresAt) {
-      this.store.delete(key);
-      return null;
-    }
-    return entry.data;
-  }
-
-  set<T>(key: string, data: T, ttlSeconds: number): void {
-    this.store.set(key, { data, expiresAt: Date.now() + ttlSeconds * 1000 });
-  }
-
-  invalidate(key: string): void {
-    this.store.delete(key);
-  }
-}
-
-const cache = new LinearCache();
-
-// Teams: 10 minute TTL (almost never change)
-async function getTeams(client: LinearClient) {
-  const cached = cache.get<any[]>("teams");
-  if (cached) return cached;
-  const teams = await client.teams();
-  cache.set("teams", teams.nodes, 600);
-  return teams.nodes;
-}
-
-// Workflow states: 30 minute TTL (rarely change)
-async function getStates(client: LinearClient, teamId: string) {
-  const key = `states:${teamId}`;
-  const cached = cache.get<any[]>(key);
-  if (cached) return cached;
-  const team = await client.team(teamId);
-  const states = await team.states();
-  cache.set(key, states.nodes, 1800);
-  return states.nodes;
-}
-
-// Labels: 10 minute TTL
-async function getLabels(client: LinearClient) {
-  const cached = cache.get<any[]>("labels");
-  if (cached) return cached;
-  const labels = await client.issueLabels();
-  cache.set("labels", labels.nodes, 600);
-  return labels.nodes;
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
 }
 ```
 
-### Step 3: Webhook-Driven Cache Invalidation
-Replace polling with webhooks. Invalidate cache when relevant entities change.
-
+### Redis Caching (Distributed)
 ```typescript
-function handleCacheInvalidation(event: { type: string; action: string; data: any }) {
-  switch (event.type) {
-    case "Issue":
-      cache.invalidate(`issue:${event.data.id}`);
-      break;
-    case "WorkflowState":
-      cache.invalidate(`states:${event.data.teamId}`);
-      break;
-    case "IssueLabel":
-      cache.invalidate("labels");
-      break;
-    case "Team":
-      cache.invalidate("teams");
-      break;
-  }
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
 }
 ```
 
-### Step 4: Batch Mutations
-Combine multiple mutations into one GraphQL request.
+## Request Batching
 
 ```typescript
-// Instead of 100 separate updateIssue calls:
-async function batchUpdatePriority(
-  client: LinearClient,
-  issueUpdates: Array<{ id: string; priority: number }>
-) {
-  const chunkSize = 20; // Keep complexity manageable
-  for (let i = 0; i < issueUpdates.length; i += chunkSize) {
-    const chunk = issueUpdates.slice(i, i + chunkSize);
-    const mutations = chunk.map((u, j) =>
-      `u${j}: issueUpdate(id: "${u.id}", input: { priority: ${u.priority} }) { success }`
-    ).join("\n");
+import DataLoader from 'dataloader';
 
-    await client.client.rawRequest(`mutation { ${mutations} }`);
+const linearLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Linear
+    const results = await linearClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
   }
-}
+);
 
-// Batch issue creation
-async function batchCreate(
-  client: LinearClient,
-  teamId: string,
-  issues: Array<{ title: string; priority?: number }>
-) {
-  const mutations = issues.map((issue, i) =>
-    `c${i}: issueCreate(input: {
-      teamId: "${teamId}",
-      title: "${issue.title.replace(/"/g, '\\"')}",
-      priority: ${issue.priority ?? 3}
-    }) { success issue { id identifier } }`
-  ).join("\n");
-
-  return client.client.rawRequest(`mutation { ${mutations} }`);
-}
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  linearLoader.load('id-1'),
+  linearLoader.load('id-2'),
+  linearLoader.load('id-3'),
+]);
 ```
 
-### Step 5: Efficient Pagination
+## Connection Optimization
+
 ```typescript
-// Stream all issues without loading everything into memory
-async function* paginateIssues(
-  client: LinearClient,
-  teamId: string,
-  pageSize = 50
-) {
-  let cursor: string | undefined;
-  let hasNext = true;
+import { Agent } from 'https';
 
-  while (hasNext) {
-    const result = await client.issues({
-      first: pageSize,
-      after: cursor,
-      filter: { team: { id: { eq: teamId } } },
-      orderBy: "updatedAt", // Fresh data first
-    });
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
 
-    yield result.nodes;
-    hasNext = result.pageInfo.hasNextPage;
-    cursor = result.pageInfo.endCursor;
-  }
-}
-
-// Process in batches
-for await (const batch of paginateIssues(client, "team-uuid")) {
-  console.log(`Processing ${batch.length} issues`);
-}
-
-// Incremental sync: only fetch issues updated since last sync
-const lastSync = "2026-03-20T00:00:00Z";
-const updated = await client.issues({
-  first: 100,
-  filter: { updatedAt: { gte: lastSync } },
-  orderBy: "updatedAt",
+const client = new LinearClient({
+  apiKey: process.env.LINEAR_API_KEY!,
+  httpAgent: agent,
 });
 ```
 
-### Step 6: Request Coalescing
-Deduplicate concurrent identical requests.
+## Pagination Optimization
 
 ```typescript
-const inflight = new Map<string, Promise<any>>();
+async function* paginatedLinearList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
 
-async function coalesce<T>(key: string, fn: () => Promise<T>): Promise<T> {
-  if (inflight.has(key)) return inflight.get(key)!;
-  const promise = fn().finally(() => inflight.delete(key));
-  inflight.set(key, promise);
-  return promise;
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
 }
 
-// Multiple components requesting same team data simultaneously = 1 API call
-const team = await coalesce("team:ENG", () =>
-  client.teams({ filter: { key: { eq: "ENG" } } }).then(r => r.nodes[0])
-);
+// Usage
+for await (const item of paginatedLinearList(cursor =>
+  linearClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
 ```
 
-## Error Handling
+## Performance Monitoring
 
-| Error | Cause | Solution |
+```typescript
+async function measuredLinearCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical Linear operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
+
+## Error Handling
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `Query complexity too high` | Deep nesting + large `first` | Use `rawRequest()` with flat fields, `first: 50` |
-| HTTP 429 | Burst exceeding rate budget | Add request queue with 100ms spacing |
-| Stale cache | TTL too long | Shorten TTL or use webhook invalidation |
-| Timeout | Query spanning too many records | Paginate with `first: 50` + cursor |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
 ## Examples
 
-### Performance Benchmark
+### Quick Performance Wrapper
 ```typescript
-async function benchmark(label: string, fn: () => Promise<any>) {
-  const start = Date.now();
-  await fn();
-  console.log(`${label}: ${Date.now() - start}ms`);
-}
-
-await benchmark("Cold teams", () => client.teams());
-await benchmark("Cached teams", () => getTeams(client));
-await benchmark("50 issues (SDK)", () => client.issues({ first: 50 }));
-await benchmark("50 issues (raw)", () => client.client.rawRequest(
-  `query { issues(first: 50) { nodes { id identifier title priority } } }`
-));
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredLinearCall(name, () =>
+    cachedLinearRequest(`cache:${name}`, fn)
+  );
 ```
 
 ## Resources
-- [Linear Best Practices](https://linear.app/developers/graphql)
-- [Rate Limiting](https://linear.app/developers/rate-limiting)
-- [Pagination](https://linear.app/developers/pagination)
-- [Filtering](https://linear.app/developers/filtering)
+- [Linear Performance Guide](https://docs.linear.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Next Steps
+For cost optimization, see `linear-cost-tuning`.

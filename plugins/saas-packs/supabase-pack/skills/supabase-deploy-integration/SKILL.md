@@ -1,208 +1,211 @@
 ---
 name: supabase-deploy-integration
 description: |
-  Deploy Supabase-powered apps to Vercel, Fly.io, and Cloud Run with
-  connection pooling, secret management, and Edge Functions.
-  Use when deploying to production, configuring platform secrets,
-  or setting up Supabase Edge Functions deployment.
+  Deploy Supabase integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Supabase-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy supabase", "supabase Vercel",
-  "supabase Edge Functions deploy", "supabase Cloud Run", "supabase Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(supabase:*)
+  "supabase production deploy", "supabase Cloud Run", "supabase Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, edge-functions]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Deploy Integration
 
 ## Overview
-Deploy Supabase-powered applications and Edge Functions to production. Covers Vercel, Fly.io, Cloud Run, and Supabase's native Edge Functions deployment with proper secret management and connection pooling.
+Deploy Supabase-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Supabase production project with API keys
-- Platform CLI installed (vercel, fly, gcloud, or supabase)
-- Application code tested against staging
+- Supabase API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Deploy Supabase Edge Functions
-
+### Environment Setup
 ```bash
-# Create an Edge Function
-supabase functions new process-payment
+# Add Supabase secrets to Vercel
+vercel secrets add supabase_api_key sk_live_***
+vercel secrets add supabase_webhook_secret whsec_***
 
-# Write the function (Deno runtime)
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
 ```
 
-```typescript
-// supabase/functions/process-payment/index.ts
-import { serve } from 'https://deno.land/std@0.177.0/http/server.ts'
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-serve(async (req) => {
-  try {
-    // Create Supabase client with the user's auth context
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: req.headers.get('Authorization')! } } }
-    )
-
-    const { amount, currency } = await req.json()
-
-    // Get the authenticated user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 })
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "SUPABASE_API_KEY": "@supabase_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
     }
-
-    // Business logic
-    const { data, error } = await supabase
-      .from('payments')
-      .insert({ user_id: user.id, amount, currency, status: 'pending' })
-      .select()
-      .single()
-
-    if (error) throw error
-
-    return new Response(JSON.stringify({ payment: data }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 })
   }
-})
-```
-
-```bash
-# Set secrets for the Edge Function
-supabase secrets set STRIPE_SECRET_KEY=sk_live_...
-supabase secrets set WEBHOOK_SECRET=whsec_...
-
-# Deploy
-supabase functions deploy process-payment
-
-# Deploy all functions
-supabase functions deploy
-```
-
-### Deploy to Vercel
-
-```bash
-# Add Supabase environment variables
-vercel env add NEXT_PUBLIC_SUPABASE_URL production
-vercel env add NEXT_PUBLIC_SUPABASE_ANON_KEY production
-vercel env add SUPABASE_SERVICE_ROLE_KEY production  # server-only
-
-# Use pooled connection string for Vercel (serverless)
-vercel env add DATABASE_URL production
-# Value: postgres://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
-
-# Deploy
-vercel deploy --prod
-```
-
-```typescript
-// lib/supabase-server.ts (for Vercel API routes / Server Components)
-import { createClient } from '@supabase/supabase-js'
-
-export function createServerClient() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
 }
 ```
 
-### Deploy to Fly.io
+## Fly.io Deployment
 
+### fly.toml
+```toml
+app = "my-supabase-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
 ```bash
-# Set secrets
-fly secrets set SUPABASE_URL=https://<ref>.supabase.co
-fly secrets set SUPABASE_ANON_KEY=eyJ...
-fly secrets set SUPABASE_SERVICE_ROLE_KEY=eyJ...
-fly secrets set DATABASE_URL=postgres://postgres.[ref]:[pwd]@aws-0-[region].pooler.supabase.com:5432/postgres
+# Set Supabase secrets
+fly secrets set SUPABASE_API_KEY=sk_live_***
+fly secrets set SUPABASE_WEBHOOK_SECRET=whsec_***
 
 # Deploy
 fly deploy
 ```
 
-### Deploy to Google Cloud Run
+## Google Cloud Run
 
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
 ```bash
-# Store secrets in Secret Manager
-echo -n "https://<ref>.supabase.co" | gcloud secrets create SUPABASE_URL --data-file=-
-echo -n "eyJ..." | gcloud secrets create SUPABASE_ANON_KEY --data-file=-
+#!/bin/bash
+# deploy-cloud-run.sh
 
-# Deploy with secret references
-gcloud run deploy my-app \
-  --source . \
-  --set-secrets="SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest" \
-  --region=us-central1 \
-  --allow-unauthenticated
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="supabase-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=SUPABASE_API_KEY=supabase-api-key:latest
 ```
 
-### Connection Pooling for Serverless
-
-```
-# Direct connection (for migrations, long-running servers)
-postgres://postgres.[ref]:[password]@db.[ref].supabase.co:5432/postgres
-
-# Pooled connection via Supavisor (for serverless / high-concurrency)
-# Transaction mode (default, recommended for serverless):
-postgres://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
-
-# Session mode (for features needing session state like prepared statements):
-postgres://postgres.[ref]:[password]@aws-0-[region].pooler.supabase.com:5432/postgres
-```
-
-### Health Check Endpoint
+## Environment Configuration Pattern
 
 ```typescript
-// api/health.ts (works on any platform)
-import { createClient } from '@supabase/supabase-js'
+// config/supabase.ts
+interface SupabaseConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-export async function GET() {
-  const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_ANON_KEY!
-  )
+export function getSupabaseConfig(): SupabaseConfig {
+  const env = process.env.NODE_ENV || 'development';
 
-  const start = Date.now()
-  const { error } = await supabase.rpc('version')
-  const latency = Date.now() - start
-
-  return Response.json({
-    healthy: !error,
-    supabase_latency_ms: latency,
-    region: process.env.FLY_REGION || process.env.VERCEL_REGION || 'unknown',
-  }, { status: error ? 503 : 200 })
+  return {
+    apiKey: process.env.SUPABASE_API_KEY!,
+    environment: env as SupabaseConfig['environment'],
+    webhookSecret: process.env.SUPABASE_WEBHOOK_SECRET,
+  };
 }
 ```
 
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const supabaseStatus = await checkSupabaseConnection();
+
+  return Response.json({
+    status: supabaseStatus ? 'healthy' : 'degraded',
+    services: {
+      supabase: supabaseStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Supabase API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Supabase integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Supabase connectivity.
+
 ## Output
-- Edge Functions deployed to Supabase's global edge network
-- Application deployed to chosen platform with proper secrets
-- Connection pooling configured for serverless environments
-- Health check endpoint verifying Supabase connectivity
+- Application deployed to production
+- Supabase secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `FetchError` on Vercel | Wrong SUPABASE_URL | Verify env vars in Vercel dashboard |
-| Edge Function 500 | Missing Deno import | Use `esm.sh` for npm packages in Edge Functions |
-| Connection timeout in serverless | Direct connection instead of pooled | Use Supavisor pooled connection string |
-| `supabase functions deploy` fails | Not linked | Run `supabase link --project-ref <ref>` |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add supabase_api_key "$SUPABASE_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set SUPABASE_API_KEY="$SUPABASE_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Edge Functions Guide](https://supabase.com/docs/guides/functions)
-- [Vercel Integration](https://supabase.com/partners/integrations/vercel)
-- [Connection Pooling](https://supabase.com/docs/guides/database/connecting-to-postgres#connection-pooler)
-- [Edge Functions Quickstart](https://supabase.com/docs/guides/functions/quickstart)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Supabase Deploy Guide](https://supabase.com/docs/deploy)
 
 ## Next Steps
 For webhook handling, see `supabase-webhooks-events`.

@@ -1,337 +1,259 @@
 ---
 name: clay-policy-guardrails
 description: |
-  Implement credit spending limits, data privacy enforcement, and input validation guardrails for Clay pipelines.
-  Use when enforcing spending caps, blocking PII enrichment,
-  or adding pre-enrichment validation rules.
-  Trigger with phrases like "clay policy", "clay guardrails", "clay spending limit",
-  "clay data privacy rules", "clay validation", "clay controls".
-allowed-tools: Read, Write, Edit, Bash(node:*)
+  Implement Clay lint rules, policy enforcement, and automated guardrails.
+  Use when setting up code quality rules for Clay integrations, implementing
+  pre-commit hooks, or configuring CI policy checks for Clay best practices.
+  Trigger with phrases like "clay policy", "clay lint",
+  "clay guardrails", "clay best practices check", "clay eslint".
+allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, clay-policy]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
-# Clay Policy Guardrails
+
+# Clay Policy & Guardrails
 
 ## Overview
-
-Policy enforcement and guardrails for Clay data enrichment pipelines. Clay processes personal and business data at scale, requiring strict controls around credit spending, data privacy compliance, input validation, and export restrictions.
+Automated policy enforcement and guardrails for Clay integrations.
 
 ## Prerequisites
+- ESLint configured in project
+- Pre-commit hooks infrastructure
+- CI/CD pipeline with policy checks
+- TypeScript for type enforcement
 
-- Clay integration in production or pre-production
-- Understanding of GDPR/CCPA requirements
-- Credit budget defined by management
-- Data classification policy for your organization
+## ESLint Rules
+
+### Custom Clay Plugin
+```javascript
+// eslint-plugin-clay/rules/no-hardcoded-keys.js
+module.exports = {
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Disallow hardcoded Clay API keys',
+    },
+    fixable: 'code',
+  },
+  create(context) {
+    return {
+      Literal(node) {
+        if (typeof node.value === 'string') {
+          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+            context.report({
+              node,
+              message: 'Hardcoded Clay API key detected',
+            });
+          }
+        }
+      },
+    };
+  },
+};
+```
+
+### ESLint Configuration
+```javascript
+// .eslintrc.js
+module.exports = {
+  plugins: ['clay'],
+  rules: {
+    'clay/no-hardcoded-keys': 'error',
+    'clay/require-error-handling': 'warn',
+    'clay/use-typed-client': 'warn',
+  },
+};
+```
+
+## Pre-Commit Hooks
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: clay-secrets-check
+        name: Check for Clay secrets
+        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
+
+      - id: clay-config-validate
+        name: Validate Clay configuration
+        entry: node scripts/validate-clay-config.js
+        language: node
+        files: '\.clay\.json$'
+```
+
+## TypeScript Strict Patterns
+
+```typescript
+// Enforce typed configuration
+interface ClayStrictConfig {
+  apiKey: string;  // Required
+  environment: 'development' | 'staging' | 'production';  // Enum
+  timeout: number;  // Required number, not optional
+  retries: number;
+}
+
+// Disallow any in Clay code
+// @ts-expect-error - Using any is forbidden
+const client = new Client({ apiKey: any });
+
+// Prefer this
+const client = new ClayClient(config satisfies ClayStrictConfig);
+```
+
+## Architecture Decision Records
+
+### ADR Template
+```markdown
+# ADR-001: Clay Client Initialization
+
+## Status
+Accepted
+
+## Context
+We need to decide how to initialize the Clay client across our application.
+
+## Decision
+We will use the singleton pattern with lazy initialization.
+
+## Consequences
+- Pro: Single client instance, connection reuse
+- Pro: Easy to mock in tests
+- Con: Global state requires careful lifecycle management
+
+## Enforcement
+- ESLint rule: clay/use-singleton-client
+- CI check: grep for "new ClayClient(" outside allowed files
+```
+
+## Policy-as-Code (OPA)
+
+```rego
+# clay-policy.rego
+package clay
+
+# Deny production API keys in non-production environments
+deny[msg] {
+  input.environment != "production"
+  startswith(input.apiKey, "sk_live_")
+  msg := "Production API keys not allowed in non-production environment"
+}
+
+# Require minimum timeout
+deny[msg] {
+  input.timeout < 10000
+  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
+}
+
+# Require retry configuration
+deny[msg] {
+  not input.retries
+  msg := "Retry configuration is required"
+}
+```
+
+## CI Policy Checks
+
+```yaml
+# .github/workflows/clay-policy.yml
+name: Clay Policy Check
+
+on: [push, pull_request]
+
+jobs:
+  policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for hardcoded secrets
+        run: |
+          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+            echo "ERROR: Hardcoded Clay keys found"
+            exit 1
+          fi
+
+      - name: Validate configuration schema
+        run: |
+          npx ajv validate -s clay-config.schema.json -d config/clay/*.json
+
+      - name: Run ESLint Clay rules
+        run: npx eslint --plugin clay --rule 'clay/no-hardcoded-keys: error' src/
+```
+
+## Runtime Guardrails
+
+```typescript
+// Prevent dangerous operations in production
+const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
+
+function guardClayOperation(operation: string): void {
+  const isProd = process.env.NODE_ENV === 'production';
+
+  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
+    throw new Error(`Operation '${operation}' blocked in production`);
+  }
+}
+
+// Rate limit protection
+function guardRateLimits(requestsInWindow: number): void {
+  const limit = parseInt(process.env.CLAY_RATE_LIMIT || '100');
+
+  if (requestsInWindow > limit * 0.9) {
+    console.warn('Approaching Clay rate limit');
+  }
+
+  if (requestsInWindow >= limit) {
+    throw new Error('Clay rate limit exceeded - request blocked');
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Credit Spending Guardrails
+### Step 1: Create ESLint Rules
+Implement custom lint rules for Clay patterns.
 
-```typescript
-// src/clay/policies/credit-policy.ts
-interface CreditPolicy {
-  dailyLimit: number;
-  perTableLimit: number;
-  perBatchLimit: number;
-  alertThresholdPct: number;
-  hardStopEnabled: boolean;
-}
+### Step 2: Configure Pre-Commit Hooks
+Set up hooks to catch issues before commit.
 
-const CREDIT_POLICIES: Record<string, CreditPolicy> = {
-  conservative: {
-    dailyLimit: 200,
-    perTableLimit: 500,
-    perBatchLimit: 100,
-    alertThresholdPct: 70,
-    hardStopEnabled: true,
-  },
-  standard: {
-    dailyLimit: 500,
-    perTableLimit: 2000,
-    perBatchLimit: 500,
-    alertThresholdPct: 80,
-    hardStopEnabled: true,
-  },
-  aggressive: {
-    dailyLimit: 2000,
-    perTableLimit: 10000,
-    perBatchLimit: 2000,
-    alertThresholdPct: 90,
-    hardStopEnabled: false, // Alert only, don't stop
-  },
-};
+### Step 3: Add CI Policy Checks
+Implement policy-as-code in CI pipeline.
 
-class CreditPolicyEnforcer {
-  private dailyUsed = 0;
-  private tableUsage = new Map<string, number>();
+### Step 4: Enable Runtime Guardrails
+Add production safeguards for dangerous operations.
 
-  constructor(private policy: CreditPolicy) {}
-
-  checkBatch(tableId: string, rowCount: number, creditsPerRow: number): {
-    allowed: boolean;
-    reason?: string;
-  } {
-    const estimated = rowCount * creditsPerRow;
-
-    // Batch limit
-    if (estimated > this.policy.perBatchLimit) {
-      return {
-        allowed: false,
-        reason: `Batch (${estimated} credits) exceeds per-batch limit (${this.policy.perBatchLimit}). Split into smaller batches.`,
-      };
-    }
-
-    // Daily limit
-    if (this.dailyUsed + estimated > this.policy.dailyLimit) {
-      if (this.policy.hardStopEnabled) {
-        return {
-          allowed: false,
-          reason: `Would exceed daily limit: ${this.dailyUsed} + ${estimated} > ${this.policy.dailyLimit}`,
-        };
-      }
-      console.warn(`WARNING: Exceeding daily limit (${this.dailyUsed + estimated}/${this.policy.dailyLimit})`);
-    }
-
-    // Per-table limit
-    const tableTotal = (this.tableUsage.get(tableId) || 0) + estimated;
-    if (tableTotal > this.policy.perTableLimit) {
-      return {
-        allowed: false,
-        reason: `Table ${tableId} would exceed limit: ${tableTotal} > ${this.policy.perTableLimit}`,
-      };
-    }
-
-    // Alert threshold
-    const dailyPct = ((this.dailyUsed + estimated) / this.policy.dailyLimit) * 100;
-    if (dailyPct > this.policy.alertThresholdPct) {
-      console.warn(`Credit alert: ${dailyPct.toFixed(0)}% of daily limit used`);
-    }
-
-    return { allowed: true };
-  }
-
-  recordUsage(tableId: string, credits: number) {
-    this.dailyUsed += credits;
-    this.tableUsage.set(tableId, (this.tableUsage.get(tableId) || 0) + credits);
-  }
-}
-```
-
-### Step 2: Data Privacy Guardrails
-
-```typescript
-// src/clay/policies/privacy-policy.ts
-
-// Fields that should NEVER be enriched or stored
-const BLOCKED_ENRICHMENT_FIELDS = new Set([
-  'ssn', 'social_security', 'tax_id',
-  'date_of_birth', 'dob', 'birthday',
-  'home_address', 'home_phone',
-  'personal_phone', 'personal_mobile',
-  'bank_account', 'credit_card',
-  'medical_history', 'health_records',
-  'salary', 'compensation',
-  'political_affiliation', 'religion',
-  'ethnic_origin', 'sexual_orientation',
-]);
-
-// Fields that require explicit consent
-const CONSENT_REQUIRED_FIELDS = new Set([
-  'personal_email', 'phone_number', 'mobile_phone',
-]);
-
-interface PrivacyCheckResult {
-  allowed: boolean;
-  violations: string[];
-  warnings: string[];
-}
-
-function checkPrivacy(
-  fieldsToEnrich: string[],
-  hasExplicitConsent: boolean = false,
-): PrivacyCheckResult {
-  const violations: string[] = [];
-  const warnings: string[] = [];
-
-  for (const field of fieldsToEnrich) {
-    const normalized = field.toLowerCase().replace(/[\s-]/g, '_');
-
-    if (BLOCKED_ENRICHMENT_FIELDS.has(normalized)) {
-      violations.push(`BLOCKED: "${field}" is a restricted field (never enrich)`);
-    }
-
-    if (CONSENT_REQUIRED_FIELDS.has(normalized) && !hasExplicitConsent) {
-      warnings.push(`CONSENT: "${field}" requires explicit consent to enrich`);
-    }
-  }
-
-  return {
-    allowed: violations.length === 0,
-    violations,
-    warnings,
-  };
-}
-```
-
-### Step 3: Input Validation Guardrails
-
-```typescript
-// src/clay/policies/input-validation.ts
-
-const PERSONAL_EMAIL_DOMAINS = new Set([
-  'gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com',
-  'aol.com', 'protonmail.com', 'mail.com', 'yandex.com', 'gmx.com',
-]);
-
-const DISPOSABLE_EMAIL_DOMAINS = new Set([
-  'tempmail.com', 'guerrillamail.com', 'throwaway.email', 'yopmail.com',
-  'mailinator.com', '10minutemail.com', 'trashmail.com',
-]);
-
-interface ValidationResult {
-  valid: Record<string, unknown>[];
-  rejected: { row: Record<string, unknown>; reason: string }[];
-  stats: {
-    total: number;
-    valid: number;
-    invalidDomain: number;
-    personalDomain: number;
-    disposableDomain: number;
-    missingRequiredField: number;
-    duplicates: number;
-  };
-}
-
-function validateBatch(
-  rows: Record<string, unknown>[],
-  requiredFields: string[] = ['domain'],
-): ValidationResult {
-  const seen = new Set<string>();
-  const stats = {
-    total: rows.length, valid: 0, invalidDomain: 0,
-    personalDomain: 0, disposableDomain: 0, missingRequiredField: 0, duplicates: 0,
-  };
-  const valid: Record<string, unknown>[] = [];
-  const rejected: { row: Record<string, unknown>; reason: string }[] = [];
-
-  for (const row of rows) {
-    // Required fields check
-    const missing = requiredFields.filter(f => !row[f]);
-    if (missing.length > 0) {
-      rejected.push({ row, reason: `Missing required: ${missing.join(', ')}` });
-      stats.missingRequiredField++;
-      continue;
-    }
-
-    const domain = String(row.domain || '').toLowerCase().trim();
-
-    // Domain validation
-    if (!domain.includes('.') || domain.length < 4) {
-      rejected.push({ row, reason: `Invalid domain: "${domain}"` });
-      stats.invalidDomain++;
-      continue;
-    }
-
-    // Personal domain filter
-    if (PERSONAL_EMAIL_DOMAINS.has(domain)) {
-      rejected.push({ row, reason: `Personal email domain: ${domain}` });
-      stats.personalDomain++;
-      continue;
-    }
-
-    // Disposable domain filter
-    if (DISPOSABLE_EMAIL_DOMAINS.has(domain)) {
-      rejected.push({ row, reason: `Disposable email domain: ${domain}` });
-      stats.disposableDomain++;
-      continue;
-    }
-
-    // Deduplication
-    const key = `${domain}:${String(row.first_name || '').toLowerCase()}:${String(row.last_name || '').toLowerCase()}`;
-    if (seen.has(key)) {
-      stats.duplicates++;
-      continue;
-    }
-    seen.add(key);
-
-    valid.push({ ...row, domain });
-    stats.valid++;
-  }
-
-  return { valid, rejected, stats };
-}
-```
-
-### Step 4: Export Restrictions
-
-```typescript
-// src/clay/policies/export-policy.ts
-type ExportDestination = 'crm' | 'outreach' | 'analytics' | 'csv';
-
-const EXPORT_RULES: Record<ExportDestination, {
-  allowedFields: string[];
-  blockedFields: string[];
-  requiresApproval: boolean;
-}> = {
-  crm: {
-    allowedFields: ['email', 'first_name', 'last_name', 'company_name', 'job_title', 'icp_score'],
-    blockedFields: ['personal_email', 'home_address'],
-    requiresApproval: false,
-  },
-  outreach: {
-    allowedFields: ['email', 'first_name', 'company_name', 'personalized_opener'],
-    blockedFields: ['phone_number', 'linkedin_url', 'personal_email'],
-    requiresApproval: false,
-  },
-  analytics: {
-    allowedFields: ['company_name', 'industry', 'employee_count', 'icp_score'],
-    blockedFields: ['email', 'first_name', 'last_name', 'phone_number'],
-    requiresApproval: false,
-  },
-  csv: {
-    allowedFields: ['*'], // All fields
-    blockedFields: ['personal_email', 'home_address', 'ssn'],
-    requiresApproval: true, // Requires manager approval for CSV export
-  },
-};
-
-function filterForExport(
-  rows: Record<string, unknown>[],
-  destination: ExportDestination,
-): Record<string, unknown>[] {
-  const rules = EXPORT_RULES[destination];
-
-  return rows.map(row => {
-    const filtered: Record<string, unknown> = {};
-    for (const [key, value] of Object.entries(row)) {
-      if (rules.blockedFields.includes(key)) continue;
-      if (rules.allowedFields[0] !== '*' && !rules.allowedFields.includes(key)) continue;
-      filtered[key] = value;
-    }
-    return filtered;
-  });
-}
-```
+## Output
+- ESLint plugin with Clay rules
+- Pre-commit hooks blocking secrets
+- CI policy checks passing
+- Runtime guardrails active
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Credit overrun | No spending limits enforced | Implement credit policy enforcer |
-| PII enrichment violation | No privacy checks | Add blocked field validation |
-| Wasted credits on bad data | No input validation | Pre-validate all batches |
-| Unauthorized data export | No export restrictions | Implement per-destination field filtering |
+| ESLint rule not firing | Wrong config | Check plugin registration |
+| Pre-commit skipped | --no-verify | Enforce in CI |
+| Policy false positive | Regex too broad | Narrow pattern match |
+| Guardrail triggered | Actual issue | Fix or whitelist |
+
+## Examples
+
+### Quick ESLint Check
+```bash
+npx eslint --plugin clay --rule 'clay/no-hardcoded-keys: error' src/
+```
 
 ## Resources
-
-- [GDPR Official Text](https://gdpr.eu/what-is-gdpr/)
-- [CCPA Requirements](https://oag.ca.gov/privacy/ccpa)
-- [Clay Community](https://community.clay.com)
+- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Pre-commit Framework](https://pre-commit.com/)
+- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
-
-For architecture patterns at scale, see `clay-architecture-variants`.
+For architecture blueprints, see `clay-architecture-variants`.

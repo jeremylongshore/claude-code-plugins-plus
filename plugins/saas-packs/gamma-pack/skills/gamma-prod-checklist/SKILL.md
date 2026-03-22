@@ -1,175 +1,121 @@
 ---
 name: gamma-prod-checklist
 description: |
-  Production readiness checklist for Gamma integration.
-  Use when preparing to deploy Gamma integration to production,
-  or auditing existing production setup.
-  Trigger with phrases like "gamma production", "gamma prod ready",
-  "gamma go live", "gamma deployment checklist", "gamma launch".
-allowed-tools: Read, Write, Edit, Grep
+  Execute Gamma production deployment checklist and rollback procedures.
+  Use when deploying Gamma integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "gamma production", "deploy gamma",
+  "gamma go-live", "gamma launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, deployment, golang, audit]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Production Checklist
 
 ## Overview
-Comprehensive checklist to ensure your Gamma integration is production-ready.
+Complete checklist for deploying Gamma integrations to production.
 
 ## Prerequisites
-- Completed development and testing
-- Staging environment validated
-- Monitoring infrastructure ready
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
-## Production Checklist
+## Instructions
 
-### 1. Authentication & Security
-- [ ] Production API key obtained (not development key)
-- [ ] API key stored in secret manager (not env file)
-- [ ] Key rotation procedure documented and tested
-- [ ] Minimum required scopes configured
-- [ ] No secrets in source code or logs
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-```typescript
-// Production client configuration
-const gamma = new GammaClient({
-  apiKey: await secretManager.getSecret('GAMMA_API_KEY'),
-  timeout: 30000,  # 30000: 30 seconds in ms
-  retries: 3,
-});
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Gamma error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
+
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Gamma connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
+
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.gamma.com
+
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/gamma-integration app=image:new --record
+kubectl rollout pause deployment/gamma-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/gamma-integration
+kubectl rollout pause deployment/gamma-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/gamma-integration
+kubectl rollout status deployment/gamma-integration
 ```
 
-### 2. Error Handling
-- [ ] All API calls wrapped in try/catch
-- [ ] Exponential backoff for rate limits
-- [ ] Graceful degradation for API outages
-- [ ] User-friendly error messages
-- [ ] Error tracking integration (Sentry, etc.)
+## Output
+- Deployed Gamma integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Examples
+
+### Health Check Implementation
 ```typescript
-import * as Sentry from '@sentry/node';
-
-try {
-  await gamma.presentations.create({ ... });
-} catch (err) {
-  Sentry.captureException(err, {
-    tags: { service: 'gamma', operation: 'create' },
-  });
-  throw new UserError('Unable to create presentation. Please try again.');
+async function healthCheck(): Promise<{ status: string; gamma: any }> {
+  const start = Date.now();
+  try {
+    await gammaClient.ping();
+    return { status: 'healthy', gamma: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', gamma: { connected: false, latencyMs: Date.now() - start } };
+  }
 }
 ```
 
-### 3. Performance
-- [ ] Client instance reused (singleton pattern)
-- [ ] Connection pooling enabled
-- [ ] Appropriate timeouts configured
-- [ ] Response caching where applicable
-- [ ] Async operations for long tasks
-
-### 4. Monitoring & Logging
-- [ ] Request/response logging (sanitized)
-- [ ] Latency metrics collection
-- [ ] Error rate alerting
-- [ ] Rate limit monitoring
-- [ ] Health check endpoint
-
-```typescript
-// Health check
-app.get('/health/gamma', async (req, res) => {
-  try {
-    await gamma.ping();
-    res.json({ status: 'healthy', service: 'gamma' });
-  } catch (err) {
-    res.status(503).json({ status: 'unhealthy', error: err.message });  # HTTP 503 Service Unavailable
-  }
-});
-```
-
-### 5. Rate Limiting
-- [ ] Rate limit tier confirmed with Gamma
-- [ ] Request queuing implemented
-- [ ] Backoff strategy in place
-- [ ] Usage monitoring alerts
-- [ ] Burst protection enabled
-
-### 6. Data Handling
-- [ ] PII handling compliant with policies
-- [ ] Data retention policies documented
-- [ ] Export data properly secured
-- [ ] User consent for AI processing
-- [ ] GDPR/CCPA compliance verified
-
-### 7. Disaster Recovery
-- [ ] Fallback behavior defined
-- [ ] Circuit breaker implemented
-- [ ] Recovery procedures documented
-- [ ] Backup API key available
-- [ ] Incident response plan ready
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(
-  (opts) => gamma.presentations.create(opts),
-  {
-    timeout: 30000,  # 30000: 30 seconds in ms
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,  # 30 seconds in ms
-  }
-);
-
-breaker.fallback(() => ({
-  error: 'Service temporarily unavailable',
-  retry: true,
-}));
-```
-
-### 8. Testing
-- [ ] Integration tests passing
-- [ ] Load testing completed
-- [ ] Failure scenario testing done
-- [ ] API mock for CI/CD
-- [ ] Staging environment validated
-
-### 9. Documentation
-- [ ] API integration documented
-- [ ] Runbooks for common issues
-- [ ] Architecture diagrams updated
-- [ ] On-call procedures defined
-- [ ] Team trained on Gamma features
-
-## Final Verification Script
+### Immediate Rollback
 ```bash
-#!/bin/bash
-set -euo pipefail
-# prod-verify.sh
-
-echo "Gamma Production Verification"
-
-# Check API key
-if [ -z "$GAMMA_API_KEY" ]; then
-  echo "FAIL: GAMMA_API_KEY not set"
-  exit 1
-fi
-
-# Test connection
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $GAMMA_API_KEY" \
-  https://api.gamma.app/v1/ping | grep -q "200" \  # HTTP 200 OK
-  && echo "OK: API connection" \
-  || echo "FAIL: API connection"
-
-echo "Verification complete"
+kubectl rollout undo deployment/gamma-integration
+kubectl rollout status deployment/gamma-integration
 ```
 
 ## Resources
-- [Gamma Production Guide](https://gamma.app/docs/production)
-- [Gamma SLA](https://gamma.app/sla)
-- [Gamma Status Page](https://status.gamma.app)
+- [Gamma Status](https://status.gamma.com)
+- [Gamma Support](https://docs.gamma.com/support)
 
 ## Next Steps
-
-Proceed to `gamma-upgrade-migration` for version upgrades.
+For version upgrades, see `gamma-upgrade-migration`.

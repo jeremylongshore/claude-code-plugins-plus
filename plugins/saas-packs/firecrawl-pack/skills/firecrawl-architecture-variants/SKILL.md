@@ -1,231 +1,286 @@
 ---
 name: firecrawl-architecture-variants
 description: |
-  Choose and implement Firecrawl architecture patterns for different scales and use cases.
-  Use when designing new Firecrawl integrations, choosing between on-demand/scheduled/pipeline
-  architectures, or planning scraping infrastructure.
+  Choose and implement FireCrawl validated architecture blueprints for different scales.
+  Use when designing new FireCrawl integrations, choosing between monolith/service/microservice
+  architectures, or planning migration paths for FireCrawl applications.
   Trigger with phrases like "firecrawl architecture", "firecrawl blueprint",
-  "how to structure firecrawl", "firecrawl at scale", "firecrawl pipeline design".
+  "how to structure firecrawl", "firecrawl project layout", "firecrawl microservice".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, migration, scaling, microservices]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Architecture Variants
+
+# FireCrawl Architecture Variants
 
 ## Overview
-Three deployment architectures for Firecrawl at different scales: on-demand scraping for simple use cases, scheduled crawl pipelines for content monitoring, and real-time ingestion pipelines for AI/RAG applications. Choose based on volume, latency requirements, and cost budget.
+Three validated architecture blueprints for FireCrawl integrations.
+
+## Prerequisites
+- Understanding of team size and DAU requirements
+- Knowledge of deployment infrastructure
+- Clear SLA requirements
+- Growth projections available
+
+## Variant A: Monolith (Simple)
+
+**Best for:** MVPs, small teams, < 10K daily active users
+
+```
+my-app/
+├── src/
+│   ├── firecrawl/
+│   │   ├── client.ts          # Singleton client
+│   │   ├── types.ts           # Types
+│   │   └── middleware.ts      # Express middleware
+│   ├── routes/
+│   │   └── api/
+│   │       └── firecrawl.ts    # API routes
+│   └── index.ts
+├── tests/
+│   └── firecrawl.test.ts
+└── package.json
+```
+
+### Key Characteristics
+- Single deployment unit
+- Synchronous FireCrawl calls in request path
+- In-memory caching
+- Simple error handling
+
+### Code Pattern
+```typescript
+// Direct integration in route handler
+app.post('/api/create', async (req, res) => {
+  try {
+    const result = await firecrawlClient.create(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+```
+
+---
+
+## Variant B: Service Layer (Moderate)
+
+**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+
+```
+my-app/
+├── src/
+│   ├── services/
+│   │   ├── firecrawl/
+│   │   │   ├── client.ts      # Client wrapper
+│   │   │   ├── service.ts     # Business logic
+│   │   │   ├── repository.ts  # Data access
+│   │   │   └── types.ts
+│   │   └── index.ts           # Service exports
+│   ├── controllers/
+│   │   └── firecrawl.ts
+│   ├── routes/
+│   ├── middleware/
+│   ├── queue/
+│   │   └── firecrawl-processor.ts  # Async processing
+│   └── index.ts
+├── config/
+│   └── firecrawl/
+└── package.json
+```
+
+### Key Characteristics
+- Separation of concerns
+- Background job processing
+- Redis caching
+- Circuit breaker pattern
+- Structured error handling
+
+### Code Pattern
+```typescript
+// Service layer abstraction
+class FireCrawlService {
+  constructor(
+    private client: FireCrawlClient,
+    private cache: CacheService,
+    private queue: QueueService
+  ) {}
+
+  async createResource(data: CreateInput): Promise<Resource> {
+    // Business logic before API call
+    const validated = this.validate(data);
+
+    // Check cache
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
+    // API call with retry
+    const result = await this.withRetry(() =>
+      this.client.create(validated)
+    );
+
+    // Cache result
+    await this.cache.set(cacheKey, result, 300);
+
+    // Async follow-up
+    await this.queue.enqueue('firecrawl.post-create', result);
+
+    return result;
+  }
+}
+```
+
+---
+
+## Variant C: Microservice (Complex)
+
+**Best for:** Enterprise, 100K+ DAU, strict SLAs
+
+```
+firecrawl-service/              # Dedicated microservice
+├── src/
+│   ├── api/
+│   │   ├── grpc/
+│   │   │   └── firecrawl.proto
+│   │   └── rest/
+│   │       └── routes.ts
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── events/
+│   │   └── services/
+│   ├── infrastructure/
+│   │   ├── firecrawl/
+│   │   │   ├── client.ts
+│   │   │   ├── mapper.ts
+│   │   │   └── circuit-breaker.ts
+│   │   ├── cache/
+│   │   ├── queue/
+│   │   └── database/
+│   └── index.ts
+├── config/
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+└── package.json
+
+other-services/
+├── order-service/       # Calls firecrawl-service
+├── payment-service/
+└── notification-service/
+```
+
+### Key Characteristics
+- Dedicated FireCrawl microservice
+- gRPC for internal communication
+- Event-driven architecture
+- Database per service
+- Kubernetes autoscaling
+- Distributed tracing
+- Circuit breaker per service
+
+### Code Pattern
+```typescript
+// Event-driven with domain isolation
+class FireCrawlAggregate {
+  private events: DomainEvent[] = [];
+
+  process(command: FireCrawlCommand): void {
+    // Domain logic
+    const result = this.execute(command);
+
+    // Emit domain event
+    this.events.push(new FireCrawlProcessedEvent(result));
+  }
+
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this.events];
+  }
+}
+
+// Event handler
+@EventHandler(FireCrawlProcessedEvent)
+class FireCrawlEventHandler {
+  async handle(event: FireCrawlProcessedEvent): Promise<void> {
+    // Saga orchestration
+    await this.sagaOrchestrator.continue(event);
+  }
+}
+```
+
+---
 
 ## Decision Matrix
 
-| Factor | On-Demand | Scheduled Pipeline | Real-Time Pipeline |
-|--------|-----------|-------------------|-------------------|
-| Volume | < 500/day | 500-10K/day | 10K+/day |
-| Latency | Sync (2-10s) | Async (hours) | Async (minutes) |
-| Use Case | Single page lookup | Site monitoring | Knowledge base, RAG |
-| Credit Control | Per-request | Per-crawl budget | Credit pipeline |
-| Complexity | Low | Medium | High |
+| Factor | Monolith | Service Layer | Microservice |
+|--------|----------|---------------|--------------|
+| Team Size | 1-5 | 5-20 | 20+ |
+| DAU | < 10K | 10K-100K | 100K+ |
+| Deployment Frequency | Weekly | Daily | Continuous |
+| Failure Isolation | None | Partial | Full |
+| Operational Complexity | Low | Medium | High |
+| Time to Market | Fastest | Moderate | Slowest |
+
+## Migration Path
+
+```
+Monolith → Service Layer:
+1. Extract FireCrawl code to service/
+2. Add caching layer
+3. Add background processing
+
+Service Layer → Microservice:
+1. Create dedicated firecrawl-service repo
+2. Define gRPC contract
+3. Add event bus
+4. Deploy to Kubernetes
+5. Migrate traffic gradually
+```
 
 ## Instructions
 
-### Architecture 1: On-Demand Scraping
-```
-User Request → Backend API → firecrawl.scrapeUrl → Clean Content → Response
-```
+### Step 1: Assess Requirements
+Use the decision matrix to identify appropriate variant.
 
-Best for: chatbots, content preview, single-page extraction.
+### Step 2: Choose Architecture
+Select Monolith, Service Layer, or Microservice based on needs.
 
-```typescript
-import FirecrawlApp from "@mendable/firecrawl-js";
+### Step 3: Implement Structure
+Set up project layout following the chosen blueprint.
 
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-});
+### Step 4: Plan Migration Path
+Document upgrade path for future scaling.
 
-// Simple API endpoint
-app.post("/api/scrape", async (req, res) => {
-  const { url } = req.body;
-
-  const result = await firecrawl.scrapeUrl(url, {
-    formats: ["markdown"],
-    onlyMainContent: true,
-    waitFor: 3000,
-  });
-
-  res.json({
-    title: result.metadata?.title,
-    content: result.markdown,
-    url: result.metadata?.sourceURL,
-  });
-});
-
-// With LLM extraction
-app.post("/api/extract", async (req, res) => {
-  const { url, schema } = req.body;
-
-  const result = await firecrawl.scrapeUrl(url, {
-    formats: ["extract"],
-    extract: { schema },
-  });
-
-  res.json({ data: result.extract });
-});
-```
-
-### Architecture 2: Scheduled Crawl Pipeline
-```
-Scheduler (cron) → Crawl Queue → firecrawl.asyncCrawlUrl → Result Store
-                                                                  │
-                                                                  ▼
-                                                        Content Processor → Search Index
-```
-
-Best for: documentation monitoring, content indexing, competitive analysis.
-
-```typescript
-import cron from "node-cron";
-
-interface CrawlTarget {
-  id: string;
-  url: string;
-  maxPages: number;
-  paths?: string[];
-  schedule: string; // cron expression
-}
-
-const targets: CrawlTarget[] = [
-  { id: "docs", url: "https://docs.example.com", maxPages: 100, paths: ["/docs/*"], schedule: "0 2 * * *" },
-  { id: "blog", url: "https://blog.example.com", maxPages: 50, schedule: "0 4 * * 1" },
-];
-
-// Schedule crawls
-for (const target of targets) {
-  cron.schedule(target.schedule, async () => {
-    console.log(`Starting scheduled crawl: ${target.id}`);
-    const job = await firecrawl.asyncCrawlUrl(target.url, {
-      limit: target.maxPages,
-      includePaths: target.paths,
-      scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
-    });
-    await db.saveCrawlJob({ targetId: target.id, jobId: job.id, startedAt: new Date() });
-  });
-}
-
-// Separate worker polls for results
-async function processPendingCrawls() {
-  const pending = await db.getPendingCrawlJobs();
-  for (const job of pending) {
-    const status = await firecrawl.checkCrawlStatus(job.jobId);
-    if (status.status === "completed") {
-      await indexPages(job.targetId, status.data || []);
-      await db.markComplete(job.id, status.data?.length || 0);
-      console.log(`Crawl ${job.targetId} complete: ${status.data?.length} pages indexed`);
-    }
-  }
-}
-setInterval(processPendingCrawls, 30000);
-```
-
-### Architecture 3: Real-Time Content Pipeline
-```
-URL Sources → Priority Queue → Firecrawl Workers → Content Validation
-                                                          │
-                                                          ▼
-                                                   Vector DB + Search Index
-                                                          │
-                                                          ▼
-                                                    RAG / AI Pipeline
-```
-
-Best for: AI training data, knowledge base, enterprise content platform.
-
-```typescript
-import PQueue from "p-queue";
-
-class ContentPipeline {
-  private queue: PQueue;
-  private firecrawl: FirecrawlApp;
-  private creditBudget: number;
-  private creditsUsed = 0;
-
-  constructor(concurrency = 5, dailyBudget = 10000) {
-    this.queue = new PQueue({ concurrency, interval: 1000, intervalCap: 10 });
-    this.firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY! });
-    this.creditBudget = dailyBudget;
-  }
-
-  async ingest(urls: string[]) {
-    if (this.creditsUsed + urls.length > this.creditBudget) {
-      throw new Error("Daily credit budget exceeded");
-    }
-
-    // Use batch scrape for efficiency
-    const result = await this.queue.add(() =>
-      this.firecrawl.batchScrapeUrls(urls, {
-        formats: ["markdown"],
-        onlyMainContent: true,
-      })
-    );
-
-    this.creditsUsed += urls.length;
-
-    // Validate and process
-    const pages = (result?.data || []).filter(page => {
-      const md = page.markdown || "";
-      return md.length > 100 && !/captcha|access denied/i.test(md);
-    });
-
-    // Store in vector DB
-    for (const page of pages) {
-      await vectorStore.upsert({
-        id: page.metadata?.sourceURL,
-        content: page.markdown,
-        metadata: { title: page.metadata?.title, url: page.metadata?.sourceURL },
-      });
-    }
-
-    return { ingested: pages.length, rejected: urls.length - pages.length };
-  }
-
-  async discover(siteUrl: string, pathFilter: string) {
-    const map = await this.firecrawl.mapUrl(siteUrl);
-    return (map.links || []).filter(url => url.includes(pathFilter));
-  }
-}
-
-// Usage
-const pipeline = new ContentPipeline(5, 10000);
-const urls = await pipeline.discover("https://docs.example.com", "/api/");
-const result = await pipeline.ingest(urls.slice(0, 100));
-console.log(`Ingested ${result.ingested} pages into vector store`);
-```
-
-## Choosing Your Architecture
-
-```
-Need real-time, user-facing response?
-├── YES → On-Demand (Architecture 1)
-└── NO → How many pages/day?
-    ├── < 500 → On-Demand with caching
-    ├── 500-10K → Scheduled Pipeline (Architecture 2)
-    └── 10K+ → Real-Time Pipeline (Architecture 3)
-```
+## Output
+- Architecture variant selected
+- Project structure implemented
+- Migration path documented
+- Appropriate patterns applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow on-demand response | JS-heavy target page | Add caching layer, reduce waitFor |
-| Stale indexed content | Crawl schedule too infrequent | Increase frequency for critical sources |
-| Credit overrun | Pipeline ingesting too aggressively | Implement daily budget with hard cap |
-| Duplicate content | Re-crawling same pages | Deduplicate by content hash before indexing |
+| Over-engineering | Wrong variant choice | Start simpler |
+| Performance issues | Wrong layer | Add caching/async |
+| Team friction | Complex architecture | Simplify or train |
+| Deployment complexity | Microservice overhead | Consider service layer |
+
+## Examples
+
+### Quick Variant Check
+```bash
+# Count team size and DAU to select variant
+echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
+echo "DAU: Check analytics dashboard"
+```
 
 ## Resources
-- [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
-- [Batch Scrape](https://docs.firecrawl.dev/features/batch-scrape)
-- [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
+- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
+- [Microservices Guide](https://martinfowler.com/microservices/)
+- [FireCrawl Architecture Guide](https://docs.firecrawl.com/architecture)
 
 ## Next Steps
-For common pitfalls, see `firecrawl-known-pitfalls`.
+For common anti-patterns, see `firecrawl-known-pitfalls`.

@@ -1,7 +1,7 @@
 {
   "name": "databricks-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Databricks (24 skills)",
+  "description": "Claude Code skill pack for Databricks (30 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,10 +9,7 @@
   "license": "MIT",
   "keywords": [
     "databricks",
-    "delta-lake",
-    "mlflow",
-    "unity-catalog",
-    "spark",
+    "databricks",
     "saas",
     "sdk",
     "integration"

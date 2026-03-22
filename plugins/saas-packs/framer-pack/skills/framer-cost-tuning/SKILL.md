@@ -10,70 +10,194 @@ allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
 compatible-with: claude-code
+tags: [saas, framer]
 ---
 
 # Framer Cost Tuning
 
 ## Overview
+Optimize Framer costs through smart tier selection, sampling, and usage monitoring.
 
-Optimize Framer costs across plans and features. The Server API is free during beta. Main costs are Framer site plans, custom domains, and team seats.
+## Prerequisites
+- Access to Framer billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## Framer Plans
+## Pricing Tiers
 
-| Plan | Price | CMS Items | Custom Domain | Pages |
-|------|-------|-----------|---------------|-------|
-| Free | $0 | 100 | No | 2 |
-| Mini | $5/mo | 200 | Yes | 150 |
-| Basic | $15/mo | 1,000 | Yes | 300 |
-| Pro | $30/mo | 10,000 | Yes | Unlimited |
-| Enterprise | Custom | Unlimited | Yes | Unlimited |
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-## Cost Optimization Strategies
-
-### Step 1: CMS Item Budgeting
+## Cost Estimation
 
 ```typescript
-// Track CMS item usage to avoid plan overages
-async function checkCMSUsage(client: any) {
-  const collections = await client.getCollections();
-  let totalItems = 0;
-  for (const col of collections) {
-    const items = await col.getItems();
-    totalItems += items.length;
-    console.log(`${col.name}: ${items.length} items`);
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateFramerCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
   }
-  console.log(`Total CMS items: ${totalItems}`);
-  // Pro plan: 10,000 limit
-  console.log(`Usage: ${((totalItems / 10000) * 100).toFixed(1)}% of Pro limit`);
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
 }
 ```
 
-### Step 2: Minimize Publish Frequency
+## Usage Monitoring
 
 ```typescript
-// Batch CMS updates before publishing (each publish rebuilds the site)
-async function batchUpdateAndPublish(updates: Array<{ collection: string; items: any[] }>) {
-  const client = await getClient();
-  for (const update of updates) {
-    const col = (await client.getCollections()).find(c => c.name === update.collection);
-    if (col) await col.setItems(update.items);
+class FramerUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
   }
-  // Single publish after all updates
-  await client.publish();
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Framer budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateFramerCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
 }
 ```
 
-### Step 3: Development vs Production Sites
+## Cost Reduction Strategies
 
-Use a free plan site for development and testing. Only pay for the production site.
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await framerClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => framerClient.get(id)));
+
+// Use batch endpoint (1 call)
+await framerClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new FramerClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Framer dashboard
+# Or use API if available:
+# Check Framer documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM framer_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Framer dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateFramerCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-
-- [Framer Pricing](https://www.framer.com/pricing/)
-- [Server API (Free Beta)](https://www.framer.com/developers/server-api-introduction)
+- [Framer Pricing](https://framer.com/pricing)
+- [Framer Billing Dashboard](https://dashboard.framer.com/billing)
 
 ## Next Steps
-
 For architecture patterns, see `framer-reference-architecture`.

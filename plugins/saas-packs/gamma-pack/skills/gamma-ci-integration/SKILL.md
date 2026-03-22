@@ -5,19 +5,19 @@ description: |
   Use when setting up automated testing, configuring CI pipelines,
   or integrating Gamma tests into your build process.
   Trigger with phrases like "gamma CI", "gamma GitHub Actions",
-  "gamma automated tests", "CI gamma", "gamma pipeline".
+  "gamma automated tests", "CI gamma".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, testing, ci-cd]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma CI Integration
 
 ## Overview
-Set up continuous integration for Gamma-powered applications with automated testing and deployment.
+Set up CI/CD pipelines for Gamma integrations with automated testing.
 
 ## Prerequisites
 - GitHub repository with Actions enabled
@@ -27,13 +27,14 @@ Set up continuous integration for Gamma-powered applications with automated test
 ## Instructions
 
 ### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/gamma-integration.yml`:
+
 ```yaml
-# .github/workflows/gamma-ci.yml
-name: Gamma CI
+name: Gamma Integration Tests
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -43,146 +44,83 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    env:
+      GAMMA_API_KEY: ${{ secrets.GAMMA_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run unit tests
-        run: npm test
-
-      - name: Run Gamma integration tests
-        run: npm run test:gamma
-        env:
-          GAMMA_MOCK: ${{ github.event_name == 'pull_request' }}
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/lcov.info
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-### Step 2: Create Test Scripts
-```json
-// package.json
-{
-  "scripts": {
-    "test": "vitest run",
-    "test:gamma": "vitest run --config vitest.gamma.config.ts",
-    "test:gamma:live": "GAMMA_MOCK=false vitest run --config vitest.gamma.config.ts"
-  }
-}
-```
-
-### Step 3: Gamma Test Configuration
-```typescript
-// vitest.gamma.config.ts
-import { defineConfig } from 'vitest/config';
-
-export default defineConfig({
-  test: {
-    include: ['tests/gamma/**/*.test.ts'],
-    testTimeout: 60000, // Gamma API can be slow  # 60000: 1 minute in ms
-    hookTimeout: 30000,  # 30000: 30 seconds in ms
-    setupFiles: ['./tests/gamma/setup.ts'],
-  },
-});
-```
-
-### Step 4: Test Setup with Mocking
-```typescript
-// tests/gamma/setup.ts
-import { beforeAll } from 'vitest';
-import { createGammaClient, type GammaClient } from '../../src/client';
-
-const useMock = process.env.GAMMA_MOCK === 'true';
-
-export let gamma: ReturnType<typeof createGammaClient>;
-
-beforeAll(() => {
-  if (useMock) {
-    gamma = createMockGammaClient();
-  } else {
-    gamma = createGammaClient({
-      apiKey: process.env.GAMMA_API_KEY!,
-    });
-  }
-});
-
-function createMockGammaClient() {
-  return {
-    generate: vi.fn().mockResolvedValue({ generationId: 'mock-gen-id' }),
-    poll: vi.fn().mockResolvedValue({
-      status: 'completed',
-      gammaUrl: 'https://gamma.app/docs/mock-test',
-      exportUrl: 'https://export.gamma.app/mock.pdf',
-      creditsUsed: 10,
-    }),
-    listThemes: vi.fn().mockResolvedValue([{ id: 'theme_1', name: 'Default' }]),
-    listFolders: vi.fn().mockResolvedValue([]),
-  };
-}
-```
-
-### Step 5: Integration Test Example
-```typescript
-// tests/gamma/generation.test.ts
-import { describe, it, expect } from 'vitest';
-import { gamma } from './setup';
-
-describe('Gamma Generation', () => {
-  it('should start a generation', async () => {
-    const result = await gamma.generate({
-      content: 'CI Test: 1-card overview of testing',
-      outputFormat: 'presentation',
-    });
-
-    expect(result.generationId).toBeDefined();
-  });
-
-  it('should list workspace themes', async () => {
-    const themes = await gamma.listThemes();
-    expect(Array.isArray(themes)).toBe(true);
-  });
-});
-```
-
-### Step 6: Add Secrets to GitHub
+### Step 2: Configure Secrets
 ```bash
-# Using GitHub CLI
-gh secret set GAMMA_API_KEY --body "your-test-api-key"
+gh secret set GAMMA_API_KEY --body "sk_test_***"
+```
 
-# Verify secrets
-gh secret list
+### Step 3: Add Integration Tests
+```typescript
+describe('Gamma Integration', () => {
+  it.skipIf(!process.env.GAMMA_API_KEY)('should connect', async () => {
+    const client = getGammaClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
-- Automated test pipeline running on push/PR
-- Mock mode for PR checks (no API calls)
-- Live integration tests on main branch
+- Automated test pipeline
+- PR checks configured
 - Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing GitHub secret | Add GAMMA_API_KEY secret |
-| Test timeout | Slow API response | Increase testTimeout |
-| Mock mismatch | Mock out of sync | Update mock responses |
-| Rate limit in CI | Too many test runs | Use mock mode for PRs |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GAMMA_API_KEY: ${{ secrets.GAMMA_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Gamma production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "gamma-integration"
+```
 
 ## Resources
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Vitest Documentation](https://vitest.dev/)
-- [Gamma Testing Guide](https://gamma.app/docs/testing)
+- [Gamma CI Guide](https://docs.gamma.com/ci)
 
 ## Next Steps
-
-Proceed to `gamma-deploy-integration` for deployment workflows.
+For deployment patterns, see `gamma-deploy-integration`.

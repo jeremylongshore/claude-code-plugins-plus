@@ -1,106 +1,114 @@
 ---
 name: anima-upgrade-migration
 description: |
-  Upgrade @animaapp/anima-sdk versions and handle API changes.
-  Use when upgrading SDK versions, migrating from the Figma plugin workflow
-  to SDK-based automation, or adapting to new Anima API features.
-  Trigger: "anima upgrade", "anima migration", "anima SDK update".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Analyze, plan, and execute Anima SDK upgrades with breaking change detection.
+  Use when upgrading Anima SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade anima", "anima migration",
+  "anima breaking changes", "update anima SDK", "analyze anima version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, migration]
 compatible-with: claude-code
+tags: [saas, anima]
 ---
 
 # Anima Upgrade & Migration
 
-## Migration Paths
+## Overview
+Guide for upgrading Anima SDK versions and handling breaking changes.
 
-| From | To | Complexity |
-|------|----|-----------|
-| Figma plugin (manual) | SDK automation | Medium |
-| SDK v1 → v2 | SDK latest | Low |
-| Anima Playground | SDK API | Low |
+## Prerequisites
+- Current Anima SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Upgrade SDK
-
+### Step 1: Check Current Version
 ```bash
-# Check current version
-npm list @animaapp/anima-sdk
-
-# Upgrade to latest
-npm install @animaapp/anima-sdk@latest
-
-# Check for breaking changes
-npm info @animaapp/anima-sdk changelog
+npm list @anima/sdk
+npm view @anima/sdk version
 ```
 
-### Step 2: Migrate from Manual Plugin to SDK
-
-```typescript
-// BEFORE: Manual Figma plugin workflow
-// 1. Open Figma → Plugins → Anima
-// 2. Select component → Export → React
-// 3. Copy-paste generated code into project
-// 4. Manually repeat for each component change
-
-// AFTER: Automated SDK workflow
-import { Anima } from '@animaapp/anima-sdk';
-
-const anima = new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
-
-// Automated: runs in CI on Figma file version change
-async function syncDesignToCode() {
-  const { files } = await anima.generateCode({
-    fileKey: process.env.FIGMA_FILE_KEY!,
-    figmaToken: process.env.FIGMA_TOKEN!,
-    nodesId: ['1:2', '3:4', '5:6'],  // All design system components
-    settings: { language: 'typescript', framework: 'react', styling: 'tailwind' },
-  });
-
-  // Write to project, run through linter, create PR
-  for (const file of files) {
-    require('fs').writeFileSync(`src/components/generated/${file.fileName}`, file.content);
-  }
-}
+### Step 2: Review Changelog
+```bash
+open https://github.com/anima/sdk/releases
 ```
 
-### Step 3: API Changes Checklist
-
-```typescript
-// Common API changes between versions:
-// - New settings options (e.g., uiLibrary: 'shadcn' added later)
-// - New frameworks (e.g., Next.js-specific output)
-// - Response format changes in files array
-// - New authentication methods
-
-// Test after upgrade:
-async function testUpgrade() {
-  const anima = new Anima({ auth: { token: process.env.ANIMA_TOKEN! } });
-  const { files } = await anima.generateCode({
-    fileKey: process.env.FIGMA_FILE_KEY!,
-    figmaToken: process.env.FIGMA_TOKEN!,
-    nodesId: ['1:2'],
-    settings: { language: 'typescript', framework: 'react', styling: 'tailwind' },
-  });
-  console.log(`Upgrade test: ${files.length} files generated`);
-}
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/anima-sdk-vX.Y.Z
+npm install @anima/sdk@latest
+npm test
 ```
+
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
-- SDK upgraded to latest version
-- Migrated from manual plugin to automated SDK
-- All generation tests passing after upgrade
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@anima/sdk';
+
+// After (v2.x)
+import { AnimaClient } from '@anima/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new AnimaClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @anima/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Anima]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
 ## Resources
-
-- [Anima SDK npm](https://www.npmjs.com/package/@animaapp/anima-sdk)
-- [Anima SDK GitHub](https://github.com/AnimaApp/anima-sdk)
+- [Anima Changelog](https://github.com/anima/sdk/releases)
+- [Anima Migration Guide](https://docs.anima.com/migration)
 
 ## Next Steps
-
-For CI/CD setup, see `anima-ci-integration`.
+For CI integration during upgrades, see `anima-ci-integration`.

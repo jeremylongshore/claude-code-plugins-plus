@@ -1,135 +1,121 @@
 ---
 name: granola-prod-checklist
 description: |
-  Production readiness checklist for Granola team and enterprise deployment.
-  Use when rolling out Granola to a team, planning enterprise deployment,
-  or verifying all configuration is production-ready.
-  Trigger: "granola production", "granola rollout", "granola deployment",
-  "granola checklist", "granola go-live".
-allowed-tools: Read, Write, Edit
+  Execute Granola production deployment checklist and rollback procedures.
+  Use when deploying Granola integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "granola production", "deploy granola",
+  "granola go-live", "granola launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, deployment, enterprise]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
+
 # Granola Production Checklist
 
 ## Overview
-Comprehensive pre-launch checklist for deploying Granola to a team or organization. Covers plan selection, security hardening, integration setup, pilot program, and go-live execution.
+Complete checklist for deploying Granola integrations to production.
 
 ## Prerequisites
-- Budget approved for Granola licenses
-- Team size and meeting volume estimated
-- IT/security review completed or in progress
-- Admin access to Granola workspace
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Phase 1 — Plan & License
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-- [ ] **Select plan:** Business ($14/user/mo) or Enterprise ($35+/user/mo)
-- [ ] **Seat count:** Purchase seats for all target users
-- [ ] **Billing:** Annual billing for 10-15% savings, or monthly for flexibility
-- [ ] **Contract:** Enterprise agreement signed (if applicable)
-- [ ] **SOC 2 report:** Requested and reviewed (available on request from Granola)
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Granola error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-### Phase 2 — Security Configuration
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Granola connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-- [ ] **SSO enabled:** Okta, Azure AD, or Google Workspace (Enterprise)
-- [ ] **SCIM provisioning:** Auto-provision users from IdP groups (Enterprise)
-- [ ] **AI training opt-out:** Enabled org-wide (Enterprise: enforced by default)
-- [ ] **Sharing defaults:** Set to Private, external sharing disabled or admin-approved
-- [ ] **Data retention:** Configured per data type (notes: 1-2yr, transcripts: 90d)
-- [ ] **DPA signed:** Data Processing Agreement for GDPR compliance
-- [ ] **Session timeout:** Configured for security policy (Enterprise)
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-### Phase 3 — Integration Setup
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.granola.com
 
-| Integration | Configuration | Verification |
-|-------------|--------------|--------------|
-| Google Calendar or Outlook | Settings > Calendar > Connect | Test meeting shows in Granola |
-| Slack | Settings > Integrations > Slack | Post test note to channel |
-| Notion | Settings > Integrations > Notion | Share test note creates DB entry |
-| HubSpot/Attio/Affinity | Settings > Integrations > CRM | Match test note to CRM contact |
-| Zapier (optional) | Connect Granola app in Zapier | Test Zap fires on note creation |
-| MCP (optional) | Configure in AI tool settings | Test meeting query in Claude/Cursor |
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/granola-integration app=image:new --record
+kubectl rollout pause deployment/granola-integration
 
-### Phase 4 — Workspace Configuration
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-- [ ] **Workspaces created:** Per department/team (Engineering, Sales, Leadership, etc.)
-- [ ] **Folders created:** Per meeting type within each workspace
-- [ ] **Templates configured:** Default templates per folder/meeting type
-- [ ] **Sharing rules:** Per-folder auto-post to Slack channels
-- [ ] **User roles assigned:** Admin, Member, Viewer per workspace
-- [ ] **Custom recipes created:** Team-specific Granola Chat recipes
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/granola-integration
+kubectl rollout pause deployment/granola-integration
+sleep 300
 
-### Phase 5 — Pilot Program (2 Weeks)
-
-1. **Select 5-10 pilot users** across different meeting types
-2. **Define success metrics:**
-
-| Metric | Target | How to Measure |
-|--------|--------|----------------|
-| User activation | 100% of pilot | All users capture at least one meeting |
-| Meeting capture rate | >70% | Meetings captured / total meetings |
-| Note quality rating | 4+/5 | Pilot user survey |
-| Support tickets | <2 per user | Track via Slack/email |
-| Time saved per meeting | >10 min | Before/after survey |
-
-3. **Collect daily feedback** for the first 3 days, then weekly
-4. **Fix issues immediately** — common pilot issues:
-   - Audio permission not granted (macOS Screen & System Audio)
-   - Calendar not connected to the right account
-   - Templates not matching meeting types
-   - Users forgetting to type notes (Enhance is better with typed context)
-
-### Phase 6 — Go-Live
-
-**Launch day checklist:**
-- [ ] Welcome email sent with setup instructions and support contact
-- [ ] Slack channel created: #granola-support
-- [ ] Quick-start guide shared (link to `granola-install-auth` + `granola-hello-world`)
-- [ ] Calendar consent notice template distributed
-- [ ] User access enabled (SSO/SCIM auto-provision or manual invite)
-- [ ] IT support team briefed on common troubleshooting steps
-
-**First week monitoring:**
-- [ ] Daily adoption check: % of users who captured a meeting
-- [ ] Support ticket volume and resolution time
-- [ ] Integration health: Slack/Notion/CRM syncs working
-- [ ] User feedback collection via survey or Slack poll
-
-### Phase 7 — Post-Launch (Weeks 2-4)
-
-- [ ] Address low-adoption users with 1:1 support
-- [ ] Publish internal "tips & tricks" based on power user patterns
-- [ ] Review and refine templates based on team feedback
-- [ ] Set up recurring reporting (weekly adoption metrics to leadership)
-- [ ] Schedule first quarterly access review
+# Complete rollout to 100%
+kubectl rollout resume deployment/granola-integration
+kubectl rollout status deployment/granola-integration
+```
 
 ## Output
-- All security controls configured and verified
-- Integrations connected, tested, and documented
-- Pilot completed with metrics meeting targets
-- Full team onboarded and actively capturing meetings
-- Support processes established with documented escalation path
+- Deployed Granola integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| Low adoption (<50%) | Insufficient training | Run live demo, share video walkthrough |
-| SSO login failure | SAML metadata mismatch | Verify ACS URL, Entity ID, and certificate with IdP |
-| Calendar not syncing org-wide | OAuth app not approved | IT admin must approve Granola's OAuth in Google/Microsoft admin |
-| Audio issues across team | macOS permission prompt dismissed | Send instructions to re-grant Screen & System Audio permission |
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; granola: any }> {
+  const start = Date.now();
+  try {
+    await granolaClient.ping();
+    return { status: 'healthy', granola: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', granola: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/granola-integration
+kubectl rollout status deployment/granola-integration
+```
 
 ## Resources
-- [Setup Guide](https://docs.granola.ai/help-center/getting-started/setting-up-granola-for-the-first-time)
-- [Enterprise API](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
-- [Security Standards](https://docs.granola.ai/help-center/consent-security-privacy/our-security-standards)
-- [Granola Updates](https://www.granola.ai/updates)
+- [Granola Status](https://status.granola.com)
+- [Granola Support](https://docs.granola.com/support)
 
 ## Next Steps
-Proceed to `granola-upgrade-migration` for version upgrade and plan migration guidance.
+For version upgrades, see `granola-upgrade-migration`.

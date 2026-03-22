@@ -1,172 +1,240 @@
 ---
 name: vastai-reference-architecture
 description: |
-  Implement Vast.ai reference architecture for GPU compute workflows.
-  Use when designing ML training pipelines, structuring GPU orchestration,
-  or establishing architecture patterns for Vast.ai applications.
-  Trigger with phrases like "vastai architecture", "vastai design pattern",
-  "vastai project structure", "vastai ml pipeline".
+  Implement Vast.ai reference architecture with best-practice project layout.
+  Use when designing new Vast.ai integrations, reviewing project structure,
+  or establishing architecture standards for Vast.ai applications.
+  Trigger with phrases like "vastai architecture", "vastai best practices",
+  "vastai project structure", "how to organize vastai", "vastai layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, architecture]
-
+compatible-with: claude-code
+tags: [saas, vastai]
 ---
+
 # Vast.ai Reference Architecture
 
 ## Overview
-Production architecture for GPU compute workflows on Vast.ai. Covers the three-tier pattern (orchestrator, GPU workers, artifact storage), job queue design, and fault-tolerant training pipelines.
+Production-ready architecture patterns for Vast.ai integrations.
 
 ## Prerequisites
-- Vast.ai account with CLI
-- Cloud storage (S3, GCS, or MinIO) for artifacts
-- Understanding of ML training pipelines
+- Understanding of layered architecture
+- Vast.ai SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
+```
+my-vastai-project/
+├── src/
+│   ├── vastai/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── vastai/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── vastai/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── vastai/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── vastai/
+│   └── integration/
+│       └── vastai/
+├── config/
+│   ├── vastai.development.json
+│   ├── vastai.staging.json
+│   └── vastai.production.json
+└── docs/
+    └── vastai/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Vast.ai Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/vastai/client.ts
+export class Vast.aiService {
+  private client: Vast.aiClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: Vast.aiConfig) {
+    this.client = new Vast.aiClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('vastai');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/vastai/errors.ts
+export class Vast.aiServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'Vast.aiServiceError';
+  }
+}
+
+export function wrapVast.aiError(error: unknown): Vast.aiServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/vastai/health.ts
+export async function checkVast.aiHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await vastaiClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Vast.ai    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Vast.ai    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/vastai.ts
+export interface Vast.aiConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadVast.aiConfig(): Vast.aiConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./vastai.${env}.json`);
+}
+```
 
 ## Instructions
 
-### Architecture: Three-Tier GPU Compute
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```
-┌─────────────────────────────────────────────────┐
-│  ORCHESTRATOR (your server / CI / cloud function) │
-│  - Job queue management                          │
-│  - Instance provisioning via Vast.ai API         │
-│  - Status monitoring and auto-recovery           │
-│  - Cost tracking and budget enforcement          │
-└───────────────┬─────────────────────────────────┘
-                │ Vast.ai REST API
-┌───────────────▼─────────────────────────────────┐
-│  GPU WORKERS (Vast.ai rented instances)          │
-│  - Training / inference execution                │
-│  - Checkpoint saving to cloud storage            │
-│  - Health reporting back to orchestrator         │
-│  - Graceful shutdown on SIGTERM (spot preemption)│
-└───────────────┬─────────────────────────────────┘
-                │ S3 / GCS / MinIO
-┌───────────────▼─────────────────────────────────┐
-│  ARTIFACT STORAGE (persistent)                   │
-│  - Model checkpoints                             │
-│  - Training logs and metrics                     │
-│  - Dataset cache                                 │
-│  - Final model artifacts                         │
-└─────────────────────────────────────────────────┘
-```
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-### Project Structure
+### Step 3: Add Error Handling
+Implement custom error classes for Vast.ai operations.
 
-```
-ml-pipeline/
-  orchestrator/
-    job_queue.py         # Job definition and scheduling
-    provisioner.py       # Vast.ai instance lifecycle
-    monitor.py           # Status polling and auto-recovery
-    cost_tracker.py      # Budget enforcement
-  worker/
-    Dockerfile           # GPU worker image
-    train.py             # Training entry point
-    checkpoint.py        # Cloud storage checkpoint manager
-    health.py            # Report status back to orchestrator
-  config/
-    gpu_profiles.yaml    # GPU selection criteria per job type
-    budgets.yaml         # Cost limits per team/project
-  scripts/
-    deploy.py            # CLI for launching jobs
-    cost_report.py       # Spending analysis
-```
-
-### GPU Profile Configuration
-
-```yaml
-# config/gpu_profiles.yaml
-profiles:
-  dev-test:
-    gpu_name: RTX_4090
-    num_gpus: 1
-    max_dph: 0.25
-    reliability_min: 0.90
-    max_duration_hours: 2
-
-  training-standard:
-    gpu_name: A100
-    num_gpus: 1
-    max_dph: 2.00
-    reliability_min: 0.98
-    max_duration_hours: 24
-
-  training-distributed:
-    gpu_name: H100_SXM
-    num_gpus: 4
-    max_dph: 4.00
-    reliability_min: 0.99
-    max_duration_hours: 48
-
-  inference-batch:
-    gpu_name: RTX_4090
-    num_gpus: 1
-    max_dph: 0.15
-    reliability_min: 0.95
-    max_duration_hours: 4
-```
-
-### Checkpoint Manager Pattern
-
-```python
-import boto3, os, json, time
-
-class CheckpointManager:
-    def __init__(self, bucket, prefix, interval_steps=500):
-        self.s3 = boto3.client("s3")
-        self.bucket = bucket
-        self.prefix = prefix
-        self.interval = interval_steps
-
-    def save(self, model, optimizer, step, metrics):
-        if step % self.interval != 0:
-            return
-        checkpoint = {
-            "model_state": model.state_dict(),
-            "optimizer_state": optimizer.state_dict(),
-            "step": step, "metrics": metrics,
-            "timestamp": time.time(),
-        }
-        path = f"{self.prefix}/checkpoint-{step}.pt"
-        torch.save(checkpoint, f"/tmp/checkpoint-{step}.pt")
-        self.s3.upload_file(f"/tmp/checkpoint-{step}.pt", self.bucket, path)
-
-    def load_latest(self):
-        objects = self.s3.list_objects_v2(Bucket=self.bucket, Prefix=self.prefix)
-        if not objects.get("Contents"):
-            return None
-        latest = max(objects["Contents"], key=lambda o: o["LastModified"])
-        self.s3.download_file(self.bucket, latest["Key"], "/tmp/latest.pt")
-        return torch.load("/tmp/latest.pt")
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for Vast.ai connectivity.
 
 ## Output
-- Three-tier architecture (orchestrator, GPU workers, artifact storage)
-- Project structure for ML pipeline on Vast.ai
-- GPU profile configuration per job type
-- Checkpoint manager with cloud storage integration
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Orchestrator loses track of instance | API timeout | Implement heartbeat from worker |
-| Checkpoint upload fails | S3 permissions | Verify credentials on GPU instance |
-| Worker can't reach orchestrator | No public IP | Use polling model (worker pulls jobs) |
-| Budget exceeded | No cost controls | Implement profile-based max_duration_hours |
-
-## Resources
-- [Vast.ai REST API](https://vast.ai/developers/api)
-- [PyTorch Distributed](https://pytorch.org/tutorials/intermediate/ddp_tutorial.html)
-
-## Next Steps
-For multi-environment configuration, see `vastai-multi-env-setup`.
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Vast.ai types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-**Simple pipeline**: Orchestrator searches for offers matching `training-standard` profile, provisions instance, uploads data via SCP, runs training, saves checkpoints to S3, destroys instance.
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/vastai/{handlers} src/services/vastai src/api/vastai
+touch src/vastai/{client,config,types,errors}.ts
+touch src/services/vastai/{index,sync,cache}.ts
+```
 
-**Fault-tolerant training**: Worker saves checkpoint every 500 steps to S3. On preemption, orchestrator provisions replacement and worker resumes from latest checkpoint.
+## Resources
+- [Vast.ai SDK Documentation](https://docs.vastai.com/sdk)
+- [Vast.ai Best Practices](https://docs.vastai.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `vastai-multi-env-setup`.

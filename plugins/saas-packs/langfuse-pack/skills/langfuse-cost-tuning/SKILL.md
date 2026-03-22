@@ -1,262 +1,203 @@
 ---
 name: langfuse-cost-tuning
 description: |
-  Monitor and optimize LLM costs using Langfuse analytics and dashboards.
-  Use when tracking LLM spending, identifying cost anomalies,
-  or implementing cost controls for AI applications.
-  Trigger with phrases like "langfuse costs", "LLM spending",
-  "track AI costs", "langfuse token usage", "optimize LLM budget".
-allowed-tools: Read, Write, Edit
+  Optimize Langfuse costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Langfuse billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "langfuse cost", "langfuse billing",
+  "reduce langfuse costs", "langfuse pricing", "langfuse expensive", "langfuse budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, monitoring, llm, analytics]
-
+compatible-with: claude-code
+tags: [saas, langfuse]
 ---
+
 # Langfuse Cost Tuning
 
 ## Overview
-Track, analyze, and optimize LLM costs using Langfuse's built-in token/cost tracking, the Metrics API for programmatic cost analysis, model routing for cost reduction, and automated budget alerts.
+Optimize Langfuse costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
-- Langfuse tracing with token usage captured (via `observeOpenAI` or manual `usage` fields)
-- For Metrics API: `@langfuse/client` installed
-- Understanding of LLM pricing models
+- Access to Langfuse billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## How Langfuse Tracks Costs
+## Pricing Tiers
 
-Langfuse automatically calculates costs for supported models (OpenAI, Anthropic, Google) when token usage is captured. For custom models, you can configure pricing in the Langfuse UI under **Settings > Model Definitions**.
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-Cost tracking works on observations of type **generation** and **embedding**. The `observeOpenAI` wrapper captures usage automatically; for manual tracing, include `usage` in your observation updates.
-
-## Instructions
-
-### Step 1: Ensure Token Usage is Captured
+## Cost Estimation
 
 ```typescript
-// Automatic: observeOpenAI captures everything
-import { observeOpenAI } from "@langfuse/openai";
-const openai = observeOpenAI(new OpenAI());
-// Tokens, model, latency, and cost are all auto-tracked
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
 
-// Manual: include usage in generation observations
-import { startActiveObservation, updateActiveObservation } from "@langfuse/tracing";
-
-await startActiveObservation(
-  { name: "llm-call", asType: "generation" },
-  async () => {
-    updateActiveObservation({ model: "gpt-4o" }); // Model required for cost calc
-
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    updateActiveObservation({
-      output: response.choices[0].message.content,
-      usage: {
-        promptTokens: response.usage?.prompt_tokens,
-        completionTokens: response.usage?.completion_tokens,
-        totalTokens: response.usage?.total_tokens,
-      },
-      // Optional: override inferred cost (in USD)
-      // costInUsd: 0.0015,
-    });
+function estimateLangfuseCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
   }
-);
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
 ```
 
-### Step 2: Query Costs via Metrics API
+## Usage Monitoring
 
 ```typescript
-import { LangfuseClient } from "@langfuse/client";
+class LangfuseUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
 
-const langfuse = new LangfuseClient();
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
 
-// Fetch aggregated cost metrics
-async function getCostReport(days: number) {
-  const fromTimestamp = new Date(Date.now() - days * 86400000).toISOString();
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
 
-  // Use the API to list traces with cost data
-  const traces = await langfuse.api.traces.list({
-    fromTimestamp,
-    limit: 1000,
-    orderBy: "timestamp",
-  });
-
-  const costByModel = new Map<string, { cost: number; tokens: number; count: number }>();
-
-  for (const trace of traces.data) {
-    const observations = await langfuse.api.observations.list({
-      traceId: trace.id,
-      type: "GENERATION",
-    });
-
-    for (const obs of observations.data) {
-      const model = obs.model || "unknown";
-      const existing = costByModel.get(model) || { cost: 0, tokens: 0, count: 0 };
-      existing.cost += obs.calculatedTotalCost || 0;
-      existing.tokens += obs.totalTokens || 0;
-      existing.count += 1;
-      costByModel.set(model, existing);
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Langfuse budget limit');
     }
   }
 
-  console.log("\n=== LLM Cost Report ===");
-  console.log(`Period: Last ${days} days\n`);
-
-  let totalCost = 0;
-  for (const [model, data] of costByModel.entries()) {
-    console.log(`${model}:`);
-    console.log(`  Calls: ${data.count}`);
-    console.log(`  Tokens: ${data.tokens.toLocaleString()}`);
-    console.log(`  Cost: $${data.cost.toFixed(4)}`);
-    totalCost += data.cost;
+  estimatedCost(): number {
+    return estimateLangfuseCost(this.requestCount).estimatedCost;
   }
-  console.log(`\nTotal: $${totalCost.toFixed(4)}`);
-}
 
-getCostReport(7);
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
 ```
 
-### Step 3: Implement Smart Model Routing
+## Cost Reduction Strategies
 
-Route requests to cheaper models when appropriate:
-
+### Step 1: Request Sampling
 ```typescript
-import { observe, updateActiveObservation } from "@langfuse/tracing";
-
-interface ModelConfig {
-  model: string;
-  costPer1MInput: number;
-  costPer1MOutput: number;
-  maxComplexity: "simple" | "moderate" | "complex";
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
 }
 
-const MODELS: ModelConfig[] = [
-  { model: "gpt-4o-mini", costPer1MInput: 0.15, costPer1MOutput: 0.60, maxComplexity: "simple" },
-  { model: "gpt-4o", costPer1MInput: 2.50, costPer1MOutput: 10.00, maxComplexity: "moderate" },
-  { model: "claude-sonnet-4-20250514", costPer1MInput: 3.00, costPer1MOutput: 15.00, maxComplexity: "complex" },
-];
-
-function selectModel(task: string, inputLength: number): ModelConfig {
-  const simpleTasks = ["classify", "extract", "summarize-short", "translate"];
-  const isSimple = simpleTasks.some((t) => task.includes(t));
-  const isShort = inputLength < 500;
-
-  if (isSimple && isShort) return MODELS[0]; // gpt-4o-mini
-  if (isSimple || inputLength < 2000) return MODELS[1]; // gpt-4o
-  return MODELS[2]; // claude-sonnet-4
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await langfuseClient.trackEvent(event);
 }
-
-const costOptimizedLLM = observe(
-  { name: "cost-optimized-llm", asType: "generation" },
-  async (task: string, input: string) => {
-    const config = selectModel(task, input.length);
-
-    updateActiveObservation({
-      model: config.model,
-      metadata: {
-        task,
-        selectedReason: `${config.maxComplexity} tier`,
-        estimatedCostPer1M: config.costPer1MInput,
-      },
-    });
-
-    const response = await callModel(config.model, input);
-    updateActiveObservation({
-      output: response.content,
-      usage: response.usage,
-    });
-
-    return response;
-  }
-);
 ```
 
-### Step 4: Budget Alerts
-
+### Step 2: Batching Requests
 ```typescript
-// scripts/cost-alert.ts -- run as cron job
-import { LangfuseClient } from "@langfuse/client";
+// Instead of N individual calls
+await Promise.all(ids.map(id => langfuseClient.get(id)));
 
-const langfuse = new LangfuseClient();
-
-const ALERT_THRESHOLDS = {
-  dailyWarn: 50,    // $50/day warning
-  dailyCritical: 200, // $200/day critical
-  perRequestWarn: 1,  // $1/request warning
-};
-
-async function checkCostAlerts() {
-  const since = new Date(Date.now() - 86400000).toISOString(); // Last 24h
-
-  const traces = await langfuse.api.traces.list({
-    fromTimestamp: since,
-    limit: 500,
-  });
-
-  let dailyCost = 0;
-  let maxRequestCost = 0;
-
-  for (const trace of traces.data) {
-    const observations = await langfuse.api.observations.list({
-      traceId: trace.id,
-      type: "GENERATION",
-    });
-
-    const traceCost = observations.data.reduce(
-      (sum, obs) => sum + (obs.calculatedTotalCost || 0), 0
-    );
-
-    dailyCost += traceCost;
-    maxRequestCost = Math.max(maxRequestCost, traceCost);
-  }
-
-  console.log(`Daily cost: $${dailyCost.toFixed(2)}`);
-  console.log(`Max request cost: $${maxRequestCost.toFixed(4)}`);
-
-  if (dailyCost > ALERT_THRESHOLDS.dailyCritical) {
-    await sendAlert("CRITICAL", `Daily LLM cost: $${dailyCost.toFixed(2)}`);
-  } else if (dailyCost > ALERT_THRESHOLDS.dailyWarn) {
-    await sendAlert("WARNING", `Daily LLM cost: $${dailyCost.toFixed(2)}`);
-  }
-}
-
-checkCostAlerts();
+// Use batch endpoint (1 call)
+await langfuseClient.batchGet(ids);
 ```
 
-## Langfuse Dashboard Features
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
 
-Langfuse provides built-in cost analytics in the UI:
+### Step 4: Compression
+```typescript
+const client = new LangfuseClient({
+  compression: true, // Enable gzip
+});
+```
 
-- **Cost Dashboard**: Tracks token usage and costs over time by model, user, and session
-- **Latency Dashboard**: Response times across models and user segments
-- **Custom Dashboards**: Build custom views with multi-level aggregations
-- **Pricing Tiers**: Supports complex pricing (cached tokens, audio tokens, per-model tiers)
+## Budget Alerts
 
-## Cost Optimization Strategies
+```bash
+# Set up billing alerts in Langfuse dashboard
+# Or use API if available:
+# Check Langfuse documentation for billing APIs
+```
 
-| Strategy | Savings | Effort | How |
-|----------|---------|--------|-----|
-| Model downgrade | 50-95% | Low | Route simple tasks to `gpt-4o-mini` |
-| Prompt optimization | 10-30% | Low | Remove filler words, use structured prompts |
-| Response caching | 20-80% | Medium | Cache identical prompts with TTL |
-| Batch processing | 50% | Medium | Use OpenAI Batch API for offline tasks |
-| Token limits | 10-40% | Low | Set `max_tokens` on all calls |
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM langfuse_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Langfuse dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing cost data | No `usage` in generation | Ensure `usage` is included with `promptTokens`/`completionTokens` |
-| Wrong cost calculation | Model name mismatch | Use exact model ID (e.g., `gpt-4o-2024-08-06`) |
-| Custom model no cost | No pricing configured | Add model pricing in Langfuse Settings > Model Definitions |
-| Stale pricing | Model prices changed | Update model definitions periodically |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateLangfuseCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-- [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)
-- [Metrics API](https://langfuse.com/docs/metrics/features/metrics-api)
-- [Custom Dashboards](https://langfuse.com/docs/metrics/features/custom-dashboards)
-- [Model Pricing Tiers](https://langfuse.com/changelog/2025-12-02-model-pricing-tiers)
+- [Langfuse Pricing](https://langfuse.com/pricing)
+- [Langfuse Billing Dashboard](https://dashboard.langfuse.com/billing)
+
+## Next Steps
+For architecture patterns, see `langfuse-reference-architecture`.

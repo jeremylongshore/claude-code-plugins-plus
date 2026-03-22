@@ -1,166 +1,151 @@
 ---
 name: klingai-rate-limits
 description: |
-  Handle Kling AI API rate limits with backoff and queuing strategies. Use when hitting 429 errors
-  or planning high-volume workflows. Trigger with phrases like 'klingai rate limit', 'kling ai 429',
-  'klingai throttle', 'kling api limits'.
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Implement Kling AI rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Kling AI.
+  Trigger with phrases like "klingai rate limit", "klingai throttling",
+  "klingai 429", "klingai retry", "klingai backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, rate-limits, reliability]
-
+compatible-with: claude-code
+tags: [saas, klingai]
 ---
+
 # Kling AI Rate Limits
 
 ## Overview
+Handle Kling AI rate limits gracefully with exponential backoff and idempotency.
 
-Kling AI enforces rate limits per API key. When exceeded, the API returns `429 Too Many Requests`. This skill covers detection, backoff strategies, request queuing, and concurrent job management.
+## Prerequisites
+- Kling AI SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
-## Rate Limit Tiers
+## Instructions
 
-| Tier | Concurrent Tasks | Requests/Min | Notes |
-|------|------------------|-------------|-------|
-| Free | 1 | 10 | 66 daily credits cap |
-| Standard | 3 | 30 | Per API key |
-| Pro | 5 | 60 | Per API key |
-| Enterprise | 10+ | Custom | Contact sales |
+### Step 1: Understand Rate Limit Tiers
 
-## Exponential Backoff with Jitter
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-```python
-import time, random, requests
+### Step 2: Implement Exponential Backoff with Jitter
 
-def exponential_backoff(attempt: int, base: float = 1.0, max_wait: float = 60.0) -> float:
-    """Calculate wait time with jitter to avoid thundering herd."""
-    wait = min(base * (2 ** attempt), max_wait)
-    jitter = random.uniform(0, wait * 0.5)
-    return wait + jitter
+```typescript
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-def request_with_retry(method, url, headers, json=None, max_retries=5):
-    for attempt in range(max_retries + 1):
-        response = method(url, headers=headers, json=json, timeout=30)
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-        if response.status_code == 429:
-            if attempt == max_retries:
-                raise RuntimeError("Rate limit: max retries exceeded")
-            wait = exponential_backoff(attempt)
-            print(f"429 rate limited. Waiting {wait:.1f}s (attempt {attempt + 1})")
-            time.sleep(wait)
-            continue
-
-        if response.status_code >= 500:
-            if attempt == max_retries:
-                response.raise_for_status()
-            time.sleep(exponential_backoff(attempt, base=2.0))
-            continue
-
-        response.raise_for_status()
-        return response
-
-    raise RuntimeError("Unreachable")
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
 ```
 
-## Concurrent Task Limiter (asyncio)
+### Step 3: Add Idempotency Keys
 
-```python
-import asyncio
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-class TaskLimiter:
-    """Limit concurrent Kling AI tasks to stay within API tier."""
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
-    def __init__(self, max_concurrent: int = 3):
-        self._semaphore = asyncio.Semaphore(max_concurrent)
-        self._active = 0
-
-    async def submit(self, coro):
-        async with self._semaphore:
-            self._active += 1
-            try:
-                return await coro
-            finally:
-                self._active -= 1
-
-    @property
-    def active_count(self) -> int:
-        return self._active
-
-# Usage
-limiter = TaskLimiter(max_concurrent=3)
-tasks = [limiter.submit(generate_video(p)) for p in prompts]
-results = await asyncio.gather(*tasks, return_exceptions=True)
+async function idempotentRequest<T>(
+  client: KlingAIClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
 ```
 
-## Rate Limit Monitor
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
-```python
-class RateLimitMonitor:
-    """Track API call frequency and warn before hitting limits."""
+## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-    def __init__(self, max_per_minute: int = 30):
-        self.max_per_minute = max_per_minute
-        self._calls = []
+## Examples
 
-    def record_call(self):
-        now = time.time()
-        self._calls = [t for t in self._calls if now - t < 60]
-        self._calls.append(now)
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
 
-    @property
-    def usage_pct(self) -> float:
-        now = time.time()
-        recent = sum(1 for t in self._calls if now - t < 60)
-        return (recent / self.max_per_minute) * 100
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
 
-    def wait_if_needed(self):
-        if self.usage_pct > 80 and self._calls:
-            wait = 60 - (time.time() - self._calls[0])
-            if wait > 0:
-                print(f"Throttling: waiting {wait:.1f}s ({self.usage_pct:.0f}% of limit)")
-                time.sleep(wait)
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
 ```
 
-## Request Queue Pattern
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
 
-```python
-from collections import deque
-import threading
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
 
-class RequestQueue:
-    """FIFO queue with rate-limit-aware dispatch."""
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
 
-    def __init__(self, client, max_per_minute: int = 30):
-        self.client = client
-        self.interval = 60.0 / max_per_minute
-        self._queue = deque()
-
-    def enqueue(self, endpoint: str, body: dict, callback=None):
-        self._queue.append((endpoint, body, callback))
-
-    def process_all(self):
-        while self._queue:
-            endpoint, body, callback = self._queue.popleft()
-            try:
-                result = self.client._post(endpoint, body)
-                if callback:
-                    callback(result, error=None)
-            except Exception as e:
-                if callback:
-                    callback(None, error=e)
-            time.sleep(self.interval)
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
 ```
-
-## Error Reference
-
-| Scenario | HTTP Code | Action |
-|----------|-----------|--------|
-| Soft rate limit | `429` + `Retry-After` | Wait specified seconds |
-| Hard rate limit | `429` no header | Backoff from 1s, double each attempt |
-| Concurrent limit hit | `429` or task rejection | Wait for active tasks to complete |
-| Burst detection | Multiple `429`s | Aggressive backoff (30-60s) |
 
 ## Resources
+- [Kling AI Rate Limits](https://docs.klingai.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
-- [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)
-- [Developer Portal](https://app.klingai.com/global/dev)
+## Next Steps
+For security configuration, see `klingai-security-basics`.

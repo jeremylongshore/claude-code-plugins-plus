@@ -1,251 +1,224 @@
 ---
 name: apollo-enterprise-rbac
 description: |
-  Enterprise role-based access control for Apollo.io.
-  Use when implementing team permissions, restricting data access,
-  or setting up enterprise security controls.
-  Trigger with phrases like "apollo rbac", "apollo permissions",
-  "apollo roles", "apollo team access", "apollo enterprise security".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(curl:*)
+  Configure Apollo enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Apollo.
+  Trigger with phrases like "apollo SSO", "apollo RBAC",
+  "apollo enterprise", "apollo roles", "apollo permissions", "apollo SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, security, rbac]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Enterprise RBAC
 
 ## Overview
-Role-based access control for Apollo.io API integrations. Apollo API keys are all-or-nothing (standard vs master), so RBAC must be implemented in your application layer as a proxy between users and the Apollo API. This skill builds a permission matrix, scoped API key system, Express middleware, and admin audit endpoints.
+Configure enterprise-grade access control for Apollo integrations.
 
 ## Prerequisites
-- Apollo master API key
-- Node.js 18+ with Express
+- Apollo Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: Define Roles and Permission Matrix
-Map Apollo API operations to team roles. Apollo's API has two main categories:
-- **Read-only**: search (free), enrichment (credits)
-- **Write**: contacts CRUD, sequences, deals, tasks
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
 
 ```typescript
-// src/rbac/roles.ts
-export type Role = 'viewer' | 'analyst' | 'sales_rep' | 'sales_manager' | 'admin';
-
-export interface Permission {
-  searchPeople: boolean;       // /mixed_people/api_search (free)
-  searchOrganizations: boolean; // /mixed_companies/search (free)
-  enrichPerson: boolean;       // /people/match (1 credit)
-  bulkEnrich: boolean;         // /people/bulk_match (credits)
-  enrichOrg: boolean;          // /organizations/enrich (1 credit)
-  manageContacts: boolean;     // /contacts CRUD (master key)
-  manageSequences: boolean;    // /emailer_campaigns/* (master key)
-  manageDeals: boolean;        // /opportunities/* (master key)
-  exportPII: boolean;          // download contacts with email/phone
-  viewAnalytics: boolean;      // sequence stats, usage
-  manageTeam: boolean;         // create/revoke scoped keys
+enum ApolloRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-export const PERMISSIONS: Record<Role, Permission> = {
-  viewer: {
-    searchPeople: true, searchOrganizations: true, enrichPerson: false,
-    bulkEnrich: false, enrichOrg: false, manageContacts: false,
-    manageSequences: false, manageDeals: false, exportPII: false,
-    viewAnalytics: true, manageTeam: false,
-  },
-  analyst: {
-    searchPeople: true, searchOrganizations: true, enrichPerson: true,
-    bulkEnrich: false, enrichOrg: true, manageContacts: false,
-    manageSequences: false, manageDeals: false, exportPII: false,
-    viewAnalytics: true, manageTeam: false,
-  },
-  sales_rep: {
-    searchPeople: true, searchOrganizations: true, enrichPerson: true,
-    bulkEnrich: false, enrichOrg: true, manageContacts: true,
-    manageSequences: true, manageDeals: true, exportPII: false,
-    viewAnalytics: false, manageTeam: false,
-  },
-  sales_manager: {
-    searchPeople: true, searchOrganizations: true, enrichPerson: true,
-    bulkEnrich: true, enrichOrg: true, manageContacts: true,
-    manageSequences: true, manageDeals: true, exportPII: true,
-    viewAnalytics: true, manageTeam: true,
-  },
-  admin: {
-    searchPeople: true, searchOrganizations: true, enrichPerson: true,
-    bulkEnrich: true, enrichOrg: true, manageContacts: true,
-    manageSequences: true, manageDeals: true, exportPII: true,
-    viewAnalytics: true, manageTeam: true,
-  },
+interface ApolloPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<ApolloRole, ApolloPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: ApolloRole,
+  action: keyof ApolloPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Apollo SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://apollo.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/apollo/callback',
+};
+
+// Map IdP groups to Apollo roles
+const groupRoleMapping: Record<string, ApolloRole> = {
+  'Engineering': ApolloRole.Developer,
+  'Platform-Admins': ApolloRole.Admin,
+  'Data-Team': ApolloRole.Viewer,
 };
 ```
 
-### Step 2: Scoped API Key System
+### OAuth2/OIDC Integration
+
 ```typescript
-// src/rbac/api-keys.ts
-import crypto from 'crypto';
+import { OAuth2Client } from '@apollo/sdk';
 
-interface ScopedKey {
-  key: string;
-  teamId: string;
-  role: Role;
-  createdBy: string;
-  createdAt: string;
-  expiresAt: string;
-}
-
-// In production: store in database
-const keys = new Map<string, ScopedKey>();
-
-export function createScopedKey(teamId: string, role: Role, createdBy: string, ttlDays: number = 90): ScopedKey {
-  const entry: ScopedKey = {
-    key: `ak_${teamId}_${crypto.randomBytes(16).toString('hex')}`,
-    teamId, role, createdBy,
-    createdAt: new Date().toISOString(),
-    expiresAt: new Date(Date.now() + ttlDays * 86400000).toISOString(),
-  };
-  keys.set(entry.key, entry);
-  return entry;
-}
-
-export function resolveKey(apiKey: string): ScopedKey | null {
-  const entry = keys.get(apiKey);
-  if (!entry) return null;
-  if (new Date(entry.expiresAt) < new Date()) { keys.delete(apiKey); return null; }
-  return entry;
-}
-
-export function revokeKey(apiKey: string) { keys.delete(apiKey); }
+const oauthClient = new OAuth2Client({
+  clientId: process.env.APOLLO_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.APOLLO_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/apollo/callback',
+  scopes: ['read', 'write'],
+});
 ```
 
-### Step 3: Permission Middleware
+## Organization Management
+
 ```typescript
-// src/rbac/middleware.ts
-import { Request, Response, NextFunction } from 'express';
-import { PERMISSIONS, Permission } from './roles';
-import { resolveKey } from './api-keys';
+interface ApolloOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: ApolloRole;
+}
 
-// Map Apollo API paths to required permissions
-const ENDPOINT_PERMISSIONS: Record<string, keyof Permission> = {
-  '/mixed_people/api_search': 'searchPeople',
-  '/mixed_companies/search': 'searchOrganizations',
-  '/people/match': 'enrichPerson',
-  '/people/bulk_match': 'bulkEnrich',
-  '/organizations/enrich': 'enrichOrg',
-  '/contacts': 'manageContacts',
-  '/emailer_campaigns': 'manageSequences',
-  '/opportunities': 'manageDeals',
-};
+async function createOrganization(
+  config: ApolloOrganization
+): Promise<void> {
+  await apolloClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
 
-export function requirePermission(action: keyof Permission) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const apiKey = req.headers['x-api-key'] as string;
-    if (!apiKey) return res.status(401).json({ error: 'x-api-key header required' });
+## Access Control Middleware
 
-    const key = resolveKey(apiKey);
-    if (!key) return res.status(401).json({ error: 'Invalid or expired API key' });
+```typescript
+function requireApolloPermission(
+  requiredPermission: keyof ApolloPermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { apolloRole: ApolloRole };
 
-    if (!PERMISSIONS[key.role][action]) {
+    if (!checkPermission(user.apolloRole, requiredPermission)) {
       return res.status(403).json({
-        error: `Permission denied: ${action} requires role upgrade`,
-        currentRole: key.role,
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
       });
     }
 
-    (req as any).apolloCtx = { teamId: key.teamId, role: key.role, user: key.createdBy };
     next();
   };
 }
+
+// Usage
+app.delete('/apollo/resource/:id',
+  requireApolloPermission('delete'),
+  deleteResourceHandler
+);
 ```
 
-### Step 4: Apollo API Proxy with RBAC
+## Audit Trail
+
 ```typescript
-// src/rbac/proxy.ts
-import express from 'express';
-import axios from 'axios';
+interface ApolloAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: ApolloRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
 
-const app = express();
-app.use(express.json());
+async function logApolloAccess(entry: ApolloAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
 
-// Proxy all /apollo/* requests through RBAC
-app.all('/apollo/*', (req, res, next) => {
-  const apolloPath = req.path.replace('/apollo', '');
-  const matchedKey = Object.keys(ENDPOINT_PERMISSIONS).find((p) => apolloPath.startsWith(p));
-  if (!matchedKey) return res.status(404).json({ error: 'Unknown Apollo endpoint' });
-
-  requirePermission(ENDPOINT_PERMISSIONS[matchedKey])(req, res, next);
-}, async (req, res) => {
-  const apolloPath = req.path.replace('/apollo', '');
-  try {
-    const response = await axios({
-      method: req.method as any,
-      url: `https://api.apollo.io/api/v1${apolloPath}`,
-      data: req.body,
-      params: req.query,
-      headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
-    });
-    res.status(response.status).json(response.data);
-  } catch (err: any) {
-    res.status(err.response?.status ?? 500).json(err.response?.data ?? { error: err.message });
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
   }
-});
+}
 ```
 
-### Step 5: Admin Endpoints
-```typescript
-// src/rbac/admin.ts
-import { Router } from 'express';
-import { requirePermission } from './middleware';
-import { createScopedKey, revokeKey } from './api-keys';
+## Instructions
 
-const admin = Router();
-admin.use(requirePermission('manageTeam'));
+### Step 1: Define Roles
+Map organizational roles to Apollo permissions.
 
-admin.post('/keys', (req, res) => {
-  const { teamId, role, ttlDays } = req.body;
-  const ctx = (req as any).apolloCtx;
-  const key = createScopedKey(teamId, role, ctx.user, ttlDays);
-  res.json({ key: key.key, role: key.role, expiresAt: key.expiresAt });
-});
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
 
-admin.delete('/keys/:key', (req, res) => {
-  revokeKey(req.params.key);
-  res.json({ revoked: true });
-});
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
 
-admin.get('/usage', async (req, res) => {
-  // Check Apollo's usage stats
-  const { data } = await axios.get('https://api.apollo.io/api/v1/usage', {
-    headers: { 'x-api-key': process.env.APOLLO_API_KEY! },
-  });
-  res.json(data);
-});
-
-export { admin };
-```
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Five-tier role system mapping to Apollo API operations
-- Scoped API key creation with configurable TTL and revocation
-- Express middleware enforcing per-endpoint permissions
-- Apollo API proxy routing all requests through RBAC
-- Admin endpoints for key management and usage stats
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-| Issue | Resolution |
-|-------|------------|
-| 403 Permission denied | Check role matrix; request upgrade from admin |
-| Key expired | Admin creates new key via `POST /keys` |
-| Wrong role for bulk enrichment | Only `sales_manager` and `admin` have `bulkEnrich` |
-| Proxy timeout | Increase timeout, check Apollo API latency |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
-- [Create API Keys](https://docs.apollo.io/docs/create-api-key)
-- [RBAC Best Practices (Auth0)](https://auth0.com/docs/manage-users/access-control/rbac)
-- [View API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
+- [Apollo Enterprise Guide](https://docs.apollo.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-Proceed to `apollo-migration-deep-dive` for migration strategies.
+For major migrations, see `apollo-migration-deep-dive`.

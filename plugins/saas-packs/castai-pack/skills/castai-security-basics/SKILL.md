@@ -1,144 +1,142 @@
 ---
 name: castai-security-basics
 description: |
-  Secure CAST AI API keys, RBAC configuration, and Kvisor security agent.
-  Use when hardening CAST AI cluster access, configuring security scanning,
-  or implementing API key rotation procedures.
-  Trigger with phrases like "cast ai security", "cast ai api key rotation",
-  "cast ai rbac", "cast ai kvisor", "secure cast ai".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(helm:*), Grep
+  Apply Cast AI security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Cast AI security configuration.
+  Trigger with phrases like "castai security", "castai secrets",
+  "secure castai", "castai API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
+tags: [saas, castai]
 ---
 
-# CAST AI Security Basics
+# Cast AI Security Basics
 
 ## Overview
-
-Secure your CAST AI integration: API key management, RBAC least-privilege, Kvisor runtime security agent, and network policy configuration.
+Security best practices for Cast AI API keys, tokens, and access control.
 
 ## Prerequisites
-
-- CAST AI agent installed on cluster
-- Cluster admin access for RBAC configuration
-- Secrets manager (AWS Secrets Manager, Vault, etc.)
+- Cast AI SDK installed
+- Understanding of environment variables
+- Access to Cast AI dashboard
 
 ## Instructions
 
-### Step 1: API Key Management
-
+### Step 1: Configure Environment Variables
 ```bash
-# Use separate keys per environment
-# console.cast.ai > API > API Access Keys
+# .env (NEVER commit to git)
+CASTAI_API_KEY=sk_live_***
+CASTAI_SECRET=***
 
-# Development: Read-Only key (monitoring only)
-# Staging: Full Access key with limited cluster scope
-# Production: Full Access key, rotated every 90 days
-
-# Store in secrets manager, never in code
-aws secretsmanager create-secret \
-  --name "castai/prod/api-key" \
-  --secret-string "${CASTAI_API_KEY}"
-
-# Rotate key procedure:
-# 1. Generate new key in console
-# 2. Update secrets manager
-# 3. Restart CAST AI agent pods to pick up new key
-# 4. Verify agent reconnects
-# 5. Revoke old key in console
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Step 2: RBAC Least-Privilege Review
-
+### Step 2: Implement Secret Rotation
 ```bash
-# Audit CAST AI ClusterRoles
-kubectl get clusterroles -l app.kubernetes.io/managed-by=castai -o yaml
+# 1. Generate new key in Cast AI dashboard
+# 2. Update environment variable
+export CASTAI_API_KEY="new_key_here"
 
-# The CAST AI agent needs these minimum permissions:
-# - get/list/watch: pods, nodes, events, namespaces, replicasets
-# - get: persistentvolumes, storageclasses
-# The cluster controller additionally needs:
-# - create/delete: nodes (for autoscaling)
-# - patch: pods/eviction (for evictor)
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${CASTAI_API_KEY}" \
+  https://api.castai.com/health
 
-# Check for overly broad permissions
-kubectl auth can-i --list --as=system:serviceaccount:castai-agent:castai-agent
+# 4. Revoke old key in dashboard
 ```
 
-### Step 3: Enable Kvisor Security Agent
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
-```bash
-# Kvisor scans for CVEs, misconfigurations, and runtime threats
-helm upgrade --install castai-kvisor castai-helm/castai-kvisor \
-  -n castai-agent \
-  --set castai.apiKey="${CASTAI_API_KEY}" \
-  --set castai.clusterID="${CASTAI_CLUSTER_ID}" \
-  --set controller.extraArgs.image-scan-enabled=true \
-  --set controller.extraArgs.kube-bench-enabled=true
-
-# Verify Kvisor is running
-kubectl get pods -n castai-agent -l app.kubernetes.io/name=castai-kvisor
-```
-
-### Step 4: Network Policies
-
-```yaml
-# Restrict CAST AI agent egress to only api.cast.ai
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: castai-agent-egress
-  namespace: castai-agent
-spec:
-  podSelector:
-    matchLabels:
-      app.kubernetes.io/name: castai-agent
-  policyTypes:
-    - Egress
-  egress:
-    - to:
-        - ipBlock:
-            cidr: 0.0.0.0/0  # api.cast.ai resolves dynamically
-      ports:
-        - protocol: TCP
-          port: 443
-    - to:  # Allow DNS
-        - namespaceSelector: {}
-      ports:
-        - protocol: UDP
-          port: 53
-```
-
-### Step 5: Security Checklist
-
-- [ ] API keys stored in secrets manager, not Helm values files
-- [ ] Separate keys per environment (dev/staging/prod)
-- [ ] Read-only keys for monitoring-only clusters
-- [ ] Key rotation scheduled every 90 days
-- [ ] Kvisor enabled for image scanning and CIS benchmarks
-- [ ] CAST AI namespace has network policies
-- [ ] Agent RBAC reviewed and minimized
-- [ ] Helm values files in `.gitignore`
-- [ ] Audit logs enabled in CAST AI console
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
-| Issue | Detection | Mitigation |
-|-------|-----------|------------|
-| API key in git history | `git log -S "CASTAI"` | Rotate key immediately |
-| Agent has cluster-admin | `kubectl auth can-i --list` | Apply scoped ClusterRole |
-| Kvisor high resource use | `kubectl top pods -n castai-agent` | Adjust scan intervals |
-| Network policy blocks agent | Agent goes offline | Allow egress to 443 |
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new CastAIClient({
+    apiKey: process.env.CASTAI_READ_KEY,
+  }),
+  writer: new CastAIClient({
+    apiKey: process.env.CASTAI_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Cast AI analytics
+  await castaiClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'castai.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-
-- [CAST AI Security](https://docs.cast.ai/docs/kvisor)
-- [Kvisor Agent](https://docs.cast.ai/docs/sec-runtime-security-installation)
-- [CAST AI RBAC](https://docs.cast.ai/docs/cluster-controller)
+- [Cast AI Security Guide](https://docs.castai.com/security)
+- [Cast AI API Scopes](https://docs.castai.com/scopes)
 
 ## Next Steps
-
-For production deployment checklist, see `castai-prod-checklist`.
+For production deployment, see `castai-prod-checklist`.

@@ -1,219 +1,114 @@
 ---
-name: "cursor-upgrade-migration"
+name: cursor-upgrade-migration
 description: |
-  Upgrade Cursor versions, migrate from VS Code, and transfer settings between machines. Triggers on
-  "upgrade cursor", "update cursor", "cursor migration", "cursor new version", "vs code to cursor",
-  "cursor changelog".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+  Analyze, plan, and execute Cursor SDK upgrades with breaking change detection.
+  Use when upgrading Cursor SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade cursor", "cursor migration",
+  "cursor breaking changes", "update cursor SDK", "analyze cursor version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, migration]
-
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+compatible-with: claude-code
+tags: [saas, cursor]
 ---
+
 # Cursor Upgrade & Migration
 
-Upgrade Cursor IDE versions, migrate from VS Code, and transfer configurations between machines.
+## Overview
+Guide for upgrading Cursor SDK versions and handling breaking changes.
 
-## Version Upgrades
+## Prerequisites
+- Current Cursor SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
-### Auto-Update (Recommended)
+## Instructions
 
-Cursor checks for updates automatically. When available:
-
-1. A notification appears: "A new version is available"
-2. Click "Restart to Update" or go to `Help` > `Check for Updates`
-3. Cursor downloads, installs, and restarts
-
-### Manual Update
-
-If auto-update fails or is disabled:
-
+### Step 1: Check Current Version
 ```bash
-# macOS (Homebrew)
-brew upgrade --cask cursor
-
-# macOS/Linux/Windows: Download latest from
-# https://cursor.com/download
-
-# Linux AppImage: replace the old file
-curl -fSL https://download.cursor.com/linux/appImage/x64 -o cursor.AppImage
-chmod +x cursor.AppImage
+npm list @cursor/sdk
+npm view @cursor/sdk version
 ```
 
-### Pre-Upgrade Checklist
-
-```
-[ ] Note current version: Help > About
-[ ] Check release notes: changelog.cursor.sh
-[ ] Backup settings:
-    macOS: cp -r ~/Library/Application\ Support/Cursor/User ~/cursor-settings-backup
-    Linux: cp -r ~/.config/Cursor/User ~/cursor-settings-backup
-[ ] Export extension list:
-    cursor --list-extensions > extensions-backup.txt
-[ ] Commit any unsaved work to git
-[ ] Note any custom keybindings (keybindings.json)
-```
-
-### Post-Upgrade Verification
-
-```
-[ ] Cursor launches without errors
-[ ] Sign-in still active (check top-right user icon)
-[ ] AI features work: try Cmd+L, type a question
-[ ] Tab completion works: type code, see ghost text
-[ ] Extensions loaded: Cmd+Shift+X, verify list
-[ ] Custom keybindings preserved: test your shortcuts
-[ ] Project rules still load: @Cursor Rules in chat
-[ ] Indexing status: check status bar
-```
-
-## VS Code to Cursor Migration
-
-### Automatic Import (First Launch)
-
-On first launch, Cursor detects VS Code and offers one-click import:
-
-```
-What migrates:
-  ✅ settings.json (editor preferences)
-  ✅ keybindings.json (custom shortcuts)
-  ✅ User snippets
-  ✅ Color themes
-  ✅ Compatible extensions (from Open VSX Registry)
-
-What does NOT migrate:
-  ❌ Microsoft-exclusive extensions (Copilot, Live Share, Remote-SSH)
-  ❌ Extension login states / databases
-  ❌ Workspace trust settings
-  ❌ Task configurations (.vscode/tasks.json -- copies but may need adjustment)
-```
-
-### Manual Migration
-
-If you skipped the auto-import:
-
+### Step 2: Review Changelog
 ```bash
-# Copy settings (macOS example)
-cp ~/Library/Application\ Support/Code/User/settings.json \
-   ~/Library/Application\ Support/Cursor/User/settings.json
-
-# Copy keybindings
-cp ~/Library/Application\ Support/Code/User/keybindings.json \
-   ~/Library/Application\ Support/Cursor/User/keybindings.json
-
-# Copy snippets
-cp -r ~/Library/Application\ Support/Code/User/snippets/ \
-      ~/Library/Application\ Support/Cursor/User/snippets/
-
-# Reinstall extensions (from backup list)
-while read ext; do cursor --install-extension "$ext"; done < extensions-backup.txt
+open https://github.com/cursor/sdk/releases
 ```
 
-### Extension Marketplace Differences
-
-Cursor uses **Open VSX Registry** instead of Microsoft's VS Code Marketplace:
-
-| Extension | Status in Cursor |
-|-----------|-----------------|
-| ESLint | Available (Open VSX) |
-| Prettier | Available (Open VSX) |
-| GitLens | Available (Open VSX) |
-| Docker | Available (Open VSX) |
-| Python | Available (Open VSX) |
-| GitHub Copilot | Not available (Microsoft exclusive, also conflicts with Cursor AI) |
-| Live Share | Not available (Microsoft exclusive) |
-| Remote - SSH | Not available (Microsoft exclusive) |
-| C# Dev Kit | Not available (Microsoft exclusive) |
-
-**For unavailable extensions**, download `.vsix` from the VS Code Marketplace website and install manually:
-`Cmd+Shift+P` > `Extensions: Install from VSIX...`
-
-### Running VS Code and Cursor Side-by-Side
-
-Both can be installed simultaneously. They use separate:
-- Settings directories
-- Extension directories
-- Configuration files
-
-You can open the same project in both editors at once (though be careful with file save conflicts).
-
-## Migration Between Machines
-
-### Export Configuration
-
+### Step 3: Create Upgrade Branch
 ```bash
-# List all extensions
-cursor --list-extensions > cursor-extensions.txt
-
-# Copy settings files
-cp ~/Library/Application\ Support/Cursor/User/settings.json .
-cp ~/Library/Application\ Support/Cursor/User/keybindings.json .
-
-# Copy project rules (these are already in git if committed)
-# .cursor/rules/*.mdc are project-level, not machine-level
+git checkout -b upgrade/cursor-sdk-vX.Y.Z
+npm install @cursor/sdk@latest
+npm test
 ```
 
-### Import on New Machine
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
+
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@cursor/sdk';
+
+// After (v2.x)
+import { CursorClient } from '@cursor/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new CursorClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
 ```bash
-# Install Cursor
-# Sign in (settings sync if available)
-
-# Restore settings
-cp settings.json ~/Library/Application\ Support/Cursor/User/
-cp keybindings.json ~/Library/Application\ Support/Cursor/User/
-
-# Install extensions
-while read ext; do cursor --install-extension "$ext"; done < cursor-extensions.txt
+npm install @cursor/sdk@1.x.x --save-exact
 ```
 
-### Settings to Review After Machine Transfer
-
-```json
-// settings.json -- platform-specific settings to check
-{
-  "terminal.integrated.defaultProfile.osx": "zsh",    // macOS
-  "terminal.integrated.defaultProfile.linux": "bash",  // Linux
-  "editor.fontFamily": "Fira Code",                    // Font must be installed
-  "files.watcherExclude": { ... }                      // Paths may differ
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Cursor]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
 }
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
-
-## Handling Breaking Changes
-
-### .cursorrules to .cursor/rules/ Migration
-
-If upgrading from a Cursor version that used `.cursorrules`:
-
-1. Create `.cursor/rules/` directory
-2. Split `.cursorrules` content into scoped `.mdc` files:
-   - Global rules → `project.mdc` with `alwaysApply: true`
-   - Language rules → `typescript.mdc` with `globs: "**/*.ts"`
-3. Test: open Chat, type `@Cursor Rules` to verify rules load
-4. Delete `.cursorrules` after confirming
-
-### Cursor 2.0 Changes
-
-Cursor 2.0 introduced:
-- Agent-first architecture (Composer defaults to Agent mode)
-- New Composer model (faster generation)
-- Parallel agents (up to 8 simultaneous)
-- Bug fixes in Chat may appear as: settings key renames, deprecated fields
-
-Check [changelog.cursor.sh](https://changelog.cursor.sh) for specific breaking changes.
-
-## Enterprise Considerations
-
-- **Managed deployment**: Use MDM (macOS) or SCCM (Windows) to distribute Cursor with pre-configured settings
-- **Version pinning**: Enterprise admins can control which Cursor versions are deployed
-- **Settings templates**: Create a starter `settings.json` for new team members
-- **Rollback**: Keep the previous installer if an update causes issues; downgrade by reinstalling
 
 ## Resources
+- [Cursor Changelog](https://github.com/cursor/sdk/releases)
+- [Cursor Migration Guide](https://docs.cursor.com/migration)
 
-- [Cursor Changelog](https://changelog.cursor.sh)
-- [Cursor Downloads](https://cursor.com/download)
-- [VS Code Migration Guide](https://docs.cursor.com/configuration/migrations/vscode)
-- [Extensions Documentation](https://docs.cursor.com/configuration/extensions)
+## Next Steps
+For CI integration during upgrades, see `cursor-ci-integration`.

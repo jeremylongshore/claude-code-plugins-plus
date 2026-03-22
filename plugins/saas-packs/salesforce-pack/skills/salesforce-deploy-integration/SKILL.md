@@ -1,70 +1,54 @@
 ---
 name: salesforce-deploy-integration
 description: |
-  Deploy Salesforce-connected applications to Heroku, Vercel, and Cloud Run with proper credential management.
+  Deploy Salesforce integrations to Vercel, Fly.io, and Cloud Run platforms.
   Use when deploying Salesforce-powered applications to production,
-  configuring platform-specific secrets, or setting up Heroku Connect.
-  Trigger with phrases like "deploy salesforce app", "salesforce Heroku",
-  "salesforce production deploy", "salesforce Cloud Run", "Heroku Connect".
-allowed-tools: Read, Write, Edit, Bash(heroku:*), Bash(vercel:*), Bash(gcloud:*)
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy salesforce", "salesforce Vercel",
+  "salesforce production deploy", "salesforce Cloud Run", "salesforce Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
 compatible-with: claude-code
+tags: [saas, salesforce]
 ---
 
 # Salesforce Deploy Integration
 
 ## Overview
-Deploy Salesforce-connected Node.js applications to Heroku (native SF integration), Vercel, or Cloud Run with JWT authentication and proper secrets management.
+Deploy Salesforce-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Salesforce Connected App with JWT Bearer flow
-- RSA key pair for server-to-server auth
-- Platform CLI installed (heroku, vercel, or gcloud)
-- Application tested against sandbox
+- Salesforce API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Heroku Deployment (Recommended for Salesforce)
-
-Heroku has native Salesforce integration via Heroku Connect (bi-directional data sync).
-
+### Environment Setup
 ```bash
-# Create Heroku app
-heroku create my-sf-app
+# Add Salesforce secrets to Vercel
+vercel secrets add salesforce_api_key sk_live_***
+vercel secrets add salesforce_webhook_secret whsec_***
 
-# Set Salesforce credentials as config vars
-heroku config:set SF_LOGIN_URL=https://login.salesforce.com
-heroku config:set SF_CLIENT_ID=3MVG9...
-heroku config:set SF_USERNAME=integration@yourcompany.com
-heroku config:set SF_JWT_KEY="$(cat server.key)"
+# Link to project
+vercel link
 
-# Deploy
-git push heroku main
+# Deploy preview
+vercel
 
-# Optional: Add Heroku Connect for bi-directional sync
-heroku addons:create herokuconnect:demo
-heroku connect:authorize
-# Map sObjects: Account, Contact, Opportunity → Postgres tables
-```
-
-### Vercel Deployment (Serverless)
-
-```bash
-# Add Salesforce secrets
-vercel env add SF_LOGIN_URL production
-vercel env add SF_CLIENT_ID production
-vercel env add SF_USERNAME production
-vercel env add SF_JWT_KEY production  # Paste private key content
-
-# Deploy
+# Deploy production
 vercel --prod
 ```
 
+### vercel.json Configuration
 ```json
 {
+  "env": {
+    "SALESFORCE_API_KEY": "@salesforce_api_key"
+  },
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30
@@ -73,33 +57,36 @@ vercel --prod
 }
 ```
 
-```typescript
-// api/salesforce/accounts.ts — Vercel serverless function
-import jsforce from 'jsforce';
+## Fly.io Deployment
 
-export default async function handler(req, res) {
-  const conn = new jsforce.Connection({
-    loginUrl: process.env.SF_LOGIN_URL,
-  });
+### fly.toml
+```toml
+app = "my-salesforce-app"
+primary_region = "iad"
 
-  // JWT auth — no password needed
-  await conn.authorize({
-    grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-    client_id: process.env.SF_CLIENT_ID!,
-    username: process.env.SF_USERNAME!,
-    privateKey: process.env.SF_JWT_KEY!,
-  });
+[env]
+  NODE_ENV = "production"
 
-  const accounts = await conn.query(
-    'SELECT Id, Name, Industry FROM Account ORDER BY CreatedDate DESC LIMIT 10'
-  );
-
-  res.json({ accounts: accounts.records });
-}
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
 ```
 
-### Google Cloud Run
+### Secrets
+```bash
+# Set Salesforce secrets
+fly secrets set SALESFORCE_API_KEY=sk_live_***
+fly secrets set SALESFORCE_WEBHOOK_SECRET=whsec_***
 
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
@@ -109,72 +96,116 @@ COPY . .
 CMD ["npm", "start"]
 ```
 
+### Deploy Script
 ```bash
-# Store JWT key in Secret Manager
-echo -n "$(cat server.key)" | gcloud secrets create sf-jwt-key --data-file=-
+#!/bin/bash
+# deploy-cloud-run.sh
 
-# Build and deploy
-gcloud builds submit --tag gcr.io/$PROJECT_ID/sf-service
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="salesforce-service"
+REGION="us-central1"
 
-gcloud run deploy sf-service \
-  --image gcr.io/$PROJECT_ID/sf-service \
-  --region us-central1 \
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
   --platform managed \
-  --set-env-vars SF_LOGIN_URL=https://login.salesforce.com \
-  --set-env-vars SF_CLIENT_ID=3MVG9... \
-  --set-env-vars SF_USERNAME=integration@yourcompany.com \
-  --set-secrets=SF_JWT_KEY=sf-jwt-key:latest
+  --allow-unauthenticated \
+  --set-secrets=SALESFORCE_API_KEY=salesforce-api-key:latest
 ```
 
-### Health Check Pattern
+## Environment Configuration Pattern
 
 ```typescript
-// health.ts — include in every deployment
-export async function healthCheck() {
-  const conn = new jsforce.Connection({ loginUrl: process.env.SF_LOGIN_URL });
+// config/salesforce.ts
+interface SalesforceConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-  try {
-    await conn.authorize({ /* JWT params */ });
-    const limits = await conn.request('/services/data/v59.0/limits/');
-    const apiRemaining = limits.DailyApiRequests.Remaining;
+export function getSalesforceConfig(): SalesforceConfig {
+  const env = process.env.NODE_ENV || 'development';
 
-    return {
-      status: apiRemaining > 1000 ? 'healthy' : 'degraded',
-      salesforce: {
-        connected: true,
-        instance: conn.instanceUrl,
-        apiRemaining,
-      },
-    };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      salesforce: { connected: false, error: error.message },
-    };
-  }
+  return {
+    apiKey: process.env.SALESFORCE_API_KEY!,
+    environment: env as SalesforceConfig['environment'],
+    webhookSecret: process.env.SALESFORCE_WEBHOOK_SECRET,
+  };
 }
 ```
 
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const salesforceStatus = await checkSalesforceConnection();
+
+  return Response.json({
+    status: salesforceStatus ? 'healthy' : 'degraded',
+    services: {
+      salesforce: salesforceStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Salesforce API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Salesforce integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Salesforce connectivity.
+
 ## Output
-- Application deployed to production platform
-- JWT authentication configured (no passwords in config)
-- Salesforce secrets stored in platform-native secrets manager
-- Health check endpoint verifying Salesforce connectivity
-- API limit monitoring active
+- Application deployed to production
+- Salesforce secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `INVALID_GRANT` on deploy | JWT key format issue | Ensure full private key including headers |
-| Cold start timeout | Connection + auth on every request | Cache connection or use connection pooling |
-| Health check fails | Wrong SF_LOGIN_URL | `login.salesforce.com` for prod, `test.salesforce.com` for sandbox |
-| Secret not found | Wrong secret name | Verify with platform-specific secret list command |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add salesforce_api_key "$SALESFORCE_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set SALESFORCE_API_KEY="$SALESFORCE_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)
-- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
-- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
-- [JWT Bearer Flow](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_oauth_jwt_flow.htm)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Salesforce Deploy Guide](https://docs.salesforce.com/deploy)
 
 ## Next Steps
-For event handling, see `salesforce-webhooks-events`.
+For webhook handling, see `salesforce-webhooks-events`.

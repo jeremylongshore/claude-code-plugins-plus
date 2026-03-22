@@ -1,253 +1,216 @@
 ---
 name: documenso-performance-tuning
 description: |
-  Optimize Documenso integration performance with caching, batching, and efficient patterns.
-  Use when improving response times, reducing API calls,
-  or optimizing bulk document operations.
+  Optimize Documenso API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Documenso integrations.
   Trigger with phrases like "documenso performance", "optimize documenso",
-  "documenso caching", "documenso batch operations".
+  "documenso latency", "documenso caching", "documenso slow", "documenso batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api, performance]
-
+compatible-with: claude-code
+tags: [saas, documenso]
 ---
+
 # Documenso Performance Tuning
 
 ## Overview
-
-Optimize Documenso integrations for speed and efficiency. Key strategies: reduce API round-trips with templates, cache document metadata, batch operations with concurrency control, and use async processing for bulk signing workflows.
+Optimize Documenso API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
+- Documenso SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-- Working Documenso integration
-- Redis or in-memory cache (recommended)
-- Completed `documenso-sdk-patterns` setup
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedDocumensoRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const documensoLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Documenso
+    const results = await documensoClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  documensoLoader.load('id-1'),
+  documensoLoader.load('id-2'),
+  documensoLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new DocumensoClient({
+  apiKey: process.env.DOCUMENSO_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedDocumensoList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedDocumensoList(cursor =>
+  documensoClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredDocumensoCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Reduce API Calls with Templates
+### Step 1: Establish Baseline
+Measure current latency for critical Documenso operations.
 
-The biggest performance win: templates reduce a multi-step document creation (create + upload + add recipients + add fields + send = 5+ calls) to just 2 calls (create from template + send).
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-```typescript
-// WITHOUT templates: 5+ API calls per document
-async function createDocumentManual(signer: { email: string; name: string }) {
-  const doc = await client.documents.createV0({ title: "Contract" });              // 1
-  await client.documents.setFileV0(doc.documentId, { file: pdfBlob });             // 2
-  const recip = await client.documentsRecipients.createV0(doc.documentId, {        // 3
-    email: signer.email, name: signer.name, role: "SIGNER",
-  });
-  await client.documentsFields.createV0(doc.documentId, {                          // 4
-    recipientId: recip.recipientId, type: "SIGNATURE",
-    pageNumber: 1, pageX: 10, pageY: 80, pageWidth: 30, pageHeight: 5,
-  });
-  await client.documents.sendV0(doc.documentId);                                   // 5
-}
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-// WITH templates: 2 API calls per document
-async function createDocumentFromTemplate(templateId: number, signer: { email: string; name: string }) {
-  const res = await fetch(                                                          // 1
-    `${BASE}/templates/${templateId}/create-document`,
-    {
-      method: "POST",
-      headers: { Authorization: `Bearer ${API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        title: `Contract — ${signer.name}`,
-        recipients: [{ email: signer.email, name: signer.name, role: "SIGNER" }],
-      }),
-    }
-  );
-  const doc = await res.json();
-  await fetch(`${BASE}/documents/${doc.documentId}/send`, {                         // 2
-    method: "POST",
-    headers: { Authorization: `Bearer ${API_KEY}` },
-  });
-}
-```
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
-### Step 2: Cache Document Metadata
-
-```typescript
-// src/cache/documenso-cache.ts
-import NodeCache from "node-cache";
-
-const cache = new NodeCache({ stdTTL: 300, checkperiod: 60 }); // 5 min TTL
-
-export async function getCachedDocument(client: Documenso, documentId: number) {
-  const key = `doc:${documentId}`;
-  const cached = cache.get(key);
-  if (cached) return cached;
-
-  const doc = await client.documents.getV0(documentId);
-  // Only cache completed documents (immutable)
-  if (doc.status === "COMPLETED") {
-    cache.set(key, doc, 3600); // 1 hour for completed
-  } else {
-    cache.set(key, doc, 30); // 30 seconds for in-progress
-  }
-  return doc;
-}
-
-// Invalidate on webhook events
-export function invalidateDocument(documentId: number) {
-  cache.del(`doc:${documentId}`);
-}
-```
-
-### Step 3: Batch Operations with Concurrency Control
-
-```typescript
-// src/batch/documenso-batch.ts
-import PQueue from "p-queue";
-
-const queue = new PQueue({
-  concurrency: 5,       // Max 5 concurrent API calls
-  interval: 1000,       // Per second window
-  intervalCap: 10,      // Max 10 per second
-});
-
-export async function batchCreateDocuments(
-  client: Documenso,
-  templateId: number,
-  signers: Array<{ email: string; name: string; company: string }>
-): Promise<Array<{ email: string; documentId?: number; error?: string }>> {
-  const results = await Promise.allSettled(
-    signers.map((signer) =>
-      queue.add(async () => {
-        const res = await fetch(
-          `https://app.documenso.com/api/v1/templates/${templateId}/create-document`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${process.env.DOCUMENSO_API_KEY}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              title: `Agreement — ${signer.company}`,
-              recipients: [{ email: signer.email, name: signer.name, role: "SIGNER" }],
-            }),
-          }
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const doc = await res.json();
-
-        // Send immediately
-        await fetch(
-          `https://app.documenso.com/api/v1/documents/${doc.documentId}/send`,
-          {
-            method: "POST",
-            headers: { Authorization: `Bearer ${process.env.DOCUMENSO_API_KEY}` },
-          }
-        );
-
-        return { email: signer.email, documentId: doc.documentId };
-      })
-    )
-  );
-
-  return results.map((r, i) => {
-    if (r.status === "fulfilled") return r.value as any;
-    return { email: signers[i].email, error: (r.reason as Error).message };
-  });
-}
-```
-
-### Step 4: Async Processing with Background Jobs
-
-```typescript
-// src/jobs/signing-queue.ts
-import Bull from "bull";
-
-const signingQueue = new Bull("documenso-signing", process.env.REDIS_URL!);
-
-// Producer: queue signing requests
-export async function queueSigningRequest(data: {
-  templateId: number;
-  signerEmail: string;
-  signerName: string;
-}) {
-  const job = await signingQueue.add(data, {
-    attempts: 3,
-    backoff: { type: "exponential", delay: 5000 },
-  });
-  return job.id;
-}
-
-// Consumer: process in background
-signingQueue.process(5, async (job) => {
-  const { templateId, signerEmail, signerName } = job.data;
-  // Create and send document...
-  return { status: "sent" };
-});
-
-signingQueue.on("completed", (job, result) => {
-  console.log(`Job ${job.id} completed: ${JSON.stringify(result)}`);
-});
-
-signingQueue.on("failed", (job, err) => {
-  console.error(`Job ${job.id} failed: ${err.message}`);
-});
-```
-
-### Step 5: Efficient Pagination
-
-```typescript
-// Paginate through all documents without loading everything into memory
-async function* iterateDocuments(client: Documenso, perPage = 50) {
-  let page = 1;
-  while (true) {
-    const { documents } = await client.documents.findV0({
-      page,
-      perPage,
-      orderByColumn: "createdAt",
-      orderByDirection: "desc",
-    });
-
-    for (const doc of documents) {
-      yield doc;
-    }
-
-    if (documents.length < perPage) break; // Last page
-    page++;
-  }
-}
-
-// Usage: process all documents without memory issues
-for await (const doc of iterateDocuments(client)) {
-  if (doc.status === "COMPLETED") {
-    await archiveDocument(doc.id);
-  }
-}
-```
-
-## Performance Targets
-
-| Operation | Target | If Exceeded |
-|-----------|--------|-------------|
-| Single document create | < 500ms | Check network latency |
-| Template create + send | < 1s | Normal for template workflow |
-| Batch of 100 documents | < 30s | Use concurrency 5-10 |
-| Document list (page) | < 300ms | Add caching layer |
-| Webhook processing | < 100ms | Process async, respond 200 immediately |
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
-| Performance Issue | Cause | Solution |
-|------------------|-------|----------|
-| Slow responses | No connection reuse | Use singleton client pattern |
-| Rate limit errors | Too many concurrent calls | Use `p-queue` with concurrency cap |
-| Memory issues | Loading all documents | Use async generator pagination |
-| Queue backlog | Slow processing | Increase worker concurrency |
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredDocumensoCall(name, () =>
+    cachedDocumensoRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
-- [Bull Queue](https://github.com/OptimalBits/bull)
-- [node-cache](https://github.com/node-cache/node-cache)
+- [Documenso Performance Guide](https://docs.documenso.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-
 For cost optimization, see `documenso-cost-tuning`.

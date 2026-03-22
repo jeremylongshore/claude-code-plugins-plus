@@ -1,27 +1,126 @@
 ---
 name: guidewire-ci-integration
 description: |
-  Configure CI/CD pipelines for Guidewire with Gosu compilation, GUnit tests, and configuration deployment.
-  Trigger: "guidewire ci integration", "ci-integration".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
+  Configure Guidewire CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Guidewire tests into your build process.
+  Trigger with phrases like "guidewire CI", "guidewire GitHub Actions",
+  "guidewire automated tests", "CI guidewire".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
-# Guidewire Ci Integration
+# Guidewire CI Integration
 
 ## Overview
+Set up CI/CD pipelines for Guidewire integrations with automated testing.
 
-GitHub Actions/Jenkins: gradle compileGosu, gradle test (GUnit), gradle buildConfiguration, deploy configuration package via GCC API. Separate pipelines for Gosu changes vs configuration-only changes.
+## Prerequisites
+- GitHub repository with Actions enabled
+- Guidewire test API key
+- npm/pnpm project configured
 
-For detailed implementation, see: [implementation guide](references/implementation-guide.md)
+## Instructions
+
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/guidewire-integration.yml`:
+
+```yaml
+name: Guidewire Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  GUIDEWIRE_API_KEY: ${{ secrets.GUIDEWIRE_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GUIDEWIRE_API_KEY: ${{ secrets.GUIDEWIRE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set GUIDEWIRE_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Guidewire Integration', () => {
+  it.skipIf(!process.env.GUIDEWIRE_API_KEY)('should connect', async () => {
+    const client = getGuidewireClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
+
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GUIDEWIRE_API_KEY: ${{ secrets.GUIDEWIRE_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Guidewire production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "guidewire-integration"
+```
 
 ## Resources
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Guidewire CI Guide](https://docs.guidewire.com/ci)
 
-- [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com)
-- [Gosu Language Guide](https://gosu-lang.github.io/)
+## Next Steps
+For deployment patterns, see `guidewire-deploy-integration`.

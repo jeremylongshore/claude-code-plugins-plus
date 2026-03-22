@@ -1,219 +1,240 @@
 ---
 name: canva-reference-architecture
 description: |
-  Implement Canva Connect API reference architecture with best-practice project layout.
+  Implement Canva reference architecture with best-practice project layout.
   Use when designing new Canva integrations, reviewing project structure,
   or establishing architecture standards for Canva applications.
-  Trigger with phrases like "canva architecture", "canva project structure",
-  "how to organize canva", "canva layout", "canva reference".
+  Trigger with phrases like "canva architecture", "canva best practices",
+  "canva project structure", "how to organize canva", "canva layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, canva]
 compatible-with: claude-code
+tags: [saas, canva]
 ---
 
 # Canva Reference Architecture
 
 ## Overview
+Production-ready architecture patterns for Canva integrations.
 
-Production-ready architecture for Canva Connect API integrations. All interactions use the REST API at `api.canva.com/rest/v1/*` with OAuth 2.0 PKCE authentication.
+## Prerequisites
+- Understanding of layered architecture
+- Canva SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
 ## Project Structure
 
 ```
-my-canva-integration/
+my-canva-project/
 ├── src/
 │   ├── canva/
-│   │   ├── client.ts           # REST client wrapper with auto-refresh
-│   │   ├── auth.ts             # OAuth 2.0 PKCE flow
-│   │   ├── types.ts            # API request/response TypeScript types
-│   │   └── errors.ts           # CanvaAPIError class
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
 │   ├── services/
-│   │   ├── design.service.ts   # Design creation, export, listing
-│   │   ├── asset.service.ts    # Asset upload and management
-│   │   ├── template.service.ts # Brand template autofill (Enterprise)
-│   │   └── folder.service.ts   # Folder management
-│   ├── routes/
-│   │   ├── auth.ts             # OAuth callback endpoints
-│   │   ├── designs.ts          # Design CRUD routes
-│   │   ├── exports.ts          # Export trigger/download routes
-│   │   └── webhooks.ts         # Webhook receiver
-│   ├── middleware/
-│   │   ├── auth.ts             # Verify user has valid Canva token
-│   │   └── rate-limit.ts       # Client-side rate limit guard
-│   ├── store/
-│   │   └── tokens.ts           # Encrypted token storage (DB)
-│   └── index.ts
+│   │   └── canva/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── canva/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── canva/
+│           └── sync.ts         # Background sync job
 ├── tests/
-│   ├── mocks/
-│   │   └── canva-server.ts     # MSW mock server
 │   ├── unit/
-│   │   └── design.service.test.ts
+│   │   └── canva/
 │   └── integration/
-│       └── canva-api.test.ts
-├── .env.example
-└── package.json
+│       └── canva/
+├── config/
+│   ├── canva.development.json
+│   ├── canva.staging.json
+│   └── canva.production.json
+└── docs/
+    └── canva/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
 ## Layer Architecture
 
 ```
 ┌─────────────────────────────────────────┐
-│             Routes Layer                │
-│   (Express/Next.js — HTTP in/out)       │
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
 ├─────────────────────────────────────────┤
-│           Service Layer                 │
-│  (Business logic, caching, validation)  │
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
 ├─────────────────────────────────────────┤
-│          Canva Client Layer             │
-│   (REST calls, token refresh, retry)    │
+│          Canva Layer        │
+│   (Client, Types, Error Handling)        │
 ├─────────────────────────────────────────┤
-│         Infrastructure Layer            │
-│    (Token store, cache, queue)          │
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
 └─────────────────────────────────────────┘
 ```
 
-## Service Layer Pattern
+## Key Components
 
+### Step 1: Client Wrapper
 ```typescript
-// src/services/design.service.ts
-import { CanvaClient } from '../canva/client';
-import { LRUCache } from 'lru-cache';
+// src/canva/client.ts
+export class CanvaService {
+  private client: CanvaClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-export class DesignService {
-  private cache = new LRUCache<string, any>({ max: 200, ttl: 300_000 });
-
-  constructor(private canva: CanvaClient) {}
-
-  async create(opts: {
-    type: 'preset' | 'custom';
-    name?: string;
-    width?: number;
-    height?: number;
-    title: string;
-    assetId?: string;
-  }) {
-    const designType = opts.type === 'preset'
-      ? { type: 'preset' as const, name: opts.name! }
-      : { type: 'custom' as const, width: opts.width!, height: opts.height! };
-
-    return this.canva.request('/designs', {
-      method: 'POST',
-      body: JSON.stringify({
-        design_type: designType,
-        title: opts.title,
-        ...(opts.assetId && { asset_id: opts.assetId }),
-      }),
-    });
+  constructor(config: CanvaConfig) {
+    this.client = new CanvaClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('canva');
   }
 
-  async get(id: string) {
-    const cached = this.cache.get(id);
-    if (cached) return cached;
-
-    const result = await this.canva.request(`/designs/${id}`);
-    this.cache.set(id, result);
-    return result;
-  }
-
-  async export(designId: string, format: object): Promise<string[]> {
-    // Start export job
-    const { job } = await this.canva.request('/exports', {
-      method: 'POST',
-      body: JSON.stringify({ design_id: designId, format }),
-    });
-
-    // Poll for completion
-    return this.pollExport(job.id);
-  }
-
-  private async pollExport(exportId: string, timeoutMs = 60000): Promise<string[]> {
-    const start = Date.now();
-    while (Date.now() - start < timeoutMs) {
-      const { job } = await this.canva.request(`/exports/${exportId}`);
-      if (job.status === 'success') return job.urls;
-      if (job.status === 'failed') throw new Error(`Export failed: ${job.error?.message}`);
-      await new Promise(r => setTimeout(r, 2000));
-    }
-    throw new Error('Export timeout');
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
   }
 }
 ```
 
-## Data Flow
+### Step 2: Error Boundary
+```typescript
+// src/canva/errors.ts
+export class CanvaServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'CanvaServiceError';
+  }
+}
+
+export function wrapCanvaError(error: unknown): CanvaServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/canva/health.ts
+export async function checkCanvaHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await canvaClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
 
 ```
-User clicks "Create Design"
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
        │
        ▼
 ┌─────────────┐
-│   Route     │  POST /api/designs
-│   Handler   │
+│ Canva    │
+│   Client    │
 └──────┬──────┘
        │
        ▼
 ┌─────────────┐
-│  Design     │  Validates input, checks auth
-│  Service    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  Canva      │  POST api.canva.com/rest/v1/designs
-│  Client     │  (auto-refreshes token if expired)
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│  Canva      │  Returns design.id, edit_url, view_url
-│  API        │
+│ Canva    │
+│   API       │
 └─────────────┘
-       │
-       ▼
-  Redirect user to edit_url → Canva Editor
 ```
 
-## Auth Middleware
+## Configuration Management
 
 ```typescript
-// src/middleware/auth.ts
-export function requireCanvaAuth(tokenStore: TokenStore) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.user?.id;
-    if (!userId) return res.status(401).json({ error: 'Not authenticated' });
-
-    const tokens = await tokenStore.get(userId);
-    if (!tokens) return res.status(403).json({ error: 'Canva not connected' });
-
-    // Attach client to request for downstream use
-    req.canva = new CanvaClient({
-      clientId: process.env.CANVA_CLIENT_ID!,
-      clientSecret: process.env.CANVA_CLIENT_SECRET!,
-      tokens,
-      onTokenRefresh: (newTokens) => tokenStore.save(userId, newTokens),
-    });
-
-    next();
+// config/canva.ts
+export interface CanvaConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
   };
 }
+
+export function loadCanvaConfig(): CanvaConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./canva.${env}.json`);
+}
 ```
 
-## Error Handling
+## Instructions
 
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Canva operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Canva connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Services import client, not vice versa |
-| Token not found | User hasn't connected Canva | Redirect to OAuth flow |
-| Cache stale | Design updated in Canva | Invalidate on webhook events |
-| Service timeout | Export taking too long | Increase timeout, add job queue |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Canva types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/canva/{handlers} src/services/canva src/api/canva
+touch src/canva/{client,config,types,errors}.ts
+touch src/services/canva/{index,sync,cache}.ts
+```
 
 ## Resources
+- [Canva SDK Documentation](https://docs.canva.com/sdk)
+- [Canva Best Practices](https://docs.canva.com/best-practices)
 
-- [Canva Starter Kit](https://github.com/canva-sdks/canva-connect-api-starter-kit)
-- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
-
-## Next Steps
-
+## Flagship Skills
 For multi-environment setup, see `canva-multi-env-setup`.

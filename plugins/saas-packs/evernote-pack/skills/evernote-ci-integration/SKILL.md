@@ -1,121 +1,126 @@
 ---
 name: evernote-ci-integration
 description: |
-  Configure CI/CD pipelines for Evernote integrations.
-  Use when setting up automated testing, continuous integration,
-  or deployment pipelines for Evernote projects.
-  Trigger with phrases like "evernote ci", "evernote github actions",
-  "evernote pipeline", "automate evernote tests".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Configure Evernote CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Evernote tests into your build process.
+  Trigger with phrases like "evernote CI", "evernote GitHub Actions",
+  "evernote automated tests", "CI evernote".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment, testing, ci-cd]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote CI Integration
 
 ## Overview
-Configure continuous integration pipelines for Evernote integrations with mock-based unit tests, sandbox-based integration tests, credential management, and deployment workflows.
+Set up CI/CD pipelines for Evernote integrations with automated testing.
 
 ## Prerequisites
-- Git repository with Evernote integration code
-- CI/CD platform (GitHub Actions, GitLab CI, etc.)
-- Test framework (Jest, Vitest, or Mocha)
-- Sandbox API credentials for integration tests
+- GitHub repository with Actions enabled
+- Evernote test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: GitHub Actions Workflow
-
-Create a workflow that runs unit tests on every PR and integration tests on merges to main. Store sandbox credentials as GitHub Actions secrets.
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/evernote-integration.yml`:
 
 ```yaml
-# .github/workflows/evernote-ci.yml
-name: Evernote CI
-on: [push, pull_request]
+name: Evernote Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  EVERNOTE_API_KEY: ${{ secrets.EVERNOTE_API_KEY }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      EVERNOTE_API_KEY: ${{ secrets.EVERNOTE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with:
+          node-version: '20'
+          cache: 'npm'
       - run: npm ci
-      - run: npm test
-      - name: Integration tests
-        if: github.ref == 'refs/heads/main'
-        env:
-          EVERNOTE_DEV_TOKEN: ${{ secrets.EVERNOTE_SANDBOX_TOKEN }}
-          EVERNOTE_SANDBOX: 'true'
-        run: npm run test:integration
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-### Step 2: Mock Evernote Client for Unit Tests
-
-Create a mock NoteStore that returns predictable data without hitting the API. Mock `createNote`, `getNote`, `findNotesMetadata`, `listNotebooks`, and `listTags`.
-
-```javascript
-class MockNoteStore {
-  constructor() {
-    this.notes = new Map();
-    this.notebooks = [{ guid: 'nb-1', name: 'Default', defaultNotebook: true }];
-  }
-
-  async createNote(note) {
-    const guid = `note-${Date.now()}`;
-    const created = { ...note, guid, created: Date.now(), updated: Date.now() };
-    this.notes.set(guid, created);
-    return created;
-  }
-
-  async getNote(guid, withContent) {
-    const note = this.notes.get(guid);
-    if (!note) throw { identifier: 'Note.guid', key: guid };
-    return withContent ? note : { ...note, content: undefined };
-  }
-
-  async listNotebooks() { return this.notebooks; }
-}
+### Step 2: Configure Secrets
+```bash
+gh secret set EVERNOTE_API_KEY --body "sk_test_***"
 ```
 
-### Step 3: Unit and Integration Test Examples
-
-Write unit tests against the mock client (fast, no credentials needed). Write integration tests against the sandbox (slow, needs `EVERNOTE_DEV_TOKEN`). Tag integration tests so they can run separately.
-
-### Step 4: Secrets Management
-
-Store `EVERNOTE_CONSUMER_KEY`, `EVERNOTE_CONSUMER_SECRET`, and `EVERNOTE_DEV_TOKEN` as repository secrets. Never log or echo secret values. Use environment-specific secret names for staging vs production.
-
-For the full CI workflow, mock client, test examples, and deployment pipeline, see [Implementation Guide](references/implementation-guide.md).
+### Step 3: Add Integration Tests
+```typescript
+describe('Evernote Integration', () => {
+  it.skipIf(!process.env.EVERNOTE_API_KEY)('should connect', async () => {
+    const client = getEvernoteClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
 
 ## Output
-- GitHub Actions workflow with unit and integration test stages
-- `MockNoteStore` class for deterministic unit testing
-- Integration test suite using sandbox credentials
-- Secrets management configuration for GitHub Actions
-- npm scripts: `test`, `test:unit`, `test:integration`
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Integration test auth failure | Expired sandbox token | Regenerate Developer Token in sandbox settings |
-| Flaky integration tests | Rate limits in CI | Add delays between integration tests, reduce parallelism |
-| Secret not available | Missing repository secret | Add secret in GitHub Settings > Secrets and variables |
-| Mock drift | Mock doesn't match real API behavior | Update mock when upgrading SDK version |
-
-## Resources
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Jest Documentation](https://jestjs.io/docs/getting-started)
-- [Evernote Sandbox](https://sandbox.evernote.com)
-- [GitHub Encrypted Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
-
-## Next Steps
-For deployment pipelines, see `evernote-deploy-integration`.
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
 
 ## Examples
 
-**Unit test suite**: Test `NoteService.createNote()` against `MockNoteStore` to verify ENML wrapping, title sanitization, and tag handling without any API calls.
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
 
-**Sandbox integration test**: In CI, create a note in the sandbox, retrieve it by GUID, verify content matches, then delete it. Runs only on main branch merges.
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      EVERNOTE_API_KEY: ${{ secrets.EVERNOTE_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Evernote production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "evernote-integration"
+```
+
+## Resources
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Evernote CI Guide](https://docs.evernote.com/ci)
+
+## Next Steps
+For deployment patterns, see `evernote-deploy-integration`.

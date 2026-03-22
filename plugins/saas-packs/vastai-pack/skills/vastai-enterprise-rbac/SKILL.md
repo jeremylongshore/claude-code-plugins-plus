@@ -1,171 +1,224 @@
 ---
 name: vastai-enterprise-rbac
 description: |
-  Implement team access control and spending governance for Vast.ai GPU cloud.
-  Use when managing multi-team GPU access, implementing spending controls,
-  or setting up API key separation for different teams.
-  Trigger with phrases like "vastai team access", "vastai RBAC",
-  "vastai enterprise", "vastai spending controls", "vastai permissions".
-allowed-tools: Read, Write, Edit, Bash(vastai:*)
+  Configure Vast.ai enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Vast.ai.
+  Trigger with phrases like "vastai SSO", "vastai RBAC",
+  "vastai enterprise", "vastai roles", "vastai permissions", "vastai SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, rbac]
-
+compatible-with: claude-code
+tags: [saas, vastai]
 ---
+
 # Vast.ai Enterprise RBAC
 
 ## Overview
-Control access to Vast.ai GPU instances and spending through API key management, team-level budgets, and GPU allocation policies. Vast.ai uses a marketplace model with per-GPU-hour pricing (RTX 4090 ~$0.20/hr, A100 ~$1.50/hr, H100 ~$3.00/hr).
+Configure enterprise-grade access control for Vast.ai integrations.
 
 ## Prerequisites
-- Vast.ai account(s) with API keys
-- Understanding of team GPU usage patterns
-- Budget allocation per team/project
+- Vast.ai Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: Team API Key Strategy
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-```python
-# Separate API keys per team for billing isolation
-# Option A: Separate Vast.ai accounts per team
-# Option B: Single account with application-level controls
+## Role Implementation
 
-TEAM_CONFIGS = {
-    "ml-research": {
-        "api_key_env": "VASTAI_KEY_RESEARCH",
-        "gpu_whitelist": ["A100", "H100_SXM"],
-        "max_instances": 8,
-        "daily_budget": 200.00,
-        "max_dph": 4.00,
-    },
-    "ml-engineering": {
-        "api_key_env": "VASTAI_KEY_ENGINEERING",
-        "gpu_whitelist": ["RTX_4090", "A100"],
-        "max_instances": 4,
-        "daily_budget": 50.00,
-        "max_dph": 2.00,
-    },
-    "data-science": {
-        "api_key_env": "VASTAI_KEY_DATASCIENCE",
-        "gpu_whitelist": ["RTX_4090", "RTX_3090"],
-        "max_instances": 2,
-        "daily_budget": 10.00,
-        "max_dph": 0.30,
-    },
+```typescript
+enum Vast.aiRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
+}
+
+interface Vast.aiPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<Vast.aiRole, Vast.aiPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: Vast.aiRole,
+  action: keyof Vast.aiPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
 }
 ```
 
-### Step 2: Policy Enforcement Layer
+## SSO Integration
 
-```python
-class VastPolicyEnforcer:
-    def __init__(self, team_config):
-        self.config = team_config
-        self.client = VastClient(api_key=os.environ[team_config["api_key_env"]])
+### SAML Configuration
 
-    def can_provision(self, gpu_name, num_gpus=1):
-        """Check if provisioning is allowed by team policy."""
-        if gpu_name not in self.config["gpu_whitelist"]:
-            return False, f"GPU {gpu_name} not in team whitelist"
+```typescript
+// Vast.ai SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://vastai.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/vastai/callback',
+};
 
-        running = len([i for i in self.client.show_instances()
-                      if i.get("actual_status") == "running"])
-        if running >= self.config["max_instances"]:
-            return False, f"Instance limit reached ({running}/{self.config['max_instances']})"
-
-        return True, "OK"
-
-    def provision_with_policy(self, gpu_name, image, disk_gb=20):
-        allowed, reason = self.can_provision(gpu_name)
-        if not allowed:
-            raise PermissionError(f"Policy violation: {reason}")
-
-        offers = self.client.search_offers({
-            "gpu_name": {"eq": gpu_name},
-            "dph_total": {"lte": self.config["max_dph"]},
-            "reliability2": {"gte": 0.95},
-            "rentable": {"eq": True},
-        })
-        if not offers.get("offers"):
-            raise RuntimeError("No offers matching policy constraints")
-
-        return self.client.create_instance(
-            offers["offers"][0]["id"], image, disk_gb)
+// Map IdP groups to Vast.ai roles
+const groupRoleMapping: Record<string, Vast.aiRole> = {
+  'Engineering': Vast.aiRole.Developer,
+  'Platform-Admins': Vast.aiRole.Admin,
+  'Data-Team': Vast.aiRole.Viewer,
+};
 ```
 
-### Step 3: Audit Logging
+### OAuth2/OIDC Integration
 
-```python
-import json, datetime
+```typescript
+import { OAuth2Client } from '@vastai/sdk';
 
-class AuditLogger:
-    def __init__(self, log_file="vast_audit.jsonl"):
-        self.log_file = log_file
-
-    def log(self, team, action, details):
-        entry = {
-            "timestamp": datetime.datetime.utcnow().isoformat(),
-            "team": team,
-            "action": action,
-            **details,
-        }
-        with open(self.log_file, "a") as f:
-            f.write(json.dumps(entry) + "\n")
-
-# Usage
-audit = AuditLogger()
-audit.log("ml-research", "provision", {
-    "gpu": "A100", "offer_id": 12345, "dph": 1.50})
-audit.log("ml-research", "destroy", {
-    "instance_id": 67890, "duration_hours": 4.2, "total_cost": 6.30})
+const oauthClient = new OAuth2Client({
+  clientId: process.env.VASTAI_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.VASTAI_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/vastai/callback',
+  scopes: ['read', 'write'],
+});
 ```
 
-### Step 4: Spending Reports
+## Organization Management
 
-```python
-def team_spending_report(audit_file="vast_audit.jsonl"):
-    """Generate spending report from audit log."""
-    import json
-    costs = {}
-    with open(audit_file) as f:
-        for line in f:
-            entry = json.loads(line)
-            if entry["action"] == "destroy" and "total_cost" in entry:
-                team = entry["team"]
-                costs.setdefault(team, 0)
-                costs[team] += entry["total_cost"]
+```typescript
+interface Vast.aiOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: Vast.aiRole;
+}
 
-    print("Team Spending Report:")
-    for team, cost in sorted(costs.items(), key=lambda x: -x[1]):
-        print(f"  {team}: ${cost:.2f}")
+async function createOrganization(
+  config: Vast.aiOrganization
+): Promise<void> {
+  await vastaiClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
 ```
+
+## Access Control Middleware
+
+```typescript
+function requireVast.aiPermission(
+  requiredPermission: keyof Vast.aiPermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { vastaiRole: Vast.aiRole };
+
+    if (!checkPermission(user.vastaiRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
+
+    next();
+  };
+}
+
+// Usage
+app.delete('/vastai/resource/:id',
+  requireVast.aiPermission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface Vast.aiAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: Vast.aiRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logVast.aiAccess(entry: Vast.aiAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Define Roles
+Map organizational roles to Vast.ai permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Team-specific API key configuration
-- Policy enforcement layer (GPU whitelist, instance limits, budget caps)
-- Audit logging for all provisioning and destruction events
-- Spending reports per team
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Policy violation on provision | GPU not in whitelist or limit reached | Request policy change or destroy idle instances |
-| Budget exceeded | Team exceeded daily limit | Alert team lead; pause provisioning until next day |
-| Missing API key | Environment variable not set | Configure key in secrets manager |
-| Audit log missing entries | Logger not wired into all operations | Audit the code paths for missing log calls |
-
-## Resources
-- [Vast.ai Account](https://cloud.vast.ai)
-- [REST API](https://vast.ai/developers/api)
-
-## Next Steps
-For migration strategies, see `vastai-migration-deep-dive`.
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
 
 ## Examples
 
-**Team onboarding**: Create a new team config entry with conservative limits (2 instances, RTX 4090 only, $10/day). Increase limits after the team demonstrates responsible usage.
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
-**Monthly chargeback**: Parse the audit log to generate per-team invoices for internal cost allocation.
+## Resources
+- [Vast.ai Enterprise Guide](https://docs.vastai.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Next Steps
+For major migrations, see `vastai-migration-deep-dive`.

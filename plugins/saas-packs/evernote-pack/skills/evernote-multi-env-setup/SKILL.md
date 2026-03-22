@@ -1,132 +1,224 @@
 ---
 name: evernote-multi-env-setup
 description: |
-  Configure multi-environment setup for Evernote integrations.
-  Use when setting up dev, staging, and production environments,
-  or managing environment-specific configurations.
+  Configure Evernote across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Evernote configurations.
   Trigger with phrases like "evernote environments", "evernote staging",
-  "evernote dev setup", "multiple environments evernote".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  "evernote dev prod", "evernote environment setup", "evernote config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, evernote-multi]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Multi-Environment Setup
 
 ## Overview
-Configure separate development, staging, and production environments for Evernote integrations with proper isolation, configuration management, and environment-aware client factories.
+Configure Evernote across development, staging, and production environments.
 
 ## Prerequisites
-- Multiple Evernote API keys (sandbox for dev/staging, production for prod)
-- Environment management infrastructure
-- CI/CD pipeline (see `evernote-ci-integration`)
+- Separate Evernote accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
+
+## Environment Strategy
+
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── evernote/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${EVERNOTE_API_KEY}",
+  "baseUrl": "https://api-sandbox.evernote.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${EVERNOTE_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.evernote.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${EVERNOTE_API_KEY_PROD}",
+  "baseUrl": "https://api.evernote.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/evernote/config.ts
+import baseConfig from '../../config/evernote/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getEvernoteConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/evernote/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+EVERNOTE_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  EVERNOTE_API_KEY: ${{ secrets.EVERNOTE_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id evernote/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=evernote-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/evernote/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getEvernoteConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[evernote] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
 
 ## Instructions
 
-### Step 1: Environment Configuration Files
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-Create per-environment config files that define the Evernote endpoint, sandbox flag, rate limit settings, and logging level.
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-```javascript
-// config/environments.js
-const configs = {
-  development: {
-    sandbox: true,
-    apiUrl: 'https://sandbox.evernote.com',
-    rateLimitDelayMs: 0,  // No throttle in dev
-    logLevel: 'debug'
-  },
-  staging: {
-    sandbox: true,
-    apiUrl: 'https://sandbox.evernote.com',
-    rateLimitDelayMs: 100,
-    logLevel: 'info'
-  },
-  production: {
-    sandbox: false,
-    apiUrl: 'https://www.evernote.com',
-    rateLimitDelayMs: 200,
-    logLevel: 'warn'
-  }
-};
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-module.exports = configs[process.env.NODE_ENV || 'development'];
-```
-
-### Step 2: Environment Variables
-
-Define environment-specific `.env` files. Each environment uses its own API key and token. The `EVERNOTE_SANDBOX` flag controls which Evernote endpoint the SDK connects to.
-
-```bash
-# .env.development - sandbox with dev token
-EVERNOTE_SANDBOX=true
-EVERNOTE_DEV_TOKEN=S=s1:U=...
-
-# .env.production - production with OAuth
-EVERNOTE_SANDBOX=false
-EVERNOTE_CONSUMER_KEY=prod-key
-EVERNOTE_CONSUMER_SECRET=prod-secret
-```
-
-### Step 3: Environment-Aware Client Factory
-
-Build a factory that creates properly configured Evernote clients based on the active environment. Include validation that production never uses sandbox tokens.
-
-### Step 4: Docker Compose for Local Development
-
-Define services for the app, Redis (caching), and a webhook receiver (ngrok or localtunnel) in `docker-compose.yml`. Mount `.env.development` as environment file.
-
-### Step 5: Health Check Endpoint
-
-Create a `/health` endpoint that verifies Evernote API connectivity, reports the active environment, and checks cache availability.
-
-```javascript
-app.get('/health', async (req, res) => {
-  const checks = {
-    environment: process.env.NODE_ENV,
-    sandbox: config.sandbox,
-    evernoteApi: 'unknown',
-    cacheConnected: false
-  };
-  try {
-    await userStore.getUser();
-    checks.evernoteApi = 'connected';
-  } catch { checks.evernoteApi = 'error'; }
-  res.json(checks);
-});
-```
-
-For the full configuration loader, client factory, Docker setup, and CI/CD environment matrix, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
 ## Output
-- Per-environment configuration files (development, staging, production)
-- Environment-aware Evernote client factory
-- `.env` templates for each environment
-- Docker Compose setup for local development
-- Health check endpoint with environment reporting
-- CI/CD configuration with environment-specific secrets
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `Invalid consumer key` | Using sandbox key in production | Verify `EVERNOTE_SANDBOX` matches key type |
-| Wrong environment | `NODE_ENV` not set | Default to `development`, warn in logs |
-| Sandbox data in production | Environment misconfiguration | Add startup validation that checks key/env match |
-| Docker connection refused | Service not started | Run `docker compose up` before testing |
-
-## Resources
-- [12 Factor App - Config](https://12factor.net/config)
-- [Evernote Sandbox](https://sandbox.evernote.com)
-- [Docker Compose](https://docs.docker.com/compose/)
-
-## Next Steps
-For observability setup, see `evernote-observability`.
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
 ## Examples
 
-**Three-environment setup**: Development uses sandbox Developer Token for instant testing. Staging uses sandbox OAuth for integration testing. Production uses production OAuth with full rate limiting and monitoring.
+### Quick Environment Check
+```typescript
+const env = getEvernoteConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
-**Docker local dev**: Run `docker compose up` to start the app with Redis caching and ngrok for webhook testing, all preconfigured for the sandbox environment.
+## Resources
+- [Evernote Environments Guide](https://docs.evernote.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
+
+## Next Steps
+For observability setup, see `evernote-observability`.

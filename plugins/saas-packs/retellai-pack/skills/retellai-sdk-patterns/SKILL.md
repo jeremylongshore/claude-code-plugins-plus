@@ -1,143 +1,149 @@
 ---
 name: retellai-sdk-patterns
 description: |
-  Production-ready Retell AI SDK patterns for voice agent applications.
-  Use when building production voice agents, implementing retry logic, or establishing patterns.
-  Trigger with phrases like "retell patterns", "voice agent patterns", "retell best practices".
+  Apply production-ready Retell AI SDK patterns for TypeScript and Python.
+  Use when implementing Retell AI integrations, refactoring SDK usage,
+  or establishing team coding standards for Retell AI.
+  Trigger with phrases like "retellai SDK patterns", "retellai best practices",
+  "retellai code patterns", "idiomatic retellai".
 allowed-tools: Read, Write, Edit
-version: 2.0.0
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, patterns]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
 # Retell AI SDK Patterns
 
 ## Overview
-Production-ready patterns for Retell AI: client singletons, typed agent configurations, call management, and error handling.
+Production-ready patterns for Retell AI SDK usage in TypeScript and Python.
 
 ## Prerequisites
-- Completed `retellai-install-auth`
-- `retell-sdk` installed
+- Completed `retellai-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1: Singleton Client
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
-import Retell from 'retell-sdk';
+// src/retellai/client.ts
+import { RetellAIClient } from '@retellai/sdk';
 
-let _retell: Retell | null = null;
+let instance: RetellAIClient | null = null;
 
-export function getRetellClient(): Retell {
-  if (!_retell) {
-    _retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+export function getRetell AIClient(): RetellAIClient {
+  if (!instance) {
+    instance = new RetellAIClient({
+      apiKey: process.env.RETELLAI_API_KEY!,
+      // Additional options
+    });
   }
-  return _retell;
+  return instance;
 }
 ```
 
-### Step 2: Typed Agent Configuration
+### Step 2: Add Error Handling Wrapper
 ```typescript
-interface AgentConfig {
-  name: string;
-  voiceId: string;
-  prompt: string;
-  functions?: FunctionConfig[];
-  maxCallDurationMs?: number;
-  endCallAfterSilenceMs?: number;
-}
+import { Retell AIError } from '@retellai/sdk';
 
-async function createAgent(config: AgentConfig) {
-  const retell = getRetellClient();
-
-  const llm = await retell.llm.create({
-    model: 'gpt-4o',
-    general_prompt: config.prompt,
-    functions: config.functions,
-  });
-
-  const agent = await retell.agent.create({
-    response_engine: { type: 'retell-llm', llm_id: llm.llm_id },
-    voice_id: config.voiceId,
-    agent_name: config.name,
-    max_call_duration_ms: config.maxCallDurationMs || 300000,
-    end_call_after_silence_ms: config.endCallAfterSilenceMs || 10000,
-  });
-
-  return { agentId: agent.agent_id, llmId: llm.llm_id };
-}
-```
-
-### Step 3: Call Manager with Retry
-```typescript
-async function makeCallWithRetry(
-  fromNumber: string, toNumber: string, agentId: string, maxRetries = 2
-) {
-  const retell = getRetellClient();
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const call = await retell.call.createPhoneCall({
-        from_number: fromNumber,
-        to_number: toNumber,
-        override_agent_id: agentId,
+async function safeRetell AICall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof Retell AIError) {
+      console.error({
+        code: err.code,
+        message: err.message,
       });
-      return call;
-    } catch (err: any) {
-      if (attempt === maxRetries || err.status < 500) throw err;
-      await new Promise(r => setTimeout(r, 2000 * (attempt + 1)));
     }
+    return { data: null, error: err as Error };
   }
 }
 ```
 
-### Step 4: Batch Call Campaign
+### Step 3: Implement Retry Logic
 ```typescript
-async function runCallCampaign(
-  numbers: string[], agentId: string, concurrency = 3, delayMs = 2000
-) {
-  const results: Array<{ number: string; callId?: string; error?: string }> = [];
-  const queue = [...numbers];
-  const active = new Set<Promise<void>>();
-
-  while (queue.length > 0 || active.size > 0) {
-    while (active.size < concurrency && queue.length > 0) {
-      const number = queue.shift()!;
-      const p = (async () => {
-        try {
-          const call = await makeCallWithRetry(process.env.RETELL_PHONE_NUMBER!, number, agentId);
-          results.push({ number, callId: call.call_id });
-        } catch (err: any) {
-          results.push({ number, error: err.message });
-        }
-        await new Promise(r => setTimeout(r, delayMs));
-      })();
-      active.add(p);
-      p.finally(() => active.delete(p));
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
     }
-    if (active.size > 0) await Promise.race(active);
   }
-  return results;
+  throw new Error('Unreachable');
 }
 ```
 
 ## Output
-- Singleton Retell client
-- Typed agent creation with LLM configuration
-- Retry logic for call creation
-- Concurrent call campaign manager
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Singleton | All SDK calls | One client instance |
-| Typed config | Agent creation | Type safety, defaults |
-| Retry wrapper | Call failures | Automatic recovery |
-| Campaign manager | Outbound calls | Rate-limited concurrency |
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
+
+## Examples
+
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, RetellAIClient>();
+
+export function getClientForTenant(tenantId: string): RetellAIClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new RetellAIClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from retellai import RetellAIClient
+
+@asynccontextmanager
+async def get_retellai_client():
+    client = RetellAIClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const retellaiResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
 
 ## Resources
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
-- [Retell AI Documentation](https://docs.retellai.com)
+- [Retell AI SDK Reference](https://docs.retellai.com/sdk)
+- [Retell AI API Types](https://docs.retellai.com/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-Apply in `retellai-core-workflow-a` for agent building.
+Apply patterns in `retellai-core-workflow-a` for real-world usage.

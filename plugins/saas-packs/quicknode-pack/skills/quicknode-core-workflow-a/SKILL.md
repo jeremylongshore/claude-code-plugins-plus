@@ -1,89 +1,71 @@
 ---
 name: quicknode-core-workflow-a
 description: |
-  QuickNode core workflow a — blockchain RPC and Web3 infrastructure integration.
-  Use when working with QuickNode for blockchain development.
-  Trigger with phrases like "quicknode core workflow a", "quicknode-core-workflow-a", "blockchain RPC".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Execute QuickNode primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "quicknode main workflow",
+  "primary task with quicknode".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, quicknode]
 ---
 
 # QuickNode Core Workflow A
 
 ## Overview
-Build EVM transaction workflows: send ETH, interact with contracts, listen for events, and handle gas estimation.
+Primary money-path workflow for QuickNode. This is the most common use case.
 
 ## Prerequisites
-- Completed `quicknode-hello-world`
-- A funded wallet (use testnet for development)
+- Completed `quicknode-install-auth` setup
+- Understanding of QuickNode core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Send ETH Transaction
+### Step 1: Initialize
 ```typescript
-import { ethers } from 'ethers';
-
-const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
-const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-
-const tx = await wallet.sendTransaction({
-  to: '0xRecipientAddress',
-  value: ethers.parseEther('0.01'),
-});
-console.log(`TX sent: ${tx.hash}`);
-const receipt = await tx.wait();
-console.log(`Confirmed in block ${receipt!.blockNumber}, gas used: ${receipt!.gasUsed}`);
+// Step 1 implementation
 ```
 
-### Step 2: Call Contract Write Function
+### Step 2: Execute
 ```typescript
-const contractAddress = '0xYourContract';
-const abi = ['function transfer(address to, uint256 amount) returns (bool)'];
-const contract = new ethers.Contract(contractAddress, abi, wallet);
-
-const tx = await contract.transfer('0xRecipient', ethers.parseUnits('100', 18));
-const receipt = await tx.wait();
-console.log(`Transfer confirmed: ${receipt!.hash}`);
+// Step 2 implementation
 ```
 
-### Step 3: Listen for Events (WebSocket)
+### Step 3: Finalize
 ```typescript
-const wsProvider = new ethers.WebSocketProvider(process.env.QUICKNODE_WSS);
-const contract = new ethers.Contract(contractAddress, ['event Transfer(address indexed from, address indexed to, uint256 value)'], wsProvider);
-
-contract.on('Transfer', (from, to, value, event) => {
-  console.log(`Transfer: ${from} -> ${to}: ${ethers.formatUnits(value, 18)}`);
-});
-```
-
-### Step 4: Gas Estimation
-```typescript
-const gasEstimate = await contract.transfer.estimateGas('0xRecipient', ethers.parseUnits('100', 18));
-const feeData = await provider.getFeeData();
-const totalCost = gasEstimate * (feeData.gasPrice || 0n);
-console.log(`Estimated gas: ${gasEstimate}, cost: ${ethers.formatEther(totalCost)} ETH`);
+// Step 3 implementation
 ```
 
 ## Output
-- ETH transfer with receipt confirmation
-- Smart contract interaction
-- Real-time event listening via WebSocket
-- Gas estimation before transactions
+- Completed Core Workflow A execution
+- Expected results from QuickNode API
+- Success confirmation or error details
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `insufficient funds` | Wallet balance too low | Fund wallet or reduce amount |
-| `nonce too low` | Nonce conflict | Get latest nonce: `provider.getTransactionCount(address)` |
-| `gas required exceeds allowance` | Contract revert | Check contract requirements |
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [QuickNode Ethereum API](https://www.quicknode.com/docs/ethereum)
-- [ethers.js Documentation](https://docs.ethers.org/)
+- [QuickNode Documentation](https://docs.quicknode.com)
+- [QuickNode API Reference](https://docs.quicknode.com/api)
 
 ## Next Steps
-NFT and token APIs: `quicknode-core-workflow-b`
+For secondary workflow, see `quicknode-core-workflow-b`.

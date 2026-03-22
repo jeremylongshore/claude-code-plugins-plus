@@ -1,7 +1,7 @@
 ---
 name: documenso-rate-limits
 description: |
-  Implement Documenso rate limiting, backoff, and request throttling patterns.
+  Implement Documenso rate limiting, backoff, and idempotency patterns.
   Use when handling rate limit errors, implementing retry logic,
   or optimizing API request throughput for Documenso.
   Trigger with phrases like "documenso rate limit", "documenso throttling",
@@ -10,210 +10,142 @@ allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, api]
-
+compatible-with: claude-code
+tags: [saas, documenso]
 ---
+
 # Documenso Rate Limits
 
 ## Overview
-
-Documenso uses a fair-use rate limiting model. There are no published per-minute request quotas -- instead, limits are based on your plan's document allowance and general API fair use. The paid plans (Individual and Team) include unlimited signing and API volume. The free plan has a document limit. If you hit a 429, implement exponential backoff and request queuing.
+Handle Documenso rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-
 - Documenso SDK installed
 - Understanding of async/await patterns
-- Completed `documenso-install-auth` setup
-
-## Documenso Fair Use Model
-
-| Plan | Documents | API Volume | Signing Volume |
-|------|-----------|------------|----------------|
-| Free | Limited (per plan) | Fair use | Fair use |
-| Individual ($30/mo) | Unlimited | Unlimited | Unlimited |
-| Team | Unlimited | Unlimited | Unlimited |
-| Enterprise | Unlimited | Unlimited | Unlimited |
-| Self-Hosted | Unlimited | No limits | No limits |
-
-Documenso explicitly does not price API usage -- they want developers to build on the platform without API cost concerns. The practical limit is abusive traffic patterns (thousands of requests per second).
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Exponential Backoff with Jitter
+### Step 1: Understand Rate Limit Tiers
+
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
+
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-// src/documenso/retry.ts
-interface RetryConfig {
-  maxRetries: number;
-  baseDelayMs: number;
-  maxDelayMs: number;
-}
-
-const DEFAULTS: RetryConfig = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 60000 };
-
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  config: Partial<RetryConfig> = {}
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  const { maxRetries, baseDelayMs, maxDelayMs } = { ...DEFAULTS, ...config };
-  let lastError: Error | undefined;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await fn();
-    } catch (err: any) {
-      lastError = err;
-      const status = err.statusCode ?? err.status;
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Don't retry client errors (except 429)
-      if (status && status >= 400 && status < 500 && status !== 429) {
-        throw err;
-      }
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      if (attempt === maxRetries) break;
-
-      // Exponential backoff with jitter
-      const delay = Math.min(baseDelayMs * 2 ** attempt, maxDelayMs);
-      const jitter = delay * (0.5 + Math.random() * 0.5);
-      console.warn(`Retry ${attempt + 1}/${maxRetries} in ${Math.round(jitter)}ms (status: ${status})`);
-      await new Promise((r) => setTimeout(r, jitter));
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw lastError!;
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 2: Request Queue for Bulk Operations
+### Step 3: Add Idempotency Keys
 
 ```typescript
-// src/documenso/queue.ts
-import PQueue from "p-queue";
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-// Limit concurrency to avoid overwhelming the API
-const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 10 });
-
-export async function queuedRequest<T>(fn: () => Promise<T>): Promise<T> {
-  return queue.add(fn) as Promise<T>;
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-// Usage: bulk document creation
-async function createBulkDocuments(
-  client: Documenso,
-  items: Array<{ title: string; pdfPath: string }>
-) {
-  const results = await Promise.allSettled(
-    items.map((item) =>
-      queuedRequest(async () => {
-        const doc = await client.documents.createV0({ title: item.title });
-        const pdf = readFileSync(item.pdfPath);
-        await client.documents.setFileV0(doc.documentId, {
-          file: new Blob([pdf], { type: "application/pdf" }),
-        });
-        return doc;
-      })
-    )
-  );
-
-  const succeeded = results.filter((r) => r.status === "fulfilled").length;
-  const failed = results.filter((r) => r.status === "rejected").length;
-  console.log(`Bulk create: ${succeeded} succeeded, ${failed} failed`);
-  return results;
+async function idempotentRequest<T>(
+  client: DocumensoClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
 ```
 
-### Step 3: Circuit Breaker for Outages
-
-```typescript
-// src/documenso/circuit-breaker.ts
-class CircuitBreaker {
-  private failures = 0;
-  private lastFailure = 0;
-  private state: "closed" | "open" | "half-open" = "closed";
-
-  constructor(
-    private threshold = 5,         // failures before opening
-    private resetTimeMs = 30000    // time before half-open
-  ) {}
-
-  async execute<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.state === "open") {
-      if (Date.now() - this.lastFailure > this.resetTimeMs) {
-        this.state = "half-open";
-      } else {
-        throw new Error("Circuit breaker is open — Documenso API unavailable");
-      }
-    }
-
-    try {
-      const result = await fn();
-      this.onSuccess();
-      return result;
-    } catch (err) {
-      this.onFailure();
-      throw err;
-    }
-  }
-
-  private onSuccess() {
-    this.failures = 0;
-    this.state = "closed";
-  }
-
-  private onFailure() {
-    this.failures++;
-    this.lastFailure = Date.now();
-    if (this.failures >= this.threshold) {
-      this.state = "open";
-      console.error(`Circuit breaker OPEN after ${this.failures} failures`);
-    }
-  }
-}
-
-// Usage
-const breaker = new CircuitBreaker();
-const doc = await breaker.execute(() => client.documents.findV0({ page: 1, perPage: 10 }));
-```
-
-### Step 4: Python Retry
-
-```python
-import time, random
-
-def with_retry(fn, max_retries=5, base_delay=1.0):
-    for attempt in range(max_retries + 1):
-        try:
-            return fn()
-        except Exception as e:
-            status = getattr(e, "status_code", None)
-            if status and 400 <= status < 500 and status != 429:
-                raise
-            if attempt == max_retries:
-                raise
-            delay = min(base_delay * (2 ** attempt), 60)
-            jitter = delay * (0.5 + random.random() * 0.5)
-            print(f"Retry {attempt + 1}/{max_retries} in {jitter:.1f}s")
-            time.sleep(jitter)
-
-# Usage
-docs = with_retry(lambda: client.documents.find_v0(page=1, per_page=10))
-```
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Scenario | Response Code | Action |
-|----------|--------------|--------|
-| Rate limited | 429 | Exponential backoff with jitter |
-| Server error | 500/502/503 | Retry up to 5 times |
-| Documenso outage | Persistent 5xx | Circuit breaker, degrade gracefully |
-| Auth error | 401/403 | Do NOT retry -- fix credentials |
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-
-- [Documenso Fair Use Policy](https://docs.documenso.com/users/fair-use)
-- [Documenso Pricing](https://documenso.com/pricing)
+- [Documenso Rate Limits](https://docs.documenso.com/rate-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
 For security configuration, see `documenso-security-basics`.

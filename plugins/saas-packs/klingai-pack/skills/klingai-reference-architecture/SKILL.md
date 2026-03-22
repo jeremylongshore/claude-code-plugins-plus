@@ -1,196 +1,240 @@
 ---
 name: klingai-reference-architecture
 description: |
-  Production reference architecture for Kling AI video generation platforms. Use when designing
-  scalable systems. Trigger with phrases like 'klingai architecture', 'kling ai system design',
-  'video platform architecture', 'klingai production setup'.
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Implement Kling AI reference architecture with best-practice project layout.
+  Use when designing new Kling AI integrations, reviewing project structure,
+  or establishing architecture standards for Kling AI applications.
+  Trigger with phrases like "klingai architecture", "klingai best practices",
+  "klingai project structure", "how to organize klingai", "klingai layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, architecture, scaling]
-
+compatible-with: claude-code
+tags: [saas, klingai]
 ---
+
 # Kling AI Reference Architecture
 
 ## Overview
+Production-ready architecture patterns for Kling AI integrations.
 
-Production architecture for video generation platforms built on Kling AI. Covers API gateway, job queue, worker pool, storage, and monitoring layers.
+## Prerequisites
+- Understanding of layered architecture
+- Kling AI SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Architecture Diagram
+## Project Structure
+
+```
+my-klingai-project/
+├── src/
+│   ├── klingai/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── klingai/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── klingai/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── klingai/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── klingai/
+│   └── integration/
+│       └── klingai/
+├── config/
+│   ├── klingai.development.json
+│   ├── klingai.staging.json
+│   └── klingai.production.json
+└── docs/
+    └── klingai/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Kling AI Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/klingai/client.ts
+export class Kling AIService {
+  private client: KlingAIClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: Kling AIConfig) {
+    this.client = new KlingAIClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('klingai');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/klingai/errors.ts
+export class Kling AIServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'Kling AIServiceError';
+  }
+}
+
+export function wrapKling AIError(error: unknown): Kling AIServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/klingai/health.ts
+export async function checkKling AIHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await klingaiClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
 
 ```
 User Request
-    |
-[API Gateway / Load Balancer]
-    |
-[Application Server]
-    |--- validate prompt & estimate cost
-    |--- enqueue job to Redis/SQS
-    |
-[Job Queue (Redis / SQS / Pub/Sub)]
-    |
-[Worker Pool (N workers)]
-    |--- generate JWT token
-    |--- POST https://api.klingai.com/v1/videos/text2video
-    |--- receive task_id
-    |--- register callback_url OR poll
-    |
-[Webhook Receiver / Poller]
-    |--- receive completion callback
-    |--- download video from Kling CDN
-    |--- upload to S3/GCS
-    |--- update job status in DB
-    |--- notify user
-    |
-[Object Storage (S3 / GCS)]
-    |
-[CDN (CloudFront / Cloud CDN)]
-    |
-User views video
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Kling AI    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Kling AI    │
+│   API       │
+└─────────────┘
 ```
 
-## Component Details
+## Configuration Management
 
-### API Layer
+```typescript
+// config/klingai.ts
+export interface Kling AIConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
 
-```python
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
-app = FastAPI()
-
-class VideoRequest(BaseModel):
-    prompt: str
-    model: str = "kling-v2-master"
-    duration: int = 5
-    mode: str = "standard"
-
-@app.post("/api/videos")
-async def create_video(req: VideoRequest):
-    # 1. Validate
-    if len(req.prompt) > 2500:
-        raise HTTPException(400, "Prompt exceeds 2500 chars")
-
-    # 2. Estimate cost
-    credits = estimate_credits(req.duration, req.mode)
-    if not budget_guard.check(credits):
-        raise HTTPException(402, "Budget exceeded")
-
-    # 3. Enqueue
-    job_id = await queue.enqueue({
-        "prompt": req.prompt,
-        "model": req.model,
-        "duration": str(req.duration),
-        "mode": req.mode,
-    })
-
-    return {"job_id": job_id, "status": "queued", "estimated_credits": credits}
+export function loadKling AIConfig(): Kling AIConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./klingai.${env}.json`);
+}
 ```
 
-### Worker Service
+## Instructions
 
-```python
-import redis
-import json
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-class VideoWorker:
-    def __init__(self, kling_client, storage_client, redis_url="redis://localhost"):
-        self.kling = kling_client
-        self.storage = storage_client
-        self.redis = redis.Redis.from_url(redis_url)
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-    def process_loop(self):
-        while True:
-            raw = self.redis.brpop("kling:jobs:pending", timeout=5)
-            if not raw:
-                continue
+### Step 3: Add Error Handling
+Implement custom error classes for Kling AI operations.
 
-            job = json.loads(raw[1])
-            try:
-                # Submit to Kling API
-                result = self.kling.text_to_video(
-                    job["prompt"],
-                    model=job["model"],
-                    duration=int(job["duration"]),
-                    mode=job["mode"],
-                    callback_url=os.environ.get("WEBHOOK_URL"),
-                )
+### Step 4: Configure Health Checks
+Add health check endpoint for Kling AI connectivity.
 
-                # If using polling (no callback)
-                if isinstance(result, dict) and "videos" in result:
-                    video_url = result["videos"][0]["url"]
-                    stored_url = self.storage.download_and_upload(video_url, job["id"])
-                    self.redis.publish("kling:events", json.dumps({
-                        "type": "completed",
-                        "job_id": job["id"],
-                        "video_url": stored_url,
-                    }))
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
-            except Exception as e:
-                self.redis.lpush("kling:jobs:failed", json.dumps({
-                    **job, "error": str(e)
-                }))
-```
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Kling AI types |
+| Test isolation | Shared state | Use dependency injection |
 
-### Scaling Guidelines
+## Examples
 
-| Component | Scaling Strategy |
-|-----------|-----------------|
-| Workers | Scale by queue depth (1 worker per 3 concurrent API tasks) |
-| API servers | Horizontal, behind load balancer |
-| Redis | Single instance for <1K jobs/day, cluster for more |
-| Storage | S3/GCS scales automatically |
-| CDN | CloudFront/Cloud CDN for global delivery |
-
-### Concurrency Limits by Tier
-
-| Tier | Max Concurrent Tasks | Workers Needed |
-|------|---------------------|----------------|
-| Free | 1 | 1 |
-| Standard | 3 | 1 |
-| Pro | 5 | 2 |
-| Enterprise | 10+ | 3-4 |
-
-## Docker Compose Setup
-
-```yaml
-# docker-compose.yml
-services:
-  api:
-    build: ./api
-    ports: ["8000:8000"]
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - KLING_ACCESS_KEY=${KLING_ACCESS_KEY}
-      - KLING_SECRET_KEY=${KLING_SECRET_KEY}
-
-  worker:
-    build: ./worker
-    deploy:
-      replicas: 2
-    environment:
-      - REDIS_URL=redis://redis:6379
-      - KLING_ACCESS_KEY=${KLING_ACCESS_KEY}
-      - KLING_SECRET_KEY=${KLING_SECRET_KEY}
-      - S3_BUCKET=${S3_BUCKET}
-
-  webhook:
-    build: ./webhook
-    ports: ["8001:8001"]
-    environment:
-      - REDIS_URL=redis://redis:6379
-
-  redis:
-    image: redis:7-alpine
-    volumes: ["redis-data:/data"]
-
-volumes:
-  redis-data:
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/klingai/{handlers} src/services/klingai src/api/klingai
+touch src/klingai/{client,config,types,errors}.ts
+touch src/services/klingai/{index,sync,cache}.ts
 ```
 
 ## Resources
+- [Kling AI SDK Documentation](https://docs.klingai.com/sdk)
+- [Kling AI Best Practices](https://docs.klingai.com/best-practices)
 
-- [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)
-- [Developer Portal](https://app.klingai.com/global/dev)
+## Flagship Skills
+For multi-environment setup, see `klingai-multi-env-setup`.

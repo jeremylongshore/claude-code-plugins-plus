@@ -1,225 +1,211 @@
 ---
 name: sentry-deploy-integration
 description: |
-  Track deployments and release health in Sentry.
-  Use when configuring deployment tracking, release health,
-  or connecting deployments to error data.
-  Trigger with phrases like "sentry deploy tracking", "sentry release health",
-  "track deployments sentry", "sentry deployment notification".
-allowed-tools: Read, Write, Edit, Bash(sentry-cli:*), Bash(curl:*), Bash(node:*), Grep
+  Deploy Sentry integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Sentry-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy sentry", "sentry Vercel",
+  "sentry production deploy", "sentry Cloud Run", "sentry Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, deployment, release-health, tracking]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Deploy Integration
 
+## Overview
+Deploy Sentry-powered applications to popular platforms with proper secrets management.
+
 ## Prerequisites
-- Sentry CLI installed and authenticated
-- Release created for the deployed version
-- Build pipeline with deploy step access
-- `SENTRY_AUTH_TOKEN` with `project:releases` scope
+- Sentry API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### 1. Complete Release + Deploy Workflow
+### Environment Setup
+```bash
+# Add Sentry secrets to Vercel
+vercel secrets add sentry_api_key sk_live_***
+vercel secrets add sentry_webhook_secret whsec_***
 
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "SENTRY_API_KEY": "@sentry_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-sentry-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Sentry secrets
+fly secrets set SENTRY_API_KEY=sk_live_***
+fly secrets set SENTRY_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
 ```bash
 #!/bin/bash
-# scripts/deploy-with-sentry.sh
-set -euo pipefail
+# deploy-cloud-run.sh
 
-VERSION="${1:-$(git rev-parse --short HEAD)}"
-ENVIRONMENT="${2:-production}"
-STARTED=$(date +%s)
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="sentry-service"
+REGION="us-central1"
 
-# Step 1: Create release
-sentry-cli releases new "$VERSION"
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Step 2: Associate commits
-sentry-cli releases set-commits "$VERSION" --auto
-
-# Step 3: Upload source maps
-sentry-cli sourcemaps upload \
-  --release="$VERSION" \
-  --url-prefix="~/static/js" \
-  --validate \
-  ./dist
-
-# Step 4: Finalize release
-sentry-cli releases finalize "$VERSION"
-
-# Step 5: Deploy application
-echo "Deploying version $VERSION to $ENVIRONMENT..."
-# your-deploy-command-here
-
-FINISHED=$(date +%s)
-
-# Step 6: Record deployment in Sentry
-sentry-cli releases deploys "$VERSION" new \
-  --env "$ENVIRONMENT" \
-  --started "$STARTED" \
-  --finished "$FINISHED"
-
-echo "Deployment recorded: $VERSION -> $ENVIRONMENT (${FINISHED-STARTED}s)"
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=SENTRY_API_KEY=sentry-api-key:latest
 ```
 
-### 2. Deploy via Sentry API
-
-```bash
-# Create a deploy using the REST API
-curl -X POST \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "environment": "production",
-    "name": "v1.2.3 production deploy",
-    "url": "https://github.com/org/repo/actions/runs/12345",
-    "dateStarted": "2026-03-22T10:00:00Z",
-    "dateFinished": "2026-03-22T10:05:00Z"
-  }' \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/releases/$VERSION/deploys/"
-```
-
-### 3. Release Health Monitoring
-
-Release health tracks crash-free sessions and users. Enable in SDK:
-
-```typescript
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  release: process.env.SENTRY_RELEASE,
-  environment: 'production',
-
-  // Session tracking is enabled by default in v8
-  // autoSessionTracking: true,
-});
-```
-
-**Release health metrics:**
-- **Crash-free sessions** — % of sessions without an unhandled error
-- **Crash-free users** — % of users without an unhandled error
-- **Adoption** — % of sessions on this release vs previous
-- **Error count** — total errors in this release
-- **Session count** — total sessions in this release
-
-### 4. Compare Releases
-
-```bash
-# List releases with stats
-curl -s -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/releases/?project=$SENTRY_PROJECT&per_page=5" \
-  | python3 -c "
-import json, sys
-releases = json.load(sys.stdin)
-for r in releases:
-    print(f\"{r['version']}: {r.get('newGroups', 0)} new issues, {len(r.get('deploys', []))} deploys\")
-"
-```
-
-### 5. Multi-Environment Deploy Tracking
-
-```bash
-# Track deployments across environments
-# Staging deploy
-sentry-cli releases deploys "$VERSION" new --env staging
-
-# After staging validation passes:
-sentry-cli releases deploys "$VERSION" new --env production
-
-# Sentry dashboard shows deployment timeline:
-# staging (2:00 PM) -> production (4:30 PM)
-```
-
-### 6. Environment-Specific SDK Configuration
+## Environment Configuration Pattern
 
 ```typescript
 // config/sentry.ts
-const envConfig: Record<string, Partial<Sentry.NodeOptions>> = {
-  production: {
-    tracesSampleRate: 0.1,
-    sampleRate: 1.0,
-    debug: false,
-  },
-  staging: {
-    tracesSampleRate: 0.5,
-    sampleRate: 1.0,
-    debug: false,
-  },
-  development: {
-    tracesSampleRate: 1.0,
-    sampleRate: 1.0,
-    debug: true,
-  },
-};
+interface SentryConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-const env = process.env.NODE_ENV || 'development';
+export function getSentryConfig(): SentryConfig {
+  const env = process.env.NODE_ENV || 'development';
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: env,
-  release: process.env.SENTRY_RELEASE,
-  ...envConfig[env],
-});
+  return {
+    apiKey: process.env.SENTRY_API_KEY!,
+    environment: env as SentryConfig['environment'],
+    webhookSecret: process.env.SENTRY_WEBHOOK_SECRET,
+  };
+}
 ```
 
-### 7. Rollback Tracking
-
-```bash
-# When rolling back, create a new deploy pointing to the old release
-ROLLBACK_VERSION="v1.1.0"  # Previous stable version
-
-sentry-cli releases deploys "$ROLLBACK_VERSION" new \
-  --env production \
-  --name "Rollback from $CURRENT_VERSION"
-
-# Sentry shows the rollback in the release timeline
-# and attributes new errors to the rolled-back version
-```
-
-### 8. Deploy Notification Webhooks
-
-Configure in **Project Settings > Integrations** for deploy notifications:
-- Slack: "Release v1.2.3 deployed to production"
-- PagerDuty: Post-deploy error spike monitoring
-- Custom webhook: `POST /webhook/sentry-deploy`
+## Health Check Endpoint
 
 ```typescript
-// Custom webhook handler
-app.post('/webhook/sentry-deploy', (req, res) => {
-  const { action, data } = req.body;
+// api/health.ts
+export async function GET() {
+  const sentryStatus = await checkSentryConnection();
 
-  if (action === 'deploy') {
-    console.log(`Deploy: ${data.release} -> ${data.environment}`);
-    // Trigger post-deploy health checks
-    runHealthChecks(data.release, data.environment);
-  }
-
-  res.status(200).send('ok');
-});
+  return Response.json({
+    status: sentryStatus ? 'healthy' : 'degraded',
+    services: {
+      sentry: sentryStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
 ```
 
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Sentry API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Sentry integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Sentry connectivity.
+
 ## Output
-- Deployments recorded with environment and timestamps
-- Release health metrics tracking crash-free sessions
-- Multi-environment deploy timeline visible in Sentry
-- Rollback tracking recording version changes
-- Deploy notifications sent to team channels
+- Application deployed to production
+- Sentry secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `release not found` | Deploy created before release | Run `sentry-cli releases new $VERSION` first |
-| No release health data | `autoSessionTracking` disabled | Ensure SDK v8 default is not overridden |
-| Wrong environment in events | `environment` not set in SDK | Explicitly set `environment` in `Sentry.init()` |
-| Deploy timestamps wrong | Missing `--started`/`--finished` flags | Capture timestamps before and after deploy step |
-| Crash-free rate inaccurate | Mixed SDK versions across instances | Ensure all instances use the same release version |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add sentry_api_key "$SENTRY_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set SENTRY_API_KEY="$SENTRY_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Release Setup](https://docs.sentry.io/product/releases/setup/)
-- [Release Health](https://docs.sentry.io/product/releases/health/)
-- [Deploy CLI](https://docs.sentry.io/cli/releases/#creating-deploys)
-- [Release API](https://docs.sentry.io/api/releases/)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Sentry Deploy Guide](https://docs.sentry.com/deploy)
+
+## Next Steps
+For webhook handling, see `sentry-webhooks-events`.

@@ -1,216 +1,113 @@
 ---
 name: apollo-debug-bundle
 description: |
-  Collect Apollo.io debug evidence for support.
-  Use when preparing support tickets, documenting issues,
-  or gathering diagnostic information for Apollo problems.
+  Collect Apollo debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent issues, preparing support tickets,
+  or collecting diagnostic information for Apollo problems.
   Trigger with phrases like "apollo debug", "apollo support bundle",
-  "collect apollo diagnostics", "apollo troubleshooting info".
-allowed-tools: Read, Grep, Bash(curl:*)
+  "collect apollo logs", "apollo diagnostic".
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, debugging]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Debug Bundle
 
-## Current State
-!`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
-!`uname -a`
-
 ## Overview
-Collect comprehensive debug information for Apollo.io API issues. Generates a JSON diagnostic bundle with environment info, connectivity tests, rate limit status, key type verification, and sanitized request/response logs.
+Collect all necessary diagnostic information for Apollo support tickets.
 
 ## Prerequisites
-- `APOLLO_API_KEY` environment variable set
-- Node.js 18+ or Python 3.10+
+- Apollo SDK installed
+- Access to application logs
+- Permission to collect environment info
 
 ## Instructions
 
-### Step 1: Create the Debug Bundle Collector
-```typescript
-// src/scripts/debug-bundle.ts
-import axios from 'axios';
-import os from 'os';
+### Step 1: Create Debug Bundle Script
+```bash
+#!/bin/bash
+# apollo-debug-bundle.sh
 
-const BASE_URL = 'https://api.apollo.io/api/v1';
+BUNDLE_DIR="apollo-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE_DIR"
 
-interface DebugBundle {
-  timestamp: string;
-  environment: Record<string, string>;
-  connectivity: { reachable: boolean; latencyMs: number; statusCode?: number };
-  keyType: 'master' | 'standard' | 'invalid' | 'unknown';
-  rateLimits: { limit?: string; remaining?: string; window?: string };
-  endpointTests: Array<{ endpoint: string; status: number | string; ok: boolean }>;
-  systemInfo: Record<string, string>;
-}
-
-async function collectDebugBundle(): Promise<DebugBundle> {
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-api-key': process.env.APOLLO_API_KEY ?? '',
-  };
-
-  const bundle: DebugBundle = {
-    timestamp: new Date().toISOString(),
-    environment: {
-      nodeVersion: process.version,
-      platform: os.platform(),
-      arch: os.arch(),
-      apiKeySet: process.env.APOLLO_API_KEY ? 'yes (redacted)' : 'NOT SET',
-      apiKeyLength: String(process.env.APOLLO_API_KEY?.length ?? 0),
-      apiKeyPrefix: process.env.APOLLO_API_KEY?.slice(0, 4) + '...' ?? 'N/A',
-    },
-    connectivity: { reachable: false, latencyMs: 0 },
-    keyType: 'unknown',
-    rateLimits: {},
-    endpointTests: [],
-    systemInfo: {},
-  };
-
-  return bundle;
-}
+echo "=== Apollo Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 2: Test Connectivity and Key Type
-```typescript
-async function testConnectivity(bundle: DebugBundle) {
-  const headers = { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! };
-
-  // Test basic auth
-  const start = Date.now();
-  try {
-    const resp = await axios.get(`${BASE_URL}/auth/health`, { headers, timeout: 10_000 });
-    bundle.connectivity = { reachable: true, latencyMs: Date.now() - start, statusCode: resp.status };
-    bundle.keyType = resp.data.is_logged_in ? 'standard' : 'invalid';  // at minimum standard
-  } catch (err: any) {
-    bundle.connectivity = { reachable: false, latencyMs: Date.now() - start, statusCode: err.response?.status };
-    return;
-  }
-
-  // Test master key access
-  try {
-    await axios.post(`${BASE_URL}/contacts/search`, { per_page: 1 }, { headers, timeout: 10_000 });
-    bundle.keyType = 'master';
-  } catch (err: any) {
-    if (err.response?.status === 403) bundle.keyType = 'standard';
-  }
-}
+### Step 2: Collect Environment Info
+```bash
+# Environment info
+echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+echo "APOLLO_API_KEY: ${APOLLO_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 3: Test Key Endpoints
-```typescript
-async function testEndpoints(bundle: DebugBundle) {
-  const headers = { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! };
+### Step 3: Gather SDK and Logs
+```bash
+# SDK version
+npm list @apollo/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
 
-  const tests = [
-    { name: 'Auth Health', method: 'GET', url: `${BASE_URL}/auth/health` },
-    { name: 'People Search', method: 'POST', url: `${BASE_URL}/mixed_people/api_search`,
-      body: { per_page: 1, q_organization_domains_list: ['apollo.io'] } },
-    { name: 'Org Enrichment', method: 'GET', url: `${BASE_URL}/organizations/enrich?domain=apollo.io` },
-    { name: 'Contacts Search', method: 'POST', url: `${BASE_URL}/contacts/search`, body: { per_page: 1 } },
-    { name: 'Sequences Search', method: 'POST', url: `${BASE_URL}/emailer_campaigns/search`, body: { per_page: 1 } },
-    { name: 'Email Accounts', method: 'GET', url: `${BASE_URL}/email_accounts` },
-  ];
+# Recent logs (redacted)
+grep -i "apollo" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
 
-  for (const test of tests) {
-    try {
-      const resp = await axios({ method: test.method as any, url: test.url, data: test.body, headers, timeout: 10_000 });
-      bundle.endpointTests.push({ endpoint: test.name, status: resp.status, ok: true });
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
 
-      // Capture rate limit headers from any successful response
-      if (resp.headers['x-rate-limit-limit']) {
-        bundle.rateLimits = {
-          limit: resp.headers['x-rate-limit-limit'],
-          remaining: resp.headers['x-rate-limit-remaining'],
-          window: resp.headers['x-rate-limit-window'],
-        };
-      }
-    } catch (err: any) {
-      bundle.endpointTests.push({
-        endpoint: test.name,
-        status: err.response?.status ?? err.code ?? err.message,
-        ok: false,
-      });
-    }
-  }
-}
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" https://api.apollo.com/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 4: Generate and Output
-```typescript
-async function main() {
-  console.log('Collecting Apollo debug bundle...\n');
-  const bundle = await collectDebugBundle();
-  await testConnectivity(bundle);
-  await testEndpoints(bundle);
-
-  // System info
-  bundle.systemInfo = {
-    hostname: os.hostname(),
-    platform: `${os.platform()} ${os.release()}`,
-    memory: `${Math.round(os.freemem() / 1024 / 1024)}MB free / ${Math.round(os.totalmem() / 1024 / 1024)}MB total`,
-  };
-
-  // Write to file
-  const fs = await import('fs');
-  const filename = `apollo-debug-${Date.now()}.json`;
-  fs.writeFileSync(filename, JSON.stringify(bundle, null, 2));
-
-  // Print summary
-  console.log('=== Apollo Debug Summary ===');
-  console.log(`API Key:     ${bundle.environment.apiKeySet} (${bundle.environment.apiKeyLength} chars)`);
-  console.log(`Key Type:    ${bundle.keyType}`);
-  console.log(`Reachable:   ${bundle.connectivity.reachable} (${bundle.connectivity.latencyMs}ms)`);
-  console.log(`Rate Limit:  ${bundle.rateLimits.remaining ?? '?'}/${bundle.rateLimits.limit ?? '?'} remaining`);
-  console.log(`Endpoints:`);
-  for (const t of bundle.endpointTests) {
-    console.log(`  ${t.ok ? 'OK' : 'FAIL'}  ${t.endpoint}: ${t.status}`);
-  }
-  console.log(`\nBundle saved: ${filename}`);
-}
-
-main().catch(console.error);
+### Step 4: Package Bundle
+```bash
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
 ## Output
-- JSON debug bundle with environment, connectivity, key type, rate limits, and endpoint results
-- Key type detection (master vs standard vs invalid)
-- Endpoint-by-endpoint health check (auth, search, enrichment, contacts, sequences)
-- Rate limit header capture
-- Ready-to-attach file for Apollo support tickets
+- `apollo-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
+  - `summary.txt` - Environment and SDK info
+  - `logs.txt` - Recent redacted logs
+  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
-| Issue | Debug Step |
-|-------|------------|
-| Connection timeout | Check network/firewall, verify DNS for `api.apollo.io` |
-| Key type = invalid | Key was revoked — regenerate in Apollo dashboard |
-| Key type = standard | Master key needed — check which endpoints fail with 403 |
-| All endpoints fail | Check [status.apollo.io](https://status.apollo.io) for outages |
+| Item | Purpose | Included |
+|------|---------|----------|
+| Environment versions | Compatibility check | ✓ |
+| SDK version | Version-specific bugs | ✓ |
+| Error logs (redacted) | Root cause analysis | ✓ |
+| Config (redacted) | Configuration issues | ✓ |
+| Network test | Connectivity issues | ✓ |
 
 ## Examples
 
-### Quick CLI Diagnostic
-```bash
-# One-liner: test auth + connectivity
-curl -s -w "\nHTTP %{http_code} in %{time_total}s\n" \
-  -H "x-api-key: $APOLLO_API_KEY" \
-  "https://api.apollo.io/api/v1/auth/health"
+### Sensitive Data Handling
+**ALWAYS REDACT:**
+- API keys and tokens
+- Passwords and secrets
+- PII (emails, names, IDs)
 
-# Test rate limit headers
-curl -s -D - -o /dev/null \
-  -H "Content-Type: application/json" -H "x-api-key: $APOLLO_API_KEY" \
-  -X POST -d '{"per_page":1,"q_organization_domains_list":["apollo.io"]}' \
-  "https://api.apollo.io/api/v1/mixed_people/api_search" 2>/dev/null | grep -i "x-rate"
-```
+**Safe to Include:**
+- Error messages
+- Stack traces (redacted)
+- SDK/runtime versions
+
+### Submit to Support
+1. Create bundle: `bash apollo-debug-bundle.sh`
+2. Review for sensitive data
+3. Upload to Apollo support portal
 
 ## Resources
-- [Apollo Status Page](https://status.apollo.io)
-- [API Usage Stats](https://docs.apollo.io/reference/view-api-usage-stats)
-- [Apollo Support](https://support.apollo.io)
+- [Apollo Support](https://docs.apollo.com/support)
+- [Apollo Status](https://status.apollo.com)
 
 ## Next Steps
-Proceed to `apollo-rate-limits` for rate limiting implementation.
+For rate limit issues, see `apollo-rate-limits`.

@@ -1,208 +1,126 @@
 ---
 name: supabase-ci-integration
 description: |
-  Configure Supabase CI/CD with GitHub Actions: automated testing, migration deployment,
-  type generation, and database reset workflows.
-  Use when setting up CI pipelines, automating Supabase migrations,
-  or running integration tests against Supabase in CI.
+  Configure Supabase CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Supabase tests into your build process.
   Trigger with phrases like "supabase CI", "supabase GitHub Actions",
-  "supabase automated tests", "CI supabase", "supabase pipeline".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Grep
+  "supabase automated tests", "CI supabase".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, ci-cd, github-actions]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase CI Integration
 
 ## Overview
-Set up GitHub Actions workflows for Supabase: run migrations on deploy, generate TypeScript types, run integration tests against a local Supabase instance, and validate RLS policies.
+Set up CI/CD pipelines for Supabase integrations with automated testing.
 
 ## Prerequisites
 - GitHub repository with Actions enabled
-- Supabase project linked (`supabase link`)
-- Supabase access token (generate at supabase.com/dashboard/account/tokens)
+- Supabase test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: Store Secrets in GitHub
-
-```bash
-# Add secrets to your GitHub repository
-gh secret set SUPABASE_ACCESS_TOKEN --body "<your-access-token>"
-gh secret set SUPABASE_DB_PASSWORD --body "<your-database-password>"
-gh secret set SUPABASE_PROJECT_ID --body "<your-project-ref>"
-```
-
-### Step 2: CI Workflow with Local Supabase
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/supabase-integration.yml`:
 
 ```yaml
-# .github/workflows/supabase-ci.yml
-name: Supabase CI
+name: Supabase Integration Tests
 
 on:
-  pull_request:
-    branches: [main]
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Start local Supabase
-        run: supabase start -x realtime,storage-api,imgproxy,inbucket,postgrest-manager
-
-      - name: Apply migrations
-        run: supabase db reset
-
-      - name: Generate types
-        run: |
-          supabase gen types typescript --local > lib/database.types.ts
-          # Verify types haven't drifted from committed version
-          git diff --exit-code lib/database.types.ts || \
-            (echo "Types are out of date. Run 'supabase gen types' locally." && exit 1)
-
-      - name: Run tests
-        run: npm test
-        env:
-          SUPABASE_URL: http://127.0.0.1:54321
-          SUPABASE_ANON_KEY: ${{ steps.supabase.outputs.anon_key }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ steps.supabase.outputs.service_role_key }}
-
-      - name: Type check
-        run: npx tsc --noEmit
-
-      - name: Stop Supabase
-        if: always()
-        run: supabase stop
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-### Step 3: Deploy Migrations on Merge
-
-```yaml
-# .github/workflows/supabase-deploy.yml
-name: Deploy Migrations
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'supabase/migrations/**'
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
-        with:
-          version: latest
-
-      - name: Link project
-        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-
-      - name: Push migrations
-        run: supabase db push
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-```
-
-### Step 4: RLS Policy Validation in CI
-
-```sql
--- supabase/tests/rls_policies.test.sql (pgTAP test)
-begin;
-select plan(3);
-
--- Test: RLS is enabled on all public tables
-select is(
-  (select count(*)::int from pg_tables
-   where schemaname = 'public' and rowsecurity = false),
-  0,
-  'All public tables have RLS enabled'
-);
-
--- Test: todos table has a select policy
-select isnt(
-  (select count(*)::int from pg_policies
-   where tablename = 'todos' and cmd = 'SELECT'),
-  0,
-  'todos table has a SELECT policy'
-);
-
--- Test: anon role cannot bypass RLS
-set role anon;
-select is_empty(
-  'select * from public.todos',
-  'anon role cannot read todos without auth'
-);
-reset role;
-
-select * from finish();
-rollback;
-```
-
+### Step 2: Configure Secrets
 ```bash
-# Run pgTAP tests
-supabase test db
+gh secret set SUPABASE_API_KEY --body "sk_test_***"
 ```
 
-### Step 5: Type Drift Detection
-
-```yaml
-# Add to your PR workflow
-- name: Check for type drift
-  run: |
-    supabase gen types typescript --local > /tmp/generated-types.ts
-    diff lib/database.types.ts /tmp/generated-types.ts || {
-      echo "::error::Database types are out of sync with schema"
-      echo "Run: supabase gen types typescript --local > lib/database.types.ts"
-      exit 1
-    }
+### Step 3: Add Integration Tests
+```typescript
+describe('Supabase Integration', () => {
+  it.skipIf(!process.env.SUPABASE_API_KEY)('should connect', async () => {
+    const client = getSupabaseClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
-- GitHub Actions workflow running tests against local Supabase
-- Automated migration deployment on merge to main
-- pgTAP tests validating RLS policies in CI
-- Type drift detection preventing stale TypeScript types
-- Secrets stored securely in GitHub repository settings
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `supabase start` fails in CI | Docker not available | Use `ubuntu-latest` runner (includes Docker) |
-| `supabase db push` unauthorized | Wrong access token | Verify `SUPABASE_ACCESS_TOKEN` secret |
-| Type drift detected | Schema changed without regenerating types | Run `supabase gen types typescript --linked` |
-| pgTAP test failures | Missing RLS policies | Add policies before merging |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Supabase production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "supabase-integration"
+```
 
 ## Resources
-- [Supabase CLI in CI](https://supabase.com/docs/guides/local-development/cli/getting-started)
-- [Database Testing with pgTAP](https://supabase.com/docs/guides/local-development/testing/pgtap-extended)
-- [Managing Environments](https://supabase.com/docs/guides/deployment/managing-environments)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Supabase CI Guide](https://supabase.com/docs/ci)
 
 ## Next Steps
-For deployment to hosting platforms, see `supabase-deploy-integration`.
+For deployment patterns, see `supabase-deploy-integration`.

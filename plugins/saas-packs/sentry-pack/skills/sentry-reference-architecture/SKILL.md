@@ -1,294 +1,240 @@
 ---
 name: sentry-reference-architecture
 description: |
-  Design best-practice Sentry architecture for organizations.
-  Use when designing Sentry integration architecture,
-  structuring projects, or planning enterprise rollout.
+  Implement Sentry reference architecture with best-practice project layout.
+  Use when designing new Sentry integrations, reviewing project structure,
+  or establishing architecture standards for Sentry applications.
   Trigger with phrases like "sentry architecture", "sentry best practices",
-  "design sentry integration", "sentry project structure".
-allowed-tools: Read, Write, Edit, Grep
+  "sentry project structure", "how to organize sentry", "sentry layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, architecture, best-practices, enterprise]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Reference Architecture
 
+## Overview
+Production-ready architecture patterns for Sentry integrations.
+
 ## Prerequisites
-- Sentry organization created
-- Team structure and service inventory documented
-- Alert escalation paths established
-- Compliance requirements known
+- Understanding of layered architecture
+- Sentry SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Instructions
+## Project Structure
 
-### 1. Project Structure Strategy
-
-**Pattern A: One Project Per Service (Recommended)**
 ```
-Organization: acme-corp
-├── Team: platform
-│   ├── Project: api-gateway
-│   ├── Project: auth-service
-│   └── Project: user-service
-├── Team: payments
-│   ├── Project: payment-api
-│   └── Project: billing-worker
-├── Team: frontend
-│   ├── Project: web-app
-│   └── Project: mobile-app
-└── Team: data
-    ├── Project: etl-pipeline
-    └── Project: analytics-api
+my-sentry-project/
+├── src/
+│   ├── sentry/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── sentry/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── sentry/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── sentry/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── sentry/
+│   └── integration/
+│       └── sentry/
+├── config/
+│   ├── sentry.development.json
+│   ├── sentry.staging.json
+│   └── sentry.production.json
+└── docs/
+    └── sentry/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-**Benefits:** Clear ownership, independent quotas, team-scoped alerts.
+## Layer Architecture
 
-**Pattern B: One Project with Environment Tags (Small teams)**
 ```
-Organization: startup-xyz
-└── Project: main-app
-    ├── Environment: production
-    ├── Environment: staging
-    └── Environment: development
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Sentry Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
 ```
 
-**Benefits:** Simpler setup, unified issue view across environments.
+## Key Components
 
-### 2. Shared Configuration Package
-
-Create an internal npm package for consistent SDK setup across services:
-
+### Step 1: Client Wrapper
 ```typescript
-// packages/sentry-config/index.ts
-import * as Sentry from '@sentry/node';
+// src/sentry/client.ts
+export class SentryService {
+  private client: SentryClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-interface ServiceConfig {
-  serviceName: string;
-  dsn: string;
-  environment?: string;
-  version?: string;
-  tracesSampleRate?: number;
-  additionalIntegrations?: Sentry.Integration[];
+  constructor(config: SentryConfig) {
+    this.client = new SentryClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('sentry');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/sentry/errors.ts
+export class SentryServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'SentryServiceError';
+  }
 }
 
-export function initSentry(config: ServiceConfig) {
-  Sentry.init({
-    dsn: config.dsn,
-    environment: config.environment || process.env.NODE_ENV || 'development',
-    release: `${config.serviceName}@${config.version || 'unknown'}`,
-    serverName: config.serviceName,
-
-    // Organization defaults
-    sendDefaultPii: false,
-    debug: process.env.NODE_ENV !== 'production',
-    maxBreadcrumbs: 50,
-
-    tracesSampleRate: config.tracesSampleRate ?? 0.1,
-
-    integrations: [
-      ...(config.additionalIntegrations || []),
-    ],
-
-    // Organization-wide filtering
-    ignoreErrors: [
-      'ResizeObserver loop',
-      'Non-Error promise rejection',
-      /Loading chunk \d+ failed/,
-    ],
-
-    // Mandatory PII scrubbing
-    beforeSend(event) {
-      if (event.request?.headers) {
-        delete event.request.headers['Authorization'];
-        delete event.request.headers['Cookie'];
-        delete event.request.headers['X-Api-Key'];
-      }
-      return event;
-    },
-
-    // Standard tags for all events
-    initialScope: {
-      tags: {
-        service: config.serviceName,
-        team: process.env.TEAM_NAME || 'unknown',
-      },
-    },
-  });
+export function wrapSentryError(error: unknown): SentryServiceError {
+  // Transform SDK errors to application errors
 }
-
-// Usage in each service:
-// initSentry({ serviceName: 'auth-service', dsn: process.env.SENTRY_DSN });
 ```
 
-### 3. Global Error Handler Middleware
+### Step 3: Health Check
+```typescript
+// src/sentry/health.ts
+export async function checkSentryHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await sentryClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Sentry    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Sentry    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
 
 ```typescript
-// packages/sentry-config/middleware.ts
-import * as Sentry from '@sentry/node';
-import { Request, Response, NextFunction } from 'express';
-
-export function sentryRequestMiddleware(serviceName: string) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    Sentry.setTag('route', req.route?.path || req.path);
-    Sentry.setTag('method', req.method);
-
-    if (req.user) {
-      Sentry.setUser({
-        id: req.user.id,
-        // Never set email/ip in production
-      });
-    }
-
-    next();
+// config/sentry.ts
+export interface SentryConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
   };
 }
 
-// Domain-specific error classes
-export class AppError extends Error {
-  constructor(
-    message: string,
-    public code: string,
-    public httpStatus: number = 500,
-    public severity: Sentry.SeverityLevel = 'error'
-  ) {
-    super(message);
-    this.name = 'AppError';
-  }
-}
-
-export class ValidationError extends AppError {
-  constructor(message: string, public fields: string[]) {
-    super(message, 'VALIDATION_ERROR', 400, 'warning');
-    this.name = 'ValidationError';
-  }
-}
-
-export class ExternalServiceError extends AppError {
-  constructor(service: string, statusCode: number, message: string) {
-    super(`${service}: ${message}`, 'EXTERNAL_SERVICE_ERROR', 502, 'error');
-    this.name = 'ExternalServiceError';
-  }
+export function loadSentryConfig(): SentryConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./sentry.${env}.json`);
 }
 ```
 
-### 4. Distributed Tracing Configuration
+## Instructions
 
-```typescript
-// All services must propagate trace context
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-// Express service — automatic with SDK v8
-// Just ensure all services use the same org and have tracing enabled
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-// For non-HTTP communication (message queues, gRPC):
-import * as Sentry from '@sentry/node';
+### Step 3: Add Error Handling
+Implement custom error classes for Sentry operations.
 
-// Producer: attach trace headers to message
-function publishMessage(queue: string, payload: object) {
-  const activeSpan = Sentry.getActiveSpan();
-  const headers: Record<string, string> = {};
-
-  if (activeSpan) {
-    headers['sentry-trace'] = Sentry.spanToTraceHeader(activeSpan);
-    headers['baggage'] = Sentry.spanToBaggageHeader(activeSpan) || '';
-  }
-
-  messageQueue.publish(queue, { payload, headers });
-}
-
-// Consumer: continue trace from message headers
-function onMessage(msg: { payload: object; headers: Record<string, string> }) {
-  Sentry.continueTrace(
-    {
-      sentryTrace: msg.headers['sentry-trace'],
-      baggage: msg.headers['baggage'],
-    },
-    () => {
-      Sentry.startSpan(
-        { name: `queue.process.${msg.payload.type}`, op: 'queue.task' },
-        () => processMessage(msg.payload)
-      );
-    }
-  );
-}
-```
-
-### 5. Alert Hierarchy
-
-```
-Tier 1 — Critical (P0)
-  Trigger: Error rate > 50/min OR crash-free sessions < 95%
-  Action: PagerDuty → on-call engineer
-  Response: 15 min acknowledge, 1 hour resolve
-
-Tier 2 — Warning (P1)
-  Trigger: New issue in production OR regression detected
-  Action: Slack #alerts-production
-  Response: Same business day
-
-Tier 3 — Info (P2)
-  Trigger: P95 latency > 2s OR error rate > 10/min
-  Action: Slack #alerts-performance
-  Response: Next sprint
-
-Tier 4 — Low (P3)
-  Trigger: New issue in staging
-  Action: Slack #alerts-staging
-  Response: Backlog triage
-```
-
-### 6. Issue Routing by Team
-
-Configure ownership rules in **Project Settings > Ownership Rules**:
-
-```
-# Route by file path
-path:src/payments/* #payments-team
-path:src/auth/* #platform-team
-path:src/api/* #backend-team
-
-# Route by URL
-url:*/api/v1/payments/* #payments-team
-url:*/api/v1/users/* #platform-team
-
-# Route by tag
-tags.service:payment-api #payments-team
-tags.service:auth-service #platform-team
-```
-
-### 7. Release Strategy
-
-```
-Release naming: {service}@{semver}+{git-sha-short}
-Examples:
-  api-gateway@2.1.0+abc1234
-  web-app@3.5.2+def5678
-  payment-api@1.8.0+ghi9012
-
-Each service creates its own release in its own project.
-Distributed traces link events across services automatically.
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for Sentry connectivity.
 
 ## Output
-- Project structure following one-project-per-service pattern
-- Shared configuration package enforcing organization defaults
-- Domain-specific error classes with consistent tagging
-- Distributed tracing configured across all services
-- Alert hierarchy with team routing and escalation paths
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Cross-service traces not linking | Missing trace header propagation | Ensure `sentry-trace` and `baggage` headers forwarded |
-| Alerts going to wrong team | Ownership rules not configured | Set up ownership rules in project settings |
-| Inconsistent SDK config across services | No shared config package | Create and enforce shared configuration package |
-| Alert fatigue | Too many low-priority alerts | Implement tiered alert hierarchy with appropriate thresholds |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Sentry types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/sentry/{handlers} src/services/sentry src/api/sentry
+touch src/sentry/{client,config,types,errors}.ts
+touch src/services/sentry/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Best Practices](https://docs.sentry.io/product/issues/best-practices/)
-- [Distributed Tracing](https://docs.sentry.io/product/performance/distributed-tracing/)
-- [Ownership Rules](https://docs.sentry.io/product/issues/ownership-rules/)
-- [Alerting Best Practices](https://docs.sentry.io/product/alerts/best-practices/)
+- [Sentry SDK Documentation](https://docs.sentry.com/sdk)
+- [Sentry Best Practices](https://docs.sentry.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `sentry-multi-env-setup`.

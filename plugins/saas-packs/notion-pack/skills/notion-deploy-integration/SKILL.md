@@ -1,85 +1,67 @@
 ---
 name: notion-deploy-integration
 description: |
-  Deploy Notion integrations to Vercel, Fly.io, and Cloud Run.
+  Deploy Notion integrations to Vercel, Fly.io, and Cloud Run platforms.
   Use when deploying Notion-powered applications to production,
-  configuring platform-specific secrets, or setting up webhook receivers.
+  configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy notion", "notion Vercel",
   "notion production deploy", "notion Cloud Run", "notion Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
 compatible-with: claude-code
+tags: [saas, notion]
 ---
 
 # Notion Deploy Integration
 
 ## Overview
-Deploy Notion-powered applications (API backends, webhook receivers, sync services) to Vercel, Fly.io, or Google Cloud Run with proper secrets management.
+Deploy Notion-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Working Notion integration tested locally
-- Production `NOTION_TOKEN`
-- Platform CLI installed (`vercel`, `fly`, or `gcloud`)
+- Notion API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Step 1: Vercel (Serverless Functions)
-Best for: Next.js apps, API routes, webhook endpoints.
-
+### Environment Setup
 ```bash
-# Set secrets
-vercel env add NOTION_TOKEN production
-# Paste your ntn_xxx token when prompted
+# Add Notion secrets to Vercel
+vercel secrets add notion_api_key sk_live_***
+vercel secrets add notion_webhook_secret whsec_***
 
-# Deploy
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
 vercel --prod
 ```
 
-**API Route Example (Next.js):**
-```typescript
-// app/api/notion/query/route.ts
-import { Client } from '@notionhq/client';
-import { NextResponse } from 'next/server';
-
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
-
-export async function POST(request: Request) {
-  const { databaseId, filter } = await request.json();
-
-  try {
-    const response = await notion.databases.query({
-      database_id: databaseId,
-      filter,
-      page_size: 50,
-    });
-
-    const pages = response.results
-      .filter((p): p is any => 'properties' in p)
-      .map(page => ({
-        id: page.id,
-        title: page.properties.Name?.title?.[0]?.plain_text ?? '',
-        lastEdited: page.last_edited_time,
-      }));
-
-    return NextResponse.json({ pages, hasMore: response.has_more });
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.code ?? 'unknown', message: error.message },
-      { status: error.status ?? 500 }
-    );
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "NOTION_API_KEY": "@notion_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
   }
 }
 ```
 
-### Step 2: Fly.io (Long-Running Services)
-Best for: Webhook receivers, sync daemons, services needing persistent connections.
+## Fly.io Deployment
 
+### fly.toml
 ```toml
-# fly.toml
-app = "my-notion-service"
+app = "my-notion-app"
 primary_region = "iad"
 
 [env]
@@ -90,154 +72,140 @@ primary_region = "iad"
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-  min_machines_running = 1
 ```
 
+### Secrets
 ```bash
-# Set secrets
-fly secrets set NOTION_TOKEN=ntn_xxx
+# Set Notion secrets
+fly secrets set NOTION_API_KEY=sk_live_***
+fly secrets set NOTION_WEBHOOK_SECRET=whsec_***
 
 # Deploy
 fly deploy
-
-# Verify
-fly status
-curl https://my-notion-service.fly.dev/health
 ```
 
-### Step 3: Google Cloud Run (Container-Based)
-Best for: GCP-native deployments, VPC access, Cloud Scheduler jobs.
+## Google Cloud Run
 
+### Dockerfile
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
-COPY dist/ ./dist/
-EXPOSE 3000
-CMD ["node", "dist/index.js"]
+COPY . .
+CMD ["npm", "start"]
 ```
 
+### Deploy Script
 ```bash
-# Create secret in Secret Manager
-echo -n "ntn_xxx" | gcloud secrets create notion-token --data-file=-
+#!/bin/bash
+# deploy-cloud-run.sh
 
-# Build and deploy
-gcloud run deploy notion-service \
-  --source . \
-  --region us-central1 \
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="notion-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
   --platform managed \
-  --set-secrets=NOTION_TOKEN=notion-token:latest \
   --allow-unauthenticated \
-  --min-instances=0 \
-  --max-instances=10
-
-# Verify
-gcloud run services describe notion-service --region us-central1 --format='value(status.url)'
+  --set-secrets=NOTION_API_KEY=notion-api-key:latest
 ```
 
-### Step 4: Health Check Endpoint
-Include in every deployment:
+## Environment Configuration Pattern
 
 ```typescript
-import { Client, isNotionClientError } from '@notionhq/client';
-import express from 'express';
+// config/notion.ts
+interface NotionConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-const app = express();
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
+export function getNotionConfig(): NotionConfig {
+  const env = process.env.NODE_ENV || 'development';
 
-app.get('/health', async (req, res) => {
-  const checks: Record<string, any> = {
-    service: 'healthy',
-    timestamp: new Date().toISOString(),
+  return {
+    apiKey: process.env.NOTION_API_KEY!,
+    environment: env as NotionConfig['environment'],
+    webhookSecret: process.env.NOTION_WEBHOOK_SECRET,
   };
-
-  try {
-    const start = Date.now();
-    await notion.users.me({});
-    checks.notion = { connected: true, latencyMs: Date.now() - start };
-  } catch (error) {
-    checks.notion = {
-      connected: false,
-      error: isNotionClientError(error) ? error.code : 'unknown',
-    };
-    checks.service = 'degraded';
-  }
-
-  const status = checks.service === 'healthy' ? 200 : 503;
-  res.status(status).json(checks);
-});
-
-app.listen(process.env.PORT || 3000);
+}
 ```
 
-### Step 5: Webhook Receiver Deployment
+## Health Check Endpoint
+
 ```typescript
-// Notion webhook handler — works on any platform
-app.post('/webhooks/notion', express.json(), async (req, res) => {
-  // Verification handshake (sent during webhook setup)
-  if (req.body.type === 'url_verification') {
-    return res.json({ challenge: req.body.challenge });
-  }
+// api/health.ts
+export async function GET() {
+  const notionStatus = await checkNotionConnection();
 
-  // Process event asynchronously (respond immediately)
-  res.status(200).json({ received: true });
-
-  // Handle event after response
-  try {
-    const { type, data } = req.body;
-    console.log(`Webhook event: ${type}`, data?.id);
-
-    switch (type) {
-      case 'page.created':
-      case 'page.content_updated':
-      case 'page.properties_updated':
-        await handlePageEvent(data);
-        break;
-      case 'page.deleted':
-        await handlePageDeleted(data);
-        break;
-      default:
-        console.log(`Unhandled event type: ${type}`);
-    }
-  } catch (error) {
-    console.error('Webhook processing failed:', error);
-  }
-});
+  return Response.json({
+    status: notionStatus ? 'healthy' : 'degraded',
+    services: {
+      notion: notionStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
 ```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Notion API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Notion integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Notion connectivity.
 
 ## Output
-- Application deployed to production platform
-- `NOTION_TOKEN` securely stored in platform secrets
-- Health check endpoint verifying Notion connectivity
-- Webhook receiver (if applicable) responding to events
+- Application deployed to production
+- Notion secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found at runtime | Wrong secret name | Check platform secret configuration |
-| Cold start timeout | First request too slow | Set min instances > 0 |
-| Health check failing | Token expired | Rotate token in secret manager |
-| Webhook verification failing | Wrong URL | Ensure HTTPS and correct path |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
 
 ## Examples
 
-### Quick Deploy (Platform-Agnostic)
+### Quick Deploy Script
 ```bash
 #!/bin/bash
+# Platform-agnostic deploy helper
 case "$1" in
-  vercel) vercel env add NOTION_TOKEN production && vercel --prod ;;
-  fly)    fly secrets set NOTION_TOKEN="$NOTION_TOKEN" && fly deploy ;;
-  gcloud) gcloud run deploy notion-svc --source . --set-secrets=NOTION_TOKEN=notion-token:latest ;;
-  *)      echo "Usage: deploy.sh [vercel|fly|gcloud]" ;;
+  vercel)
+    vercel secrets add notion_api_key "$NOTION_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set NOTION_API_KEY="$NOTION_API_KEY"
+    fly deploy
+    ;;
 esac
 ```
 
 ## Resources
-- [Vercel Environment Variables](https://vercel.com/docs/projects/environment-variables)
-- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
-- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
-- [Notion Webhooks](https://developers.notion.com/reference/webhooks)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Notion Deploy Guide](https://docs.notion.com/deploy)
 
 ## Next Steps
-For webhook handling details, see `notion-webhooks-events`.
+For webhook handling, see `notion-webhooks-events`.

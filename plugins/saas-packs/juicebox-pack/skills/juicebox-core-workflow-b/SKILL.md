@@ -1,67 +1,73 @@
 ---
 name: juicebox-core-workflow-b
 description: |
-  Execute Juicebox enrichment and outreach workflow.
-  Trigger: "juicebox enrich", "candidate enrichment", "talent pool".
+  Execute Juicebox secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "juicebox secondary workflow",
+  "secondary task with juicebox".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
-# Juicebox Enrichment & Outreach
+# Juicebox Core Workflow B
 
 ## Overview
-Enrich profiles with AI Skills Maps, tech profiles, contact data. Build talent pools and automated outreach sequences.
+Secondary workflow for Juicebox. Complements the primary workflow.
+
+## Prerequisites
+- Completed `juicebox-install-auth` setup
+- Familiarity with `juicebox-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Bulk Enrichment
+### Step 1: Setup
 ```typescript
-const enriched = await Promise.all(
-  profiles.map(p => client.enrich({
-    profile_id: p.id,
-    fields: ['skills_map', 'tech_profile', 'research_profile', 'contact']
-  }))
-);
-enriched.forEach(ep => {
-  console.log(`${ep.name} — ${ep.skills_map.top_skills.join(', ')}`);
-  if (ep.tech_profile?.github) console.log(`  GitHub: ${ep.tech_profile.github.repos} repos`);
-});
+// Step 1 implementation
 ```
 
-### Step 2: Talent Pool
+### Step 2: Process
 ```typescript
-const pool = await client.pools.create({
-  name: 'Senior Backend Q1 2026',
-  profiles: enriched.map(p => p.id),
-  tags: ['backend', 'senior']
-});
+// Step 2 implementation
 ```
 
-### Step 3: Outreach Sequence
+### Step 3: Complete
 ```typescript
-await client.outreach.create({
-  pool_id: pool.id,
-  steps: [
-    { type: 'email', delay_days: 0, subject: 'Opportunity at {{company}}',
-      body: 'Hi {{first_name}}, I saw your work on {{top_skill}}...' },
-    { type: 'email', delay_days: 3, subject: 'Following up' },
-    { type: 'linkedin', delay_days: 5, message: 'Hi {{first_name}}...' }
-  ]
-});
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Juicebox API
+- Success confirmation or error details
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Partial enrichment | Limited profile data | Expected for some profiles |
-| Email bounce | Invalid address | Use verified contacts only |
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-- [Enrichment API](https://docs.juicebox.work/api/enrich)
+- [Juicebox Documentation](https://docs.juicebox.com)
+- [Juicebox API Reference](https://docs.juicebox.com/api)
 
 ## Next Steps
-For errors, see `juicebox-common-errors`.
+For common errors, see `juicebox-common-errors`.

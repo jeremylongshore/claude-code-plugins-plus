@@ -1,8 +1,6 @@
 # Juicebox Skill Pack
 
-> Claude Code skill pack for Juicebox PeopleGPT integration (24 skills)
-
-AI-powered people search and recruiting platform with 800M+ profiles. Build candidate sourcing pipelines with natural language search, enrichment, contact data, and ATS integration.
+> Claude Code skill pack for Juicebox integration (24 skills)
 
 ## Installation
 
@@ -15,44 +13,46 @@ AI-powered people search and recruiting platform with 800M+ profiles. Build cand
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-install-auth` | Install SDK and configure PeopleGPT API authentication |
-| `juicebox-hello-world` | First search: people search, enrichment, contact data |
-| `juicebox-local-dev-loop` | Dev environment with mock data and cost control |
-| `juicebox-sdk-patterns` | Singleton client, batch search, error wrapper |
-| `juicebox-core-workflow-a` | People search with power filters and ATS export |
-| `juicebox-core-workflow-b` | Profile enrichment and outreach sequences |
-| `juicebox-common-errors` | API error codes with diagnostic commands |
-| `juicebox-debug-bundle` | Debug evidence collection for support |
-| `juicebox-rate-limits` | Rate limiting by plan tier |
-| `juicebox-security-basics` | API key management and candidate data privacy |
-| `juicebox-prod-checklist` | Production deployment checklist |
-| `juicebox-upgrade-migration` | SDK version upgrades |
+| `juicebox-install-auth` | Install Auth |
+| `juicebox-hello-world` | Hello World |
+| `juicebox-local-dev-loop` | Local Dev Loop |
+| `juicebox-sdk-patterns` | Sdk Patterns |
+| `juicebox-core-workflow-a` | Core Workflow A |
+| `juicebox-core-workflow-b` | Core Workflow B |
+| `juicebox-common-errors` | Common Errors |
+| `juicebox-debug-bundle` | Debug Bundle |
+| `juicebox-rate-limits` | Rate Limits |
+| `juicebox-security-basics` | Security Basics |
+| `juicebox-prod-checklist` | Prod Checklist |
+| `juicebox-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-ci-integration` | CI/CD with mock and integration tests |
-| `juicebox-deploy-integration` | Docker and Cloud Run deployment |
-| `juicebox-webhooks-events` | Outreach tracking and enrichment webhooks |
-| `juicebox-performance-tuning` | Query optimization and result caching |
-| `juicebox-cost-tuning` | Quota management and cost reduction |
-| `juicebox-reference-architecture` | Recruiting platform architecture |
+| `juicebox-ci-integration` | Ci Integration |
+| `juicebox-deploy-integration` | Deploy Integration |
+| `juicebox-webhooks-events` | Webhooks Events |
+| `juicebox-performance-tuning` | Performance Tuning |
+| `juicebox-cost-tuning` | Cost Tuning |
+| `juicebox-reference-architecture` | Reference Architecture |
 
 ### Flagship Skills (F19-F24)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-multi-env-setup` | Dev/staging/prod with isolated keys |
-| `juicebox-observability` | Search metrics, latency, quota monitoring |
-| `juicebox-incident-runbook` | API outage triage and mitigation |
-| `juicebox-data-handling` | GDPR/CCPA compliance for candidate data |
-| `juicebox-enterprise-rbac` | Team roles: recruiter, sourcer, manager |
-| `juicebox-migration-deep-dive` | Migrate from LinkedIn Recruiter or SeekOut |
+| `juicebox-multi-env-setup` | Multi Env Setup |
+| `juicebox-observability` | Observability |
+| `juicebox-incident-runbook` | Incident Runbook |
+| `juicebox-data-handling` | Data Handling |
+| `juicebox-enterprise-rbac` | Enterprise Rbac |
+| `juicebox-migration-deep-dive` | Migration Deep Dive |
 
-## Resources
+## Usage
 
-- [Juicebox Docs](https://docs.juicebox.work)
-- [PeopleGPT](https://juicebox.ai/peoplegpt)
-- [Integrations](https://juicebox.ai/integrations)
+Skills trigger automatically when you discuss Juicebox topics. For example:
+
+- "Help me set up Juicebox" → triggers `juicebox-install-auth`
+- "Debug this Juicebox error" → triggers `juicebox-common-errors`
+- "Deploy my Juicebox integration" → triggers `juicebox-deploy-integration`
 
 ## License
 

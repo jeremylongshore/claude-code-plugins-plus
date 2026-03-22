@@ -1,190 +1,114 @@
 ---
 name: windsurf-upgrade-migration
 description: |
-  Upgrade Windsurf IDE, migrate settings from VS Code or Cursor, and handle breaking changes.
-  Use when upgrading Windsurf versions, migrating from another editor,
-  or handling configuration changes after updates.
-  Trigger with phrases like "upgrade windsurf", "windsurf update",
-  "migrate to windsurf", "windsurf from cursor", "windsurf from vscode".
+  Analyze, plan, and execute Windsurf SDK upgrades with breaking change detection.
+  Use when upgrading Windsurf SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade windsurf", "windsurf migration",
+  "windsurf breaking changes", "update windsurf SDK", "analyze windsurf version".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, migration, upgrade, vscode]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Upgrade & Migration
 
-## Current State
-!`windsurf --version 2>/dev/null || echo 'Not installed'`
-!`code --version 2>/dev/null | head -1 || echo 'VS Code not installed'`
-
 ## Overview
-Guide for upgrading Windsurf to new versions and migrating from VS Code or Cursor. Covers settings transfer, extension compatibility, and Windsurf-specific configuration that doesn't exist in other editors.
+Guide for upgrading Windsurf SDK versions and handling breaking changes.
 
 ## Prerequisites
-- Current editor installation accessible
-- Git for version controlling config files
-- Backup of existing settings
+- Current Windsurf SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Check Current Windsurf Version
-
+### Step 1: Check Current Version
 ```bash
-# Current version
-windsurf --version
-
-# Check for updates
-# Windsurf auto-updates by default
-# Manual: Help > Check for Updates (or download from windsurf.com)
+npm list @windsurf/sdk
+npm view @windsurf/sdk version
 ```
 
-### Step 2: Migrate from VS Code
-
-Windsurf is VS Code-based and supports most VS Code settings and extensions:
-
+### Step 2: Review Changelog
 ```bash
-# Windsurf imports VS Code settings on first launch
-# For manual migration:
-
-# 1. Export VS Code extensions list
-code --list-extensions > vscode-extensions.txt
-
-# 2. Install in Windsurf
-cat vscode-extensions.txt | xargs -L1 windsurf --install-extension
-
-# 3. Copy settings
-# macOS:
-cp ~/Library/Application\ Support/Code/User/settings.json \
-   ~/Library/Application\ Support/Windsurf/User/settings.json
-
-# Linux:
-cp ~/.config/Code/User/settings.json \
-   ~/.config/Windsurf/User/settings.json
+open https://github.com/windsurf/sdk/releases
 ```
 
-**Key difference:** Remove or disable GitHub Copilot -- it conflicts with Windsurf's Supercomplete.
-
-### Step 3: Migrate from Cursor
-
-Cursor and Windsurf both extend VS Code but have different AI config files:
-
-```yaml
-# Mapping Cursor concepts to Windsurf:
-cursor_to_windsurf:
-  .cursorrules:       .windsurfrules     # AI context rules
-  .cursorignore:      .codeiumignore     # AI indexing exclusions
-  .cursor/rules/:     .windsurf/rules/   # Workspace rules
-  cursor_settings:    windsurf_settings  # IDE preferences
-  Composer:           Cascade            # Agentic AI assistant
-  Tab:                Supercomplete      # Inline completions
-  Cmd+K:              Cmd+I              # Inline editing
-  Cmd+L:              Cmd+L              # AI chat (same!)
-```
-
-**Migration script:**
+### Step 3: Create Upgrade Branch
 ```bash
-#!/bin/bash
-set -euo pipefail
-echo "Migrating Cursor config to Windsurf..."
-
-# Convert .cursorrules to .windsurfrules
-[ -f .cursorrules ] && cp .cursorrules .windsurfrules && echo "Copied .cursorrules → .windsurfrules"
-
-# Convert .cursorignore to .codeiumignore
-[ -f .cursorignore ] && cp .cursorignore .codeiumignore && echo "Copied .cursorignore → .codeiumignore"
-
-# Migrate workspace rules
-if [ -d .cursor/rules ]; then
-  mkdir -p .windsurf/rules
-  cp .cursor/rules/*.md .windsurf/rules/ 2>/dev/null
-  echo "Copied workspace rules to .windsurf/rules/"
-  echo "NOTE: Check frontmatter -- Windsurf uses 'trigger:' field, Cursor uses different format"
-fi
-
-echo "Migration complete. Review .windsurfrules for Cursor-specific references."
+git checkout -b upgrade/windsurf-sdk-vX.Y.Z
+npm install @windsurf/sdk@latest
+npm test
 ```
 
-### Step 4: Add Windsurf-Specific Configuration
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
-After migration, add Windsurf-exclusive features:
-
-```markdown
-<!-- New Windsurf features not in VS Code or Cursor -->
-
-1. Cascade Workflows (.windsurf/workflows/*.md)
-   - Reusable multi-step automation via slash commands
-   - No equivalent in VS Code or Cursor
-
-2. Cascade Memories
-   - Persistent facts across sessions
-   - Partial equivalent: Cursor notepad
-
-3. Turbo Mode
-   - Auto-execute terminal commands
-   - Cursor has "auto-run" but different config
-
-4. Browser Previews
-   - In-IDE preview with element selection
-   - Send UI elements to Cascade for editing
-
-5. Workspace Rules with Trigger Modes
-   - glob, always_on, manual, model_decision
-   - More granular than Cursor's rule system
-```
-
-### Step 5: Post-Upgrade Validation
-
-```bash
-set -euo pipefail
-echo "=== Windsurf Post-Upgrade Check ==="
-echo "Version: $(windsurf --version)"
-echo "Extensions: $(windsurf --list-extensions | wc -l) installed"
-echo "Rules: $([ -f .windsurfrules ] && wc -c < .windsurfrules || echo 'none') bytes"
-echo "Ignore: $([ -f .codeiumignore ] && wc -l < .codeiumignore || echo 'none') patterns"
-
-# Test AI features
-echo ""
-echo "Manual checks:"
-echo "1. Open a code file -- Supercomplete should show ghost text"
-echo "2. Press Cmd/Ctrl+L -- Cascade should open and respond"
-echo "3. Press Cmd/Ctrl+I -- Command mode should activate"
-```
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Extensions not loading | Incompatible with Windsurf | Check Windsurf marketplace for alternative |
-| Settings not applied | Wrong config directory | Verify OS-specific settings path |
-| .cursorrules not working | Wrong filename | Rename to `.windsurfrules` |
-| Keyboard shortcuts different | Windsurf overrides some defaults | Check Keyboard Shortcuts editor |
-| Copilot still active | Not disabled | Extensions > search "copilot" > Disable |
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
 ## Examples
 
-### Backup Before Upgrade
-```bash
-# Backup current Windsurf config
-tar -czf windsurf-config-backup-$(date +%Y%m%d).tar.gz \
-  ~/.config/Windsurf/User/ \
-  ~/.codeium/ \
-  .windsurfrules \
-  .codeiumignore \
-  .windsurf/ 2>/dev/null
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@windsurf/sdk';
+
+// After (v2.x)
+import { WindsurfClient } from '@windsurf/sdk';
 ```
 
-### Check Windsurf Changelog
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new WindsurfClient({
+  apiKey: 'xxx',
+});
 ```
-Visit: https://windsurf.com/changelog
-Look for: breaking changes, deprecated settings, new features
+
+### Rollback Procedure
+```bash
+npm install @windsurf/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Windsurf]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
 ```
 
 ## Resources
-- [Windsurf Changelog](https://windsurf.com/changelog)
-- [Windsurf Download](https://windsurf.com/download)
-- [Migrating from Cursor](https://docs.windsurf.com)
+- [Windsurf Changelog](https://github.com/windsurf/sdk/releases)
+- [Windsurf Migration Guide](https://docs.windsurf.com/migration)
 
 ## Next Steps
-For CI integration, see `windsurf-ci-integration`.
+For CI integration during upgrades, see `windsurf-ci-integration`.

@@ -1,7 +1,7 @@
 {
   "name": "maintainx-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for MaintainX CMMS (24 skills)",
+  "description": "Claude Code skill pack for MaintainX (18 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,10 +9,9 @@
   "license": "MIT",
   "keywords": [
     "maintainx",
-    "cmms",
+    "maintainx",
     "saas",
-    "maintenance",
-    "work-orders",
-    "assets"
+    "sdk",
+    "integration"
   ]
 }

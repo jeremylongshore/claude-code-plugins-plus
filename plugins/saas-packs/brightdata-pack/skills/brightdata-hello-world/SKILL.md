@@ -6,144 +6,93 @@ description: |
   or learning basic Bright Data API patterns.
   Trigger with phrases like "brightdata hello world", "brightdata example",
   "brightdata quick start", "simple brightdata code".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*)
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, scraping, data, brightdata]
 compatible-with: claude-code
+tags: [saas, brightdata]
 ---
 
 # Bright Data Hello World
 
 ## Overview
-
-Scrape a real webpage through Bright Data's Web Unlocker proxy. Web Unlocker handles CAPTCHAs, fingerprinting, and retries automatically — you send a normal HTTP request through the proxy endpoint at `brd.superproxy.io:33335`.
+Minimal working example demonstrating core Bright Data functionality.
 
 ## Prerequisites
-
 - Completed `brightdata-install-auth` setup
-- Web Unlocker zone active in Bright Data control panel
-- `brd-ca.crt` SSL certificate downloaded
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Scrape via Web Unlocker Proxy (Node.js)
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
+### Step 2: Import and Initialize Client
 ```typescript
-// hello-brightdata.ts
-import axios from 'axios';
-import https from 'https';
-import 'dotenv/config';
+import { BrightDataClient } from '@brightdata/sdk';
 
-const { BRIGHTDATA_CUSTOMER_ID, BRIGHTDATA_ZONE, BRIGHTDATA_ZONE_PASSWORD } = process.env;
+const client = new BrightDataClient({
+  apiKey: process.env.BRIGHTDATA_API_KEY,
+});
+```
 
-const proxy = {
-  host: 'brd.superproxy.io',
-  port: 33335,
-  auth: {
-    username: `brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}`,
-    password: BRIGHTDATA_ZONE_PASSWORD!,
-  },
-};
-
-async function scrape(url: string) {
-  const response = await axios.get(url, {
-    proxy,
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-    timeout: 60000,
-  });
-  console.log(`Status: ${response.status}`);
-  console.log(`Content length: ${response.data.length} chars`);
-  console.log(response.data.substring(0, 500));
-  return response.data;
+### Step 3: Make Your First API Call
+```typescript
+async function main() {
+  // Your first API call here
 }
 
-scrape('https://example.com').catch(console.error);
-```
-
-### Step 2: Scrape via REST API
-
-```typescript
-// hello-brightdata-api.ts
-import 'dotenv/config';
-
-async function scrapeViaAPI(url: string) {
-  const response = await fetch('https://api.brightdata.com/request', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.BRIGHTDATA_API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      zone: process.env.BRIGHTDATA_ZONE,
-      url,
-      format: 'raw',
-    }),
-  });
-  const html = await response.text();
-  console.log(`Status: ${response.status}, Length: ${html.length}`);
-  return html;
-}
-
-scrapeViaAPI('https://example.com').catch(console.error);
-```
-
-### Step 3: Python Version
-
-```python
-# hello_brightdata.py
-import os, requests
-from dotenv import load_dotenv
-
-load_dotenv()
-proxy_url = (
-    f"http://brd-customer-{os.environ['BRIGHTDATA_CUSTOMER_ID']}"
-    f"-zone-{os.environ['BRIGHTDATA_ZONE']}"
-    f":{os.environ['BRIGHTDATA_ZONE_PASSWORD']}"
-    f"@brd.superproxy.io:33335"
-)
-response = requests.get(
-    'https://example.com',
-    proxies={'http': proxy_url, 'https': proxy_url},
-    verify='./brd-ca.crt',
-    timeout=60,
-)
-print(f"Status: {response.status_code}, Length: {len(response.text)}")
-```
-
-## Geo-Targeting
-
-Add country or city targeting to the proxy username:
-
-```typescript
-// Country-level
-const username = `brd-customer-${ID}-zone-${ZONE}-country-us`;
-// City-level
-const username2 = `brd-customer-${ID}-zone-${ZONE}-country-us-city-newyork`;
+main().catch(console.error);
 ```
 
 ## Output
-
-- Successful HTTP response through Bright Data proxy
-- HTML content of the target page
-- Rotated IP address per request
+- Working code file with Bright Data client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your Bright Data connection is working.
+```
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `407 Proxy Auth Required` | Bad credentials | Check `brd-customer-{ID}-zone-{ZONE}` format |
-| `502 Bad Gateway` | Target site blocked | Web Unlocker retries; increase timeout |
-| `ETIMEDOUT` | CAPTCHA solving delay | Set timeout to 60-120s |
-| Empty response | Zone inactive | Verify zone in control panel |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { BrightDataClient } from '@brightdata/sdk';
+
+const client = new BrightDataClient({
+  apiKey: process.env.BRIGHTDATA_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from brightdata import BrightDataClient
+
+client = BrightDataClient()
+
+# Your first API call here
+```
 
 ## Resources
-
-- [Web Unlocker Docs](https://docs.brightdata.com/scraping-automation/web-unlocker/send-your-first-request)
-- [Web Unlocker API](https://docs.brightdata.com/scraping-automation/web-unlocker/web-unlocker-api)
-- [Geo-Targeting](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- [Bright Data Getting Started](https://docs.brightdata.com/getting-started)
+- [Bright Data API Reference](https://docs.brightdata.com/api)
+- [Bright Data Examples](https://docs.brightdata.com/examples)
 
 ## Next Steps
-
 Proceed to `brightdata-local-dev-loop` for development workflow setup.

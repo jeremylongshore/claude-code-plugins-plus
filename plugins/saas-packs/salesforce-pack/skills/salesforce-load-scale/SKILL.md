@@ -1,209 +1,276 @@
 ---
 name: salesforce-load-scale
 description: |
-  Implement Salesforce load testing, API limit capacity planning, and Bulk API scaling.
-  Use when running performance tests against Salesforce, planning API consumption,
-  or scaling high-volume Salesforce integrations.
+  Implement Salesforce load testing, auto-scaling, and capacity planning strategies.
+  Use when running performance tests, configuring horizontal scaling,
+  or planning capacity for Salesforce integrations.
   Trigger with phrases like "salesforce load test", "salesforce scale",
-  "salesforce performance test", "salesforce capacity planning", "salesforce high volume".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(sf:*)
+  "salesforce performance test", "salesforce capacity", "salesforce k6", "salesforce benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, crm, salesforce]
 compatible-with: claude-code
+tags: [saas, salesforce]
 ---
 
 # Salesforce Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Salesforce integrations. Focus on API limit budgeting, Bulk API throughput, and handling Salesforce's unique constraint: org-wide shared limits.
+Load testing, scaling strategies, and capacity planning for Salesforce integrations.
 
 ## Prerequisites
-- k6 or Artillery load testing tool
-- Sandbox or Developer org for testing (never load test production)
-- Understanding of your org's API limit allocation
-- Monitoring configured (see `salesforce-observability`)
+- k6 load testing tool installed
+- Kubernetes cluster with HPA configured
+- Prometheus for metrics collection
+- Test environment API keys
 
-## Instructions
+## Load Testing with k6
 
-### Step 1: Calculate API Limit Budget
-
-```typescript
-const conn = await getConnection();
-const limits = await conn.request('/services/data/v59.0/limits/');
-
-const budget = {
-  dailyMax: limits.DailyApiRequests.Max,
-  currentlyUsed: limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining,
-  remaining: limits.DailyApiRequests.Remaining,
-  // Budget allocation
-  integrationA: Math.floor(limits.DailyApiRequests.Max * 0.40), // 40% for primary sync
-  integrationB: Math.floor(limits.DailyApiRequests.Max * 0.20), // 20% for secondary
-  salesUsers: Math.floor(limits.DailyApiRequests.Max * 0.30),   // 30% for Salesforce UI users
-  headroom: Math.floor(limits.DailyApiRequests.Max * 0.10),     // 10% buffer
-};
-
-console.table(budget);
-// Example (Enterprise, 50 users): 150,000 daily calls
-// Integration A: 60,000 | Integration B: 30,000 | Users: 45,000 | Buffer: 15,000
-```
-
-### Step 2: Load Test with k6 (against Sandbox)
-
+### Basic Load Test
 ```javascript
 // salesforce-load-test.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
-const SF_TOKEN = __ENV.SF_ACCESS_TOKEN;
-const SF_INSTANCE = __ENV.SF_INSTANCE_URL;
-
 export const options = {
   stages: [
-    { duration: '1m', target: 5 },    // Ramp up
-    { duration: '3m', target: 5 },    // Steady state
-    { duration: '1m', target: 20 },   // Peak load
-    { duration: '3m', target: 20 },   // Sustained peak
-    { duration: '1m', target: 0 },    // Ramp down
+    { duration: '2m', target: 10 },   // Ramp up
+    { duration: '5m', target: 10 },   // Steady state
+    { duration: '2m', target: 50 },   // Ramp to peak
+    { duration: '5m', target: 50 },   // Stress test
+    { duration: '2m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<3000'],  // SF API calls are slower than typical SaaS
+    http_req_duration: ['p(95)<500'],
     http_req_failed: ['rate<0.01'],
   },
 };
 
 export default function () {
-  // SOQL query
-  const queryRes = http.get(
-    `${SF_INSTANCE}/services/data/v59.0/query/?q=SELECT+Id,Name+FROM+Account+LIMIT+10`,
-    { headers: { Authorization: `Bearer ${SF_TOKEN}` } }
-  );
-  check(queryRes, { 'query 200': (r) => r.status === 200 });
-
-  // sObject retrieve
-  const retrieveRes = http.get(
-    `${SF_INSTANCE}/services/data/v59.0/sobjects/Account/describe`,
-    { headers: { Authorization: `Bearer ${SF_TOKEN}` } }
-  );
-  check(retrieveRes, { 'describe 200': (r) => r.status === 200 });
-
-  // Check rate limit headers
-  const limitInfo = queryRes.headers['Sforce-Limit-Info'];
-  if (limitInfo) {
-    const [used, max] = limitInfo.replace('api-usage=', '').split('/');
-    if (parseInt(used) / parseInt(max) > 0.8) {
-      console.warn(`API usage at ${used}/${max}`);
+  const response = http.post(
+    'https://api.salesforce.com/v1/resource',
+    JSON.stringify({ test: true }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${__ENV.SALESFORCE_API_KEY}`,
+      },
     }
-  }
+  );
 
-  sleep(1); // Respect rate limits
+  check(response, {
+    'status is 200': (r) => r.status === 200,
+    'latency < 500ms': (r) => r.timings.duration < 500,
+  });
+
+  sleep(1);
 }
 ```
 
+### Run Load Test
 ```bash
-# Get access token for load test
-SF_ACCESS_TOKEN=$(sf org display --target-org my-sandbox --json | jq -r '.result.accessToken')
-SF_INSTANCE_URL=$(sf org display --target-org my-sandbox --json | jq -r '.result.instanceUrl')
+# Install k6
+brew install k6  # macOS
+# or: sudo apt install k6  # Linux
 
-# Run load test (ONLY against sandbox)
-k6 run \
-  --env SF_ACCESS_TOKEN=$SF_ACCESS_TOKEN \
-  --env SF_INSTANCE_URL=$SF_INSTANCE_URL \
-  salesforce-load-test.js
+# Run test
+k6 run --env SALESFORCE_API_KEY=${SALESFORCE_API_KEY} salesforce-load-test.js
+
+# Run with output to InfluxDB
+k6 run --out influxdb=http://localhost:8086/k6 salesforce-load-test.js
 ```
 
-### Step 3: Bulk API Throughput Testing
+## Scaling Patterns
 
+### Horizontal Scaling
+```yaml
+# kubernetes HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: salesforce-integration-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: salesforce-integration
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Pods
+      pods:
+        metric:
+          name: salesforce_queue_depth
+        target:
+          type: AverageValue
+          averageValue: 100
+```
+
+### Connection Pooling
 ```typescript
-// Bulk API 2.0 can process millions of records per job
-// Key limits:
-// - 15,000 Bulk API jobs/day
-// - 150,000,000 records per 24hr rolling period
-// - 10 concurrent Bulk API jobs
+import { Pool } from 'generic-pool';
 
-// Generate test data
-function generateTestCsv(count: number): string {
-  const lines = ['FirstName,LastName,Email,External_ID__c'];
-  for (let i = 0; i < count; i++) {
-    lines.push(`Test${i},User${i},test${i}@loadtest.example.com,LOAD-${i}`);
+const salesforcePool = Pool.create({
+  create: async () => {
+    return new SalesforceClient({
+      apiKey: process.env.SALESFORCE_API_KEY!,
+    });
+  },
+  destroy: async (client) => {
+    await client.close();
+  },
+  max: 20,
+  min: 5,
+  idleTimeoutMillis: 30000,
+});
+
+async function withSalesforceClient<T>(
+  fn: (client: SalesforceClient) => Promise<T>
+): Promise<T> {
+  const client = await salesforcePool.acquire();
+  try {
+    return await fn(client);
+  } finally {
+    salesforcePool.release(client);
   }
-  return lines.join('\n');
+}
+```
+
+## Capacity Planning
+
+### Metrics to Monitor
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| CPU Utilization | > 70% | > 85% |
+| Memory Usage | > 75% | > 90% |
+| Request Queue Depth | > 100 | > 500 |
+| Error Rate | > 1% | > 5% |
+| P95 Latency | > 1000ms | > 3000ms |
+
+### Capacity Calculation
+```typescript
+interface CapacityEstimate {
+  currentRPS: number;
+  maxRPS: number;
+  headroom: number;
+  scaleRecommendation: string;
 }
 
-// Measure Bulk API throughput
-const startTime = Date.now();
-const results = await conn.bulk2.loadAndWaitForResults({
-  object: 'Contact',
-  operation: 'upsert',
-  externalIdFieldName: 'External_ID__c',
-  input: generateTestCsv(50000),
-  pollInterval: 5000,
-});
+function estimateSalesforceCapacity(
+  metrics: SystemMetrics
+): CapacityEstimate {
+  const currentRPS = metrics.requestsPerSecond;
+  const avgLatency = metrics.p50Latency;
+  const cpuUtilization = metrics.cpuPercent;
 
-const duration = (Date.now() - startTime) / 1000;
-const throughput = results.successfulResults.length / duration;
+  // Estimate max RPS based on current performance
+  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
+  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
 
-console.log({
-  records: results.successfulResults.length,
-  failures: results.failedResults.length,
-  durationSeconds: duration.toFixed(1),
-  recordsPerSecond: throughput.toFixed(1),
-});
-// Typical: 1,000-5,000 records/second depending on triggers and validation rules
+  return {
+    currentRPS,
+    maxRPS: Math.floor(maxRPS),
+    headroom: Math.round(headroom),
+    scaleRecommendation: headroom < 30
+      ? 'Scale up soon'
+      : headroom < 50
+      ? 'Monitor closely'
+      : 'Adequate capacity',
+  };
+}
 ```
 
-### Step 4: Scaling Strategies
+## Benchmark Results Template
 
-```typescript
-// Strategy 1: Use Bulk API for large datasets (separate limit pool)
-// Regular API: shared daily limit
-// Bulk API: 15,000 jobs/day, unlimited records per job
+```markdown
+## Salesforce Performance Benchmark
+**Date:** YYYY-MM-DD
+**Environment:** [staging/production]
+**SDK Version:** X.Y.Z
 
-// Strategy 2: Batch with sObject Collections (200 records/call)
-// 100,000 API calls * 200 records/call = 20M records/day via REST
+### Test Configuration
+- Duration: 10 minutes
+- Ramp: 10 → 100 → 10 VUs
+- Target endpoint: /v1/resource
 
-// Strategy 3: Reduce describe/metadata calls (cache aggressively)
-// A single describe call can return 500+ fields — cache for hours
+### Results
+| Metric | Value |
+|--------|-------|
+| Total Requests | 50,000 |
+| Success Rate | 99.9% |
+| P50 Latency | 120ms |
+| P95 Latency | 350ms |
+| P99 Latency | 800ms |
+| Max RPS Achieved | 150 |
 
-// Strategy 4: Use Composite API (25 operations per call)
-// Replaces 25 individual calls with 1
+### Observations
+- [Key finding 1]
+- [Key finding 2]
 
-// Strategy 5: Off-peak scheduling
-// Run bulk jobs during business hours when sales users are active
-// This ensures API limit usage is spread across the day
+### Recommendations
+- [Scaling recommendation]
 ```
 
-### Step 5: Capacity Planning Table
+## Instructions
 
-| Operation | Records/Day | API Calls Required | Strategy |
-|-----------|------------|-------------------|----------|
-| Account sync | 10,000 | 50 (Collections) | sObject Collections, 200/call |
-| Contact sync | 100,000 | 1 (Bulk job) | Bulk API 2.0 |
-| Opportunity queries | 5,000 | 25 (SOQL) | Relationship queries, cache |
-| Real-time updates | 500 | 500 | REST API, individual calls |
-| Metadata/describe | Constant | 10 (cached) | Cache with 1-hour TTL |
-| **Total** | **115,500** | **586** | **Well within limits** |
+### Step 1: Create Load Test Script
+Write k6 test script with appropriate thresholds.
+
+### Step 2: Configure Auto-Scaling
+Set up HPA with CPU and custom metrics.
+
+### Step 3: Run Load Test
+Execute test and collect metrics.
+
+### Step 4: Analyze and Document
+Record results in benchmark template.
 
 ## Output
-- API limit budget allocated across integrations
-- Load test script targeting sandbox
-- Bulk API throughput benchmarked
-- Scaling strategies documented
-- Capacity planning table for production
+- Load test script created
+- HPA configured
+- Benchmark results documented
+- Capacity recommendations defined
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `REQUEST_LIMIT_EXCEEDED` during test | Wrong org (testing production) | ONLY test against sandbox |
-| Bulk job timeout | Too many triggers firing | Disable non-essential triggers in sandbox |
-| Low throughput | Validation rules, workflows | Test with rules disabled, then enabled |
-| Inconsistent results | Concurrent jobs contending | Run one test at a time |
+| k6 timeout | Rate limited | Reduce RPS |
+| HPA not scaling | Wrong metrics | Verify metric name |
+| Connection refused | Pool exhausted | Increase pool size |
+| Inconsistent results | Warm-up needed | Add ramp-up phase |
+
+## Examples
+
+### Quick k6 Test
+```bash
+k6 run --vus 10 --duration 30s salesforce-load-test.js
+```
+
+### Check Current Capacity
+```typescript
+const metrics = await getSystemMetrics();
+const capacity = estimateSalesforceCapacity(metrics);
+console.log('Headroom:', capacity.headroom + '%');
+console.log('Recommendation:', capacity.scaleRecommendation);
+```
+
+### Scale HPA Manually
+```bash
+kubectl scale deployment salesforce-integration --replicas=5
+kubectl get hpa salesforce-integration-hpa
+```
 
 ## Resources
-- [API Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
-- [Bulk API 2.0 Limits](https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/bulk_api_2_0.htm)
 - [k6 Documentation](https://k6.io/docs/)
+- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Salesforce Rate Limits](https://docs.salesforce.com/rate-limits)
 
 ## Next Steps
 For reliability patterns, see `salesforce-reliability-patterns`.

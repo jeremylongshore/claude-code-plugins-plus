@@ -1,304 +1,201 @@
 ---
 name: clerk-webhooks-events
 description: |
-  Configure Clerk webhooks and handle authentication events.
-  Use when setting up user sync, handling auth events,
-  or integrating Clerk with external systems via Svix webhooks.
-  Trigger with phrases like "clerk webhooks", "clerk events",
-  "clerk user sync", "clerk svix", "clerk event handling".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Implement Clerk webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Clerk event notifications securely.
+  Trigger with phrases like "clerk webhook", "clerk events",
+  "clerk webhook signature", "handle clerk events", "clerk notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, authentication, webhooks]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Webhooks & Events
 
 ## Overview
-Configure and handle Clerk webhooks for user lifecycle events and data synchronization. Clerk uses Svix for webhook delivery with HMAC-SHA256 signature verification. As of 2025, Clerk provides a built-in `verifyWebhook()` helper in `@clerk/backend` alongside the manual Svix approach.
+Securely handle Clerk webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Clerk account with webhook endpoint configured in Dashboard
-- HTTPS endpoint (use `ngrok` for local dev)
-- `CLERK_WEBHOOK_SECRET` environment variable (starts with `whsec_`)
+- Clerk webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/clerk',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-clerk-signature'] as string;
+    const timestamp = req.headers['x-clerk-timestamp'] as string;
+
+    if (!verifyClerkSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleClerkEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyClerkSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.CLERK_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type ClerkEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface ClerkEvent {
+  id: string;
+  type: ClerkEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<ClerkEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleClerkEvent(event: ClerkEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `clerk:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `clerk:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Clerk CLI to send test events
+clerk webhooks trigger resource.created --url http://localhost:3000/webhooks/clerk
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
 
 ## Instructions
 
-### Step 1: Install Dependencies
-```bash
-# Option A: Use @clerk/backend's built-in verifyWebhook() (recommended)
-# Already included with @clerk/nextjs — no extra install needed
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Clerk dashboard.
 
-# Option B: Manual Svix verification
-npm install svix
-```
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-### Step 2: Create Webhook Endpoint (verifyWebhook — Recommended)
-```typescript
-// app/api/webhooks/clerk/route.ts
-import { verifyWebhook } from '@clerk/backend/webhooks'
-import type { WebhookEvent } from '@clerk/nextjs/server'
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-export async function POST(req: Request) {
-  let evt: WebhookEvent
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
-  try {
-    evt = await verifyWebhook(req)
-  } catch (err) {
-    console.error('Webhook verification failed:', err)
-    return new Response('Invalid signature', { status: 400 })
-  }
-
-  return handleWebhookEvent(evt)
-}
-```
-
-### Step 2 (Alternative): Manual Svix Verification
-```typescript
-// app/api/webhooks/clerk/route.ts
-import { Webhook } from 'svix'
-import { headers } from 'next/headers'
-import type { WebhookEvent } from '@clerk/nextjs/server'
-
-export async function POST(req: Request) {
-  const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET
-  if (!WEBHOOK_SECRET) {
-    throw new Error('Missing CLERK_WEBHOOK_SECRET env variable')
-  }
-
-  const headerPayload = await headers()
-  const svixHeaders = {
-    'svix-id': headerPayload.get('svix-id') || '',
-    'svix-timestamp': headerPayload.get('svix-timestamp') || '',
-    'svix-signature': headerPayload.get('svix-signature') || '',
-  }
-
-  if (!svixHeaders['svix-id'] || !svixHeaders['svix-signature']) {
-    return new Response('Missing svix headers', { status: 400 })
-  }
-
-  // CRITICAL: Use req.text(), NOT req.json() — JSON parsing alters the payload
-  // and breaks signature verification
-  const body = await req.text()
-  const wh = new Webhook(WEBHOOK_SECRET)
-  let evt: WebhookEvent
-
-  try {
-    evt = wh.verify(body, svixHeaders) as WebhookEvent
-  } catch (err) {
-    console.error('Webhook verification failed:', err)
-    return new Response('Invalid signature', { status: 400 })
-  }
-
-  return handleWebhookEvent(evt)
-}
-```
-
-### Step 3: Implement Event Handlers
-```typescript
-async function handleWebhookEvent(evt: WebhookEvent) {
-  const eventType = evt.type
-
-  switch (eventType) {
-    case 'user.created': {
-      const { id, email_addresses, first_name, last_name, image_url } = evt.data
-      const primaryEmail = email_addresses.find(e => e.id === evt.data.primary_email_address_id)
-
-      await db.user.create({
-        data: {
-          clerkId: id,
-          email: primaryEmail?.email_address || email_addresses[0]?.email_address,
-          firstName: first_name,
-          lastName: last_name,
-          avatarUrl: image_url,
-        },
-      })
-      console.log(`[Webhook] User created: ${id}`)
-      break
-    }
-
-    case 'user.updated': {
-      const { id, email_addresses, first_name, last_name, image_url } = evt.data
-      const primaryEmail = email_addresses.find(e => e.id === evt.data.primary_email_address_id)
-
-      await db.user.upsert({
-        where: { clerkId: id },
-        update: {
-          email: primaryEmail?.email_address,
-          firstName: first_name,
-          lastName: last_name,
-          avatarUrl: image_url,
-        },
-        create: {
-          clerkId: id,
-          email: primaryEmail?.email_address || '',
-          firstName: first_name,
-          lastName: last_name,
-          avatarUrl: image_url,
-        },
-      })
-      break
-    }
-
-    case 'user.deleted': {
-      if (evt.data.id) {
-        // Soft-delete or hard-delete based on your data retention policy
-        await db.user.update({
-          where: { clerkId: evt.data.id },
-          data: { deletedAt: new Date() },
-        })
-      }
-      break
-    }
-
-    case 'organization.created': {
-      const { id, name, slug, created_by } = evt.data
-      await db.organization.create({
-        data: { clerkOrgId: id, name, slug: slug || '', createdBy: created_by },
-      })
-      break
-    }
-
-    case 'organizationMembership.created': {
-      const { organization, public_user_data, role } = evt.data
-      await db.orgMembership.create({
-        data: {
-          orgId: organization.id,
-          userId: public_user_data.user_id,
-          role,
-        },
-      })
-      break
-    }
-
-    case 'session.created':
-      console.log(`[Webhook] Session created for user: ${evt.data.user_id}`)
-      break
-
-    default:
-      console.log(`[Webhook] Unhandled event: ${eventType}`)
-  }
-
-  return new Response('OK', { status: 200 })
-}
-```
-
-### Step 4: Idempotency Protection
-```typescript
-// lib/webhook-idempotency.ts
-// Clerk/Svix may retry failed deliveries — prevent duplicate processing
-
-export async function processIdempotently(
-  svixId: string,
-  eventType: string,
-  handler: () => Promise<void>
-): Promise<{ processed: boolean; duplicate: boolean }> {
-  // Check if already processed (use your DB or Redis)
-  const existing = await db.webhookEvent.findUnique({
-    where: { svixId },
-  })
-
-  if (existing) {
-    console.log(`[Webhook] Duplicate event skipped: ${svixId} (${eventType})`)
-    return { processed: false, duplicate: true }
-  }
-
-  // Mark as processing (before handler, to catch concurrent deliveries)
-  await db.webhookEvent.create({
-    data: { svixId, eventType, status: 'processing', receivedAt: new Date() },
-  })
-
-  try {
-    await handler()
-    await db.webhookEvent.update({
-      where: { svixId },
-      data: { status: 'completed', processedAt: new Date() },
-    })
-    return { processed: true, duplicate: false }
-  } catch (error) {
-    await db.webhookEvent.update({
-      where: { svixId },
-      data: { status: 'failed', error: String(error) },
-    })
-    throw error
-  }
-}
-```
-
-### Step 5: Configure Webhook in Clerk Dashboard
-1. Navigate to **Clerk Dashboard > Webhooks > Add Endpoint**
-2. Set endpoint URL: `https://yourdomain.com/api/webhooks/clerk`
-3. Select events to subscribe to:
-   - **User events:** `user.created`, `user.updated`, `user.deleted`
-   - **Org events:** `organization.created`, `organizationMembership.created`
-   - **Session events:** `session.created`, `session.ended` (optional, high volume)
-4. Copy the **Signing Secret** (`whsec_...`) to your `.env.local`:
-```bash
-CLERK_WEBHOOK_SECRET=whsec_...
-```
-
-### Step 6: Express.js Webhook Endpoint
-```typescript
-import express from 'express'
-import { Webhook } from 'svix'
-
-const app = express()
-
-// CRITICAL: Use express.raw(), NOT express.json() for webhook routes
-app.post('/api/webhooks/clerk',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const wh = new Webhook(process.env.CLERK_WEBHOOK_SECRET!)
-    try {
-      const evt = wh.verify(req.body, {
-        'svix-id': req.headers['svix-id'] as string,
-        'svix-timestamp': req.headers['svix-timestamp'] as string,
-        'svix-signature': req.headers['svix-signature'] as string,
-      })
-      // Handle event...
-      res.status(200).json({ received: true })
-    } catch (err) {
-      console.error('Webhook verification failed:', err)
-      res.status(400).json({ error: 'Invalid signature' })
-    }
-  }
-)
-```
-
-### Local Development with ngrok
-```bash
-# Start ngrok tunnel for local webhook testing
-ngrok http 3000
-
-# Copy the https://xxx.ngrok-free.app URL
-# Add it as webhook endpoint in Clerk Dashboard > Webhooks
-# URL: https://xxx.ngrok-free.app/api/webhooks/clerk
-```
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong `CLERK_WEBHOOK_SECRET` | Re-copy signing secret from Dashboard > Webhooks |
-| Invalid signature | Body parsed with `json()` before verify | Use `req.text()` (Next.js) or `express.raw()` (Express) |
-| Missing svix headers | Request not from Clerk/Svix | Verify endpoint URL; check sender |
-| Duplicate processing | Clerk retried delivery | Implement idempotency with `svix-id` as unique key |
-| Handler timeout | Slow DB operations | Offload heavy work to a background job queue |
-| 404 on webhook URL | Route not matching | Ensure `/api/webhooks` is in middleware's `isPublicRoute` |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
-## Enterprise Considerations
-- Treat `CLERK_WEBHOOK_SECRET` like a password -- rotate it if compromised (Dashboard > Webhooks > Signing Secret > Rotate)
-- Svix headers include `svix-timestamp` for replay attack protection (rejects events older than 5 minutes by default)
-- For high-volume apps, offload webhook processing to a queue (BullMQ, Inngest, Trigger.dev) and return 200 immediately
-- Monitor webhook delivery in Dashboard > Webhooks > Message Logs -- failed messages auto-retry with exponential backoff
-- Use `verifyWebhook()` from `@clerk/backend/webhooks` when possible -- it handles header extraction and secret key resolution automatically
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/clerk \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Webhooks Overview](https://clerk.com/docs/guides/development/webhooks/overview)
-- [verifyWebhook() Reference](https://clerk.com/docs/reference/backend/verify-webhook)
-- [Sync Data with Webhooks](https://clerk.com/docs/webhooks/sync-data)
-- [Debug Webhooks](https://clerk.com/docs/guides/development/webhooks/debugging)
+- [Clerk Webhooks Guide](https://docs.clerk.com/webhooks)
+- [Webhook Security Best Practices](https://docs.clerk.com/webhooks/security)
 
 ## Next Steps
-Proceed to `clerk-performance-tuning` for optimization strategies.
+For performance optimization, see `clerk-performance-tuning`.

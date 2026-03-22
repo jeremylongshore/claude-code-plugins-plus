@@ -1,59 +1,114 @@
 ---
 name: persona-upgrade-migration
 description: |
-  Upgrade Persona API versions and handle breaking changes.
-  Use when working with Persona identity verification.
-  Trigger with phrases like "persona upgrade-migration", "persona upgrade-migration".
+  Analyze, plan, and execute Persona SDK upgrades with breaking change detection.
+  Use when upgrading Persona SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade persona", "persona migration",
+  "persona breaking changes", "update persona SDK", "analyze persona version".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 2.0.0
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona, identity, kyc, verification]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, persona]
 ---
 
-# persona upgrade migration | sed 's/\b\(.\)/\u\1/g'
+# Persona Upgrade & Migration
 
 ## Overview
-API versioning via Persona-Version header, deprecated field migration, test against sandbox.
+Guide for upgrading Persona SDK versions and handling breaking changes.
 
 ## Prerequisites
-- Completed `persona-install-auth` setup
-- Valid Persona API key (sandbox or production)
+- Current Persona SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Implementation
-```python
-import os, requests
-
-HEADERS = {
-    "Authorization": f"Bearer {os.environ['PERSONA_API_KEY']}",
-    "Persona-Version": "2023-01-05",
-}
-BASE = "https://withpersona.com/api/v1"
-
-# Upgrade Persona API versions and handle breaking changes
-resp = requests.get(f"{BASE}/inquiries?page[size]=10", headers=HEADERS)
-resp.raise_for_status()
-inquiries = resp.json()["data"]
-for inq in inquiries:
-    print(f"  {inq['id']}: {inq['attributes']['status']}")
+### Step 1: Check Current Version
+```bash
+npm list @persona/sdk
+npm view @persona/sdk version
 ```
 
+### Step 2: Review Changelog
+```bash
+open https://github.com/persona/sdk/releases
+```
+
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/persona-sdk-vX.Y.Z
+npm install @persona/sdk@latest
+npm test
+```
+
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
+
 ## Output
-- API versioning via Persona-Version header, deprecated field migration, test against sandbox.
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 404 Not Found | Wrong resource ID | Verify ID format |
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@persona/sdk';
+
+// After (v2.x)
+import { PersonaClient } from '@persona/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new PersonaClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @persona/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Persona]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
 ## Resources
-- [Persona API Reference](https://docs.withpersona.com/reference/introduction)
-- [Persona Documentation](https://docs.withpersona.com)
+- [Persona Changelog](https://github.com/persona/sdk/releases)
+- [Persona Migration Guide](https://docs.persona.com/migration)
 
 ## Next Steps
-See related Persona skills for more workflows.
+For CI integration during upgrades, see `persona-ci-integration`.

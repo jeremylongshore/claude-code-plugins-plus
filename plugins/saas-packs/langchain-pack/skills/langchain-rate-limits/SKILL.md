@@ -1,211 +1,151 @@
 ---
 name: langchain-rate-limits
 description: |
-  Implement LangChain rate limiting, retry strategies, and backoff.
-  Use when handling API rate limits, controlling request throughput,
-  or implementing concurrency-safe batch processing.
-  Trigger: "langchain rate limit", "langchain throttling",
-  "langchain backoff", "langchain retry", "API quota", "429 error".
+  Implement LangChain rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for LangChain.
+  Trigger with phrases like "langchain rate limit", "langchain throttling",
+  "langchain 429", "langchain retry", "langchain backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, api, llm]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
+
 # LangChain Rate Limits
 
 ## Overview
+Handle LangChain rate limits gracefully with exponential backoff and idempotency.
 
-Handle API rate limits gracefully with built-in retries, exponential backoff, concurrency control, provider fallbacks, and custom rate limiters.
+## Prerequisites
+- LangChain SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
-## Provider Rate Limits (2026)
+## Instructions
 
-| Provider | Model | RPM | TPM |
-|----------|-------|-----|-----|
-| OpenAI | gpt-4o | 10,000 | 800,000 |
-| OpenAI | gpt-4o-mini | 10,000 | 4,000,000 |
-| Anthropic | claude-sonnet | 4,000 | 400,000 |
-| Anthropic | claude-haiku | 4,000 | 400,000 |
-| Google | gemini-1.5-pro | 360 | 4,000,000 |
+### Step 1: Understand Rate Limit Tiers
 
-RPM = requests/minute, TPM = tokens/minute. Actual limits depend on your tier.
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-## Strategy 1: Built-in Retry (Simplest)
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-
-// Built-in exponential backoff on 429/500/503
-const model = new ChatOpenAI({
-  model: "gpt-4o-mini",
-  maxRetries: 5,      // retries with exponential backoff
-  timeout: 30000,     // 30s timeout per request
-});
-
-// This automatically retries on rate limit errors
-const response = await model.invoke("Hello");
-```
-
-## Strategy 2: Concurrency-Controlled Batch
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-const chain = ChatPromptTemplate.fromTemplate("Summarize: {text}")
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", maxRetries: 3 }))
-  .pipe(new StringOutputParser());
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-const inputs = articles.map((text) => ({ text }));
-
-// batch() with maxConcurrency prevents flooding the API
-const results = await chain.batch(inputs, {
-  maxConcurrency: 5,  // max 5 parallel requests
-});
-```
-
-## Strategy 3: Provider Fallback on Rate Limit
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatAnthropic } from "@langchain/anthropic";
-
-const primary = new ChatOpenAI({
-  model: "gpt-4o-mini",
-  maxRetries: 2,
-  timeout: 10000,
-});
-
-const fallback = new ChatAnthropic({
-  model: "claude-sonnet-4-20250514",
-  maxRetries: 2,
-});
-
-// Automatically switches to Anthropic if OpenAI rate-limits
-const resilientModel = primary.withFallbacks({
-  fallbacks: [fallback],
-});
-
-const chain = prompt.pipe(resilientModel).pipe(new StringOutputParser());
-```
-
-## Strategy 4: Custom Rate Limiter
-
-```typescript
-class TokenBucketLimiter {
-  private tokens: number;
-  private lastRefill: number;
-
-  constructor(
-    private maxTokens: number,    // bucket size
-    private refillRate: number,   // tokens per second
-  ) {
-    this.tokens = maxTokens;
-    this.lastRefill = Date.now();
-  }
-
-  async acquire(): Promise<void> {
-    this.refill();
-    while (this.tokens < 1) {
-      const waitMs = (1 / this.refillRate) * 1000;
-      await new Promise((r) => setTimeout(r, waitMs));
-      this.refill();
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
-    this.tokens -= 1;
   }
-
-  private refill() {
-    const now = Date.now();
-    const elapsed = (now - this.lastRefill) / 1000;
-    this.tokens = Math.min(this.maxTokens, this.tokens + elapsed * this.refillRate);
-    this.lastRefill = now;
-  }
-}
-
-// Usage: 100 requests per minute
-const limiter = new TokenBucketLimiter(100, 100 / 60);
-
-async function rateLimitedInvoke(chain: any, input: any) {
-  await limiter.acquire();
-  return chain.invoke(input);
+  throw new Error('Unreachable');
 }
 ```
 
-## Strategy 5: Async Batch with Semaphore
+### Step 3: Add Idempotency Keys
 
 ```typescript
-async function batchWithSemaphore<T>(
-  chain: { invoke: (input: any) => Promise<T> },
-  inputs: any[],
-  maxConcurrent = 5,
-): Promise<T[]> {
-  let active = 0;
-  const results: T[] = [];
-  const queue = [...inputs.entries()];
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-  return new Promise((resolve, reject) => {
-    function next() {
-      while (active < maxConcurrent && queue.length > 0) {
-        const [index, input] = queue.shift()!;
-        active++;
-        chain.invoke(input)
-          .then((result) => {
-            results[index] = result;
-            active--;
-            if (queue.length === 0 && active === 0) resolve(results);
-            else next();
-          })
-          .catch(reject);
-      }
-    }
-    next();
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+async function idempotentRequest<T>(
+  client: LangChainClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
   });
 }
-
-// Process 100 items, 5 at a time
-const results = await batchWithSemaphore(chain, inputs, 5);
 ```
 
-## Python Equivalent
-
-```python
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_core.runnables import RunnableConfig
-
-# Built-in retry
-llm = ChatOpenAI(model="gpt-4o-mini", max_retries=5, request_timeout=30)
-
-# Fallback
-primary = ChatOpenAI(model="gpt-4o-mini", max_retries=2)
-fallback = ChatAnthropic(model="claude-sonnet-4-20250514")
-robust = primary.with_fallbacks([fallback])
-
-# Batch with concurrency control
-results = chain.batch(
-    [{"text": t} for t in texts],
-    config=RunnableConfig(max_concurrency=10),
-)
-```
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| `429 Too Many Requests` | Rate limit hit | Increase `maxRetries`, reduce `maxConcurrency` |
-| `Timeout` | Response too slow | Increase `timeout`, check network |
-| `QuotaExceeded` | Monthly limit hit | Upgrade tier or switch provider |
-| Batch partially fails | Some items rate limited | Use `.batch()` with `returnExceptions: true` |
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-
-- [OpenAI Rate Limits](https://platform.openai.com/docs/guides/rate-limits)
-- [Anthropic Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
-- [LangChain Batch Processing](https://js.langchain.com/docs/how_to/batch/)
+- [LangChain Rate Limits](https://docs.langchain.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
-Proceed to `langchain-security-basics` for security best practices.
+For security configuration, see `langchain-security-basics`.

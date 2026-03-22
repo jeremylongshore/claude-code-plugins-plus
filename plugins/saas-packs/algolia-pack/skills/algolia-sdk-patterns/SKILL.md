@@ -1,230 +1,149 @@
 ---
 name: algolia-sdk-patterns
 description: |
-  Apply production-ready algoliasearch v5 patterns: singleton client, typed search,
-  error handling, and batch operations.
+  Apply production-ready Algolia SDK patterns for TypeScript and Python.
   Use when implementing Algolia integrations, refactoring SDK usage,
-  or establishing team coding standards.
-  Trigger: "algolia SDK patterns", "algolia best practices", "algolia code patterns", "idiomatic algolia".
+  or establishing team coding standards for Algolia.
+  Trigger with phrases like "algolia SDK patterns", "algolia best practices",
+  "algolia code patterns", "idiomatic algolia".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
 compatible-with: claude-code
+tags: [saas, algolia]
 ---
 
 # Algolia SDK Patterns
 
 ## Overview
-
-Production-ready patterns for `algoliasearch` v5. Key architectural change from v4: all methods live on the client directly — no more `client.initIndex()`. Index name is passed as a parameter to every call.
+Production-ready patterns for Algolia SDK usage in TypeScript and Python.
 
 ## Prerequisites
-
-- `algoliasearch` v5+ installed
 - Completed `algolia-install-auth` setup
-- TypeScript project (patterns work in JS too, you just lose type safety)
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Pattern 1: Typed Singleton Client
-
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
 // src/algolia/client.ts
-import { algoliasearch, type Algoliasearch } from 'algoliasearch';
+import { AlgoliaClient } from '@algolia/sdk';
 
-let _client: Algoliasearch | null = null;
+let instance: AlgoliaClient | null = null;
 
-export function getClient(): Algoliasearch {
-  if (!_client) {
-    const appId = process.env.ALGOLIA_APP_ID;
-    const apiKey = process.env.ALGOLIA_ADMIN_KEY;
-    if (!appId || !apiKey) {
-      throw new Error(
-        'ALGOLIA_APP_ID and ALGOLIA_ADMIN_KEY must be set. '
-        + 'Get them from dashboard.algolia.com > Settings > API Keys'
-      );
-    }
-    _client = algoliasearch(appId, apiKey);
+export function getAlgoliaClient(): AlgoliaClient {
+  if (!instance) {
+    instance = new AlgoliaClient({
+      apiKey: process.env.ALGOLIA_API_KEY!,
+      // Additional options
+    });
   }
-  return _client;
-}
-
-// For testing: reset singleton
-export function resetClient(): void {
-  _client = null;
+  return instance;
 }
 ```
 
-### Pattern 2: Typed Search Results
-
+### Step 2: Add Error Handling Wrapper
 ```typescript
-// src/algolia/types.ts
+import { AlgoliaError } from '@algolia/sdk';
 
-// Define your record shape — extends Algolia's Hit type
-interface Product {
-  objectID: string;
-  name: string;
-  category: string;
-  price: number;
-  description: string;
-  image_url: string;
-}
-
-// src/algolia/search.ts
-import { getClient } from './client';
-
-export async function searchProducts(
-  query: string,
-  options?: {
-    filters?: string;
-    facetFilters?: string[][];
-    hitsPerPage?: number;
-    page?: number;
-  }
-) {
-  const client = getClient();
-
-  const { hits, nbHits, nbPages, page } = await client.searchSingleIndex<Product>({
-    indexName: 'products',
-    searchParams: {
-      query,
-      filters: options?.filters,
-      facetFilters: options?.facetFilters,
-      hitsPerPage: options?.hitsPerPage ?? 20,
-      page: options?.page ?? 0,
-      attributesToRetrieve: ['name', 'category', 'price', 'image_url'],
-      attributesToHighlight: ['name', 'description'],
-    },
-  });
-
-  return { hits, totalHits: nbHits, totalPages: nbPages, currentPage: page };
-}
-
-// Usage: const { hits } = await searchProducts('laptop', { filters: 'price < 1000' });
-```
-
-### Pattern 3: Error Handling with Algolia Error Types
-
-```typescript
-// src/algolia/errors.ts
-import { ApiError } from 'algoliasearch';
-
-export async function safeAlgoliaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<{ data: T | null; error: string | null }> {
+async function safeAlgoliaCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
   try {
-    const data = await fn();
+    const data = await operation();
     return { data, error: null };
   } catch (err) {
-    if (err instanceof ApiError) {
-      // ApiError has status and message from Algolia API
-      const msg = `Algolia ${operation} failed [${err.status}]: ${err.message}`;
-      console.error(msg);
-
-      // Specific handling for common codes
-      if (err.status === 429) {
-        console.warn('Rate limited — reduce request frequency or contact Algolia');
-      } else if (err.status === 404) {
-        console.warn('Index or object not found — verify index name');
-      }
-
-      return { data: null, error: msg };
+    if (err instanceof AlgoliaError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
     }
-    // Non-Algolia error (network, etc.)
-    const msg = err instanceof Error ? err.message : 'Unknown error';
-    console.error(`${operation} error: ${msg}`);
-    return { data: null, error: msg };
+    return { data: null, error: err as Error };
   }
 }
-
-// Usage:
-// const { data, error } = await safeAlgoliaCall('search', () =>
-//   client.searchSingleIndex({ indexName: 'products', searchParams: { query: 'foo' } })
-// );
 ```
 
-### Pattern 4: Batch Operations
-
+### Step 3: Implement Retry Logic
 ```typescript
-// src/algolia/batch.ts
-import { getClient } from './client';
-
-// saveObjects handles batching internally — send up to 1000 objects per call
-export async function bulkIndex(indexName: string, records: Record<string, any>[]) {
-  const client = getClient();
-  const BATCH_SIZE = 1000;
-
-  for (let i = 0; i < records.length; i += BATCH_SIZE) {
-    const batch = records.slice(i, i + BATCH_SIZE);
-    const { taskID } = await client.saveObjects({
-      indexName,
-      objects: batch,
-    });
-    await client.waitForTask({ indexName, taskID });
-    console.log(`Indexed ${Math.min(i + BATCH_SIZE, records.length)}/${records.length}`);
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
   }
-}
-
-// Partial update — only send changed fields
-export async function updateFields(
-  indexName: string,
-  objectID: string,
-  fields: Record<string, any>
-) {
-  const client = getClient();
-  return client.partialUpdateObject({
-    indexName,
-    objectID,
-    attributesToUpdate: fields,
-  });
+  throw new Error('Unreachable');
 }
 ```
 
-### Pattern 5: Multi-Tenant Client Factory
-
-```typescript
-// src/algolia/multi-tenant.ts
-import { algoliasearch, type Algoliasearch } from 'algoliasearch';
-
-const tenantClients = new Map<string, Algoliasearch>();
-
-export function getClientForTenant(tenantId: string): Algoliasearch {
-  if (!tenantClients.has(tenantId)) {
-    // Each tenant might have their own Algolia app, or use index prefixes
-    const appId = process.env[`ALGOLIA_APP_ID_${tenantId.toUpperCase()}`]
-      || process.env.ALGOLIA_APP_ID!;
-    const apiKey = process.env[`ALGOLIA_ADMIN_KEY_${tenantId.toUpperCase()}`]
-      || process.env.ALGOLIA_ADMIN_KEY!;
-
-    tenantClients.set(tenantId, algoliasearch(appId, apiKey));
-  }
-  return tenantClients.get(tenantId)!;
-}
-
-// Or use a single app with index prefixing
-export function tenantIndex(tenantId: string, base: string): string {
-  return `${tenantId}_${base}`; // "acme_products"
-}
-```
+## Output
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
-
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| `safeAlgoliaCall` wrapper | All API calls | Prevents uncaught exceptions, structured error info |
-| `ApiError` check | Distinguishing API vs network errors | Targeted retry/recovery logic |
-| `waitForTask` | After every write operation | Ensures reads see latest data |
-| Batch chunking | Large datasets | Avoids record-too-big and timeout errors |
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
+
+## Examples
+
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, AlgoliaClient>();
+
+export function getClientForTenant(tenantId: string): AlgoliaClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new AlgoliaClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from algolia import AlgoliaClient
+
+@asynccontextmanager
+async def get_algolia_client():
+    client = AlgoliaClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const algoliaResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
 
 ## Resources
-
-- [algoliasearch v5 Methods](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/)
-- [v4 to v5 Migration Guide](https://www.algolia.com/doc/libraries/javascript/v5/upgrade/)
-- [API Error Codes](https://www.algolia.com/doc/api-reference/api-methods/)
+- [Algolia SDK Reference](https://docs.algolia.com/sdk)
+- [Algolia API Types](https://docs.algolia.com/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-
-Apply patterns in `algolia-core-workflow-a` for search implementation.
+Apply patterns in `algolia-core-workflow-a` for real-world usage.

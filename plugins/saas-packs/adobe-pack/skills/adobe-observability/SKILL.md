@@ -1,125 +1,113 @@
 ---
 name: adobe-observability
 description: |
-  Set up comprehensive observability for Adobe API integrations with
-  Prometheus metrics, OpenTelemetry traces, structured logging, and
-  alert rules covering Firefly, PDF Services, and Photoshop APIs.
+  Set up comprehensive observability for Adobe integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Adobe operations, setting up dashboards,
+  or configuring alerting for Adobe integration health.
   Trigger with phrases like "adobe monitoring", "adobe metrics",
   "adobe observability", "monitor adobe", "adobe alerts", "adobe tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
 compatible-with: claude-code
+tags: [saas, adobe]
 ---
 
 # Adobe Observability
 
 ## Overview
-
-Set up comprehensive observability for Adobe API integrations covering four pillars: metrics (Prometheus), traces (OpenTelemetry), logs (structured JSON), and alerts. Each Adobe API has different latency profiles requiring specific monitoring.
+Set up comprehensive observability for Adobe integrations.
 
 ## Prerequisites
-
 - Prometheus or compatible metrics backend
-- OpenTelemetry SDK (`@opentelemetry/api`)
+- OpenTelemetry SDK installed
 - Grafana or similar dashboarding tool
-- AlertManager or PagerDuty for alerts
+- AlertManager configured
 
-## Instructions
+## Metrics Collection
 
-### Step 1: Define Key Metrics by API
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `adobe_requests_total` | Counter | Total API requests |
+| `adobe_request_duration_seconds` | Histogram | Request latency |
+| `adobe_errors_total` | Counter | Error count by type |
+| `adobe_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-| Metric | Type | Labels | Description |
-|--------|------|--------|-------------|
-| `adobe_ims_token_requests_total` | Counter | `status` | Token generation attempts |
-| `adobe_api_requests_total` | Counter | `api,operation,status` | API calls by type |
-| `adobe_api_duration_seconds` | Histogram | `api,operation` | Latency per operation |
-| `adobe_api_errors_total` | Counter | `api,error_code` | Errors by code (401,403,429,500) |
-| `adobe_job_poll_count` | Histogram | `api` | Polls before async job completes |
-| `adobe_rate_limit_retries_total` | Counter | `api` | 429 retries |
-| `adobe_pdf_transactions_used` | Gauge | — | Monthly PDF Services usage |
-
-### Step 2: Instrumented Adobe Client
+### Prometheus Metrics
 
 ```typescript
-import { Counter, Histogram, Gauge, Registry } from 'prom-client';
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
 const registry = new Registry();
 
-const apiRequests = new Counter({
-  name: 'adobe_api_requests_total',
+const requestCounter = new Counter({
+  name: 'adobe_requests_total',
   help: 'Total Adobe API requests',
-  labelNames: ['api', 'operation', 'status'] as const,
+  labelNames: ['method', 'status'],
   registers: [registry],
 });
 
-const apiDuration = new Histogram({
-  name: 'adobe_api_duration_seconds',
-  help: 'Adobe API request duration in seconds',
-  labelNames: ['api', 'operation'] as const,
-  buckets: [0.5, 1, 2, 5, 10, 20, 30, 60], // Adobe APIs are slow
+const requestDuration = new Histogram({
+  name: 'adobe_request_duration_seconds',
+  help: 'Adobe request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
   registers: [registry],
 });
 
-const apiErrors = new Counter({
-  name: 'adobe_api_errors_total',
-  help: 'Adobe API errors by code',
-  labelNames: ['api', 'error_code'] as const,
+const errorCounter = new Counter({
+  name: 'adobe_errors_total',
+  help: 'Adobe errors by type',
+  labelNames: ['error_type'],
   registers: [registry],
 });
+```
 
-export async function instrumentedAdobeCall<T>(
-  api: string,
-  operation: string,
-  fn: () => Promise<T>
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
 ): Promise<T> {
-  const timer = apiDuration.startTimer({ api, operation });
+  const timer = requestDuration.startTimer({ method });
+
   try {
-    const result = await fn();
-    apiRequests.inc({ api, operation, status: 'success' });
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
     return result;
   } catch (error: any) {
-    const errorCode = error.status || error.httpStatus || 'unknown';
-    apiRequests.inc({ api, operation, status: 'error' });
-    apiErrors.inc({ api, error_code: String(errorCode) });
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
     throw error;
   } finally {
     timer();
   }
 }
-
-// Usage
-const image = await instrumentedAdobeCall('firefly', 'generate', () =>
-  generateImage({ prompt: 'sunset landscape' })
-);
 ```
 
-### Step 3: OpenTelemetry Distributed Tracing
+## Distributed Tracing
+
+### OpenTelemetry Setup
 
 ```typescript
 import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-const tracer = trace.getTracer('adobe-integration');
+const tracer = trace.getTracer('adobe-client');
 
-export async function tracedAdobeCall<T>(
-  api: string,
-  operation: string,
-  fn: () => Promise<T>
+async function tracedAdobeCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
 ): Promise<T> {
-  return tracer.startActiveSpan(`adobe.${api}.${operation}`, async (span) => {
-    span.setAttribute('adobe.api', api);
-    span.setAttribute('adobe.operation', operation);
-    span.setAttribute('adobe.client_id', process.env.ADOBE_CLIENT_ID!);
-
+  return tracer.startActiveSpan(`adobe.${operationName}`, async (span) => {
     try {
-      const result = await fn();
+      const result = await operation();
       span.setStatus({ code: SpanStatusCode.OK });
       return result;
     } catch (error: any) {
       span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.setAttribute('adobe.error_code', error.status || 'unknown');
       span.recordException(error);
       throw error;
     } finally {
@@ -129,7 +117,9 @@ export async function tracedAdobeCall<T>(
 }
 ```
 
-### Step 4: Structured Logging
+## Logging Strategy
+
+### Structured Logging
 
 ```typescript
 import pino from 'pino';
@@ -137,80 +127,115 @@ import pino from 'pino';
 const logger = pino({
   name: 'adobe',
   level: process.env.LOG_LEVEL || 'info',
-  redact: ['clientSecret', 'accessToken', 'req.headers.authorization'],
 });
 
-export function logAdobeOperation(entry: {
-  api: string;
-  operation: string;
-  durationMs: number;
-  status: 'success' | 'error';
-  httpStatus?: number;
-  jobId?: string;
-  error?: string;
-}) {
-  if (entry.status === 'error') {
-    logger.error(entry, `Adobe ${entry.api}.${entry.operation} failed`);
-  } else {
-    logger.info(entry, `Adobe ${entry.api}.${entry.operation} completed`);
-  }
+function logAdobeOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'adobe',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
 }
 ```
 
-### Step 5: Alert Rules
+## Alert Configuration
+
+### Prometheus AlertManager Rules
 
 ```yaml
-# prometheus/adobe-alerts.yml
+# adobe_alerts.yaml
 groups:
   - name: adobe_alerts
     rules:
-      - alert: AdobeAuthFailure
-        expr: increase(adobe_api_errors_total{error_code="401"}[5m]) > 0
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Adobe authentication failure — credentials may be expired or revoked"
-
-      - alert: AdobeRateLimited
-        expr: rate(adobe_api_errors_total{error_code="429"}[5m]) > 0.1
+      - alert: AdobeHighErrorRate
+        expr: |
+          rate(adobe_errors_total[5m]) /
+          rate(adobe_requests_total[5m]) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Adobe API rate limited — reduce throughput or upgrade tier"
+          summary: "Adobe error rate > 5%"
 
       - alert: AdobeHighLatency
         expr: |
           histogram_quantile(0.95,
-            rate(adobe_api_duration_seconds_bucket{api="firefly"}[5m])
-          ) > 30
-        for: 10m
+            rate(adobe_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Adobe Firefly P95 latency > 30s"
+          summary: "Adobe P95 latency > 2s"
 
-      - alert: AdobeApiDown
-        expr: |
-          rate(adobe_api_errors_total{error_code=~"5.."}[5m]) /
-          rate(adobe_api_requests_total[5m]) > 0.1
-        for: 5m
+      - alert: AdobeDown
+        expr: up{job="adobe"} == 0
+        for: 1m
         labels:
           severity: critical
         annotations:
-          summary: "Adobe API server error rate > 10%"
-
-      - alert: AdobePdfQuotaLow
-        expr: adobe_pdf_transactions_used > 450
-        labels:
-          severity: warning
-        annotations:
-          summary: "PDF Services: < 50 free tier transactions remaining"
+          summary: "Adobe integration is down"
 ```
 
-### Metrics Endpoint
+## Dashboard
 
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Adobe Request Rate",
+      "targets": [{
+        "expr": "rate(adobe_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Adobe Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(adobe_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
+
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
 ```typescript
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', registry.contentType);
@@ -218,28 +243,10 @@ app.get('/metrics', async (req, res) => {
 });
 ```
 
-## Output
-
-- Prometheus metrics for all Adobe API calls (latency, errors, rate limits)
-- OpenTelemetry traces with Adobe-specific span attributes
-- Structured JSON logging with credential redaction
-- Alert rules for auth failures, rate limiting, latency, and quota
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| High cardinality metrics | Too many label values | Use fixed set of operation names |
-| Alert storms | Thresholds too sensitive | Increase `for` duration |
-| Missing traces | No OTel propagation | Verify context propagation setup |
-| Redacted data in logs | Over-aggressive redaction | Whitelist safe fields |
-
 ## Resources
-
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
-- [Adobe Status Page](https://status.adobe.com)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Adobe Observability Guide](https://docs.adobe.com/observability)
 
 ## Next Steps
-
 For incident response, see `adobe-incident-runbook`.

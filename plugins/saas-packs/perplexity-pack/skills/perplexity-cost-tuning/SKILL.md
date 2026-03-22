@@ -1,195 +1,203 @@
 ---
 name: perplexity-cost-tuning
 description: |
-  Optimize Perplexity costs through model routing, caching, token limits, and budget monitoring.
+  Optimize Perplexity costs through tier selection, sampling, and usage monitoring.
   Use when analyzing Perplexity billing, reducing API costs,
-  or implementing budget alerts for Perplexity Sonar API.
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "perplexity cost", "perplexity billing",
-  "reduce perplexity costs", "perplexity pricing", "perplexity budget".
+  "reduce perplexity costs", "perplexity pricing", "perplexity expensive", "perplexity budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, api, monitoring, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Cost Tuning
 
 ## Overview
-Reduce Perplexity Sonar API costs. Perplexity charges per-token (input + output) plus a per-request fee that varies by search context size. The biggest cost lever is model selection: `sonar-pro` costs 3-15x more than `sonar` per request.
-
-## Pricing Reference
-
-| Model | Input $/M tokens | Output $/M tokens | Request Fee |
-|-------|-------------------|-------------------|-------------|
-| `sonar` | $1 | $1 | $5 per 1K requests |
-| `sonar-pro` | $3 | $15 | $5 per 1K requests |
-| `sonar-reasoning-pro` | $3 | $15 | $5 per 1K requests |
-| `sonar-deep-research` | $2 | $8 | $5 per 1K searches |
-
-Search context size (Low/Medium/High) affects the request fee. More context = higher fee.
+Optimize Perplexity costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
-- Perplexity API account with usage dashboard
-- Understanding of query patterns in your application
-- Cache infrastructure for search results
+- Access to Perplexity billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## Instructions
+## Pricing Tiers
 
-### Step 1: Route Queries to the Right Model
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
 ```typescript
-// 60-70% of queries can use sonar, saving 3-15x per query
-function selectModel(query: string): "sonar" | "sonar-pro" {
-  const simplePatterns = [
-    /^what is/i, /^define/i, /^who is/i, /^when did/i,
-    /current price/i, /^how many/i, /^is it true/i,
-  ];
-  if (simplePatterns.some((p) => p.test(query))) return "sonar";
-
-  const complexPatterns = [
-    /compare.*vs/i, /analysis of/i, /comprehensive/i,
-    /pros and cons/i, /in-depth/i, /research/i,
-  ];
-  if (complexPatterns.some((p) => p.test(query))) return "sonar-pro";
-
-  return "sonar"; // Default to cheapest
-}
-```
-
-### Step 2: Limit Output Tokens
-```bash
-set -euo pipefail
-# Factual queries need ~100 tokens, not 4096
-# Setting max_tokens dramatically reduces output costs
-
-# Simple fact: 100 tokens = $0.0001 output
-curl -X POST https://api.perplexity.ai/chat/completions \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "sonar",
-    "messages": [{"role": "user", "content": "Current population of Tokyo"}],
-    "max_tokens": 100
-  }'
-
-# Research query: keep at 2048 only when needed
-curl -X POST https://api.perplexity.ai/chat/completions \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "sonar-pro",
-    "messages": [{"role": "user", "content": "Compare React vs Vue in 2025 for enterprise apps"}],
-    "max_tokens": 2048
-  }'
-```
-
-### Step 3: Cache to Eliminate Duplicate Queries
-```typescript
-import { LRUCache } from "lru-cache";
-import { createHash } from "crypto";
-
-const searchCache = new LRUCache<string, any>({
-  max: 10000,
-  ttl: 4 * 3600_000, // 4-hour default TTL
-});
-
-async function cachedQuery(query: string, model: string) {
-  const key = createHash("sha256")
-    .update(`${model}:${query.toLowerCase().trim()}`)
-    .digest("hex");
-
-  const cached = searchCache.get(key);
-  if (cached) return cached; // $0 cost
-
-  const result = await perplexity.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: query }],
-  });
-  searchCache.set(key, result);
-  return result;
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
 }
 
-// Track cache effectiveness
-function cacheStats() {
+function estimatePerplexityCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
   return {
-    size: searchCache.size,
-    hitRate: `${((searchCache as any).hits / ((searchCache as any).hits + (searchCache as any).misses) * 100).toFixed(1)}%`,
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
   };
 }
 ```
 
-### Step 4: Use Domain Filters to Reduce Search Cost
-```bash
-set -euo pipefail
-# Restricting search domains = less content to process = lower request fee
-curl -X POST https://api.perplexity.ai/chat/completions \
-  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "sonar",
-    "messages": [{"role": "user", "content": "Python 3.13 release notes"}],
-    "search_domain_filter": ["python.org", "docs.python.org"],
-    "max_tokens": 500
-  }'
-```
+## Usage Monitoring
 
-### Step 5: Track and Budget
 ```typescript
-class CostTracker {
-  private costs: Array<{ model: string; tokens: number; timestamp: Date }> = [];
+class PerplexityUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
 
-  record(model: string, usage: { total_tokens: number }) {
-    this.costs.push({
-      model,
-      tokens: usage.total_tokens,
-      timestamp: new Date(),
-    });
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
   }
 
-  dailySummary() {
-    const today = this.costs.filter(
-      (c) => c.timestamp.toDateString() === new Date().toDateString()
-    );
-    const sonarTokens = today.filter((c) => c.model === "sonar").reduce((s, c) => s + c.tokens, 0);
-    const proTokens = today.filter((c) => c.model === "sonar-pro").reduce((s, c) => s + c.tokens, 0);
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
 
-    return {
-      queries: today.length,
-      estimatedCost: (sonarTokens * 0.000001) + (proTokens * 0.000009), // rough estimate
-      sonarQueries: today.filter((c) => c.model === "sonar").length,
-      proQueries: today.filter((c) => c.model === "sonar-pro").length,
-    };
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Perplexity budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimatePerplexityCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
   }
 }
 ```
 
-## Cost Optimization Checklist
-- [ ] Default model is `sonar` (not `sonar-pro`)
-- [ ] `max_tokens` set on every request
-- [ ] Caching enabled for repeated queries
-- [ ] Model routing by query complexity
-- [ ] Domain filter used where applicable
-- [ ] Monthly budget cap set on API key
-- [ ] Cost tracking in production monitoring
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await perplexityClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => perplexityClient.get(id)));
+
+// Use batch endpoint (1 call)
+await perplexityClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new PerplexityClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Perplexity dashboard
+# Or use API if available:
+# Check Perplexity documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM perplexity_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Perplexity dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| High cost per query | Using sonar-pro for everything | Route simple queries to sonar |
-| Low cache hit rate | Queries too unique | Normalize queries before hashing |
-| Budget exhausted early | No spending caps | Set monthly budget on API key |
-| Unexpectedly high bill | No max_tokens limits | Set max_tokens on all requests |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
 
-## Output
-- Model routing saving 60-70% on simple queries
-- Token limiting reducing output costs
-- Caching eliminating duplicate query costs
-- Cost tracking for budget monitoring
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimatePerplexityCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-- [Perplexity Pricing](https://docs.perplexity.ai/docs/getting-started/pricing)
-- [Model Cards](https://docs.perplexity.ai/getting-started/models)
+- [Perplexity Pricing](https://perplexity.com/pricing)
+- [Perplexity Billing Dashboard](https://dashboard.perplexity.com/billing)
 
 ## Next Steps
 For architecture patterns, see `perplexity-reference-architecture`.

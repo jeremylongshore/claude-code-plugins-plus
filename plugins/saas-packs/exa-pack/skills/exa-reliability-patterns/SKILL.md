@@ -1,246 +1,292 @@
 ---
 name: exa-reliability-patterns
 description: |
-  Implement Exa reliability patterns: query fallback chains, circuit breakers, and graceful degradation.
-  Use when building fault-tolerant Exa integrations, implementing fallback strategies,
-  or adding resilience to production search services.
+  Implement Exa reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Use when building fault-tolerant Exa integrations, implementing retry strategies,
+  or adding resilience to production Exa services.
   Trigger with phrases like "exa reliability", "exa circuit breaker",
-  "exa fallback", "exa resilience", "exa graceful degradation".
+  "exa idempotent", "exa resilience", "exa fallback", "exa bulkhead".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, reliability, resilience]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Reliability Patterns
 
 ## Overview
-Production reliability patterns for Exa neural search. Exa-specific failure modes include: empty result sets (query too narrow), content retrieval failures (sites block crawling), variable latency by search type, and 429 rate limits at 10 QPS default.
+Production-grade reliability patterns for Exa integrations.
 
-## Instructions
+## Prerequisites
+- Understanding of circuit breaker pattern
+- opossum or similar library installed
+- Queue infrastructure for DLQ
+- Caching layer for fallbacks
 
-### Step 1: Query Fallback Chain
+## Circuit Breaker
+
 ```typescript
-import Exa from "exa-js";
+import CircuitBreaker from 'opossum';
 
-const exa = new Exa(process.env.EXA_API_KEY);
+const exaBreaker = new CircuitBreaker(
+  async (operation: () => Promise<any>) => operation(),
+  {
+    timeout: 30000,
+    errorThresholdPercentage: 50,
+    resetTimeout: 30000,
+    volumeThreshold: 10,
+  }
+);
 
-// If neural search returns too few results, fall back through search types
-async function resilientSearch(
-  query: string,
-  minResults = 3,
-  opts: any = {}
-) {
-  // Try 1: Neural search (best quality)
-  let results = await exa.searchAndContents(query, {
-    type: "neural",
-    numResults: 10,
-    ...opts,
-  });
-  if (results.results.length >= minResults) return results;
+// Events
+exaBreaker.on('open', () => {
+  console.warn('Exa circuit OPEN - requests failing fast');
+  alertOps('Exa circuit breaker opened');
+});
 
-  // Try 2: Auto search (Exa picks best approach)
-  results = await exa.searchAndContents(query, {
-    type: "auto",
-    numResults: 10,
-    ...opts,
-  });
-  if (results.results.length >= minResults) return results;
+exaBreaker.on('halfOpen', () => {
+  console.info('Exa circuit HALF-OPEN - testing recovery');
+});
 
-  // Try 3: Keyword search (different index)
-  results = await exa.searchAndContents(query, {
-    type: "keyword",
-    numResults: 10,
-    ...opts,
-  });
-  if (results.results.length >= minResults) return results;
+exaBreaker.on('close', () => {
+  console.info('Exa circuit CLOSED - normal operation');
+});
 
-  // Try 4: Remove filters and broaden
-  const broadOpts = { ...opts };
-  delete broadOpts.startPublishedDate;
-  delete broadOpts.endPublishedDate;
-  delete broadOpts.includeDomains;
-  delete broadOpts.includeText;
-
-  return exa.searchAndContents(query, {
-    type: "auto",
-    numResults: 10,
-    ...broadOpts,
-  });
+// Usage
+async function safeExaCall<T>(fn: () => Promise<T>): Promise<T> {
+  return exaBreaker.fire(fn);
 }
 ```
 
-### Step 2: Retry with Exponential Backoff
+## Idempotency Keys
+
 ```typescript
-async function searchWithRetry(
-  query: string,
-  opts: any,
-  maxRetries = 3
-) {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      return await exa.searchAndContents(query, opts);
-    } catch (err: any) {
-      const status = err.status || 0;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-      // Only retry on rate limits (429) and server errors (5xx)
-      if (status !== 429 && (status < 500 || status >= 600)) throw err;
-      if (attempt === maxRetries) throw err;
+// Generate deterministic idempotency key from input
+function generateIdempotencyKey(
+  operation: string,
+  params: Record<string, any>
+): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
-      const delay = 1000 * Math.pow(2, attempt) + Math.random() * 500;
-      console.log(`[Exa] ${status} retry ${attempt + 1}/${maxRetries} in ${delay.toFixed(0)}ms`);
-      await new Promise(r => setTimeout(r, delay));
+// Or use random key with storage
+class IdempotencyManager {
+  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
+
+  getOrCreate(operationId: string): string {
+    const existing = this.store.get(operationId);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.key;
     }
+
+    const key = uuidv4();
+    this.store.set(operationId, {
+      key,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return key;
   }
-  throw new Error("Unreachable");
 }
 ```
 
-### Step 3: Circuit Breaker
+## Bulkhead Pattern
+
 ```typescript
-class ExaCircuitBreaker {
-  private failures = 0;
-  private lastFailure = 0;
-  private state: "closed" | "open" | "half-open" = "closed";
-  private readonly threshold = 5;       // failures before opening
-  private readonly resetTimeMs = 30000; // 30s before half-open
+import PQueue from 'p-queue';
 
-  async execute<T>(fn: () => Promise<T>, fallback?: () => T): Promise<T> {
-    // Check if circuit should reset
-    if (this.state === "open") {
-      if (Date.now() - this.lastFailure > this.resetTimeMs) {
-        this.state = "half-open";
-      } else if (fallback) {
-        return fallback();
-      } else {
-        throw new Error("Exa circuit breaker is open");
-      }
-    }
+// Separate queues for different operations
+const exaQueues = {
+  critical: new PQueue({ concurrency: 10 }),
+  normal: new PQueue({ concurrency: 5 }),
+  bulk: new PQueue({ concurrency: 2 }),
+};
 
-    try {
-      const result = await fn();
-      if (this.state === "half-open") {
-        this.state = "closed";
-        this.failures = 0;
-      }
-      return result;
-    } catch (err: any) {
-      this.failures++;
-      this.lastFailure = Date.now();
-
-      if (this.failures >= this.threshold) {
-        this.state = "open";
-        console.warn(`[Exa] Circuit breaker OPEN after ${this.failures} failures`);
-      }
-
-      if (fallback && this.state === "open") return fallback();
-      throw err;
-    }
-  }
-
-  getState() {
-    return { state: this.state, failures: this.failures };
-  }
+async function prioritizedExaCall<T>(
+  priority: 'critical' | 'normal' | 'bulk',
+  fn: () => Promise<T>
+): Promise<T> {
+  return exaQueues[priority].add(fn);
 }
 
-const circuitBreaker = new ExaCircuitBreaker();
+// Usage
+await prioritizedExaCall('critical', () =>
+  exaClient.processPayment(order)
+);
 
-// Usage with fallback to cached results
-const result = await circuitBreaker.execute(
-  () => exa.searchAndContents("query", { numResults: 5, text: true }),
-  () => getCachedResults("query") // fallback when circuit is open
+await prioritizedExaCall('bulk', () =>
+  exaClient.syncCatalog(products)
 );
 ```
 
-### Step 4: Graceful Degradation
+## Timeout Hierarchy
+
 ```typescript
-interface SearchResultWithMeta {
-  results: any[];
-  degraded: boolean;
-  source: "live" | "cache" | "fallback";
-  searchType: string;
+const TIMEOUT_CONFIG = {
+  connect: 5000,      // Initial connection
+  request: 30000,     // Standard requests
+  upload: 120000,     // File uploads
+  longPoll: 300000,   // Webhook long-polling
+};
+
+async function timedoutExaCall<T>(
+  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+  fn: () => Promise<T>
+): Promise<T> {
+  const timeout = TIMEOUT_CONFIG[operation];
+
+  return Promise.race([
+    fn(),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Exa ${operation} timeout`)), timeout)
+    ),
+  ]);
+}
+```
+
+## Graceful Degradation
+
+```typescript
+interface ExaFallback {
+  enabled: boolean;
+  data: any;
+  staleness: 'fresh' | 'stale' | 'very_stale';
 }
 
-async function degradableSearch(
-  query: string,
-  opts: any = {}
-): Promise<SearchResultWithMeta> {
-  // Level 1: Full search with contents
+async function withExaFallback<T>(
+  fn: () => Promise<T>,
+  fallbackFn: () => Promise<T>
+): Promise<{ data: T; fallback: boolean }> {
   try {
-    const results = await searchWithRetry(query, {
-      type: "neural",
-      numResults: 10,
-      text: { maxCharacters: 2000 },
-      highlights: { maxCharacters: 500 },
-      ...opts,
-    }, 2);
-    return { results: results.results, degraded: false, source: "live", searchType: "neural" };
-  } catch {}
+    const data = await fn();
+    // Update cache for future fallback
+    await updateFallbackCache(data);
+    return { data, fallback: false };
+  } catch (error) {
+    console.warn('Exa failed, using fallback:', error.message);
+    const data = await fallbackFn();
+    return { data, fallback: true };
+  }
+}
+```
 
-  // Level 2: Fast search without content (less expensive)
-  try {
-    const results = await exa.search(query, {
-      type: "fast",
-      numResults: 5,
+## Dead Letter Queue
+
+```typescript
+interface DeadLetterEntry {
+  id: string;
+  operation: string;
+  payload: any;
+  error: string;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+class ExaDeadLetterQueue {
+  private queue: DeadLetterEntry[] = [];
+
+  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
+    this.queue.push({
+      ...entry,
+      id: uuidv4(),
+      lastAttempt: new Date(),
     });
-    return { results: results.results, degraded: true, source: "live", searchType: "fast" };
-  } catch {}
-
-  // Level 3: Return cached results
-  const cached = getCachedResults(query);
-  if (cached) {
-    return { results: cached, degraded: true, source: "cache", searchType: "cached" };
   }
 
-  // Level 4: Return empty with degradation flag
-  return { results: [], degraded: true, source: "fallback", searchType: "none" };
+  async processOne(): Promise<boolean> {
+    const entry = this.queue.shift();
+    if (!entry) return false;
+
+    try {
+      await exaClient[entry.operation](entry.payload);
+      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
+      return true;
+    } catch (error) {
+      entry.attempts++;
+      entry.lastAttempt = new Date();
+
+      if (entry.attempts < 5) {
+        this.queue.push(entry);
+      } else {
+        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
+        await alertOnPermanentFailure(entry);
+      }
+      return false;
+    }
+  }
 }
 ```
 
-### Step 5: Result Quality Monitoring
+## Health Check with Degraded State
+
 ```typescript
-class SearchQualityMonitor {
-  private stats = { total: 0, empty: 0, lowScore: 0 };
+type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
 
-  record(results: any[]) {
-    this.stats.total++;
-    if (results.length === 0) this.stats.empty++;
-    if (results[0]?.score < 0.5) this.stats.lowScore++;
-  }
+async function exaHealthCheck(): Promise<{
+  status: HealthStatus;
+  details: Record<string, any>;
+}> {
+  const checks = {
+    api: await checkApiConnectivity(),
+    circuitBreaker: exaBreaker.stats(),
+    dlqSize: deadLetterQueue.size(),
+  };
 
-  isHealthy(): boolean {
-    if (this.stats.total < 10) return true; // not enough data
-    const emptyRate = this.stats.empty / this.stats.total;
-    const lowScoreRate = this.stats.lowScore / this.stats.total;
-    return emptyRate < 0.2 && lowScoreRate < 0.3;
-  }
+  const status: HealthStatus =
+    !checks.api.connected ? 'unhealthy' :
+    checks.circuitBreaker.state === 'open' ? 'degraded' :
+    checks.dlqSize > 100 ? 'degraded' :
+    'healthy';
 
-  getReport() {
-    return {
-      ...this.stats,
-      emptyRate: `${((this.stats.empty / this.stats.total) * 100).toFixed(1)}%`,
-      lowScoreRate: `${((this.stats.lowScore / this.stats.total) * 100).toFixed(1)}%`,
-      healthy: this.isHealthy(),
-    };
-  }
+  return { status, details: checks };
 }
 ```
+
+## Instructions
+
+### Step 1: Implement Circuit Breaker
+Wrap Exa calls with circuit breaker.
+
+### Step 2: Add Idempotency Keys
+Generate deterministic keys for operations.
+
+### Step 3: Configure Bulkheads
+Separate queues for different priorities.
+
+### Step 4: Set Up Dead Letter Queue
+Handle permanent failures gracefully.
+
+## Output
+- Circuit breaker protecting Exa calls
+- Idempotency preventing duplicates
+- Bulkhead isolation implemented
+- DLQ for failed operations
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Empty results | Query too specific | Use fallback chain with broader query |
-| Slow responses | Neural on complex query | Degrade to `fast` type |
-| 429 rate limit | Burst traffic | Circuit breaker + backoff |
-| Content retrieval fails | Site blocks crawling | Fall back to highlights or summary |
-| Quality degradation | Query drift | Monitor empty/low-score rates |
+| Circuit stays open | Threshold too low | Adjust error percentage |
+| Duplicate operations | Missing idempotency | Add idempotency key |
+| Queue full | Rate too high | Increase concurrency |
+| DLQ growing | Persistent failures | Investigate root cause |
+
+## Examples
+
+### Quick Circuit Check
+```typescript
+const state = exaBreaker.stats().state;
+console.log('Exa circuit:', state);
+```
 
 ## Resources
-- [Exa API Reference](https://docs.exa.ai/reference/search)
-- [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Opossum Documentation](https://nodeshift.dev/opossum/)
+- [Exa Reliability Guide](https://docs.exa.com/reliability)
 
 ## Next Steps
-For policy guardrails, see `exa-policy-guardrails`. For architecture variants, see `exa-architecture-variants`.
+For policy enforcement, see `exa-policy-guardrails`.

@@ -1,213 +1,216 @@
 ---
 name: mistral-performance-tuning
 description: |
-  Optimize Mistral AI performance with caching, batching, and latency reduction.
+  Optimize Mistral AI API performance with caching, batching, and connection pooling.
   Use when experiencing slow API responses, implementing caching strategies,
   or optimizing request throughput for Mistral AI integrations.
   Trigger with phrases like "mistral performance", "optimize mistral",
-  "mistral latency", "mistral caching", "mistral slow".
+  "mistral latency", "mistral caching", "mistral slow", "mistral batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, api, performance]
-
+compatible-with: claude-code
+tags: [saas, mistral]
 ---
+
 # Mistral AI Performance Tuning
 
 ## Overview
-Optimize Mistral AI API response times and throughput. Key levers: model selection (Mistral Small ~200ms TTFT vs Large ~500ms), prompt length (fewer tokens = faster), streaming (perceived speed), caching (zero-latency repeats), and concurrent request management.
+Optimize Mistral AI API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Mistral API integration in production
-- Understanding of RPM/TPM limits for your tier
-- Application architecture supporting streaming
+- Mistral AI SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Model Selection by Latency Budget
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
+## Caching Strategy
+
+### Response Caching
 ```typescript
-const MODELS_BY_USE_CASE: Record<string, { model: string; ttftMs: string; note: string }> = {
-  realtime_chat:     { model: 'mistral-small-latest',  ttftMs: '~200ms',  note: '256k ctx, cheapest' },
-  code_completion:   { model: 'codestral-latest',      ttftMs: '~150ms',  note: 'Optimized for code + FIM' },
-  code_agents:       { model: 'devstral-latest',       ttftMs: '~300ms',  note: 'Agentic coding tasks' },
-  reasoning:         { model: 'mistral-large-latest',  ttftMs: '~500ms',  note: '256k ctx, strongest' },
-  vision:            { model: 'pixtral-large-latest',  ttftMs: '~600ms',  note: 'Image + text multimodal' },
-  embeddings:        { model: 'mistral-embed',         ttftMs: '~50ms',   note: '1024-dim, batch-friendly' },
-  edge_devices:      { model: 'ministral-latest',      ttftMs: '~100ms',  note: '3B-14B, fastest' },
-};
-```
-
-### Step 2: Streaming for User-Facing Responses
-
-Streaming reduces perceived latency from 1-2s (full response) to ~200ms (first token):
-
-```typescript
-import { Mistral } from '@mistralai/mistralai';
-
-const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-
-async function* streamChat(messages: any[], model = 'mistral-small-latest') {
-  const stream = await client.chat.stream({ model, messages });
-  for await (const chunk of stream) {
-    const content = chunk.data?.choices?.[0]?.delta?.content;
-    if (content) yield content;
-  }
-}
-
-// Web Response with SSE
-function streamToSSE(messages: any[]): Response {
-  const encoder = new TextEncoder();
-  const readable = new ReadableStream({
-    async start(controller) {
-      for await (const text of streamChat(messages)) {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
-      }
-      controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-      controller.close();
-    },
-  });
-  return new Response(readable, {
-    headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' },
-  });
-}
-```
-
-### Step 3: Response Caching
-
-```typescript
-import { createHash } from 'crypto';
 import { LRUCache } from 'lru-cache';
 
 const cache = new LRUCache<string, any>({
-  max: 5000,
-  ttl: 3_600_000, // 1 hour
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
 });
 
-async function cachedChat(
-  messages: any[],
-  model: string,
-  temperature = 0,
-): Promise<any> {
-  // Only cache deterministic requests
-  if (temperature > 0) {
-    return client.chat.complete({ model, messages, temperature });
-  }
-
-  const key = createHash('sha256')
-    .update(JSON.stringify({ model, messages }))
-    .digest('hex');
-
+async function cachedMistral AIRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
   const cached = cache.get(key);
-  if (cached) {
-    console.debug('Cache HIT');
-    return cached;
-  }
+  if (cached) return cached as T;
 
-  const result = await client.chat.complete({ model, messages, temperature: 0 });
-  cache.set(key, result);
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
   return result;
 }
 ```
 
-### Step 4: Prompt Length Optimization
-
+### Redis Caching (Distributed)
 ```typescript
-// Shorter prompts = faster TTFT and lower cost
-function optimizePrompt(systemPrompt: string, maxChars = 500): string {
-  return systemPrompt
-    .replace(/\s+/g, ' ')        // Collapse whitespace
-    .replace(/\n\s*\n/g, '\n')   // Remove blank lines
-    .trim()
-    .slice(0, maxChars);
-}
+import Redis from 'ioredis';
 
-// Trim conversation history to last N turns
-function trimHistory(messages: any[], maxTurns = 10): any[] {
-  const system = messages.filter(m => m.role === 'system');
-  const history = messages.filter(m => m.role !== 'system').slice(-maxTurns * 2);
-  return [...system, ...history];
-}
+const redis = new Redis(process.env.REDIS_URL);
 
-// Impact: Reducing from 4000 to 500 input tokens saves ~50% TTFT
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
 ```
 
-### Step 5: Concurrent Request Queue
+## Request Batching
 
 ```typescript
-import PQueue from 'p-queue';
+import DataLoader from 'dataloader';
 
-// Match concurrency to your workspace RPM limit
-const queue = new PQueue({
-  concurrency: 10,
-  interval: 60_000,
-  intervalCap: 100, // RPM limit
-});
-
-async function queuedChat(messages: any[], model = 'mistral-small-latest') {
-  return queue.add(() => client.chat.complete({ model, messages }));
-}
-
-// Process 100 requests respecting RPM
-const prompts = Array.from({ length: 100 }, (_, i) => `Question ${i}`);
-const results = await Promise.all(
-  prompts.map(p => queuedChat([{ role: 'user', content: p }]))
+const mistralLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Mistral AI
+    const results = await mistralClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
 );
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  mistralLoader.load('id-1'),
+  mistralLoader.load('id-2'),
+  mistralLoader.load('id-3'),
+]);
 ```
 
-### Step 6: Batch API for Non-Realtime Workloads
-
-Use Batch API for 50% cost savings when latency is not critical:
+## Connection Optimization
 
 ```typescript
-// Batch API processes requests asynchronously (minutes to hours)
-// Supports: /v1/chat/completions, /v1/embeddings, /v1/fim/completions, /v1/moderations
-// See mistral-webhooks-events for full batch implementation
-```
+import { Agent } from 'https';
 
-### Step 7: FIM (Fill-in-the-Middle) for Code
-
-```typescript
-// Codestral supports FIM — faster than full chat for code completion
-const response = await client.fim.complete({
-  model: 'codestral-latest',
-  prompt: 'function fibonacci(n) {\n  if (n <= 1) return n;\n',
-  suffix: '\n}\n',
-  maxTokens: 100,
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
 });
-// Returns just the middle part — minimal tokens, minimal latency
+
+const client = new MistralAIClient({
+  apiKey: process.env.MISTRAL_API_KEY!,
+  httpAgent: agent,
+});
 ```
 
-## Performance Benchmarks
+## Pagination Optimization
 
-| Optimization | Typical Impact |
-|-------------|----------------|
-| mistral-small vs mistral-large | 2-4x faster TTFT |
-| Streaming vs non-streaming | 5-10x perceived speed |
-| Response caching (temp=0) | 100x faster (cache hit) |
-| Prompt trimming (4k to 500 tokens) | 30-50% faster TTFT |
-| Batch API | Not faster, but 50% cheaper |
-| FIM vs chat for code | 2-3x fewer tokens |
+```typescript
+async function* paginatedMistral AIList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedMistral AIList(cursor =>
+  mistralClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredMistral AICall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical Mistral AI operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `429 rate_limit_exceeded` | RPM/TPM cap hit | Use PQueue with interval cap |
-| High TTFT (>1s) | Prompt too long or large model | Trim prompt, use mistral-small |
-| Stream disconnected | Network timeout | Implement reconnection |
-| Cache thrashing | High cardinality prompts | Increase cache size or reduce TTL |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredMistral AICall(name, () =>
+    cachedMistral AIRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Models Overview](https://docs.mistral.ai/getting-started/models/)
-- [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
-- [FIM/Code Generation](https://docs.mistral.ai/capabilities/code_generation/)
-- [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
+- [Mistral AI Performance Guide](https://docs.mistral.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-## Output
-- Model selection optimized for latency requirements
-- Streaming endpoints for perceived speed
-- LRU response cache for deterministic requests
-- Prompt optimization reducing token count
-- Concurrent request queue respecting RPM limits
+## Next Steps
+For cost optimization, see `mistral-cost-tuning`.

@@ -1,136 +1,114 @@
 ---
 name: evernote-upgrade-migration
 description: |
-  Upgrade Evernote SDK versions and migrate between API versions.
-  Use when upgrading SDK, handling breaking changes,
-  or migrating to newer API patterns.
-  Trigger with phrases like "upgrade evernote sdk", "evernote migration",
-  "update evernote", "evernote breaking changes".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Analyze, plan, and execute Evernote SDK upgrades with breaking change detection.
+  Use when upgrading Evernote SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade evernote", "evernote migration",
+  "evernote breaking changes", "update evernote SDK", "analyze evernote version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, migration]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Upgrade & Migration
 
-## Current State
-!`npm list evernote 2>/dev/null || echo 'evernote SDK not installed'`
-
 ## Overview
-Guide for upgrading Evernote SDK versions, converting callback-based code to Promises, handling breaking changes, and maintaining backward compatibility during gradual migration.
+Guide for upgrading Evernote SDK versions and handling breaking changes.
 
 ## Prerequisites
-- Existing Evernote integration to upgrade
-- Test environment for validation
-- Understanding of current implementation patterns
+- Current Evernote SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
 ### Step 1: Check Current Version
-
-Identify your current SDK version and compare against the latest release. Check the changelog for breaking changes between versions.
-
 ```bash
-# Check installed version
-npm list evernote
-
-# Check latest available
-npm view evernote version
-
-# View changelog
-npm view evernote repository.url
+npm list @evernote/sdk
+npm view @evernote/sdk version
 ```
 
-### Step 2: Review Breaking Changes
-
-Common breaking changes across Evernote SDK versions:
-- **Constructor changes**: `new Evernote.Note()` became `new Evernote.Types.Note()`
-- **Callback to Promise**: Older versions used callbacks, newer versions return Promises
-- **Import path changes**: Module structure may change between major versions
-- **Thrift version updates**: Underlying Thrift protocol may change serialization
-
-### Step 3: Convert Callbacks to Promises
-
-Wrap callback-based SDK calls in Promise wrappers for modern async/await usage.
-
-```javascript
-// OLD: Callback pattern
-noteStore.getNote(guid, true, false, false, false, (error, note) => {
-  if (error) return handleError(error);
-  processNote(note);
-});
-
-// NEW: Promise/async pattern
-const note = await noteStore.getNote(guid, true, false, false, false);
-processNote(note);
+### Step 2: Review Changelog
+```bash
+open https://github.com/evernote/sdk/releases
 ```
 
-### Step 4: Compatibility Layer
-
-Build a compatibility layer that supports both old and new SDK patterns during gradual migration. This allows upgrading module by module instead of a big-bang rewrite.
-
-```javascript
-class EvernoteCompat {
-  constructor(noteStore) {
-    this.noteStore = noteStore;
-  }
-
-  // Works with both callback and Promise-based SDK
-  async getNote(guid, opts = {}) {
-    const { withContent = true, withResources = false } = opts;
-    return this.noteStore.getNote(guid, withContent, withResources, false, false);
-  }
-
-  async createNote(title, content, notebookGuid) {
-    const Note = Evernote.Types?.Note || Evernote.Note;
-    const note = new Note();
-    note.title = title;
-    note.content = content;
-    if (notebookGuid) note.notebookGuid = notebookGuid;
-    return this.noteStore.createNote(note);
-  }
-}
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/evernote-sdk-vX.Y.Z
+npm install @evernote/sdk@latest
+npm test
 ```
 
-### Step 5: Test Suite Updates
-
-Update test assertions for new SDK response shapes. Add tests for the compatibility layer. Run both unit and integration tests against the sandbox.
-
-### Step 6: Deprecation Warnings
-
-Add deprecation warnings to old patterns so team members know to use new patterns. Remove after migration is complete.
-
-For the full migration script, compatibility layer, test suite updates, and deprecation system, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- SDK version comparison and changelog review
-- Callback-to-Promise conversion patterns
-- `EvernoteCompat` compatibility layer for gradual migration
-- Updated test suite for new SDK behavior
-- Deprecation warning system for old patterns
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `Evernote.Note is not a constructor` | Old import style after upgrade | Use `Evernote.Types.Note` |
-| `callback is not a function` | Mixed callback/Promise patterns | Use Promise consistently, remove callback arg |
-| `Cannot read property 'then'` | Using old callback-only method | Update to Promise-based SDK method |
-| Type mismatch | Thrift serialization change | Re-generate types from updated Thrift definitions |
-
-## Resources
-- [Evernote SDK JS](https://github.com/Evernote/evernote-sdk-js)
-- [SDK Releases](https://github.com/Evernote/evernote-sdk-js/releases)
-- [Python SDK](https://github.com/Evernote/evernote-sdk-python)
-- [API Reference](https://dev.evernote.com/doc/reference/)
-
-## Next Steps
-For CI/CD integration, see `evernote-ci-integration`.
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
 ## Examples
 
-**Gradual migration**: Wrap existing NoteStore with `EvernoteCompat`, upgrade SDK version, update modules one at a time to use the new patterns, and remove the compatibility layer when migration is complete.
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@evernote/sdk';
 
-**Callback to async/await**: Find all callback-based Evernote API calls using `grep -r 'noteStore.*function.*error'`, convert each to async/await, and update error handling from `if (error)` to `try/catch`.
+// After (v2.x)
+import { EvernoteClient } from '@evernote/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new EvernoteClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @evernote/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Evernote]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
+
+## Resources
+- [Evernote Changelog](https://github.com/evernote/sdk/releases)
+- [Evernote Migration Guide](https://docs.evernote.com/migration)
+
+## Next Steps
+For CI integration during upgrades, see `evernote-ci-integration`.

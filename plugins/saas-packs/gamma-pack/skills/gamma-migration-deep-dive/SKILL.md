@@ -1,270 +1,246 @@
 ---
 name: gamma-migration-deep-dive
 description: |
-  Deep dive into migrating to Gamma from other presentation platforms.
-  Use when migrating from PowerPoint, Google Slides, Canva,
-  or other presentation tools to Gamma.
-  Trigger with phrases like "gamma migration", "migrate to gamma",
-  "gamma import", "gamma from powerpoint", "gamma from google slides".
-allowed-tools: Read, Write, Edit, Bash(node:*)
+  Execute Gamma major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Gamma, performing major version upgrades,
+  or re-platforming existing integrations to Gamma.
+  Trigger with phrases like "migrate gamma", "gamma migration",
+  "switch to gamma", "gamma replatform", "gamma upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, migration]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Migration Deep Dive
 
-## Current State
-!`npm list 2>/dev/null | head -10`
-
 ## Overview
-
-Migrate presentation workflows from PowerPoint, Google Slides, Canva, or other platforms to Gamma's AI-powered generation. Gamma takes a fundamentally different approach -- instead of manually placing slides, you provide content and Gamma generates the presentation. Migration is about converting your content pipeline, not your slide files.
+Comprehensive guide for migrating to or from Gamma, or major version upgrades.
 
 ## Prerequisites
+- Current system documentation
+- Gamma SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
 
-- Gamma API access (Pro+ plan)
-- Source presentations accessible for content extraction
-- Node.js 18+ for migration scripts
-- Completed `gamma-install-auth` setup
+## Migration Types
 
-## Migration Approaches
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
 
-| Approach | When to Use | Effort |
-|----------|-------------|--------|
-| Content extraction + regeneration | Lots of text-heavy presentations | Medium |
-| Import via Gamma UI | One-off migration of key decks | Low |
-| Template recreation | Repeatable presentation formats | Medium |
-| Parallel operation | Gradual transition over time | Low |
+## Pre-Migration Assessment
 
-**Key insight:** You don't "import" slides into Gamma. You extract content from old presentations and regenerate them using Gamma's AI. This often produces better results than the originals.
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "gamma" > gamma-files.txt
+
+# Count integration points
+wc -l gamma-files.txt
+
+# Identify dependencies
+npm list | grep gamma
+pip freeze | grep gamma
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessGammaMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Gamma   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Gamma SDK
+npm install @gamma/sdk
+
+# Configure credentials
+cp .env.example .env.gamma
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@gamma/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/gamma.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class GammaAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const gammaData = this.transform(data);
+    return gammaClient.create(gammaData);
+  }
+
+  private transform(data: CreateInput): GammaInput {
+    // Map from old format to Gamma format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateGammaData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await gammaClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const gammaPercentage = getFeatureFlag('gamma_migration_percentage');
+
+  if (Math.random() * 100 < gammaPercentage) {
+    return new GammaAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app GAMMA_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.gamma'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateGammaMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1: Inventory Source Presentations
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-```typescript
-// scripts/inventory-presentations.ts
-import { readdir, stat } from "node:fs/promises";
-import { join, extname } from "node:path";
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-interface PresentationInfo {
-  path: string;
-  format: string;
-  sizeMB: number;
-  lastModified: Date;
-}
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-async function inventoryPresentations(dir: string): Promise<PresentationInfo[]> {
-  const entries = await readdir(dir, { recursive: true });
-  const presentations: PresentationInfo[] = [];
+### Step 4: Shift Traffic
+Gradually route traffic to new Gamma integration.
 
-  for (const entry of entries) {
-    const ext = extname(entry).toLowerCase();
-    if ([".pptx", ".ppt", ".key", ".pdf", ".md"].includes(ext)) {
-      const fullPath = join(dir, entry);
-      const info = await stat(fullPath);
-      presentations.push({
-        path: fullPath,
-        format: ext,
-        sizeMB: info.size / (1024 * 1024),
-        lastModified: info.mtime,
-      });
-    }
-  }
-
-  console.log(`Found ${presentations.length} presentations:`);
-  const byFormat = presentations.reduce((acc, p) => {
-    acc[p.format] = (acc[p.format] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-  console.log("By format:", byFormat);
-
-  return presentations;
-}
-```
-
-### Step 2: Extract Content from PowerPoint
-
-```typescript
-// scripts/extract-pptx.ts
-// Use 'pptx-parser' or 'officegen' to extract text content
-
-import JSZip from "jszip";
-import { readFile } from "node:fs/promises";
-import { DOMParser } from "xmldom";
-
-async function extractPptxContent(pptxPath: string): Promise<string[]> {
-  const buffer = await readFile(pptxPath);
-  const zip = await JSZip.loadAsync(buffer);
-
-  const slides: string[] = [];
-  const slideFiles = Object.keys(zip.files)
-    .filter((f) => f.match(/ppt\/slides\/slide\d+\.xml$/))
-    .sort();
-
-  for (const slideFile of slideFiles) {
-    const xml = await zip.file(slideFile)!.async("string");
-    const doc = new DOMParser().parseFromString(xml);
-    // Extract all text elements
-    const textNodes = doc.getElementsByTagName("a:t");
-    const texts: string[] = [];
-    for (let i = 0; i < textNodes.length; i++) {
-      const text = textNodes[i].textContent?.trim();
-      if (text) texts.push(text);
-    }
-    slides.push(texts.join("\n"));
-  }
-
-  return slides;
-}
-
-// Convert extracted content to Gamma prompt
-function slidesToGammaPrompt(slides: string[], title: string): string {
-  let prompt = `${title}\n\n`;
-  slides.forEach((content, i) => {
-    prompt += `Slide ${i + 1}:\n${content}\n\n`;
-  });
-  return prompt;
-}
-```
-
-### Step 3: Batch Migration Script
-
-```typescript
-// scripts/migrate-to-gamma.ts
-import { createGammaClient } from "../src/client";
-import { pollUntilDone } from "../src/poll";
-import pLimit from "p-limit";
-
-const gamma = createGammaClient({ apiKey: process.env.GAMMA_API_KEY! });
-const limit = pLimit(2); // Max 2 concurrent generations
-
-interface MigrationItem {
-  title: string;
-  content: string;
-  sourceFile: string;
-}
-
-async function migrateBatch(items: MigrationItem[]) {
-  const results = await Promise.allSettled(
-    items.map((item) =>
-      limit(async () => {
-        console.log(`Migrating: ${item.title}`);
-        const { generationId } = await gamma.generate({
-          content: item.content,
-          outputFormat: "presentation",
-          textMode: "condense", // AI condenses extracted text
-          exportAs: "pptx",    // Get PPTX for comparison
-        });
-
-        const result = await pollUntilDone(gamma, generationId);
-        return {
-          title: item.title,
-          sourceFile: item.sourceFile,
-          gammaUrl: result.gammaUrl,
-          exportUrl: result.exportUrl,
-          creditsUsed: result.creditsUsed,
-        };
-      })
-    )
-  );
-
-  // Report
-  const succeeded = results.filter((r) => r.status === "fulfilled");
-  const failed = results.filter((r) => r.status === "rejected");
-  console.log(`\nMigration complete: ${succeeded.length} succeeded, ${failed.length} failed`);
-
-  for (const r of results) {
-    if (r.status === "fulfilled") {
-      console.log(`  OK: ${r.value.title} → ${r.value.gammaUrl}`);
-    } else {
-      console.log(`  FAIL: ${r.reason}`);
-    }
-  }
-}
-```
-
-### Step 4: Template Recreation
-
-For recurring presentation types (weekly reports, proposals, etc.), create Gamma templates:
-
-```text
-Migration steps for templates:
-1. Identify repeating presentation formats in your org
-2. Create a one-page template gamma in the Gamma app:
-   - gamma.app → Create → design a single representative page
-3. Note the template gamma ID from the URL
-4. Use POST /v1.0/generations/from-template with the gammaId
-5. Update your automation scripts to use generateFromTemplate()
-```
-
-```typescript
-// After template creation in Gamma UI
-const MIGRATED_TEMPLATES: Record<string, string> = {
-  "weekly-report": "gamma_template_weekly_abc123",
-  "sales-proposal": "gamma_template_proposal_def456",
-  "team-update": "gamma_template_update_ghi789",
-};
-
-async function generateFromMigratedTemplate(
-  templateKey: string,
-  content: string
-) {
-  const gammaId = MIGRATED_TEMPLATES[templateKey];
-  if (!gammaId) throw new Error(`Unknown template: ${templateKey}`);
-
-  const { generationId } = await gamma.generateFromTemplate({
-    gammaId,
-    prompt: content,
-    exportAs: "pdf",
-  });
-
-  return pollUntilDone(gamma, generationId);
-}
-```
-
-### Step 5: Validation Checklist
-
-After migrating each presentation:
-
-```text
-- [ ] Content accuracy: AI-generated text matches source intent
-- [ ] Slide count: reasonable for the content volume
-- [ ] Theme/branding: workspace theme applied correctly
-- [ ] Export quality: PDF/PPTX downloads successfully
-- [ ] Links preserved: any URLs from original are in the content
-- [ ] Stakeholder review: key presentations reviewed by owners
-```
-
-## Supported Migration Paths
-
-| Source | Method | Fidelity | Notes |
-|--------|--------|----------|-------|
-| PowerPoint (.pptx) | Extract text → regenerate | Content-high, design-new | AI redesigns slides |
-| Google Slides | Export as .pptx → extract | Content-high, design-new | Export first |
-| Canva | Export as .pdf → extract text | Medium | Limited text extraction |
-| Keynote (.key) | Export as .pptx → extract | Content-high, design-new | Export first |
-| Markdown (.md) | Direct use as content | High | Best migration path |
-| Notion pages | Export as .md → use directly | High | Clean text extraction |
+## Output
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Gamma
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Content too long | Exceeds 100K token limit | Split into multiple presentations |
-| Credit budget exceeded | Too many migrations at once | Batch over multiple days |
-| Poor output quality | Content too unstructured | Add structure (headings, bullets) to extracted content |
-| Missing images | Images in source not extracted | Gamma generates new images; reference image concepts in text |
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
+
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateGammaMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
 ## Resources
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Gamma Migration Guide](https://docs.gamma.com/migration)
 
-- [Gamma Import Guide](https://gamma.app/docs/import)
-- [Generate API Parameters](https://developers.gamma.app/guides/generate-api-parameters-explained)
-- [Text Mode Options](https://developers.gamma.app/docs/understand-the-api-options)
-
-## Next Steps
-
-Review `gamma-core-workflow-a` for ongoing content generation after migration.
+## Flagship+ Skills
+For advanced troubleshooting, see `gamma-advanced-troubleshooting`.

@@ -1,256 +1,216 @@
 ---
 name: coderabbit-performance-tuning
 description: |
-  Optimize CodeRabbit review speed, relevance, and signal-to-noise ratio.
-  Use when reviews take too long, contain too many irrelevant comments,
-  or when teams are experiencing review fatigue.
+  Optimize CodeRabbit API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for CodeRabbit integrations.
   Trigger with phrases like "coderabbit performance", "optimize coderabbit",
-  "coderabbit slow", "coderabbit noise", "coderabbit too many comments", "coderabbit relevance".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  "coderabbit latency", "coderabbit caching", "coderabbit slow", "coderabbit batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, performance, tuning]
-
+compatible-with: claude-code
+tags: [saas, coderabbit]
 ---
+
 # CodeRabbit Performance Tuning
 
 ## Overview
-Optimize CodeRabbit review speed, relevance, and developer experience. Review time is primarily a function of PR size. Comment quality is controlled by profile selection, path instructions, and learnings. This skill covers all the levers for tuning CodeRabbit to your team's needs.
+Optimize CodeRabbit API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- CodeRabbit installed and producing reviews
-- `.coderabbit.yaml` in repository root
-- Several PRs worth of review history to evaluate
+- CodeRabbit SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Performance Factors
+## Latency Benchmarks
 
-| Factor | Impact | You Control? |
-|--------|--------|-------------|
-| PR size (lines changed) | Review speed (2-15 min) | Yes -- keep PRs small |
-| Profile (chill/assertive) | Comment volume | Yes -- `.coderabbit.yaml` |
-| Path instructions | Comment relevance | Yes -- `.coderabbit.yaml` |
-| Path filters | Files reviewed | Yes -- `.coderabbit.yaml` |
-| Learnings | Long-term quality | Yes -- via PR comment feedback |
-| CodeRabbit service load | Review latency | No -- check status page |
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedCodeRabbitRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const coderabbitLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from CodeRabbit
+    const results = await coderabbitClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  coderabbitLoader.load('id-1'),
+  coderabbitLoader.load('id-2'),
+  coderabbitLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new CodeRabbitClient({
+  apiKey: process.env.CODERABBIT_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedCodeRabbitList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedCodeRabbitList(cursor =>
+  coderabbitClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredCodeRabbitCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Optimize PR Size for Faster Reviews
-```markdown
-# PR size directly impacts review speed and quality
+### Step 1: Establish Baseline
+Measure current latency for critical CodeRabbit operations.
 
-| PR Size | Review Time | Review Quality |
-|---------|------------|----------------|
-| < 200 lines | 2-3 min | Excellent -- focused, actionable |
-| 200-500 lines | 3-7 min | Good -- catches most issues |
-| 500-1000 lines | 7-12 min | Moderate -- may miss nuanced issues |
-| 1000+ lines | 12-15+ min | Low -- too much context |
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-# Enforce PR size limits with CI:
-```
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-```yaml
-# .github/workflows/pr-size.yml
-name: PR Size Check
-on: [pull_request]
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Check PR size
-        run: |
-          TOTAL=$(git diff --stat origin/${{ github.base_ref }}...HEAD | tail -1 | \
-            grep -oP '\d+ insertion|d+ deletion' | grep -oP '\d+' | \
-            awk '{sum+=$1} END {print sum+0}')
-          echo "Lines changed: $TOTAL"
-          if [ "$TOTAL" -gt 500 ]; then
-            echo "::warning::Large PR ($TOTAL lines). Consider splitting for better CodeRabbit review quality."
-          fi
-```
-
-### Step 2: Choose the Right Review Profile
-```yaml
-# .coderabbit.yaml - Profile comparison
-reviews:
-  profile: "assertive"    # Start here, tune based on team feedback
-
-# Profile decision guide:
-#
-# "chill":
-#   - 1-3 comments per PR
-#   - Only critical issues and bugs
-#   - Best for: senior teams, high-trust environments
-#   - Warning: may miss moderate issues
-#
-# "assertive" (recommended):
-#   - 3-8 comments per PR
-#   - Bugs, security, best practices
-#   - Best for: most teams
-#   - Good balance of signal-to-noise
-#
-# Tune based on metrics:
-#   - Team ignoring most comments? → Switch to chill
-#   - Security issues slipping through? → Stay on assertive
-#   - New or junior team? → assertive catches more learning opportunities
-```
-
-### Step 3: Add Path Instructions for Relevance
-```yaml
-# .coderabbit.yaml - Context makes reviews more relevant
-reviews:
-  path_instructions:
-    # Tell CodeRabbit WHAT to look for (increases relevance)
-    - path: "src/api/**"
-      instructions: |
-        Review for: input validation, proper HTTP status codes, auth middleware.
-        Ignore: import order, logging format.
-
-    - path: "src/components/**"
-      instructions: |
-        Review for: accessibility (aria labels), performance (memo/useMemo).
-        Ignore: CSS naming, component file structure.
-
-    - path: "**/*.test.*"
-      instructions: |
-        Review for: assertion completeness, edge cases, async handling.
-        Do NOT comment on: test naming conventions, import order.
-
-    # Tell CodeRabbit what NOT to comment on (reduces noise)
-    - path: "src/legacy/**"
-      instructions: |
-        Legacy code being incrementally migrated.
-        ONLY flag: security vulnerabilities, data loss risks, crashes.
-        Do NOT suggest: refactoring, naming changes, style improvements.
-
-    - path: "scripts/**"
-      instructions: |
-        One-off scripts. Only flag: security issues, destructive operations
-        without confirmation, missing error handling on file/network ops.
-```
-
-### Step 4: Exclude Low-Value Files
-```yaml
-# .coderabbit.yaml - Skip files that generate noise
-reviews:
-  path_filters:
-    # Auto-generated files (no useful feedback possible)
-    - "!**/*.lock"
-    - "!**/package-lock.json"
-    - "!**/pnpm-lock.yaml"
-    - "!**/*.generated.*"
-    - "!**/generated/**"
-
-    # Build output
-    - "!dist/**"
-    - "!build/**"
-    - "!**/*.min.js"
-    - "!**/*.min.css"
-
-    # Test fixtures and snapshots
-    - "!**/*.snap"
-    - "!**/__mocks__/**"
-    - "!**/fixtures/**"
-    - "!**/testdata/**"
-
-    # Third-party code
-    - "!vendor/**"
-    - "!node_modules/**"
-
-    # Data files
-    - "!**/*.csv"
-    - "!**/*.sql"           # DB migrations (review manually)
-
-  auto_review:
-    ignore_title_keywords:
-      - "WIP"
-      - "DO NOT MERGE"
-      - "chore: bump"
-      - "chore(deps)"
-      - "auto-generated"
-    drafts: false            # Skip draft PRs
-```
-
-### Step 5: Train CodeRabbit with Learnings
-```markdown
-# CodeRabbit learns from your feedback on PR comments.
-# This improves relevance over time.
-
-# When CodeRabbit gives feedback you disagree with, reply:
-"We intentionally use default exports in this project for Next.js pages.
-Please don't flag default exports in files under src/pages/."
-
-# When CodeRabbit catches something valuable, reinforce it:
-"Good catch! Always flag missing error boundaries in React components."
-
-# View and manage learnings:
-# app.coderabbit.ai > Organization > Learnings
-
-# Learnings persist across PRs and repos within the organization.
-# They are the most effective long-term tuning mechanism.
-```
-
-### Step 6: Measure Improvement
-```bash
-set -euo pipefail
-ORG="${1:-your-org}"
-REPO="${2:-your-repo}"
-
-echo "=== Review Quality Metrics ==="
-
-TOTAL_PRS=0
-TOTAL_COMMENTS=0
-
-for PR_NUM in $(gh api "repos/$ORG/$REPO/pulls?state=closed&per_page=20" --jq '.[].number'); do
-  COMMENTS=$(gh api "repos/$ORG/$REPO/pulls/$PR_NUM/comments" \
-    --jq '[.[] | select(.user.login=="coderabbitai[bot]")] | length' 2>/dev/null || echo "0")
-  if [ "$COMMENTS" -gt 0 ]; then
-    TOTAL_PRS=$((TOTAL_PRS + 1))
-    TOTAL_COMMENTS=$((TOTAL_COMMENTS + COMMENTS))
-    echo "PR #$PR_NUM: $COMMENTS comments"
-  fi
-done
-
-if [ "$TOTAL_PRS" -gt 0 ]; then
-  AVG=$(( TOTAL_COMMENTS / TOTAL_PRS ))
-  echo ""
-  echo "Average: $AVG comments/PR"
-  echo ""
-  if [ "$AVG" -gt 10 ]; then
-    echo "Recommendation: Switch to 'chill' profile or add path_instructions"
-  elif [ "$AVG" -lt 2 ]; then
-    echo "Recommendation: Switch to 'assertive' profile for more thorough reviews"
-  else
-    echo "Good signal-to-noise ratio"
-  fi
-fi
-```
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
-- PR size guidelines documented and enforced via CI
-- Review profile selected based on team needs
-- Path instructions configured for relevant feedback
-- Low-value files excluded from review
-- Learnings trained from team feedback
-- Review quality measured with metrics
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Review takes 15+ min | PR too large (1000+ lines) | Split into smaller PRs |
-| Too many irrelevant comments | No path_instructions | Add context for key directories |
-| Team ignoring reviews | Review fatigue from noise | Switch to `chill`, add exclusions |
-| Same issue flagged repeatedly | Learning not created | Reply to comment stating the preference |
-| Reviews on generated code | Missing path_filters | Add `!**/generated/**` to exclusions |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredCodeRabbitCall(name, () =>
+    cachedCodeRabbitRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [CodeRabbit Review Profiles](https://docs.coderabbit.ai/reference/configuration)
-- [Path Instructions Guide](https://docs.coderabbit.ai/guides/review-instructions)
-- [CodeRabbit Learnings](https://docs.coderabbit.ai/guides/learnings)
+- [CodeRabbit Performance Guide](https://docs.coderabbit.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-For learnings and advanced tuning, see `coderabbit-core-workflow-b`.
+For cost optimization, see `coderabbit-cost-tuning`.

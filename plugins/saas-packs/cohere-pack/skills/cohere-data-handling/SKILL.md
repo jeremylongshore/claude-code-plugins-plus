@@ -1,258 +1,222 @@
 ---
 name: cohere-data-handling
 description: |
-  Implement data privacy for Cohere API calls with PII redaction and compliance.
-  Use when handling sensitive data, implementing PII redaction before API calls,
-  or ensuring GDPR/CCPA compliance with Cohere integrations.
+  Implement Cohere PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Cohere integrations.
   Trigger with phrases like "cohere data", "cohere PII",
-  "cohere GDPR", "cohere data retention", "cohere privacy", "cohere redact".
+  "cohere GDPR", "cohere data retention", "cohere privacy", "cohere CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
 compatible-with: claude-code
+tags: [saas, cohere]
 ---
 
 # Cohere Data Handling
 
 ## Overview
-Handle sensitive data when calling Cohere APIs. Cohere processes text server-side for Chat, Embed, Rerank, and Classify — any PII in your input reaches their servers. This skill covers pre-call redaction, post-call scrubbing, and compliance patterns.
+Handle sensitive data correctly when integrating with Cohere.
 
 ## Prerequisites
 - Understanding of GDPR/CCPA requirements
-- `cohere-ai` SDK installed
+- Cohere SDK with data export capabilities
 - Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-## Data Flow Awareness
+## Data Classification
 
-```
-Your App → [PII Redaction] → Cohere API → [Response Scrubbing] → Your App → User
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
 
-Key point: Everything you send to cohere.chat(), cohere.embed(), etc.
-is processed on Cohere's servers. Redact BEFORE the API call.
-```
-
-## Instructions
-
-### Step 1: PII Detection
+## PII Detection
 
 ```typescript
-interface PIIFinding {
-  type: string;
-  match: string;
-  start: number;
-  end: number;
-}
-
-const PII_PATTERNS: Array<{ type: string; regex: RegExp }> = [
+const PII_PATTERNS = [
   { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b(\+\d{1,3}[-.]?)?\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
   { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
   { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-  { type: 'ip_address', regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g },
 ];
 
-function detectPII(text: string): PIIFinding[] {
-  const findings: PIIFinding[] = [];
-  for (const { type, regex } of PII_PATTERNS) {
-    for (const match of text.matchAll(new RegExp(regex))) {
-      findings.push({
-        type,
-        match: match[0],
-        start: match.index!,
-        end: match.index! + match[0].length,
-      });
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
     }
   }
+
   return findings;
 }
 ```
 
-### Step 2: Pre-Call Redaction
+## Data Redaction
 
 ```typescript
-function redactPII(text: string): { redacted: string; map: Map<string, string> } {
-  const map = new Map<string, string>();
-  let redacted = text;
-  let counter = 0;
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
 
-  for (const { type, regex } of PII_PATTERNS) {
-    redacted = redacted.replace(new RegExp(regex), (match) => {
-      const placeholder = `[${type.toUpperCase()}_${counter++}]`;
-      map.set(placeholder, match);
-      return placeholder;
-    });
-  }
-
-  return { redacted, map };
-}
-
-// Usage: redact before sending to Cohere
-async function safeCohereChat(userInput: string) {
-  const { redacted, map } = redactPII(userInput);
-
-  const response = await cohere.chat({
-    model: 'command-a-03-2025',
-    messages: [{ role: 'user', content: redacted }],
-  });
-
-  // Optionally restore PII in response (for internal use only)
-  let answer = response.message?.content?.[0]?.text ?? '';
-  for (const [placeholder, original] of map) {
-    answer = answer.replace(placeholder, original);
-  }
-
-  return answer;
-}
-```
-
-### Step 3: Safe Embedding
-
-```typescript
-// Embeddings are stored long-term in vector DBs — ensure no PII
-async function safeEmbed(texts: string[]): Promise<number[][]> {
-  // Check for PII before embedding
-  for (const text of texts) {
-    const pii = detectPII(text);
-    if (pii.length > 0) {
-      console.warn(`PII detected in embed input: ${pii.map(p => p.type).join(', ')}`);
-      // Option 1: Redact and embed
-      // Option 2: Reject and throw
-      throw new Error(`PII found in embedding input: ${pii.map(p => p.type).join(', ')}`);
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
     }
   }
 
-  return cohere.embed({
-    model: 'embed-v4.0',
-    texts,
-    inputType: 'search_document',
-    embeddingTypes: ['float'],
-  }).then(r => r.embeddings.float);
+  return redacted;
 }
+
+// Use in logging
+console.log('Cohere request:', redactPII(requestData));
 ```
 
-### Step 4: Classify with Data Minimization
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
 
 ```typescript
-// Classify endpoint receives text + examples — minimize both
-async function safeClassify(inputs: string[]) {
-  // Redact PII from classification inputs
-  const safeInputs = inputs.map(text => redactPII(text).redacted);
+async function cleanupCohereData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
 
-  return cohere.classify({
-    model: 'embed-english-v3.0',
-    inputs: safeInputs,
-    examples: [
-      // Examples should never contain real PII
-      { text: 'This product is great', label: 'positive' },
-      { text: 'Amazing experience', label: 'positive' },
-      { text: 'Terrible service', label: 'negative' },
-      { text: 'Very disappointed', label: 'negative' },
-    ],
+  await db.cohereLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
   });
 }
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupCohereData(30));
 ```
 
-### Step 5: Audit Logging
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
 
 ```typescript
-interface CohereAuditEntry {
-  timestamp: Date;
-  endpoint: string;
-  model: string;
-  piiDetected: string[];
-  redacted: boolean;
-  tokensUsed: { input: number; output: number };
-  userId?: string;
-}
+async function exportUserData(userId: string): Promise<DataExport> {
+  const cohereData = await cohereClient.getUserData(userId);
 
-async function auditCohereCall(entry: CohereAuditEntry): Promise<void> {
-  // Log to database (not console — structured storage)
-  await db.cohereAudit.insert({
-    ...entry,
-    // Never log the actual API input/output — only metadata
-  });
-}
-
-// Usage
-async function auditedChat(userId: string, message: string) {
-  const pii = detectPII(message);
-  const { redacted } = redactPII(message);
-
-  const response = await cohere.chat({
-    model: 'command-a-03-2025',
-    messages: [{ role: 'user', content: redacted }],
-  });
-
-  await auditCohereCall({
-    timestamp: new Date(),
-    endpoint: 'chat',
-    model: 'command-a-03-2025',
-    piiDetected: pii.map(p => p.type),
-    redacted: pii.length > 0,
-    tokensUsed: {
-      input: response.usage?.billedUnits?.inputTokens ?? 0,
-      output: response.usage?.billedUnits?.outputTokens ?? 0,
+  return {
+    source: 'Cohere',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: cohereData.profile,
+      activities: cohereData.activities,
+      // Include all user-related data
     },
-    userId,
-  });
-
-  return response;
+  };
 }
 ```
 
-### Step 6: Safety Modes for Content Filtering
+### Right to Deletion
 
 ```typescript
-// Cohere's built-in safety modes (separate from PII — these handle harmful content)
-await cohere.chat({
-  model: 'command-a-03-2025',
-  messages: [{ role: 'user', content: userInput }],
-  safetyMode: 'STRICT',  // Maximum content filtering
-  // Options: 'CONTEXTUAL' (default), 'STRICT', 'OFF'
-  // Note: Not configurable when using tools or documents
-});
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Cohere
+  await cohereClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.cohereUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'cohere',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
 ```
 
-## Data Retention Guidelines
+## Data Minimization
 
-| Data | Retention | Action |
-|------|-----------|--------|
-| API request logs (redacted) | 30 days | Auto-delete |
-| Audit entries | 7 years | Archive to cold storage |
-| Cached embeddings | Until source changes | Invalidate on update |
-| Cohere API responses | Do not persist | Process in memory only |
-| PII mappings | Per-request only | Never persist |
+```typescript
+// Only request needed fields
+const user = await cohereClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
 
-## Compliance Checklist
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
-- [ ] PII redacted before all Cohere API calls
-- [ ] Embeddings verified PII-free before vector DB storage
-- [ ] Audit trail for all API calls with PII metadata
-- [ ] Safety mode set to STRICT for user-facing applications
-- [ ] API responses not persisted (processed in memory)
-- [ ] Data retention policy enforced with automated cleanup
-- [ ] Classify examples use synthetic data (no real PII)
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Cohere data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- PII detection and redaction pipeline
-- Safe wrappers for Chat, Embed, and Classify
-- Audit logging with PII metadata (not content)
-- Data retention policy with automated cleanup
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in embeddings | Missing pre-check | Add detectPII before embed |
-| Redaction breaks context | Over-aggressive regex | Use domain-specific patterns |
-| Audit gap | Async logging failed | Use sync fallback |
-| Safety mode ignored | Used with tools/docs | Separate safety from RAG calls |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Cohere response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-- [Cohere Safety Modes](https://docs.cohere.com/docs/safety-modes)
-- [Cohere Privacy Policy](https://cohere.com/privacy)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Cohere Privacy Guide](https://docs.cohere.com/privacy)
 
 ## Next Steps
 For enterprise access control, see `cohere-enterprise-rbac`.

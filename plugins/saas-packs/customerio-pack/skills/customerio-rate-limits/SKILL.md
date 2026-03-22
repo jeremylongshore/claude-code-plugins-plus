@@ -1,274 +1,151 @@
 ---
 name: customerio-rate-limits
 description: |
-  Implement Customer.io rate limiting and backoff.
-  Use when handling high-volume API calls, implementing
-  retry logic, or hitting 429 errors.
-  Trigger: "customer.io rate limit", "customer.io throttle",
-  "customer.io 429", "customer.io backoff", "customer.io too many requests".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
+  Implement Customer.io rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Customer.io.
+  Trigger with phrases like "customerio rate limit", "customerio throttling",
+  "customerio 429", "customerio retry", "customerio backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, api, rate-limiting]
-
+compatible-with: claude-code
+tags: [saas, customerio]
 ---
+
 # Customer.io Rate Limits
 
 ## Overview
+Handle Customer.io rate limits gracefully with exponential backoff and idempotency.
 
-Understand Customer.io's API rate limits and implement proper throttling: token bucket limiters, exponential backoff with jitter, queue-based processing, and 429 response handling.
-
-## Rate Limit Reference
-
-| API | Endpoint | Limit | Scope |
-|-----|----------|-------|-------|
-| Track API | `identify`, `track`, `trackAnonymous` | ~100 req/sec | Per workspace |
-| Track API | Batch operations | ~100 req/sec | Per workspace |
-| App API | Transactional email/push | ~100 req/sec | Per workspace |
-| App API | Broadcasts, queries | ~10 req/sec | Per workspace |
-
-These are approximate. Customer.io uses sliding window rate limiting. When exceeded, you get a `429 Too Many Requests` response.
+## Prerequisites
+- Customer.io SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Token Bucket Rate Limiter
+### Step 1: Understand Rate Limit Tiers
+
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
+
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-// lib/rate-limiter.ts
-export class TokenBucket {
-  private tokens: number;
-  private lastRefill: number;
-
-  constructor(
-    private readonly maxTokens: number = 80,  // Stay under 100/sec limit
-    private readonly refillRate: number = 80   // Tokens per second
-  ) {
-    this.tokens = maxTokens;
-    this.lastRefill = Date.now();
-  }
-
-  private refill(): void {
-    const now = Date.now();
-    const elapsed = (now - this.lastRefill) / 1000;
-    this.tokens = Math.min(this.maxTokens, this.tokens + elapsed * this.refillRate);
-    this.lastRefill = now;
-  }
-
-  async acquire(): Promise<void> {
-    this.refill();
-    if (this.tokens >= 1) {
-      this.tokens -= 1;
-      return;
-    }
-    // Wait until a token is available
-    const waitMs = ((1 - this.tokens) / this.refillRate) * 1000;
-    await new Promise((r) => setTimeout(r, Math.ceil(waitMs)));
-    this.tokens = 0;
-    this.lastRefill = Date.now();
-  }
-}
-```
-
-### Step 2: Exponential Backoff with Jitter
-
-```typescript
-// lib/backoff.ts
-interface BackoffOptions {
-  maxRetries: number;
-  baseDelayMs: number;
-  maxDelayMs: number;
-  jitter: number;         // 0 to 1
-}
-
-const DEFAULTS: BackoffOptions = {
-  maxRetries: 4,
-  baseDelayMs: 1000,
-  maxDelayMs: 60000,
-  jitter: 0.25,
-};
-
-export async function withBackoff<T>(
-  fn: () => Promise<T>,
-  opts: Partial<BackoffOptions> = {}
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  const { maxRetries, baseDelayMs, maxDelayMs, jitter } = { ...DEFAULTS, ...opts };
-  let lastErr: Error | undefined;
-
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await fn();
-    } catch (err: any) {
-      lastErr = err;
-      const status = err.statusCode ?? err.status;
+      return await operation();
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Don't retry 4xx errors (except 429)
-      if (status >= 400 && status < 500 && status !== 429) throw err;
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      if (attempt === maxRetries) break;
-
-      // Check Retry-After header (429 responses)
-      const retryAfter = err.headers?.["retry-after"];
-      let delay: number;
-
-      if (retryAfter) {
-        delay = parseInt(retryAfter) * 1000;
-      } else {
-        delay = Math.min(baseDelayMs * Math.pow(2, attempt), maxDelayMs);
-      }
-
-      // Add jitter to prevent thundering herd
-      delay += delay * jitter * Math.random();
-      console.warn(`CIO retry ${attempt + 1}/${maxRetries} in ${Math.round(delay)}ms`);
-      await new Promise((r) => setTimeout(r, delay));
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw lastErr;
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Rate-Limited Client
+### Step 3: Add Idempotency Keys
 
 ```typescript
-// lib/customerio-rate-limited.ts
-import { TrackClient, RegionUS } from "customerio-node";
-import { TokenBucket } from "./rate-limiter";
-import { withBackoff } from "./backoff";
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-export class RateLimitedCioClient {
-  private client: TrackClient;
-  private limiter: TokenBucket;
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
-  constructor(siteId: string, apiKey: string, ratePerSec: number = 80) {
-    this.client = new TrackClient(siteId, apiKey, { region: RegionUS });
-    this.limiter = new TokenBucket(ratePerSec, ratePerSec);
-  }
-
-  async identify(userId: string, attrs: Record<string, any>): Promise<void> {
-    await this.limiter.acquire();
-    return withBackoff(() => this.client.identify(userId, attrs));
-  }
-
-  async track(userId: string, event: { name: string; data?: any }): Promise<void> {
-    await this.limiter.acquire();
-    return withBackoff(() => this.client.track(userId, event));
-  }
-
-  async trackAnonymous(event: {
-    anonymous_id: string;
-    name: string;
-    data?: any;
-  }): Promise<void> {
-    await this.limiter.acquire();
-    return withBackoff(() => this.client.trackAnonymous(event));
-  }
-
-  async suppress(userId: string): Promise<void> {
-    await this.limiter.acquire();
-    return withBackoff(() => this.client.suppress(userId));
-  }
-
-  async destroy(userId: string): Promise<void> {
-    await this.limiter.acquire();
-    return withBackoff(() => this.client.destroy(userId));
-  }
+async function idempotentRequest<T>(
+  client: Customer.ioClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
 ```
 
-### Step 4: Queue-Based Processing with p-queue
-
-For sustained high volume, use `p-queue` for cleaner concurrency control:
-
-```typescript
-// lib/customerio-queued.ts
-import PQueue from "p-queue";
-import { TrackClient, RegionUS } from "customerio-node";
-
-const cio = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_TRACK_API_KEY!,
-  { region: RegionUS }
-);
-
-// Process at most 80 requests per second with max 10 concurrent
-const queue = new PQueue({
-  concurrency: 10,
-  interval: 1000,
-  intervalCap: 80,
-});
-
-// Queue operations instead of calling directly
-export function queueIdentify(userId: string, attrs: Record<string, any>) {
-  return queue.add(() => cio.identify(userId, attrs));
-}
-
-export function queueTrack(userId: string, name: string, data?: any) {
-  return queue.add(() => cio.track(userId, { name, data }));
-}
-
-// Monitor queue health
-setInterval(() => {
-  console.log(
-    `CIO queue: pending=${queue.pending} size=${queue.size}`
-  );
-}, 10000);
-```
-
-Install: `npm install p-queue`
-
-### Step 5: Bulk Import Strategy
-
-For large data imports (>10K users), avoid hitting rate limits with controlled batching:
-
-```typescript
-// scripts/bulk-import.ts
-import { RateLimitedCioClient } from "../lib/customerio-rate-limited";
-
-async function bulkImport(users: { id: string; attrs: Record<string, any> }[]) {
-  const client = new RateLimitedCioClient(
-    process.env.CUSTOMERIO_SITE_ID!,
-    process.env.CUSTOMERIO_TRACK_API_KEY!,
-    50  // Conservative rate — 50/sec for imports
-  );
-
-  let processed = 0;
-  let errors = 0;
-
-  for (const user of users) {
-    try {
-      await client.identify(user.id, user.attrs);
-      processed++;
-    } catch (err: any) {
-      errors++;
-      console.error(`Failed user ${user.id}: ${err.message}`);
-    }
-
-    if (processed % 1000 === 0) {
-      console.log(`Progress: ${processed}/${users.length} (${errors} errors)`);
-    }
-  }
-
-  console.log(`Done: ${processed} processed, ${errors} errors`);
-}
-```
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
-| Scenario | Strategy |
-|----------|----------|
-| `429` received | Respect `Retry-After` header, fall back to exponential backoff |
-| Burst traffic spike | Token bucket absorbs burst, queue holds overflow |
-| Sustained high volume | Use p-queue with interval limiting |
-| Bulk import | Use conservative rate (50/sec) with progress logging |
-| Downstream timeout | Don't count as rate limit — retry normally |
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
 
 ## Resources
-
-- [Track API Limits](https://docs.customer.io/integrations/api/track/)
-- [App API Reference](https://docs.customer.io/integrations/api/app/)
-- [p-queue npm](https://www.npmjs.com/package/p-queue)
+- [Customer.io Rate Limits](https://docs.customerio.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
-After implementing rate limits, proceed to `customerio-security-basics` for security best practices.
+For security configuration, see `customerio-security-basics`.

@@ -1,231 +1,211 @@
 ---
 name: clickhouse-deploy-integration
 description: |
-  Deploy ClickHouse-backed applications to Vercel, Fly.io, and Cloud Run with
-  connection pooling, secrets, and health checks.
-  Use when deploying applications that connect to ClickHouse Cloud,
-  configuring platform secrets, or setting up deployment pipelines.
-  Trigger: "deploy clickhouse app", "clickhouse Vercel", "clickhouse Cloud Run",
-  "clickhouse production deploy", "clickhouse Fly.io".
+  Deploy ClickHouse integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying ClickHouse-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy clickhouse", "clickhouse Vercel",
+  "clickhouse production deploy", "clickhouse Cloud Run", "clickhouse Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse, olap]
 compatible-with: claude-code
+tags: [saas, clickhouse]
 ---
 
 # ClickHouse Deploy Integration
 
 ## Overview
-
-Deploy applications that connect to ClickHouse Cloud from serverless and
-container platforms with proper connection management and secrets handling.
+Deploy ClickHouse-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-
-- ClickHouse Cloud instance (or self-hosted with public endpoint)
+- ClickHouse API keys for production environment
 - Platform CLI installed (vercel, fly, or gcloud)
-- Application tested locally against ClickHouse
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Step 1: ClickHouse Connection Module (Platform-Agnostic)
-
-```typescript
-// src/db.ts — singleton for serverless-safe connections
-import { createClient, ClickHouseClient } from '@clickhouse/client';
-
-let client: ClickHouseClient | null = null;
-
-export function getClickHouse(): ClickHouseClient {
-  if (!client) {
-    client = createClient({
-      url: process.env.CLICKHOUSE_HOST!,         // https://<host>:8443
-      username: process.env.CLICKHOUSE_USER!,
-      password: process.env.CLICKHOUSE_PASSWORD!,
-      database: process.env.CLICKHOUSE_DATABASE ?? 'default',
-      request_timeout: 30_000,
-      max_open_connections: 5,    // Low for serverless (many cold starts)
-      compression: {
-        request: true,            // Saves egress bandwidth
-        response: true,
-      },
-    });
-  }
-  return client;
-}
-```
-
-### Step 2: Vercel (Serverless Functions)
-
+### Environment Setup
 ```bash
-# Set secrets
-vercel env add CLICKHOUSE_HOST production
-vercel env add CLICKHOUSE_USER production
-vercel env add CLICKHOUSE_PASSWORD production
-vercel env add CLICKHOUSE_DATABASE production
+# Add ClickHouse secrets to Vercel
+vercel secrets add clickhouse_api_key sk_live_***
+vercel secrets add clickhouse_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
 ```
 
-```typescript
-// api/events/route.ts (Next.js App Router)
-import { getClickHouse } from '@/src/db';
-import { NextResponse } from 'next/server';
-
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const days = Number(searchParams.get('days') ?? 7);
-
-  const client = getClickHouse();
-  const rs = await client.query({
-    query: `
-      SELECT event_type, count() AS cnt
-      FROM events
-      WHERE created_at >= now() - INTERVAL {days:UInt32} DAY
-      GROUP BY event_type ORDER BY cnt DESC
-    `,
-    query_params: { days },
-    format: 'JSONEachRow',
-  });
-
-  return NextResponse.json(await rs.json());
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "CLICKHOUSE_API_KEY": "@clickhouse_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
 }
 ```
 
-**Vercel gotchas:**
-- Serverless function timeout: 30s (Pro) / 10s (Hobby)
-- Each invocation may create a new connection — set `max_open_connections` low
-- Use Edge Runtime only with HTTP-based clients (ClickHouse client works fine)
+## Fly.io Deployment
 
-### Step 3: Fly.io (Containers)
-
+### fly.toml
 ```toml
-# fly.toml
 app = "my-clickhouse-app"
 primary_region = "iad"
 
 [env]
   NODE_ENV = "production"
-  CLICKHOUSE_DATABASE = "analytics"
 
 [http_service]
   internal_port = 3000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-
-[[http_service.checks]]
-  grace_period = "10s"
-  interval = "30s"
-  method = "GET"
-  path = "/health"
-  timeout = "5s"
 ```
 
+### Secrets
 ```bash
 # Set ClickHouse secrets
-fly secrets set CLICKHOUSE_HOST="https://abc123.clickhouse.cloud:8443"
-fly secrets set CLICKHOUSE_USER="app_writer"
-fly secrets set CLICKHOUSE_PASSWORD="secret"
+fly secrets set CLICKHOUSE_API_KEY=sk_live_***
+fly secrets set CLICKHOUSE_WEBHOOK_SECRET=whsec_***
 
+# Deploy
 fly deploy
 ```
 
-### Step 4: Google Cloud Run
+## Google Cloud Run
 
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
 ```bash
 #!/bin/bash
 # deploy-cloud-run.sh
+
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE="clickhouse-app"
+SERVICE_NAME="clickhouse-service"
 REGION="us-central1"
 
-# Store secrets in Secret Manager
-echo -n "https://abc123.clickhouse.cloud:8443" | \
-  gcloud secrets create ch-host --data-file=- --project=$PROJECT_ID
-echo -n "secret-password" | \
-  gcloud secrets create ch-password --data-file=- --project=$PROJECT_ID
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Build and deploy
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE
-
-gcloud run deploy $SERVICE \
-  --image gcr.io/$PROJECT_ID/$SERVICE \
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
   --region $REGION \
   --platform managed \
-  --set-secrets="CLICKHOUSE_HOST=ch-host:latest,CLICKHOUSE_PASSWORD=ch-password:latest" \
-  --set-env-vars="CLICKHOUSE_USER=app_writer,CLICKHOUSE_DATABASE=analytics" \
-  --min-instances=1 \
-  --max-instances=10 \
-  --memory=512Mi
+  --allow-unauthenticated \
+  --set-secrets=CLICKHOUSE_API_KEY=clickhouse-api-key:latest
 ```
 
-### Step 5: Health Check Endpoint
+## Environment Configuration Pattern
 
 ```typescript
-// Works on all platforms
-app.get('/health', async (req, res) => {
-  const start = Date.now();
-  try {
-    const client = getClickHouse();
-    const { success } = await client.ping();
-    const latencyMs = Date.now() - start;
-
-    res.json({
-      status: success ? 'healthy' : 'degraded',
-      clickhouse: { connected: success, latencyMs },
-      version: process.env.npm_package_version,
-    });
-  } catch (err) {
-    res.status(503).json({
-      status: 'unhealthy',
-      clickhouse: { connected: false, error: (err as Error).message },
-    });
-  }
-});
-```
-
-### Step 6: Graceful Shutdown
-
-```typescript
-// Critical: flush pending inserts on shutdown
-async function gracefulShutdown() {
-  console.log('Shutting down...');
-  const client = getClickHouse();
-  await client.close();    // Waits for pending operations to complete
-  process.exit(0);
+// config/clickhouse.ts
+interface ClickHouseConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
 }
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+export function getClickHouseConfig(): ClickHouseConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.CLICKHOUSE_API_KEY!,
+    environment: env as ClickHouseConfig['environment'],
+    webhookSecret: process.env.CLICKHOUSE_WEBHOOK_SECRET,
+  };
+}
 ```
 
-## Platform Comparison
+## Health Check Endpoint
 
-| Feature | Vercel | Fly.io | Cloud Run |
-|---------|--------|--------|-----------|
-| Model | Serverless functions | Containers | Containers |
-| Persistent connections | No (cold starts) | Yes | Yes (min-instances) |
-| Max timeout | 30s (Pro) | Unlimited | 60min |
-| Best for | API endpoints | Long-running apps | Event-driven |
-| `max_open_connections` | 1-3 | 10-20 | 5-10 |
+```typescript
+// api/health.ts
+export async function GET() {
+  const clickhouseStatus = await checkClickHouseConnection();
+
+  return Response.json({
+    status: clickhouseStatus ? 'healthy' : 'degraded',
+    services: {
+      clickhouse: clickhouseStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store ClickHouse API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with ClickHouse integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm ClickHouse connectivity.
+
+## Output
+- Application deployed to production
+- ClickHouse secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `ECONNRESET` on Vercel | Function timeout | Reduce query scope, increase timeout |
-| `TLS handshake` failed | Wrong port | Use port 8443 for Cloud |
-| Secret not found | Env var not set | Check platform secret config |
-| Cold start latency | New connection per invocation | Use `min-instances=1` on Cloud Run |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add clickhouse_api_key "$CLICKHOUSE_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set CLICKHOUSE_API_KEY="$CLICKHOUSE_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-
-- [ClickHouse Cloud Connection](https://clickhouse.com/docs/cloud/get-started)
-- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
-- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
-- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [ClickHouse Deploy Guide](https://docs.clickhouse.com/deploy)
 
 ## Next Steps
-
-For data ingestion patterns, see `clickhouse-webhooks-events`.
+For webhook handling, see `clickhouse-webhooks-events`.

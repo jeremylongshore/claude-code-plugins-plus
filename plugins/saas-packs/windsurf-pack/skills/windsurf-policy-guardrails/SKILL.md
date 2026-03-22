@@ -1,237 +1,259 @@
 ---
 name: windsurf-policy-guardrails
 description: |
-  Implement team-wide Windsurf usage policies, code quality gates, and Cascade guardrails.
-  Use when setting up code review policies for AI-generated code, configuring Turbo mode
-  safety controls, or implementing CI gates for Cascade output.
-  Trigger with phrases like "windsurf policy", "windsurf guardrails",
-  "cascade safety rules", "windsurf team rules", "AI code policy".
+  Implement Windsurf lint rules, policy enforcement, and automated guardrails.
+  Use when setting up code quality rules for Windsurf integrations, implementing
+  pre-commit hooks, or configuring CI policy checks for Windsurf best practices.
+  Trigger with phrases like "windsurf policy", "windsurf lint",
+  "windsurf guardrails", "windsurf best practices check", "windsurf eslint".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, policy, guardrails, team-management]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
-# Windsurf Policy Guardrails
+
+# Windsurf Policy & Guardrails
 
 ## Overview
-Policy guardrails for team Windsurf usage: controlling what Cascade can do, enforcing code review for AI output, configuring terminal safety controls, and preventing common AI coding mistakes.
+Automated policy enforcement and guardrails for Windsurf integrations.
 
 ## Prerequisites
-- Windsurf configured for team use
-- Git workflow established
-- CI/CD pipeline in place
-- Team agreement on AI usage standards
+- ESLint configured in project
+- Pre-commit hooks infrastructure
+- CI/CD pipeline with policy checks
+- TypeScript for type enforcement
 
-## Instructions
+## ESLint Rules
 
-### Step 1: Terminal Command Safety (Turbo Mode Controls)
+### Custom Windsurf Plugin
+```javascript
+// eslint-plugin-windsurf/rules/no-hardcoded-keys.js
+module.exports = {
+  meta: {
+    type: 'problem',
+    docs: {
+      description: 'Disallow hardcoded Windsurf API keys',
+    },
+    fixable: 'code',
+  },
+  create(context) {
+    return {
+      Literal(node) {
+        if (typeof node.value === 'string') {
+          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+            context.report({
+              node,
+              message: 'Hardcoded Windsurf API key detected',
+            });
+          }
+        }
+      },
+    };
+  },
+};
+```
 
-Configure what Cascade can and cannot auto-execute:
+### ESLint Configuration
+```javascript
+// .eslintrc.js
+module.exports = {
+  plugins: ['windsurf'],
+  rules: {
+    'windsurf/no-hardcoded-keys': 'error',
+    'windsurf/require-error-handling': 'warn',
+    'windsurf/use-typed-client': 'warn',
+  },
+};
+```
 
-```json
-// settings.json — Team-wide terminal safety
-{
-  "windsurf.cascadeCommandsAllowList": [
-    "npm test", "npm run", "npx vitest", "npx tsc",
-    "git status", "git diff", "git log", "git add",
-    "eslint", "prettier", "biome",
-    "ls", "cat", "head", "tail", "wc", "grep"
-  ],
-  "windsurf.cascadeCommandsDenyList": [
-    "rm -rf", "rm -r /",
-    "sudo",
-    "git push --force", "git reset --hard",
-    "DROP TABLE", "DELETE FROM", "TRUNCATE",
-    "curl | bash", "wget | sh",
-    "chmod 777",
-    "kill -9",
-    "shutdown", "reboot", "halt",
-    "mkfs", "dd if=",
-    "npm publish", "npx publish"
-  ]
+## Pre-Commit Hooks
+
+```yaml
+# .pre-commit-config.yaml
+repos:
+  - repo: local
+    hooks:
+      - id: windsurf-secrets-check
+        name: Check for Windsurf secrets
+        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+        language: system
+        pass_filenames: false
+
+      - id: windsurf-config-validate
+        name: Validate Windsurf configuration
+        entry: node scripts/validate-windsurf-config.js
+        language: node
+        files: '\.windsurf\.json$'
+```
+
+## TypeScript Strict Patterns
+
+```typescript
+// Enforce typed configuration
+interface WindsurfStrictConfig {
+  apiKey: string;  // Required
+  environment: 'development' | 'staging' | 'production';  // Enum
+  timeout: number;  // Required number, not optional
+  retries: number;
+}
+
+// Disallow any in Windsurf code
+// @ts-expect-error - Using any is forbidden
+const client = new Client({ apiKey: any });
+
+// Prefer this
+const client = new WindsurfClient(config satisfies WindsurfStrictConfig);
+```
+
+## Architecture Decision Records
+
+### ADR Template
+```markdown
+# ADR-001: Windsurf Client Initialization
+
+## Status
+Accepted
+
+## Context
+We need to decide how to initialize the Windsurf client across our application.
+
+## Decision
+We will use the singleton pattern with lazy initialization.
+
+## Consequences
+- Pro: Single client instance, connection reuse
+- Pro: Easy to mock in tests
+- Con: Global state requires careful lifecycle management
+
+## Enforcement
+- ESLint rule: windsurf/use-singleton-client
+- CI check: grep for "new WindsurfClient(" outside allowed files
+```
+
+## Policy-as-Code (OPA)
+
+```rego
+# windsurf-policy.rego
+package windsurf
+
+# Deny production API keys in non-production environments
+deny[msg] {
+  input.environment != "production"
+  startswith(input.apiKey, "sk_live_")
+  msg := "Production API keys not allowed in non-production environment"
+}
+
+# Require minimum timeout
+deny[msg] {
+  input.timeout < 10000
+  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
+}
+
+# Require retry configuration
+deny[msg] {
+  not input.retries
+  msg := "Retry configuration is required"
 }
 ```
 
-### Step 2: Workspace Isolation Rules
-
-Prevent Cascade from accessing sensitive directories:
-
-```gitignore
-# .codeiumignore — security boundary
-# AI cannot see or modify files matching these patterns
-
-# Credentials
-.env
-.env.*
-credentials/
-secrets/
-*.pem
-*.key
-
-# Infrastructure
-terraform.tfstate*
-*.tfvars
-ansible/vault*
-
-# Customer data
-data/production/
-exports/
-```
-
-```markdown
-<!-- .windsurf/rules/protected-files.md -->
----
-trigger: always_on
----
-## Protected Files Policy
-- NEVER modify files in migrations/ without explicit request
-- NEVER modify Dockerfile or docker-compose.yml without explicit request
-- NEVER modify CI/CD workflows (.github/workflows/) without explicit request
-- NEVER modify package.json dependencies without explicit request
-- ALWAYS ask before changing database schema files
-```
-
-### Step 3: AI Code Review Policy
+## CI Policy Checks
 
 ```yaml
-# .github/workflows/ai-code-gate.yml
-name: AI Code Quality Gate
-on: pull_request
+# .github/workflows/windsurf-policy.yml
+name: Windsurf Policy Check
+
+on: [push, pull_request]
 
 jobs:
-  ai-review-gate:
+  policy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
 
-      - name: Check cascade commit policy
+      - name: Check for hardcoded secrets
         run: |
-          # Count files changed
-          FILES=$(git diff --name-only origin/main..HEAD | wc -l)
-
-          # Large changesets need explicit review
-          if [ "$FILES" -gt 15 ]; then
-            echo "::warning::Large changeset ($FILES files modified)."
-            echo "If AI-generated, ensure line-by-line review."
-          fi
-
-          # New files must have tests
-          NEW_SRC=$(git diff --name-only --diff-filter=A origin/main..HEAD | grep -cE '\.(ts|js)$' || true)
-          NEW_TEST=$(git diff --name-only --diff-filter=A origin/main..HEAD | grep -cE '\.(test|spec)\.' || true)
-          if [ "$NEW_SRC" -gt 3 ] && [ "$NEW_TEST" -eq 0 ]; then
-            echo "::error::$NEW_SRC new source files without tests."
-            echo "Add tests before merging AI-generated code."
+          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+            echo "ERROR: Hardcoded Windsurf keys found"
             exit 1
           fi
 
-      - name: Scan for hardcoded secrets
+      - name: Validate configuration schema
         run: |
-          SECRETS_FOUND=$(git diff origin/main..HEAD | grep -cE '(sk_live|sk_test|AKIA[A-Z0-9]|ghp_|glpat-|xoxb-)' || true)
-          if [ "$SECRETS_FOUND" -gt 0 ]; then
-            echo "::error::Potential hardcoded secret detected in diff."
-            exit 1
-          fi
+          npx ajv validate -s windsurf-config.schema.json -d config/windsurf/*.json
+
+      - name: Run ESLint Windsurf rules
+        run: npx eslint --plugin windsurf --rule 'windsurf/no-hardcoded-keys: error' src/
 ```
 
-### Step 4: Team Cascade Usage Guidelines
+## Runtime Guardrails
 
-```markdown
-<!-- docs/windsurf-policy.md — committed to repo -->
+```typescript
+// Prevent dangerous operations in production
+const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
 
-# Team Windsurf AI Usage Policy
+function guardWindsurfOperation(operation: string): void {
+  const isProd = process.env.NODE_ENV === 'production';
 
-## Required Practices
-1. **Git before Cascade** — commit or stash before every Cascade session
-2. **Feature branches only** — never use Cascade on main or develop
-3. **Review every diff** — accept changes file-by-file, not "accept all"
-4. **Test after accepting** — run tests before committing Cascade changes
-5. **Tag AI commits** — prefix with `[cascade]` for traceability
+  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
+    throw new Error(`Operation '${operation}' blocked in production`);
+  }
+}
 
-## Prohibited Actions
-1. Never paste secrets, API keys, or passwords into Cascade chat
-2. Never let Cascade modify production config without manual review
-3. Never use Cascade to write security-critical code without expert review
-4. Never accept Cascade suggestions for database migrations without DBA review
-5. Never use Turbo mode with commands not in the allow list
+// Rate limit protection
+function guardRateLimits(requestsInWindow: number): void {
+  const limit = parseInt(process.env.WINDSURF_RATE_LIMIT || '100');
 
-## Code Review Standards for AI-Generated Code
-- Reviewer MUST verify logic, not just syntax
-- Reviewer MUST check edge cases (AI often misses boundary conditions)
-- Reviewer MUST verify error handling (AI tends to happy-path)
-- Reviewer MUST check for AI-specific patterns: unnecessary abstraction,
-  over-engineering, cargo-cult patterns from training data
+  if (requestsInWindow > limit * 0.9) {
+    console.warn('Approaching Windsurf rate limit');
+  }
 
-## Accountability
-- The developer who accepts and commits AI-generated code is responsible
-- "Cascade wrote it" is not an excuse for bugs in production
-- All standard code review requirements apply to AI-generated code
-```
-
-### Step 5: Extension Trust Policy
-
-```json
-// .vscode/extensions.json (works in Windsurf)
-{
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "dbaeumer.vscode-eslint",
-    "biomejs.biome"
-  ],
-  "unwantedRecommendations": [
-    "github.copilot",
-    "github.copilot-chat",
-    "tabnine.tabnine-vscode",
-    "sourcegraph.cody-ai"
-  ]
+  if (requestsInWindow >= limit) {
+    throw new Error('Windsurf rate limit exceeded - request blocked');
+  }
 }
 ```
 
-### Step 6: Pre-Cascade Checklist Workflow
+## Instructions
 
-```markdown
-<!-- .windsurf/workflows/safe-cascade.md -->
----
-name: safe-cascade
-description: Pre-flight checks before Cascade work
----
-// turbo-all
+### Step 1: Create ESLint Rules
+Implement custom lint rules for Windsurf patterns.
 
-1. Run `git status` — verify clean working tree
-2. Run `git checkout -b cascade/$(date +%Y%m%d-%H%M%S)` — new branch
-3. Run `git log --oneline -3` — note recent context
-4. Report: "Ready for Cascade. Branch created. Clean working tree."
-5. Ask: "What would you like Cascade to do?"
-```
+### Step 2: Configure Pre-Commit Hooks
+Set up hooks to catch issues before commit.
+
+### Step 3: Add CI Policy Checks
+Implement policy-as-code in CI pipeline.
+
+### Step 4: Enable Runtime Guardrails
+Add production safeguards for dangerous operations.
+
+## Output
+- ESLint plugin with Windsurf rules
+- Pre-commit hooks blocking secrets
+- CI policy checks passing
+- Runtime guardrails active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cascade modifies secrets | Files not in .codeiumignore | Add to .codeiumignore, rotate exposed secret |
-| Untested AI code merged | No CI gate | Add test-required check to PR |
-| Conflicting suggestions | Multiple AI extensions | Remove competing extensions |
-| Developer bypasses policy | No enforcement | Add CI gates, team training |
-| Cascade runs destructive command | Not in deny list | Add to cascadeCommandsDenyList |
+| ESLint rule not firing | Wrong config | Check plugin registration |
+| Pre-commit skipped | --no-verify | Enforce in CI |
+| Policy false positive | Regex too broad | Narrow pattern match |
+| Guardrail triggered | Actual issue | Fix or whitelist |
 
 ## Examples
 
-### Quick Policy Verification
+### Quick ESLint Check
 ```bash
-set -euo pipefail
-echo "=== Policy Compliance Check ==="
-echo "Branch protection: $(gh api repos/:owner/:repo/branches/main/protection --jq '.required_status_checks.contexts | length' 2>/dev/null || echo 'N/A') checks"
-echo ".codeiumignore: $([ -f .codeiumignore ] && echo 'EXISTS' || echo 'MISSING')"
-echo "Policy doc: $([ -f docs/windsurf-policy.md ] && echo 'EXISTS' || echo 'MISSING')"
-echo "Extension control: $([ -f .vscode/extensions.json ] && echo 'EXISTS' || echo 'MISSING')"
+npx eslint --plugin windsurf --rule 'windsurf/no-hardcoded-keys: error' src/
 ```
 
 ## Resources
-- [Windsurf Terminal Docs](https://docs.windsurf.com/windsurf/terminal)
-- [Windsurf Rules](https://docs.windsurf.com/windsurf/cascade/memories)
-- [Windsurf Admin Guide](https://docs.windsurf.com/windsurf/guide-for-admins)
+- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Pre-commit Framework](https://pre-commit.com/)
+- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
-For architecture strategies, see `windsurf-architecture-variants`.
+For architecture blueprints, see `windsurf-architecture-variants`.

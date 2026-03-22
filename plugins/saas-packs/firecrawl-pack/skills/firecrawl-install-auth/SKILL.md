@@ -1,143 +1,92 @@
 ---
 name: firecrawl-install-auth
 description: |
-  Install and configure Firecrawl SDK authentication for web scraping.
-  Use when setting up a new Firecrawl integration, configuring API keys,
-  or initializing Firecrawl in your project.
+  Install and configure FireCrawl SDK/CLI authentication.
+  Use when setting up a new FireCrawl integration, configuring API keys,
+  or initializing FireCrawl in your project.
   Trigger with phrases like "install firecrawl", "setup firecrawl",
   "firecrawl auth", "configure firecrawl API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, api, authentication]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Install & Auth
+
+# FireCrawl Install & Auth
 
 ## Overview
-Install the Firecrawl SDK and configure API key authentication. Firecrawl turns any website into LLM-ready markdown or structured data. The SDK is published as `@mendable/firecrawl-js` on npm and `firecrawl-py` on PyPI.
+Set up FireCrawl SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
 - Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, yarn, or pip)
-- Firecrawl API key from [firecrawl.dev/app](https://firecrawl.dev/app) (free tier available)
+- Package manager (npm, pnpm, or pip)
+- FireCrawl account with API access
+- API key from FireCrawl dashboard
 
 ## Instructions
 
-### Step 1: Install the SDK
+### Step 1: Install SDK
 ```bash
-set -euo pipefail
-# Node.js (official npm package)
-npm install @mendable/firecrawl-js
+# Node.js
+npm install @firecrawl/sdk
 
 # Python
-pip install firecrawl-py
+pip install firecrawl
 ```
 
-### Step 2: Configure Your API Key
+### Step 2: Configure Authentication
 ```bash
-# Set the environment variable (SDK reads FIRECRAWL_API_KEY automatically)
-export FIRECRAWL_API_KEY="fc-YOUR_API_KEY"
+# Set environment variable
+export FIRECRAWL_API_KEY="your-api-key"
 
-# Or add to .env file (use dotenv in your app)
-echo 'FIRECRAWL_API_KEY=fc-YOUR_API_KEY' >> .env
+# Or create .env file
+echo 'FIRECRAWL_API_KEY=your-api-key' >> .env
 ```
 
-All Firecrawl API keys start with `fc-`. Get yours at [firecrawl.dev/app](https://firecrawl.dev/app).
-
-### Step 3: Verify Connection — TypeScript
+### Step 3: Verify Connection
 ```typescript
-import FirecrawlApp from "@mendable/firecrawl-js";
-
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-});
-
-// Quick connection test: scrape a simple page
-const result = await firecrawl.scrapeUrl("https://example.com", {
-  formats: ["markdown"],
-});
-
-if (result.success) {
-  console.log("Firecrawl connected. Page title:", result.metadata?.title);
-  console.log("Content length:", result.markdown?.length, "chars");
-} else {
-  console.error("Firecrawl error:", result.error);
-}
-```
-
-### Step 4: Verify Connection — Python
-```python
-from firecrawl import FirecrawlApp
-
-firecrawl = FirecrawlApp(api_key="fc-YOUR_API_KEY")
-
-# Quick connection test
-result = firecrawl.scrape_url("https://example.com", params={
-    "formats": ["markdown"]
-})
-
-print(f"Title: {result.get('metadata', {}).get('title')}")
-print(f"Content: {len(result.get('markdown', ''))} chars")
-```
-
-### Step 5: Self-Hosted Setup (Optional)
-```typescript
-// Point to your own Firecrawl instance instead of api.firecrawl.dev
-const firecrawl = new FirecrawlApp({
-  apiKey: "any-key",  // required even for self-hosted
-  apiUrl: "http://localhost:3002",  // self-hosted Firecrawl URL
-});
+// Test connection code here
 ```
 
 ## Output
-- `@mendable/firecrawl-js` installed in `node_modules/`
-- `FIRECRAWL_API_KEY` environment variable configured
-- Successful scrape confirming API connectivity
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid or missing API key | Verify key starts with `fc-` and is set in env |
-| `402 Payment Required` | Credits exhausted | Check balance at firecrawl.dev/app |
-| `MODULE_NOT_FOUND` | Wrong package name | Use `@mendable/firecrawl-js` not `firecrawl-js` |
-| `ECONNREFUSED` | Wrong API URL for self-hosted | Verify `apiUrl` and Docker container is running |
-| `429 Too Many Requests` | Rate limit exceeded | Wait for `Retry-After` header duration |
+| Invalid API Key | Incorrect or expired key | Verify key in FireCrawl dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.firecrawl.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
 ## Examples
 
-### TypeScript with dotenv
+### TypeScript Setup
 ```typescript
-import "dotenv/config";
-import FirecrawlApp from "@mendable/firecrawl-js";
+import { FireCrawlClient } from '@firecrawl/sdk';
 
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
+const client = new FireCrawlClient({
+  apiKey: process.env.FIRECRAWL_API_KEY,
 });
 ```
 
-### Python with Environment Variable
+### Python Setup
 ```python
-import os
-from firecrawl import FirecrawlApp
+from firecrawl import FireCrawlClient
 
-firecrawl = FirecrawlApp(api_key=os.environ["FIRECRAWL_API_KEY"])
-```
-
-### Verify .gitignore Protects Secrets
-```bash
-set -euo pipefail
-# Ensure .env files are gitignored
-grep -q "^\.env" .gitignore 2>/dev/null || echo -e "\n.env\n.env.local\n.env.*.local" >> .gitignore
+client = FireCrawlClient(
+    api_key=os.environ.get('FIRECRAWL_API_KEY')
+)
 ```
 
 ## Resources
-- [Firecrawl Quickstart](https://docs.firecrawl.dev/introduction)
-- [Firecrawl Dashboard](https://firecrawl.dev/app)
-- [Node SDK on npm](https://www.npmjs.com/package/@mendable/firecrawl-js)
-- [Python SDK on PyPI](https://pypi.org/project/firecrawl-py/)
+- [FireCrawl Documentation](https://docs.firecrawl.com)
+- [FireCrawl Dashboard](https://api.firecrawl.com)
+- [FireCrawl Status](https://status.firecrawl.com)
 
 ## Next Steps
-After successful auth, proceed to `firecrawl-hello-world` for your first real scrape.
+After successful auth, proceed to `firecrawl-hello-world` for your first API call.

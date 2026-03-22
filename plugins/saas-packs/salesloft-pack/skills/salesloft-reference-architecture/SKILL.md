@@ -1,184 +1,240 @@
 ---
 name: salesloft-reference-architecture
 description: |
-  Production architecture for SalesLoft API integrations with service layer,
-  webhook processing, and CRM sync patterns.
-  Use when designing new SalesLoft integrations or reviewing project structure.
-  Trigger: "salesloft architecture", "salesloft project structure", "salesloft design".
+  Implement Salesloft reference architecture with best-practice project layout.
+  Use when designing new Salesloft integrations, reviewing project structure,
+  or establishing architecture standards for Salesloft applications.
+  Trigger with phrases like "salesloft architecture", "salesloft best practices",
+  "salesloft project structure", "how to organize salesloft", "salesloft layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
+tags: [saas, salesloft]
 ---
 
-# SalesLoft Reference Architecture
+# Salesloft Reference Architecture
 
 ## Overview
+Production-ready architecture patterns for Salesloft integrations.
 
-Production architecture for SalesLoft API integrations: typed API client, service layer with caching, webhook processor, and background sync. Designed around SalesLoft's REST API v2 with cost-based rate limiting.
+## Prerequisites
+- Understanding of layered architecture
+- Salesloft SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
 ## Project Structure
 
 ```
-salesloft-integration/
+my-salesloft-project/
 ├── src/
 │   ├── salesloft/
-│   │   ├── client.ts           # Axios wrapper with rate-limit handling
-│   │   ├── types.ts            # Person, Cadence, Activity types
-│   │   ├── paginator.ts        # AsyncGenerator pagination
-│   │   └── errors.ts           # SalesloftApiError class
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
 │   ├── services/
-│   │   ├── people-sync.ts      # Bidirectional people sync
-│   │   ├── cadence-manager.ts  # Cadence CRUD + enrollment
-│   │   └── activity-tracker.ts # Email/call activity aggregation
-│   ├── webhooks/
-│   │   ├── handler.ts          # Signature verification + routing
-│   │   └── processors/        # Per-event-type processors
-│   ├── jobs/
-│   │   ├── incremental-sync.ts # Cron: sync changed records
-│   │   └── engagement-report.ts# Cron: aggregate daily metrics
-│   └── api/
-│       ├── health.ts           # /health endpoint
-│       └── webhooks.ts         # /webhooks/salesloft endpoint
+│   │   └── salesloft/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── salesloft/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── salesloft/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── salesloft/
+│   └── integration/
+│       └── salesloft/
 ├── config/
-│   ├── default.json
-│   ├── production.json
-│   └── test.json
-└── tests/
-    ├── unit/
-    └── integration/
+│   ├── salesloft.development.json
+│   ├── salesloft.staging.json
+│   └── salesloft.production.json
+└── docs/
+    └── salesloft/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-## Architecture Diagram
+## Layer Architecture
 
 ```
-┌─────────────────────────────────┐
-│           API Layer             │
-│  /health  /webhooks/salesloft   │
-├─────────────────────────────────┤
-│         Service Layer           │
-│  PeopleSync  CadenceManager    │
-│  ActivityTracker               │
-├─────────────────────────────────┤
-│       SalesLoft Client          │
-│  Typed API  Pagination  Retry  │
-├─────────────────────────────────┤
-│       Infrastructure            │
-│  Redis Cache  BullMQ Jobs      │
-│  PostgreSQL  Prometheus        │
-└─────────────────────────────────┘
-         │              ▲
-         ▼              │
-┌─────────────────────────────────┐
-│     SalesLoft REST API v2       │
-│  /people  /cadences  /webhooks  │
-│  Rate: 600 cost/min             │
-└─────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Salesloft Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
 ```
 
 ## Key Components
 
-### Typed API Models
-
+### Step 1: Client Wrapper
 ```typescript
-// src/salesloft/types.ts
-export interface SalesloftPerson {
-  id: number;
-  display_name: string;
-  email_address: string;
-  first_name: string;
-  last_name: string;
-  title: string | null;
-  company_name: string | null;
-  phone: string | null;
-  city: string | null;
-  state: string | null;
-  tags: string[];
-  created_at: string;
-  updated_at: string;
-}
+// src/salesloft/client.ts
+export class SalesloftService {
+  private client: SalesloftClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-export interface SalesloftCadence {
-  id: number;
-  name: string;
-  current_state: 'draft' | 'active' | 'paused' | 'archived';
-  team_cadence: boolean;
-  counts: { people_count: number };
-}
+  constructor(config: SalesloftConfig) {
+    this.client = new SalesloftClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('salesloft');
+  }
 
-export interface SalesloftActivity {
-  id: number;
-  action_type: 'email' | 'phone' | 'other' | 'integration';
-  person_id: number;
-  cadence_id: number | null;
-  created_at: string;
-}
-```
-
-### Service Layer Pattern
-
-```typescript
-// src/services/people-sync.ts
-export class PeopleSyncService {
-  constructor(
-    private salesloft: SalesloftClient,
-    private db: Database,
-    private cache: LRUCache<string, any>,
-  ) {}
-
-  async syncIncremental(): Promise<{ created: number; updated: number }> {
-    const lastSync = await this.db.getLastSyncTime('people');
-    const stats = { created: 0, updated: 0 };
-
-    for await (const person of this.salesloft.paginate<SalesloftPerson>(
-      '/people.json', { updated_at: { gt: lastSync } }
-    )) {
-      const existing = await this.db.findPersonBySlId(person.id);
-      if (existing) {
-        await this.db.updatePerson(person);
-        stats.updated++;
-      } else {
-        await this.db.createPerson(person);
-        stats.created++;
-      }
-      this.cache.delete(`person:${person.email_address}`);
-    }
-
-    await this.db.setLastSyncTime('people', new Date().toISOString());
-    return stats;
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
   }
 }
 ```
 
-### Background Job
-
+### Step 2: Error Boundary
 ```typescript
-// src/jobs/incremental-sync.ts
-import { CronJob } from 'cron';
+// src/salesloft/errors.ts
+export class SalesloftServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'SalesloftServiceError';
+  }
+}
 
-new CronJob('*/5 * * * *', async () => { // Every 5 minutes
-  const service = new PeopleSyncService(salesloft, db, cache);
-  const stats = await service.syncIncremental();
-  console.log(`Sync: +${stats.created} created, ~${stats.updated} updated`);
-}).start();
+export function wrapSalesloftError(error: unknown): SalesloftServiceError {
+  // Transform SDK errors to application errors
+}
 ```
 
-## Error Handling
+### Step 3: Health Check
+```typescript
+// src/salesloft/health.ts
+export async function checkSalesloftHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await salesloftClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
 
-| Component | Failure Mode | Recovery |
-|-----------|-------------|----------|
-| API Client | 429 rate limit | Automatic retry with `Retry-After` |
-| Webhook Handler | Invalid signature | Reject 401, log for investigation |
-| Sync Job | Partial failure | Resume from last successful `updated_at` |
-| Cache | Redis unavailable | Fall through to API (graceful degradation) |
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Salesloft    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Salesloft    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/salesloft.ts
+export interface SalesloftConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadSalesloftConfig(): SalesloftConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./salesloft.${env}.json`);
+}
+```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Salesloft operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Salesloft connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Salesloft types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/salesloft/{handlers} src/services/salesloft src/api/salesloft
+touch src/salesloft/{client,config,types,errors}.ts
+touch src/services/salesloft/{index,sync,cache}.ts
+```
 
 ## Resources
+- [Salesloft SDK Documentation](https://docs.salesloft.com/sdk)
+- [Salesloft Best Practices](https://docs.salesloft.com/best-practices)
 
-- [SalesLoft API Reference](https://api.salesloft.com/swagger/index.html)
-- [SalesLoft Developer Portal](https://developers.salesloft.com/)
-
-## Next Steps
-
-See individual skill docs for deep-dives on each component.
+## Flagship Skills
+For multi-environment setup, see `salesloft-multi-env-setup`.

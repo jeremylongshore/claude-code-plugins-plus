@@ -1,284 +1,246 @@
 ---
 name: langchain-migration-deep-dive
 description: |
-  Migrate to LangChain from raw OpenAI SDK, LlamaIndex, or custom LLM code.
-  Covers codebase assessment, side-by-side validation, RAG migration,
-  agent migration, and feature-flagged gradual rollout.
-  Trigger: "migrate to langchain", "langchain refactor", "legacy LLM migration",
-  "replace openai SDK with langchain", "llamaindex to langchain".
-allowed-tools: Read, Write, Edit, Bash(node:*), Bash(npm:*), Grep
+  Execute LangChain major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from LangChain, performing major version upgrades,
+  or re-platforming existing integrations to LangChain.
+  Trigger with phrases like "migrate langchain", "langchain migration",
+  "switch to langchain", "langchain replatform", "langchain upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, llm, migration]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
+
 # LangChain Migration Deep Dive
 
-## Current State
-
-!`npm list 2>/dev/null | grep -E "openai|langchain|llamaindex" | head -10`
-
 ## Overview
+Comprehensive guide for migrating to or from LangChain, or major version upgrades.
 
-Migrate from raw SDK calls (OpenAI, Anthropic) or other frameworks (LlamaIndex, custom agents) to LangChain. Covers codebase scanning, pattern-by-pattern migration, side-by-side validation, and feature-flagged rollout.
+## Prerequisites
+- Current system documentation
+- LangChain SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
 
-## Step 1: Assess Codebase
+## Migration Types
 
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "langchain" > langchain-files.txt
+
+# Count integration points
+wc -l langchain-files.txt
+
+# Identify dependencies
+npm list | grep langchain
+pip freeze | grep langchain
+```
+
+### Step 2: Data Inventory
 ```typescript
-// Scan for migration targets
-import * as fs from "fs";
-import * as path from "path";
-
-interface MigrationItem {
-  file: string;
-  line: number;
-  pattern: string;
-  complexity: "low" | "medium" | "high";
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
 }
 
-function scanForMigration(dir: string): MigrationItem[] {
-  const items: MigrationItem[] = [];
-  const patterns = [
-    { regex: /openai\.chat\.completions\.create/g, name: "OpenAI direct call", complexity: "low" as const },
-    { regex: /new OpenAI\(/g, name: "OpenAI SDK init", complexity: "low" as const },
-    { regex: /anthropic\.messages\.create/g, name: "Anthropic direct call", complexity: "low" as const },
-    { regex: /from llama_index/g, name: "LlamaIndex import", complexity: "medium" as const },
-    { regex: /VectorStoreIndex/g, name: "LlamaIndex vector store", complexity: "high" as const },
-    { regex: /function_call|tool_choice/g, name: "Manual tool calling", complexity: "high" as const },
+async function assessLangChainMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  LangChain   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install LangChain SDK
+npm install @langchain/sdk
+
+# Configure credentials
+cp .env.example .env.langchain
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('@langchain/sdk').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/langchain.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class LangChainAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const langchainData = this.transform(data);
+    return langchainClient.create(langchainData);
+  }
+
+  private transform(data: CreateInput): LangChainInput {
+    // Map from old format to LangChain format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateLangChainData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await langchainClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const langchainPercentage = getFeatureFlag('langchain_migration_percentage');
+
+  if (Math.random() * 100 < langchainPercentage) {
+    return new LangChainAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app LANGCHAIN_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.langchain'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateLangChainMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
   ];
 
-  // Recursive file scan
-  function scan(dir: string) {
-    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-      if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules") {
-        scan(path.join(dir, entry.name));
-      } else if (entry.name.match(/\.(ts|js|py)$/)) {
-        const content = fs.readFileSync(path.join(dir, entry.name), "utf-8");
-        const lines = content.split("\n");
-        for (const p of patterns) {
-          lines.forEach((line, i) => {
-            if (p.regex.test(line)) {
-              items.push({ file: path.join(dir, entry.name), line: i + 1, pattern: p.name, complexity: p.complexity });
-            }
-            p.regex.lastIndex = 0;
-          });
-        }
-      }
-    }
-  }
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
 
-  scan(dir);
-  return items;
+  return { checks: results, passed: results.every(r => r.result.success) };
 }
 ```
 
-## Step 2: Migrate Raw OpenAI SDK to LangChain
+## Instructions
 
-### Before (Raw OpenAI SDK)
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-```typescript
-import OpenAI from "openai";
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-const client = new OpenAI();
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-async function summarize(text: string) {
-  const response = await client.chat.completions.create({
-    model: "gpt-4o-mini",
-    messages: [
-      { role: "system", content: "Summarize the text." },
-      { role: "user", content: text },
-    ],
-    temperature: 0,
-  });
-  return response.choices[0].message.content;
-}
-```
+### Step 4: Shift Traffic
+Gradually route traffic to new LangChain integration.
 
-### After (LangChain)
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-
-const summarizeChain = ChatPromptTemplate.fromMessages([
-  ["system", "Summarize the text."],
-  ["human", "{text}"],
-])
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", temperature: 0 }))
-  .pipe(new StringOutputParser());
-
-// Benefits gained:
-// - .invoke(), .batch(), .stream() for free
-// - Automatic retry with backoff
-// - LangSmith tracing
-// - .withFallbacks() for provider resilience
-// - .withStructuredOutput() for typed results
-```
-
-## Step 3: Migrate Manual Function Calling
-
-### Before (Raw Tool Calling)
-
-```typescript
-const response = await client.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [{ role: "user", content: input }],
-  tools: [{
-    type: "function",
-    function: {
-      name: "search",
-      parameters: { type: "object", properties: { query: { type: "string" } } },
-    },
-  }],
-});
-
-// Manual tool call loop
-if (response.choices[0].message.tool_calls) {
-  for (const tc of response.choices[0].message.tool_calls) {
-    const result = await callTool(tc.function.name, JSON.parse(tc.function.arguments));
-    // Manually append tool result, re-call API...
-  }
-}
-```
-
-### After (LangChain Agent)
-
-```typescript
-import { tool } from "@langchain/core/tools";
-import { createToolCallingAgent, AgentExecutor } from "langchain/agents";
-import { z } from "zod";
-
-const searchTool = tool(
-  async ({ query }) => { /* search logic */ return "results"; },
-  { name: "search", description: "Search the web", schema: z.object({ query: z.string() }) }
-);
-
-const agent = createToolCallingAgent({ llm, tools: [searchTool], prompt });
-const executor = new AgentExecutor({ agent, tools: [searchTool] });
-
-// One call handles the entire tool-calling loop
-const result = await executor.invoke({ input: "Search for LangChain news", chat_history: [] });
-```
-
-## Step 4: Migrate RAG Pipeline
-
-### Before (Custom RAG)
-
-```typescript
-// Manual: embed -> search -> format -> call LLM
-const queryEmbed = await openai.embeddings.create({ model: "text-embedding-3-small", input: query });
-const results = await pineconeIndex.query({ vector: queryEmbed.data[0].embedding, topK: 5 });
-const context = results.matches.map((m) => m.metadata.text).join("\n");
-const answer = await openai.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [{ role: "user", content: `Context: ${context}\n\nQuestion: ${query}` }],
-});
-```
-
-### After (LangChain RAG Chain)
-
-```typescript
-import { PineconeStore } from "@langchain/pinecone";
-import { OpenAIEmbeddings, ChatOpenAI } from "@langchain/openai";
-import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables";
-
-const vectorStore = await PineconeStore.fromExistingIndex(
-  new OpenAIEmbeddings({ model: "text-embedding-3-small" }),
-  { pineconeIndex: index }
-);
-
-const ragChain = RunnableSequence.from([
-  {
-    context: vectorStore.asRetriever({ k: 5 }).pipe(
-      (docs) => docs.map((d) => d.pageContent).join("\n")
-    ),
-    question: new RunnablePassthrough(),
-  },
-  ragPrompt,
-  new ChatOpenAI({ model: "gpt-4o-mini" }),
-  new StringOutputParser(),
-]);
-
-// Now you get: streaming, batching, tracing, fallbacks for free
-```
-
-## Step 5: Side-by-Side Validation
-
-```typescript
-async function validateMigration(
-  legacyFn: (input: string) => Promise<string>,
-  newChain: any,
-  testInputs: string[],
-) {
-  const results = [];
-
-  for (const input of testInputs) {
-    const [legacy, migrated] = await Promise.all([
-      legacyFn(input),
-      newChain.invoke({ input }),
-    ]);
-
-    results.push({
-      input: input.slice(0, 50),
-      legacyLength: legacy.length,
-      migratedLength: migrated.length,
-      match: legacy.toLowerCase().includes(migrated.toLowerCase().slice(0, 20)),
-    });
-  }
-
-  console.table(results);
-  return results;
-}
-```
-
-## Step 6: Feature-Flagged Rollout
-
-```typescript
-function shouldUseLangChain(userId: string, rolloutPercent: number): boolean {
-  // Consistent hashing: same user always gets same experience
-  const hash = userId.split("").reduce((acc, c) => acc + c.charCodeAt(0), 0);
-  return (hash % 100) < rolloutPercent;
-}
-
-async function processRequest(userId: string, input: string) {
-  if (shouldUseLangChain(userId, 25)) {  // 25% rollout
-    return newChain.invoke({ input });
-  }
-  return legacySummarize(input);
-}
-
-// Gradual rollout: 10% -> 25% -> 50% -> 100%
-```
-
-## Migration Checklist
-
-- [ ] Codebase scanned for migration targets
-- [ ] Direct SDK calls converted to LCEL chains
-- [ ] Manual tool-calling loops replaced with AgentExecutor
-- [ ] Custom RAG replaced with LangChain retriever chains
-- [ ] Side-by-side validation passing
-- [ ] Feature flags configured for gradual rollout
-- [ ] LangSmith tracing enabled for monitoring
-- [ ] Legacy code removed after 100% rollout
+## Output
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to LangChain
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
 
-| Issue | Fix |
-|-------|-----|
-| Different response format | Add `StringOutputParser` or `.withStructuredOutput()` |
-| Missing streaming | Use `.stream()` instead of `.invoke()` |
-| Memory format mismatch | Use `RunnableWithMessageHistory` |
-| Tool schema differences | Define with Zod, use `tool()` function |
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateLangChainMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
 ## Resources
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [LangChain Migration Guide](https://docs.langchain.com/migration)
 
-- [LangChain.js Migration Guide](https://js.langchain.com/docs/versions/)
-- [OpenAI SDK to LangChain](https://js.langchain.com/docs/integrations/chat/openai/)
-- [Feature Flags Best Practices](https://launchdarkly.com/blog/best-practices-feature-flags/)
-
-## Next Steps
-
-Use `langchain-upgrade-migration` for LangChain version-to-version upgrades.
+## Flagship+ Skills
+For advanced troubleshooting, see `langchain-advanced-troubleshooting`.

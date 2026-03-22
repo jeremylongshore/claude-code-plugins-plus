@@ -1,260 +1,224 @@
 ---
 name: figma-enterprise-rbac
 description: |
-  Configure Figma Enterprise features: OAuth 2.0, team management, and access control.
-  Use when implementing OAuth flows, managing team/project access via API,
-  or building Enterprise-level Figma integrations.
-  Trigger with phrases like "figma enterprise", "figma OAuth",
-  "figma team management", "figma access control", "figma SCIM".
+  Configure Figma enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Figma.
+  Trigger with phrases like "figma SSO", "figma RBAC",
+  "figma enterprise", "figma roles", "figma permissions", "figma SAML".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
 compatible-with: claude-code
+tags: [saas, figma]
 ---
 
 # Figma Enterprise RBAC
 
 ## Overview
-Figma Enterprise features accessible via the REST API: OAuth 2.0 for user-facing apps, team/project management, and the Variables API (Enterprise-only). This skill covers building OAuth integrations and managing organizational access.
+Configure enterprise-grade access control for Figma integrations.
 
 ## Prerequisites
-- Figma Enterprise or Organization plan
-- OAuth app registered in Figma developer dashboard
-- Understanding of OAuth 2.0 authorization code flow
+- Figma Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: OAuth 2.0 App Setup
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
+
 ```typescript
-// Figma OAuth 2.0 Authorization Code Flow
-
-// 1. Build authorization URL
-function getAuthUrl(state: string): string {
-  const params = new URLSearchParams({
-    client_id: process.env.FIGMA_CLIENT_ID!,
-    redirect_uri: process.env.FIGMA_REDIRECT_URI!,
-    scope: 'file_content:read,file_comments:write,file_variables:read',
-    state,
-    response_type: 'code',
-  });
-  return `https://www.figma.com/oauth?${params}`;
+enum FigmaRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-// 2. Exchange authorization code for tokens (within 30 seconds!)
-async function exchangeCode(code: string): Promise<{
-  access_token: string;
-  refresh_token: string;
-  expires_in: number;
-  user_id: string;
-}> {
-  const res = await fetch('https://api.figma.com/v1/oauth/token', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: process.env.FIGMA_CLIENT_ID!,
-      client_secret: process.env.FIGMA_CLIENT_SECRET!,
-      redirect_uri: process.env.FIGMA_REDIRECT_URI!,
-      code,
-      grant_type: 'authorization_code',
-    }),
-  });
-
-  if (!res.ok) {
-    const error = await res.text();
-    throw new Error(`Token exchange failed: ${res.status} ${error}`);
-  }
-
-  return res.json();
+interface FigmaPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
 }
 
-// 3. Refresh expired tokens
-async function refreshAccessToken(refreshToken: string): Promise<{
-  access_token: string;
-  expires_in: number;
-}> {
-  const res = await fetch('https://api.figma.com/v1/oauth/refresh', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: process.env.FIGMA_CLIENT_ID!,
-      client_secret: process.env.FIGMA_CLIENT_SECRET!,
-      refresh_token: refreshToken,
-    }),
-  });
+const ROLE_PERMISSIONS: Record<FigmaRole, FigmaPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
 
-  if (!res.ok) throw new Error(`Token refresh failed: ${res.status}`);
-  return res.json();
+function checkPermission(
+  role: FigmaRole,
+  action: keyof FigmaPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
 }
 ```
 
-### Step 2: OAuth Callback Handler
+## SSO Integration
+
+### SAML Configuration
+
 ```typescript
-// Express callback handler
-app.get('/auth/figma/callback', async (req, res) => {
-  const { code, state } = req.query;
+// Figma SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://figma.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/figma/callback',
+};
 
-  // Verify state matches what we sent (CSRF protection)
-  if (state !== req.session.oauthState) {
-    return res.status(403).json({ error: 'Invalid state parameter' });
-  }
+// Map IdP groups to Figma roles
+const groupRoleMapping: Record<string, FigmaRole> = {
+  'Engineering': FigmaRole.Developer,
+  'Platform-Admins': FigmaRole.Admin,
+  'Data-Team': FigmaRole.Viewer,
+};
+```
 
-  try {
-    // Exchange code within 30 seconds
-    const tokens = await exchangeCode(code as string);
+### OAuth2/OIDC Integration
 
-    // Get user info with the new token
-    const userRes = await fetch('https://api.figma.com/v1/me', {
-      headers: { 'X-Figma-Token': tokens.access_token },
-    });
-    const user = await userRes.json();
+```typescript
+import { OAuth2Client } from '@figma/sdk';
 
-    // Store tokens securely (encrypted at rest)
-    await saveUserTokens(user.id, {
-      accessToken: tokens.access_token,
-      refreshToken: tokens.refresh_token,
-      expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
-    });
-
-    res.redirect('/dashboard?connected=figma');
-  } catch (error) {
-    console.error('Figma OAuth error:', error);
-    res.redirect('/settings?error=figma_auth_failed');
-  }
+const oauthClient = new OAuth2Client({
+  clientId: process.env.FIGMA_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.FIGMA_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/figma/callback',
+  scopes: ['read', 'write'],
 });
 ```
 
-### Step 3: Team and Project Management
+## Organization Management
+
 ```typescript
-// GET /v1/teams/:team_id/projects -- list team projects
-async function getTeamProjects(teamId: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/teams/${teamId}/projects`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  return res.json(); // { projects: [{ id, name }] }
+interface FigmaOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: FigmaRole;
 }
 
-// GET /v1/projects/:project_id/files -- list project files
-async function getProjectFiles(projectId: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/projects/${projectId}/files`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  return res.json(); // { files: [{ key, name, thumbnail_url, last_modified }] }
-}
-
-// GET /v1/teams/:team_id/components -- published components (Tier 3)
-async function getTeamComponents(teamId: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/teams/${teamId}/components`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  return res.json();
-  // { meta: { components: [{ key, file_key, node_id, name, description }] } }
-}
-
-// GET /v1/teams/:team_id/styles -- published styles (Tier 3)
-async function getTeamStyles(teamId: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/teams/${teamId}/styles`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  return res.json();
-  // { meta: { styles: [{ key, file_key, node_id, name, style_type }] } }
-}
-```
-
-### Step 4: Variables API (Enterprise Only)
-```typescript
-// GET /v1/files/:key/variables/local -- Tier 2, requires file_variables:read
-async function getLocalVariables(fileKey: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/files/${fileKey}/variables/local`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  if (res.status === 403) {
-    throw new Error('Variables API requires Figma Enterprise plan');
-  }
-  return res.json();
-  // { meta: { variables: Record<id, Variable>, variableCollections: Record<id, Collection> } }
-}
-
-// GET /v1/files/:key/variables/published -- published variables
-async function getPublishedVariables(fileKey: string, token: string) {
-  const res = await fetch(
-    `https://api.figma.com/v1/files/${fileKey}/variables/published`,
-    { headers: { 'X-Figma-Token': token } }
-  );
-  return res.json();
-  // Published variables have a subscribed_id that changes each publish
-}
-
-// POST /v1/files/:key/variables -- bulk create/update/delete
-async function updateVariables(
-  fileKey: string,
-  changes: VariableChanges,
-  token: string
-) {
-  const res = await fetch(
-    `https://api.figma.com/v1/files/${fileKey}/variables`,
-    {
-      method: 'POST',
-      headers: {
-        'X-Figma-Token': token,
-        'Content-Type': 'application/json',
+async function createOrganization(
+  config: FigmaOrganization
+): Promise<void> {
+  await figmaClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
       },
-      body: JSON.stringify(changes),
-    }
-  );
-  return res.json();
+    },
+  });
 }
 ```
 
-### Step 5: Access Control Middleware
+## Access Control Middleware
+
 ```typescript
-// Middleware that checks if user has Figma access to a resource
-async function requireFigmaAccess(fileKey: string) {
+function requireFigmaPermission(
+  requiredPermission: keyof FigmaPermissions
+) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const userToken = await getUserFigmaToken(req.user.id);
-    if (!userToken) {
-      return res.status(403).json({ error: 'Figma account not connected' });
-    }
+    const user = req.user as { figmaRole: FigmaRole };
 
-    // Check if user's token can access this file
-    const check = await fetch(
-      `https://api.figma.com/v1/files/${fileKey}?depth=1`,
-      { headers: { 'X-Figma-Token': userToken } }
-    );
-
-    if (check.status === 403) {
-      return res.status(403).json({ error: 'No access to this Figma file' });
+    if (!checkPermission(user.figmaRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
     }
 
     next();
   };
 }
+
+// Usage
+app.delete('/figma/resource/:id',
+  requireFigmaPermission('delete'),
+  deleteResourceHandler
+);
 ```
 
+## Audit Trail
+
+```typescript
+interface FigmaAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: FigmaRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logFigmaAccess(entry: FigmaAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Define Roles
+Map organizational roles to Figma permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
 ## Output
-- OAuth 2.0 flow with authorization, token exchange, and refresh
-- Team/project/file listing via API
-- Variables API access (Enterprise)
-- Access control middleware for file-level permissions
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| OAuth code expired | Exchange took >30s | Exchange immediately on callback |
-| Token refresh failed | Refresh token revoked | Re-authenticate user through OAuth flow |
-| 403 on Variables API | Not Enterprise plan | Use styles API instead (available on all plans) |
-| Team components empty | No published components | Publish components in Figma first |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Figma OAuth 2.0](https://developers.figma.com/docs/rest-api/authentication/)
-- [Figma Variables API](https://developers.figma.com/docs/rest-api/variables-endpoints/)
-- [Component Endpoints](https://developers.figma.com/docs/rest-api/component-endpoints/)
+- [Figma Enterprise Guide](https://docs.figma.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
 For major migrations, see `figma-migration-deep-dive`.

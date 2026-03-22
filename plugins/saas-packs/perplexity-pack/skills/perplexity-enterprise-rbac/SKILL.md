@@ -1,220 +1,224 @@
 ---
 name: perplexity-enterprise-rbac
 description: |
-  Configure Perplexity API key scoping, per-team model access, cost controls,
-  and search domain restrictions for enterprise deployments.
-  Trigger with phrases like "perplexity enterprise", "perplexity RBAC",
-  "perplexity team access", "perplexity roles", "perplexity permissions".
+  Configure Perplexity enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Perplexity.
+  Trigger with phrases like "perplexity SSO", "perplexity RBAC",
+  "perplexity enterprise", "perplexity roles", "perplexity permissions", "perplexity SAML".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, rbac]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Enterprise RBAC
 
 ## Overview
-Control access to Perplexity Sonar API at the organizational level. Perplexity does not have built-in RBAC -- you implement access control through: separate API keys per team/environment, a gateway that enforces model and budget policies, and domain restrictions for compliance.
-
-## Access Control Strategy
-
-| Layer | Mechanism | Perplexity Support |
-|-------|-----------|-------------------|
-| Authentication | API key per team | Yes (multiple keys) |
-| Model restriction | Gateway enforcement | Build yourself |
-| Budget cap | Per-key monthly limit | Via dashboard |
-| Domain restriction | `search_domain_filter` | Yes (per-request) |
-| Rate limiting | Gateway + key limits | Yes (per-key RPM) |
+Configure enterprise-grade access control for Perplexity integrations.
 
 ## Prerequisites
-- Perplexity API account with admin access
-- Separate API keys per team/environment
-- Gateway or middleware for policy enforcement
+- Perplexity Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: Create Per-Team API Keys
-Generate separate keys at [perplexity.ai/settings/api](https://www.perplexity.ai/settings/api):
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-```
-Key: pplx-support-bot-prod     → Budget: $200/mo, sonar only
-Key: pplx-research-team        → Budget: $1000/mo, sonar + sonar-pro
-Key: pplx-data-team            → Budget: $500/mo, sonar only
-Key: pplx-executive-reports    → Budget: $300/mo, sonar-pro
-```
+## Role Implementation
 
-### Step 2: Gateway with Policy Enforcement
 ```typescript
-// perplexity-gateway.ts
-import OpenAI from "openai";
-
-interface TeamPolicy {
-  apiKey: string;
-  allowedModels: string[];
-  maxTokensPerRequest: number;
-  maxRequestsPerMinute: number;
-  requiredDomainFilter?: string[];  // Force search to specific domains
-  blockedDomainFilter?: string[];   // Block specific domains
+enum PerplexityRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-const TEAM_POLICIES: Record<string, TeamPolicy> = {
-  support: {
-    apiKey: process.env.PPLX_KEY_SUPPORT!,
-    allowedModels: ["sonar"],
-    maxTokensPerRequest: 512,
-    maxRequestsPerMinute: 30,
-  },
-  research: {
-    apiKey: process.env.PPLX_KEY_RESEARCH!,
-    allowedModels: ["sonar", "sonar-pro", "sonar-reasoning-pro"],
-    maxTokensPerRequest: 4096,
-    maxRequestsPerMinute: 50,
-  },
-  compliance: {
-    apiKey: process.env.PPLX_KEY_COMPLIANCE!,
-    allowedModels: ["sonar", "sonar-pro"],
-    maxTokensPerRequest: 2048,
-    maxRequestsPerMinute: 20,
-    requiredDomainFilter: ["sec.gov", "edgar.sec.gov", "law.cornell.edu"],
-  },
-  marketing: {
-    apiKey: process.env.PPLX_KEY_MARKETING!,
-    allowedModels: ["sonar"],
-    maxTokensPerRequest: 1024,
-    maxRequestsPerMinute: 20,
-    blockedDomainFilter: ["-competitor1.com", "-competitor2.com"],
-  },
+interface PerplexityPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<PerplexityRole, PerplexityPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
 };
 
-function enforcePolicy(
-  team: string,
-  requestedModel: string,
-  requestedTokens: number
-): { client: OpenAI; model: string; maxTokens: number; domainFilter?: string[] } {
-  const policy = TEAM_POLICIES[team];
-  if (!policy) throw new Error(`Unknown team: ${team}`);
-
-  if (!policy.allowedModels.includes(requestedModel)) {
-    console.warn(`Team ${team} not allowed ${requestedModel}, using ${policy.allowedModels[0]}`);
-  }
-
-  const model = policy.allowedModels.includes(requestedModel)
-    ? requestedModel
-    : policy.allowedModels[0];
-
-  const maxTokens = Math.min(requestedTokens, policy.maxTokensPerRequest);
-
-  return {
-    client: new OpenAI({ apiKey: policy.apiKey, baseURL: "https://api.perplexity.ai" }),
-    model,
-    maxTokens,
-    domainFilter: policy.requiredDomainFilter || policy.blockedDomainFilter,
-  };
+function checkPermission(
+  role: PerplexityRole,
+  action: keyof PerplexityPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
 }
 ```
 
-### Step 3: Enforced Search with Domain Restrictions
+## SSO Integration
+
+### SAML Configuration
+
 ```typescript
-async function teamSearch(
-  team: string,
-  query: string,
-  requestedModel: string = "sonar"
+// Perplexity SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://perplexity.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/perplexity/callback',
+};
+
+// Map IdP groups to Perplexity roles
+const groupRoleMapping: Record<string, PerplexityRole> = {
+  'Engineering': PerplexityRole.Developer,
+  'Platform-Admins': PerplexityRole.Admin,
+  'Data-Team': PerplexityRole.Viewer,
+};
+```
+
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from '@perplexity/sdk';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.PERPLEXITY_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.PERPLEXITY_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/perplexity/callback',
+  scopes: ['read', 'write'],
+});
+```
+
+## Organization Management
+
+```typescript
+interface PerplexityOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: PerplexityRole;
+}
+
+async function createOrganization(
+  config: PerplexityOrganization
+): Promise<void> {
+  await perplexityClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function requirePerplexityPermission(
+  requiredPermission: keyof PerplexityPermissions
 ) {
-  const { client, model, maxTokens, domainFilter } = enforcePolicy(
-    team, requestedModel, 2048
-  );
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { perplexityRole: PerplexityRole };
 
-  const response = await client.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: query }],
-    max_tokens: maxTokens,
-    ...(domainFilter && { search_domain_filter: domainFilter }),
-  } as any);
+    if (!checkPermission(user.perplexityRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
 
-  return {
-    answer: response.choices[0].message.content,
-    citations: (response as any).citations || [],
-    model: response.model,
-    team,
-    tokens: response.usage?.total_tokens,
+    next();
   };
 }
 
 // Usage
-const result = await teamSearch("compliance", "latest SEC filing for AAPL", "sonar-pro");
-// -> Uses sonar-pro (allowed for compliance team)
-// -> Searches only sec.gov, edgar.sec.gov, law.cornell.edu
-
-const supportResult = await teamSearch("support", "How to reset password", "sonar-pro");
-// -> Downgrades to sonar (support team only allowed sonar)
+app.delete('/perplexity/resource/:id',
+  requirePerplexityPermission('delete'),
+  deleteResourceHandler
+);
 ```
 
-### Step 4: Usage Tracking per Team
+## Audit Trail
+
 ```typescript
-class TeamUsageTracker {
-  private usage: Map<string, Array<{ timestamp: number; tokens: number; model: string; cost: number }>> = new Map();
+interface PerplexityAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: PerplexityRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
 
-  record(team: string, tokens: number, model: string) {
-    const entries = this.usage.get(team) || [];
-    const cost = model === "sonar-pro" ? tokens * 0.000009 : tokens * 0.000001;
-    entries.push({ timestamp: Date.now(), tokens, model, cost });
-    this.usage.set(team, entries);
-  }
+async function logPerplexityAccess(entry: PerplexityAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
 
-  getDailySummary(team: string) {
-    const today = new Date().toDateString();
-    const entries = (this.usage.get(team) || []).filter(
-      (e) => new Date(e.timestamp).toDateString() === today
-    );
-    return {
-      team,
-      queries: entries.length,
-      totalTokens: entries.reduce((s, e) => s + e.tokens, 0),
-      estimatedCost: entries.reduce((s, e) => s + e.cost, 0).toFixed(4),
-      modelBreakdown: {
-        sonar: entries.filter((e) => e.model === "sonar").length,
-        "sonar-pro": entries.filter((e) => e.model === "sonar-pro").length,
-      },
-    };
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
   }
 }
 ```
 
-### Step 5: Key Rotation Schedule
-Rotate API keys every 90 days. Name keys with quarter (`pplx-research-2026Q1`) for tracking.
+## Instructions
 
-```bash
-set -euo pipefail
-# 1. Generate new key at perplexity.ai/settings/api
-# 2. Deploy new key alongside old key (24-hour overlap)
-# 3. Verify new key works
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $NEW_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"test"}],"max_tokens":5}' \
-  https://api.perplexity.ai/chat/completions
-# 4. Remove old key from perplexity.ai/settings/api
-```
+### Step 1: Define Roles
+Map organizational roles to Perplexity permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
+## Output
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401` for a team | Key expired or revoked | Regenerate key for that team |
-| Model downgrade unexpected | Policy restricting access | Check team's `allowedModels` |
-| Compliance citations from wrong domain | Domain filter not applied | Verify `requiredDomainFilter` in policy |
-| Budget exceeded | Team over monthly cap | Alert team lead, increase cap or throttle |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
 
-## Output
-- Per-team API key management
-- Gateway enforcing model and token policies
-- Domain-restricted search for compliance teams
-- Usage tracking and cost allocation per team
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Perplexity API Documentation](https://docs.perplexity.ai)
-- [API Key Management](https://www.perplexity.ai/settings/api)
+- [Perplexity Enterprise Guide](https://docs.perplexity.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-For migration planning, see `perplexity-migration-deep-dive`.
+For major migrations, see `perplexity-migration-deep-dive`.

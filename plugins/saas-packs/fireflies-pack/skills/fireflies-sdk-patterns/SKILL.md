@@ -1,240 +1,148 @@
 ---
 name: fireflies-sdk-patterns
 description: |
-  Apply production-ready Fireflies.ai GraphQL client patterns for TypeScript and Python.
-  Use when implementing Fireflies.ai integrations, building typed clients,
-  or establishing team coding standards for the GraphQL API.
+  Apply production-ready Fireflies.ai SDK patterns for TypeScript and Python.
+  Use when implementing Fireflies.ai integrations, refactoring SDK usage,
+  or establishing team coding standards for Fireflies.ai.
   Trigger with phrases like "fireflies SDK patterns", "fireflies best practices",
-  "fireflies client", "fireflies GraphQL wrapper", "typed fireflies".
+  "fireflies code patterns", "idiomatic fireflies".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, python, typescript]
-
+compatible-with: claude-code
+tags: [saas, fireflies]
 ---
-# Fireflies.ai Client Patterns
+
+# Fireflies.ai SDK Patterns
 
 ## Overview
-Production-ready patterns for the Fireflies.ai GraphQL API. Fireflies has no official SDK -- all interaction is via HTTP POST to `https://api.fireflies.ai/graphql`. These patterns provide typed wrappers, error handling, caching, and multi-tenant support.
+Production-ready patterns for Fireflies.ai SDK usage in TypeScript and Python.
 
 ## Prerequisites
-- `FIREFLIES_API_KEY` environment variable set
-- TypeScript 5+ or Python 3.10+
-- Optional: `graphql-request` for typed queries
+- Completed `fireflies-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1: Typed GraphQL Client (TypeScript)
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
-// lib/fireflies-client.ts
-const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+// src/fireflies/client.ts
+import { Fireflies.aiClient } from '@fireflies/sdk';
 
-interface FirefliesError {
-  message: string;
-  code?: string;
-  extensions?: { status: number; helpUrls?: string[] };
-}
+let instance: Fireflies.aiClient | null = null;
 
-interface FirefliesResponse<T> {
-  data?: T;
-  errors?: FirefliesError[];
-}
-
-export class FirefliesClient {
-  private apiKey: string;
-  private baseUrl: string;
-
-  constructor(apiKey?: string) {
-    this.apiKey = apiKey || process.env.FIREFLIES_API_KEY!;
-    this.baseUrl = FIREFLIES_API;
-    if (!this.apiKey) throw new Error("FIREFLIES_API_KEY is required");
-  }
-
-  async query<T = any>(gql: string, variables?: Record<string, any>): Promise<T> {
-    const res = await fetch(this.baseUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${this.apiKey}`,
-      },
-      body: JSON.stringify({ query: gql, variables }),
-    });
-
-    const json: FirefliesResponse<T> = await res.json();
-
-    if (json.errors?.length) {
-      const err = json.errors[0];
-      const error = new Error(`Fireflies: ${err.message}`) as any;
-      error.code = err.code;
-      error.status = err.extensions?.status;
-      throw error;
-    }
-
-    return json.data!;
-  }
-
-  // Convenience methods for common queries
-  async getUser() {
-    return this.query<{ user: any }>(`{ user { name email user_id is_admin } }`);
-  }
-
-  async getTranscripts(limit = 20) {
-    return this.query<{ transcripts: any[] }>(`
-      query($limit: Int) {
-        transcripts(limit: $limit) {
-          id title date duration organizer_email participants
-          summary { overview action_items keywords }
-        }
-      }
-    `, { limit });
-  }
-
-  async getTranscript(id: string) {
-    return this.query<{ transcript: any }>(`
-      query($id: String!) {
-        transcript(id: $id) {
-          id title date duration
-          speakers { id name }
-          sentences { speaker_name text start_time end_time }
-          summary { overview action_items keywords short_summary }
-          analytics {
-            sentiments { positive_pct negative_pct neutral_pct }
-            speakers { name duration word_count questions }
-          }
-        }
-      }
-    `, { id });
-  }
-}
-```
-
-### Step 2: Singleton Pattern
-```typescript
-// lib/fireflies.ts
-let instance: FirefliesClient | null = null;
-
-export function getFirefliesClient(): FirefliesClient {
+export function getFireflies.aiClient(): Fireflies.aiClient {
   if (!instance) {
-    instance = new FirefliesClient();
+    instance = new Fireflies.aiClient({
+      apiKey: process.env.FIREFLIES_API_KEY!,
+      // Additional options
+    });
   }
   return instance;
 }
 ```
 
-### Step 3: Multi-Tenant Factory
+### Step 2: Add Error Handling Wrapper
 ```typescript
-const tenantClients = new Map<string, FirefliesClient>();
+import { Fireflies.aiError } from '@fireflies/sdk';
 
-export function getClientForTenant(tenantId: string): FirefliesClient {
-  if (!tenantClients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId); // from your secret store
-    tenantClients.set(tenantId, new FirefliesClient(apiKey));
+async function safeFireflies.aiCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof Fireflies.aiError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
+    }
+    return { data: null, error: err as Error };
   }
-  return tenantClients.get(tenantId)!;
 }
 ```
 
-### Step 4: Response Validation with Zod
+### Step 3: Implement Retry Logic
 ```typescript
-import { z } from "zod";
-
-const TranscriptSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  date: z.string(),
-  duration: z.number(),
-  speakers: z.array(z.object({ id: z.string(), name: z.string() })),
-  summary: z.object({
-    overview: z.string().nullable(),
-    action_items: z.array(z.string()).nullable(),
-    keywords: z.array(z.string()).nullable(),
-  }).nullable(),
-});
-
-type Transcript = z.infer<typeof TranscriptSchema>;
-
-async function getValidatedTranscript(id: string): Promise<Transcript> {
-  const client = getFirefliesClient();
-  const { transcript } = await client.getTranscript(id);
-  return TranscriptSchema.parse(transcript);
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 5: Python Client
-```python
-import os
-from typing import Any
-import requests
-
-class FirefliesClient:
-    API_URL = "https://api.fireflies.ai/graphql"
-
-    def __init__(self, api_key: str | None = None):
-        self.api_key = api_key or os.environ["FIREFLIES_API_KEY"]
-
-    def query(self, gql: str, variables: dict | None = None) -> dict[str, Any]:
-        resp = requests.post(
-            self.API_URL,
-            json={"query": gql, "variables": variables},
-            headers={
-                "Content-Type": "application/json",
-                "Authorization": f"Bearer {self.api_key}",
-            },
-        )
-        data = resp.json()
-        if "errors" in data:
-            raise Exception(f"Fireflies: {data['errors'][0]['message']}")
-        return data["data"]
-
-    def get_transcripts(self, limit: int = 20) -> list[dict]:
-        result = self.query("""
-            query($limit: Int) {
-                transcripts(limit: $limit) {
-                    id title date duration organizer_email
-                    summary { overview action_items keywords }
-                }
-            }
-        """, {"limit": limit})
-        return result["transcripts"]
-
-    def get_transcript(self, transcript_id: str) -> dict:
-        result = self.query("""
-            query($id: String!) {
-                transcript(id: $id) {
-                    id title date duration
-                    speakers { name }
-                    sentences { speaker_name text start_time end_time }
-                    summary { overview action_items keywords }
-                }
-            }
-        """, {"id": transcript_id})
-        return result["transcript"]
-
-# Usage
-client = FirefliesClient()
-for t in client.get_transcripts(5):
-    print(f"{t['title']} - {t['duration']}min")
-```
+## Output
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Typed client class | All API calls | Centralized auth and error handling |
-| Singleton | Single-tenant apps | Reuse connection, consistent config |
-| Factory | Multi-tenant SaaS | Isolated API keys per customer |
-| Zod validation | API responses | Runtime type safety, catches schema drift |
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
-## Output
-- Type-safe GraphQL client with error codes
-- Singleton and factory patterns for different deployment models
-- Zod schemas for runtime response validation
-- Python client with identical API surface
+## Examples
+
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, Fireflies.aiClient>();
+
+export function getClientForTenant(tenantId: string): Fireflies.aiClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new Fireflies.aiClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from fireflies import Fireflies.aiClient
+
+@asynccontextmanager
+async def get_fireflies_client():
+    client = Fireflies.aiClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const firefliesResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
 
 ## Resources
-- [Fireflies API Docs](https://docs.fireflies.ai/)
-- [Fireflies GraphQL Introspection](https://docs.fireflies.ai/fundamentals/introspection)
+- [Fireflies.ai SDK Reference](https://docs.fireflies.com/sdk)
+- [Fireflies.ai API Types](https://docs.fireflies.com/types)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps

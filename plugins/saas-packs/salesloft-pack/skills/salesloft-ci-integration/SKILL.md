@@ -1,138 +1,126 @@
 ---
 name: salesloft-ci-integration
 description: |
-  Set up CI/CD pipelines for SalesLoft integrations with GitHub Actions.
-  Use when automating SalesLoft integration tests, validating OAuth tokens,
-  or running cadence sync validation in CI.
-  Trigger: "salesloft CI", "salesloft GitHub Actions", "salesloft automated tests".
+  Configure Salesloft CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Salesloft tests into your build process.
+  Trigger with phrases like "salesloft CI", "salesloft GitHub Actions",
+  "salesloft automated tests", "CI salesloft".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, outreach, salesloft]
 compatible-with: claude-code
+tags: [saas, salesloft]
 ---
 
-# SalesLoft CI Integration
+# Salesloft CI Integration
 
 ## Overview
+Set up CI/CD pipelines for Salesloft integrations with automated testing.
 
-GitHub Actions workflows for testing SalesLoft API integrations: unit tests with mocked responses, integration tests against the live API, and OAuth token validation.
+## Prerequisites
+- GitHub repository with Actions enabled
+- Salesloft test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: GitHub Actions Workflow
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/salesloft-integration.yml`:
 
 ```yaml
-# .github/workflows/salesloft-ci.yml
-name: SalesLoft Integration
+name: Salesloft Integration Tests
+
 on:
   push:
     branches: [main]
   pull_request:
+    branches: [main]
+
+env:
+  SALESLOFT_API_KEY: ${{ secrets.SALESLOFT_API_KEY }}
 
 jobs:
-  unit-tests:
+  test:
     runs-on: ubuntu-latest
+    env:
+      SALESLOFT_API_KEY: ${{ secrets.SALESLOFT_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with:
+          node-version: '20'
+          cache: 'npm'
       - run: npm ci
       - run: npm test -- --coverage
-      - uses: actions/upload-artifact@v4
-        with: { name: coverage, path: coverage/ }
-
-  integration-tests:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    env:
-      SALESLOFT_API_KEY: ${{ secrets.SALESLOFT_TEST_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
-      - run: npm ci
-      - name: Verify SalesLoft connectivity
-        run: |
-          curl -sf -H "Authorization: Bearer $SALESLOFT_API_KEY" \
-            https://api.salesloft.com/v2/me.json | jq '.data.email'
       - run: npm run test:integration
 ```
 
 ### Step 2: Configure Secrets
-
 ```bash
-# Store test API key (read-only scoped)
-gh secret set SALESLOFT_TEST_API_KEY --body "your-test-token"
-
-# For webhook testing
-gh secret set SALESLOFT_WEBHOOK_SECRET --body "your-webhook-secret"
+gh secret set SALESLOFT_API_KEY --body "sk_test_***"
 ```
 
-### Step 3: Integration Test Structure
-
+### Step 3: Add Integration Tests
 ```typescript
-// tests/integration/salesloft.test.ts
-import { describe, it, expect } from 'vitest';
-import { createClient } from '../../src/salesloft/client';
-
-const SKIP = !process.env.SALESLOFT_API_KEY;
-
-describe.skipIf(SKIP)('SalesLoft Integration', () => {
-  const api = createClient();
-
-  it('authenticates and returns user', async () => {
-    const { data } = await api.get('/me.json');
-    expect(data.data.email).toBeTruthy();
-  });
-
-  it('lists people with pagination', async () => {
-    const { data } = await api.get('/people.json', {
-      params: { per_page: 5 },
-    });
-    expect(data.metadata.paging).toHaveProperty('total_count');
-    expect(data.data.length).toBeLessThanOrEqual(5);
-  });
-
-  it('lists cadences', async () => {
-    const { data } = await api.get('/cadences.json', {
-      params: { per_page: 5 },
-    });
-    expect(Array.isArray(data.data)).toBe(true);
-  });
-
-  it('handles rate limit headers', async () => {
-    const resp = await api.get('/people.json', { params: { per_page: 1 } });
-    expect(resp.headers).toHaveProperty('x-ratelimit-limit-per-minute');
+describe('Salesloft Integration', () => {
+  it.skipIf(!process.env.SALESLOFT_API_KEY)('should connect', async () => {
+    const client = getSalesloftClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
   });
 });
 ```
 
-### Step 4: Pre-merge Validation
-
-```yaml
-# Branch protection: require these checks
-required_status_checks:
-  strict: true
-  contexts:
-    - "unit-tests"
-```
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
 
-| CI Issue | Cause | Solution |
-|----------|-------|----------|
-| Secret not found | Missing `SALESLOFT_TEST_API_KEY` | `gh secret set` |
-| Integration test 401 | Token expired | Refresh and update secret |
-| Rate limit in CI | Parallel runs | Use separate test API keys per branch |
-| Flaky integration tests | SalesLoft maintenance | Add retry and skip conditions |
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      SALESLOFT_API_KEY: ${{ secrets.SALESLOFT_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Salesloft production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "salesloft-integration"
+```
 
 ## Resources
-
-- [GitHub Actions Docs](https://docs.github.com/en/actions)
-- [SalesLoft API Logs](https://developers.salesloft.com/docs/platform/guides/api-logs/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Salesloft CI Guide](https://docs.salesloft.com/ci)
 
 ## Next Steps
-
 For deployment patterns, see `salesloft-deploy-integration`.

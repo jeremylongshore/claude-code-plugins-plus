@@ -1,187 +1,216 @@
 ---
 name: openrouter-performance-tuning
 description: |
-  Optimize OpenRouter request latency and throughput. Use when building real-time applications, reducing TTFT, or scaling request volume. Triggers: 'openrouter performance', 'openrouter latency', 'openrouter speed', 'optimize openrouter throughput'.
-allowed-tools: Read, Write, Edit, Bash, Grep
-version: 2.0.0
+  Optimize OpenRouter API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for OpenRouter integrations.
+  Trigger with phrases like "openrouter performance", "optimize openrouter",
+  "openrouter latency", "openrouter caching", "openrouter slow", "openrouter batch".
+allowed-tools: Read, Write, Edit
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, performance, latency, optimization]
-
+compatible-with: claude-code
+tags: [saas, openrouter]
 ---
+
 # OpenRouter Performance Tuning
 
 ## Overview
+Optimize OpenRouter API performance with caching, batching, and connection pooling.
 
-OpenRouter adds minimal overhead (~50-100ms) to direct provider calls. Most latency comes from the upstream model. Key levers: model selection (smaller = faster), streaming (lower TTFT), parallel requests, prompt size reduction, and provider routing to faster infrastructure. This skill covers benchmarking, streaming optimization, concurrent processing, and connection tuning.
+## Prerequisites
+- OpenRouter SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Benchmark Latency
+## Latency Benchmarks
 
-```python
-import os, time, statistics
-from openai import OpenAI
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-)
+## Caching Strategy
 
-def benchmark_model(model: str, prompt: str = "Say hello", n: int = 5) -> dict:
-    """Benchmark a model's latency over N requests."""
-    latencies = []
-    for _ in range(n):
-        start = time.monotonic()
-        response = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            max_tokens=50,
-        )
-        latencies.append((time.monotonic() - start) * 1000)
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
 
-    return {
-        "model": model,
-        "p50_ms": round(statistics.median(latencies)),
-        "p95_ms": round(sorted(latencies)[int(len(latencies) * 0.95)]),
-        "avg_ms": round(statistics.mean(latencies)),
-        "min_ms": round(min(latencies)),
-        "max_ms": round(max(latencies)),
-    }
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
 
-# Compare fast vs slow models
-for model in ["openai/gpt-4o-mini", "anthropic/claude-3-haiku", "anthropic/claude-3.5-sonnet"]:
-    result = benchmark_model(model)
-    print(f"{result['model']}: p50={result['p50_ms']}ms p95={result['p95_ms']}ms")
+async function cachedOpenRouterRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
 ```
 
-## Streaming for Lower TTFT
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-```python
-def stream_completion(messages, model="openai/gpt-4o-mini", **kwargs):
-    """Stream response for lower time-to-first-token."""
-    start = time.monotonic()
-    first_token_time = None
-    full_content = []
+const redis = new Redis(process.env.REDIS_URL);
 
-    stream = client.chat.completions.create(
-        model=model, messages=messages, stream=True,
-        stream_options={"include_usage": True},  # Get token counts at end
-        **kwargs,
-    )
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
 
-    for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            if first_token_time is None:
-                first_token_time = (time.monotonic() - start) * 1000
-            full_content.append(chunk.choices[0].delta.content)
-
-    total_time = (time.monotonic() - start) * 1000
-    return {
-        "content": "".join(full_content),
-        "ttft_ms": round(first_token_time or 0),
-        "total_ms": round(total_time),
-    }
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
 ```
 
-## Parallel Request Processing
+## Request Batching
 
-```python
-import asyncio
-from openai import AsyncOpenAI
+```typescript
+import DataLoader from 'dataloader';
 
-async def parallel_completions(prompts: list[str], model="openai/gpt-4o-mini",
-                                max_concurrent=10, **kwargs):
-    """Process multiple prompts concurrently."""
-    semaphore = asyncio.Semaphore(max_concurrent)
-    client = AsyncOpenAI(
-        base_url="https://openrouter.ai/api/v1",
-        api_key=os.environ["OPENROUTER_API_KEY"],
-        default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-    )
+const openrouterLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from OpenRouter
+    const results = await openrouterClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
 
-    async def process(prompt):
-        async with semaphore:
-            response = await client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                **kwargs,
-            )
-            return response.choices[0].message.content
-
-    return await asyncio.gather(*[process(p) for p in prompts])
-
-# 10 requests in parallel instead of sequential
-results = asyncio.run(parallel_completions(
-    ["Summarize: " + text for text in documents],
-    max_concurrent=5,
-    max_tokens=200,
-))
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  openrouterLoader.load('id-1'),
+  openrouterLoader.load('id-2'),
+  openrouterLoader.load('id-3'),
+]);
 ```
-
-## Performance Optimization Checklist
-
-| Optimization | Impact | Effort |
-|-------------|--------|--------|
-| Use streaming | TTFT drops 2-10x | Low |
-| Use smaller models for simple tasks | 2-5x faster | Low |
-| Reduce prompt size | Proportional to reduction | Medium |
-| Set `max_tokens` | Caps response time | Low |
-| Parallel requests | N requests in ~1 request time | Medium |
-| Use `:nitro` variant | Faster inference (where available) | Low |
-| Provider routing to fastest | 10-30% latency reduction | Low |
-| Connection keep-alive | Saves TCP/TLS handshake | Low |
-
-## Model Speed Tiers
-
-| Speed | Models | Typical TTFT |
-|-------|--------|-------------|
-| Fastest | `openai/gpt-4o-mini`, `anthropic/claude-3-haiku` | 200-500ms |
-| Fast | `openai/gpt-4o`, `google/gemini-2.0-flash-001` | 500ms-1s |
-| Standard | `anthropic/claude-3.5-sonnet` | 1-3s |
-| Slow | `openai/o1`, reasoning models | 5-30s |
 
 ## Connection Optimization
 
-```python
-# Reuse client instance (connection pooling)
-# BAD: creating new client per request
-for prompt in prompts:
-    c = OpenAI(base_url="https://openrouter.ai/api/v1", ...)  # New TCP connection each time
-    c.chat.completions.create(...)
+```typescript
+import { Agent } from 'https';
 
-# GOOD: reuse single client
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    timeout=30.0,           # Set appropriate timeout
-    max_retries=2,          # Built-in retry with backoff
-    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-)
-for prompt in prompts:
-    client.chat.completions.create(...)  # Reuses HTTP connection
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new OpenRouterClient({
+  apiKey: process.env.OPENROUTER_API_KEY!,
+  httpAgent: agent,
+});
 ```
 
+## Pagination Optimization
+
+```typescript
+async function* paginatedOpenRouterList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedOpenRouterList(cursor =>
+  openrouterClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredOpenRouterCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical OpenRouter operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
+
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| High TTFT (>5s) | Model cold-starting or overloaded | Switch to `:nitro` variant or different provider |
-| Timeout errors | max_tokens too high or model too slow | Reduce max_tokens; use streaming; increase timeout |
-| Throughput bottleneck | Sequential processing | Use async + semaphore for concurrent requests |
-| Inconsistent latency | Provider load varies | Use `provider.order` to pin to fastest provider |
+## Examples
 
-## Enterprise Considerations
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredOpenRouterCall(name, () =>
+    cachedOpenRouterRequest(`cache:${name}`, fn)
+  );
+```
 
-- Benchmark models in your infrastructure, not just locally -- network path matters
-- Use streaming for all user-facing requests to minimize perceived latency
-- Set `max_tokens` on every request to bound response time and cost
-- Reuse client instances to benefit from HTTP connection pooling
-- Use `asyncio.Semaphore` to control concurrency and avoid overwhelming the API
-- Monitor P95 latency, not just average -- tail latencies indicate provider issues
-- Consider `:nitro` model variants for latency-critical paths
+## Resources
+- [OpenRouter Performance Guide](https://docs.openrouter.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-## References
-
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models) | [Streaming](https://openrouter.ai/docs/features/streaming)
+## Next Steps
+For cost optimization, see `openrouter-cost-tuning`.

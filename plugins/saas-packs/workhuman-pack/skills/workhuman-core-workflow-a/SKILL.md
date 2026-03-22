@@ -1,60 +1,71 @@
 ---
 name: workhuman-core-workflow-a
 description: |
-  Workhuman core workflow a for employee recognition and rewards API.
-  Use when integrating Workhuman Social Recognition,
-  or building recognition workflows with HRIS systems.
-  Trigger: "workhuman core workflow a".
+  Execute Workhuman primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "workhuman main workflow",
+  "primary task with workhuman".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, recognition, workhuman]
 compatible-with: claude-code
+tags: [saas, workhuman]
 ---
 
 # Workhuman Core Workflow A
 
 ## Overview
+Primary money-path workflow for Workhuman. This is the most common use case.
 
-Guidance for core workflow a with Workhuman Social Recognition and rewards API.
+## Prerequisites
+- Completed `workhuman-install-auth` setup
+- Understanding of Workhuman core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Key Workhuman API Concepts
+### Step 1: Initialize
+```typescript
+// Step 1 implementation
+```
 
-- **Auth**: OAuth 2.0 client credentials flow
-- **Recognition**: Peer-to-peer and manager nominations with points
-- **Awards**: Configurable levels (bronze, silver, gold, platinum)
-- **Values**: Company values attached to recognitions
-- **HRIS Sync**: Bidirectional sync with Workday, SAP SuccessFactors
-- **Integrations**: Microsoft Teams, Slack, Outlook native plugins
+### Step 2: Execute
+```typescript
+// Step 2 implementation
+```
 
-### Core API Endpoints
+### Step 3: Finalize
+```typescript
+// Step 3 implementation
+```
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/v1/recognitions` | GET | List recognitions |
-| `/api/v1/recognitions` | POST | Create nomination |
-| `/api/v1/recognitions/:id` | GET | Get recognition status |
-| `/api/v1/users` | GET | List employees |
-| `/api/v1/rewards/catalog` | GET | Browse reward catalog |
-| `/api/v1/rewards/redeem` | POST | Redeem points for reward |
+## Output
+- Completed Core Workflow A execution
+- Expected results from Workhuman API
+- Success confirmation or error details
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Token expired | Re-authenticate |
-| `403 Forbidden` | Insufficient permissions | Check role/permissions |
-| `422 Validation` | Missing fields | Check required fields |
-| `404 Not Found` | Invalid ID | Verify resource exists |
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-
-- [Workhuman Platform](https://www.workhuman.com/)
-- [Workhuman Integrations](https://www.workhuman.com/capabilities/integrations/)
+- [Workhuman Documentation](https://docs.workhuman.com)
+- [Workhuman API Reference](https://docs.workhuman.com/api)
 
 ## Next Steps
-
-See related Workhuman skills for more patterns.
+For secondary workflow, see `workhuman-core-workflow-b`.

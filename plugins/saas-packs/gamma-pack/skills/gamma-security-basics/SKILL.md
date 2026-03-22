@@ -1,166 +1,142 @@
 ---
 name: gamma-security-basics
 description: |
-  Implement security best practices for Gamma integration.
-  Use when securing API keys, implementing access controls,
+  Apply Gamma security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
   or auditing Gamma security configuration.
-  Trigger with phrases like "gamma security", "gamma API key security",
-  "gamma secure", "gamma credentials", "gamma access control".
-allowed-tools: Read, Write, Edit, Grep
+  Trigger with phrases like "gamma security", "gamma secrets",
+  "secure gamma", "gamma API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, gamma, api, security, audit]
-
+compatible-with: claude-code
+tags: [saas, gamma]
 ---
+
 # Gamma Security Basics
 
 ## Overview
-Security best practices for Gamma API integration to protect credentials and data.
+Security best practices for Gamma API keys, tokens, and access control.
 
 ## Prerequisites
-- Active Gamma integration
-- Environment variable support
-- Understanding of secret management
+- Gamma SDK installed
+- Understanding of environment variables
+- Access to Gamma dashboard
 
 ## Instructions
 
-### Step 1: Secure API Key Storage
-```typescript
-// NEVER do this
-const gamma = new GammaClient({
-  apiKey: 'gamma_live_abc123...', // Hardcoded - BAD!
-});
-
-// DO this instead
-const gamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY,
-});
-```
-
-**Environment Setup:**
+### Step 1: Configure Environment Variables
 ```bash
-# .env (add to .gitignore!)
-GAMMA_API_KEY=gamma_live_abc123...
+# .env (NEVER commit to git)
+GAMMA_API_KEY=sk_live_***
+GAMMA_SECRET=***
 
-# Load in application
-import 'dotenv/config';
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Step 2: Key Rotation Strategy
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Gamma dashboard
+# 2. Update environment variable
+export GAMMA_API_KEY="new_key_here"
+
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${GAMMA_API_KEY}" \
+  https://api.gamma.com/health
+
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
+
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
 ```typescript
-// Support multiple keys for rotation
-const gamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY_PRIMARY
-    || process.env.GAMMA_API_KEY_SECONDARY,
-});
-
-// Rotation script
-async function rotateApiKey() {
-  // 1. Generate new key in Gamma dashboard
-  // 2. Update GAMMA_API_KEY_SECONDARY
-  // 3. Deploy and verify
-  // 4. Swap PRIMARY and SECONDARY
-  // 5. Revoke old key
-}
+const clients = {
+  reader: new GammaClient({
+    apiKey: process.env.GAMMA_READ_KEY,
+  }),
+  writer: new GammaClient({
+    apiKey: process.env.GAMMA_WRITE_KEY,
+  }),
+};
 ```
 
-### Step 3: Request Signing (if supported)
+### Webhook Signature Verification
 ```typescript
 import crypto from 'crypto';
 
-function signRequest(payload: object, secret: string): string {
-  const timestamp = Date.now().toString();
-  const message = timestamp + JSON.stringify(payload);
-
-  return crypto
-    .createHmac('sha256', secret)
-    .update(message)
-    .digest('hex');
-}
-
-// Usage with webhook verification
-function verifyWebhook(body: string, signature: string, secret: string): boolean {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(body)
-    .digest('hex');
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
 
-### Step 4: Access Control Patterns
-```typescript
-// Scoped API keys (if supported)
-const readOnlyGamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY_READONLY,
-  scopes: ['presentations:read', 'exports:read'],
-});
-
-const fullAccessGamma = new GammaClient({
-  apiKey: process.env.GAMMA_API_KEY_FULL,
-});
-
-// Permission check before operations
-async function createPresentation(user: User, data: object) {
-  if (!user.permissions.includes('gamma:create')) {
-    throw new Error('Insufficient permissions');
-  }
-  return fullAccessGamma.presentations.create(data);
-}
-```
-
-### Step 5: Audit Logging
-```typescript
-import { GammaClient } from '@gamma/sdk';
-
-function createAuditedClient(userId: string) {
-  return new GammaClient({
-    apiKey: process.env.GAMMA_API_KEY,
-    interceptors: {
-      request: (config) => {
-        console.log(JSON.stringify({
-          timestamp: new Date().toISOString(),
-          userId,
-          action: `${config.method} ${config.path}`,
-          type: 'gamma_api_request',
-        }));
-        return config;
-      },
-    },
-  });
-}
-```
-
-## Security Checklist
-
-- [ ] API keys stored in environment variables
-- [ ] .env files in .gitignore
-- [ ] No keys in source code or logs
-- [ ] Key rotation procedure documented
-- [ ] Minimal permission scopes used
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
 - [ ] Audit logging enabled
-- [ ] Webhook signatures verified
-- [ ] HTTPS enforced for all calls
 
-## Error Handling
-| Security Issue | Detection | Remediation |
-|----------------|-----------|-------------|
-| Exposed key | GitHub scanning | Rotate immediately |
-| Key in logs | Log audit | Filter sensitive data |
-| Unauthorized access | Audit logs | Revoke and investigate |
-| Weak permissions | Access review | Apply least privilege |
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Gamma analytics
+  await gammaClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'gamma.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-- [Gamma Security Guide](https://gamma.app/docs/security)
-- [API Key Management](https://gamma.app/docs/api-keys)
-- [OWASP API Security](https://owasp.org/API-Security/)
+- [Gamma Security Guide](https://docs.gamma.com/security)
+- [Gamma API Scopes](https://docs.gamma.com/scopes)
 
 ## Next Steps
-
-Proceed to `gamma-prod-checklist` for production readiness.
+For production deployment, see `gamma-prod-checklist`.

@@ -1,180 +1,121 @@
 ---
-name: "cursor-prod-checklist"
+name: cursor-prod-checklist
 description: |
-  Production readiness checklist for Cursor IDE setup: security, rules, indexing, privacy, and team
-  standards. Triggers on "cursor production", "cursor ready", "cursor checklist", "optimize cursor setup",
-  "cursor onboarding".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+  Execute Cursor production deployment checklist and rollback procedures.
+  Use when deploying Cursor integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "cursor production", "deploy cursor",
+  "cursor go-live", "cursor launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-prod]
-
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+compatible-with: claude-code
+tags: [saas, cursor]
 ---
+
 # Cursor Production Checklist
 
-Comprehensive checklist for configuring Cursor IDE for production use. Covers security hardening, project rules, indexing optimization, privacy settings, and team standardization.
+## Overview
+Complete checklist for deploying Cursor integrations to production.
 
-## Pre-Flight Checklist
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
-### Authentication & Licensing
+## Instructions
 
-```
-[ ] All team members authenticated with correct plan (Pro/Business/Enterprise)
-[ ] SSO configured (Business/Enterprise) -- see cursor-sso-integration skill
-[ ] Privacy Mode enabled (enforced at team level for Business+)
-[ ] Verify plan at cursor.com/settings
-```
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-### Project Rules
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Cursor error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-```
-[ ] .cursor/rules/ directory created and committed to git
-[ ] Core project rule with alwaysApply: true (stack, conventions, standards)
-[ ] Language-specific rules with glob patterns (*.ts, *.py, etc.)
-[ ] Security rule: "Never suggest hardcoded credentials or secrets"
-[ ] No sensitive data (API keys, passwords) in any rule file
-```
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Cursor connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-**Minimum viable rule set:**
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-```yaml
-# .cursor/rules/project.mdc
----
-description: "Core project context"
-globs: ""
-alwaysApply: true
----
-# Project: [Name]
-Stack: [framework, language, database, etc.]
-Package manager: [npm/pnpm/yarn]
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.cursor.com
 
-## Conventions
-- [your team conventions here]
-- Never commit console.log statements
-- All functions require TypeScript return types
-- Use Conventional Commits format
-```
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/cursor-integration app=image:new --record
+kubectl rollout pause deployment/cursor-integration
 
-```yaml
-# .cursor/rules/security.mdc
----
-description: "Security constraints for AI-generated code"
-globs: ""
-alwaysApply: true
----
-# Security Rules
-- NEVER hardcode API keys, passwords, or secrets in code
-- NEVER disable HTTPS/TLS verification
-- ALWAYS use parameterized queries (no string concatenation for SQL)
-- ALWAYS validate and sanitize user input
-- Use environment variables for all configuration values
-```
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-### Indexing Configuration
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/cursor-integration
+kubectl rollout pause deployment/cursor-integration
+sleep 300
 
-```
-[ ] .cursorignore created at project root
-[ ] Excluded: node_modules/, dist/, build/, .next/, vendor/
-[ ] Excluded: *.min.js, *.map, *.lock, *.sqlite
-[ ] Excluded: .env*, secrets/, credentials/
-[ ] .cursorindexingignore created for large-but-useful files
-[ ] Verified indexing completes (status bar shows "Indexed")
-[ ] Tested @Codebase queries return relevant results
+# Complete rollout to 100%
+kubectl rollout resume deployment/cursor-integration
+kubectl rollout status deployment/cursor-integration
 ```
 
-### Privacy & Security
+## Output
+- Deployed Cursor integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
-```
-[ ] Privacy Mode: ON (Cursor Settings > General > Privacy Mode)
-[ ] Verified: cursor.com/settings shows "Privacy Mode: Enabled"
-[ ] .cursorignore covers all files with PII or regulated data
-[ ] API keys (if BYOK) stored in Cursor settings, NOT in project files
-[ ] Team members briefed: AI output is a draft, not production-ready code
-```
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-### AI Configuration
+## Examples
 
-```
-[ ] Default model set (Cursor Settings > Models)
-[ ] BYOK configured if required by team (see cursor-api-key-management skill)
-[ ] Auto mode evaluated vs fixed model selection
-[ ] Tab completion enabled and tested
-[ ] Conflicting extensions disabled (Copilot, TabNine, Codeium)
-```
-
-### Version Control Integration
-
-```
-[ ] .cursor/rules/ committed to git (team shares rules)
-[ ] .cursorignore committed to git
-[ ] .cursorindexingignore committed to git
-[ ] AI-generated commit messages reviewed before pushing
-[ ] Pre-commit hooks run (linting, tests) regardless of AI-generated code
-```
-
-## Team Onboarding Template
-
-```markdown
-# Cursor IDE Onboarding
-
-## Setup (15 minutes)
-1. Download Cursor from cursor.com/download
-2. Sign in with your @company.com email (SSO will redirect)
-3. Open our project repository in Cursor
-4. Wait for indexing to complete (status bar)
-
-## Daily Workflow
-- Cmd+L (Chat): Ask questions, plan features
-- Cmd+K (Inline Edit): Fix/refactor selected code
-- Cmd+I (Composer): Multi-file changes
-- Tab: Accept AI completions while typing
-
-## Our Rules
-- Project rules are in .cursor/rules/ -- read them
-- Always review AI-generated code before committing
-- Start new chats for new tasks (don't continue stale conversations)
-- Use @Files for specific context, @Codebase for discovery
-
-## Prohibited
-- Do NOT paste credentials into Chat/Composer
-- Do NOT disable Privacy Mode
-- Do NOT commit AI-generated code without review and testing
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; cursor: any }> {
+  const start = Date.now();
+  try {
+    await cursorClient.ping();
+    return { status: 'healthy', cursor: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', cursor: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
 ```
 
-## Maintenance Schedule
-
-| Task | Frequency | How |
-|------|-----------|-----|
-| Review and update project rules | Monthly | Audit `.cursor/rules/` for stale info |
-| Verify Privacy Mode enforcement | Quarterly | Admin dashboard or Cursor Settings |
-| Rotate API keys (BYOK) | Quarterly | Provider console + Cursor Settings |
-| Update .cursorignore | When project structure changes | Add new build/data directories |
-| Review extension list | Monthly | Disable unused, check for conflicts |
-| Cursor version update | As released | Help > Check for Updates |
-| Team onboarding doc update | When workflow changes | Keep setup steps current |
-
-## Production Anti-Patterns
-
-| Anti-Pattern | Risk | Fix |
-|-------------|------|-----|
-| No .cursor/rules/ | AI generates inconsistent code | Create rules with team conventions |
-| No .cursorignore | Secrets indexed, large files slow indexing | Add comprehensive ignore patterns |
-| Privacy Mode off | Code stored by model providers | Enable at team level (admin dashboard) |
-| One giant conversation | Context overflow, bad suggestions | Start new chat per task |
-| Blind "Apply All" | Bugs, wrong patterns committed | Review every diff before applying |
-| No pre-commit hooks | AI-generated bugs reach main branch | Enforce lint + test hooks |
-
-## Enterprise Considerations
-
-- **Compliance documentation**: Maintain records of Cursor configuration for SOC 2 / ISO 27001 audits
-- **Change management**: Treat `.cursor/rules/` changes like infrastructure changes -- PR and review
-- **Access reviews**: Quarterly review of team membership and seat assignments
-- **Data classification**: Map .cursorignore to your data classification policy
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/cursor-integration
+kubectl rollout status deployment/cursor-integration
+```
 
 ## Resources
+- [Cursor Status](https://status.cursor.com)
+- [Cursor Support](https://docs.cursor.com/support)
 
-- [Cursor Enterprise](https://cursor.com/enterprise)
-- [Privacy and Data Governance](https://docs.cursor.com/enterprise/privacy-and-data-governance)
-- [Security Page](https://cursor.com/security)
+## Next Steps
+For version upgrades, see `cursor-upgrade-migration`.

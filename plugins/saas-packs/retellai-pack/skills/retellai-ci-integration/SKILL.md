@@ -1,49 +1,126 @@
 ---
 name: retellai-ci-integration
 description: |
-  Retell AI ci integration — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell ci integration", "retellai-ci-integration", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Configure Retell AI CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Retell AI tests into your build process.
+  Trigger with phrases like "retellai CI", "retellai GitHub Actions",
+  "retellai automated tests", "CI retellai".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
-# Retell AI Ci Integration
+# Retell AI CI Integration
 
 ## Overview
-Implementation patterns for Retell AI ci integration — voice agent and telephony platform.
+Set up CI/CD pipelines for Retell AI integrations with automated testing.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
+- GitHub repository with Actions enabled
+- Retell AI test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: SDK Pattern
-```typescript
-import Retell from 'retell-sdk';
-const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/retellai-integration.yml`:
 
-const agents = await retell.agent.list();
-console.log(`Agents: ${agents.length}`);
+```yaml
+name: Retell AI Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  RETELLAI_API_KEY: ${{ secrets.RETELLAI_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      RETELLAI_API_KEY: ${{ secrets.RETELLAI_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set RETELLAI_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Retell AI Integration', () => {
+  it.skipIf(!process.env.RETELLAI_API_KEY)('should connect', async () => {
+    const client = getRetell AIClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
-- Retell AI integration for ci integration
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 400 Bad Request | Invalid parameters | Check API documentation |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      RETELLAI_API_KEY: ${{ secrets.RETELLAI_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Retell AI production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "retellai-integration"
+```
 
 ## Resources
-- [Retell AI Documentation](https://docs.retellai.com)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Retell AI CI Guide](https://docs.retellai.com/ci)
 
 ## Next Steps
-See related Retell AI skills for more workflows.
+For deployment patterns, see `retellai-deploy-integration`.

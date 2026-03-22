@@ -1,40 +1,126 @@
 ---
 name: juicebox-ci-integration
 description: |
-  Configure Juicebox CI/CD.
-  Trigger: "juicebox ci", "juicebox pipeline".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Configure Juicebox CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Juicebox tests into your build process.
+  Trigger with phrases like "juicebox CI", "juicebox GitHub Actions",
+  "juicebox automated tests", "CI juicebox".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox CI Integration
 
-## GitHub Actions
+## Overview
+Set up CI/CD pipelines for Juicebox integrations with automated testing.
+
+## Prerequisites
+- GitHub repository with Actions enabled
+- Juicebox test API key
+- npm/pnpm project configured
+
+## Instructions
+
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/juicebox-integration.yml`:
+
 ```yaml
-name: Juicebox Tests
-on: [push, pull_request]
+name: Juicebox Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  JUICEBOX_API_KEY: ${{ secrets.JUICEBOX_API_KEY }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      JUICEBOX_API_KEY: ${{ secrets.JUICEBOX_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm test
-  integration:
-    if: github.ref == 'refs/heads/main'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set JUICEBOX_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Juicebox Integration', () => {
+  it.skipIf(!process.env.JUICEBOX_API_KEY)('should connect', async () => {
+    const client = getJuiceboxClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
+
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
     runs-on: ubuntu-latest
+    env:
+      JUICEBOX_API_KEY: ${{ secrets.JUICEBOX_API_KEY_PROD }}
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm run test:integration
-        env:
-          JUICEBOX_API_KEY: ${{ secrets.JUICEBOX_API_KEY }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Juicebox production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "juicebox-integration"
 ```
 
 ## Resources
-- [Juicebox Docs](https://docs.juicebox.work)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Juicebox CI Guide](https://docs.juicebox.com/ci)
 
 ## Next Steps
-See `juicebox-deploy-integration`.
+For deployment patterns, see `juicebox-deploy-integration`.

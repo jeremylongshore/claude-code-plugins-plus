@@ -1,49 +1,211 @@
 ---
 name: retellai-deploy-integration
 description: |
-  Retell AI deploy integration — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell deploy integration", "retellai-deploy-integration", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Deploy Retell AI integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Retell AI-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy retellai", "retellai Vercel",
+  "retellai production deploy", "retellai Cloud Run", "retellai Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
 # Retell AI Deploy Integration
 
 ## Overview
-Implementation patterns for Retell AI deploy integration — voice agent and telephony platform.
+Deploy Retell AI-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
+- Retell AI API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add Retell AI secrets to Vercel
+vercel secrets add retellai_api_key sk_live_***
+vercel secrets add retellai_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "RETELLAI_API_KEY": "@retellai_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-retellai-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Retell AI secrets
+fly secrets set RETELLAI_API_KEY=sk_live_***
+fly secrets set RETELLAI_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="retellai-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=RETELLAI_API_KEY=retellai-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/retellai.ts
+interface Retell AIConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getRetell AIConfig(): Retell AIConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.RETELLAI_API_KEY!,
+    environment: env as Retell AIConfig['environment'],
+    webhookSecret: process.env.RETELLAI_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const retellaiStatus = await checkRetell AIConnection();
+
+  return Response.json({
+    status: retellaiStatus ? 'healthy' : 'degraded',
+    services: {
+      retellai: retellaiStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: SDK Pattern
-```typescript
-import Retell from 'retell-sdk';
-const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-const agents = await retell.agent.list();
-console.log(`Agents: ${agents.length}`);
-```
+### Step 2: Configure Secrets
+Store Retell AI API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Retell AI integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Retell AI connectivity.
 
 ## Output
-- Retell AI integration for deploy integration
+- Application deployed to production
+- Retell AI secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 400 Bad Request | Invalid parameters | Check API documentation |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add retellai_api_key "$RETELLAI_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set RETELLAI_API_KEY="$RETELLAI_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Retell AI Documentation](https://docs.retellai.com)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Retell AI Deploy Guide](https://docs.retellai.com/deploy)
 
 ## Next Steps
-See related Retell AI skills for more workflows.
+For webhook handling, see `retellai-webhooks-events`.

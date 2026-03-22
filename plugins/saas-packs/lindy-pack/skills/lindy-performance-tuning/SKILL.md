@@ -1,161 +1,216 @@
 ---
 name: lindy-performance-tuning
 description: |
-  Optimize Lindy AI agent execution speed, reliability, and cost efficiency.
-  Use when agents are slow, consuming too many credits,
-  or producing inconsistent results.
-  Trigger with phrases like "lindy performance", "lindy slow",
-  "optimize lindy", "lindy latency", "lindy speed".
+  Optimize Lindy API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Lindy integrations.
+  Trigger with phrases like "lindy performance", "optimize lindy",
+  "lindy latency", "lindy caching", "lindy slow", "lindy batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, performance]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Performance Tuning
 
 ## Overview
-Lindy agents execute as multi-step workflows where each step (LLM call, action
-execution, API call, condition evaluation) adds latency and credit cost. Optimization
-targets: fewer steps, smaller models, faster actions, tighter prompts.
+Optimize Lindy API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Lindy workspace with active agents
-- Access to agent Tasks tab (view step-by-step execution history)
-- Understanding of agent workflow structure
+- Lindy SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
+
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedLindyRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const lindyLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Lindy
+    const results = await lindyClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  lindyLoader.load('id-1'),
+  lindyLoader.load('id-2'),
+  lindyLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new LindyClient({
+  apiKey: process.env.LINDY_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedLindyList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedLindyList(cursor =>
+  lindyClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredLindyCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Profile Agent Execution
-In the Tasks tab, open a completed task and review:
-- **Total task duration**: Baseline for improvement
-- **Per-step timing**: Identify the slowest steps
-- **Credit consumption**: Which steps cost the most
-- **Step count**: Total actions executed per task
+### Step 1: Establish Baseline
+Measure current latency for critical Lindy operations.
 
-Common bottlenecks:
-| Bottleneck | Symptom | Fix |
-|-----------|---------|-----|
-| Large model on simple task | High credit cost, slow | Switch to Gemini Flash |
-| Too many LLM steps | Long total duration | Consolidate into fewer steps |
-| Agent Step with many skills | Unpredictable path | Reduce to 2-4 focused skills |
-| Knowledge Base over-querying | Multiple KB searches | Increase Max Results per query |
-| Sequential when parallel possible | Unnecessary waiting | Use loop with Max Concurrent > 1 |
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-### Step 2: Right-Size Model Selection
-The single biggest performance lever. Match model to task complexity:
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-| Task | Recommended Model | Speed | Credits |
-|------|-------------------|-------|---------|
-| Route email to category | Gemini Flash | Fast | ~1 |
-| Extract fields from text | GPT-4o-mini | Fast | ~2 |
-| Draft short response | Claude Sonnet | Medium | ~3 |
-| Complex multi-step analysis | GPT-4 / Claude Opus | Slow | ~10 |
-| Simple phone call | Gemini Flash | Fast | ~20/min |
-| Complex phone conversation | Claude Sonnet | Medium | ~20/min |
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
-**Rule of thumb**: Start with the smallest model. Only upgrade if output quality
-is insufficient. Most classification and routing tasks work fine with Gemini Flash.
-
-### Step 3: Consolidate LLM Steps
-Before (3 LLM calls, ~9 credits):
-```
-Step 1: Classify email (LLM)
-Step 2: Extract key entities (LLM)
-Step 3: Generate response (LLM)
-```
-
-After (1 LLM call, ~3 credits):
-```
-Step 1: Classify, extract entities, and generate response (single LLM prompt)
-```
-
-Consolidated prompt:
-```
-Analyze this email and return JSON with:
-1. "classification": one of [billing, technical, general]
-2. "entities": {customer_name, product, issue_type}
-3. "draft_response": professional reply under 150 words
-
-Email: {{email_received.body}}
-```
-
-### Step 4: Use Deterministic Actions Where Possible
-Replace AI-powered fields with **Set Manually** mode when values are predictable:
-
-| Field | Instead of AI Prompt | Use Set Manually |
-|-------|---------------------|------------------|
-| Slack channel | "Post to the support channel" | `#support-triage` |
-| Email subject | "Create an appropriate subject" | `[Ticket] {{email_received.subject}}` |
-| Sheet column | "Determine the right column" | Column A |
-
-Each Set Manually field saves one LLM inference (~1 credit).
-
-### Step 5: Optimize Knowledge Base Queries
-- **Max Results**: Set to the minimum needed (default 4, max 10)
-- **Search Fuzziness**: Keep at 100 (semantic) unless precision matching needed
-- **Query mode**: Use AI Prompt with specific instructions:
-  ```
-  Search for the customer's specific product issue.
-  Focus on: {{extracted_entities.product}} {{extracted_entities.issue_type}}
-  ```
-  Not: "Search for relevant information" (too vague, wastes results)
-
-### Step 6: Optimize Trigger Filters
-Prevent wasted runs with precise trigger filters:
-```
-Before: Email Received (all emails) → 200 runs/day → 600 credits
-After:  Email Received (label: "support" AND NOT from: "noreply@")
-        → 30 runs/day → 90 credits (85% savings)
-```
-
-### Step 7: Use Agent Steps Judiciously
-Agent Steps (autonomous mode) are powerful but expensive — the agent may take
-unpredictable paths and use more actions than a deterministic workflow.
-
-**Use Agent Steps when**: Next steps are genuinely uncertain (complex research,
-multi-source investigation, adaptive problem-solving)
-
-**Use deterministic actions when**: Steps are predictable (classify -> route -> respond)
-
-**When using Agent Steps**:
-- Limit available skills to 2-4
-- Set clear, measurable exit conditions
-- Include a fallback exit condition to prevent infinite loops
-- Monitor credit consumption of first 10 runs to establish baseline
-
-### Step 8: Loop Optimization
-For batch processing, configure loops for efficiency:
-- **Max Concurrent**: Increase for independent items (parallel execution)
-- **Max Cycles**: Always set a cap to prevent runaway processing
-- Only pass essential data as loop output (not full context)
-
-## Performance Baseline Reference
-
-| Agent Type | Expected Duration | Expected Credits |
-|-----------|------------------|-----------------|
-| Simple router (1 LLM + 1 action) | 2-5 seconds | 1-2 |
-| Email triage (classify + respond) | 5-15 seconds | 3-5 |
-| Research agent (search + analyze) | 15-60 seconds | 5-15 |
-| Multi-agent pipeline | 30-120 seconds | 10-30 |
-| Phone call | Real-time | ~20/min |
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Agent timeout | Too many sequential steps | Consolidate steps, reduce skill count |
-| High credit burn | Large model + many steps | Downgrade model, merge LLM calls |
-| Inconsistent output | Agent Step choosing different paths | Switch to deterministic workflow |
-| KB search slow | Large knowledge base | Reduce fuzziness, increase specificity |
-| Loop runs too long | High max cycles, low concurrency | Increase Max Concurrent, lower Max Cycles |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredLindyCall(name, () =>
+    cachedLindyRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Lindy Prompt Guide](https://docs.lindy.ai/fundamentals/lindy-101/prompt-guide)
-- [Agent Steps](https://docs.lindy.ai/fundamentals/lindy-101/ai-agents)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [Lindy Performance Guide](https://docs.lindy.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-Proceed to `lindy-cost-tuning` for budget optimization.
+For cost optimization, see `lindy-cost-tuning`.

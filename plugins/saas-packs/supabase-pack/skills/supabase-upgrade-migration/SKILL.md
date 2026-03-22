@@ -1,160 +1,114 @@
 ---
 name: supabase-upgrade-migration
 description: |
-  Analyze, plan, and execute Supabase SDK and CLI upgrades with breaking change detection.
-  Use when upgrading @supabase/supabase-js versions, migrating from v1 to v2,
-  or detecting deprecations in your Supabase integration.
-  Trigger with phrases like "upgrade supabase", "supabase breaking changes",
-  "update supabase SDK", "supabase v2 migration", "supabase version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Bash(supabase:*), Bash(git:*), Grep
+  Analyze, plan, and execute Supabase SDK upgrades with breaking change detection.
+  Use when upgrading Supabase SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade supabase", "supabase migration",
+  "supabase breaking changes", "update supabase SDK", "analyze supabase version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, migration, upgrade]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
-# Supabase Upgrade Migration
+
+# Supabase Upgrade & Migration
 
 ## Overview
-Upgrade `@supabase/supabase-js` and the Supabase CLI safely with breaking change detection, automated code migration, and rollback planning. Covers the common v1-to-v2 migration path and minor version upgrades.
-
-## Current State
-!`npm list @supabase/supabase-js 2>/dev/null | grep supabase || echo 'not installed'`
-!`supabase --version 2>/dev/null || echo 'CLI not installed'`
+Guide for upgrading Supabase SDK versions and handling breaking changes.
 
 ## Prerequisites
 - Current Supabase SDK installed
-- Git with clean working tree
+- Git for version control
 - Test suite available
+- Staging environment
 
 ## Instructions
 
-### Step 1: Audit Current Version and Usage
-
+### Step 1: Check Current Version
 ```bash
-# Check current SDK version
 npm list @supabase/supabase-js
-
-# Check CLI version
-supabase --version
-
-# Find all Supabase imports in your codebase
-grep -rn "from '@supabase/supabase-js'" --include="*.ts" --include="*.tsx" src/
-grep -rn "from 'supabase'" --include="*.py" src/
+npm view @supabase/supabase-js version
 ```
 
-### Step 2: Review Breaking Changes
-
-**supabase-js v1 to v2 breaking changes:**
-
-| v1 Pattern | v2 Pattern |
-|-----------|-----------|
-| `createClient(url, key)` | Same (no change) |
-| `supabase.auth.session()` (sync) | `supabase.auth.getSession()` (async) |
-| `supabase.auth.user()` (sync) | `supabase.auth.getUser()` (async) |
-| `supabase.auth.signIn({ email, password })` | `supabase.auth.signInWithPassword({ email, password })` |
-| `supabase.auth.signIn({ provider: 'google' })` | `supabase.auth.signInWithOAuth({ provider: 'google' })` |
-| `supabase.auth.signIn({ email })` (magic link) | `supabase.auth.signInWithOtp({ email })` |
-| `supabase.auth.api.resetPasswordForEmail(email)` | `supabase.auth.resetPasswordForEmail(email)` |
-| `supabase.auth.onAuthStateChange(callback)` returns `{ data: subscription }` | Returns `{ data: { subscription } }` |
-| `error.message` string parsing | `error.code` enum for reliable matching |
-| `.single()` returns error on 0 rows | Same, use `.maybeSingle()` for optional |
-
-### Step 3: Run the Upgrade
-
+### Step 2: Review Changelog
 ```bash
-# Create a branch
-git checkout -b upgrade-supabase-sdk
+open https://github.com/supabase/sdk/releases
+```
 
-# Upgrade SDK
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/supabase-sdk-vX.Y.Z
 npm install @supabase/supabase-js@latest
-
-# Upgrade CLI
-npm install -g supabase@latest
-
-# If using SSR helper:
-npm install @supabase/ssr@latest
-
-# Regenerate types (schema may have evolved)
-supabase gen types typescript --linked > lib/database.types.ts
-```
-
-### Step 4: Apply Code Migrations
-
-```typescript
-// BEFORE (v1 auth patterns)
-const session = supabase.auth.session()
-const user = supabase.auth.user()
-const { error } = await supabase.auth.signIn({ email, password })
-
-// AFTER (v2 auth patterns)
-const { data: { session } } = await supabase.auth.getSession()
-const { data: { user } } = await supabase.auth.getUser()
-const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-// BEFORE (v1 auth state listener)
-const { data: subscription } = supabase.auth.onAuthStateChange(callback)
-subscription.unsubscribe()
-
-// AFTER (v2 auth state listener)
-const { data: { subscription } } = supabase.auth.onAuthStateChange(callback)
-subscription.unsubscribe()
-
-// BEFORE (v1 error handling)
-if (error.message.includes('not found')) { ... }
-
-// AFTER (v2 error handling)
-if (error.code === 'PGRST116') { ... }
-```
-
-### Step 5: Verify and Test
-
-```bash
-# Type check
-npx tsc --noEmit
-
-# Run tests
 npm test
-
-# Manual smoke test critical auth flows:
-# - Sign up → confirm email → sign in
-# - OAuth sign in → callback
-# - Password reset flow
-# - Session refresh across page navigations
 ```
 
-### Step 6: Rollback Plan
-
-```bash
-# If upgrade causes issues:
-git stash  # stash any uncommitted work
-npm install @supabase/supabase-js@<previous-version>
-
-# Or revert the branch
-git checkout main
-```
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- SDK upgraded to latest version
-- Breaking changes identified and fixed
-- Type checking passes with new types
-- Test suite green
-- Rollback procedure documented
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Property 'session' does not exist` | v1 sync methods removed in v2 | Use async `getSession()` |
-| `Property 'signIn' does not exist` | Renamed in v2 | Use `signInWithPassword` / `signInWithOAuth` / `signInWithOtp` |
-| Type errors after `gen types` | Schema changed | Update code to match new types |
-| `supabase.auth.api` undefined | `.api` removed in v2 | Methods moved to `supabase.auth.*` directly |
+## Examples
+
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@supabase/supabase-js';
+
+// After (v2.x)
+import { SupabaseClient } from '@supabase/supabase-js';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new SupabaseClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @supabase/supabase-js@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Supabase]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
 ## Resources
-- [supabase-js v2 Migration Guide](https://supabase.com/blog/supabase-js-v2)
-- [supabase-js Releases](https://github.com/supabase/supabase-js/releases)
-- [Supabase CLI Releases](https://github.com/supabase/cli/releases)
+- [Supabase Changelog](https://github.com/supabase/sdk/releases)
+- [Supabase Migration Guide](https://supabase.com/docs/migration)
 
 ## Next Steps
-For CI integration with the new SDK, see `supabase-ci-integration`.
+For CI integration during upgrades, see `supabase-ci-integration`.

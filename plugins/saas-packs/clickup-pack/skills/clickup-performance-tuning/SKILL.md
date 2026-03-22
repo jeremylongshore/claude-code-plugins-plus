@@ -1,219 +1,216 @@
 ---
 name: clickup-performance-tuning
 description: |
-  Optimize ClickUp API v2 performance with caching, pagination, connection pooling,
-  and request batching patterns.
-  Trigger: "clickup performance", "optimize clickup", "clickup latency",
-  "clickup caching", "clickup slow", "clickup batch requests", "clickup pagination".
+  Optimize ClickUp API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for ClickUp integrations.
+  Trigger with phrases like "clickup performance", "optimize clickup",
+  "clickup latency", "clickup caching", "clickup slow", "clickup batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, clickup]
 compatible-with: claude-code
+tags: [saas, clickup]
 ---
 
 # ClickUp Performance Tuning
 
 ## Overview
+Optimize ClickUp API performance with caching, batching, and connection pooling.
 
-Optimize ClickUp API v2 throughput and latency. Key strategies: cache hierarchy data, paginate efficiently, pool connections, and batch where possible.
+## Prerequisites
+- ClickUp SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Baseline Latency (ClickUp API v2)
+## Latency Benchmarks
 
-| Endpoint | Typical P50 | Typical P95 |
-|----------|-------------|-------------|
-| `GET /user` | 80ms | 200ms |
-| `GET /team` | 100ms | 300ms |
-| `GET /list/{id}/task` | 150ms | 500ms |
-| `POST /list/{id}/task` | 200ms | 600ms |
-| `PUT /task/{id}` | 150ms | 400ms |
-| `GET /task/{id}` (with custom fields) | 200ms | 700ms |
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-## 1. Cache Hierarchy Data
+## Caching Strategy
 
-Workspaces, spaces, folders, and lists change infrequently. Cache them.
-
+### Response Caching
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const clickupCache = new LRUCache<string, any>({
+const cache = new LRUCache<string, any>({
   max: 1000,
-  ttl: 300_000, // 5 min for structural data
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
 });
 
-async function cachedRequest<T>(path: string, ttl?: number): Promise<T> {
-  const cached = clickupCache.get(path);
+async function cachedClickUpRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
   if (cached) return cached as T;
 
-  const data = await clickupRequest(path);
-  clickupCache.set(path, data, ttl ? { ttl } : undefined);
-  return data as T;
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
 }
-
-// Hierarchy data: 5 min cache (default)
-const spaces = await cachedRequest(`/team/${teamId}/space?archived=false`);
-
-// Task data: 30 sec cache (changes more often)
-const task = await cachedRequest(`/task/${taskId}`, 30_000);
 ```
 
-## 2. Efficient Pagination
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-Get Tasks returns max 100 tasks per page. Use async generators for memory efficiency.
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
 
 ```typescript
-async function* paginateTasks(listId: string, filters: Record<string, string> = {}) {
-  let page = 0;
-  let hasMore = true;
+import DataLoader from 'dataloader';
 
-  while (hasMore) {
-    const params = new URLSearchParams({
-      page: String(page),
-      archived: 'false',
-      subtasks: 'true',
-      ...filters,
-    });
-
-    const data = await clickupRequest(`/list/${listId}/task?${params}`);
-    const tasks = data.tasks;
-
-    for (const task of tasks) {
-      yield task;
-    }
-
-    // ClickUp returns fewer than 100 tasks on last page
-    hasMore = tasks.length === 100;
-    page++;
+const clickupLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from ClickUp
+    const results = await clickupClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
   }
-}
+);
 
-// Process tasks without loading all into memory
-let count = 0;
-for await (const task of paginateTasks('900100200300', { 'statuses[]': 'in progress' })) {
-  await processTask(task);
-  count++;
-}
-console.log(`Processed ${count} tasks`);
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  clickupLoader.load('id-1'),
+  clickupLoader.load('id-2'),
+  clickupLoader.load('id-3'),
+]);
 ```
 
-## 3. Connection Pooling
+## Connection Optimization
 
 ```typescript
-import { Agent } from 'node:https';
+import { Agent } from 'https';
 
-const keepAliveAgent = new Agent({
+// Keep-alive connection pooling
+const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 30_000,
-  scheduling: 'lifo',
+  timeout: 30000,
 });
 
-// Use with undici or node-fetch that supports custom agents
-// Native fetch in Node 18+ uses keep-alive by default
+const client = new ClickUpClient({
+  apiKey: process.env.CLICKUP_API_KEY!,
+  httpAgent: agent,
+});
 ```
 
-## 4. Parallel with Rate Awareness
+## Pagination Optimization
 
 ```typescript
-import PQueue from 'p-queue';
+async function* paginatedClickUpList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
 
-// Respect 100 req/min on Free/Unlimited/Business
-const clickupQueue = new PQueue({
-  concurrency: 5,
-  interval: 60_000,
-  intervalCap: 90, // 90% of 100 limit
-});
-
-async function parallelTaskFetch(taskIds: string[]) {
-  const results = await Promise.all(
-    taskIds.map(id =>
-      clickupQueue.add(() => clickupRequest(`/task/${id}`))
-    )
-  );
-  return results;
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
 }
-```
 
-## 5. Webhook-Based Cache Invalidation
-
-```typescript
-// Instead of polling or short TTLs, invalidate cache on webhook events
-app.post('/webhooks/clickup', (req, res) => {
-  res.status(200).json({ received: true });
-
-  const { event, task_id } = req.body;
-
-  switch (event) {
-    case 'taskUpdated':
-    case 'taskDeleted':
-      clickupCache.delete(`/task/${task_id}`);
-      break;
-    case 'listUpdated':
-    case 'listDeleted':
-      // Invalidate all list-related caches
-      for (const key of clickupCache.keys()) {
-        if (key.includes('/list/')) clickupCache.delete(key);
-      }
-      break;
-  }
-});
-```
-
-## 6. Reduce Payload Size
-
-```typescript
-// Use custom_fields and include_closed parameters to minimize response size
-const params = new URLSearchParams({
-  archived: 'false',
-  include_closed: 'false',
-  subtasks: 'false',        // Skip subtask expansion if not needed
-  page: '0',
-});
-
-// Note: ClickUp v2 doesn't support field selection (no ?fields= parameter)
-// Minimize response by filtering client-side
-const { tasks } = await clickupRequest(`/list/${listId}/task?${params}`);
-const slim = tasks.map((t: any) => ({
-  id: t.id, name: t.name, status: t.status.status, priority: t.priority?.priority,
-}));
+// Usage
+for await (const item of paginatedClickUpList(cursor =>
+  clickupClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
 ```
 
 ## Performance Monitoring
 
 ```typescript
-async function measuredRequest<T>(name: string, fn: () => Promise<T>): Promise<T> {
+async function measuredClickUpCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
   const start = performance.now();
   try {
     const result = await fn();
-    const ms = (performance.now() - start).toFixed(1);
-    console.log(`[clickup] ${name}: ${ms}ms`);
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
     return result;
   } catch (error) {
-    const ms = (performance.now() - start).toFixed(1);
-    console.error(`[clickup] ${name}: FAILED after ${ms}ms`);
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
     throw error;
   }
 }
 ```
 
-## Error Handling
+## Instructions
 
+### Step 1: Establish Baseline
+Measure current latency for critical ClickUp operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
+
+## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Stale cache | No invalidation | Use webhooks for invalidation |
-| Memory growth | Unbounded cache | Set `max` entries on LRU cache |
-| Pagination loop | API returns 100 forever | Add max page safety limit |
-| Queue backlog | Burst of requests | Increase concurrency or plan tier |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredClickUpCall(name, () =>
+    cachedClickUpRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-
-- [ClickUp Get Tasks](https://developer.clickup.com/reference/gettasks)
-- [ClickUp Rate Limits](https://developer.clickup.com/docs/rate-limits)
-- [lru-cache](https://github.com/isaacs/node-lru-cache)
-- [p-queue](https://github.com/sindresorhus/p-queue)
+- [ClickUp Performance Guide](https://docs.clickup.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-
 For cost optimization, see `clickup-cost-tuning`.

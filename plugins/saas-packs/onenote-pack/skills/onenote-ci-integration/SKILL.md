@@ -1,32 +1,126 @@
 ---
 name: onenote-ci-integration
 description: |
-  Ci Integration for OneNote.
-  Trigger: "onenote ci integration".
-allowed-tools: Read, Write, Edit, Grep
+  Configure OneNote CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating OneNote tests into your build process.
+  Trigger with phrases like "onenote CI", "onenote GitHub Actions",
+  "onenote automated tests", "CI onenote".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
 compatible-with: claude-code
+tags: [saas, onenote]
 ---
 
 # OneNote CI Integration
 
-## GitHub Actions
+## Overview
+Set up CI/CD pipelines for OneNote integrations with automated testing.
+
+## Prerequisites
+- GitHub repository with Actions enabled
+- OneNote test API key
+- npm/pnpm project configured
+
+## Instructions
+
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/onenote-integration.yml`:
+
 ```yaml
-name: OneNote Tests
-on: [push, pull_request]
+name: OneNote Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  ONENOTE_API_KEY: ${{ secrets.ONENOTE_API_KEY }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      ONENOTE_API_KEY: ${{ secrets.ONENOTE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set ONENOTE_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('OneNote Integration', () => {
+  it.skipIf(!process.env.ONENOTE_API_KEY)('should connect', async () => {
+    const client = getOneNoteClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
+
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      ONENOTE_API_KEY: ${{ secrets.ONENOTE_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify OneNote production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "onenote-integration"
 ```
 
 ## Resources
-- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [OneNote CI Guide](https://docs.onenote.com/ci)
 
 ## Next Steps
-See `onenote-deploy-integration`.
+For deployment patterns, see `onenote-deploy-integration`.

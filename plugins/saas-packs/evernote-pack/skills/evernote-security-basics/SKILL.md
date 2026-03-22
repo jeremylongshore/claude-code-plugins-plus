@@ -1,110 +1,142 @@
 ---
 name: evernote-security-basics
 description: |
-  Implement security best practices for Evernote integrations.
-  Use when securing API credentials, implementing OAuth securely,
-  or hardening Evernote integrations.
-  Trigger with phrases like "evernote security", "secure evernote",
-  "evernote credentials", "evernote oauth security".
-allowed-tools: Read, Write, Edit, Grep
+  Apply Evernote security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Evernote security configuration.
+  Trigger with phrases like "evernote security", "evernote secrets",
+  "secure evernote", "evernote API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, security]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Security Basics
 
 ## Overview
-Security best practices for Evernote API integrations, covering credential management, OAuth hardening, token storage, data protection, and secure logging patterns.
+Security best practices for Evernote API keys, tokens, and access control.
 
 ## Prerequisites
-- Evernote SDK setup
-- Understanding of OAuth 1.0a
-- Basic cryptography concepts (AES encryption, hashing)
+- Evernote SDK installed
+- Understanding of environment variables
+- Access to Evernote dashboard
 
 ## Instructions
 
-### Step 1: Credential Management
+### Step 1: Configure Environment Variables
+```bash
+# .env (NEVER commit to git)
+EVERNOTE_API_KEY=sk_live_***
+EVERNOTE_SECRET=***
 
-Store `consumerKey`, `consumerSecret`, and access tokens in environment variables or a secrets manager (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault). Never commit credentials to source control. Add `.env` to `.gitignore`.
-
-```javascript
-// Load from environment, fail fast if missing
-const requiredVars = ['EVERNOTE_CONSUMER_KEY', 'EVERNOTE_CONSUMER_SECRET'];
-for (const v of requiredVars) {
-  if (!process.env[v]) throw new Error(`Missing required env var: ${v}`);
-}
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Step 2: Secure OAuth Flow
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Evernote dashboard
+# 2. Update environment variable
+export EVERNOTE_API_KEY="new_key_here"
 
-Add CSRF protection with a state parameter stored in the session. Validate the callback URL matches your registered domain. Use HTTPS-only for all OAuth endpoints. Set secure cookie flags for session tokens.
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${EVERNOTE_API_KEY}" \
+  https://api.evernote.com/health
 
-```javascript
-// Generate CSRF token for OAuth state
-const csrfToken = crypto.randomBytes(32).toString('hex');
-req.session.oauthCsrf = csrfToken;
-
-// Verify on callback
-if (req.query.state !== req.session.oauthCsrf) {
-  return res.status(403).send('CSRF validation failed');
-}
+# 4. Revoke old key in dashboard
 ```
 
-### Step 3: Encrypted Token Storage
-
-Encrypt access tokens at rest using AES-256-GCM before storing in your database. Decrypt only when making API calls. Store the encryption key separately from the database.
-
-### Step 4: Input Validation
-
-Sanitize all user input before embedding in ENML. Validate note titles (max 255 chars), tag names (max 100 chars, no commas), and notebook names (max 100 chars). Strip forbidden HTML elements and attributes.
-
-### Step 5: Secure Logging
-
-Redact access tokens, consumer secrets, and user email addresses from log output. Log only the first 8 characters of tokens for debugging correlation.
-
-```javascript
-function redactToken(token) {
-  if (!token || token.length < 12) return '***';
-  return token.slice(0, 8) + '...[REDACTED]';
-}
-```
-
-### Step 6: Token Lifecycle Management
-
-Track token expiration (`edam_expires`), implement proactive refresh before expiry, and handle `AUTH_EXPIRED` errors gracefully. Tokens default to 1-year validity but users can set shorter durations.
-
-For the complete security implementation including encrypted storage, CSRF-protected OAuth, input validation, and audit logging, see [Implementation Guide](references/implementation-guide.md).
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
 ## Output
-- Environment-based credential management with validation
-- CSRF-protected OAuth 1.0a flow
-- AES-256-GCM encrypted token storage
-- Input sanitization for ENML content and metadata
-- Redacted logging utility
-- Token expiration tracking and refresh
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `INVALID_AUTH` | Token revoked or invalid | Re-authenticate via OAuth; check token not corrupted during encryption |
-| `AUTH_EXPIRED` | Token past expiration date | Implement proactive refresh before `edam_expires` |
-| `PERMISSION_DENIED` | API key lacks required scope | Request appropriate permissions from Evernote |
-| CSRF mismatch | Session expired or attack attempt | Regenerate CSRF token and restart OAuth flow |
-
-## Resources
-- [OAuth Documentation](https://dev.evernote.com/doc/articles/authentication.php)
-- [API Key Permissions](https://dev.evernote.com/doc/articles/permissions.php)
-- [OWASP Security Guidelines](https://owasp.org/www-project-web-security-testing-guide/)
-- [Node.js Crypto (AES)](https://nodejs.org/api/crypto.html)
-
-## Next Steps
-For production deployment checklist, see `evernote-prod-checklist`.
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
 ## Examples
 
-**Secure credential setup**: Store credentials in AWS Secrets Manager, load at startup, validate all required values are present, and fail fast on missing configuration.
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new EvernoteClient({
+    apiKey: process.env.EVERNOTE_READ_KEY,
+  }),
+  writer: new EvernoteClient({
+    apiKey: process.env.EVERNOTE_WRITE_KEY,
+  }),
+};
+```
 
-**Token rotation**: Monitor `edam_expires` for all stored tokens, send re-authentication emails 30 days before expiry, and gracefully degrade to read-only mode when tokens expire.
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Evernote analytics
+  await evernoteClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'evernote.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
+
+## Resources
+- [Evernote Security Guide](https://docs.evernote.com/security)
+- [Evernote API Scopes](https://docs.evernote.com/scopes)
+
+## Next Steps
+For production deployment, see `evernote-prod-checklist`.

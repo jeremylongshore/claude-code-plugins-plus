@@ -1,244 +1,276 @@
 ---
 name: vercel-load-scale
 description: |
-  Load test and scale Vercel deployments with concurrency tuning and capacity planning.
-  Use when running performance tests, planning for traffic spikes,
-  or optimizing serverless function scaling on Vercel.
+  Implement Vercel load testing, auto-scaling, and capacity planning strategies.
+  Use when running performance tests, configuring horizontal scaling,
+  or planning capacity for Vercel integrations.
   Trigger with phrases like "vercel load test", "vercel scale",
-  "vercel performance test", "vercel capacity", "vercel benchmark".
-allowed-tools: Read, Write, Edit, Bash(npx:*), Bash(vercel:*), Bash(curl:*)
+  "vercel performance test", "vercel capacity", "vercel k6", "vercel benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, testing, performance, scaling]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Load & Scale
 
 ## Overview
-Load test Vercel deployments to identify scaling limits, cold start impact, and concurrency thresholds. Covers k6/autocannon test scripts, Vercel's auto-scaling model, Fluid Compute concurrency, and capacity planning.
+Load testing, scaling strategies, and capacity planning for Vercel integrations.
 
 ## Prerequisites
-- Load testing tool: k6, autocannon, or artillery
-- Test environment deployment (never load test production without approval)
-- Access to Vercel Analytics for monitoring during tests
+- k6 load testing tool installed
+- Kubernetes cluster with HPA configured
+- Prometheus for metrics collection
+- Test environment API keys
 
-## Instructions
+## Load Testing with k6
 
-### Step 1: Understand Vercel's Scaling Model
-Vercel serverless functions scale automatically:
-
-| Behavior | Details |
-|----------|---------|
-| Scale-up | New function instances spawn on demand |
-| Scale-down | Idle instances shut down after ~15 minutes |
-| Cold starts | First request to a new instance pays initialization cost |
-| Concurrency | Each instance handles one request at a time (by default) |
-| Fluid Compute | Pro/Enterprise: multiple requests per instance |
-
-**Concurrency limits by plan:**
-
-| Plan | Max Concurrent Functions |
-|------|------------------------|
-| Hobby | 10 |
-| Pro | 1,000 |
-| Enterprise | 100,000 |
-
-### Step 2: Basic Load Test with autocannon
-```bash
-# Install autocannon
-npm install -g autocannon
-
-# Test with 50 concurrent connections for 30 seconds
-autocannon -c 50 -d 30 https://my-app-preview.vercel.app/api/endpoint
-
-# Output includes:
-# Latency: avg, p50, p99, max
-# Requests/sec: avg, min, max
-# Errors: timeouts, non-2xx responses
-```
-
-### Step 3: k6 Load Test Script
+### Basic Load Test
 ```javascript
-// load-test.js
+// vercel-load-test.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
-import { Rate, Trend } from 'k6/metrics';
-
-const errorRate = new Rate('errors');
-const coldStartRate = new Rate('cold_starts');
-const latency = new Trend('api_latency');
 
 export const options = {
   stages: [
-    { duration: '1m', target: 10 },   // Warm up
-    { duration: '3m', target: 50 },   // Ramp to 50 users
-    { duration: '2m', target: 100 },  // Peak load
-    { duration: '1m', target: 0 },    // Cool down
+    { duration: '2m', target: 10 },   // Ramp up
+    { duration: '5m', target: 10 },   // Steady state
+    { duration: '2m', target: 50 },   // Ramp to peak
+    { duration: '5m', target: 50 },   // Stress test
+    { duration: '2m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<2000'],  // P95 < 2s
-    errors: ['rate<0.01'],              // Error rate < 1%
+    http_req_duration: ['p(95)<100'],
+    http_req_failed: ['rate<0.01'],
   },
 };
 
 export default function () {
-  const res = http.get('https://my-app-preview.vercel.app/api/endpoint');
+  const response = http.post(
+    'https://api.vercel.com/v1/resource',
+    JSON.stringify({ test: true }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${__ENV.VERCEL_API_KEY}`,
+      },
+    }
+  );
 
-  check(res, {
+  check(response, {
     'status is 200': (r) => r.status === 200,
-    'latency < 2s': (r) => r.timings.duration < 2000,
+    'latency < 100ms': (r) => r.timings.duration < 100,
   });
-
-  errorRate.add(res.status !== 200);
-  latency.add(res.timings.duration);
-
-  // Track cold starts if your API returns this header
-  if (res.headers['X-Cold-Start'] === 'true') {
-    coldStartRate.add(1);
-  }
 
   sleep(1);
 }
 ```
 
+### Run Load Test
 ```bash
-# Run the load test
-k6 run load-test.js
+# Install k6
+brew install k6  # macOS
+# or: sudo apt install k6  # Linux
 
-# Run with output to JSON for analysis
-k6 run --out json=results.json load-test.js
+# Run test
+k6 run --env VERCEL_API_KEY=${VERCEL_API_KEY} vercel-load-test.js
+
+# Run with output to InfluxDB
+k6 run --out influxdb=http://localhost:8086/k6 vercel-load-test.js
 ```
 
-### Step 4: Cold Start Stress Test
-```javascript
-// cold-start-test.js — specifically test cold start behavior
-import http from 'k6/http';
-import { sleep } from 'k6';
+## Scaling Patterns
 
-export const options = {
-  scenarios: {
-    // Scenario 1: Sustained load (warm instances)
-    sustained: {
-      executor: 'constant-arrival-rate',
-      rate: 10,
-      timeUnit: '1s',
-      duration: '2m',
-      preAllocatedVUs: 20,
-    },
-    // Scenario 2: Spike (forces new cold starts)
-    spike: {
-      executor: 'ramping-arrival-rate',
-      startRate: 10,
-      timeUnit: '1s',
-      stages: [
-        { target: 200, duration: '10s' },  // Sudden spike
-        { target: 10, duration: '1m' },     // Return to normal
-      ],
-      preAllocatedVUs: 300,
-      startTime: '2m',  // Start after sustained phase
-    },
+### Horizontal Scaling
+```yaml
+# kubernetes HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: vercel-integration-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: vercel-integration
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Pods
+      pods:
+        metric:
+          name: vercel_queue_depth
+        target:
+          type: AverageValue
+          averageValue: 100
+```
+
+### Connection Pooling
+```typescript
+import { Pool } from 'generic-pool';
+
+const vercelPool = Pool.create({
+  create: async () => {
+    return new VercelClient({
+      apiKey: process.env.VERCEL_API_KEY!,
+    });
   },
-};
+  destroy: async (client) => {
+    await client.close();
+  },
+  max: None,
+  min: None,
+  idleTimeoutMillis: 30000,
+});
 
-export default function () {
-  const res = http.get('https://my-app-preview.vercel.app/api/endpoint');
-  // Log cold start timing for analysis
-}
-```
-
-### Step 5: Fluid Compute Concurrency Tuning
-```json
-// vercel.json — configure concurrency for Fluid Compute (Pro/Enterprise)
-{
-  "functions": {
-    "api/high-throughput.ts": {
-      "memory": 1024,
-      "maxDuration": 30,
-      "concurrency": 10
-    }
+async function withVercelClient<T>(
+  fn: (client: VercelClient) => Promise<T>
+): Promise<T> {
+  const client = await vercelPool.acquire();
+  try {
+    return await fn(client);
+  } finally {
+    vercelPool.release(client);
   }
 }
 ```
 
-With Fluid Compute concurrency, a single function instance handles multiple requests:
-- Reduces cold starts (fewer instances needed)
-- Reduces cost (shared memory across requests)
-- Best for I/O-bound functions (waiting on DB/API calls)
-- Not ideal for CPU-bound functions (computation blocks other requests)
+## Capacity Planning
 
-### Step 6: Capacity Planning
+### Metrics to Monitor
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| CPU Utilization | > 70% | > 85% |
+| Memory Usage | > 75% | > 90% |
+| Request Queue Depth | > 100 | > 500 |
+| Error Rate | > 1% | > 5% |
+| P95 Latency | > 500ms | > 2000ms |
+
+### Capacity Calculation
+```typescript
+interface CapacityEstimate {
+  currentRPS: number;
+  maxRPS: number;
+  headroom: number;
+  scaleRecommendation: string;
+}
+
+function estimateVercelCapacity(
+  metrics: SystemMetrics
+): CapacityEstimate {
+  const currentRPS = metrics.requestsPerSecond;
+  const avgLatency = metrics.p50Latency;
+  const cpuUtilization = metrics.cpuPercent;
+
+  // Estimate max RPS based on current performance
+  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
+  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+
+  return {
+    currentRPS,
+    maxRPS: Math.floor(maxRPS),
+    headroom: Math.round(headroom),
+    scaleRecommendation: headroom < 30
+      ? 'Scale up soon'
+      : headroom < 50
+      ? 'Monitor closely'
+      : 'Adequate capacity',
+  };
+}
 ```
-Capacity Planning Formula:
 
-  Required instances = Peak RPS * Avg Response Time (seconds)
-
-  Example:
-  - Peak: 500 requests/second
-  - Avg response: 200ms (0.2s)
-  - Required: 500 * 0.2 = 100 concurrent instances
-
-  With Fluid Compute (concurrency=10):
-  - Required: 500 * 0.2 / 10 = 10 concurrent instances
-
-  Plan check:
-  - Hobby (10 concurrent): NOT sufficient
-  - Pro (1000 concurrent): Sufficient with headroom
-```
-
-## Load Test Results Template
+## Benchmark Results Template
 
 ```markdown
-## Load Test Report — [Date]
+## Vercel Performance Benchmark
+**Date:** YYYY-MM-DD
+**Environment:** [staging/production]
+**SDK Version:** X.Y.Z
 
-### Configuration
-- Target: https://my-app-preview.vercel.app/api/endpoint
-- Tool: k6 v0.50
-- Duration: 7 minutes (ramp up → peak → cool down)
-- Peak concurrent users: 100
+### Test Configuration
+- Duration: 10 minutes
+- Ramp: 10 → 100 → 10 VUs
+- Target endpoint: /v1/resource
 
 ### Results
 | Metric | Value |
 |--------|-------|
-| Total requests | 12,450 |
-| Success rate | 99.8% |
-| P50 latency | 45ms |
-| P95 latency | 320ms |
-| P99 latency | 1,200ms |
-| Max latency | 3,400ms |
-| Cold start % | 8% |
-| Avg cold start duration | 650ms |
-| Throttled (429) | 0 |
+| Total Requests | 50,000 |
+| Success Rate | 99.9% |
+| P50 Latency | 120ms |
+| P95 Latency | 350ms |
+| P99 Latency | 800ms |
+| Max RPS Achieved | 150 |
+
+### Observations
+- [Key finding 1]
+- [Key finding 2]
 
 ### Recommendations
-1. Cold start: 650ms avg — consider Edge Functions for latency-critical paths
-2. P99 spike: caused by cold starts — Fluid Compute concurrency would help
-3. No throttling at 100 concurrent — Pro plan (1000 limit) is sufficient
+- [Scaling recommendation]
 ```
 
+## Instructions
+
+### Step 1: Create Load Test Script
+Write k6 test script with appropriate thresholds.
+
+### Step 2: Configure Auto-Scaling
+Set up HPA with CPU and custom metrics.
+
+### Step 3: Run Load Test
+Execute test and collect metrics.
+
+### Step 4: Analyze and Document
+Record results in benchmark template.
+
 ## Output
-- Load test scripts for sustained and spike traffic scenarios
-- Cold start frequency and duration measured
-- Concurrency limits tested and validated
-- Capacity plan with scaling recommendations
+- Load test script created
+- HPA configured
 - Benchmark results documented
+- Capacity recommendations defined
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `FUNCTION_THROTTLED` (429) | Exceeded concurrent limit | Reduce test concurrency or upgrade plan |
-| Vercel blocks load test | Not from approved IP | Contact Vercel support before load testing |
-| High P99 but low P50 | Cold starts on spikes | Use Fluid Compute concurrency or Edge Functions |
-| All requests timeout | Function region far from test origin | Set `regions` in vercel.json closer to test source |
-| Inconsistent results | Shared infrastructure variability | Run multiple test rounds, use median results |
+| k6 timeout | Rate limited | Reduce RPS |
+| HPA not scaling | Wrong metrics | Verify metric name |
+| Connection refused | Pool exhausted | Increase pool size |
+| Inconsistent results | Warm-up needed | Add ramp-up phase |
+
+## Examples
+
+### Quick k6 Test
+```bash
+k6 run --vus 10 --duration 30s vercel-load-test.js
+```
+
+### Check Current Capacity
+```typescript
+const metrics = await getSystemMetrics();
+const capacity = estimateVercelCapacity(metrics);
+console.log('Headroom:', capacity.headroom + '%');
+console.log('Recommendation:', capacity.scaleRecommendation);
+```
+
+### Scale HPA Manually
+```bash
+kubectl scale deployment vercel-integration --replicas=5
+kubectl get hpa vercel-integration-hpa
+```
 
 ## Resources
-- [Vercel Function Limits](https://vercel.com/docs/functions/limitations)
-- [Concurrency Scaling](https://vercel.com/docs/functions/concurrency-scaling)
-- [Fluid Compute](https://vercel.com/docs/functions/usage-and-pricing)
 - [k6 Documentation](https://k6.io/docs/)
-- [Vercel Load Testing Policy](https://vercel.com/kb/guide/what-s-vercel-s-policy-regarding-load-testing-deployments)
+- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Vercel Rate Limits](https://vercel.com/docs/rate-limits)
 
 ## Next Steps
 For reliability patterns, see `vercel-reliability-patterns`.

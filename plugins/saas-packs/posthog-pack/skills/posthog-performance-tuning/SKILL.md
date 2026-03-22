@@ -1,222 +1,216 @@
 ---
 name: posthog-performance-tuning
 description: |
-  Optimize PostHog performance: local flag evaluation, client batching config,
-  event sampling, efficient HogQL queries, and serverless flush patterns.
-  Trigger: "posthog performance", "optimize posthog", "posthog latency",
-  "posthog caching", "posthog slow", "posthog batch", "posthog fast".
+  Optimize PostHog API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for PostHog integrations.
+  Trigger with phrases like "posthog performance", "optimize posthog",
+  "posthog latency", "posthog caching", "posthog slow", "posthog batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, api, performance]
+compatible-with: claude-code
+tags: [saas, posthog]
 ---
 
 # PostHog Performance Tuning
 
 ## Overview
-
-Optimize PostHog for production workloads. The biggest performance wins are: local feature flag evaluation (eliminates network calls), proper batching configuration, event sampling for high-volume apps, and efficient HogQL queries with date filters.
+Optimize PostHog API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
+- PostHog SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-- `posthog-node` and/or `posthog-js` installed
-- Personal API key (`phx_...`) for local flag evaluation
-- Feature flags configured (if applicable)
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedPostHogRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const posthogLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from PostHog
+    const results = await posthogClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  posthogLoader.load('id-1'),
+  posthogLoader.load('id-2'),
+  posthogLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new PostHogClient({
+  apiKey: process.env.POSTHOG_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedPostHogList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedPostHogList(cursor =>
+  posthogClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredPostHogCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Enable Local Feature Flag Evaluation
+### Step 1: Establish Baseline
+Measure current latency for critical PostHog operations.
 
-The single biggest performance improvement. Without local evaluation, every `getFeatureFlag()` call makes a network request (~50-200ms). With local evaluation, flag definitions are cached and evaluation is instant (~0.1ms).
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-```typescript
-import { PostHog } from 'posthog-node';
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  host: 'https://us.i.posthog.com',
-  // This is the key: personal API key enables local flag evaluation
-  personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
-  // Flag definitions are polled every 30 seconds by default
-  // Adjust if you need faster flag updates:
-  // featureFlagsPollingInterval: 10000, // 10 seconds
-});
-
-// With personalApiKey set, this evaluates locally (no network call)
-const variant = await posthog.getFeatureFlag('pricing-experiment', 'user-123', {
-  personProperties: { plan: 'pro', country: 'US' },
-});
-
-// Get all flags at once (still local, still fast)
-const allFlags = await posthog.getAllFlags('user-123', {
-  personProperties: { plan: 'pro' },
-  groupProperties: { company: { industry: 'SaaS' } },
-});
-```
-
-### Step 2: Optimize Client Batching
-
-```typescript
-// Production: batch events for network efficiency
-const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  host: 'https://us.i.posthog.com',
-  flushAt: 20,           // Send batch when 20 events accumulated (default)
-  flushInterval: 10000,  // Or flush every 10 seconds (default)
-  requestTimeout: 10000, // 10 second timeout per request
-  maxRetries: 3,         // Retry failed sends
-});
-
-// Serverless: flush immediately (function may exit)
-const serverless = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  host: 'https://us.i.posthog.com',
-  flushAt: 1,       // Send every event immediately
-  flushInterval: 0, // Don't wait
-});
-
-// CRITICAL: Always shutdown before process exits
-process.on('SIGTERM', async () => {
-  await posthog.shutdown();
-  process.exit(0);
-});
-```
-
-### Step 3: Event Sampling (Browser)
-
-```typescript
-import posthog from 'posthog-js';
-
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: 'https://us.i.posthog.com',
-  before_send: (event) => {
-    // Always capture business-critical events
-    const alwaysCapture = ['purchase', 'signup', 'subscription_started', 'subscription_canceled'];
-    if (alwaysCapture.includes(event.event)) return event;
-
-    // Sample high-volume events
-    const sampleRates: Record<string, number> = {
-      '$pageview': 1.0,        // Keep all pageviews
-      '$pageleave': 0.5,       // Sample 50%
-      '$autocapture': 0.1,     // Sample 10% of autocapture
-      'scroll_depth': 0.05,    // Sample 5%
-    };
-
-    const rate = sampleRates[event.event] ?? 0.5;
-    if (Math.random() >= rate) return null; // Drop event
-
-    // Tag sampled events so you can adjust in analysis
-    event.properties = { ...event.properties, $sample_rate: rate };
-    return event;
-  },
-});
-```
-
-### Step 4: Efficient HogQL Queries
-
-```typescript
-async function queryPostHog(hogql: string) {
-  const response = await fetch(
-    `https://app.posthog.com/api/projects/${process.env.POSTHOG_PROJECT_ID}/query/`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.POSTHOG_PERSONAL_API_KEY}`,
-      },
-      body: JSON.stringify({
-        query: { kind: 'HogQLQuery', query: hogql },
-      }),
-    }
-  );
-  return response.json();
-}
-
-// FAST: Filtered by time, limited results
-const fast = await queryPostHog(`
-  SELECT
-    properties.$current_url AS url,
-    count() AS views,
-    uniq(distinct_id) AS visitors
-  FROM events
-  WHERE event = '$pageview'
-    AND timestamp > now() - interval 7 day
-  GROUP BY url
-  ORDER BY views DESC
-  LIMIT 50
-`);
-
-// SLOW (avoid): No time filter, scans entire table
-// SELECT * FROM events WHERE event = '$pageview'
-
-// OPTIMIZED: Use subqueries for complex analysis
-const retention = await queryPostHog(`
-  SELECT
-    dateTrunc('week', first_seen) AS cohort_week,
-    dateTrunc('week', timestamp) AS activity_week,
-    uniq(distinct_id) AS users
-  FROM events
-  INNER JOIN (
-    SELECT distinct_id, min(timestamp) AS first_seen
-    FROM events
-    WHERE event = 'user_signed_up'
-      AND timestamp > now() - interval 90 day
-    GROUP BY distinct_id
-  ) AS cohorts ON events.distinct_id = cohorts.distinct_id
-  WHERE timestamp > now() - interval 90 day
-  GROUP BY cohort_week, activity_week
-  ORDER BY cohort_week, activity_week
-`);
-```
-
-### Step 5: Session Recording Performance
-
-```typescript
-// Limit session recording to reduce data volume and cost
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: 'https://us.i.posthog.com',
-  session_recording: {
-    // Only record 10% of sessions
-    sampleRate: 0.1,
-    // Minimum session duration to record (skip quick bounces)
-    minimumDurationMilliseconds: 5000,
-    // Mask all text inputs by default
-    maskAllInputs: true,
-    // Mask specific CSS selectors
-    maskTextSelector: '.sensitive-data',
-  },
-});
-```
-
-## Performance Benchmarks
-
-| Operation | Without Optimization | With Optimization |
-|-----------|---------------------|-------------------|
-| Feature flag evaluation | 50-200ms (network) | <1ms (local eval) |
-| Event capture | Individual sends | Batched (20 events/req) |
-| HogQL query (7d) | 2-5s | <1s (with filters) |
-| HogQL query (no filter) | 30-60s (timeout risk) | N/A (always filter) |
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Events dropped on exit | No shutdown hook | Add `posthog.shutdown()` to SIGTERM handler |
-| Flag evaluation slow | No `personalApiKey` | Add personal API key for local evaluation |
-| High event cost | Capturing everything | Implement `before_send` sampling |
-| HogQL timeout | No date filter | Always include `timestamp > now() - interval N day` |
-| Session recordings large | Recording all sessions | Set `sampleRate` to 0.1-0.25 |
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
-- Local feature flag evaluation (<1ms per check)
-- Optimized batching configuration
-- Event sampling with `before_send`
-- Efficient HogQL query patterns
-- Session recording sampling
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredPostHogCall(name, () =>
+    cachedPostHogRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
+- [PostHog Performance Guide](https://docs.posthog.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-- [PostHog Local Evaluation](https://posthog.com/docs/feature-flags/local-evaluation)
-- [PostHog Node SDK Config](https://posthog.com/docs/libraries/node)
-- [HogQL Documentation](https://posthog.com/docs/sql)
-- [Session Recording Config](https://posthog.com/docs/session-replay/how-to-control-which-sessions-you-record)
+## Next Steps
+For cost optimization, see `posthog-cost-tuning`.

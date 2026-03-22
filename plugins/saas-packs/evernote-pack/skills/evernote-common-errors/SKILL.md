@@ -1,125 +1,113 @@
 ---
 name: evernote-common-errors
 description: |
-  Diagnose and fix common Evernote API errors.
-  Use when encountering Evernote API exceptions, debugging failures,
+  Diagnose and fix Evernote common errors and exceptions.
+  Use when encountering Evernote errors, debugging failed requests,
   or troubleshooting integration issues.
-  Trigger with phrases like "evernote error", "evernote exception",
-  "fix evernote issue", "debug evernote", "evernote troubleshooting".
-allowed-tools: Read, Write, Edit, Grep
+  Trigger with phrases like "evernote error", "fix evernote",
+  "evernote not working", "debug evernote".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, debugging]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Common Errors
 
 ## Overview
-Comprehensive guide to diagnosing and resolving Evernote API errors. Evernote uses three exception types: `EDAMUserException` (client errors), `EDAMSystemException` (server/rate limit errors), and `EDAMNotFoundException` (invalid GUIDs).
+Quick reference for the top 10 most common Evernote errors and their solutions.
 
 ## Prerequisites
-- Basic Evernote SDK setup
-- Understanding of Evernote data model
+- Evernote SDK installed
+- API credentials configured
+- Access to error logs
 
 ## Instructions
 
-### EDAMUserException Error Codes
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-| Code | Name | Cause | Fix |
-|------|------|-------|-----|
-| 1 | `BAD_DATA_FORMAT` | Invalid ENML, missing DOCTYPE | Validate ENML before sending; check for forbidden elements |
-| 2 | `DATA_REQUIRED` | Missing required field (title, content) | Ensure `note.title` and `note.content` are set |
-| 3 | `PERMISSION_DENIED` | API key lacks permissions | Request additional permissions from Evernote |
-| 4 | `INVALID_AUTH` | Invalid or revoked token | Re-authenticate user via OAuth |
-| 5 | `AUTH_EXPIRED` | Token past expiration date | Check `edam_expires`, refresh token |
-| 6 | `LIMIT_REACHED` | Account limit exceeded (250 notebooks) | Clean up resources before creating new ones |
-| 7 | `QUOTA_REACHED` | Monthly upload quota exceeded | Check `user.accounting.remaining` |
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-### ENML Validation
-
-The most common error is `BAD_DATA_FORMAT` from invalid ENML. Validate before sending:
-
-```javascript
-function validateENML(content) {
-  const errors = [];
-  if (!content.includes('<?xml version="1.0"')) errors.push('Missing XML declaration');
-  if (!content.includes('<!DOCTYPE en-note')) errors.push('Missing DOCTYPE');
-  if (!content.includes('<en-note>')) errors.push('Missing <en-note> root');
-
-  const forbidden = [/<script/i, /<form/i, /<iframe/i, /<input/i];
-  forbidden.forEach(p => { if (p.test(content)) errors.push(`Forbidden: ${p.source}`); });
-
-  if (/\s(class|id|onclick)=/i.test(content)) errors.push('Forbidden attributes');
-  return { valid: errors.length === 0, errors };
-}
-```
-
-### EDAMSystemException Handling
-
-Rate limit errors include `rateLimitDuration` (seconds to wait). Maintenance errors should be retried with progressive backoff.
-
-```javascript
-async function withRetry(operation, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await operation();
-    } catch (error) {
-      if (error.rateLimitDuration) {
-        await new Promise(r => setTimeout(r, error.rateLimitDuration * 1000));
-        continue;
-      }
-      throw error;
-    }
-  }
-}
-```
-
-### EDAMNotFoundException Handling
-
-Thrown when a GUID does not exist (deleted note, wrong user, invalid format). Handle gracefully by returning null instead of throwing.
-
-```javascript
-async function safeGetNote(noteStore, guid) {
-  try {
-    return await noteStore.getNote(guid, true, false, false, false);
-  } catch (error) {
-    if (error.identifier === 'Note.guid') return null;
-    throw error;
-  }
-}
-```
-
-### Error Handler Service
-
-Build a centralized error handler that classifies exceptions and returns structured results with `type`, `code`, `action`, and `recoverable` flags. See [Implementation Guide](references/implementation-guide.md) for the complete `EvernoteErrorHandler` class.
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
 
 ## Output
-- Error code reference table for all `EDAMUserException` codes
-- ENML validation utility that catches common content errors
-- Rate limit retry with `rateLimitDuration` handling
-- Safe getter pattern for `EDAMNotFoundException`
-- Centralized `EvernoteErrorHandler` service class
+- Identified error cause
+- Applied fix
+- Verified resolution
 
 ## Error Handling
-| Exception | When Thrown | Recovery |
-|-----------|------------|----------|
-| `EDAMUserException` | Client error (invalid input, permissions) | Fix input or re-authenticate |
-| `EDAMSystemException` | Server error (rate limits, maintenance) | Wait and retry |
-| `EDAMNotFoundException` | Resource not found (invalid GUID) | Verify GUID, check trash |
 
-## Resources
-- [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
-- [Rate Limits](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [API Reference](https://dev.evernote.com/doc/reference/)
-- [ENML DTD](http://xml.evernote.com/pub/enml2.dtd)
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
+```
 
-## Next Steps
-For debugging tools and techniques, see `evernote-debug-bundle`.
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
+```bash
+# Verify API key is set
+echo $EVERNOTE_API_KEY
+```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `evernote-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
 
 ## Examples
 
-**ENML debugging**: Note creation fails with `BAD_DATA_FORMAT`. Run `validateENML()` on the content to identify missing DOCTYPE, unclosed tags, or forbidden elements like `<script>`.
+### Quick Diagnostic Commands
+```bash
+# Check Evernote status
+curl -s https://status.evernote.com
 
-**Token refresh flow**: API call returns `AUTH_EXPIRED` (code 5). Check stored `edam_expires` timestamp, redirect user to OAuth re-authorization, store new token with updated expiration.
+# Verify API connectivity
+curl -I https://api.evernote.com
+
+# Check local configuration
+env | grep EVERNOTE
+```
+
+### Escalation Path
+1. Collect evidence with `evernote-debug-bundle`
+2. Check Evernote status page
+3. Contact support with request ID
+
+## Resources
+- [Evernote Status Page](https://status.evernote.com)
+- [Evernote Support](https://docs.evernote.com/support)
+- [Evernote Error Codes](https://docs.evernote.com/errors)
+
+## Next Steps
+For comprehensive debugging, see `evernote-debug-bundle`.

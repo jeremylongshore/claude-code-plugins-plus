@@ -1,247 +1,252 @@
 ---
 name: sentry-observability
 description: |
-  Integrate Sentry with your observability stack.
-  Use when connecting Sentry to logging, metrics, APM tools,
-  or building unified observability dashboards.
-  Trigger with phrases like "sentry observability", "sentry logging integration",
-  "sentry metrics", "sentry opentelemetry".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*)
+  Set up comprehensive observability for Sentry integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Sentry operations, setting up dashboards,
+  or configuring alerting for Sentry integration health.
+  Trigger with phrases like "sentry monitoring", "sentry metrics",
+  "sentry observability", "monitor sentry", "sentry alerts", "sentry tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, observability, logging, opentelemetry, metrics]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Observability
 
+## Overview
+Set up comprehensive observability for Sentry integrations.
+
 ## Prerequisites
-- Existing observability stack (logging, metrics, APM)
-- Trace ID correlation strategy defined
-- Dashboard platform available (Grafana, Datadog, etc.)
-- Alert routing established
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `sentry_requests_total` | Counter | Total API requests |
+| `sentry_request_duration_seconds` | Histogram | Request latency |
+| `sentry_errors_total` | Counter | Error count by type |
+| `sentry_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'sentry_requests_total',
+  help: 'Total Sentry API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'sentry_request_duration_seconds',
+  help: 'Sentry request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'sentry_errors_total',
+  help: 'Sentry errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('sentry-client');
+
+async function tracedSentryCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`sentry.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'sentry',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logSentryOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'sentry',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# sentry_alerts.yaml
+groups:
+  - name: sentry_alerts
+    rules:
+      - alert: SentryHighErrorRate
+        expr: |
+          rate(sentry_errors_total[5m]) /
+          rate(sentry_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sentry error rate > 5%"
+
+      - alert: SentryHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(sentry_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Sentry P95 latency > 2s"
+
+      - alert: SentryDown
+        expr: up{job="sentry"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Sentry integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Sentry Request Rate",
+      "targets": [{
+        "expr": "rate(sentry_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Sentry Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(sentry_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### 1. OpenTelemetry Integration (SDK v8)
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-Sentry SDK v8 is built on OpenTelemetry under the hood. You can connect Sentry to your existing OTel pipeline:
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-```typescript
-import * as Sentry from '@sentry/node';
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-
-  // Sentry auto-uses OpenTelemetry for tracing in v8
-  // Additional OTel exporters can be added:
-  // The SDK creates an OTel TracerProvider automatically
-});
-
-// Access the OTel tracer for custom instrumentation
-import { trace } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('my-app');
-const span = tracer.startSpan('custom-operation');
-// Sentry sees this span automatically via OTel bridge
-span.end();
-```
-
-### 2. Structured Logging Integration
-
-Connect your logger to Sentry for correlated error + log context:
-
-```typescript
-// Winston integration
-import winston from 'winston';
-import * as Sentry from '@sentry/node';
-
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console()],
-});
-
-// Log errors to both Winston and Sentry
-function logError(message: string, error: Error, context?: object) {
-  // Log to file/stdout
-  logger.error(message, { error: error.message, stack: error.stack, ...context });
-
-  // Capture in Sentry with same context
-  Sentry.withScope((scope) => {
-    if (context) scope.setContext('log', context);
-    scope.setTag('logger', 'winston');
-    Sentry.captureException(error);
-  });
-}
-
-// Add Sentry event ID to log entries for cross-referencing
-function logWithSentryId(level: string, message: string, meta?: object) {
-  const eventId = level === 'error'
-    ? Sentry.captureMessage(message, 'error')
-    : undefined;
-
-  logger.log(level, message, {
-    ...meta,
-    ...(eventId && { sentry_event_id: eventId }),
-  });
-}
-```
-
-### 3. Request ID Correlation
-
-Link logs, Sentry events, and traces with a shared request ID:
-
-```typescript
-import { randomUUID } from 'crypto';
-import * as Sentry from '@sentry/node';
-
-// Express middleware: attach request ID everywhere
-app.use((req, res, next) => {
-  const requestId = req.headers['x-request-id'] as string || randomUUID();
-  req.requestId = requestId;
-  res.setHeader('x-request-id', requestId);
-
-  // Set in Sentry scope
-  Sentry.setTag('request_id', requestId);
-
-  // Set in logger context
-  logger.defaultMeta = { ...logger.defaultMeta, request_id: requestId };
-
-  next();
-});
-
-// Now all systems share the same request_id:
-// - Sentry events: tags.request_id
-// - Log entries: request_id field
-// - HTTP responses: X-Request-Id header
-// - Downstream services: X-Request-Id header propagated
-```
-
-### 4. Custom Metrics with Sentry
-
-```typescript
-// Sentry v8 supports custom metrics
-import * as Sentry from '@sentry/node';
-
-// Counter — track occurrences
-Sentry.metrics.increment('api.requests', 1, {
-  tags: { endpoint: '/api/users', method: 'GET', status: '200' },
-});
-
-// Gauge — track current values
-Sentry.metrics.gauge('queue.depth', currentDepth, {
-  tags: { queue: 'email-notifications' },
-});
-
-// Distribution — track value distributions
-Sentry.metrics.distribution('api.response_time', responseTimeMs, {
-  tags: { endpoint: '/api/search' },
-  unit: 'millisecond',
-});
-
-// Set — track unique values
-Sentry.metrics.set('users.active', userId, {
-  tags: { plan: 'enterprise' },
-});
-```
-
-### 5. Grafana Dashboard Integration
-
-```typescript
-// Export Sentry data to Grafana via API
-// Create a Grafana data source pointing to Sentry API
-
-// Sentry API queries for Grafana panels:
-const queries = {
-  // Error rate over time
-  errorRate: `https://sentry.io/api/0/organizations/${org}/events-stats/?field=count()&query=is:unresolved&interval=1h`,
-
-  // Transaction duration percentiles
-  latency: `https://sentry.io/api/0/organizations/${org}/events-stats/?field=p95(transaction.duration)&interval=1h`,
-
-  // Error count by service
-  errorsByService: `https://sentry.io/api/0/organizations/${org}/events/?field=count()&groupBy=tags.service`,
-};
-```
-
-### 6. PagerDuty Integration
-
-Configure in **Settings > Integrations > PagerDuty**:
-
-1. Connect PagerDuty account
-2. Map Sentry projects to PagerDuty services
-3. Create alert rules that trigger PagerDuty incidents:
-
-```
-Issue Alert: "Critical Production Error"
-  Conditions: level:fatal AND environment:production
-  Actions: Send PagerDuty notification to "Production On-Call"
-  Frequency: Once per issue (deduplicated)
-
-Metric Alert: "Error Spike"
-  Trigger: Error count > 100 in 5 minutes
-  Actions: Create PagerDuty incident (Critical severity)
-  Resolution: Error count < 10 for 10 minutes
-```
-
-### 7. Slack Integration
-
-Configure in **Settings > Integrations > Slack**:
-
-```
-# Alert routing by channel
-#alerts-critical    → P0 production errors (PagerDuty + Slack)
-#alerts-production  → New production issues, regressions
-#alerts-staging     → Staging errors
-#alerts-performance → P95 latency breaches, Web Vital regressions
-```
-
-### 8. Cross-Tool Trace Correlation
-
-```typescript
-// Embed Sentry trace ID in all outbound contexts
-const traceId = Sentry.getActiveSpan()?.spanContext().traceId;
-
-// Add to HTTP response headers
-res.setHeader('X-Sentry-Trace-Id', traceId || '');
-
-// Add to log entries
-logger.info('Request processed', {
-  trace_id: traceId,
-  request_id: req.requestId,
-  sentry_url: `https://sentry.io/organizations/${org}/performance/trace/${traceId}/`,
-});
-
-// Add to downstream API calls
-fetch('https://service-b.internal/api', {
-  headers: {
-    'X-Trace-Id': traceId,
-    // sentry-trace and baggage are auto-propagated
-  },
-});
-```
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- OpenTelemetry bridge connecting Sentry to OTel pipeline
-- Structured logging correlated with Sentry events via request ID
-- Custom metrics tracking business KPIs in Sentry
-- PagerDuty and Slack integrations with tiered alert routing
-- Cross-tool trace correlation linking logs, traces, and errors
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| OTel spans not in Sentry | SDK not using OTel bridge | SDK v8 uses OTel by default; verify version |
-| Missing request IDs in logs | Middleware order wrong | Request ID middleware must run before logger and Sentry |
-| PagerDuty not triggering | Alert rule conditions too narrow | Test with lower thresholds first, then tune |
-| Metrics not appearing | Feature not enabled | Verify Sentry plan includes custom metrics |
-| Trace IDs not matching | Different trace ID formats | Use Sentry's trace ID format (W3C standard) |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [Integrations](https://docs.sentry.io/organization/integrations/)
-- [OpenTelemetry](https://docs.sentry.io/platforms/javascript/guides/node/tracing/instrumentation/opentelemetry/)
-- [Custom Metrics](https://docs.sentry.io/product/explore/metrics/)
-- [PagerDuty](https://docs.sentry.io/organization/integrations/notification-incidents/pagerduty/)
-- [Slack](https://docs.sentry.io/organization/integrations/notification-incidents/slack/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Sentry Observability Guide](https://docs.sentry.com/observability)
+
+## Next Steps
+For incident response, see `sentry-incident-runbook`.

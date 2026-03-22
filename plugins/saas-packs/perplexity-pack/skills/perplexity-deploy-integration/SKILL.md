@@ -1,201 +1,211 @@
 ---
 name: perplexity-deploy-integration
 description: |
-  Deploy Perplexity Sonar API integrations to Vercel, Cloud Run, and Docker.
+  Deploy Perplexity integrations to Vercel, Fly.io, and Cloud Run platforms.
   Use when deploying Perplexity-powered applications to production,
-  configuring platform-specific secrets, or setting up edge functions.
+  configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy perplexity", "perplexity Vercel",
-  "perplexity production deploy", "perplexity Cloud Run", "perplexity Docker".
+  "perplexity production deploy", "perplexity Cloud Run", "perplexity Fly.io".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, perplexity, deployment]
-
+compatible-with: claude-code
+tags: [saas, perplexity]
 ---
+
 # Perplexity Deploy Integration
 
 ## Overview
-Deploy applications using Perplexity Sonar API to edge and server platforms. Perplexity's OpenAI-compatible endpoint at `https://api.perplexity.ai/chat/completions` works from any platform that can make HTTPS requests.
+Deploy Perplexity-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Perplexity API key stored in `PERPLEXITY_API_KEY`
-- Platform CLI installed (vercel, gcloud, or docker)
-- Application tested locally
+- Perplexity API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Step 1: Vercel Edge Function
-```typescript
-// api/search.ts
-import OpenAI from "openai";
-
-export const config = { runtime: "edge" };
-
-const perplexity = new OpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY!,
-  baseURL: "https://api.perplexity.ai",
-});
-
-export default async function handler(req: Request) {
-  const { query, model = "sonar", stream = false } = await req.json();
-
-  if (stream) {
-    const response = await perplexity.chat.completions.create({
-      model,
-      messages: [{ role: "user", content: query }],
-      stream: true,
-      max_tokens: 2048,
-    });
-
-    return new Response(response.toReadableStream(), {
-      headers: { "Content-Type": "text/event-stream" },
-    });
-  }
-
-  const response = await perplexity.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: query }],
-    max_tokens: 2048,
-  });
-
-  return Response.json({
-    answer: response.choices[0].message.content,
-    citations: (response as any).citations || [],
-    model: response.model,
-  });
-}
-```
-
+### Environment Setup
 ```bash
-set -euo pipefail
-# Deploy to Vercel
-vercel env add PERPLEXITY_API_KEY production
-vercel deploy --prod
+# Add Perplexity secrets to Vercel
+vercel secrets add perplexity_api_key sk_live_***
+vercel secrets add perplexity_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
 ```
 
-### Step 2: Cloud Run with Redis Cache
-```typescript
-// server.ts
-import express from "express";
-import OpenAI from "openai";
-import { createClient } from "redis";
-import { createHash } from "crypto";
-
-const app = express();
-app.use(express.json());
-
-const perplexity = new OpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY!,
-  baseURL: "https://api.perplexity.ai",
-});
-
-const redis = createClient({ url: process.env.REDIS_URL });
-await redis.connect();
-
-app.post("/api/search", async (req, res) => {
-  const { query, model = "sonar" } = req.body;
-  const cacheKey = `pplx:${createHash("sha256").update(`${model}:${query}`).digest("hex")}`;
-
-  // Check cache first
-  const cached = await redis.get(cacheKey);
-  if (cached) {
-    return res.json({ ...JSON.parse(cached), cached: true });
-  }
-
-  const response = await perplexity.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: query }],
-    max_tokens: 2048,
-  });
-
-  const result = {
-    answer: response.choices[0].message.content,
-    citations: (response as any).citations || [],
-    model: response.model,
-    tokens: response.usage?.total_tokens,
-  };
-
-  // Cache for 1 hour
-  await redis.setEx(cacheKey, 3600, JSON.stringify(result));
-  res.json(result);
-});
-
-app.listen(8080);
-```
-
-```bash
-set -euo pipefail
-# Deploy to Cloud Run
-gcloud secrets create perplexity-api-key --data-file=<(echo -n "$PERPLEXITY_API_KEY")
-gcloud run deploy perplexity-search \
-  --source . \
-  --set-secrets=PERPLEXITY_API_KEY=perplexity-api-key:latest \
-  --port=8080 \
-  --allow-unauthenticated
-```
-
-### Step 3: Docker
-```dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production
-COPY . .
-RUN npm run build
-
-ENV NODE_ENV=production
-EXPOSE 8080
-CMD ["node", "dist/server.js"]
-```
-
-### Step 4: Vercel Configuration
+### vercel.json Configuration
 ```json
 {
+  "env": {
+    "PERPLEXITY_API_KEY": "@perplexity_api_key"
+  },
   "functions": {
-    "api/search.ts": {
+    "api/**/*.ts": {
       "maxDuration": 30
     }
   }
 }
 ```
 
-### Step 5: Health Check
-```typescript
-app.get("/health", async (req, res) => {
-  const start = Date.now();
-  try {
-    await perplexity.chat.completions.create({
-      model: "sonar",
-      messages: [{ role: "user", content: "ping" }],
-      max_tokens: 5,
-    });
-    res.json({ status: "healthy", latencyMs: Date.now() - start });
-  } catch {
-    res.status(503).json({ status: "unhealthy", latencyMs: Date.now() - start });
-  }
-});
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-perplexity-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
 ```
+
+### Secrets
+```bash
+# Set Perplexity secrets
+fly secrets set PERPLEXITY_API_KEY=sk_live_***
+fly secrets set PERPLEXITY_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="perplexity-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=PERPLEXITY_API_KEY=perplexity-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/perplexity.ts
+interface PerplexityConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getPerplexityConfig(): PerplexityConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.PERPLEXITY_API_KEY!,
+    environment: env as PerplexityConfig['environment'],
+    webhookSecret: process.env.PERPLEXITY_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const perplexityStatus = await checkPerplexityConnection();
+
+  return Response.json({
+    status: perplexityStatus ? 'healthy' : 'degraded',
+    services: {
+      perplexity: perplexityStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Perplexity API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Perplexity integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Perplexity connectivity.
+
+## Output
+- Application deployed to production
+- Perplexity secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Edge function timeout | sonar-pro takes >30s | Use sonar or increase maxDuration |
-| Cache stale for news | TTL too long | Use `search_recency_filter` + shorter TTL |
-| API key invalid after deploy | Wrong secret reference | Verify `vercel env ls` or `gcloud secrets` |
-| Stream interrupted | Client disconnect | Handle abort signal gracefully |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
 
-## Output
-- Deployed API endpoint serving Perplexity search
-- Cached responses with configurable TTL
-- Health check endpoint
-- Platform-specific secret management
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add perplexity_api_key "$PERPLEXITY_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set PERPLEXITY_API_KEY="$PERPLEXITY_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Perplexity API Documentation](https://docs.perplexity.ai)
-- [Vercel Edge Functions](https://vercel.com/docs/functions/edge-functions)
-- [Cloud Run Docs](https://cloud.google.com/run/docs)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Perplexity Deploy Guide](https://docs.perplexity.com/deploy)
 
 ## Next Steps
-For multi-environment setup, see `perplexity-multi-env-setup`.
+For webhook handling, see `perplexity-webhooks-events`.

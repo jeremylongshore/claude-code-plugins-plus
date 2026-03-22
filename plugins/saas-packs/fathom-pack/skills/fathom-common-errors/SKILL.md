@@ -1,61 +1,113 @@
 ---
 name: fathom-common-errors
 description: |
-  Diagnose and fix Fathom API errors including auth failures and missing data.
-  Use when API calls fail, transcripts are empty, or webhooks are not firing.
-  Trigger with phrases like "fathom error", "fathom not working",
-  "fathom api failure", "fix fathom".
-allowed-tools: Read, Bash(curl:*), Grep
+  Diagnose and fix Fathom common errors and exceptions.
+  Use when encountering Fathom errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "fathom error", "fix fathom",
+  "fathom not working", "debug fathom".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
+tags: [saas, fathom]
 ---
 
 # Fathom Common Errors
 
-## Error Reference
+## Overview
+Quick reference for the top 10 most common Fathom errors and their solutions.
 
-### 1. 401 Unauthorized
-**Fix**: Regenerate API key at Settings > Integrations > API Access.
+## Prerequisites
+- Fathom SDK installed
+- API credentials configured
+- Access to error logs
 
-### 2. 429 Rate Limited
-Limit: 60 calls per minute across all API keys.
-**Fix**: Implement exponential backoff. Batch requests.
+## Instructions
 
-### 3. Empty Transcript
-**Causes**: Meeting still processing, recording too short, or audio quality issues.
-**Fix**: Wait 5-10 minutes after recording. Check recording in Fathom UI.
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-### 4. Missing Summary
-**Cause**: AI processing not complete.
-**Fix**: Poll the recording endpoint until summary is available.
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-### 5. Webhook Not Firing
-**Fix**: Verify webhook URL in Settings > Integrations > Webhooks. Test with:
-```bash
-curl -X POST https://your-url.com/webhooks/fathom \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test"}'
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
-### 6. OAuth Token Expired
-**Fix**: Refresh the access token using your refresh token.
+**Cause:** API key is missing, expired, or invalid.
 
-## Quick Diagnostics
-
+**Solution:**
 ```bash
-# Test API key
-curl -s -o /dev/null -w "%{http_code}" -H "X-Api-Key: ${FATHOM_API_KEY}" \
-  https://api.fathom.ai/external/v1/meetings?limit=1
+# Verify API key is set
+echo $FATHOM_API_KEY
 ```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `fathom-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Fathom status
+curl -s https://status.fathom.com
+
+# Verify API connectivity
+curl -I https://api.fathom.com
+
+# Check local configuration
+env | grep FATHOM
+```
+
+### Escalation Path
+1. Collect evidence with `fathom-debug-bundle`
+2. Check Fathom status page
+3. Contact support with request ID
 
 ## Resources
-
-- [Fathom Help Center](https://help.fathom.video)
-- [Fathom API Docs](https://developers.fathom.ai)
+- [Fathom Status Page](https://status.fathom.com)
+- [Fathom Support](https://docs.fathom.com/support)
+- [Fathom Error Codes](https://docs.fathom.com/errors)
 
 ## Next Steps
-
-For diagnostics, see `fathom-debug-bundle`.
+For comprehensive debugging, see `fathom-debug-bundle`.

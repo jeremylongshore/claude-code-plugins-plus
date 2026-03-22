@@ -1,267 +1,216 @@
 ---
 name: langfuse-performance-tuning
 description: |
-  Optimize Langfuse tracing performance for high-throughput applications.
-  Use when experiencing latency issues, optimizing trace overhead,
-  or scaling Langfuse for production workloads.
+  Optimize Langfuse API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Langfuse integrations.
   Trigger with phrases like "langfuse performance", "optimize langfuse",
-  "langfuse latency", "langfuse overhead", "langfuse slow".
+  "langfuse latency", "langfuse caching", "langfuse slow", "langfuse batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langfuse, performance, scaling, tracing]
-
+compatible-with: claude-code
+tags: [saas, langfuse]
 ---
+
 # Langfuse Performance Tuning
 
 ## Overview
-Optimize Langfuse tracing for minimal overhead and maximum throughput: benchmark measurement, batch tuning, non-blocking patterns, payload optimization, sampling, and memory management.
+Optimize Langfuse API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Existing Langfuse integration
-- Performance baseline to compare against
+- Langfuse SDK installed
 - Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Performance Targets
+## Latency Benchmarks
 
-| Metric | Target | Critical |
-|--------|--------|----------|
-| Trace creation overhead | < 1ms | < 5ms |
-| Flush latency (batch) | < 100ms | < 500ms |
-| Memory per active trace | < 1KB | < 5KB |
-| CPU overhead | < 1% | < 5% |
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-## Instructions
+## Caching Strategy
 
-### Step 1: Benchmark Current Performance
-
+### Response Caching
 ```typescript
-// scripts/benchmark-langfuse.ts
-import { performance } from "perf_hooks";
-import { startActiveObservation, updateActiveObservation } from "@langfuse/tracing";
-import { LangfuseSpanProcessor } from "@langfuse/otel";
-import { NodeSDK } from "@opentelemetry/sdk-node";
+import { LRUCache } from 'lru-cache';
 
-async function benchmark() {
-  const sdk = new NodeSDK({
-    spanProcessors: [new LangfuseSpanProcessor()],
-  });
-  sdk.start();
-
-  const iterations = 1000;
-
-  // Measure trace creation
-  const timings: number[] = [];
-  for (let i = 0; i < iterations; i++) {
-    const start = performance.now();
-    await startActiveObservation(`bench-${i}`, async () => {
-      updateActiveObservation({ input: { i }, output: { done: true } });
-    });
-    timings.push(performance.now() - start);
-  }
-
-  const sorted = timings.sort((a, b) => a - b);
-  console.log("=== Langfuse Performance Benchmark ===");
-  console.log(`Iterations: ${iterations}`);
-  console.log(`Mean:  ${(sorted.reduce((a, b) => a + b) / sorted.length).toFixed(3)}ms`);
-  console.log(`P50:   ${sorted[Math.floor(sorted.length * 0.5)].toFixed(3)}ms`);
-  console.log(`P95:   ${sorted[Math.floor(sorted.length * 0.95)].toFixed(3)}ms`);
-  console.log(`P99:   ${sorted[Math.floor(sorted.length * 0.99)].toFixed(3)}ms`);
-
-  const flushStart = performance.now();
-  await sdk.shutdown();
-  console.log(`Flush: ${(performance.now() - flushStart).toFixed(1)}ms`);
-}
-
-benchmark();
-```
-
-### Step 2: Optimize Batch Configuration
-
-```typescript
-// v4+: Tune OTel span processor
-import { LangfuseSpanProcessor } from "@langfuse/otel";
-import { NodeSDK } from "@opentelemetry/sdk-node";
-
-const processor = new LangfuseSpanProcessor({
-  exportIntervalMillis: 10000,  // Flush every 10s (default: 5000)
-  maxExportBatchSize: 100,      // Larger batches = fewer API calls
-  maxQueueSize: 4096,           // Buffer more events before dropping
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
 });
 
-const sdk = new NodeSDK({ spanProcessors: [processor] });
-sdk.start();
-```
+async function cachedLangfuseRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-```typescript
-// v3: Direct configuration
-const langfuse = new Langfuse({
-  flushAt: 100,           // Larger batches
-  flushInterval: 10000,   // Less frequent flushes
-  requestTimeout: 30000,  // Allow time for large batches
-});
-```
-
-| Setting | Low Volume | High Volume | Ultra-High |
-|---------|-----------|-------------|------------|
-| Batch size | 15 | 50-100 | 200 |
-| Flush interval | 5s | 10s | 30s |
-| Queue size | 1024 | 4096 | 8192 |
-
-### Step 3: Non-Blocking Trace Wrapper
-
-Ensure tracing never blocks your application's critical path:
-
-```typescript
-import { observe, updateActiveObservation } from "@langfuse/tracing";
-
-// The observe wrapper is already non-blocking for the trace submission.
-// But protect against SDK crashes:
-function safeObserve<T extends (...args: any[]) => Promise<any>>(
-  name: string,
-  fn: T
-): T {
-  return (async (...args: Parameters<T>) => {
-    try {
-      return await observe({ name }, async () => {
-        updateActiveObservation({ input: args });
-        const result = await fn(...args);
-        updateActiveObservation({ output: result });
-        return result;
-      })();
-    } catch (error) {
-      // If tracing throws, run function without tracing
-      console.warn(`Tracing failed for ${name}:`, error);
-      return fn(...args);
-    }
-  }) as T;
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
 }
 ```
 
-### Step 4: Payload Size Optimization
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-Large trace payloads slow down flush and increase costs:
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
 
 ```typescript
-function truncateForTrace(input: any, maxStringLen = 5000, maxArrayLen = 50): any {
-  if (typeof input === "string") {
-    return input.length > maxStringLen
-      ? input.slice(0, maxStringLen) + `...[truncated ${input.length - maxStringLen} chars]`
-      : input;
-  }
+import DataLoader from 'dataloader';
 
-  if (Array.isArray(input)) {
-    return input.slice(0, maxArrayLen).map((item) => truncateForTrace(item));
+const langfuseLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Langfuse
+    const results = await langfuseClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
   }
+);
 
-  if (input instanceof Buffer || input instanceof Uint8Array) {
-    return `[Binary: ${input.length} bytes]`;
-  }
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  langfuseLoader.load('id-1'),
+  langfuseLoader.load('id-2'),
+  langfuseLoader.load('id-3'),
+]);
+```
 
-  if (typeof input === "object" && input !== null) {
-    const result: Record<string, any> = {};
-    for (const [key, value] of Object.entries(input)) {
-      result[key] = truncateForTrace(value);
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new LangfuseClient({
+  apiKey: process.env.LANGFUSE_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedLangfuseList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
     }
-    return result;
-  }
-
-  return input;
+    cursor = nextCursor;
+  } while (cursor);
 }
 
 // Usage
-await startActiveObservation("process", async () => {
-  updateActiveObservation({
-    input: truncateForTrace(largeInput),  // Truncated for trace
-  });
-  const result = await process(largeInput); // Full input to function
-  updateActiveObservation({ output: truncateForTrace(result) });
-});
+for await (const item of paginatedLangfuseList(cursor =>
+  langfuseClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
 ```
 
-### Step 5: Sampling for Ultra-High Volume
-
-When you cannot afford to trace every request:
+## Performance Monitoring
 
 ```typescript
-class TraceSampler {
-  private rate: number;
-  private windowMs = 60000;
-  private maxPerWindow: number;
-  private timestamps: number[] = [];
-
-  constructor(rate: number, maxPerMinute: number) {
-    this.rate = rate;
-    this.maxPerWindow = maxPerMinute;
+async function measuredLangfuseCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
   }
-
-  shouldSample(isError = false): boolean {
-    if (isError) return true; // Always trace errors
-
-    const now = Date.now();
-    this.timestamps = this.timestamps.filter((t) => t > now - this.windowMs);
-
-    if (this.timestamps.length >= this.maxPerWindow) return false;
-    if (Math.random() > this.rate) return false;
-
-    this.timestamps.push(now);
-    return true;
-  }
-}
-
-const sampler = new TraceSampler(0.1, 1000); // 10%, max 1000/min
-
-async function maybeTrace<T>(name: string, fn: () => Promise<T>, isError = false): Promise<T> {
-  if (!sampler.shouldSample(isError)) {
-    return fn(); // Skip tracing
-  }
-
-  return startActiveObservation(name, async () => {
-    updateActiveObservation({ metadata: { sampled: true } });
-    return fn();
-  });
 }
 ```
 
-### Step 6: Memory Management
+## Instructions
 
-```typescript
-// Monitor trace-related memory usage
-function logMemoryStats() {
-  const mem = process.memoryUsage();
-  console.log({
-    heapUsedMB: (mem.heapUsed / 1024 / 1024).toFixed(1),
-    rssMB: (mem.rss / 1024 / 1024).toFixed(1),
-    externalMB: (mem.external / 1024 / 1024).toFixed(1),
-  });
-}
+### Step 1: Establish Baseline
+Measure current latency for critical Langfuse operations.
 
-// Log every minute in production
-setInterval(logMemoryStats, 60000);
-```
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-## Optimization Impact Matrix
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-| Optimization | Latency Impact | Throughput Impact | Effort |
-|-------------|---------------|-------------------|--------|
-| Increase batch size | High | High | Low |
-| Non-blocking wrapper | High | Medium | Low |
-| Payload truncation | Medium | Medium | Low |
-| Sampling | High | Very High | Medium |
-| Memory monitoring | Low | Low | Low |
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| High P99 latency | Sync flush in hot path | Use non-blocking wrapper |
-| Memory growth | No payload limits | Truncate inputs/outputs |
-| Request timeouts | Batch too large | Reduce batch size or increase timeout |
-| Dropped spans | Queue full | Increase `maxQueueSize` |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredLangfuseCall(name, () =>
+    cachedLangfuseRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Event Queuing/Batching](https://langfuse.com/docs/observability/features/queuing-batching)
-- [Advanced SDK Configuration](https://langfuse.com/docs/observability/sdk/typescript/advanced-usage)
-- [Token & Cost Tracking](https://langfuse.com/docs/observability/features/token-and-cost-tracking)
+- [Langfuse Performance Guide](https://docs.langfuse.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Next Steps
+For cost optimization, see `langfuse-cost-tuning`.

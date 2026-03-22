@@ -1,269 +1,222 @@
 ---
 name: sentry-data-handling
 description: |
-  Manage sensitive data, PII scrubbing, and compliance in Sentry.
-  Use when configuring PII scrubbing, data retention,
-  GDPR compliance, or data security settings.
-  Trigger with phrases like "sentry pii", "sentry gdpr",
-  "sentry data privacy", "scrub sensitive data sentry".
-allowed-tools: Read, Write, Edit, Grep, Bash(curl:*)
+  Implement Sentry PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Sentry integrations.
+  Trigger with phrases like "sentry data", "sentry PII",
+  "sentry GDPR", "sentry data retention", "sentry privacy", "sentry CCPA".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, security, compliance, gdpr, pii]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Data Handling
 
+## Overview
+Handle sensitive data correctly when integrating with Sentry.
+
 ## Prerequisites
-- Sentry project with admin access
-- Compliance requirements documented (GDPR, HIPAA, PCI-DSS, SOC 2)
-- List of sensitive data patterns to scrub
-- Data retention requirements understood
+- Understanding of GDPR/CCPA requirements
+- Sentry SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Sentry request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupSentryData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.sentryLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupSentryData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const sentryData = await sentryClient.getUserData(userId);
+
+  return {
+    source: 'Sentry',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: sentryData.profile,
+      activities: sentryData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Sentry
+  await sentryClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.sentryUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'sentry',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await sentryClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### 1. SDK-Level PII Prevention
+### Step 1: Classify Data
+Categorize all Sentry data by sensitivity level.
 
-The first line of defense is preventing PII from leaving the client:
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-```typescript
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-  // CRITICAL: disable automatic PII collection
-  sendDefaultPii: false, // No IP addresses, cookies, user-agent
-
-  beforeSend(event) {
-    return scrubEvent(event);
-  },
-
-  beforeSendTransaction(event) {
-    return scrubEvent(event);
-  },
-
-  beforeBreadcrumb(breadcrumb) {
-    // Scrub PII from breadcrumbs
-    if (breadcrumb.data) {
-      const sensitiveKeys = ['password', 'token', 'secret', 'api_key', 'authorization'];
-      sensitiveKeys.forEach(key => {
-        if (breadcrumb.data[key]) {
-          breadcrumb.data[key] = '[REDACTED]';
-        }
-      });
-    }
-    return breadcrumb;
-  },
-});
-
-function scrubEvent(event: Sentry.Event): Sentry.Event | null {
-  // Scrub request headers
-  if (event.request?.headers) {
-    delete event.request.headers['Authorization'];
-    delete event.request.headers['Cookie'];
-    delete event.request.headers['X-Api-Key'];
-    delete event.request.headers['X-Auth-Token'];
-  }
-
-  // Scrub request body
-  if (event.request?.data) {
-    const data = typeof event.request.data === 'string'
-      ? tryParseJson(event.request.data)
-      : event.request.data;
-
-    if (data && typeof data === 'object') {
-      scrubObject(data);
-      event.request.data = JSON.stringify(data);
-    }
-  }
-
-  // Scrub error messages
-  if (event.exception?.values) {
-    event.exception.values.forEach(exc => {
-      if (exc.value) {
-        exc.value = scrubPiiFromString(exc.value);
-      }
-    });
-  }
-
-  // Scrub user data (keep id, remove PII)
-  if (event.user) {
-    const { id, ...pii } = event.user;
-    event.user = { id }; // Only keep anonymous ID
-  }
-
-  return event;
-}
-
-function scrubObject(obj: Record<string, unknown>) {
-  const sensitiveKeys = [
-    'password', 'passwd', 'secret', 'token', 'api_key', 'apiKey',
-    'ssn', 'social_security', 'credit_card', 'cc_number', 'cvv',
-    'email', 'phone', 'address', 'dob', 'date_of_birth',
-  ];
-
-  for (const key of Object.keys(obj)) {
-    if (sensitiveKeys.some(sk => key.toLowerCase().includes(sk))) {
-      obj[key] = '[REDACTED]';
-    } else if (typeof obj[key] === 'string') {
-      obj[key] = scrubPiiFromString(obj[key] as string);
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      scrubObject(obj[key] as Record<string, unknown>);
-    }
-  }
-}
-
-function scrubPiiFromString(str: string): string {
-  return str
-    // Email addresses
-    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]')
-    // Credit card numbers (13-19 digits with optional separators)
-    .replace(/\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{1,7}\b/g, '[CC_NUMBER]')
-    // SSN patterns
-    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN]')
-    // Phone numbers (US format)
-    .replace(/\b(\+1)?[\s-]?\(?\d{3}\)?[\s-]?\d{3}[\s-]?\d{4}\b/g, '[PHONE]');
-}
-```
-
-### 2. Server-Side Data Scrubbing
-
-Configure in **Project Settings > Security & Privacy**:
-
-- **Enable Data Scrubber** — automatically scrubs values matching common PII field names
-- **Custom Sensitive Fields** — add: `password`, `secret`, `token`, `api_key`, `ssn`, `credit_card`, `cvv`, `authorization`
-- **Safe Fields** — fields to NEVER scrub: `transaction_id`, `order_id`, `request_id`
-- **Scrub IP Addresses** — remove IP from all events
-- **Scrub Credit Cards** — detect and remove card number patterns
-
-### 3. Advanced Data Scrubbing Rules
-
-Configure in **Project Settings > Security & Privacy > Advanced Data Scrubbing**:
-
-```
-# Pattern-based rules
-[Remove] [Regex: \d{4}-\d{4}-\d{4}-\d{4}] from [$string]     # Credit cards
-[Remove] [Regex: \b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b] from [$string]  # Emails
-[Remove] [Regex: \b\d{3}-\d{2}-\d{4}\b] from [$string]        # SSN
-[Mask] [Password] from [extra.request_body]                      # Passwords
-[Replace] [Credit card] with [REDACTED] from [**]                # All credit cards everywhere
-```
-
-### 4. GDPR Compliance
-
-**Right to be Informed:**
-- Document that you use Sentry for error tracking in your privacy policy
-- Explain what data is collected and why (stack traces, device info, user IDs)
-
-**Right to Erasure (Article 17):**
-```bash
-# Delete all data for a specific user
-# Use the Sentry API to search and delete events by user
-curl -X DELETE \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/data-deletion/?user_id=USER_ID"
-
-# Or contact Sentry support for full data erasure
-```
-
-**Data Minimization:**
-```typescript
-// Only set user ID, never PII
-Sentry.setUser({ id: user.anonymousId });
-// NOT: Sentry.setUser({ id: user.id, email: user.email, name: user.name });
-```
-
-**Data Processing Agreement:**
-- Sign Sentry's DPA at https://sentry.io/legal/dpa/
-- Required for GDPR compliance when processing EU user data
-
-### 5. Data Retention Configuration
-
-Configure in **Organization Settings > Data Retention**:
-- Default: 90 days for most event data
-- Minimum: 30 days
-- Maximum: varies by plan (Team: 90 days, Business: 365 days)
-
-### 6. SOC 2 / HIPAA Considerations
-
-```typescript
-// For HIPAA environments:
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  sendDefaultPii: false,
-
-  beforeSend(event) {
-    // Remove ALL user-identifiable information
-    delete event.user;
-    delete event.request?.headers;
-    delete event.request?.cookies;
-
-    // Remove request body (may contain PHI)
-    delete event.request?.data;
-
-    // Keep only technical data
-    return event;
-  },
-});
-
-// For SOC 2:
-// - Enable audit logging (Business/Enterprise plan)
-// - Configure SSO/SAML
-// - Enable IP allowlisting
-// - Set up regular access reviews
-```
-
-### 7. Verify Data Scrubbing Works
-
-```typescript
-// Test script: verify PII is scrubbed
-Sentry.withScope((scope) => {
-  scope.setUser({
-    id: 'test-123',
-    email: 'should-be-scrubbed@example.com',
-    ip_address: '192.168.1.1',
-  });
-
-  scope.setContext('test_data', {
-    password: 'should-be-scrubbed',
-    credit_card: '4111-1111-1111-1111',
-    api_key: 'sk_live_should_be_scrubbed',
-    safe_field: 'this should remain',
-  });
-
-  Sentry.captureMessage('Data scrubbing verification test');
-});
-
-// Then check the event in Sentry dashboard:
-// - email should be [REDACTED] or missing
-// - password should be [REDACTED]
-// - credit_card should be [REDACTED]
-// - api_key should be [REDACTED]
-// - safe_field should be visible
-```
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- Client-side PII scrubbing via beforeSend removing sensitive headers, bodies, and patterns
-- Server-side data scrubber enabled with custom sensitive field list
-- Advanced scrubbing rules for regex pattern matching
-- GDPR compliance with data minimization and erasure capability
-- Data retention policies configured per organization requirements
-- Verification test confirming scrubbing works end-to-end
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| PII visible in event | `beforeSend` not scrubbing properly | Test with verification script, check regex patterns |
-| Over-scrubbing | Safe fields being redacted | Add fields to Safe Fields list in project settings |
-| GDPR erasure request | User requests data deletion | Use API or contact Sentry support for full erasure |
-| SOC 2 audit finding | Missing audit logs | Upgrade to Business/Enterprise for audit logging |
-| `sendDefaultPii: true` in production | Configuration not environment-aware | Gate PII collection behind environment check |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Sentry response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-- [Data Privacy](https://docs.sentry.io/product/data-management-settings/data-privacy/)
-- [Data Scrubbing](https://docs.sentry.io/product/data-management-settings/scrubbing/)
-- [GDPR Compliance](https://sentry.io/legal/gdpr/)
-- [DPA](https://sentry.io/legal/dpa/)
-- [Security](https://sentry.io/security/)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Sentry Privacy Guide](https://docs.sentry.com/privacy)
+
+## Next Steps
+For enterprise access control, see `sentry-enterprise-rbac`.

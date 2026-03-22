@@ -1,65 +1,71 @@
 ---
 name: openevidence-core-workflow-a
 description: |
-  Execute OpenEvidence primary workflow: Clinical Query & Decision Support.
-  Trigger: "openevidence clinical query & decision support", "primary openevidence workflow".
+  Execute OpenEvidence primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "openevidence main workflow",
+  "primary task with openevidence".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
 compatible-with: claude-code
+tags: [saas, openevidence]
 ---
 
-# OpenEvidence — Clinical Query & Decision Support
+# OpenEvidence Core Workflow A
 
 ## Overview
-Primary workflow for OpenEvidence integration.
+Primary money-path workflow for OpenEvidence. This is the most common use case.
+
+## Prerequisites
+- Completed `openevidence-install-auth` setup
+- Understanding of OpenEvidence core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Clinical Query
+### Step 1: Initialize
 ```typescript
-const result = await client.query({
-  question: 'What is the recommended treatment for acute migraine in adults?',
-  context: 'emergency_department',
-  evidence_level: 'high',  // Filter by evidence quality
-  max_citations: 10
-});
-
-console.log('Answer:', result.answer);
-console.log('Confidence:', result.confidence);
-result.citations.forEach(c =>
-  console.log(`  [${c.journal}] ${c.title} (${c.year}) — ${c.evidence_level}`)
-);
+// Step 1 implementation
 ```
 
-### Step 2: Drug Interaction Check
+### Step 2: Execute
 ```typescript
-const interactions = await client.interactions.check({
-  medications: ['metformin', 'lisinopril', 'atorvastatin'],
-  patient_context: { age: 65, conditions: ['diabetes', 'hypertension'] }
-});
-
-interactions.forEach(i =>
-  console.log(`${i.drug1} + ${i.drug2}: ${i.severity} — ${i.description}`)
-);
+// Step 2 implementation
 ```
 
-### Step 3: Guideline Lookup
+### Step 3: Finalize
 ```typescript
-const guidelines = await client.guidelines.search({
-  condition: 'hypertension',
-  source: ['ACC/AHA', 'ESC'],
-  year_min: 2023
-});
-guidelines.forEach(g =>
-  console.log(`${g.source}: ${g.title} (${g.year})`)
-);
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from OpenEvidence API
+- Success confirmation or error details
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [OpenEvidence Docs](https://www.openevidence.com)
+- [OpenEvidence Documentation](https://docs.openevidence.com)
+- [OpenEvidence API Reference](https://docs.openevidence.com/api)
 
 ## Next Steps
-See `openevidence-core-workflow-b`.
+For secondary workflow, see `openevidence-core-workflow-b`.

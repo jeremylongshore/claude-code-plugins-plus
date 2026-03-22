@@ -1,115 +1,151 @@
 ---
 name: evernote-rate-limits
 description: |
-  Handle Evernote API rate limits effectively.
-  Use when implementing rate limit handling, optimizing API usage,
-  or troubleshooting rate limit errors.
+  Implement Evernote rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Evernote.
   Trigger with phrases like "evernote rate limit", "evernote throttling",
-  "api quota evernote", "rate limit exceeded".
-allowed-tools: Read, Write, Edit, Grep
+  "evernote 429", "evernote retry", "evernote backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Rate Limits
 
 ## Overview
-Evernote enforces rate limits per API key, per user. When exceeded, the API throws `EDAMSystemException` with `errorCode: RATE_LIMIT_REACHED` and `rateLimitDuration` (seconds to wait). Production integrations must handle this gracefully.
+Handle Evernote rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-- Evernote SDK setup
+- Evernote SDK installed
 - Understanding of async/await patterns
-- Error handling implementation
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Rate Limit Handler
+### Step 1: Understand Rate Limit Tiers
 
-Catch `EDAMSystemException` and check for `rateLimitDuration`. Implement exponential backoff: wait the specified duration, then retry. Track retry attempts to avoid infinite loops.
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-```javascript
-async function withRateLimitRetry(operation, maxRetries = 3) {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
+### Step 2: Implement Exponential Backoff with Jitter
+
+```typescript
+async function withExponentialBackoff<T>(
+  operation: () => Promise<T>,
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+): Promise<T> {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
-    } catch (error) {
-      if (error.rateLimitDuration && attempt < maxRetries - 1) {
-        const waitMs = error.rateLimitDuration * 1000;
-        console.log(`Rate limited. Waiting ${error.rateLimitDuration}s...`);
-        await new Promise(r => setTimeout(r, waitMs));
-        continue;
-      }
-      throw error;
+    } catch (error: any) {
+      if (attempt === config.maxRetries) throw error;
+      const status = error.status || error.response?.status;
+      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
+  throw new Error('Unreachable');
 }
 ```
 
-### Step 2: Rate-Limited Client Wrapper
+### Step 3: Add Idempotency Keys
 
-Wrap the NoteStore with a class that adds configurable delays between API calls. Use a request queue to prevent bursts. Track request timestamps for monitoring.
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 
-```javascript
-class RateLimitedClient {
-  constructor(noteStore, minDelayMs = 100) {
-    this.noteStore = noteStore;
-    this.minDelayMs = minDelayMs;
-    this.lastRequestTime = 0;
-  }
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
-  async call(method, ...args) {
-    const elapsed = Date.now() - this.lastRequestTime;
-    if (elapsed < this.minDelayMs) {
-      await new Promise(r => setTimeout(r, this.minDelayMs - elapsed));
-    }
-    this.lastRequestTime = Date.now();
-    return withRateLimitRetry(() => this.noteStore[method](...args));
-  }
+async function idempotentRequest<T>(
+  client: EvernoteClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
 }
 ```
-
-### Step 3: Batch Operations with Rate Limiting
-
-Process items sequentially with delay between each operation. On rate limit, wait and retry the failed item. Report progress via callback. Collect successes and failures.
-
-### Step 4: Avoiding Rate Limits
-
-Strategies to minimize API calls: cache `listNotebooks()` and `listTags()` results, use `findNotesMetadata()` instead of `getNote()` for listings, request only needed fields in `NotesMetadataResultSpec`, batch reads with sync chunks instead of individual fetches.
-
-### Step 5: Rate Limit Monitoring
-
-Track request counts, rate limit hits, average response times, and wait times. Log statistics periodically to identify optimization opportunities.
-
-For the complete rate limiter, batch processor, monitoring dashboard, and optimization examples, see [Implementation Guide](references/implementation-guide.md).
 
 ## Output
-- Automatic retry with exponential backoff on rate limit errors
-- Request queue with configurable minimum delay between calls
-- Batch processor with progress tracking and failure collection
-- Rate limit monitoring with request/error statistics
-- API call optimization strategies (caching, metadata-only queries)
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
 
 ## Error Handling
-| Scenario | Response |
-|----------|----------|
-| First rate limit hit | Wait `rateLimitDuration` seconds, retry |
-| Repeated rate limits | Increase `minDelayMs`, reduce batch size |
-| Rate limit during sync | Pause sync, wait, resume from last USN |
-| Rate limit on initial setup | Request rate limit boost from Evernote support |
-
-## Resources
-- [Rate Limits Overview](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [API Best Practices](https://dev.evernote.com/doc/articles/rate_limits.php)
-- [Webhooks (reduce polling)](https://dev.evernote.com/doc/articles/webhooks.php)
-
-## Next Steps
-For security considerations, see `evernote-security-basics`.
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
 
 ## Examples
 
-**Batch note export**: Export 1,000 notes with 200ms delay between API calls and automatic retry on rate limits. Track progress and report failures at the end.
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
 
-**High-throughput sync**: Use `getFilteredSyncChunk()` to fetch changes in bulk (100 entries per call) instead of individual `getNote()` calls, reducing API call count by 100x.
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
+  }
+
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
+  }
+}
+```
+
+## Resources
+- [Evernote Rate Limits](https://docs.evernote.com/rate-limits)
+- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+## Next Steps
+For security configuration, see `evernote-security-basics`.

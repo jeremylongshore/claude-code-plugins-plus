@@ -1,44 +1,119 @@
 ---
 name: juicebox-local-dev-loop
 description: |
-  Configure Juicebox local dev workflow.
-  Trigger: "juicebox local dev", "juicebox dev setup".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Configure Juicebox local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Juicebox.
+  Trigger with phrases like "juicebox dev setup", "juicebox local development",
+  "juicebox dev environment", "develop with juicebox".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox Local Dev Loop
 
-## Project Structure
+## Overview
+Set up a fast, reproducible local development workflow for Juicebox.
+
+## Prerequisites
+- Completed `juicebox-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
+
+## Instructions
+
+### Step 1: Create Project Structure
 ```
-my-juicebox-app/
-├── .env                    # JUICEBOX_API_KEY=jb_live_...
-├── src/client.ts           # Singleton
-├── src/searches/           # Query definitions
-├── tests/fixtures/         # Mock results
-└── scripts/dev.ts
+my-juicebox-project/
+├── src/
+│   ├── juicebox/
+│   │   ├── client.ts       # Juicebox client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── juicebox.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-## Mock Data
-```typescript
-export const mockSearch = {
-  total: 150,
-  profiles: [{ id: 'prof_1', name: 'Jane Smith', title: 'Engineer', company: 'Google' }]
-};
+### Step 2: Configure Environment
+```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-## Cost Control
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}
+```
+
+### Step 4: Configure Testing
 ```typescript
-const limit = process.env.NODE_ENV === 'development' ? 5 : 50;
-const results = await client.search({ query, limit });
+import { describe, it, expect, vi } from 'vitest';
+import { JuiceboxClient } from '../src/juicebox/client';
+
+describe('Juicebox Client', () => {
+  it('should initialize with API key', () => {
+    const client = new JuiceboxClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
+```
+
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Juicebox development
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Juicebox Responses
+```typescript
+vi.mock('@juicebox/sdk', () => ({
+  JuiceboxClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=JUICEBOX=* npm run dev
 ```
 
 ## Resources
-- [Juicebox Docs](https://docs.juicebox.work)
+- [Juicebox SDK Reference](https://docs.juicebox.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-See `juicebox-sdk-patterns`.
+See `juicebox-sdk-patterns` for production-ready code patterns.

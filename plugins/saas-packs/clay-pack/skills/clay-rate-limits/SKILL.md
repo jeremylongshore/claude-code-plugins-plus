@@ -1,153 +1,60 @@
 ---
 name: clay-rate-limits
 description: |
-  Handle Clay rate limits, webhook throttling, and credit pacing strategies.
-  Use when hitting 429 errors, managing webhook submission rates,
-  or optimizing throughput within Clay's plan limits.
+  Implement Clay rate limiting, backoff, and idempotency patterns.
+  Use when handling rate limit errors, implementing retry logic,
+  or optimizing API request throughput for Clay.
   Trigger with phrases like "clay rate limit", "clay throttling",
-  "clay 429", "clay slow", "clay records per hour".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  "clay 429", "clay retry", "clay backoff".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, api]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Rate Limits
 
 ## Overview
-
-Clay enforces rate limits at the plan level, webhook level, and enrichment provider level. Understanding these limits prevents data loss, credit waste, and integration failures.
+Handle Clay rate limits gracefully with exponential backoff and idempotency.
 
 ## Prerequisites
-
-- Clay account with known plan tier
-- Webhook URL(s) for your tables
-- Understanding of your data volume requirements
+- Clay SDK installed
+- Understanding of async/await patterns
+- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Understand Clay Rate Limit Tiers
+### Step 1: Understand Rate Limit Tiers
 
-| Plan | Records/Hour | Webhook Limit | HTTP API Columns | Enterprise API |
-|------|-------------|---------------|-----------------|----------------|
-| Free | Limited | 50K lifetime per webhook | Not available | Not available |
-| Starter | Standard | 50K lifetime per webhook | Not available | Not available |
-| Explorer | 400/hour | 50K lifetime per webhook | Not available | Not available |
-| Pro | Unlimited | 50K lifetime per webhook | Available | Not available |
-| Enterprise | Unlimited | 50K lifetime per webhook | Available | Available |
+| Tier | Requests/min | Requests/day | Burst |
+|------|-------------|--------------|-------|
+| Free | 60 | 1,000 | 10 |
+| Pro | 300 | 10,000 | 50 |
+| Enterprise | 1,000 | 100,000 | 200 |
 
-**Key insight:** The 50K webhook submission limit is per-webhook, not per-table. Once exhausted, create a new webhook on the same table.
-
-### Step 2: Implement Webhook Rate Limiting
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
-// src/clay/rate-limiter.ts — respect Clay's plan-level rate limits
-import PQueue from 'p-queue';
-
-interface RateLimiterConfig {
-  maxPerHour: number;     // Plan limit (e.g., 400 for Explorer)
-  maxPerSecond: number;   // Practical burst limit
-  webhookLimit: number;   // 50K per webhook lifetime
-}
-
-const PLAN_LIMITS: Record<string, RateLimiterConfig> = {
-  explorer: { maxPerHour: 400, maxPerSecond: 2, webhookLimit: 50_000 },
-  pro:      { maxPerHour: Infinity, maxPerSecond: 10, webhookLimit: 50_000 },
-  enterprise: { maxPerHour: Infinity, maxPerSecond: 20, webhookLimit: 50_000 },
-};
-
-class ClayRateLimiter {
-  private queue: PQueue;
-  private submissionCount = 0;
-  private hourlyCount = 0;
-  private hourlyResetAt: Date;
-  private config: RateLimiterConfig;
-
-  constructor(plan: keyof typeof PLAN_LIMITS) {
-    this.config = PLAN_LIMITS[plan];
-    this.queue = new PQueue({
-      concurrency: 1,
-      interval: 1000,
-      intervalCap: this.config.maxPerSecond,
-    });
-    this.hourlyResetAt = new Date(Date.now() + 3600_000);
-  }
-
-  async submit(webhookUrl: string, data: Record<string, unknown>): Promise<Response> {
-    // Check webhook lifetime limit
-    if (this.submissionCount >= this.config.webhookLimit) {
-      throw new Error(
-        `Webhook submission limit (${this.config.webhookLimit}) reached. Create a new webhook.`
-      );
-    }
-
-    // Check hourly limit
-    if (Date.now() > this.hourlyResetAt.getTime()) {
-      this.hourlyCount = 0;
-      this.hourlyResetAt = new Date(Date.now() + 3600_000);
-    }
-    if (this.hourlyCount >= this.config.maxPerHour) {
-      const waitMs = this.hourlyResetAt.getTime() - Date.now();
-      console.log(`Hourly limit reached. Waiting ${(waitMs / 1000).toFixed(0)}s...`);
-      await new Promise(r => setTimeout(r, waitMs));
-      this.hourlyCount = 0;
-    }
-
-    return this.queue.add(async () => {
-      const res = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      if (res.status === 429) {
-        const retryAfter = parseInt(res.headers.get('Retry-After') || '60');
-        console.log(`429 rate limited. Waiting ${retryAfter}s...`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
-        return this.submit(webhookUrl, data); // Retry
-      }
-
-      this.submissionCount++;
-      this.hourlyCount++;
-      return res;
-    });
-  }
-
-  getStats() {
-    return {
-      totalSubmissions: this.submissionCount,
-      hourlyRemaining: this.config.maxPerHour - this.hourlyCount,
-      webhookRemaining: this.config.webhookLimit - this.submissionCount,
-    };
-  }
-}
-```
-
-### Step 3: Handle 429 Responses with Backoff
-
-```typescript
-// src/clay/backoff.ts
-async function withClayBackoff<T>(
+async function withExponentialBackoff<T>(
   operation: () => Promise<T>,
-  maxRetries = 5
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
     } catch (error: any) {
-      if (attempt === maxRetries) throw error;
-
-      // Clay returns 429 for plan-level rate limits
+      if (attempt === config.maxRetries) throw error;
       const status = error.status || error.response?.status;
       if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      const baseDelay = 1000 * Math.pow(2, attempt); // 1s, 2s, 4s, 8s, 16s
-      const jitter = Math.random() * 500;
-      const delay = Math.min(baseDelay + jitter, 60_000); // Max 60s
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
 
-      console.log(`Clay rate limited (attempt ${attempt + 1}). Retrying in ${(delay / 1000).toFixed(1)}s`);
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -155,80 +62,90 @@ async function withClayBackoff<T>(
 }
 ```
 
-### Step 4: Manage Webhook Lifecycle
+### Step 3: Add Idempotency Keys
 
 ```typescript
-// src/clay/webhook-manager.ts
-interface WebhookState {
-  url: string;
-  submissionCount: number;
-  createdAt: Date;
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
-class WebhookManager {
-  private webhooks: Map<string, WebhookState> = new Map();
-  private readonly LIMIT = 50_000;
-  private readonly WARN_THRESHOLD = 45_000;
+async function idempotentRequest<T>(
+  client: ClayClient,
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
+): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
+  return client.request({
+    ...params,
+    headers: { 'Idempotency-Key': key, ...params.headers },
+  });
+}
+```
 
-  registerWebhook(tableId: string, url: string) {
-    this.webhooks.set(tableId, { url, submissionCount: 0, createdAt: new Date() });
+## Output
+- Reliable API calls with automatic retry
+- Idempotent requests preventing duplicates
+- Rate limit headers properly handled
+
+## Error Handling
+| Header | Description | Action |
+|--------|-------------|--------|
+| X-RateLimit-Limit | Max requests | Monitor usage |
+| X-RateLimit-Remaining | Remaining requests | Throttle if low |
+| X-RateLimit-Reset | Reset timestamp | Wait until reset |
+| Retry-After | Seconds to wait | Honor this value |
+
+## Examples
+
+### Queue-Based Rate Limiting
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
+  return queue.add(operation);
+}
+```
+
+### Monitor Rate Limit Usage
+```typescript
+class RateLimitMonitor {
+  private remaining: number = 60;
+  private resetAt: Date = new Date();
+
+  updateFromHeaders(headers: Headers) {
+    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
   }
 
-  async getWebhookUrl(tableId: string): Promise<string> {
-    const state = this.webhooks.get(tableId);
-    if (!state) throw new Error(`No webhook registered for table ${tableId}`);
-
-    if (state.submissionCount >= this.LIMIT) {
-      throw new Error(
-        `Webhook for table ${tableId} exhausted (${this.LIMIT} submissions). ` +
-        `Create a new webhook in Clay UI: Table > + Add > Webhooks > Monitor webhook`
-      );
-    }
-
-    if (state.submissionCount >= this.WARN_THRESHOLD) {
-      console.warn(
-        `Webhook for ${tableId} at ${state.submissionCount}/${this.LIMIT} submissions. ` +
-        `Plan to create a replacement soon.`
-      );
-    }
-
-    return state.url;
+  shouldThrottle(): boolean {
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
   }
 
-  recordSubmission(tableId: string) {
-    const state = this.webhooks.get(tableId);
-    if (state) state.submissionCount++;
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
   }
 }
 ```
 
-### Step 5: Enrichment Provider Rate Limits
-
-Enrichment providers within Clay have their own limits. When using Clay's managed accounts, Clay handles throttling internally. When using your own API keys, you inherit the provider's rate limits:
-
-| Provider | Typical Rate Limit | Credits per Lookup |
-|----------|-------------------|-------------------|
-| Apollo | 100 req/min | 2 (own key: 0) |
-| Clearbit | 600 req/min | 2-5 (own key: 0) |
-| Hunter.io | 15 req/sec | 2 (own key: 0) |
-| People Data Labs | 100 req/min | 3 (own key: 0) |
-| Prospeo | 200 req/min | 2 (own key: 0) |
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `429 Too Many Requests` | Plan-level hourly limit | Reduce submission rate, upgrade plan |
-| Webhook silently stops | 50K submission limit hit | Create new webhook on same table |
-| Enrichment stuck | Provider rate limit | Wait or connect your own API key |
-| Explorer 400/hr limit | Plan restriction | Queue submissions, upgrade to Pro |
-
 ## Resources
-
-- [Clay Plans & Billing](https://university.clay.com/docs/plans-and-billing)
-- [Clay University -- Sources](https://university.clay.com/docs/sources)
+- [Clay Rate Limits](https://docs.clay.com/rate-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
-
 For security configuration, see `clay-security-basics`.

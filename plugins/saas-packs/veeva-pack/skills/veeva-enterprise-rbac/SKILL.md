@@ -1,44 +1,224 @@
 ---
 name: veeva-enterprise-rbac
 description: |
-  Veeva Vault enterprise rbac for enterprise operations.
-  Use when implementing advanced Veeva Vault patterns.
-  Trigger: "veeva enterprise rbac".
-allowed-tools: Read, Write, Edit, Grep
+  Configure Veeva enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Veeva.
+  Trigger with phrases like "veeva SSO", "veeva RBAC",
+  "veeva enterprise", "veeva roles", "veeva permissions", "veeva SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
+tags: [saas, veeva]
 ---
 
-# Veeva Vault Enterprise Rbac
+# Veeva Enterprise RBAC
 
 ## Overview
+Configure enterprise-grade access control for Veeva integrations.
 
-Enterprise-grade enterprise rbac patterns for Veeva Vault deployments.
+## Prerequisites
+- Veeva Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
+
+## Role Definitions
+
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
+
+```typescript
+enum VeevaRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
+}
+
+interface VeevaPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<VeevaRole, VeevaPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: VeevaRole,
+  action: keyof VeevaPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Veeva SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://veeva.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/veeva/callback',
+};
+
+// Map IdP groups to Veeva roles
+const groupRoleMapping: Record<string, VeevaRole> = {
+  'Engineering': VeevaRole.Developer,
+  'Platform-Admins': VeevaRole.Admin,
+  'Data-Team': VeevaRole.Viewer,
+};
+```
+
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from '@veeva/sdk';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.VEEVA_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.VEEVA_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/veeva/callback',
+  scopes: ['read', 'write'],
+});
+```
+
+## Organization Management
+
+```typescript
+interface VeevaOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: VeevaRole;
+}
+
+async function createOrganization(
+  config: VeevaOrganization
+): Promise<void> {
+  await veevaClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function requireVeevaPermission(
+  requiredPermission: keyof VeevaPermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { veevaRole: VeevaRole };
+
+    if (!checkPermission(user.veevaRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
+
+    next();
+  };
+}
+
+// Usage
+app.delete('/veeva/resource/:id',
+  requireVeevaPermission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface VeevaAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: VeevaRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logVeevaAccess(entry: VeevaAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
 
 ## Instructions
 
-### Key Considerations
+### Step 1: Define Roles
+Map organizational roles to Veeva permissions.
 
-- Veeva Vault is purpose-built for regulated life sciences
-- All API changes should be validated against compliance requirements
-- Use VQL for efficient data retrieval
-- VAPIL provides Java-native API coverage
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
+## Output
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Access denied | Security profile | Update profile permissions |
-| Data validation | Required fields | Check object metadata |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-
-- [Vault API Reference](https://developer.veevavault.com/api/)
-- [Vault Documentation](https://developer.veevavault.com/docs/)
+- [Veeva Enterprise Guide](https://docs.veeva.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-
-See related Veeva Vault skills.
+For major migrations, see `veeva-migration-deep-dive`.

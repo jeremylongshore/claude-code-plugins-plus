@@ -2,215 +2,335 @@
 name: exa-known-pitfalls
 description: |
   Identify and avoid Exa anti-patterns and common integration mistakes.
-  Use when reviewing Exa code, onboarding new developers,
-  or auditing existing Exa integrations for correctness.
+  Use when reviewing Exa code for issues, onboarding new developers,
+  or auditing existing Exa integrations for best practices violations.
   Trigger with phrases like "exa mistakes", "exa anti-patterns",
   "exa pitfalls", "exa what not to do", "exa code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, audit, best-practices]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Known Pitfalls
 
 ## Overview
-Real gotchas when integrating Exa's neural search API. Exa uses embeddings-based search rather than keyword matching, which creates a different class of failure modes than traditional search APIs. This skill covers the top pitfalls with wrong/right examples.
+Common mistakes and anti-patterns when integrating with Exa.
 
-## Pitfall 1: Keyword-Style Queries
+## Prerequisites
+- Access to Exa codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-Exa's neural search interprets natural language semantically. Boolean operators and keyword syntax degrade results.
+## Pitfall #1: Synchronous API Calls in Request Path
 
+### ❌ Anti-Pattern
 ```typescript
-import Exa from "exa-js";
-const exa = new Exa(process.env.EXA_API_KEY);
-
-// BAD: keyword/boolean style — Exa ignores AND/OR
-const bad = await exa.search(
-  "python AND machine learning OR deep learning 2024"
-);
-
-// GOOD: natural language statement
-const good = await exa.search(
-  "recent tutorials on building ML models with Python",
-  { type: "neural", numResults: 10 }
-);
+// User waits for Exa API call
+app.post('/checkout', async (req, res) => {
+  const payment = await exaClient.processPayment(req.body);  // 2-5s latency
+  const notification = await exaClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
-## Pitfall 2: Wrong Search Type
-
-Using neural search for exact lookups (URLs, names) or keyword search for conceptual queries silently degrades quality.
-
+### ✅ Better Approach
 ```typescript
-// BAD: neural search for a specific URL/identifier
-const bad = await exa.search("arxiv.org/abs/2301.00001", { type: "neural" });
-
-// GOOD: keyword for exact terms, neural for concepts
-const exactMatch = await exa.search("arxiv.org/abs/2301.00001", {
-  type: "keyword",
-});
-const conceptual = await exa.search(
-  "transformer architecture improvements for long context",
-  { type: "neural" }
-);
-```
-
-## Pitfall 3: Expecting Content from search()
-
-`search()` returns metadata only (URL, title, score). Content requires `searchAndContents()` or `getContents()`.
-
-```typescript
-// BAD: accessing .text from search() — it's undefined
-const results = await exa.search("AI safety research");
-const text = results.results[0].text;  // undefined!
-
-// GOOD: use searchAndContents for text/highlights
-const withContent = await exa.searchAndContents("AI safety research", {
-  numResults: 5,
-  text: { maxCharacters: 2000 },
-  highlights: { maxCharacters: 500 },
-});
-console.log(withContent.results[0].text);       // actual content
-console.log(withContent.results[0].highlights);  // key excerpts
-```
-
-## Pitfall 4: Narrow Date Filters Return Empty
-
-Date filters silently exclude results. A single-day window often returns nothing without error.
-
-```typescript
-// BAD: too narrow, likely returns empty array
-const bad = await exa.search("AI news", {
-  startPublishedDate: "2025-03-15T00:00:00.000Z",
-  endPublishedDate: "2025-03-15T23:59:59.000Z",
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
 });
 
-// GOOD: reasonable window with fallback
-let results = await exa.search("AI news", {
-  startPublishedDate: "2025-03-01T00:00:00.000Z",
-  endPublishedDate: "2025-03-31T23:59:59.000Z",
-  numResults: 10,
-});
-// Fallback if no results
-if (results.results.length === 0) {
-  results = await exa.search("AI news", { numResults: 10 });
+// Background job
+async function processCheckout(data) {
+  const payment = await exaClient.processPayment(data);
+  await exaClient.sendEmail(payment);
 }
 ```
 
-## Pitfall 5: findSimilar Takes a URL, Not a Query
+---
 
-`findSimilar` expects a URL as its first argument. Passing a query string gives meaningless results.
+## Pitfall #2: Not Handling Rate Limits
 
+### ❌ Anti-Pattern
 ```typescript
-// BAD: passing a query string to findSimilar
-const bad = await exa.findSimilar("machine learning research papers");
-
-// GOOD: pass a URL — findSimilar finds pages semantically similar to it
-const good = await exa.findSimilar("https://arxiv.org/abs/2301.00001", {
-  numResults: 10,
-  excludeSourceDomain: true,
-});
+// Blast requests, crash on 429
+for (const item of items) {
+  await exaClient.process(item);  // Will hit rate limit
+}
 ```
 
-## Pitfall 6: Date Filters with company/people Categories
-
-The `company` and `people` categories do NOT support date filters. Using them returns a 400 error.
-
+### ✅ Better Approach
 ```typescript
-// BAD: date filter with company category → 400 error
-const bad = await exa.search("AI startups", {
-  category: "company",
-  startPublishedDate: "2024-01-01T00:00:00.000Z",  // not supported!
-});
+import pLimit from 'p-limit';
 
-// GOOD: company search without date filters
-const good = await exa.search("AI startups", {
-  category: "company",
-  numResults: 10,
-});
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => exaClient.process(item));
+}
 ```
 
-## Pitfall 7: Not Limiting Content Size
+---
 
-Requesting full text without `maxCharacters` can return massive payloads, increasing latency and cost.
+## Pitfall #3: Leaking API Keys
 
+### ❌ Anti-Pattern
 ```typescript
-// BAD: unlimited text retrieval
-const bad = await exa.searchAndContents("topic", {
-  numResults: 20,
-  text: true,  // could return megabytes of content
+// In frontend code (visible to users!)
+const client = new ExaClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
 });
 
-// GOOD: limit content size
-const good = await exa.searchAndContents("topic", {
-  numResults: 10,
-  text: { maxCharacters: 2000 },  // cap at 2000 chars per result
-  highlights: { maxCharacters: 500 },
-});
+// In git history
+git commit -m "add API key"  // Exposed forever
 ```
 
-## Pitfall 8: Creating New Client Per Request
-
-Each `new Exa()` call creates a new HTTP client. Reuse a singleton for connection pooling.
-
+### ✅ Better Approach
 ```typescript
-// BAD: new client every request (in a route handler)
-app.get("/search", async (req, res) => {
-  const exa = new Exa(process.env.EXA_API_KEY);  // wasteful!
-  const results = await exa.search(req.query.q);
-  res.json(results);
+// Backend only, environment variable
+const client = new ExaClient({
+  apiKey: process.env.EXA_API_KEY,
 });
 
-// GOOD: singleton client
-const exa = new Exa(process.env.EXA_API_KEY);
-app.get("/search", async (req, res) => {
-  const results = await exa.search(req.query.q);
-  res.json(results);
-});
+// Use .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-## Pitfall 9: Ignoring the requestId in Errors
+---
 
-Exa error responses include `requestId` for support debugging. Always log it.
+## Pitfall #4: Ignoring Idempotency
 
+### ❌ Anti-Pattern
 ```typescript
-// BAD: generic error handling
+// Network error on response = duplicate charge!
 try {
-  await exa.search("query");
-} catch (err) {
-  console.error("Search failed");  // loses diagnostic info
-}
-
-// GOOD: capture requestId
-try {
-  await exa.search("query");
-} catch (err: any) {
-  console.error("Search failed:", {
-    status: err.status,
-    message: err.message,
-    requestId: err.requestId,  // include when contacting support
-    tag: err.error_tag,
-  });
+  await exaClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await exaClient.charge(order);  // Charged twice!
+  }
 }
 ```
 
-## Quick Review Checklist
-- [ ] Queries are natural language, not keyword/boolean syntax
-- [ ] Search type matches the query intent (neural vs keyword)
-- [ ] Using `searchAndContents` when page content is needed
-- [ ] Date filter windows are wide enough (7+ days)
-- [ ] `findSimilar` receives URLs, not query strings
-- [ ] No date filters on `company` or `people` categories
-- [ ] `maxCharacters` set on text and highlights
-- [ ] Exa client is a singleton, not created per request
-- [ ] Error handling captures `requestId`
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
+
+await exaClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
+
+---
+
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-exa-signature'];
+    if (!verifyExaSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await exaClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await exaClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof ExaNotFoundError) {
+    return null;
+  }
+  if (error instanceof ExaRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new ExaClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.exa.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new ExaClient({
+  timeout: parseInt(process.env.EXA_TIMEOUT || '30000'),
+  baseUrl: process.env.EXA_BASE_URL || 'https://api.exa.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Exa is down, every request hangs
+for (const user of users) {
+  await exaClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(exaClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Exa is down
+const recommendations = await exaClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await exaClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('exa', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
-- [Exa Search Reference](https://docs.exa.ai/reference/search)
-- [Exa Error Codes](https://docs.exa.ai/reference/error-codes)
-- [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
+- [Exa Security Guide](https://docs.exa.com/security)
+- [Exa Best Practices](https://docs.exa.com/best-practices)
 
-## Next Steps
-For SDK patterns, see `exa-sdk-patterns`. For common errors, see `exa-common-errors`.
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

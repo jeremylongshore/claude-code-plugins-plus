@@ -1,232 +1,216 @@
 ---
 name: langchain-performance-tuning
 description: |
-  Optimize LangChain application performance: latency, throughput,
-  streaming, caching, batch processing, and connection pooling.
-  Trigger: "langchain performance", "langchain optimization",
-  "langchain latency", "langchain slow", "speed up langchain".
+  Optimize LangChain API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for LangChain integrations.
+  Trigger with phrases like "langchain performance", "optimize langchain",
+  "langchain latency", "langchain caching", "langchain slow", "langchain batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, performance]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
+
 # LangChain Performance Tuning
 
 ## Overview
+Optimize LangChain API performance with caching, batching, and connection pooling.
 
-Optimize LangChain apps for production: measure baseline latency, implement caching, batch with concurrency control, stream for perceived speed, optimize prompts for fewer tokens, and select the right model for each task.
+## Prerequisites
+- LangChain SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Step 1: Benchmark Baseline
+## Latency Benchmarks
 
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
 ```typescript
-async function benchmark(
-  chain: { invoke: (input: any) => Promise<any> },
-  input: any,
-  iterations = 5,
-) {
-  const times: number[] = [];
+import { LRUCache } from 'lru-cache';
 
-  for (let i = 0; i < iterations; i++) {
-    const start = performance.now();
-    await chain.invoke(input);
-    times.push(performance.now() - start);
-  }
-
-  times.sort((a, b) => a - b);
-  return {
-    mean: (times.reduce((a, b) => a + b, 0) / times.length).toFixed(0) + "ms",
-    median: times[Math.floor(times.length / 2)].toFixed(0) + "ms",
-    p95: times[Math.floor(times.length * 0.95)].toFixed(0) + "ms",
-    min: times[0].toFixed(0) + "ms",
-    max: times[times.length - 1].toFixed(0) + "ms",
-  };
-}
-
-// Usage
-const results = await benchmark(chain, { input: "test" }, 10);
-console.table(results);
-```
-
-## Step 2: Streaming (Perceived Performance)
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-
-const chain = ChatPromptTemplate.fromTemplate("{input}")
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", streaming: true }))
-  .pipe(new StringOutputParser());
-
-// Non-streaming: user waits 2-3s for full response
-// Streaming: first token in ~200ms, user sees progress immediately
-
-const stream = await chain.stream({ input: "Explain LCEL" });
-for await (const chunk of stream) {
-  process.stdout.write(chunk);
-}
-
-// Express SSE endpoint for web apps
-app.post("/api/chat/stream", async (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
-  const stream = await chain.stream({ input: req.body.input });
-  for await (const chunk of stream) {
-    res.write(`data: ${JSON.stringify({ text: chunk })}\n\n`);
-  }
-  res.write("data: [DONE]\n\n");
-  res.end();
-});
-```
-
-## Step 3: Batch Processing with Concurrency
-
-```typescript
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-
-const chain = ChatPromptTemplate.fromTemplate("Summarize: {text}")
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini" }))
-  .pipe(new StringOutputParser());
-
-const inputs = articles.map((text) => ({ text }));
-
-// Sequential: ~10s for 10 items (1s each)
-// const results = [];
-// for (const input of inputs) results.push(await chain.invoke(input));
-
-// Batch: ~2s for 10 items (parallel API calls)
-const results = await chain.batch(inputs, {
-  maxConcurrency: 10,
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
 });
 
-// Benchmark comparison
-console.time("sequential");
-for (const i of inputs.slice(0, 5)) await chain.invoke(i);
-console.timeEnd("sequential");
-
-console.time("batch");
-await chain.batch(inputs.slice(0, 5), { maxConcurrency: 5 });
-console.timeEnd("batch");
-```
-
-## Step 4: Caching
-
-```typescript
-// In-memory cache (single process, resets on restart)
-const cache = new Map<string, string>();
-
-async function cachedInvoke(
-  chain: any,
-  input: Record<string, any>,
-): Promise<string> {
-  const key = JSON.stringify(input);
+async function cachedLangChainRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
   const cached = cache.get(key);
-  if (cached) return cached;
+  if (cached) return cached as T;
 
-  const result = await chain.invoke(input);
-  cache.set(key, result);
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
   return result;
 }
-
-// Cache hit: ~0ms (vs ~500-2000ms for API call)
 ```
 
-```python
-# Python — built-in caching
-from langchain_core.globals import set_llm_cache
-from langchain_community.cache import SQLiteCache, InMemoryCache
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-# Option 1: In-memory (single process)
-set_llm_cache(InMemoryCache())
+const redis = new Redis(process.env.REDIS_URL);
 
-# Option 2: SQLite (persistent, survives restarts)
-set_llm_cache(SQLiteCache(database_path=".langchain_cache.db"))
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
 
-# Option 3: Redis (distributed, production)
-from langchain_community.cache import RedisCache
-import redis
-set_llm_cache(RedisCache(redis.Redis.from_url("redis://localhost:6379")))
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
 ```
 
-## Step 5: Model Selection by Task
+## Request Batching
 
 ```typescript
-import { ChatOpenAI } from "@langchain/openai";
+import DataLoader from 'dataloader';
 
-// Fast + cheap: simple tasks, classification, extraction
-const fast = new ChatOpenAI({
-  model: "gpt-4o-mini",    // ~200ms TTFT, $0.15/1M input
-  temperature: 0,
-});
+const langchainLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from LangChain
+    const results = await langchainClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
 
-// Powerful + slower: complex reasoning, code generation
-const powerful = new ChatOpenAI({
-  model: "gpt-4o",          // ~400ms TTFT, $2.50/1M input
-  temperature: 0,
-});
-
-// Route based on task
-import { RunnableBranch } from "@langchain/core/runnables";
-
-const router = RunnableBranch.from([
-  [(input: any) => input.task === "classify", classifyChain],
-  [(input: any) => input.task === "reason", reasoningChain],
-  defaultChain,
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  langchainLoader.load('id-1'),
+  langchainLoader.load('id-2'),
+  langchainLoader.load('id-3'),
 ]);
 ```
 
-## Step 6: Prompt Optimization
+## Connection Optimization
 
 ```typescript
-// Shorter prompts = fewer input tokens = lower latency + cost
+import { Agent } from 'https';
 
-// BEFORE (150+ tokens):
-const verbose = `You are an expert AI assistant specialized in software
-engineering. Your task is to carefully analyze the following code and
-provide a comprehensive review covering all aspects including...`;
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
 
-// AFTER (20 tokens, same quality):
-const concise = "Review this code. List issues and fixes:\n\n{code}";
-
-// Token counting (Python)
-// import tiktoken
-// enc = tiktoken.encoding_for_model("gpt-4o-mini")
-// print(len(enc.encode(prompt)))  # check before deploying
+const client = new LangChainClient({
+  apiKey: process.env.LANGCHAIN_API_KEY!,
+  httpAgent: agent,
+});
 ```
 
-## Performance Impact Summary
+## Pagination Optimization
 
-| Optimization | Latency Improvement | Cost Impact |
-|-------------|---------------------|-------------|
-| Streaming | First token 80% faster | Neutral |
-| Caching | 99% on cache hit | Major savings |
-| Batch processing | 50-80% for bulk ops | Neutral |
-| gpt-4o-mini vs gpt-4o | ~2x faster TTFT | ~17x cheaper |
-| Shorter prompts | 10-30% | 10-50% cheaper |
-| maxConcurrency tuning | Linear scaling | Neutral |
+```typescript
+async function* paginatedLangChainList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedLangChainList(cursor =>
+  langchainClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredLangChainCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical LangChain operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Batch partially fails | Rate limit on some items | Lower `maxConcurrency`, add `maxRetries` |
-| Stream hangs | Network timeout | Set `timeout` on model, handle disconnect |
-| Cache stale data | Content changed upstream | Add TTL or version key to cache |
-| High memory usage | Large cache | Use LRU eviction or Redis |
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredLangChainCall(name, () =>
+    cachedLangChainRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-
-- [LangChain Streaming Guide](https://js.langchain.com/docs/how_to/streaming/)
-- [Batch Processing](https://js.langchain.com/docs/how_to/batch/)
-- [OpenAI Latency Guide](https://platform.openai.com/docs/guides/latency-optimization)
+- [LangChain Performance Guide](https://docs.langchain.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-
-Use `langchain-cost-tuning` for cost optimization alongside performance.
+For cost optimization, see `langchain-cost-tuning`.

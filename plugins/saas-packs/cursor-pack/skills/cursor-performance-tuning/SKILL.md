@@ -1,320 +1,216 @@
 ---
-name: "cursor-performance-tuning"
+name: cursor-performance-tuning
 description: |
-  Optimize Cursor IDE performance: reduce memory usage, speed up indexing, tune AI features, and manage
-  extensions for large codebases. Triggers on "cursor performance", "cursor slow", "cursor optimization",
-  "cursor memory", "speed up cursor", "cursor lag".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+  Optimize Cursor API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Cursor integrations.
+  Trigger with phrases like "cursor performance", "optimize cursor",
+  "cursor latency", "cursor caching", "cursor slow", "cursor batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, performance]
-
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+compatible-with: claude-code
+tags: [saas, cursor]
 ---
+
 # Cursor Performance Tuning
 
-Diagnose and fix Cursor IDE performance issues. Covers editor optimization, indexing tuning, extension auditing, AI feature configuration, and strategies for large codebases.
+## Overview
+Optimize Cursor API performance with caching, batching, and connection pooling.
 
-## Performance Diagnostic Workflow
+## Prerequisites
+- Cursor SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-```
-Step 1: Identify bottleneck
-         ├── Editor lag? → Step 2 (Editor settings)
-         ├── High CPU?   → Step 3 (Extension audit)
-         ├── Slow AI?    → Step 4 (AI tuning)
-         └── Memory?     → Step 5 (Memory management)
+## Latency Benchmarks
 
-Step 2: Editor settings
-         ├── Disable minimap, breadcrumbs
-         ├── Reduce file watcher scope
-         └── Increase memory limits
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-Step 3: Extension audit
-         ├── Profile running extensions
-         ├── Disable heavy extensions
-         └── Use workspace-scoped disabling
+## Caching Strategy
 
-Step 4: AI feature tuning
-         ├── Optimize .cursorignore
-         ├── Use faster models
-         └── Manage chat history
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
 
-Step 5: Memory management
-         ├── Close unused workspace folders
-         ├── Limit open editor tabs
-         └── Clear caches
-```
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
 
-## Editor Optimization
+async function cachedCursorRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-### settings.json Performance Settings
-
-```json
-{
-  // Disable visual features for speed
-  "editor.minimap.enabled": false,
-  "editor.renderWhitespace": "none",
-  "editor.guides.bracketPairs": false,
-  "breadcrumbs.enabled": false,
-  "editor.occurrencesHighlight": "off",
-  "editor.matchBrackets": "never",
-  "editor.folding": false,
-  "editor.glyphMargin": false,
-
-  // Reduce file watching scope
-  "files.watcherExclude": {
-    "**/node_modules/**": true,
-    "**/.git/objects/**": true,
-    "**/.git/subtree-cache/**": true,
-    "**/dist/**": true,
-    "**/build/**": true,
-    "**/coverage/**": true,
-    "**/.next/**": true,
-    "**/target/**": true
-  },
-
-  // Exclude from search and explorer
-  "files.exclude": {
-    "**/node_modules": true,
-    "**/.git": true,
-    "**/dist": true,
-    "**/build": true
-  },
-
-  // Memory limits
-  "files.maxMemoryForLargeFilesMB": 4096,
-
-  // Reduce auto-save overhead
-  "files.autoSave": "onFocusChange",
-
-  // Limit search results
-  "search.maxResults": 5000
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
 }
 ```
 
-### Disable Animations
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
-```json
-{
-  "workbench.list.smoothScrolling": false,
-  "editor.smoothScrolling": false,
-  "editor.cursorSmoothCaretAnimation": "off",
-  "terminal.integrated.smoothScrolling": false
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
 }
 ```
 
-## Extension Audit
+## Request Batching
 
-### Profile Running Extensions
+```typescript
+import DataLoader from 'dataloader';
 
-`Cmd+Shift+P` > `Developer: Show Running Extensions`
+const cursorLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Cursor
+    const results = await cursorClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
 
-This shows:
-- Extension name
-- Activation time (ms)
-- Profile CPU time
-
-Sort by activation time. Extensions taking > 500ms are worth investigating.
-
-### Process Explorer
-
-`Cmd+Shift+P` > `Developer: Open Process Explorer`
-
-Shows per-process CPU and memory usage:
-- Main window
-- Extension host (all extensions combined)
-- Individual extension processes
-- Terminal processes
-
-### Common High-Impact Extensions
-
-| Extension | Impact | Mitigation |
-|-----------|--------|------------|
-| **GitLens** | CPU: high on large repos | Disable for repos > 50K commits or use lightweight mode |
-| **Prettier** | CPU: triggers on every save | Set `"editor.formatOnSave": false`, format manually |
-| **TypeScript** | Memory: large projects | Increase `"typescript.tsserver.maxTsServerMemory": 4096` |
-| **ESLint** | CPU: validates on type | Set `"eslint.run": "onSave"` instead of "onType" |
-| **Spell Checker** | CPU: large files | Add exclusion patterns for generated files |
-| **Import Cost** | CPU: recalculates on change | Disable for projects with many imports |
-
-### Disable Per Workspace
-
-Right-click extension > `Disable (Workspace)`. This keeps the extension available for other projects while removing it from the current slow one.
-
-## AI Feature Tuning
-
-### Indexing Optimization
-
-The biggest performance lever for AI features:
-
-```gitignore
-# .cursorignore -- aggressive exclusion for large projects
-node_modules/
-dist/
-build/
-.next/
-out/
-target/
-coverage/
-.turbo/
-.cache/
-__pycache__/
-*.pyc
-venv/
-.venv/
-
-# Generated code
-*.min.js
-*.min.css
-*.bundle.js
-*.d.ts.map
-*.tsbuildinfo
-
-# Data files
-*.csv
-*.json.gz
-*.parquet
-*.sqlite
-*.sql
-
-# Lock files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-Cargo.lock
-
-# Media
-*.png
-*.jpg
-*.gif
-*.svg
-*.mp4
-*.woff2
-
-# Documentation build output
-docs/dist/
-docs/.vitepress/dist/
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  cursorLoader.load('id-1'),
+  cursorLoader.load('id-2'),
+  cursorLoader.load('id-3'),
+]);
 ```
 
-### Tab Completion Speed
+## Connection Optimization
 
-Tab completion is fast by design (~100ms), but can feel slow if:
-- The file is very large (> 10K lines): split the file
-- Many extensions are running: audit extensions
-- Network is slow: Tab requires network for model inference
+```typescript
+import { Agent } from 'https';
 
-### Chat/Composer Response Time
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
 
-| Factor | Impact | Fix |
-|--------|--------|-----|
-| Model choice | Opus/o1 are slower than Sonnet/GPT-4o | Use faster models for simple tasks |
-| Context size | More @-mentions = slower | Use @Files not @Codebase when possible |
-| Conversation length | Long chats slow down | Start new chat frequently |
-| Server load | Peak hours are slower | Use off-peak or BYOK |
-
-### Managing Chat History
-
-Long chat sessions consume memory and slow down responses:
-
-```
-Signs of chat-related slowdown:
-- Typing lag in the chat input
-- Editor becomes sluggish after extended chat session
-- AI responses take progressively longer
-
-Fix:
-1. Start a new chat (Cmd+N in chat panel)
-2. Close old chat tabs
-3. One topic per chat session
+const client = new CursorClient({
+  apiKey: process.env.CURSOR_API_KEY!,
+  httpAgent: agent,
+});
 ```
 
-## Large Codebase Strategies
+## Pagination Optimization
 
-### For Projects > 50K Files
+```typescript
+async function* paginatedCursorList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
 
-```
-1. Open specific packages, not the whole monorepo
-   cursor packages/api/    # Not: cursor .
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
 
-2. Aggressive .cursorignore (see above)
-
-3. Multi-root workspace with only active packages
-   File > Add Folder to Workspace (selectively)
-
-4. Disable codebase indexing if not needed
-   Cursor Settings > Features > Codebase Indexing > off
-   (You lose @Codebase but gain performance)
-
-5. Increase system resources
-   Close other Electron apps (Slack, Teams, Discord)
-   Increase swap space on Linux
-```
-
-### Linux File Watcher Limits
-
-```bash
-# Check current limit
-cat /proc/sys/fs/inotify/max_user_watches
-
-# Increase (required for large projects)
-echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
+// Usage
+for await (const item of paginatedCursorList(cursor =>
+  cursorClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
 ```
 
-### Memory Monitoring
+## Performance Monitoring
 
-```bash
-# macOS: Monitor Cursor memory usage
-top -pid $(pgrep -f "Cursor")
-
-# Linux: Monitor Cursor processes
-ps aux | grep -i cursor | sort -rn -k4
-
-# If memory exceeds 4GB consistently:
-# 1. Close unused workspace folders
-# 2. Limit open editor tabs to ~20
-# 3. Restart Cursor daily during heavy use
+```typescript
+async function measuredCursorCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
 ```
 
-## Cache Management
+## Instructions
 
-### Clear Caches
+### Step 1: Establish Baseline
+Measure current latency for critical Cursor operations.
 
-```bash
-# macOS
-rm -rf ~/Library/Application\ Support/Cursor/Cache/
-rm -rf ~/Library/Application\ Support/Cursor/CachedData/
-rm -rf ~/Library/Application\ Support/Cursor/Code\ Cache/
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-# Linux
-rm -rf ~/.config/Cursor/Cache/
-rm -rf ~/.config/Cursor/CachedData/
-rm -rf ~/.config/Cursor/Code\ Cache/
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredCursorCall(name, () =>
+    cachedCursorRequest(`cache:${name}`, fn)
+  );
 ```
-
-Restart Cursor after clearing. Caches rebuild automatically.
-
-### Database Maintenance
-
-Cursor stores extension data in SQLite databases. If the storage directory grows large:
-
-```bash
-# Check size (macOS)
-du -sh ~/Library/Application\ Support/Cursor/
-
-# If > 2GB, clearing Cache/ and CachedData/ usually reclaims most space
-```
-
-## Enterprise Considerations
-
-- **Baseline performance**: Establish performance baselines for standard project sizes on team hardware
-- **Hardware recommendations**: 16GB RAM minimum for large projects, 32GB for monorepos
-- **Network performance**: AI features require low-latency internet. VPN routing can add 200-500ms per request
-- **Standardized settings**: Distribute performance-optimized `settings.json` to all team members
 
 ## Resources
+- [Cursor Performance Guide](https://docs.cursor.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-- [VS Code Performance Tips](https://code.visualstudio.com/docs/editor/editingevolved#_performance)
-- [Cursor Forum - Performance](https://forum.cursor.com/c/help)
-- [Codebase Indexing](https://docs.cursor.com/context/codebase-indexing)
+## Next Steps
+For cost optimization, see `cursor-cost-tuning`.

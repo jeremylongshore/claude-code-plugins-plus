@@ -6,174 +6,93 @@ description: |
   or learning basic Framer API patterns.
   Trigger with phrases like "framer hello world", "framer example",
   "framer quick start", "simple framer code".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*)
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
 compatible-with: claude-code
+tags: [saas, framer]
 ---
 
 # Framer Hello World
 
 ## Overview
-
-Build a minimal Framer plugin that inserts a styled text layer onto the canvas, and a code component that renders inside Framer sites. Both use the `framer-plugin` SDK which provides the `framer` global for editor interaction.
+Minimal working example demonstrating core Framer functionality.
 
 ## Prerequisites
-
 - Completed `framer-install-auth` setup
-- Framer editor open with a project
-- Plugin dev server running (`npm run dev`)
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Hello World Plugin
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-```tsx
-// src/App.tsx — Plugin UI that runs inside Framer editor
-import { framer } from 'framer-plugin';
+### Step 2: Import and Initialize Client
+```typescript
+import { FramerClient } from '@framer/sdk';
 
-framer.showUI({ width: 300, height: 200, title: 'Hello World Plugin' });
-
-export function App() {
-  const insertText = async () => {
-    await framer.addText('Hello from my plugin!', {
-      position: { x: 100, y: 100 },
-      style: { fontSize: 24, color: '#333' },
-    });
-    framer.notify('Text inserted on canvas!');
-  };
-
-  const insertImage = async () => {
-    await framer.addImage({
-      url: 'https://picsum.photos/400/300',
-      position: { x: 100, y: 200 },
-    });
-  };
-
-  return (
-    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <h2>Hello World</h2>
-      <button onClick={insertText}>Insert Text</button>
-      <button onClick={insertImage}>Insert Image</button>
-    </div>
-  );
-}
-```
-
-### Step 2: Hello World Code Component
-
-```tsx
-// Code component — renders inside Framer sites (not a plugin)
-// Create via: Framer editor > Assets > Code > New Component
-import { addPropertyControls, ControlType } from 'framer';
-
-interface Props {
-  text: string;
-  color: string;
-}
-
-export default function HelloComponent({ text, color }: Props) {
-  return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100%',
-      fontSize: 24,
-      fontWeight: 600,
-      color,
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      borderRadius: 12,
-      padding: 20,
-    }}>
-      {text}
-    </div>
-  );
-}
-
-addPropertyControls(HelloComponent, {
-  text: { type: ControlType.String, title: 'Text', defaultValue: 'Hello Framer!' },
-  color: { type: ControlType.Color, title: 'Color', defaultValue: '#ffffff' },
+const client = new FramerClient({
+  apiKey: process.env.FRAMER_API_KEY,
 });
 ```
 
-### Step 3: Hello World Code Override
-
-```tsx
-// Code override — modifies existing layer behavior
-// Create via: Framer editor > Assets > Code > New Override
-import { Override } from 'framer';
-
-export function FadeInOnScroll(): Override {
-  return {
-    initial: { opacity: 0, y: 20 },
-    whileInView: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: 'easeOut' },
-    viewport: { once: true },
-  };
-}
-
-export function HoverScale(): Override {
-  return {
-    whileHover: { scale: 1.05 },
-    whileTap: { scale: 0.95 },
-    transition: { type: 'spring', stiffness: 400, damping: 17 },
-  };
-}
-```
-
-### Step 4: Server API Hello World
-
+### Step 3: Make Your First API Call
 ```typescript
-// server-hello.ts — headless access without opening Framer
-import { framer } from 'framer-api';
-
 async function main() {
-  const client = await framer.connect({
-    apiKey: process.env.FRAMER_API_KEY!,
-    siteId: process.env.FRAMER_SITE_ID!,
-  });
-
-  // List all pages
-  const pages = await client.getPages();
-  console.log('Pages:', pages.map(p => p.name));
-
-  // List CMS collections
-  const collections = await client.getCollections();
-  for (const col of collections) {
-    const items = await col.getItems();
-    console.log(`Collection "${col.name}": ${items.length} items`);
-  }
+  // Your first API call here
 }
 
 main().catch(console.error);
 ```
 
 ## Output
-
-- Working plugin that inserts text and images onto the Framer canvas
-- Code component with property controls
-- Code overrides for animation behaviors
-- Server API script listing pages and CMS collections
+- Working code file with Framer client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your Framer connection is working.
+```
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `framer is not defined` | Running outside editor | Plugin code only works in Framer editor iframe |
-| Component not rendering | Missing export default | Code components must use `export default` |
-| Override not applying | Wrong export name | Each override must be a named export function |
-| Server API timeout | Invalid site ID | Check FRAMER_SITE_ID in site settings |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { FramerClient } from '@framer/sdk';
+
+const client = new FramerClient({
+  apiKey: process.env.FRAMER_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from framer import FramerClient
+
+client = FramerClient()
+
+# Your first API call here
+```
 
 ## Resources
-
-- [Framer Plugin Introduction](https://www.framer.com/developers/plugins-introduction)
-- [Code Components](https://www.framer.com/developers/plugins-with-components)
-- [Code Overrides](https://www.framer.com/developers/overrides-introduction)
-- [Server API](https://www.framer.com/developers/server-api-introduction)
+- [Framer Getting Started](https://docs.framer.com/getting-started)
+- [Framer API Reference](https://docs.framer.com/api)
+- [Framer Examples](https://docs.framer.com/examples)
 
 ## Next Steps
-
-Proceed to `framer-local-dev-loop` for development workflow.
+Proceed to `framer-local-dev-loop` for development workflow setup.

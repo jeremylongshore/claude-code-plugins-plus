@@ -1,214 +1,224 @@
 ---
 name: vercel-enterprise-rbac
 description: |
-  Configure Vercel enterprise RBAC, access groups, SSO integration, and audit logging.
-  Use when implementing team access control, configuring SAML SSO,
-  or setting up role-based permissions for Vercel projects.
+  Configure Vercel enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Vercel.
   Trigger with phrases like "vercel SSO", "vercel RBAC",
-  "vercel enterprise", "vercel roles", "vercel permissions", "vercel access groups".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  "vercel enterprise", "vercel roles", "vercel permissions", "vercel SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, rbac, enterprise, sso]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Enterprise RBAC
 
 ## Overview
-Configure Vercel's role-based access control (RBAC) with team roles, project-level access groups, SSO/SAML integration, and audit logging. Covers the two access control planes: team-level (who can deploy) and application-level (who can access deployed content).
+Configure enterprise-grade access control for Vercel integrations.
 
 ## Prerequisites
-- Vercel Pro or Enterprise plan
-- Identity Provider (IdP) with SAML 2.0 support (for SSO)
-- Understanding of your organization's access requirements
+- Vercel Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
+
+## Role Definitions
+
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
+
+```typescript
+enum VercelRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
+}
+
+interface VercelPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<VercelRole, VercelPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: VercelRole,
+  action: keyof VercelPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Vercel SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://vercel.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/vercel/callback',
+};
+
+// Map IdP groups to Vercel roles
+const groupRoleMapping: Record<string, VercelRole> = {
+  'Engineering': VercelRole.Developer,
+  'Platform-Admins': VercelRole.Admin,
+  'Data-Team': VercelRole.Viewer,
+};
+```
+
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from 'vercel';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.VERCEL_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.VERCEL_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/vercel/callback',
+  scopes: read, write, deploy,
+});
+```
+
+## Organization Management
+
+```typescript
+interface VercelOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: VercelRole;
+}
+
+async function createOrganization(
+  config: VercelOrganization
+): Promise<void> {
+  await vercelClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function requireVercelPermission(
+  requiredPermission: keyof VercelPermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { vercelRole: VercelRole };
+
+    if (!checkPermission(user.vercelRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
+
+    next();
+  };
+}
+
+// Usage
+app.delete('/vercel/resource/:id',
+  requireVercelPermission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface VercelAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: VercelRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logVercelAccess(entry: VercelAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Understand Vercel's Role Model
+### Step 1: Define Roles
+Map organizational roles to Vercel permissions.
 
-**Team-Level Roles:**
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
 
-| Role | Deploy Prod | Manage Projects | Manage Billing | Manage Members |
-|------|-------------|-----------------|----------------|----------------|
-| Owner | Yes | Yes | Yes | Yes |
-| Member | Yes | Yes | No | No |
-| Developer | Preview only | Limited | No | No |
-| Viewer | No | Read-only | No | No |
-| Security (Enterprise) | No | Security settings | No | No |
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
 
-**Extended Permissions (Enterprise):**
-Layer on top of base roles for granular control:
-- Deploy to production
-- Manage environment variables
-- Manage domains
-- Access runtime logs
-- Manage integrations
-
-### Step 2: Configure Team Members via API
-```bash
-# Invite a team member
-curl -X POST "https://api.vercel.com/v1/teams/team_xxx/members" \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "developer@company.com",
-    "role": "DEVELOPER"
-  }'
-
-# List team members
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v2/teams/team_xxx/members" \
-  | jq '.members[] | {name: .name, email: .email, role: .role}'
-
-# Update a member's role
-curl -X PATCH "https://api.vercel.com/v1/teams/team_xxx/members/user_xxx" \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"role": "MEMBER"}'
-
-# Remove a team member
-curl -X DELETE "https://api.vercel.com/v1/teams/team_xxx/members/user_xxx" \
-  -H "Authorization: Bearer $VERCEL_TOKEN"
-```
-
-### Step 3: Access Groups (Project-Level Permissions)
-Access Groups assign teams of people to specific projects with specific roles:
-
-1. Go to **Team Settings > Access Groups**
-2. Create a group (e.g., "Frontend Team", "Backend Team")
-3. Add members to the group
-4. Assign the group to specific projects with a role
-
-```
-Example Access Group Setup:
-├── Frontend Team → [project-web, project-docs] → Member role
-├── Backend Team → [project-api, project-worker] → Member role
-├── DevOps Team → [all projects] → Member role
-└── QA Team → [all projects] → Viewer role
-```
-
-### Step 4: SSO / SAML Configuration
-In the Vercel dashboard: **Team Settings > Authentication > SAML Single Sign-On**
-
-1. Enable SAML SSO
-2. Configure your IdP (Okta, Azure AD, Google Workspace):
-   - ACS URL: `https://vercel.com/api/auth/saml/acs`
-   - Entity ID: `https://vercel.com`
-   - Name ID format: `emailAddress`
-3. Enter IdP metadata URL or upload certificate
-4. Map SAML attributes to Vercel fields
-
-```
-SAML Attribute Mapping:
-├── email → user email (required)
-├── firstName → display name
-├── lastName → display name
-└── groups → Vercel team roles (optional)
-```
-
-**Enforce SSO for all team members:**
-Once enabled, toggle "Require SAML for login" — all members must authenticate through SSO.
-
-### Step 5: Application-Level Auth with Middleware
-```typescript
-// middleware.ts — enforce auth on deployed application routes
-import { NextRequest, NextResponse } from 'next/server';
-import { verifyJWT } from '@/lib/auth';
-
-const ROLE_ROUTES: Record<string, string[]> = {
-  '/admin': ['admin'],
-  '/dashboard': ['admin', 'member'],
-  '/api/admin': ['admin'],
-};
-
-export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Check if route requires auth
-  const requiredRoles = Object.entries(ROLE_ROUTES)
-    .find(([prefix]) => pathname.startsWith(prefix));
-
-  if (!requiredRoles) return NextResponse.next();
-
-  const token = request.cookies.get('session')?.value;
-  if (!token) {
-    return pathname.startsWith('/api')
-      ? NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-      : NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  const payload = await verifyJWT(token);
-  if (!payload || !requiredRoles[1].includes(payload.role)) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
-  // Pass user info to API routes via headers
-  const response = NextResponse.next();
-  response.headers.set('x-user-id', payload.sub);
-  response.headers.set('x-user-role', payload.role);
-  return response;
-}
-
-export const config = {
-  matcher: ['/admin/:path*', '/dashboard/:path*', '/api/admin/:path*'],
-};
-```
-
-### Step 6: Audit Logging
-Vercel Enterprise includes audit logs in **Team Settings > Audit Log**.
-
-Events tracked:
-- Team member added/removed/role changed
-- Project created/deleted
-- Deployment to production
-- Environment variable created/updated/deleted
-- Domain added/removed
-- Integration installed/uninstalled
-- SSO configuration changes
-
-```bash
-# Export audit logs via API (Enterprise)
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v1/teams/team_xxx/audit-log?limit=100" \
-  | jq '.events[] | {action: .action, user: .user.email, createdAt: .createdAt, resource: .resource}'
-```
-
-## RBAC Checklist
-
-| Check | Status |
-|-------|--------|
-| Team roles assigned per least privilege | Required |
-| Production deploy restricted to Member+ | Required |
-| Access Groups configured per project | Recommended |
-| SSO/SAML enforced for all members | Enterprise |
-| Audit logging exported to SIEM | Enterprise |
-| Application-level auth in middleware | Required |
-| Off-boarding removes Vercel access via IdP | Required |
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Team roles configured with least-privilege access
-- Access Groups scoping members to specific projects
-- SSO/SAML enforced for all team authentication
-- Application-level RBAC in Edge Middleware
-- Audit logs exported for compliance
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Member can't deploy to prod | Developer role (preview only) | Change to Member or Owner role |
-| SSO login fails | IdP metadata URL expired | Update SAML configuration |
-| Access Group not applied | Member not in group | Add member to the Access Group |
-| Audit log missing events | Free/Pro plan limitation | Upgrade to Enterprise for audit logs |
-| Off-boarded user still has access | SSO not enforced | Enable "Require SAML for login" |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Vercel RBAC](https://vercel.com/docs/rbac)
-- [Access Roles](https://vercel.com/docs/rbac/access-roles)
-- [Access Groups](https://vercel.com/docs/rbac/access-groups)
-- [Extended Permissions](https://vercel.com/docs/rbac/access-roles/extended-permissions)
-- [Managing Team Members](https://vercel.com/docs/rbac/managing-team-members)
+- [Vercel Enterprise Guide](https://vercel.com/docs/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
-For migration strategies, see `vercel-migration-deep-dive`.
+For major migrations, see `vercel-migration-deep-dive`.

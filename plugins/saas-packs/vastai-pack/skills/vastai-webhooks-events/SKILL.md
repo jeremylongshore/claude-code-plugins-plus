@@ -1,164 +1,201 @@
 ---
 name: vastai-webhooks-events
 description: |
-  Build event-driven workflows around Vast.ai instance lifecycle events.
-  Use when monitoring instance status changes, implementing auto-recovery,
-  or building event-driven GPU orchestration.
-  Trigger with phrases like "vastai events", "vastai instance monitoring",
-  "vastai status changes", "vastai lifecycle events".
-allowed-tools: Read, Write, Edit, Bash(vastai:*), Bash(curl:*)
+  Implement Vast.ai webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Vast.ai event notifications securely.
+  Trigger with phrases like "vastai webhook", "vastai events",
+  "vastai webhook signature", "handle vastai events", "vastai notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vast-ai, webhooks]
-
+compatible-with: claude-code
+tags: [saas, vastai]
 ---
+
 # Vast.ai Webhooks & Events
 
 ## Overview
-Build event-driven workflows around Vast.ai GPU instance lifecycle. Vast.ai does not provide traditional webhooks, so event detection relies on polling the REST API at `cloud.vast.ai/api/v0` and reacting to instance status transitions (loading, running, exited, error, offline).
+Securely handle Vast.ai webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Vast.ai CLI authenticated
-- Understanding of instance lifecycle states
-- Python 3.8+ for event loop implementation
+- Vast.ai webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/vastai',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-vastai-signature'] as string;
+    const timestamp = req.headers['x-vastai-timestamp'] as string;
+
+    if (!verifyVast.aiSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleVast.aiEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyVast.aiSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.VASTAI_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type Vast.aiEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface Vast.aiEvent {
+  id: string;
+  type: Vast.aiEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<Vast.aiEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleVast.aiEvent(event: Vast.aiEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `vastai:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `vastai:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Vast.ai CLI to send test events
+vastai webhooks trigger resource.created --url http://localhost:3000/webhooks/vastai
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
 
 ## Instructions
 
-### Step 1: Instance Status Poller
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Vast.ai dashboard.
 
-```python
-import time, json, subprocess
-from typing import Callable, Dict, List
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-class InstanceEventPoller:
-    """Poll Vast.ai API and emit events on status transitions."""
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-    def __init__(self, api_key: str, poll_interval: int = 30):
-        self.api_key = api_key
-        self.poll_interval = poll_interval
-        self.previous_states: Dict[int, str] = {}
-        self.handlers: Dict[str, List[Callable]] = {}
-
-    def on(self, event: str, handler: Callable):
-        self.handlers.setdefault(event, []).append(handler)
-
-    def poll_once(self):
-        result = subprocess.run(
-            ["vastai", "show", "instances", "--raw"],
-            capture_output=True, text=True)
-        instances = json.loads(result.stdout)
-
-        for inst in instances:
-            inst_id = inst["id"]
-            status = inst.get("actual_status", "unknown")
-            prev = self.previous_states.get(inst_id)
-
-            if prev and prev != status:
-                event = f"{prev}_to_{status}"
-                for handler in self.handlers.get(event, []):
-                    handler(inst)
-                for handler in self.handlers.get("any_change", []):
-                    handler(inst, prev, status)
-
-            self.previous_states[inst_id] = status
-
-    def run(self):
-        print(f"Polling every {self.poll_interval}s...")
-        while True:
-            self.poll_once()
-            time.sleep(self.poll_interval)
-```
-
-### Step 2: Event Handlers
-
-```python
-def on_instance_running(instance):
-    print(f"Instance {instance['id']} is RUNNING")
-    print(f"  SSH: ssh -p {instance['ssh_port']} root@{instance['ssh_host']}")
-    # Trigger: start training job, send notification, etc.
-
-def on_instance_exited(instance):
-    print(f"Instance {instance['id']} EXITED")
-    # Trigger: collect results, check for errors, notify team
-
-def on_spot_preemption(instance, old_status, new_status):
-    if old_status == "running" and new_status in ("exited", "offline"):
-        print(f"ALERT: Instance {instance['id']} may have been preempted")
-        # Trigger: auto-recovery, provision replacement
-
-# Wire up handlers
-poller = InstanceEventPoller(api_key)
-poller.on("loading_to_running", on_instance_running)
-poller.on("running_to_exited", on_instance_exited)
-poller.on("any_change", on_spot_preemption)
-poller.run()
-```
-
-### Step 3: Auto-Recovery on Preemption
-
-```python
-def auto_recover(instance, old_status, new_status):
-    """Automatically replace preempted instances."""
-    if old_status != "running" or new_status not in ("exited", "offline", "error"):
-        return
-
-    gpu_name = instance.get("gpu_name", "RTX_4090")
-    image = instance.get("image_uuid", "pytorch/pytorch:latest")
-
-    print(f"Auto-recovering {instance['id']} ({gpu_name})...")
-
-    # Search for replacement
-    offers = json.loads(subprocess.run(
-        ["vastai", "search", "offers",
-         f"gpu_name={gpu_name} reliability>0.98 rentable=true",
-         "--order", "dph_total", "--raw", "--limit", "3"],
-        capture_output=True, text=True, check=True).stdout)
-
-    if offers:
-        new_id = json.loads(subprocess.run(
-            ["vastai", "create", "instance", str(offers[0]["id"]),
-             "--image", image, "--disk", "50", "--raw"],
-            capture_output=True, text=True, check=True).stdout)["new_contract"]
-        print(f"Replacement instance: {new_id}")
-```
-
-### Step 4: Cost Event Tracking
-
-```python
-def track_costs(instance, old_status, new_status):
-    """Log cost events for billing tracking."""
-    if new_status == "running":
-        print(f"BILLING START: Instance {instance['id']} "
-              f"at ${instance.get('dph_total', 0):.3f}/hr")
-    elif old_status == "running":
-        print(f"BILLING STOP: Instance {instance['id']}")
-```
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Polling-based event detection for instance status changes
-- Event handlers for running, exited, preempted states
-- Auto-recovery on spot preemption
-- Cost tracking event logger
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Missed status transition | Poll interval too long | Reduce to 15-30s for critical instances |
-| False preemption alert | Instance restarted intentionally | Track expected state changes |
-| Auto-recovery loops | Same host keeps failing | Exclude failed host IDs from search |
-| API timeout during poll | Network or rate limiting | Retry with backoff; continue polling |
-
-## Resources
-- [Vast.ai REST API](https://vast.ai/developers/api)
-- [Instance Management](https://docs.vast.ai/api-reference/instances/create-instance)
-
-## Next Steps
-For performance optimization, see `vastai-performance-tuning`.
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-**Slack notifications**: Wire `on_instance_running` to send a Slack message with SSH connection details. Wire `on_spot_preemption` to alert the team.
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
 
-**Training monitor**: Track `running_to_exited` events. If exit was expected (job complete), collect results. If unexpected, trigger auto-recovery with checkpoint resume.
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/vastai \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
+
+## Resources
+- [Vast.ai Webhooks Guide](https://docs.vastai.com/webhooks)
+- [Webhook Security Best Practices](https://docs.vastai.com/webhooks/security)
+
+## Next Steps
+For performance optimization, see `vastai-performance-tuning`.

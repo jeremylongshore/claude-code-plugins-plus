@@ -1,36 +1,121 @@
 ---
 name: oraclecloud-prod-checklist
 description: |
-  Prod Checklist for Oracle Cloud.
-  Trigger: "oraclecloud prod checklist".
-allowed-tools: Read, Write, Edit
+  Execute Oracle Cloud production deployment checklist and rollback procedures.
+  Use when deploying Oracle Cloud integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "oraclecloud production", "deploy oraclecloud",
+  "oraclecloud go-live", "oraclecloud launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, infrastructure]
 compatible-with: claude-code
+tags: [saas, oraclecloud]
 ---
 
 # Oracle Cloud Production Checklist
 
-## Pre-Launch
-- [ ] Production credentials in secret manager
-- [ ] Rate limiting implemented
-- [ ] Error handling for all API codes
-- [ ] Health check endpoint
-- [ ] Monitoring and alerting
-- [ ] Rollback procedure documented
+## Overview
+Complete checklist for deploying Oracle Cloud integrations to production.
 
-## Health Check
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
+
+## Instructions
+
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
+
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Oracle Cloud error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
+
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Oracle Cloud connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
+
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.oraclecloud.com
+
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/oraclecloud-integration app=image:new --record
+kubectl rollout pause deployment/oraclecloud-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/oraclecloud-integration
+kubectl rollout pause deployment/oraclecloud-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/oraclecloud-integration
+kubectl rollout status deployment/oraclecloud-integration
+```
+
+## Output
+- Deployed Oracle Cloud integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
+
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Examples
+
+### Health Check Implementation
 ```typescript
-async function health() {
-  try { /* test Oracle Cloud API call */ return { status: 'healthy' }; }
-  catch { return { status: 'degraded' }; }
+async function healthCheck(): Promise<{ status: string; oraclecloud: any }> {
+  const start = Date.now();
+  try {
+    await oraclecloudClient.ping();
+    return { status: 'healthy', oraclecloud: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', oraclecloud: { connected: false, latencyMs: Date.now() - start } };
+  }
 }
 ```
 
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/oraclecloud-integration
+kubectl rollout status deployment/oraclecloud-integration
+```
+
 ## Resources
-- [Oracle Cloud Docs](https://docs.oracle.com/en-us/iaas/api/)
+- [Oracle Cloud Status](https://status.oraclecloud.com)
+- [Oracle Cloud Support](https://docs.oraclecloud.com/support)
 
 ## Next Steps
-See `oraclecloud-upgrade-migration`.
+For version upgrades, see `oraclecloud-upgrade-migration`.

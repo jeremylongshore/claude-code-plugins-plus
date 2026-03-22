@@ -1,191 +1,203 @@
 ---
 name: clerk-cost-tuning
 description: |
-  Optimize Clerk costs and understand pricing.
-  Use when planning budget, reducing costs,
-  or understanding Clerk pricing model.
-  Trigger with phrases like "clerk cost", "clerk pricing",
-  "reduce clerk cost", "clerk billing", "clerk budget".
-allowed-tools: Read, Write, Edit, Grep
+  Optimize Clerk costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Clerk billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "clerk cost", "clerk billing",
+  "reduce clerk costs", "clerk pricing", "clerk expensive", "clerk budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Cost Tuning
 
 ## Overview
-Understand Clerk pricing and optimize costs. Clerk charges by Monthly Active Users (MAU). Covers pricing tiers, MAU reduction strategies, caching to reduce API calls, and usage monitoring.
+Optimize Clerk costs through smart tier selection, sampling, and usage monitoring.
 
 ## Prerequisites
-- Clerk account active
-- Understanding of MAU (Monthly Active Users)
-- Application usage patterns known
+- Access to Clerk billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
+
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateClerkCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class ClerkUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Clerk budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateClerkCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await clerkClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => clerkClient.get(id)));
+
+// Use batch endpoint (1 call)
+await clerkClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new ClerkClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Clerk dashboard
+# Or use API if available:
+# Check Clerk documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM clerk_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Step 1: Understand Clerk Pricing Model
+### Step 1: Analyze Current Usage
+Review Clerk dashboard for usage patterns and costs.
 
-| Plan | Price | MAU Included | Extra MAU |
-|------|-------|-------------|-----------|
-| Free | $0/mo | 10,000 MAU | N/A |
-| Pro | $25/mo | 10,000 MAU | $0.02/MAU |
-| Enterprise | Custom | Custom | Custom |
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-Key pricing concepts:
-- **MAU** = unique user who authenticates at least once per month
-- Users who only visit public pages are not counted
-- Bot/crawler sessions are not counted
-- Test/development instances are free and unlimited
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-### Step 2: Reduce MAU Count
-```typescript
-// Strategy 1: Defer authentication — don't force sign-in until necessary
-// middleware.ts
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
-const requiresAuth = createRouteMatcher([
-  '/dashboard(.*)',
-  '/settings(.*)',
-  '/api/protected(.*)',
-])
-
-export default clerkMiddleware(async (auth, req) => {
-  // Only require auth for specific routes (not entire site)
-  if (requiresAuth(req)) {
-    await auth.protect()
-  }
-})
-```
-
-```typescript
-// Strategy 2: Use anonymous access for read-only features
-// app/blog/[slug]/page.tsx
-import { auth } from '@clerk/nextjs/server'
-
-export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const { userId } = await auth() // Check but don't require
-  const post = await db.post.findUnique({ where: { slug: params.slug } })
-
-  return (
-    <article>
-      <h1>{post?.title}</h1>
-      <div>{post?.content}</div>
-      {userId ? <CommentForm /> : <p>Sign in to comment</p>}
-    </article>
-  )
-}
-```
-
-### Step 3: Cache to Reduce API Calls
-```typescript
-// lib/user-cache.ts
-import { cache } from 'react'
-import { currentUser } from '@clerk/nextjs/server'
-
-// Deduplicate within single request (free)
-export const getUser = cache(async () => {
-  return currentUser()
-})
-
-// Cross-request caching reduces Backend API calls
-import { unstable_cache } from 'next/cache'
-import { clerkClient } from '@clerk/nextjs/server'
-
-export const getUserMetadata = unstable_cache(
-  async (userId: string) => {
-    const client = await clerkClient()
-    const user = await client.users.getUser(userId)
-    return user.publicMetadata
-  },
-  ['user-metadata'],
-  { revalidate: 600 } // 10-minute cache
-)
-```
-
-### Step 4: Monitor Usage
-```typescript
-// app/api/admin/clerk-usage/route.ts
-import { auth, clerkClient } from '@clerk/nextjs/server'
-
-export async function GET() {
-  const { has } = await auth()
-  if (!has({ role: 'org:admin' })) {
-    return Response.json({ error: 'Admin only' }, { status: 403 })
-  }
-
-  const client = await clerkClient()
-  const users = await client.users.getUserList({ limit: 1 })
-
-  return Response.json({
-    totalUsers: users.totalCount,
-    // Estimate MAU based on recent sign-ins
-    estimatedMAU: 'Check Clerk Dashboard > Billing for actual MAU',
-    dashboardUrl: 'https://dashboard.clerk.com/last-active?after=30d',
-  })
-}
-```
-
-### Step 5: Clean Up Inactive Users
-```typescript
-// scripts/cleanup-inactive-users.ts
-import { createClerkClient } from '@clerk/backend'
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
-
-async function findInactiveUsers(daysInactive = 90) {
-  const cutoff = Date.now() - daysInactive * 24 * 60 * 60 * 1000
-  const allUsers = await clerk.users.getUserList({ limit: 500 })
-
-  const inactive = allUsers.data.filter(
-    (user) => (user.lastSignInAt || 0) < cutoff
-  )
-
-  console.log(`Found ${inactive.length} users inactive for ${daysInactive}+ days`)
-  console.log('Consider: notification campaign, data export, or account cleanup')
-
-  return inactive
-}
-
-findInactiveUsers()
-```
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
 ## Output
-- Pricing model understood with MAU thresholds
-- Route-level auth to minimize unnecessary MAU counts
-- Request-level and cross-request caching reducing API calls
-- Usage monitoring endpoint for admins
-- Inactive user identification script
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected bill increase | MAU spike from bot traffic | Add bot detection, restrict auth to needed routes |
-| Feature limitations | Free tier limits (no SSO, etc.) | Upgrade to Pro ($25/mo) |
-| High API call volume | No caching | Add React `cache()` + `unstable_cache()` |
-| MAU count mismatch | Counting test users | Use separate dev instance (free, unlimited) |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
 
 ## Examples
 
-### Cost Estimation Script
+### Quick Cost Check
 ```typescript
-function estimateMonthlyCost(mau: number): string {
-  if (mau <= 10_000) return 'Free tier ($0/mo)'
-  const overage = mau - 10_000
-  const cost = 25 + overage * 0.02
-  return `Pro tier: $${cost.toFixed(2)}/mo (${overage.toLocaleString()} extra MAU at $0.02 each)`
+// Estimate monthly cost for your usage
+const estimate = estimateClerkCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
 }
-
-console.log(estimateMonthlyCost(15_000))  // "Pro tier: $125.00/mo (5,000 extra MAU at $0.02 each)"
-console.log(estimateMonthlyCost(50_000))  // "Pro tier: $825.00/mo (40,000 extra MAU at $0.02 each)"
 ```
 
 ## Resources
 - [Clerk Pricing](https://clerk.com/pricing)
-- [Clerk Usage Dashboard](https://dashboard.clerk.com)
-- [Clerk Fair Use Policy](https://clerk.com/legal/fair-use-policy)
+- [Clerk Billing Dashboard](https://dashboard.clerk.com/billing)
 
 ## Next Steps
-Proceed to `clerk-reference-architecture` for architecture patterns.
+For architecture patterns, see `clerk-reference-architecture`.

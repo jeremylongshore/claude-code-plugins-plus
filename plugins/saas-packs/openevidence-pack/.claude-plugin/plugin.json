@@ -1,7 +1,7 @@
 {
   "name": "openevidence-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for OpenEvidence medical AI (24 skills)",
+  "description": "Claude Code skill pack for OpenEvidence (24 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,10 +9,9 @@
   "license": "MIT",
   "keywords": [
     "openevidence",
-    "medical-ai",
-    "clinical-decision-support",
+    "openevidence",
     "saas",
-    "healthcare",
-    "hipaa"
+    "sdk",
+    "integration"
   ]
 }

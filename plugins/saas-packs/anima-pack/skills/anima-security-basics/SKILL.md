@@ -1,92 +1,142 @@
 ---
 name: anima-security-basics
 description: |
-  Secure Anima and Figma tokens for design-to-code pipelines.
-  Use when protecting API credentials, restricting Figma access scope,
-  or hardening CI/CD design automation pipelines.
-  Trigger: "anima security", "anima token safety", "figma token security".
-allowed-tools: Read, Write, Edit, Grep
+  Apply Anima security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Anima security configuration.
+  Trigger with phrases like "anima security", "anima secrets",
+  "secure anima", "anima API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, figma, anima, security]
 compatible-with: claude-code
+tags: [saas, anima]
 ---
 
 # Anima Security Basics
 
-## Security Checklist
+## Overview
+Security best practices for Anima API keys, tokens, and access control.
 
-- [ ] Anima token stored in secret manager (not .env in prod)
-- [ ] Figma PAT has minimum required scope (file:read only)
-- [ ] SDK runs server-side only (never ship tokens to browser)
-- [ ] `.env` files gitignored and chmod 600
-- [ ] CI secrets stored in GitHub Secrets, not workflow files
-- [ ] Generated code reviewed before committing (no embedded tokens)
+## Prerequisites
+- Anima SDK installed
+- Understanding of environment variables
+- Access to Anima dashboard
 
 ## Instructions
 
-### Step 1: Figma Token Scope Restriction
-
+### Step 1: Configure Environment Variables
 ```bash
-# When creating a Figma Personal Access Token:
-# - Give it the MINIMUM scope needed: File Content (read-only)
-# - Do NOT grant write access unless you need Figma plugin features
-# - Set an expiration date (90 days recommended)
-# - Create separate tokens for dev vs CI environments
+# .env (NEVER commit to git)
+ANIMA_API_KEY=sk_live_***
+ANIMA_SECRET=***
+
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Step 2: Server-Side Only Enforcement
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Anima dashboard
+# 2. Update environment variable
+export ANIMA_API_KEY="new_key_here"
 
-```typescript
-// src/anima/safety.ts
-// Anima SDK is designed for server-side use only
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${ANIMA_API_KEY}" \
+  https://api.anima.com/health
 
-function validateEnvironment(): void {
-  if (typeof window !== 'undefined') {
-    throw new Error('Anima SDK must run server-side only — never import in browser code');
-  }
-  if (!process.env.ANIMA_TOKEN) throw new Error('ANIMA_TOKEN not set');
-  if (!process.env.FIGMA_TOKEN) throw new Error('FIGMA_TOKEN not set');
-}
-
-// Call this at startup
-validateEnvironment();
+# 4. Revoke old key in dashboard
 ```
 
-### Step 3: Secret Manager Integration
-
-```typescript
-// src/anima/secrets.ts
-async function loadAnimaSecrets(): Promise<{ animaToken: string; figmaToken: string }> {
-  const { SecretManagerServiceClient } = await import('@google-cloud/secret-manager');
-  const client = new SecretManagerServiceClient();
-
-  const [animaVersion] = await client.accessSecretVersion({
-    name: `projects/${process.env.GCP_PROJECT}/secrets/anima-token/versions/latest`,
-  });
-  const [figmaVersion] = await client.accessSecretVersion({
-    name: `projects/${process.env.GCP_PROJECT}/secrets/figma-token/versions/latest`,
-  });
-
-  return {
-    animaToken: animaVersion.payload?.data?.toString() || '',
-    figmaToken: figmaVersion.payload?.data?.toString() || '',
-  };
-}
-```
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
 ## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
-- Figma token with minimal scope (read-only)
-- Server-side enforcement preventing browser usage
-- Secrets loaded from cloud secret manager
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new AnimaClient({
+    apiKey: process.env.ANIMA_READ_KEY,
+  }),
+  writer: new AnimaClient({
+    apiKey: process.env.ANIMA_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Anima analytics
+  await animaClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'anima.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-
-- [Figma Access Tokens](https://www.figma.com/developers/api#access-tokens)
-- [GCP Secret Manager](https://cloud.google.com/secret-manager)
+- [Anima Security Guide](https://docs.anima.com/security)
+- [Anima API Scopes](https://docs.anima.com/scopes)
 
 ## Next Steps
-
 For production deployment, see `anima-prod-checklist`.

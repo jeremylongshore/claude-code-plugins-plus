@@ -10,168 +10,192 @@ allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, webhooks]
-
+compatible-with: claude-code
+tags: [saas, coderabbit]
 ---
+
 # CodeRabbit Webhooks & Events
 
 ## Overview
-Handle CodeRabbit events triggered through GitHub and GitLab integrations. CodeRabbit posts AI-powered code review comments on pull requests.
+Securely handle CodeRabbit webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- CodeRabbit installed on your GitHub or GitLab repository
-- GitHub webhook endpoint configured for PR events
-- GitHub App or personal access token for API access
-- `.coderabbit.yaml` configuration in repository root
+- CodeRabbit webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Event Types
+## Webhook Endpoint Setup
 
-| Event | Source | Payload |
-|-------|--------|---------|
-| `pull_request_review` | GitHub webhook | Review body, state (approved/changes_requested) |
-| `pull_request_review_comment` | GitHub webhook | Line comment, diff position, file path |
-| `check_run.completed` | GitHub Checks API | CodeRabbit analysis results, conclusion |
-| `issue_comment.created` | GitHub webhook | Summary comment, walkthrough |
-| `pull_request.labeled` | GitHub webhook | Labels applied by CodeRabbit |
-
-## Instructions
-
-### Step 1: Configure GitHub Webhook Receiver
+### Express.js
 ```typescript
-import express from "express";
-import crypto from "crypto";
+import express from 'express';
+import crypto from 'crypto';
 
 const app = express();
 
-app.post("/webhooks/github",
-  express.raw({ type: "application/json" }),
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/coderabbit',
+  express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers["x-hub-signature-256"] as string;  # 256 bytes
-    const secret = process.env.GITHUB_WEBHOOK_SECRET!;
+    const signature = req.headers['x-coderabbit-signature'] as string;
+    const timestamp = req.headers['x-coderabbit-timestamp'] as string;
 
-    const expected = "sha256=" + crypto
-      .createHmac("sha256", secret)
-      .update(req.body)
-      .digest("hex");
-
-    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-      return res.status(401).json({ error: "Invalid signature" });  # HTTP 401 Unauthorized
+    if (!verifyCodeRabbitSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
     }
 
-    const event = req.headers["x-github-event"] as string;
-    const payload = JSON.parse(req.body.toString());
-    res.status(200).json({ received: true });  # HTTP 200 OK
-    await routeCodeRabbitEvent(event, payload);
+    const event = JSON.parse(req.body.toString());
+    await handleCodeRabbitEvent(event);
+
+    res.status(200).json({ received: true });
   }
 );
 ```
 
-### Step 2: Filter and Route CodeRabbit Events
+## Signature Verification
+
 ```typescript
-async function routeCodeRabbitEvent(event: string, payload: any) {
-  const isCodeRabbit = payload?.sender?.login === "coderabbitai[bot]";
+function verifyCodeRabbitSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.CODERABBIT_WEBHOOK_SECRET!;
 
-  if (!isCodeRabbit && event !== "check_run") return;
-
-  switch (event) {
-    case "pull_request_review":
-      await handleCodeRabbitReview(payload);
-      break;
-    case "pull_request_review_comment":
-      await handleReviewComment(payload);
-      break;
-    case "check_run":
-      if (payload.check_run?.app?.slug === "coderabbitai") {
-        await handleCheckRunComplete(payload);
-      }
-      break;
-    case "issue_comment":
-      await handleSummaryComment(payload);
-      break;
-  }
-}
-```
-
-### Step 3: Process Review Results
-```typescript
-async function handleCodeRabbitReview(payload: any) {
-  const { review, pull_request } = payload;
-  const prNumber = pull_request.number;
-  const state = review.state;
-
-  if (state === "changes_requested") {
-    const issues = parseReviewIssues(review.body);
-    await notifyTeam({
-      channel: "#code-reviews",
-      message: `CodeRabbit found ${issues.length} issues in PR #${prNumber}`,
-      prUrl: pull_request.html_url,
-    });
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
   }
 
-  if (state === "approved") {
-    await checkAutoMergeEligibility(prNumber);
-  }
-}
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
 
-function parseReviewIssues(body: string): string[] {
-  return body.split("\n").filter(line =>
-    line.match(/^[-*]\s+(Bug|Issue|Suggestion|Security)/i)
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
   );
 }
 ```
 
-### Step 4: Configure CodeRabbit Behavior
-```yaml
-# .coderabbit.yaml
-reviews:
-  auto_review:
-    enabled: true
-    drafts: false
-  path_filters:
-    - "!**/*.test.ts"
-    - "!**/generated/**"
-  review_instructions:
-    - path: "src/api/**"
-      instructions: "Focus on security and input validation"
-chat:
-  auto_reply: true
+## Event Handler Pattern
+
+```typescript
+type CodeRabbitEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface CodeRabbitEvent {
+  id: string;
+  type: CodeRabbitEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<CodeRabbitEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleCodeRabbitEvent(event: CodeRabbitEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
 ```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `coderabbit:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `coderabbit:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use CodeRabbit CLI to send test events
+coderabbit webhooks trigger resource.created --url http://localhost:3000/webhooks/coderabbit
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the CodeRabbit dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| No review posted | PR too large | Split PR or adjust `max_files` in config |
-| Invalid signature | Wrong GitHub secret | Verify webhook secret in App settings |
-| Bot not responding | App not installed | Check CodeRabbit GitHub App installation |
-| Duplicate comments | Re-triggered workflow | CodeRabbit deduplicates automatically |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-### Track Review Metrics
-```typescript
-async function handleCheckRunComplete(payload: any) {
-  const { check_run } = payload;
-  await metricsDb.insert({
-    prNumber: check_run.pull_requests?.[0]?.number,
-    conclusion: check_run.conclusion,
-    issuesFound: check_run.output?.annotations_count || 0,
-    completedAt: check_run.completed_at,
-  });
-}
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/coderabbit \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
 ```
 
 ## Resources
-- [CodeRabbit Documentation](https://docs.coderabbit.ai)
-- [GitHub Webhooks Guide](https://docs.github.com/en/webhooks)
-- [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
-
-## Output
-- GitHub webhook receiver with signature validation
-- CodeRabbit event routing for reviews, comments, and check runs
-- Review result processing with team notifications
-- Auto-merge eligibility check on CodeRabbit approval
-- Review metrics tracking via check run events
+- [CodeRabbit Webhooks Guide](https://docs.coderabbit.com/webhooks)
+- [Webhook Security Best Practices](https://docs.coderabbit.com/webhooks/security)
 
 ## Next Steps
-For deployment setup, see `coderabbit-deploy-integration`.
+For performance optimization, see `coderabbit-performance-tuning`.

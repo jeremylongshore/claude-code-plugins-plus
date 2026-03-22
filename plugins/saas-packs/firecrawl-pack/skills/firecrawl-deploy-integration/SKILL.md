@@ -1,212 +1,211 @@
 ---
 name: firecrawl-deploy-integration
 description: |
-  Deploy Firecrawl integrations to Vercel, Cloud Run, and Docker platforms.
-  Use when deploying Firecrawl-powered applications to production,
-  configuring platform-specific secrets, or setting up self-hosted Firecrawl.
+  Deploy FireCrawl integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying FireCrawl-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy firecrawl", "firecrawl Vercel",
-  "firecrawl production deploy", "firecrawl Cloud Run", "firecrawl Docker".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(docker:*), Bash(gcloud:*)
+  "firecrawl production deploy", "firecrawl Cloud Run", "firecrawl Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, deployment]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Deploy Integration
+
+# FireCrawl Deploy Integration
 
 ## Overview
-Deploy applications using Firecrawl's web scraping API to production. Covers Vercel serverless, Cloud Run containers, self-hosted Firecrawl via Docker, and webhook endpoint deployment for async crawl results.
+Deploy FireCrawl-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Firecrawl API key (`FIRECRAWL_API_KEY`)
-- Application using `@mendable/firecrawl-js`
-- Platform CLI (vercel, docker, or gcloud)
+- FireCrawl API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add FireCrawl secrets to Vercel
+vercel secrets add firecrawl_api_key sk_live_***
+vercel secrets add firecrawl_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "FIRECRAWL_API_KEY": "@firecrawl_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-firecrawl-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set FireCrawl secrets
+fly secrets set FIRECRAWL_API_KEY=sk_live_***
+fly secrets set FIRECRAWL_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="firecrawl-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=FIRECRAWL_API_KEY=firecrawl-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/firecrawl.ts
+interface FireCrawlConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getFireCrawlConfig(): FireCrawlConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.FIRECRAWL_API_KEY!,
+    environment: env as FireCrawlConfig['environment'],
+    webhookSecret: process.env.FIRECRAWL_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const firecrawlStatus = await checkFireCrawlConnection();
+
+  return Response.json({
+    status: firecrawlStatus ? 'healthy' : 'degraded',
+    services: {
+      firecrawl: firecrawlStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: Configure Platform Secrets
-```bash
-set -euo pipefail
-# Vercel
-vercel env add FIRECRAWL_API_KEY production
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-# Cloud Run
-echo -n "$FIRECRAWL_API_KEY" | gcloud secrets create firecrawl-api-key --data-file=-
+### Step 2: Configure Secrets
+Store FireCrawl API keys securely using the platform's secrets management.
 
-# Docker
-# Use --env-file or docker secrets
-```
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with FireCrawl integration.
 
-### Step 2: Vercel Serverless API Route
-```typescript
-// app/api/scrape/route.ts (Next.js App Router)
-import FirecrawlApp from "@mendable/firecrawl-js";
-import { NextRequest, NextResponse } from "next/server";
+### Step 4: Verify Health
+Test the health check endpoint to confirm FireCrawl connectivity.
 
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-});
-
-export async function POST(req: NextRequest) {
-  const { url, formats = ["markdown"] } = await req.json();
-
-  if (!url) {
-    return NextResponse.json({ error: "URL required" }, { status: 400 });
-  }
-
-  try {
-    const result = await firecrawl.scrapeUrl(url, {
-      formats,
-      onlyMainContent: true,
-      waitFor: 3000,
-    });
-
-    return NextResponse.json({
-      success: result.success,
-      markdown: result.markdown,
-      title: result.metadata?.title,
-      sourceURL: result.metadata?.sourceURL,
-    });
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message, status: error.statusCode },
-      { status: error.statusCode || 500 }
-    );
-  }
-}
-```
-
-### Step 3: Self-Hosted Firecrawl (Docker Compose)
-```yaml
-# docker-compose.yml
-services:
-  firecrawl:
-    image: mendableai/firecrawl:latest
-    ports:
-      - "3002:3002"
-    environment:
-      - PORT=3002
-      - USE_DB_AUTHENTICATION=false
-      - REDIS_URL=redis://redis:6379
-      - REDIS_RATE_LIMIT_URL=redis://redis:6379
-      - NUM_WORKERS_PER_QUEUE=2
-      - BULL_AUTH_KEY=${BULL_AUTH_KEY:-changeme}
-    depends_on:
-      redis:
-        condition: service_healthy
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
-
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - FIRECRAWL_API_KEY=fc-self-hosted
-      - FIRECRAWL_API_URL=http://firecrawl:3002
-    depends_on:
-      - firecrawl
-```
-
-```typescript
-// Point app to self-hosted Firecrawl
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-  apiUrl: process.env.FIRECRAWL_API_URL || "https://api.firecrawl.dev",
-});
-```
-
-### Step 4: Cloud Run Deployment
-```bash
-set -euo pipefail
-# Build and deploy
-gcloud run deploy firecrawl-app \
-  --source . \
-  --region us-central1 \
-  --set-secrets "FIRECRAWL_API_KEY=firecrawl-api-key:latest" \
-  --memory 512Mi \
-  --timeout 300 \
-  --allow-unauthenticated
-```
-
-### Step 5: Webhook Endpoint for Async Crawls
-```typescript
-// app/api/webhooks/firecrawl/route.ts
-import crypto from "crypto";
-import { NextRequest, NextResponse } from "next/server";
-
-export async function POST(req: NextRequest) {
-  const body = await req.text();
-
-  // Verify webhook signature
-  const signature = req.headers.get("x-firecrawl-signature");
-  if (signature && process.env.FIRECRAWL_WEBHOOK_SECRET) {
-    const expected = crypto
-      .createHmac("sha256", process.env.FIRECRAWL_WEBHOOK_SECRET)
-      .update(body)
-      .digest("hex");
-    if (signature !== expected) {
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-    }
-  }
-
-  const { type, id, data } = JSON.parse(body);
-
-  switch (type) {
-    case "crawl.completed":
-      console.log(`Crawl ${id} complete: ${data.length} pages`);
-      await processPages(data);
-      break;
-    case "crawl.page":
-      console.log(`Page scraped: ${data[0]?.metadata?.sourceURL}`);
-      break;
-    case "crawl.started":
-      console.log(`Crawl ${id} started`);
-      break;
-  }
-
-  return NextResponse.json({ received: true });
-}
-```
-
-### Step 6: Health Check
-```typescript
-export async function GET() {
-  try {
-    const result = await firecrawl.scrapeUrl("https://example.com", {
-      formats: ["markdown"],
-    });
-    return NextResponse.json({
-      status: result.success ? "healthy" : "degraded",
-    });
-  } catch {
-    return NextResponse.json({ status: "unhealthy" }, { status: 503 });
-  }
-}
-```
+## Output
+- Application deployed to production
+- FireCrawl secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Vercel timeout | Scrape takes > 10s | Use background functions or async crawl |
-| Self-hosted OOM | Playwright browser memory | Increase container memory to 2GB+ |
-| Cloud Run cold start | First request slow | Set min instances to 1 |
-| Webhook not received | URL not publicly accessible | Use ngrok in dev, verify HTTPS in prod |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add firecrawl_api_key "$FIRECRAWL_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set FIRECRAWL_API_KEY="$FIRECRAWL_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/contributing/self-host)
-- [Firecrawl Webhooks](https://docs.firecrawl.dev/webhooks/overview)
-- [Firecrawl Node SDK](https://docs.firecrawl.dev/sdks/node)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [FireCrawl Deploy Guide](https://docs.firecrawl.com/deploy)
 
 ## Next Steps
 For webhook handling, see `firecrawl-webhooks-events`.

@@ -10,104 +10,117 @@ allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, framer]
 compatible-with: claude-code
+tags: [saas, framer]
 ---
 
 # Framer CI Integration
 
 ## Overview
+Set up CI/CD pipelines for Framer integrations with automated testing.
 
-Set up CI/CD for Framer plugins and Server API integrations. Plugin builds are tested with Vite + vitest. Server API CMS sync can be triggered from CI for automated content publishing.
+## Prerequisites
+- GitHub repository with Actions enabled
+- Framer test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: GitHub Actions for Plugin Build
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/framer-integration.yml`:
 
 ```yaml
-name: Framer Plugin CI
+name: Framer Integration Tests
+
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
-      - run: npm ci
-      - run: npm run build
-      - run: npm test
+env:
+  FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
 
-  cms-sync:
-    if: github.ref == 'refs/heads/main'
-    needs: build
+jobs:
+  test:
     runs-on: ubuntu-latest
     env:
       FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY }}
-      FRAMER_SITE_ID: ${{ secrets.FRAMER_SITE_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20', cache: 'npm' }
+        with:
+          node-version: '20'
+          cache: 'npm'
       - run: npm ci
-      - name: Sync CMS and publish
-        run: node scripts/sync-and-publish.js
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-### Step 2: CMS Sync Script for CI
-
-```typescript
-// scripts/sync-and-publish.ts
-import { framer } from 'framer-api';
-
-async function main() {
-  const client = await framer.connect({
-    apiKey: process.env.FRAMER_API_KEY!,
-    siteId: process.env.FRAMER_SITE_ID!,
-  });
-
-  // Fetch content from your CMS/API
-  const posts = await fetch('https://your-api.com/posts').then(r => r.json());
-
-  // Sync to Framer CMS
-  const collections = await client.getCollections();
-  const blogCollection = collections.find(c => c.name === 'Blog Posts');
-  if (blogCollection) {
-    await blogCollection.setItems(posts.map(p => ({ fieldData: { title: p.title, body: p.content, slug: p.slug } })));
-    console.log(`Synced ${posts.length} posts`);
-  }
-
-  // Publish site
-  await client.publish();
-  console.log('Site published');
-}
-
-main().catch(e => { console.error(e); process.exit(1); });
-```
-
-### Step 3: Configure Secrets
-
+### Step 2: Configure Secrets
 ```bash
-gh secret set FRAMER_API_KEY --body "framer_sk_..."
-gh secret set FRAMER_SITE_ID --body "abc123"
+gh secret set FRAMER_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('Framer Integration', () => {
+  it.skipIf(!process.env.FRAMER_API_KEY)('should connect', async () => {
+    const client = getFramerClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
-- Plugin builds verified on every PR
-- Automated CMS sync and publish on main push
-- Secrets configured in GitHub
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      FRAMER_API_KEY: ${{ secrets.FRAMER_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Framer production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "framer-integration"
+```
 
 ## Resources
-
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Framer Server API](https://www.framer.com/developers/server-api-introduction)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Framer CI Guide](https://docs.framer.com/ci)
 
 ## Next Steps
-
-For deployment, see `framer-deploy-integration`.
+For deployment patterns, see `framer-deploy-integration`.

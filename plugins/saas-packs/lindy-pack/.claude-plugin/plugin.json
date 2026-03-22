@@ -1,7 +1,7 @@
 {
   "name": "lindy-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Lindy AI (24 skills)",
+  "description": "Claude Code skill pack for Lindy (24 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,9 +9,9 @@
   "license": "MIT",
   "keywords": [
     "lindy",
-    "ai-agents",
+    "lindy",
     "saas",
-    "workflow",
-    "automation"
+    "sdk",
+    "integration"
   ]
 }

@@ -1,298 +1,203 @@
 ---
 name: customerio-cost-tuning
 description: |
-  Optimize Customer.io costs and usage efficiency.
-  Use when reducing profile count, cleaning inactive users,
-  deduplicating events, or right-sizing your plan.
-  Trigger: "customer.io cost", "reduce customer.io spend",
-  "customer.io billing", "customer.io pricing", "customer.io cleanup".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
+  Optimize Customer.io costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Customer.io billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "customerio cost", "customerio billing",
+  "reduce customerio costs", "customerio pricing", "customerio expensive", "customerio budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, cost-optimization, billing]
-
+compatible-with: claude-code
+tags: [saas, customerio]
 ---
+
 # Customer.io Cost Tuning
 
 ## Overview
+Optimize Customer.io costs through smart tier selection, sampling, and usage monitoring.
 
-Optimize Customer.io costs by managing profile count (the primary billing driver), suppressing/deleting inactive users, deduplicating events, reducing unnecessary API calls, and monitoring usage trends.
+## Prerequisites
+- Access to Customer.io billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-## How Customer.io Pricing Works
+## Pricing Tiers
 
-Customer.io bills based on **profile count** (number of identified people in your workspace) and **email/SMS volume**. Key cost drivers:
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-| Factor | Impact | Optimization Strategy |
-|--------|--------|----------------------|
-| Total profiles | Primary cost driver | Delete inactive profiles |
-| Email sends | Per-email cost above tier | Suppress unengaged users |
-| SMS sends | Per-SMS cost | Only send to opt-in users |
-| Overidentification | Creates unnecessary profiles | Don't identify users who'll never receive messages |
-| Event volume | Can increase processing costs | Deduplicate and sample |
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateCustomer.ioCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class Customer.ioUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Customer.io budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateCustomer.ioCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await customerioClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => customerioClient.get(id)));
+
+// Use batch endpoint (1 call)
+await customerioClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new Customer.ioClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Customer.io dashboard
+# Or use API if available:
+# Check Customer.io documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM customerio_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Step 1: Profile Audit
+### Step 1: Analyze Current Usage
+Review Customer.io dashboard for usage patterns and costs.
 
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
 ```typescript
-// scripts/cio-profile-audit.ts
-// Audit your Customer.io integration for cost optimization opportunities
-
-import { TrackClient, RegionUS } from "customerio-node";
-
-const cio = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_TRACK_API_KEY!,
-  { region: RegionUS }
-);
-
-// Check: Are you identifying users who'll never receive messages?
-const AUDIT_RULES = {
-  // Users without email can't receive email campaigns
-  noEmail: "Don't identify users without email unless using push/SMS",
-
-  // Test users should be cleaned up
-  testUsers: "Suppress and delete test-*, ci-*, dev-* prefixed users",
-
-  // Anonymous users that never convert inflate profile count
-  staleAnonymous: "Delete anonymous profiles older than 90 days without conversion",
-
-  // Inactive users who haven't opened email in 6+ months
-  unengaged: "Suppress users with no email opens in 180+ days",
-};
-
-console.log("=== Customer.io Cost Audit Rules ===\n");
-for (const [rule, action] of Object.entries(AUDIT_RULES)) {
-  console.log(`${rule}: ${action}`);
-}
-console.log("\nRun these checks in Customer.io dashboard:");
-console.log("1. People > Segments > Create 'Inactive 90 days' segment");
-console.log("2. People > Segments > Create 'No email attribute' segment");
-console.log("3. People > Filter by created_at < 90 days ago AND email_opened = 0");
-```
-
-### Step 2: Suppress and Delete Inactive Users
-
-```typescript
-// scripts/cio-cleanup-inactive.ts
-import { TrackClient, RegionUS } from "customerio-node";
-
-const cio = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_TRACK_API_KEY!,
-  { region: RegionUS }
-);
-
-interface CleanupTarget {
-  userId: string;
-  reason: string;
-}
-
-async function cleanupInactiveUsers(
-  targets: CleanupTarget[],
-  dryRun: boolean = true
-): Promise<void> {
-  let suppressed = 0;
-  let deleted = 0;
-  let errors = 0;
-
-  for (const target of targets) {
-    if (dryRun) {
-      console.log(`[DRY RUN] Would suppress+delete: ${target.userId} (${target.reason})`);
-      continue;
-    }
-
-    try {
-      // Step 1: Suppress — stops all messaging immediately
-      await cio.suppress(target.userId);
-      suppressed++;
-
-      // Step 2: Destroy — removes from billing
-      await cio.destroy(target.userId);
-      deleted++;
-
-      // Rate limit to 50/sec for bulk operations
-      await new Promise((r) => setTimeout(r, 20));
-    } catch (err: any) {
-      errors++;
-      console.error(`Failed ${target.userId}: ${err.message}`);
-    }
-
-    if ((suppressed + errors) % 100 === 0) {
-      console.log(`Progress: ${suppressed} deleted, ${errors} errors`);
-    }
-  }
-
-  console.log(`\nResult: ${suppressed} suppressed, ${deleted} deleted, ${errors} errors`);
-}
-
-// Usage: Build target list from your database
-// const inactiveUsers = await db.query(`
-//   SELECT id FROM users
-//   WHERE last_login_at < NOW() - INTERVAL '180 days'
-//   AND email_verified = false
-// `);
-```
-
-### Step 3: Event Deduplication
-
-```typescript
-// lib/customerio-dedup-events.ts
-// Prevent sending duplicate events that inflate volume
-
-import { createHash } from "crypto";
-import { TrackClient, RegionUS } from "customerio-node";
-
-const cio = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_TRACK_API_KEY!,
-  { region: RegionUS }
-);
-
-// Simple LRU dedup (use Redis in production)
-const recentEvents = new Map<string, number>();
-const MAX_CACHE = 50_000;
-const DEDUP_WINDOW_MS = 60 * 1000;  // 1 minute window
-
-function isDuplicate(userId: string, eventName: string, data?: any): boolean {
-  const hash = createHash("sha256")
-    .update(`${userId}:${eventName}:${JSON.stringify(data ?? {})}`)
-    .digest("hex")
-    .substring(0, 12);
-
-  const last = recentEvents.get(hash);
-  if (last && Date.now() - last < DEDUP_WINDOW_MS) {
-    return true;
-  }
-
-  recentEvents.set(hash, Date.now());
-
-  // Prevent unbounded growth
-  if (recentEvents.size > MAX_CACHE) {
-    const cutoff = Date.now() - DEDUP_WINDOW_MS;
-    for (const [key, time] of recentEvents) {
-      if (time < cutoff) recentEvents.delete(key);
-    }
-  }
-
-  return false;
-}
-
-export async function trackDeduped(
-  userId: string,
-  name: string,
-  data?: Record<string, any>
-): Promise<void> {
-  if (isDuplicate(userId, name, data)) {
-    return; // Skip duplicate
-  }
-  await cio.track(userId, { name, data });
+// Estimate monthly cost for your usage
+const estimate = estimateCustomer.ioCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
 }
 ```
-
-### Step 4: Event Sampling for High-Volume Events
-
-```typescript
-// lib/customerio-sampling.ts
-// Sample high-volume events to reduce API calls
-
-const EVENT_SAMPLE_RATES: Record<string, number> = {
-  page_viewed: 0.1,          // Sample 10% of page views
-  button_clicked: 0.25,      // Sample 25% of clicks
-  search_performed: 0.5,     // Sample 50% of searches
-  signed_up: 1.0,            // Always track signups
-  checkout_completed: 1.0,   // Always track purchases
-  subscription_cancelled: 1.0, // Always track cancellations
-};
-
-export function shouldTrack(eventName: string): boolean {
-  const rate = EVENT_SAMPLE_RATES[eventName] ?? 1.0;
-  return Math.random() < rate;
-}
-
-// Usage
-if (shouldTrack("page_viewed")) {
-  await cio.track(userId, {
-    name: "page_viewed",
-    data: { url: "/pricing", sampled: true },
-  });
-}
-```
-
-### Step 5: Usage Monitoring
-
-```typescript
-// scripts/cio-usage-monitor.ts
-// Track your Customer.io usage trends
-
-interface UsageMetrics {
-  identifyCalls: number;
-  trackCalls: number;
-  transactionalSends: number;
-  broadcastTriggers: number;
-  webhooksReceived: number;
-}
-
-class UsageMonitor {
-  private metrics: UsageMetrics = {
-    identifyCalls: 0,
-    trackCalls: 0,
-    transactionalSends: 0,
-    broadcastTriggers: 0,
-    webhooksReceived: 0,
-  };
-
-  increment(metric: keyof UsageMetrics): void {
-    this.metrics[metric]++;
-  }
-
-  report(): void {
-    console.log("\n=== Customer.io Usage Report ===");
-    console.log(`Period: ${new Date().toISOString()}`);
-    for (const [key, value] of Object.entries(this.metrics)) {
-      console.log(`  ${key}: ${value.toLocaleString()}`);
-    }
-    const total = Object.values(this.metrics).reduce((a, b) => a + b, 0);
-    console.log(`  TOTAL API calls: ${total.toLocaleString()}`);
-  }
-
-  reset(): void {
-    for (const key of Object.keys(this.metrics)) {
-      this.metrics[key as keyof UsageMetrics] = 0;
-    }
-  }
-}
-
-export const usageMonitor = new UsageMonitor();
-```
-
-## Cost Savings Estimates
-
-| Optimization | Typical Savings | Implementation Effort |
-|--------------|-----------------|----------------------|
-| Delete inactive profiles (180+ days) | 15-30% profile cost | Low |
-| Event deduplication | 5-15% event volume | Low |
-| Event sampling (analytics events) | 50-80% event volume for sampled events | Low |
-| Suppress bounced emails | 2-5% email cost | Low |
-| Don't identify email-less users | 5-20% profile cost | Medium |
-| Annual billing | 10-20% total cost | None |
-
-## Monthly Cost Review Checklist
-
-- [ ] Review profile count trend (People > Overview)
-- [ ] Identify and delete stale test profiles
-- [ ] Review segment for users with no email attribute
-- [ ] Check bounce rate and suppress chronic bouncers
-- [ ] Review event volume by type (optimize high-volume/low-value events)
-- [ ] Compare plan tier vs actual usage
 
 ## Resources
-
-- [Customer.io Pricing](https://customer.io/pricing/)
-- [Track API - Suppress/Destroy](https://docs.customer.io/integrations/api/track/)
+- [Customer.io Pricing](https://customerio.com/pricing)
+- [Customer.io Billing Dashboard](https://dashboard.customerio.com/billing)
 
 ## Next Steps
-
-After cost optimization, proceed to `customerio-reference-architecture` for enterprise patterns.
+For architecture patterns, see `customerio-reference-architecture`.

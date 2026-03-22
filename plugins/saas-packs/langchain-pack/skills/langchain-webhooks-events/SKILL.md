@@ -1,274 +1,201 @@
 ---
 name: langchain-webhooks-events
 description: |
-  Implement LangChain callback handlers, streaming, webhooks,
-  Server-Sent Events (SSE), and WebSocket integration.
-  Trigger: "langchain callbacks", "langchain webhooks",
-  "langchain events", "langchain streaming", "langchain SSE", "WebSocket LLM".
-allowed-tools: Read, Write, Edit
+  Implement LangChain webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling LangChain event notifications securely.
+  Trigger with phrases like "langchain webhook", "langchain events",
+  "langchain webhook signature", "handle langchain events", "langchain notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, webhooks]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
+
 # LangChain Webhooks & Events
 
 ## Overview
+Securely handle LangChain webhooks with signature validation and replay protection.
 
-Event-driven patterns for LangChain: custom callback handlers for lifecycle hooks, webhook dispatching, Server-Sent Events (SSE) for streaming, WebSocket integration, and event aggregation for tracing.
+## Prerequisites
+- LangChain webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Callback Handler Architecture
+## Webhook Endpoint Setup
 
-LangChain emits events at every stage of chain/agent execution. Custom handlers can observe, log, stream, or dispatch these events.
-
-```
-chain.invoke()
-  ├── handleChainStart()
-  │   ├── handleLLMStart()
-  │   │   ├── handleLLMNewToken()  // streaming
-  │   │   └── handleLLMEnd()
-  │   ├── handleToolStart()
-  │   │   └── handleToolEnd()
-  │   └── handleRetrieverStart()
-  │       └── handleRetrieverEnd()
-  └── handleChainEnd()
-```
-
-## Custom Callback Handler
-
+### Express.js
 ```typescript
-import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
-
-class WebhookHandler extends BaseCallbackHandler {
-  name = "WebhookHandler";
-
-  constructor(private webhookUrl: string) {
-    super();
-  }
-
-  async handleLLMStart(llm: any, prompts: string[]) {
-    await this.send("llm_start", {
-      model: llm?.id?.[2],
-      promptCount: prompts.length,
-    });
-  }
-
-  async handleLLMEnd(output: any) {
-    await this.send("llm_end", {
-      tokenUsage: output.llmOutput?.tokenUsage,
-    });
-  }
-
-  async handleLLMError(error: Error) {
-    await this.send("llm_error", {
-      error: error.message,
-    });
-  }
-
-  async handleToolStart(_tool: any, input: string) {
-    await this.send("tool_start", { input: input.slice(0, 200) });
-  }
-
-  async handleToolEnd(output: string) {
-    await this.send("tool_end", { output: output.slice(0, 200) });
-  }
-
-  private async send(event: string, data: Record<string, any>) {
-    try {
-      await fetch(this.webhookUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event,
-          data,
-          timestamp: new Date().toISOString(),
-        }),
-        signal: AbortSignal.timeout(5000),
-      });
-    } catch (e) {
-      // Don't let webhook failures break the chain
-      console.warn(`Webhook error: ${e}`);
-    }
-  }
-}
-
-// Attach to model
-const model = new ChatOpenAI({
-  model: "gpt-4o-mini",
-  callbacks: [new WebhookHandler("https://api.example.com/webhook")],
-});
-```
-
-## Server-Sent Events (SSE) Endpoint
-
-```typescript
-import express from "express";
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import express from 'express';
+import crypto from 'crypto';
 
 const app = express();
-app.use(express.json());
 
-const chain = ChatPromptTemplate.fromTemplate("{input}")
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", streaming: true }))
-  .pipe(new StringOutputParser());
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/langchain',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-langchain-signature'] as string;
+    const timestamp = req.headers['x-langchain-timestamp'] as string;
 
-app.post("/api/chat/stream", async (req, res) => {
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
+    if (!verifyLangChainSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleLangChainEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyLangChainSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.LANGCHAIN_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type LangChainEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface LangChainEvent {
+  id: string;
+  type: LangChainEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<LangChainEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleLangChainEvent(event: LangChainEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
 
   try {
-    const stream = await chain.stream({ input: req.body.input });
-
-    for await (const chunk of stream) {
-      if (res.destroyed) break;  // client disconnected
-      res.write(`data: ${JSON.stringify({ text: chunk })}\n\n`);
-    }
-
-    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
-  } catch (error: any) {
-    res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
-  }
-
-  res.end();
-});
-```
-
-### Client-Side SSE Consumer
-
-```typescript
-// Browser JavaScript
-async function streamChat(input: string) {
-  const response = await fetch("/api/chat/stream", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ input }),
-  });
-
-  const reader = response.body!.getReader();
-  const decoder = new TextDecoder();
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    const text = decoder.decode(value);
-    const lines = text.split("\n").filter((l) => l.startsWith("data: "));
-
-    for (const line of lines) {
-      const data = JSON.parse(line.slice(6));
-      if (data.done) return;
-      if (data.text) document.getElementById("output")!.textContent += data.text;
-    }
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
   }
 }
 ```
 
-## WebSocket Streaming
+## Idempotency Handling
 
 ```typescript
-import { WebSocketServer } from "ws";
-import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
+import { Redis } from 'ioredis';
 
-const wss = new WebSocketServer({ port: 8080 });
+const redis = new Redis(process.env.REDIS_URL);
 
-const chain = ChatPromptTemplate.fromTemplate("{input}")
-  .pipe(new ChatOpenAI({ model: "gpt-4o-mini", streaming: true }))
-  .pipe(new StringOutputParser());
-
-wss.on("connection", (ws) => {
-  ws.on("message", async (raw) => {
-    const { input } = JSON.parse(raw.toString());
-
-    try {
-      const stream = await chain.stream({ input });
-      for await (const chunk of stream) {
-        if (ws.readyState !== ws.OPEN) break;
-        ws.send(JSON.stringify({ type: "token", text: chunk }));
-      }
-      ws.send(JSON.stringify({ type: "done" }));
-    } catch (error: any) {
-      ws.send(JSON.stringify({ type: "error", message: error.message }));
-    }
-  });
-});
-```
-
-## Event Aggregation (Trace Collection)
-
-```typescript
-interface TraceEvent {
-  event: string;
-  timestamp: number;
-  data: Record<string, any>;
-  runId: string;
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `langchain:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
 }
 
-class TraceAggregator extends BaseCallbackHandler {
-  name = "TraceAggregator";
-  events: TraceEvent[] = [];
-
-  handleChainStart(_chain: any, inputs: any, runId: string) {
-    this.log("chain_start", runId, { inputKeys: Object.keys(inputs) });
-  }
-
-  handleChainEnd(outputs: any, runId: string) {
-    this.log("chain_end", runId, { outputKeys: Object.keys(outputs) });
-  }
-
-  handleLLMStart(llm: any, _prompts: string[], runId: string) {
-    this.log("llm_start", runId, { model: llm?.id?.[2] });
-  }
-
-  handleLLMEnd(output: any, runId: string) {
-    this.log("llm_end", runId, {
-      tokens: output.llmOutput?.tokenUsage?.totalTokens,
-    });
-  }
-
-  private log(event: string, runId: string, data: Record<string, any>) {
-    this.events.push({ event, timestamp: Date.now(), data, runId });
-  }
-
-  getTrace() {
-    return {
-      events: this.events,
-      totalEvents: this.events.length,
-      durationMs: this.events.length > 1
-        ? this.events[this.events.length - 1].timestamp - this.events[0].timestamp
-        : 0,
-    };
-  }
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `langchain:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
 }
-
-// Usage
-const tracer = new TraceAggregator();
-await chain.invoke({ input: "test" }, { callbacks: [tracer] });
-console.log(tracer.getTrace());
 ```
+
+## Webhook Testing
+
+```bash
+# Use LangChain CLI to send test events
+langchain webhooks trigger resource.created --url http://localhost:3000/webhooks/langchain
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the LangChain dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Webhook timeout | Slow endpoint | Use `AbortSignal.timeout()`, make async |
-| WebSocket disconnect | Client closed | Check `ws.readyState` before sending |
-| SSE connection reset | Proxy timeout | Add keep-alive pings every 15s |
-| Events not captured | Callback not passed | Add to `callbacks` array in `invoke()` |
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/langchain \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-
-- [LangChain Callbacks](https://js.langchain.com/docs/concepts/callbacks/)
-- [LangChain Streaming](https://js.langchain.com/docs/how_to/streaming/)
-- [Server-Sent Events (MDN)](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events)
-- [ws Package](https://www.npmjs.com/package/ws)
+- [LangChain Webhooks Guide](https://docs.langchain.com/webhooks)
+- [Webhook Security Best Practices](https://docs.langchain.com/webhooks/security)
 
 ## Next Steps
-
-Use `langchain-observability` for comprehensive production monitoring.
+For performance optimization, see `langchain-performance-tuning`.

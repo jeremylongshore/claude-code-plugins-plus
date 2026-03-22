@@ -1,188 +1,205 @@
 ---
 name: firecrawl-incident-runbook
 description: |
-  Execute Firecrawl incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Firecrawl-related outages, investigating scrape/crawl failures,
-  or running post-incident reviews for Firecrawl integration issues.
+  Execute FireCrawl incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to FireCrawl-related outages, investigating errors,
+  or running post-incident reviews for FireCrawl integration failures.
   Trigger with phrases like "firecrawl incident", "firecrawl outage",
   "firecrawl down", "firecrawl on-call", "firecrawl emergency", "firecrawl broken".
-allowed-tools: Read, Grep, Bash(curl:*), Bash(kubectl:*)
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, incident-response]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Incident Runbook
+
+# FireCrawl Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Firecrawl integration failures. Covers API outage triage, credential issues, credit exhaustion, crawl job failures, and webhook delivery problems.
+Rapid incident response procedures for FireCrawl-related outages.
+
+## Prerequisites
+- Access to FireCrawl dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete failure | < 15 min | API returns 401/500 on all requests |
-| P2 | Degraded service | < 1 hour | High latency, partial failures, 429s |
-| P3 | Minor impact | < 4 hours | Webhook delays, some empty scrapes |
-| P4 | No user impact | Next business day | Monitoring gaps, credit warnings |
+| P1 | Complete outage | < 15 min | FireCrawl API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
 
-## Quick Triage (Run First)
+## Quick Triage
 
 ```bash
-set -euo pipefail
-# 1. Test Firecrawl API directly
-echo "=== API Health ==="
-curl -s -w "\nHTTP %{http_code}\n" https://api.firecrawl.dev/v1/scrape \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"url":"https://example.com","formats":["markdown"]}' | jq '{success, error}'
+# 1. Check FireCrawl status
+curl -s https://status.firecrawl.com | jq
 
-# 2. Check credit balance
-echo "=== Credits ==="
-curl -s https://api.firecrawl.dev/v1/team/credits \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | jq .
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.firecrawl'
 
-# 3. Check our app health
-echo "=== App Health ==="
-curl -sf https://api.yourapp.com/health | jq '.services.firecrawl' || echo "App unhealthy"
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(firecrawl_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=firecrawl-integration --since=5m | grep -i error | tail -20
 ```
 
 ## Decision Tree
 
 ```
-Firecrawl API returning errors?
-├─ 401: API key invalid
-│   → Verify key at firecrawl.dev/app, rotate if needed
-├─ 402: Credits exhausted
-│   → Upgrade plan or wait for monthly reset
-├─ 429: Rate limited
-│   → Reduce concurrency, enable backoff, check Retry-After
-├─ 500/503: Firecrawl outage
-│   → Enable fallback mode, monitor firecrawl.dev status
-└─ API working fine
-    └─ Our integration issue
-        ├─ Empty markdown → Increase waitFor, check target site
-        ├─ Crawl stuck → Check job status, enforce timeout
-        └─ Webhook not firing → Verify endpoint, check signature
+FireCrawl API returning errors?
+├─ YES: Is status.firecrawl.com showing incident?
+│   ├─ YES → Wait for FireCrawl to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
 ## Immediate Actions by Error Type
 
-### 401 — Authentication Failure
+### 401/403 - Authentication
 ```bash
-set -euo pipefail
-# Verify current key
-echo "Key prefix: ${FIRECRAWL_API_KEY:0:5}"
-echo "Key length: ${#FIRECRAWL_API_KEY}"
+# Verify API key is set
+kubectl get secret firecrawl-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# Test with explicit key
-curl -s https://api.firecrawl.dev/v1/scrape \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"url":"https://example.com","formats":["markdown"]}' | jq .success
+# Check if key was rotated
+# → Verify in FireCrawl dashboard
 
-# If fails: regenerate key at firecrawl.dev/app and update all environments
+# Remediation: Update secret and restart pods
+kubectl create secret generic firecrawl-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/firecrawl-integration
 ```
 
-### 402 — Credits Exhausted
+### 429 - Rate Limited
 ```bash
-set -euo pipefail
-# Check balance
-curl -s https://api.firecrawl.dev/v1/team/credits \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | jq .
+# Check rate limit headers
+curl -v https://api.firecrawl.com 2>&1 | grep -i rate
 
-# Immediate: disable non-critical scraping
-# Long-term: upgrade plan or implement credit budget
+# Enable request queuing
+kubectl set env deployment/firecrawl-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact FireCrawl for limit increase
 ```
 
-### 429 — Rate Limited
-```typescript
-// Enable emergency rate limiting
-const EMERGENCY_DELAY_MS = 5000; // 5s between requests
+### 500/503 - FireCrawl Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/firecrawl-integration FIRECRAWL_FALLBACK=true
 
-async function emergencyScrape(url: string) {
-  await new Promise(r => setTimeout(r, EMERGENCY_DELAY_MS));
-  return firecrawl.scrapeUrl(url, { formats: ["markdown"] });
-}
-```
+# Notify users of degraded service
+# Update status page
 
-### 500/503 — Firecrawl Outage
-```typescript
-// Enable graceful degradation
-async function scrapeWithFallback(url: string) {
-  try {
-    return await firecrawl.scrapeUrl(url, { formats: ["markdown"] });
-  } catch (error: any) {
-    if (error.statusCode >= 500) {
-      console.error("Firecrawl unavailable — using cached content");
-      return getCachedContent(url); // serve stale data
-    }
-    throw error;
-  }
-}
+# Monitor FireCrawl status for resolution
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
 ```
-P[1-4] INCIDENT: Firecrawl Integration
+🔴 P1 INCIDENT: FireCrawl Integration
 Status: INVESTIGATING
-Impact: [Describe user-facing impact]
-Error: [401/402/429/500] — [brief description]
-Action: [What you're doing right now]
-Next update: [time]
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+FireCrawl Integration Issue
+
+We're experiencing issues with our FireCrawl integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
 ```
 
 ## Post-Incident
 
 ### Evidence Collection
 ```bash
-set -euo pipefail
-# Collect debug bundle
-mkdir -p incident-$(date +%Y%m%d)
-curl -s https://api.firecrawl.dev/v1/team/credits \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" > incident-$(date +%Y%m%d)/credits.json
+# Generate debug bundle
+./scripts/firecrawl-debug-bundle.sh
 
-# Application logs
-kubectl logs -l app=my-app --since=1h | grep -i firecrawl > incident-$(date +%Y%m%d)/logs.txt 2>/dev/null || true
+# Export relevant logs
+kubectl logs -l app=firecrawl-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=firecrawl_errors_total&start=2h" > metrics.json
 ```
 
 ### Postmortem Template
-```
-## Incident: Firecrawl [Error Type]
-Date: YYYY-MM-DD | Duration: X hours | Severity: P[1-4]
+```markdown
+## Incident: FireCrawl [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
 
 ### Summary
 [1-2 sentence description]
 
 ### Timeline
-- HH:MM — [First alert]
-- HH:MM — [Investigation started]
-- HH:MM — [Root cause identified]
-- HH:MM — [Resolved]
+- HH:MM - [Event]
+- HH:MM - [Event]
 
 ### Root Cause
 [Technical explanation]
 
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
 ### Action Items
-- [ ] [Preventive measure] — Owner — Due date
+- [ ] [Preventive measure] - Owner - Due date
 ```
+
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is FireCrawl-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach Firecrawl API | Network/DNS issue | Try from different network, check DNS |
-| All scrapes return empty | Target site changed | Verify manually, adjust scrape options |
-| Crawl jobs never complete | Queue backup | Cancel stuck jobs, reduce concurrency |
-| Webhook endpoint unreachable | Deployment issue | Check HTTPS cert, DNS, firewall |
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.firecrawl.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-- [Firecrawl Dashboard](https://firecrawl.dev/app)
-- [Firecrawl Status](https://firecrawl.dev/status)
-- [GitHub Issues](https://github.com/mendableai/firecrawl/issues)
+- [FireCrawl Status Page](https://status.firecrawl.com)
+- [FireCrawl Support](https://support.firecrawl.com)
 
 ## Next Steps
 For data handling, see `firecrawl-data-handling`.

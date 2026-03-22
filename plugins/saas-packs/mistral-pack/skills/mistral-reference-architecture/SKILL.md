@@ -5,304 +5,236 @@ description: |
   Use when designing new Mistral AI integrations, reviewing project structure,
   or establishing architecture standards for Mistral AI applications.
   Trigger with phrases like "mistral architecture", "mistral best practices",
-  "mistral project structure", "how to organize mistral".
+  "mistral project structure", "how to organize mistral", "mistral layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, mistral, mistral-reference]
-
+compatible-with: claude-code
+tags: [saas, mistral]
 ---
+
 # Mistral AI Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Mistral AI integrations: layered project structure, singleton client, Zod-validated config, custom error classes, service layer with caching, health checks, prompt templates, and model routing.
+Production-ready architecture patterns for Mistral AI integrations.
 
 ## Prerequisites
-- TypeScript/Node.js project (ESM)
-- `@mistralai/mistralai` SDK
-- `zod` for config validation
-- Testing framework (Vitest)
+- Understanding of layered architecture
+- Mistral AI SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
+```
+my-mistral-project/
+├── src/
+│   ├── mistral/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── mistral/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── mistral/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── mistral/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── mistral/
+│   └── integration/
+│       └── mistral/
+├── config/
+│   ├── mistral.development.json
+│   ├── mistral.staging.json
+│   └── mistral.production.json
+└── docs/
+    └── mistral/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
 
 ## Layer Architecture
 
 ```
-API Layer (Routes, Controllers, Middleware)
-    |
-Service Layer (Business Logic, Orchestration)
-    |
-Mistral Layer (Client, Config, Errors, Prompts)
-    |
-Infrastructure Layer (Cache, Queue, Monitoring)
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Mistral AI Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/mistral/client.ts
+export class Mistral AIService {
+  private client: MistralAIClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: Mistral AIConfig) {
+    this.client = new MistralAIClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('mistral');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/mistral/errors.ts
+export class Mistral AIServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'Mistral AIServiceError';
+  }
+}
+
+export function wrapMistral AIError(error: unknown): Mistral AIServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/mistral/health.ts
+export async function checkMistral AIHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await mistralClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Mistral AI    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Mistral AI    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/mistral.ts
+export interface Mistral AIConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadMistral AIConfig(): Mistral AIConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./mistral.${env}.json`);
+}
 ```
 
 ## Instructions
 
-### Step 1: Directory Structure
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```
-src/
-├── mistral/
-│   ├── client.ts         # Singleton client factory
-│   ├── config.ts         # Zod-validated config
-│   ├── errors.ts         # Custom error classes
-│   ├── types.ts          # Shared types
-│   └── prompts.ts        # Prompt templates
-├── services/
-│   ├── chat.service.ts   # Chat with caching + retry
-│   ├── embed.service.ts  # Embeddings + search
-│   └── rag.service.ts    # RAG pipeline
-├── api/
-│   ├── chat.route.ts     # HTTP endpoints
-│   └── health.route.ts   # Health check
-└── config/
-    ├── base.ts           # Shared config
-    ├── development.ts    # Dev overrides
-    └── production.ts     # Prod overrides
-```
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-### Step 2: Config with Zod Validation
+### Step 3: Add Error Handling
+Implement custom error classes for Mistral AI operations.
 
-```typescript
-// src/mistral/config.ts
-import { z } from 'zod';
-
-const MistralConfigSchema = z.object({
-  apiKey: z.string().min(10, 'MISTRAL_API_KEY required'),
-  defaultModel: z.string().default('mistral-small-latest'),
-  timeoutMs: z.number().default(30_000),
-  maxRetries: z.number().default(3),
-  cache: z.object({
-    enabled: z.boolean().default(true),
-    ttlMs: z.number().default(3_600_000),
-    maxSize: z.number().default(5000),
-  }).default({}),
-});
-
-export type MistralConfig = z.infer<typeof MistralConfigSchema>;
-
-export function loadConfig(): MistralConfig {
-  return MistralConfigSchema.parse({
-    apiKey: process.env.MISTRAL_API_KEY,
-    defaultModel: process.env.MISTRAL_MODEL,
-    timeoutMs: process.env.MISTRAL_TIMEOUT ? Number(process.env.MISTRAL_TIMEOUT) : undefined,
-  });
-}
-```
-
-### Step 3: Singleton Client
-
-```typescript
-// src/mistral/client.ts
-import { Mistral } from '@mistralai/mistralai';
-import { loadConfig, type MistralConfig } from './config.js';
-
-let _client: Mistral | null = null;
-let _config: MistralConfig | null = null;
-
-export function getMistralClient(): Mistral {
-  if (!_client) {
-    _config = loadConfig();
-    _client = new Mistral({
-      apiKey: _config.apiKey,
-      timeoutMs: _config.timeoutMs,
-      maxRetries: _config.maxRetries,
-    });
-  }
-  return _client;
-}
-
-export function getConfig(): MistralConfig {
-  if (!_config) loadConfig();
-  return _config!;
-}
-
-export function resetClient(): void {
-  _client = null;
-  _config = null;
-}
-```
-
-### Step 4: Custom Error Classes
-
-```typescript
-// src/mistral/errors.ts
-export type MistralErrorCode =
-  | 'AUTH_ERROR'
-  | 'RATE_LIMIT'
-  | 'BAD_REQUEST'
-  | 'SERVICE_ERROR'
-  | 'TIMEOUT'
-  | 'CONTEXT_OVERFLOW';
-
-export class MistralServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: MistralErrorCode,
-    public readonly status: number,
-    public readonly retryable: boolean,
-  ) {
-    super(message);
-    this.name = 'MistralServiceError';
-  }
-
-  static fromApiError(error: any): MistralServiceError {
-    const status = error.status ?? error.statusCode ?? 500;
-    if (status === 401) return new MistralServiceError('Authentication failed', 'AUTH_ERROR', 401, false);
-    if (status === 429) return new MistralServiceError('Rate limit exceeded', 'RATE_LIMIT', 429, true);
-    if (status === 400) return new MistralServiceError(error.message, 'BAD_REQUEST', 400, false);
-    if (status >= 500) return new MistralServiceError('Service error', 'SERVICE_ERROR', status, true);
-    return new MistralServiceError(error.message, 'SERVICE_ERROR', status, false);
-  }
-}
-```
-
-### Step 5: Service Layer with Caching
-
-```typescript
-// src/services/chat.service.ts
-import { createHash } from 'crypto';
-import { LRUCache } from 'lru-cache';
-import { getMistralClient, getConfig } from '../mistral/client.js';
-import { MistralServiceError } from '../mistral/errors.js';
-
-const cache = new LRUCache<string, any>({ max: 5000, ttl: 3_600_000 });
-
-export class ChatService {
-  async complete(messages: any[], options?: {
-    model?: string;
-    temperature?: number;
-    maxTokens?: number;
-  }) {
-    const config = getConfig();
-    const model = options?.model ?? config.defaultModel;
-    const temperature = options?.temperature ?? 0.7;
-
-    // Cache deterministic requests
-    if (temperature === 0 && config.cache.enabled) {
-      const key = createHash('sha256').update(JSON.stringify({ model, messages })).digest('hex');
-      const cached = cache.get(key);
-      if (cached) return cached;
-
-      const result = await this.executeChat(model, messages, { ...options, temperature: 0 });
-      cache.set(key, result);
-      return result;
-    }
-
-    return this.executeChat(model, messages, options);
-  }
-
-  async *stream(messages: any[], model?: string) {
-    const client = getMistralClient();
-    try {
-      const stream = await client.chat.stream({
-        model: model ?? getConfig().defaultModel,
-        messages,
-      });
-      for await (const event of stream) {
-        const text = event.data?.choices?.[0]?.delta?.content;
-        if (text) yield text;
-      }
-    } catch (error: any) {
-      throw MistralServiceError.fromApiError(error);
-    }
-  }
-
-  private async executeChat(model: string, messages: any[], options: any = {}) {
-    const client = getMistralClient();
-    try {
-      return await client.chat.complete({ model, messages, ...options });
-    } catch (error: any) {
-      throw MistralServiceError.fromApiError(error);
-    }
-  }
-}
-```
-
-### Step 6: Health Check
-
-```typescript
-// src/api/health.route.ts
-import { getMistralClient } from '../mistral/client.js';
-
-export async function checkMistralHealth() {
-  const start = performance.now();
-  try {
-    const client = getMistralClient();
-    const models = await client.models.list();
-    const latencyMs = Math.round(performance.now() - start);
-
-    return {
-      status: latencyMs > 5000 ? 'degraded' : 'healthy',
-      latencyMs,
-      modelCount: models.data?.length ?? 0,
-    };
-  } catch (error: any) {
-    return {
-      status: 'unhealthy',
-      latencyMs: Math.round(performance.now() - start),
-      error: error.message,
-    };
-  }
-}
-```
-
-### Step 7: Prompt Templates
-
-```typescript
-// src/mistral/prompts.ts
-interface PromptTemplate {
-  name: string;
-  system: string;
-  userTemplate: (input: string) => string;
-  model: string;
-  maxTokens: number;
-}
-
-export const PROMPTS: Record<string, PromptTemplate> = {
-  summarize: {
-    name: 'summarize',
-    system: 'Summarize the text in 2-3 sentences. Be factual and concise.',
-    userTemplate: (text) => `Summarize:\n\n${text}`,
-    model: 'mistral-small-latest',
-    maxTokens: 200,
-  },
-  classify: {
-    name: 'classify',
-    system: 'Classify the input. Reply with one word only.',
-    userTemplate: (text) => text,
-    model: 'mistral-small-latest',
-    maxTokens: 10,
-  },
-  codeReview: {
-    name: 'codeReview',
-    system: 'Review code for bugs, security issues, and improvements. Be specific.',
-    userTemplate: (code) => `Review this code:\n\`\`\`\n${code}\n\`\`\``,
-    model: 'mistral-large-latest',
-    maxTokens: 1000,
-  },
-};
-```
-
-## Error Handling
-| Issue | Cause | Resolution |
-|-------|-------|------------|
-| Config validation error | Missing/invalid env vars | Check Zod error message |
-| Rate limit (429) | RPM/TPM exceeded | MistralServiceError has `retryable: true` |
-| Auth error (401) | Invalid API key | Not retryable, check credentials |
-| Cache ineffective | High temperature | Only cache temperature=0 requests |
-
-## Resources
-- [Mistral API Reference](https://docs.mistral.ai/api/)
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [12-Factor App](https://12factor.net/)
+### Step 4: Configure Health Checks
+Add health check endpoint for Mistral AI connectivity.
 
 ## Output
-- Layered directory structure with clear separation
-- Zod-validated configuration from environment
-- Singleton client with lazy initialization
-- Custom error classes with retryability
-- Service layer with caching and streaming
-- Health check endpoint
-- Reusable prompt templates
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Mistral AI types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/mistral/{handlers} src/services/mistral src/api/mistral
+touch src/mistral/{client,config,types,errors}.ts
+touch src/services/mistral/{index,sync,cache}.ts
+```
+
+## Resources
+- [Mistral AI SDK Documentation](https://docs.mistral.com/sdk)
+- [Mistral AI Best Practices](https://docs.mistral.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `mistral-multi-env-setup`.

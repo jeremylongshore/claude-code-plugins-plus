@@ -1,27 +1,113 @@
 ---
 name: guidewire-common-errors
 description: |
-  Diagnose and fix common Guidewire Cloud API errors including Gosu exceptions, validation failures, and integration issues.
-  Trigger: "guidewire common errors", "common-errors".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
+  Diagnose and fix Guidewire common errors and exceptions.
+  Use when encountering Guidewire errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "guidewire error", "fix guidewire",
+  "guidewire not working", "debug guidewire".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
 # Guidewire Common Errors
 
 ## Overview
+Quick reference for the top 10 most common Guidewire errors and their solutions.
 
-Fix 400 (validation), 401 (OAuth token expired), 403 (missing API role), 404 (wrong endpoint path), 409 (stale checksum - re-GET and retry), 422 (business rule violation - read userMessage). Gosu errors: ClassNotFoundException (wrong module), NPE (null entity reference), ValidationException (missing required fields).
+## Prerequisites
+- Guidewire SDK installed
+- API credentials configured
+- Access to error logs
 
-For detailed implementation, see: [implementation guide](references/implementation-guide.md)
+## Instructions
+
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
+
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
+```
+
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
+```bash
+# Verify API key is set
+echo $GUIDEWIRE_API_KEY
+```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `guidewire-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Guidewire status
+curl -s https://status.guidewire.com
+
+# Verify API connectivity
+curl -I https://api.guidewire.com
+
+# Check local configuration
+env | grep GUIDEWIRE
+```
+
+### Escalation Path
+1. Collect evidence with `guidewire-debug-bundle`
+2. Check Guidewire status page
+3. Contact support with request ID
 
 ## Resources
+- [Guidewire Status Page](https://status.guidewire.com)
+- [Guidewire Support](https://docs.guidewire.com/support)
+- [Guidewire Error Codes](https://docs.guidewire.com/errors)
 
-- [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com)
-- [Gosu Language Guide](https://gosu-lang.github.io/)
+## Next Steps
+For comprehensive debugging, see `guidewire-debug-bundle`.

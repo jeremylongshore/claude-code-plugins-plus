@@ -1,229 +1,240 @@
 ---
 name: lindy-reference-architecture
 description: |
-  Reference architectures for Lindy AI agent integrations.
-  Use when designing systems, planning multi-agent architectures,
-  or implementing production integration patterns.
-  Trigger with phrases like "lindy architecture", "lindy design",
-  "lindy system design", "lindy patterns", "lindy multi-agent".
-allowed-tools: Read, Write, Edit
+  Implement Lindy reference architecture with best-practice project layout.
+  Use when designing new Lindy integrations, reviewing project structure,
+  or establishing architecture standards for Lindy applications.
+  Trigger with phrases like "lindy architecture", "lindy best practices",
+  "lindy project structure", "how to organize lindy", "lindy layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, lindy-reference]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for integrating Lindy AI agents into
-applications. Covers webhook integration, multi-agent societies, event-driven
-pipelines, and high-availability patterns.
+Production-ready architecture patterns for Lindy integrations.
 
 ## Prerequisites
-- Understanding of Lindy agent model (triggers, actions, skills)
-- Familiarity with webhook-based architectures
-- Production requirements defined (throughput, latency, reliability)
+- Understanding of layered architecture
+- Lindy SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Architecture 1: Simple Webhook Integration
-Single agent triggered by your application, results sent via callback.
-
-```
-┌─────────────┐       POST (webhook)       ┌──────────────┐
-│  Your App   │ ─────────────────────────→  │ Lindy Agent  │
-│             │                             │              │
-│  /callback  │ ←─────────────────────────  │ HTTP Request │
-│             │       POST (callback)       │   Action     │
-└─────────────┘                             └──────────────┘
-```
-
-**Implementation**:
-- Your app sends webhook with `callbackUrl` field
-- Lindy agent processes and responds via Send POST Request to Callback
-- Your app receives results asynchronously
-
-**Best for**: Simple automations (email triage, lead scoring, content generation)
-
-## Architecture 2: Event-Driven Pipeline
-Multiple event sources feed agents through a central webhook router.
+## Project Structure
 
 ```
-┌──────────┐
-│ Stripe   │──webhook──┐
-└──────────┘           │
-                       ▼
-┌──────────┐     ┌───────────┐     ┌──────────────┐
-│ Shopify  │──→  │  Router   │──→  │ Lindy Agents │
-└──────────┘     │  Service  │     │              │
-                 └───────────┘     │ • Order Bot  │
-┌──────────┐           ▲          │ • Support Bot│
-│ Your App │──webhook──┘          │ • Analytics  │
-└──────────┘                      └──────────────┘
+my-lindy-project/
+├── src/
+│   ├── lindy/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── lindy/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── lindy/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── lindy/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── lindy/
+│   └── integration/
+│       └── lindy/
+├── config/
+│   ├── lindy.development.json
+│   ├── lindy.staging.json
+│   └── lindy.production.json
+└── docs/
+    └── lindy/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-**Implementation**:
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Lindy Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
 ```typescript
-// Event router — maps events to specific Lindy agents
-const agentWebhooks: Record<string, string> = {
-  'order.created': process.env.LINDY_ORDER_AGENT_WEBHOOK!,
-  'customer.support_request': process.env.LINDY_SUPPORT_AGENT_WEBHOOK!,
-  'analytics.daily_report': process.env.LINDY_ANALYTICS_AGENT_WEBHOOK!,
-};
+// src/lindy/client.ts
+export class LindyService {
+  private client: LindyClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-app.post('/events', async (req, res) => {
-  const { event, data } = req.body;
-  const webhookUrl = agentWebhooks[event];
-
-  if (!webhookUrl) {
-    return res.status(400).json({ error: `Unknown event: ${event}` });
+  constructor(config: LindyConfig) {
+    this.client = new LindyClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('lindy');
   }
 
-  await fetch(webhookUrl, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ event, data, callbackUrl: `${BASE_URL}/callback` }),
-  });
-
-  res.json({ routed: true, agent: event });
-});
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
 ```
 
-**Best for**: Multiple event sources, different agents per event type
+### Step 2: Error Boundary
+```typescript
+// src/lindy/errors.ts
+export class LindyServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'LindyServiceError';
+  }
+}
 
-## Architecture 3: Multi-Agent Society (Delegation)
-Specialized agents collaborate through Lindy's built-in delegation system.
-
-```
-┌─────────────────┐
-│ Orchestrator    │
-│ Lindy           │
-│ (receives       │
-│  initial task)  │
-└───┬────────┬────┘
-    │        │
-    ▼        ▼
-┌────────┐ ┌────────┐
-│Research│ │Analysis│
-│ Lindy  │ │ Lindy  │
-└───┬────┘ └───┬────┘
-    │          │
-    ▼          ▼
-┌─────────────────┐
-│ Writer Lindy    │
-│ (synthesizes    │
-│  final output)  │
-└─────────────────┘
+export function wrapLindyError(error: unknown): LindyServiceError {
+  // Transform SDK errors to application errors
+}
 ```
 
-**Setup in Lindy**:
-1. Create specialized agents with **Agent Message Received** triggers
-2. Orchestrator uses **Agent Send Message** action to delegate
-3. Each agent completes its specialty and sends results forward
-4. Writer agent synthesizes and delivers final output
-
-**Key decisions**:
-| Decision | Option A | Option B |
-|----------|---------|---------|
-| Context passing | Full context (accurate, expensive) | Selective context (cheap, focused) |
-| Error handling | Agent retries | Orchestrator retry logic |
-| Parallelism | Sequential delegation | Parallel delegation with merge |
-
-**Best for**: Complex tasks requiring multiple specialties (research + analysis + writing)
-
-## Architecture 4: Scheduled Pipeline
-Agents run on schedules, each feeding data to the next.
-
-```
-                    Schedule: Daily 6 AM
-                         │
-                         ▼
-                  ┌──────────────┐
-                  │ Data Fetch   │ Pulls from APIs/databases
-                  │ Lindy        │
-                  └──────┬───────┘
-                         │ Agent Send Message
-                         ▼
-                  ┌──────────────┐
-                  │ Analysis     │ Processes & summarizes
-                  │ Lindy        │
-                  └──────┬───────┘
-                         │ Agent Send Message
-                         ▼
-                  ┌──────────────┐
-                  │ Report       │ Formats & delivers
-                  │ Lindy        │
-                  │  → Slack     │
-                  │  → Email     │
-                  └──────────────┘
+### Step 3: Health Check
+```typescript
+// src/lindy/health.ts
+export async function checkLindyHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await lindyClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
 ```
 
-**Best for**: Daily reports, weekly digests, scheduled data processing
-
-## Architecture 5: Chat + Knowledge Base
-Agent deployed as customer-facing chatbot with RAG-powered responses.
+## Data Flow Diagram
 
 ```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  Website     │     │ Lindy Agent  │     │ Knowledge    │
-│  (Embed      │◀──▶ │              │◀──▶ │ Base         │
-│   Widget)    │     │ Chat Trigger │     │ PDFs, Docs,  │
-└──────────────┘     │ + KB Search  │     │ Websites     │
-                     │ + Condition  │     └──────────────┘
-                     │ + Escalate   │
-                     └──────────────┘
-                            │
-                            ▼ (if escalation needed)
-                     ┌──────────────┐
-                     │ Slack DM to  │
-                     │ human agent  │
-                     └──────────────┘
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Lindy    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Lindy    │
+│   API       │
+└─────────────┘
 ```
 
-**Deploy the embed widget**:
-```html
-<!-- Paste near end of <body> tag -->
-<script src="https://embed.lindy.ai/widget.js"
-  data-lindy-id="YOUR_AGENT_ID"></script>
+## Configuration Management
+
+```typescript
+// config/lindy.ts
+export interface LindyConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadLindyConfig(): LindyConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./lindy.${env}.json`);
+}
 ```
 
-**KB configuration**:
-- Sources: Product docs, FAQ PDFs, knowledge articles
-- Fuzziness: 100 (semantic search)
-- Max Results: 5 (balance relevance vs context size)
-- Auto-resync: every 24 hours
+## Instructions
 
-**Best for**: Customer support, FAQ bots, internal knowledge assistants
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-## Architecture Decision Matrix
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-| Pattern | Throughput | Latency | Complexity | Cost |
-|---------|-----------|---------|-----------|------|
-| Simple webhook | Low-Med | 2-15s | Low | Low |
-| Event-driven pipeline | High | 5-30s | Medium | Medium |
-| Multi-agent society | Low-Med | 30-120s | High | High |
-| Scheduled pipeline | Batch | N/A | Medium | Predictable |
-| Chat + KB | Interactive | 2-10s | Low-Med | Per-message |
+### Step 3: Add Error Handling
+Implement custom error classes for Lindy operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Lindy connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Lindy types |
+| Test isolation | Shared state | Use dependency injection |
 
-| Pattern | Failure Mode | Recovery |
-|---------|-------------|----------|
-| Simple webhook | Agent fails | Retry webhook with backoff |
-| Event-driven | Router crash | Queue events, replay on recovery |
-| Multi-agent | Delegation fails | Orchestrator retries or skips |
-| Scheduled | Missed schedule | Next run catches up |
-| Chat + KB | KB empty | Fallback to generic response + escalate |
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/lindy/{handlers} src/services/lindy src/api/lindy
+touch src/lindy/{client,config,types,errors}.ts
+touch src/services/lindy/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Lindy Introduction](https://docs.lindy.ai/fundamentals/lindy-101/introduction)
-- [Delegation 101](https://www.lindy.ai/academy-lessons/delegation-101)
-- [Building a Chatbot](https://www.lindy.ai/academy-lessons/building-a-chatbot-101)
-- [Lindy Embed](https://www.lindy.ai/integrations/lindy-embed)
+- [Lindy SDK Documentation](https://docs.lindy.com/sdk)
+- [Lindy Best Practices](https://docs.lindy.com/best-practices)
 
-## Next Steps
-Proceed to Flagship tier skills for enterprise features: multi-env, observability,
-incident response, data handling, RBAC, and migration.
+## Flagship Skills
+For multi-environment setup, see `lindy-multi-env-setup`.

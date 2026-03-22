@@ -1,251 +1,240 @@
 ---
 name: replit-reference-architecture
 description: |
-  Implement Replit reference architecture with best-practice project layout, data layer, and deployment.
-  Use when designing new Replit apps, reviewing project structure,
-  or establishing architecture standards for production Replit applications.
+  Implement Replit reference architecture with best-practice project layout.
+  Use when designing new Replit integrations, reviewing project structure,
+  or establishing architecture standards for Replit applications.
   Trigger with phrases like "replit architecture", "replit best practices",
-  "replit project structure", "how to organize replit", "replit production layout".
+  "replit project structure", "how to organize replit", "replit layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, architecture, reference]
-
+compatible-with: claude-code
+tags: [saas, replit]
 ---
+
 # Replit Reference Architecture
 
 ## Overview
-Production architecture for applications on Replit. Covers project structure, configuration files, data layer (PostgreSQL + KV + Object Storage), authentication, deployment strategy, and the platform constraints that shape architectural decisions.
+Production-ready architecture patterns for Replit integrations.
 
-## Architecture Diagram
+## Prerequisites
+- Understanding of layered architecture
+- Replit SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
 ```
-                    ┌──────────────────────────┐
-                    │    Client (Browser)       │
-                    └──────────┬───────────────┘
-                               │ HTTPS
-                    ┌──────────▼───────────────┐
-                    │  Replit Proxy (TLS, Auth) │
-                    │  Injects X-Replit-User-*  │
-                    └──────────┬───────────────┘
-                               │
-┌──────────────────────────────▼──────────────────────────────┐
-│                 Replit Deployment                            │
-│                                                              │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────────┐  │
-│  │ .replit      │  │ replit.nix   │  │ Secrets (AES-256) │  │
-│  │ (run/build)  │  │ (Nix deps)   │  │ (env vars)        │  │
-│  └─────────────┘  └──────────────┘  └───────────────────┘  │
-│                                                              │
-│  ┌──────────────────────────────────────────────────────┐   │
-│  │              Express / Flask Server                   │   │
-│  │  Routes │ Auth Middleware │ Error Handler │ Health    │   │
-│  └────────┬───────────────────────────────────┬─────────┘   │
-│           │                                   │              │
-│  ┌────────▼──────────┐  ┌───────────────────▼────────────┐ │
-│  │  PostgreSQL       │  │  Replit KV Database            │ │
-│  │  (DATABASE_URL)   │  │  (REPLIT_DB_URL)               │ │
-│  │  Dev + Prod DBs   │  │  50 MiB, 5K keys              │ │
-│  └───────────────────┘  └────────────────────────────────┘ │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────────┐│
-│  │  Object Storage (App Storage)                           ││
-│  │  File uploads, backups, large data                      ││
-│  │  @replit/object-storage SDK                             ││
-│  └─────────────────────────────────────────────────────────┘│
-│                                                              │
-│  Deployment: Autoscale │ Reserved VM │ Static               │
-└──────────────────────────────────────────────────────────────┘
+my-replit-project/
+├── src/
+│   ├── replit/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── replit/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── replit/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── replit/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── replit/
+│   └── integration/
+│       └── replit/
+├── config/
+│   ├── replit.development.json
+│   ├── replit.staging.json
+│   └── replit.production.json
+└── docs/
+    └── replit/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Replit Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/replit/client.ts
+export class ReplitService {
+  private client: ReplitClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: ReplitConfig) {
+    this.client = new ReplitClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('replit');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/replit/errors.ts
+export class ReplitServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'ReplitServiceError';
+  }
+}
+
+export function wrapReplitError(error: unknown): ReplitServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/replit/health.ts
+export async function checkReplitHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await replitClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Replit    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Replit    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/replit.ts
+export interface ReplitConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadReplitConfig(): ReplitConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./replit.${env}.json`);
+}
 ```
 
 ## Instructions
 
-### Step 1: Project Structure
-```
-my-replit-app/
-├── .replit                    # Run + deployment configuration
-├── replit.nix                 # System-level Nix dependencies
-├── package.json               # npm dependencies + scripts
-├── tsconfig.json              # TypeScript config
-├── src/
-│   ├── index.ts               # Entry point — Express setup
-│   ├── config.ts              # Secrets validation + env config
-│   ├── routes/
-│   │   ├── api.ts             # Business logic endpoints
-│   │   ├── auth.ts            # Auth-related routes
-│   │   └── health.ts          # Health check (required for deploy)
-│   ├── services/
-│   │   ├── postgres.ts        # PostgreSQL pool singleton
-│   │   ├── kv.ts              # Replit KV Database wrapper
-│   │   └── storage.ts         # Object Storage wrapper
-│   ├── middleware/
-│   │   ├── auth.ts            # Replit Auth header extraction
-│   │   ├── rateLimit.ts       # Rate limiting
-│   │   └── errors.ts          # Global error handler
-│   └── types/
-│       └── index.ts           # Shared type definitions
-├── tests/
-│   ├── api.test.ts            # API integration tests
-│   └── services.test.ts       # Service unit tests
-└── scripts/
-    └── migrate.ts             # Database migration scripts
-```
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-### Step 2: Configuration Files
-```toml
-# .replit
-entrypoint = "src/index.ts"
-run = "npx tsx src/index.ts"
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-modules = ["nodejs-20:v8-20230920-bd784b9"]
+### Step 3: Add Error Handling
+Implement custom error classes for Replit operations.
 
-[nix]
-channel = "stable-24_05"
+### Step 4: Configure Health Checks
+Add health check endpoint for Replit connectivity.
 
-[env]
-NODE_ENV = "development"
-
-[deployment]
-run = ["sh", "-c", "npx tsx src/index.ts"]
-build = ["sh", "-c", "npm ci --production"]
-deploymentTarget = "autoscale"
-
-[unitTest]
-language = "nodejs"
-
-[languages.typescript]
-pattern = "**/*.ts"
-```
-
-```nix
-# replit.nix
-{ pkgs }: {
-  deps = [
-    pkgs.nodejs-20_x
-    pkgs.nodePackages.typescript-language-server
-  ];
-}
-```
-
-### Step 3: Configuration Module
-```typescript
-// src/config.ts — centralized configuration with validation
-export const config = {
-  port: parseInt(process.env.PORT || '3000'),
-  nodeEnv: process.env.NODE_ENV || 'development',
-  isProduction: process.env.NODE_ENV === 'production',
-  repl: {
-    slug: process.env.REPL_SLUG || 'unknown',
-    owner: process.env.REPL_OWNER || 'unknown',
-    id: process.env.REPL_ID,
-  },
-  db: {
-    url: process.env.DATABASE_URL,
-    kvUrl: process.env.REPLIT_DB_URL,
-  },
-} as const;
-
-// Validate required secrets at import time
-const REQUIRED_SECRETS = ['DATABASE_URL'];
-const missing = REQUIRED_SECRETS.filter(k => !process.env[k]);
-if (missing.length > 0 && config.isProduction) {
-  console.error(`FATAL: Missing secrets: ${missing.join(', ')}`);
-  process.exit(1);
-}
-```
-
-### Step 4: Data Layer Strategy
-| Storage | Use When | Limits |
-|---------|----------|--------|
-| **PostgreSQL** | Structured data, relations, queries | Plan-dependent |
-| **Replit KV** | Simple cache, session data, counters | 50 MiB, 5K keys |
-| **Object Storage** | Files, images, backups, large blobs | Plan-dependent |
-
-```typescript
-// src/services/postgres.ts
-import { Pool } from 'pg';
-import { config } from '../config';
-
-export const pool = new Pool({
-  connectionString: config.db.url,
-  ssl: { rejectUnauthorized: false },
-  max: 5,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 5000,
-});
-
-// src/services/kv.ts
-import Database from '@replit/database';
-export const kv = new Database();
-
-// src/services/storage.ts
-import { Client } from '@replit/object-storage';
-export const storage = new Client();
-```
-
-### Step 5: Entry Point Pattern
-```typescript
-// src/index.ts
-import express from 'express';
-import { config } from './config';
-import { pool } from './services/postgres';
-import healthRouter from './routes/health';
-import apiRouter from './routes/api';
-import { requireAuth } from './middleware/auth';
-import { errorHandler } from './middleware/errors';
-
-const app = express();
-app.use(express.json({ limit: '1mb' }));
-
-// Public routes
-app.use(healthRouter);
-
-// Protected routes
-app.use('/api', requireAuth, apiRouter);
-
-// Global error handler (must be last)
-app.use(errorHandler);
-
-// Start server — bind to 0.0.0.0 (required for Replit)
-app.listen(config.port, '0.0.0.0', () => {
-  console.log(`[${config.repl.slug}] Running on port ${config.port}`);
-  // Pre-connect database
-  pool.query('SELECT 1').catch(err => {
-    console.error('Database connection failed:', err.message);
-  });
-});
-
-// Graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down...');
-  await pool.end();
-  process.exit(0);
-});
-```
-
-## Platform Constraints
-| Constraint | Impact | Mitigation |
-|-----------|--------|------------|
-| Ephemeral filesystem | Files lost on restart | Use DB or Object Storage |
-| Cold starts (Autoscale) | 5-30s first request | Reserved VM or lazy loading |
-| Memory limits | OOM kills | Stream data, limit pool size |
-| Public Repls | Source visible | Never hardcode secrets |
-| Container restarts | State loss | External state (DB/Storage) |
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cold start slow | Heavy imports at startup | Lazy-load non-critical modules |
-| DB connection refused | PostgreSQL not provisioned | Create database in Database pane |
-| Secrets undefined | Not in Secrets tab | Add via sidebar lock icon |
-| Filesystem writes lost | Ephemeral container | Use Object Storage or PostgreSQL |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Replit types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/replit/{handlers} src/services/replit src/api/replit
+touch src/replit/{client,config,types,errors}.ts
+touch src/services/replit/{index,sync,cache}.ts
+```
 
 ## Resources
-- [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
-- [PostgreSQL on Replit](https://docs.replit.com/cloud-services/storage-and-databases/postgresql-on-replit)
-- [Object Storage](https://docs.replit.com/cloud-services/storage-and-databases/object-storage/overview)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- [Replit SDK Documentation](https://docs.replit.com/sdk)
+- [Replit Best Practices](https://docs.replit.com/best-practices)
 
-## Next Steps
-For deployment, see `replit-deploy-integration`. For multi-environment, see `replit-multi-env-setup`.
+## Flagship Skills
+For multi-environment setup, see `replit-multi-env-setup`.

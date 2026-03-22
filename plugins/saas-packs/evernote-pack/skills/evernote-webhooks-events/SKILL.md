@@ -1,102 +1,201 @@
 ---
 name: evernote-webhooks-events
 description: |
-  Implement Evernote webhook notifications and sync events.
-  Use when handling note changes, implementing real-time sync,
-  or processing Evernote notifications.
+  Implement Evernote webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Evernote event notifications securely.
   Trigger with phrases like "evernote webhook", "evernote events",
-  "evernote sync", "evernote notifications".
+  "evernote webhook signature", "handle evernote events", "evernote notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, webhooks]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Webhooks & Events
 
 ## Overview
-Implement Evernote webhook notifications for real-time change detection. Evernote webhooks notify your endpoint that changes occurred, but you must use the sync API to retrieve the actual changed data.
+Securely handle Evernote webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Evernote API key with webhook permissions
-- HTTPS endpoint accessible from the internet
-- Understanding of Evernote sync API
+- Evernote webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Webhook Endpoint
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
 
-Create an Express endpoint that receives webhook POST requests. Evernote sends `userId`, `guid` (notebook GUID), and `reason` (create, update, notebook) as query parameters. Respond with HTTP 200 immediately, then process asynchronously.
+const app = express();
 
-```javascript
-app.post('/evernote/webhook', (req, res) => {
-  const { userId, guid, reason } = req.query;
-  res.sendStatus(200); // Respond immediately
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/evernote',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-evernote-signature'] as string;
+    const timestamp = req.headers['x-evernote-timestamp'] as string;
 
-  // Process asynchronously
-  processWebhook({ userId, notebookGuid: guid, reason })
-    .catch(err => console.error('Webhook processing failed:', err));
-});
-```
+    if (!verifyEvernoteSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
 
-### Step 2: Webhook Reasons
+    const event = JSON.parse(req.body.toString());
+    await handleEvernoteEvent(event);
 
-Handle three webhook reasons: `create` (new note created), `update` (note modified), and `notebook` (notebook-level change). Each triggers a sync of the affected notebook.
-
-### Step 3: Sync State Management
-
-Store the last sync USN per user. On webhook receipt, call `getSyncState()` to get the current server USN, then `getFilteredSyncChunk()` to fetch only the changes since your last sync.
-
-```javascript
-const syncState = await noteStore.getSyncState();
-const chunk = await noteStore.getFilteredSyncChunk(
-  lastUSN,
-  100,  // maxEntries
-  new Evernote.NoteStore.SyncChunkFilter({
-    includeNotes: true,
-    includeNotebooks: true,
-    includeTags: true
-  })
+    res.status(200).json({ received: true });
+  }
 );
 ```
 
-### Step 4: Event Processing and Handlers
+## Signature Verification
 
-Route sync chunk entries to typed handlers: `onNoteCreated`, `onNoteUpdated`, `onNoteDeleted`, `onNotebookChanged`. Implement idempotency by tracking processed USNs to handle duplicate webhook deliveries.
+```typescript
+function verifyEvernoteSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.EVERNOTE_WEBHOOK_SECRET!;
 
-### Step 5: Polling Fallback
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
 
-Implement a polling fallback for environments where webhooks are unavailable. Poll `getSyncState()` on a timer (e.g., every 5 minutes) and sync when `updateCount` changes.
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
 
-For the full webhook server, sync manager, event handlers, and polling implementations, see [Implementation Guide](references/implementation-guide.md).
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type EvernoteEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface EvernoteEvent {
+  id: string;
+  type: EvernoteEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<EvernoteEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleEvernoteEvent(event: EvernoteEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `evernote:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `evernote:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Evernote CLI to send test events
+evernote webhooks trigger resource.created --url http://localhost:3000/webhooks/evernote
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Evernote dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Express webhook endpoint with async processing
-- Sync state manager with USN tracking
-- Event router for create, update, and delete operations
-- Idempotent event processing (handles duplicate deliveries)
-- Polling fallback for non-webhook environments
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Webhook not received | URL not reachable from Evernote servers | Verify HTTPS endpoint is publicly accessible |
-| Duplicate webhooks | Network retries by Evernote | Track processed USNs for idempotency |
-| Missing changes | Race condition between webhook and sync | Re-sync with small delay after webhook |
-| Sync timeout | Large change set in chunk | Reduce `maxEntries` per chunk, paginate |
-
-## Resources
-- [Webhooks Overview](https://dev.evernote.com/doc/articles/webhooks.php)
-- [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
-- [Developer Portal](https://dev.evernote.com/)
-
-## Next Steps
-For performance optimization, see `evernote-performance-tuning`.
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-**Real-time note sync**: Receive webhook on note update, fetch the sync chunk, update local database, and notify connected clients via WebSocket.
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
 
-**Polling-based sync**: For environments behind firewalls, poll `getSyncState()` every 5 minutes and process any changes via the same handler pipeline used by webhooks.
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/evernote \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
+
+## Resources
+- [Evernote Webhooks Guide](https://docs.evernote.com/webhooks)
+- [Webhook Security Best Practices](https://docs.evernote.com/webhooks/security)
+
+## Next Steps
+For performance optimization, see `evernote-performance-tuning`.

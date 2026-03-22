@@ -1,238 +1,201 @@
 ---
 name: fireflies-webhooks-events
 description: |
-  Implement Fireflies.ai webhook receiver with HMAC signature verification and event processing.
-  Use when setting up webhook endpoints, handling transcript-ready notifications,
-  or building real-time meeting intelligence pipelines.
+  Implement Fireflies.ai webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Fireflies.ai event notifications securely.
   Trigger with phrases like "fireflies webhook", "fireflies events",
   "fireflies webhook signature", "handle fireflies events", "fireflies notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, webhooks]
-
+compatible-with: claude-code
+tags: [saas, fireflies]
 ---
+
 # Fireflies.ai Webhooks & Events
 
 ## Overview
-Handle Fireflies.ai webhook events for real-time transcript notifications. Fireflies fires a webhook when a transcript finishes processing. The payload is signed with HMAC-SHA256 for verification.
+Securely handle Fireflies.ai webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Fireflies.ai Business or Enterprise plan
-- `FIREFLIES_API_KEY` and `FIREFLIES_WEBHOOK_SECRET` in environment
-- HTTPS endpoint accessible from the internet
+- Fireflies.ai webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Webhook Event Reference
+## Webhook Endpoint Setup
 
-Fireflies currently fires one event type:
-
-| Event | `eventType` Value | Trigger |
-|-------|-------------------|---------|
-| Transcription completed | `"Transcription completed"` | Transcript is fully processed and ready |
-
-### Payload Format
-```json
-{
-  "meetingId": "ASxwZxCstx",
-  "eventType": "Transcription completed",
-  "clientReferenceId": "be582c46-4ac9-4565-9ba6-6ab4264496a8"
-}
-```
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `meetingId` | String | Transcript ID -- use in `transcript(id:)` query |
-| `eventType` | String | Always `"Transcription completed"` currently |
-| `clientReferenceId` | ID | Your custom ID from `uploadAudio` (null if bot-recorded) |
-
-## Important Constraints
-- Webhooks fire **only for meetings you own** (organizer_email matches your account)
-- Super Admin webhooks (Enterprise only) fire for all team-owned meetings
-
-## Instructions
-
-### Step 1: Register Webhook in Dashboard
-1. Go to [app.fireflies.ai/settings](https://app.fireflies.ai/settings)
-2. Select **Developer settings** tab
-3. Enter your HTTPS webhook URL
-4. Enter or generate a 16-32 character secret
-5. Save
-
-### Step 2: Build Webhook Receiver with Signature Verification
+### Express.js
 ```typescript
-import express from "express";
-import crypto from "crypto";
+import express from 'express';
+import crypto from 'crypto';
 
 const app = express();
 
-// IMPORTANT: Use raw body for HMAC verification
-app.post("/webhooks/fireflies",
-  express.raw({ type: "application/json" }),
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/fireflies',
+  express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers["x-hub-signature"] as string;
-    const rawBody = req.body.toString();
+    const signature = req.headers['x-fireflies-signature'] as string;
+    const timestamp = req.headers['x-fireflies-timestamp'] as string;
 
-    // Verify HMAC-SHA256 signature
-    if (!signature || !verifySignature(rawBody, signature)) {
-      console.warn("Rejected webhook: invalid signature");
-      return res.status(401).json({ error: "Invalid signature" });
+    if (!verifyFireflies.aiSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
     }
 
-    // Acknowledge immediately -- process async
+    const event = JSON.parse(req.body.toString());
+    await handleFireflies.aiEvent(event);
+
     res.status(200).json({ received: true });
-
-    const event = JSON.parse(rawBody);
-    console.log(`Webhook: ${event.eventType} for meeting ${event.meetingId}`);
-
-    // Process in background
-    processTranscriptReady(event.meetingId, event.clientReferenceId)
-      .catch(err => console.error("Webhook processing failed:", err));
   }
 );
+```
 
-function verifySignature(payload: string, signature: string): boolean {
+## Signature Verification
+
+```typescript
+function verifyFireflies.aiSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
   const secret = process.env.FIREFLIES_WEBHOOK_SECRET!;
-  const expected = crypto
-    .createHmac("sha256", secret)
-    .update(payload)
-    .digest("hex");
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
   return crypto.timingSafeEqual(
     Buffer.from(signature),
-    Buffer.from(expected)
+    Buffer.from(expectedSignature)
   );
 }
 ```
 
-### Step 3: Fetch and Process the Transcript
+## Event Handler Pattern
+
 ```typescript
-const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+type Fireflies.aiEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
 
-async function processTranscriptReady(meetingId: string, clientRefId?: string) {
-  const res = await fetch(FIREFLIES_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
-    },
-    body: JSON.stringify({
-      query: `
-        query GetTranscript($id: String!) {
-          transcript(id: $id) {
-            id title date duration
-            organizer_email
-            speakers { name }
-            sentences { speaker_name text start_time end_time }
-            summary {
-              overview
-              action_items
-              keywords
-              short_summary
-            }
-            meeting_attendees { displayName email }
-          }
-        }
-      `,
-      variables: { id: meetingId },
-    }),
-  });
-
-  const json = await res.json();
-  if (json.errors) throw new Error(json.errors[0].message);
-
-  const transcript = json.data.transcript;
-  console.log(`Processing: "${transcript.title}" (${transcript.duration}min)`);
-  console.log(`Speakers: ${transcript.speakers.map((s: any) => s.name).join(", ")}`);
-  console.log(`Action items: ${transcript.summary?.action_items?.length || 0}`);
-
-  // Route to downstream systems
-  await Promise.all([
-    storeTranscript(transcript),
-    createTasksFromActionItems(transcript),
-    notifyTeam(transcript),
-  ]);
+interface Fireflies.aiEvent {
+  id: string;
+  type: Fireflies.aiEventType;
+  data: Record<string, any>;
+  created: string;
 }
 
-async function storeTranscript(transcript: any) {
-  // Store in your database
-  console.log(`Stored transcript: ${transcript.id}`);
-}
+const eventHandlers: Record<Fireflies.aiEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
 
-async function createTasksFromActionItems(transcript: any) {
-  const items = transcript.summary?.action_items || [];
-  for (const item of items) {
-    console.log(`Task created: ${item}`);
-    // await taskManager.create({ title: item, source: transcript.title });
+async function handleFireflies.aiEvent(event: Fireflies.aiEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
   }
 }
+```
 
-async function notifyTeam(transcript: any) {
-  // Send Slack/email notification
-  const summary = transcript.summary?.short_summary || transcript.summary?.overview;
-  console.log(`Notification: "${transcript.title}" -- ${summary}`);
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `fireflies:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `fireflies:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
 }
 ```
 
-### Step 4: Per-Upload Webhook (Alternative)
-Instead of dashboard-level webhook, include a webhook URL in `uploadAudio`:
-```typescript
-await fetch(FIREFLIES_API, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
-  },
-  body: JSON.stringify({
-    query: `
-      mutation($input: AudioUploadInput) {
-        uploadAudio(input: $input) { success title message }
-      }
-    `,
-    variables: {
-      input: {
-        url: "https://storage.example.com/recording.mp3",
-        title: "Client Call 2026-03-22",
-        webhook: "https://api.yourapp.com/webhooks/fireflies",
-        client_reference_id: "order-12345",
-      },
-    },
-  }),
-});
+## Webhook Testing
+
+```bash
+# Use Fireflies.ai CLI to send test events
+fireflies webhooks trigger resource.created --url http://localhost:3000/webhooks/fireflies
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
 ```
 
-### Step 5: Test Webhook
-```bash
-set -euo pipefail
-# Test by uploading a short audio file
-curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "mutation($input: AudioUploadInput) { uploadAudio(input: $input) { success message } }",
-    "variables": { "input": { "url": "https://example.com/test-audio.mp3", "title": "Webhook Test" } }
-  }' | jq .
-# The webhook will fire when transcription completes (usually 2-5 minutes)
-```
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Fireflies.ai dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Webhook not firing | URL not saved in dashboard | Re-register at app.fireflies.ai/settings |
-| Invalid signature | Secret mismatch | Verify secret matches dashboard value |
-| Missing `meetingId` | Malformed payload | Log raw body, check Fireflies status |
-| Webhook only fires for some meetings | Owner-only constraint | Webhooks fire only for your meetings |
-| `clientReferenceId` is null | Bot-recorded meeting | Only set on `uploadAudio` calls |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
-## Output
-- HTTPS webhook endpoint with HMAC-SHA256 signature verification
-- Automatic transcript fetch on completion events
-- Action item extraction and downstream routing
-- Per-upload webhook support for custom tracking
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/fireflies \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Fireflies Webhooks](https://docs.fireflies.ai/graphql-api/webhooks)
-- [Webhook Verification Example](https://replit.com/@firefliesai/Firefliesai-Verifying-webhook-requests)
+- [Fireflies.ai Webhooks Guide](https://docs.fireflies.com/webhooks)
+- [Webhook Security Best Practices](https://docs.fireflies.com/webhooks/security)
 
 ## Next Steps
-For deployment setup, see `fireflies-deploy-integration`.
+For performance optimization, see `fireflies-performance-tuning`.

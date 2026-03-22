@@ -1,179 +1,224 @@
 ---
 name: clay-multi-env-setup
 description: |
-  Configure Clay integrations across development, staging, and production environments.
-  Use when setting up per-environment Clay tables, managing webhook URLs per environment,
-  or implementing environment-specific enrichment configurations.
-  Trigger with phrases like "clay environments", "clay staging", "clay dev prod",
-  "clay environment setup", "clay config by env".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Configure Clay across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Clay configurations.
+  Trigger with phrases like "clay environments", "clay staging",
+  "clay dev prod", "clay environment setup", "clay config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, deployment]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Multi-Environment Setup
 
 ## Overview
-
-Configure Clay integrations across dev/staging/prod with isolated tables, separate webhook URLs, and environment-specific enrichment settings. Clay is a single workspace per account, so multi-environment isolation requires separate tables, careful naming, and environment-aware application code.
+Configure Clay across development, staging, and production environments.
 
 ## Prerequisites
+- Separate Clay accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
-- Clay account (one workspace can hold multiple tables)
-- Environment variable management per deployment target
-- Understanding of Clay table and webhook concepts
+## Environment Strategy
+
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── clay/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${CLAY_API_KEY}",
+  "baseUrl": "https://api-sandbox.clay.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${CLAY_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.clay.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${CLAY_API_KEY_PROD}",
+  "baseUrl": "https://api.clay.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/clay/config.ts
+import baseConfig from '../../config/clay/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function getClayConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/clay/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+CLAY_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  CLAY_API_KEY: ${{ secrets.CLAY_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id clay/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=clay-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/clay/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getClayConfig();
+
+  if (config.environment !== 'production') {
+    console.warn(`[clay] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
 
 ## Instructions
 
-### Step 1: Create Per-Environment Tables
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-In Clay, create separate tables for each environment:
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-| Table Name | Environment | Webhook URL | Auto-Enrich | Credit Cap |
-|------------|-------------|-------------|-------------|------------|
-| `[DEV] Outbound Leads` | Development | Dev webhook | ON (small batches) | 100 rows |
-| `[STG] Outbound Leads` | Staging | Staging webhook | ON | 500 rows |
-| `Outbound Leads` | Production | Prod webhook | ON | 10,000 rows |
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-Each table gets its own webhook URL. Copy each URL to the appropriate environment's secrets.
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
-### Step 2: Environment Configuration
-
-```typescript
-// src/config/clay.ts — environment-aware Clay configuration
-interface ClayEnvConfig {
-  webhookUrl: string;
-  apiKey?: string;                // Enterprise API (if applicable)
-  maxRowsPerBatch: number;
-  delayBetweenRowsMs: number;
-  enableCRMSync: boolean;
-  tablePrefix: string;
-}
-
-function getClayConfig(): ClayEnvConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  const configs: Record<string, ClayEnvConfig> = {
-    development: {
-      webhookUrl: process.env.CLAY_WEBHOOK_URL_DEV!,
-      maxRowsPerBatch: 10,          // Small batches to conserve credits
-      delayBetweenRowsMs: 500,      // Slow, safe
-      enableCRMSync: false,         // Never push dev data to real CRM
-      tablePrefix: '[DEV]',
-    },
-    staging: {
-      webhookUrl: process.env.CLAY_WEBHOOK_URL_STG!,
-      maxRowsPerBatch: 100,
-      delayBetweenRowsMs: 250,
-      enableCRMSync: false,         // Use sandbox CRM if needed
-      tablePrefix: '[STG]',
-    },
-    production: {
-      webhookUrl: process.env.CLAY_WEBHOOK_URL!,
-      apiKey: process.env.CLAY_API_KEY,
-      maxRowsPerBatch: 1000,
-      delayBetweenRowsMs: 100,
-      enableCRMSync: true,
-      tablePrefix: '',
-    },
-  };
-
-  const config = configs[env];
-  if (!config) throw new Error(`Unknown environment: ${env}`);
-  if (!config.webhookUrl) throw new Error(`CLAY_WEBHOOK_URL not set for ${env}`);
-
-  return config;
-}
-```
-
-### Step 3: Environment Variable Management
-
-```bash
-# .env.development
-CLAY_WEBHOOK_URL_DEV=https://app.clay.com/api/v1/webhooks/dev-webhook-id
-NODE_ENV=development
-
-# .env.staging
-CLAY_WEBHOOK_URL_STG=https://app.clay.com/api/v1/webhooks/stg-webhook-id
-NODE_ENV=staging
-
-# .env.production (never in git — use secrets manager)
-CLAY_WEBHOOK_URL=https://app.clay.com/api/v1/webhooks/prod-webhook-id
-CLAY_API_KEY=clay_ent_production_key
-NODE_ENV=production
-```
-
-```bash
-# GitHub Actions — per-environment secrets
-gh secret set CLAY_WEBHOOK_URL_DEV --body "https://app.clay.com/api/v1/webhooks/dev-id"
-gh secret set CLAY_WEBHOOK_URL_STG --body "https://app.clay.com/api/v1/webhooks/stg-id"
-gh secret set CLAY_WEBHOOK_URL --body "https://app.clay.com/api/v1/webhooks/prod-id"
-gh secret set CLAY_API_KEY --body "clay_ent_production_key"
-```
-
-### Step 4: Startup Validation
-
-```typescript
-// src/config/validate.ts — fail fast if config is wrong
-import { z } from 'zod';
-
-const ClayConfigSchema = z.object({
-  webhookUrl: z.string().url().startsWith('https://'),
-  apiKey: z.string().startsWith('clay_ent_').optional(),
-  maxRowsPerBatch: z.number().positive().max(10_000),
-  delayBetweenRowsMs: z.number().min(0),
-  enableCRMSync: z.boolean(),
-  tablePrefix: z.string(),
-});
-
-export function validateClayConfig(config: unknown) {
-  const result = ClayConfigSchema.safeParse(config);
-  if (!result.success) {
-    console.error('Clay configuration invalid:', result.error.format());
-    process.exit(1);
-  }
-  console.log(`Clay config validated for ${process.env.NODE_ENV}`);
-  return result.data;
-}
-```
-
-### Step 5: Environment-Aware Safety Guards
-
-```typescript
-// src/clay/guards.ts — prevent production data in dev and vice versa
-function safetyCheck(env: string, rowCount: number): void {
-  if (env === 'development' && rowCount > 50) {
-    throw new Error(`Dev environment: refusing to process ${rowCount} rows (max 50). Use staging or production.`);
-  }
-  if (env === 'staging' && rowCount > 1000) {
-    throw new Error(`Staging environment: refusing to process ${rowCount} rows (max 1000). Use production.`);
-  }
-}
-
-function preventCrossEnvData(env: string, crmPushEnabled: boolean): void {
-  if (env !== 'production' && crmPushEnabled) {
-    throw new Error(`CRM sync is disabled in ${env}. Only production can push to CRM.`);
-  }
-}
-```
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong table receives data | Dev webhook URL in production | Validate webhook URL matches environment |
-| Dev data in production CRM | CRM sync enabled in dev | Guard CRM sync to production only |
-| Credit waste in dev/staging | Full enrichment on test data | Set low row caps on dev/staging tables |
-| Missing webhook URL at startup | Environment variable not set | Add startup validation with Zod |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getClayConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-
-- [Clay University -- Table Management Settings](https://university.clay.com/docs/table-management-settings)
-- [Zod Documentation](https://zod.dev/)
+- [Clay Environments Guide](https://docs.clay.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-
-For monitoring and observability, see `clay-observability`.
+For observability setup, see `clay-observability`.

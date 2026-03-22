@@ -1,267 +1,336 @@
 ---
 name: supabase-known-pitfalls
 description: |
-  Identify and fix Supabase anti-patterns: service key exposure, missing RLS,
-  N+1 queries, select(*), missing error handling, and other common mistakes.
-  Use when reviewing Supabase code, onboarding developers,
-  or auditing existing integrations.
+  Identify and avoid Supabase anti-patterns and common integration mistakes.
+  Use when reviewing Supabase code for issues, onboarding new developers,
+  or auditing existing Supabase integrations for best practices violations.
   Trigger with phrases like "supabase mistakes", "supabase anti-patterns",
-  "supabase pitfalls", "supabase code review", "what not to do supabase".
+  "supabase pitfalls", "supabase what not to do", "supabase code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, code-review, anti-patterns]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Known Pitfalls
 
 ## Overview
-The most common Supabase anti-patterns ranked by severity (security > data integrity > performance > maintainability), with the correct pattern for each. Use as a code review checklist or onboarding reference.
+Common mistakes and anti-patterns when integrating with Supabase.
 
 ## Prerequisites
 - Access to Supabase codebase for review
-- Understanding of RLS and Supabase SDK
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
+
+## Pitfall #1: Synchronous API Calls in Request Path
+
+### ❌ Anti-Pattern
+```typescript
+// User waits for Supabase API call
+app.post('/checkout', async (req, res) => {
+  const payment = await supabaseClient.processPayment(req.body);  // 2-5s latency
+  const notification = await supabaseClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
+```
+
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
+
+// Background job
+async function processCheckout(data) {
+  const payment = await supabaseClient.processPayment(data);
+  await supabaseClient.sendEmail(payment);
+}
+```
+
+---
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await supabaseClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => supabaseClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new SupabaseClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new SupabaseClient({
+  apiKey: process.env.SUPABASE_API_KEY,
+});
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+---
+
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await supabaseClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await supabaseClient.charge(order);  // Charged twice!
+  }
+}
+```
+
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
+
+await supabaseClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
+
+---
+
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-supabase-signature'];
+    if (!verifySupabaseSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await supabaseClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await supabaseClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof SupabaseNotFoundError) {
+    return null;
+  }
+  if (error instanceof SupabaseRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new SupabaseClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.supabase.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new SupabaseClient({
+  timeout: parseInt(process.env.SUPABASE_TIMEOUT || '30000'),
+  baseUrl: process.env.SUPABASE_BASE_URL || 'https://api.supabase.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Supabase is down, every request hangs
+for (const user of users) {
+  await supabaseClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(supabaseClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Supabase is down
+const recommendations = await supabaseClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await supabaseClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('supabase', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
 
 ## Instructions
 
-### CRITICAL: Security Pitfalls
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
 
-#### Pitfall 1: Service Role Key in Client Code
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
 
-```typescript
-// BAD: service role key exposed to the browser
-const supabase = createClient(url, process.env.NEXT_PUBLIC_SERVICE_ROLE_KEY!)
-// This key bypasses ALL RLS. Anyone can read/write/delete everything.
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
 
-// GOOD: anon key on client side
-const supabase = createClient(url, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!)
-// Anon key respects RLS policies.
-```
-
-**Detection**: `grep -rn 'SERVICE_ROLE' --include="*.tsx" --include="*.jsx" src/`
-
-#### Pitfall 2: Tables Without RLS
-
-```sql
--- BAD: table created without enabling RLS
-create table public.user_data (
-  id uuid primary key,
-  email text,
-  ssn text  -- PII exposed to anyone with the anon key!
-);
-
--- GOOD: always enable RLS immediately
-create table public.user_data (
-  id uuid primary key,
-  email text,
-  ssn text
-);
-alter table public.user_data enable row level security;
--- Then add appropriate policies
-```
-
-**Detection**:
-```sql
-select tablename from pg_tables
-where schemaname = 'public' and rowsecurity = false;
-```
-
-#### Pitfall 3: Overly Permissive RLS
-
-```sql
--- BAD: allows any authenticated user to read ALL records
-create policy "Authenticated can read all" on public.messages
-  for select using (auth.uid() is not null);
--- Every logged-in user sees every message!
-
--- GOOD: scope to user's own data or organization
-create policy "Users read own messages" on public.messages
-  for select using (
-    sender_id = auth.uid() or recipient_id = auth.uid()
-  );
-```
-
-### HIGH: Data Integrity Pitfalls
-
-#### Pitfall 4: Ignoring Error Responses
-
-```typescript
-// BAD: not checking for errors
-const { data } = await supabase.from('orders').insert(order).select().single()
-// If error occurred, data is null and you proceed with undefined values
-
-// GOOD: always check error
-const { data, error } = await supabase.from('orders').insert(order).select().single()
-if (error) {
-  console.error('Insert failed:', error.code, error.message)
-  throw new Error(`Failed to create order: ${error.message}`)
-}
-```
-
-#### Pitfall 5: Missing .select() After Mutations
-
-```typescript
-// BAD: insert/update/delete return NO data by default
-const { data } = await supabase.from('todos').insert({ title: 'New' })
-console.log(data)  // null! Not what you expected.
-
-// GOOD: chain .select() to get the result back
-const { data } = await supabase.from('todos').insert({ title: 'New' }).select().single()
-console.log(data)  // { id: 1, title: 'New', ... }
-```
-
-#### Pitfall 6: .single() on Zero-or-Many Results
-
-```typescript
-// BAD: .single() throws error if 0 or 2+ rows match
-const { data, error } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('username', search)
-  .single()
-// error: PGRST116 if no match, PGRST200 if multiple matches
-
-// GOOD: use .maybeSingle() when result is optional
-const { data } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('username', search)
-  .maybeSingle()
-// data is null if no match, no error thrown
-```
-
-### MEDIUM: Performance Pitfalls
-
-#### Pitfall 7: select('*') Everywhere
-
-```typescript
-// BAD: fetches ALL columns including large text/jsonb fields
-const { data } = await supabase.from('posts').select('*')
-
-// GOOD: specify only needed columns
-const { data } = await supabase.from('posts').select('id, title, created_at')
-// Reduces bandwidth, prevents leaking sensitive columns, faster serialization
-```
-
-#### Pitfall 8: N+1 Queries
-
-```typescript
-// BAD: one query per project to get tasks
-const projects = await getProjects()
-for (const project of projects) {
-  const { data: tasks } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('project_id', project.id)
-  project.tasks = tasks
-}
-// 1 + N queries where N is the number of projects
-
-// GOOD: use a join (single query)
-const { data } = await supabase
-  .from('projects')
-  .select(`
-    id, name,
-    tasks (id, title, status)
-  `)
-// 1 query with embedded join
-
-// ALSO GOOD: batch with .in()
-const { data: tasks } = await supabase
-  .from('tasks')
-  .select('id, title, project_id')
-  .in('project_id', projects.map(p => p.id))
-```
-
-#### Pitfall 9: Missing Indexes on Foreign Keys
-
-```sql
--- BAD: foreign key without index (slow joins and RLS)
-create table public.tasks (
-  id uuid primary key,
-  project_id uuid references public.projects(id)  -- no index!
-);
-
--- GOOD: always index foreign key columns
-create table public.tasks (
-  id uuid primary key,
-  project_id uuid references public.projects(id)
-);
-create index idx_tasks_project_id on public.tasks(project_id);
-```
-
-#### Pitfall 10: Synchronous Auth Check on Every Request
-
-```typescript
-// BAD: hits Supabase Auth API on every single request
-async function getUser(req: Request) {
-  const { data: { user } } = await supabase.auth.getUser()  // network call
-  return user
-}
-
-// GOOD: verify JWT locally, only call getUser when needed
-async function getUser(req: Request) {
-  const { data: { session } } = await supabase.auth.getSession()  // local
-  // getUser() only when you need verified, fresh user data
-  return session?.user
-}
-```
-
-### LOW: Maintainability Pitfalls
-
-#### Pitfall 11: Not Using Generated Types
-
-```typescript
-// BAD: manual types that drift from schema
-interface Todo { id: number; title: string; done: boolean }
-
-// GOOD: use generated types
-import type { Database } from './database.types'
-type Todo = Database['public']['Tables']['todos']['Row']
-// Run: supabase gen types typescript --linked > lib/database.types.ts
-```
-
-#### Pitfall 12: Creating Multiple Client Instances
-
-```typescript
-// BAD: new client in every file
-// utils/auth.ts
-const supabase = createClient(url, key)
-// utils/data.ts
-const supabase = createClient(url, key)  // separate instance!
-
-// GOOD: singleton exported from one file
-// lib/supabase.ts
-export const supabase = createClient(url, key)
-// Import everywhere: import { supabase } from '../lib/supabase'
-```
-
-### Code Review Checklist
-
-- [ ] No `SERVICE_ROLE_KEY` in client-side code or `NEXT_PUBLIC_*` vars
-- [ ] RLS enabled on all tables (`pg_tables.rowsecurity = true`)
-- [ ] All Supabase calls check `error` before using `data`
-- [ ] `.select()` chained after `.insert()`, `.update()`, `.upsert()`
-- [ ] Column names specified in `.select()` (no `select('*')`)
-- [ ] Foreign key columns have indexes
-- [ ] No N+1 query patterns (use joins or `.in()`)
-- [ ] Single client instance (singleton pattern)
-- [ ] Generated types used (not manual interface definitions)
-- [ ] `.maybeSingle()` used for optional lookups
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
 
 ## Output
-- Anti-patterns identified with severity classification
-- Each pitfall paired with the correct Supabase pattern
-- Code review checklist for PR reviews
-- Detection commands for automated scanning
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
-- [Supabase Security](https://supabase.com/docs/guides/security)
-- [Supabase Performance](https://supabase.com/docs/guides/database/inspect)
-- [Row Level Security](https://supabase.com/docs/guides/database/postgres/row-level-security)
-- [TypeScript Support](https://supabase.com/docs/reference/javascript/typescript-support)
+- [Supabase Security Guide](https://supabase.com/docs/security)
+- [Supabase Best Practices](https://supabase.com/docs/best-practices)
 
-## Next Steps
-This completes the Supabase skill pack. See `supabase-install-auth` to start a new project.
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

@@ -2,280 +2,204 @@
 name: databricks-incident-runbook
 description: |
   Execute Databricks incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Databricks-related outages, investigating job failures,
-  or running post-incident reviews for pipeline failures.
+  Use when responding to Databricks-related outages, investigating errors,
+  or running post-incident reviews for Databricks integration failures.
   Trigger with phrases like "databricks incident", "databricks outage",
-  "databricks down", "databricks on-call", "databricks emergency", "job failed".
-allowed-tools: Read, Grep, Bash(databricks:*), Bash(curl:*)
+  "databricks down", "databricks on-call", "databricks emergency", "databricks broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, incident-response]
-
+compatible-with: claude-code
+tags: [saas, databricks]
 ---
+
 # Databricks Incident Runbook
 
 ## Overview
-Rapid incident response for Databricks: triage script, decision tree, immediate actions by error type, communication templates, evidence collection, and postmortem template. Designed for on-call engineers to follow during live incidents.
+Rapid incident response procedures for Databricks-related outages.
+
+## Prerequisites
+- Access to Databricks dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Production pipeline down | < 15 min | Critical ETL failed, data not updating |
-| P2 | Degraded performance | < 1 hour | Slow queries, partial failures, stale data |
-| P3 | Non-critical issues | < 4 hours | Dev cluster issues, non-critical job delays |
-| P4 | No user impact | Next business day | Monitoring gaps, cleanup needed |
+| P1 | Complete outage | < 15 min | Databricks API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
 
-## Instructions
+## Quick Triage
 
-### Step 1: Quick Triage (Run First)
 ```bash
-#!/bin/bash
-set -euo pipefail
-echo "=== DATABRICKS TRIAGE $(date -u +%H:%M:%S\ UTC) ==="
+# 1. Check Databricks status
+curl -s https://status.databricks.com | jq
 
-# 1. Is Databricks itself down?
-echo "--- Platform Status ---"
-curl -s https://status.databricks.com/api/v2/status.json | \
-  jq -r '.status.description // "UNKNOWN"'
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.databricks'
 
-# 2. Can we reach the workspace?
-echo "--- Workspace ---"
-if databricks current-user me --output json 2>/dev/null | jq -r .userName; then
-    echo "API: CONNECTED"
-else
-    echo "API: UNREACHABLE — check VPN/firewall/token"
-fi
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(databricks_errors_total[5m])
 
-# 3. Recent failures
-echo "--- Failed Runs (last 1h) ---"
-databricks runs list --limit 20 --output json 2>/dev/null | \
-  jq -r '.runs[]? | select(.state.result_state == "FAILED") |
-    "\(.run_id): \(.run_name // "unnamed") — \(.state.state_message // "no message")"' || \
-  echo "Could not fetch runs"
-
-# 4. Cluster health
-echo "--- Clusters in ERROR state ---"
-databricks clusters list --output json 2>/dev/null | \
-  jq -r '.[]? | select(.state == "ERROR") |
-    "\(.cluster_id): \(.cluster_name) — \(.termination_reason.code // "unknown")"' || \
-  echo "Could not fetch clusters"
+# 4. Recent error logs
+kubectl logs -l app=databricks-integration --since=5m | grep -i error | tail -20
 ```
 
-### Step 2: Decision Tree
+## Decision Tree
+
 ```
-Is the issue affecting production data pipelines?
-├─ YES: Is it a single job or multiple?
-│   ├─ SINGLE JOB
-│   │   ├─ Cluster failed to start → Step 3a
-│   │   ├─ Code/logic error → Step 3b
-│   │   ├─ Data quality issue → Step 3c
-│   │   └─ Permission error → Step 3d
-│   │
-│   └─ MULTIPLE JOBS → Likely infrastructure
-│       ├─ Check platform status (status.databricks.com)
-│       ├─ Check workspace quotas (Admin Console)
-│       └─ Check network/VPN connectivity
-│
-└─ NO: Is it performance?
-    ├─ Slow queries → Check query plan, warehouse sizing
-    ├─ Slow cluster startup → Check instance availability
-    └─ Data freshness → Check upstream dependencies
+Databricks API returning errors?
+├─ YES: Is status.databricks.com showing incident?
+│   ├─ YES → Wait for Databricks to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
-### Step 3a: Cluster Failed to Start
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
 ```bash
-CLUSTER_ID="your-cluster-id"
+# Verify API key is set
+kubectl get secret databricks-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
-# Get termination reason
-databricks clusters get --cluster-id $CLUSTER_ID | \
-  jq '{state, termination_reason}'
+# Check if key was rotated
+# → Verify in Databricks dashboard
 
-# Check recent events
-databricks clusters events --cluster-id $CLUSTER_ID --limit 10 | \
-  jq '.events[] | "\(.timestamp): \(.type) — \(.details // "none")"'
-
-# Common fixes:
-# QUOTA_EXCEEDED → Terminate idle clusters
-# CLOUD_PROVIDER_LAUNCH_FAILURE → Check instance availability in region
-# DRIVER_UNREACHABLE → Network/security group issue
-
-# Quick fix: restart
-databricks clusters start --cluster-id $CLUSTER_ID
+# Remediation: Update secret and restart pods
+kubectl create secret generic databricks-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/databricks-integration
 ```
 
-### Step 3b: Code/Logic Error
+### 429 - Rate Limited
 ```bash
-RUN_ID="your-run-id"
+# Check rate limit headers
+curl -v https://api.databricks.com 2>&1 | grep -i rate
 
-# Get run details and error
-databricks runs get --run-id $RUN_ID | jq '{
-  state: .state,
-  tasks: [.tasks[]? | {key: .task_key, result: .state.result_state, error: .state.state_message}]
-}'
+# Enable request queuing
+kubectl set env deployment/databricks-integration RATE_LIMIT_MODE=queue
 
-# Get task output for failed tasks
-databricks runs get-output --run-id $RUN_ID | jq '{
-  error: .error,
-  trace: (.error_trace // "" | .[0:1000])
-}'
-
-# Repair failed tasks only (skip successful ones)
-databricks runs repair --run-id $RUN_ID --rerun-tasks FAILED
+# Long-term: Contact Databricks for limit increase
 ```
 
-### Step 3c: Data Quality Issue
-```sql
--- Quick data sanity check
-SELECT COUNT(*) AS total_rows,
-       COUNT(DISTINCT id) AS unique_ids,
-       SUM(CASE WHEN amount IS NULL THEN 1 ELSE 0 END) AS null_amounts,
-       MIN(created_at) AS oldest,
-       MAX(created_at) AS newest
-FROM prod_catalog.silver.orders
-WHERE created_at > current_timestamp() - INTERVAL 1 DAY;
-
--- Check recent table changes
-DESCRIBE HISTORY prod_catalog.silver.orders LIMIT 10;
-
--- Restore to previous version if corrupted
-RESTORE TABLE prod_catalog.silver.orders TO VERSION AS OF 5;
-```
-
-### Step 3d: Permission Error
+### 500/503 - Databricks Errors
 ```bash
-# Check current user
-databricks current-user me
+# Enable graceful degradation
+kubectl set env deployment/databricks-integration DATABRICKS_FALLBACK=true
 
-# Check job permissions
-databricks permissions get jobs --job-id $JOB_ID
+# Notify users of degraded service
+# Update status page
 
-# Fix permissions
-databricks permissions update jobs --job-id $JOB_ID --json '{
-  "access_control_list": [{
-    "user_name": "service-principal@company.com",
-    "permission_level": "CAN_MANAGE_RUN"
-  }]
-}'
+# Monitor Databricks status for resolution
 ```
 
-### Step 4: Communication
+## Communication Templates
 
-#### Internal (Slack)
+### Internal (Slack)
 ```
-:red_circle: **P1 INCIDENT: [Brief Description]**
-
-**Status:** INVESTIGATING
-**Impact:** [What data/users are affected]
-**Started:** [Time UTC]
-**Current Action:** [What you're doing now]
-**Next Update:** [+30 min]
-
-**IC:** @[your-name]
+🔴 P1 INCIDENT: Databricks Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
 ```
 
-#### External (Status Page)
+### External (Status Page)
 ```
-**Data Pipeline Delay**
-We are experiencing delays in data processing.
-Dashboard data may be up to [X] hours stale.
-Started: [Time] UTC
-Status: Actively investigating
-Next update: [Time] UTC
+Databricks Integration Issue
+
+We're experiencing issues with our Databricks integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
 ```
 
-### Step 5: Evidence Collection
+## Post-Incident
+
+### Evidence Collection
 ```bash
-#!/bin/bash
-INCIDENT_ID=$1
-RUN_ID=$2
-CLUSTER_ID=$3
+# Generate debug bundle
+./scripts/databricks-debug-bundle.sh
 
-mkdir -p "incident-$INCIDENT_ID"
+# Export relevant logs
+kubectl logs -l app=databricks-integration --since=1h > incident-logs.txt
 
-# Collect everything
-databricks runs get --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/run.json" 2>&1
-databricks runs get-output --run-id $RUN_ID --output json > "incident-$INCIDENT_ID/output.json" 2>&1
-
-if [ -n "$CLUSTER_ID" ]; then
-    databricks clusters get --cluster-id $CLUSTER_ID --output json > "incident-$INCIDENT_ID/cluster.json" 2>&1
-    databricks clusters events --cluster-id $CLUSTER_ID --limit 50 --output json > "incident-$INCIDENT_ID/events.json" 2>&1
-fi
-
-tar -czf "incident-$INCIDENT_ID.tar.gz" "incident-$INCIDENT_ID"
-echo "Evidence: incident-$INCIDENT_ID.tar.gz"
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=databricks_errors_total&start=2h" > metrics.json
 ```
 
-### Step 6: Postmortem Template
+### Postmortem Template
 ```markdown
-## Incident: [Title]
-
-**Date:** YYYY-MM-DD | **Duration:** Xh Ym | **Severity:** P[1-4]
-**IC:** [Name]
+## Incident: Databricks [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
 
 ### Summary
-[1-2 sentences: what happened and what was the impact]
+[1-2 sentence description]
 
-### Timeline (UTC)
-| Time | Event |
-|------|-------|
-| HH:MM | Alert fired / issue detected |
-| HH:MM | Investigation started |
-| HH:MM | Root cause identified |
-| HH:MM | Mitigation applied |
-| HH:MM | Resolved |
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
 
 ### Root Cause
 [Technical explanation]
 
 ### Impact
-- Tables affected: [list]
-- Data staleness: [hours]
-- Users affected: [count/teams]
+- Users affected: N
+- Revenue impact: $X
 
 ### Action Items
-| Priority | Action | Owner | Due |
-|----------|--------|-------|-----|
-| P1 | [Preventive fix] | [Name] | [Date] |
-| P2 | [Monitoring gap] | [Name] | [Date] |
+- [ ] [Preventive measure] - Owner - Due date
 ```
 
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Databricks-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
 ## Output
-- Issue triaged and severity assigned
-- Root cause identified via decision tree
-- Immediate remediation applied
-- Stakeholders notified with structured updates
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
 - Evidence collected for postmortem
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach API | Token expired or VPN down | Re-auth: `databricks auth login` |
-| `runs repair` fails | Run too old for repair | Create new run with same config |
-| `RESTORE TABLE` fails | VACUUM already cleaned old versions | Restore from backup or replay pipeline |
-| Cluster restart loops | Init script failing | Check cluster events for init script errors |
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
 ## Examples
 
-### One-Line Health Checks
+### One-Line Health Check
 ```bash
-# Last 5 runs for a job
-databricks runs list --job-id $JID --limit 5 | jq '.runs[] | "\(.state.result_state): \(.run_name)"'
-
-# Quick cluster restart
-databricks clusters restart --cluster-id $CID && echo "Restart initiated"
-
-# Cancel all active runs for a job
-databricks runs list --job-id $JID --active-only | jq -r '.runs[].run_id' | \
-  xargs -I{} databricks runs cancel --run-id {}
+curl -sf https://api.yourapp.com/health | jq '.services.databricks.status' || echo "UNHEALTHY"
 ```
 
 ## Resources
-- [Databricks Status](https://status.databricks.com)
-- [Support Portal](https://help.databricks.com)
-- [Community Forum](https://community.databricks.com)
+- [Databricks Status Page](https://status.databricks.com)
+- [Databricks Support](https://support.databricks.com)
 
 ## Next Steps
-For data handling and compliance, see `databricks-data-handling`.
+For data handling, see `databricks-data-handling`.

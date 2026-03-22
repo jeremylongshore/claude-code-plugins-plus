@@ -1,49 +1,142 @@
 ---
 name: retellai-security-basics
 description: |
-  Retell AI security basics — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell security basics", "retellai-security-basics", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Apply Retell AI security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Retell AI security configuration.
+  Trigger with phrases like "retellai security", "retellai secrets",
+  "secure retellai", "retellai API key security".
+allowed-tools: Read, Write, Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
 # Retell AI Security Basics
 
 ## Overview
-Implementation patterns for Retell AI security basics — voice agent and telephony platform.
+Security best practices for Retell AI API keys, tokens, and access control.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
+- Retell AI SDK installed
+- Understanding of environment variables
+- Access to Retell AI dashboard
 
 ## Instructions
 
-### Step 1: SDK Pattern
-```typescript
-import Retell from 'retell-sdk';
-const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+### Step 1: Configure Environment Variables
+```bash
+# .env (NEVER commit to git)
+RETELLAI_API_KEY=sk_live_***
+RETELLAI_SECRET=***
 
-const agents = await retell.agent.list();
-console.log(`Agents: ${agents.length}`);
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Retell AI dashboard
+# 2. Update environment variable
+export RETELLAI_API_KEY="new_key_here"
+
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${RETELLAI_API_KEY}" \
+  https://api.retellai.com/health
+
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
+
 ## Output
-- Retell AI integration for security basics
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 400 Bad Request | Invalid parameters | Check API documentation |
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new RetellAIClient({
+    apiKey: process.env.RETELLAI_READ_KEY,
+  }),
+  writer: new RetellAIClient({
+    apiKey: process.env.RETELLAI_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Retell AI analytics
+  await retellaiClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'retellai.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-- [Retell AI Documentation](https://docs.retellai.com)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [Retell AI Security Guide](https://docs.retellai.com/security)
+- [Retell AI API Scopes](https://docs.retellai.com/scopes)
 
 ## Next Steps
-See related Retell AI skills for more workflows.
+For production deployment, see `retellai-prod-checklist`.

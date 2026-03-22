@@ -1,48 +1,73 @@
 ---
 name: together-core-workflow-b
 description: |
-  Together AI core workflow b for inference, fine-tuning, and model deployment.
-  Use when working with Together AI's OpenAI-compatible API.
-  Trigger: "together core workflow b".
-allowed-tools: Read, Write, Edit, Bash(pip:*), Grep
+  Execute Together AI secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "together secondary workflow",
+  "secondary task with together".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, inference, together]
 compatible-with: claude-code
+tags: [saas, together]
 ---
 
 # Together AI Core Workflow B
 
 ## Overview
+Secondary workflow for Together AI. Complements the primary workflow.
 
-Guidance for core workflow b with Together AI inference and fine-tuning API.
+## Prerequisites
+- Completed `together-install-auth` setup
+- Familiarity with `together-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Key Points
+### Step 1: Setup
+```typescript
+// Step 1 implementation
+```
 
-- Together AI is OpenAI-compatible: `base_url = 'https://api.together.xyz/v1'`
-- Use the `together` Python SDK or any OpenAI client library
-- Supports 100+ open-source models (Llama, Mixtral, Qwen, FLUX)
-- Fine-tuning available for supported models
-- Batch inference at 50% cost reduction
+### Step 2: Process
+```typescript
+// Step 2 implementation
+```
+
+### Step 3: Complete
+```typescript
+// Step 3 implementation
+```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Together AI API
+- Success confirmation or error details
 
 ## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Check at api.together.xyz |
-| `Model not found` | Wrong model ID | Use `client.models.list()` |
-| `429 Rate limit` | Too many requests | Implement backoff |
-| `500 Server error` | Model overloaded | Retry with backoff |
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [Together AI Docs](https://docs.together.ai/)
-- [API Reference](https://docs.together.ai/reference/chat-completions-1)
-- [Model List](https://docs.together.ai/docs/inference-models)
+- [Together AI Documentation](https://docs.together.com)
+- [Together AI API Reference](https://docs.together.com/api)
 
 ## Next Steps
-
-See related Together AI skills for more patterns.
+For common errors, see `together-common-errors`.

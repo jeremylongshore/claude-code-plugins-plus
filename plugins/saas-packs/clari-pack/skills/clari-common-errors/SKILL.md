@@ -1,112 +1,113 @@
 ---
 name: clari-common-errors
 description: |
-  Diagnose and fix Clari API errors including auth failures, export issues, and data mismatches.
-  Use when Clari API calls fail, exports return empty data,
-  or forecast numbers do not match the UI.
-  Trigger with phrases like "clari error", "clari not working",
-  "clari api failure", "fix clari", "debug clari".
-allowed-tools: Read, Bash(curl:*), Grep
+  Diagnose and fix Clari common errors and exceptions.
+  Use when encountering Clari errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "clari error", "fix clari",
+  "clari not working", "debug clari".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
+tags: [saas, clari]
 ---
 
 # Clari Common Errors
 
 ## Overview
+Quick reference for the top 10 most common Clari errors and their solutions.
 
-Diagnostic guide for the most common Clari API issues: authentication failures, empty exports, job timeouts, and data discrepancies.
+## Prerequisites
+- Clari SDK installed
+- API credentials configured
+- Access to error logs
 
-## Error Reference
+## Instructions
 
-### 1. 401 Unauthorized
-```
-{"error": "Unauthorized", "message": "Invalid API key"}
-```
-**Fix**: Regenerate token at Clari > User Settings > API Token. Tokens may expire or be revoked by admins.
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-### 2. 403 Forbidden -- API Access Not Enabled
-```
-{"error": "Forbidden", "message": "API access not enabled for this user"}
-```
-**Fix**: Contact your Clari admin to enable API access. Requires enterprise plan.
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-### 3. 404 Forecast Not Found
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
 ```
-{"error": "Not Found", "message": "Forecast 'wrong_name' not found"}
+Authentication error: Invalid API key
 ```
-**Fix**: List available forecasts first:
+
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
 ```bash
-curl -s -H "apikey: ${CLARI_API_KEY}" \
-  https://api.clari.com/v4/export/forecast/list | jq '.forecasts[].forecastName'
+# Verify API key is set
+echo $CLARI_API_KEY
 ```
 
-### 4. Export Returns Empty Entries
-The API returns `{"entries": []}` with no error.
+---
 
-**Causes:**
-- Time period has no submitted forecasts
-- User lacks visibility into the forecast hierarchy
-- Wrong forecast name (case-sensitive)
-
-**Fix**: Verify in Clari UI that the forecast has submissions for the requested period.
-
-### 5. Job Stuck in PENDING
-Export job never reaches COMPLETED status.
-
-**Causes:**
-- Very large export (all reps, all periods)
-- Clari backend queue congestion
-
-**Fix**: Increase polling timeout. Break large exports into per-period batches.
-
-### 6. Data Mismatch Between API and UI
-Forecast numbers from API do not match what is shown in Clari UI.
-
-**Causes:**
-- API exports submitted calls, UI may show latest-edited values
-- Currency conversion differences
-- Time period boundary differences (calendar vs fiscal)
-
-**Fix**: Use `includeHistorical: true` to get all submission versions. Match the exact time period label from the UI.
-
-### 7. Copilot API OAuth Errors
+### Rate Limit Exceeded
+**Error Message:**
 ```
-{"error": "invalid_client"}
+Rate limit exceeded. Please retry after X seconds.
 ```
-**Fix**: The Copilot API uses OAuth2, not API key auth. Register your app at https://api-doc.copilot.clari.com and use client credentials flow.
 
-### 8. Rate Limit Exceeded
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `clari-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
 ```
-HTTP 429 Too Many Requests
+Request timeout after 30000ms
 ```
-**Fix**: Implement exponential backoff. See `clari-rate-limits` for patterns.
 
-## Quick Diagnostic Commands
+**Cause:** Network connectivity or server latency issues.
 
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
 ```bash
-# Test API key
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "apikey: ${CLARI_API_KEY}" \
-  https://api.clari.com/v4/export/forecast/list
+# Check Clari status
+curl -s https://status.clari.com
 
-# List all forecasts
-curl -s -H "apikey: ${CLARI_API_KEY}" \
-  https://api.clari.com/v4/export/forecast/list | jq .
+# Verify API connectivity
+curl -I https://api.clari.com
 
-# Check running jobs
-curl -s -H "apikey: ${CLARI_API_KEY}" \
-  https://api.clari.com/v4/export/jobs | jq '.jobs[] | {jobId, status, createdAt}'
+# Check local configuration
+env | grep CLARI
 ```
+
+### Escalation Path
+1. Collect evidence with `clari-debug-bundle`
+2. Check Clari status page
+3. Contact support with request ID
 
 ## Resources
-
-- [Clari Developer Portal](https://developer.clari.com)
-- [Clari Community](https://community.clari.com)
+- [Clari Status Page](https://status.clari.com)
+- [Clari Support](https://docs.clari.com/support)
+- [Clari Error Codes](https://docs.clari.com/errors)
 
 ## Next Steps
-
-For comprehensive diagnostics, see `clari-debug-bundle`.
+For comprehensive debugging, see `clari-debug-bundle`.

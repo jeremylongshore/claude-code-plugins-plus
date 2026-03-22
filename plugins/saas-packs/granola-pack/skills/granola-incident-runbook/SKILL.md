@@ -1,231 +1,205 @@
 ---
 name: granola-incident-runbook
 description: |
-  Incident response procedures for Granola meeting capture failures and outages.
-  Use when meetings aren't recording, transcription fails mid-meeting,
-  integrations stop syncing, or the Granola service is down.
-  Trigger: "granola incident", "granola outage", "granola down",
-  "granola not recording", "granola emergency".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(pgrep:*), Bash(pkill:*), Bash(open:*)
+  Execute Granola incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Granola-related outages, investigating errors,
+  or running post-incident reviews for Granola integration failures.
+  Trigger with phrases like "granola incident", "granola outage",
+  "granola down", "granola on-call", "granola emergency", "granola broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, incident-response]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
+
 # Granola Incident Runbook
 
 ## Overview
-Standard operating procedures for Granola incidents — from individual recording failures to organization-wide outages. Covers triage, remediation, communication, escalation, and post-incident review. Designed for IT admins, team leads, and individual users.
+Rapid incident response procedures for Granola-related outages.
 
 ## Prerequisites
-- Granola admin access (for org-level incidents)
-- Bookmark [status.granola.ai](https://status.granola.ai) for service status
-- Internal communication channel identified (#granola-support or similar)
+- Access to Granola dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Granola API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Granola status
+curl -s https://status.granola.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.granola'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(granola_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=granola-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Granola API returning errors?
+├─ YES: Is status.granola.com showing incident?
+│   ├─ YES → Wait for Granola to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret granola-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Granola dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic granola-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/granola-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.granola.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/granola-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Granola for limit increase
+```
+
+### 500/503 - Granola Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/granola-integration GRANOLA_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Granola status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Granola Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Granola Integration Issue
+
+We're experiencing issues with our Granola integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/granola-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=granola-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=granola_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Granola [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1 — Triage: Assess Severity
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-```bash
-# Quick status check
-curl -s "https://status.granola.ai/api/v2/status.json" 2>/dev/null | python3 -c "
-import json, sys
-try:
-    data = json.load(sys.stdin)
-    indicator = data.get('status', {}).get('indicator', 'unknown')
-    desc = data.get('status', {}).get('description', 'Unknown')
-    print(f'Status: {indicator} — {desc}')
-except:
-    print('Cannot reach status page — possible network issue')
-" || echo "Network error — check internet connection"
-```
+### Step 2: Follow Decision Tree
+Determine if the issue is Granola-side or internal.
 
-| Severity | Description | Response Time | Example |
-|----------|-------------|---------------|---------|
-| **P1 Critical** | Org-wide outage, data loss risk | Immediate | Granola service down, no one can record |
-| **P2 High** | Multiple users affected | < 1 hour | Recording fails for a team, sync broken |
-| **P3 Medium** | Single user issue | < 4 hours | One person's transcription stopped |
-| **P4 Low** | Minor issue, workaround exists | < 24 hours | UI glitch, slow processing |
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-**Scope assessment questions:**
-1. Is it just you, or are others affected too? → Ask in #granola-support
-2. Is [status.granola.ai](https://status.granola.ai) showing an incident? → P1/P2 if yes
-3. Was it working earlier today? → Recent change (OS update, permissions) likely
-4. Which platform? (Zoom/Meet/Teams) → Platform-specific audio routing
-
-### Step 2 — Remediation by Incident Type
-
----
-
-#### Incident: "Meeting Not Recording"
-
-**Severity:** P3 (single user) or P2 (team-wide)
-
-**Immediate actions:**
-1. Click Granola menu bar icon > **Start Recording** (manual override)
-2. If manual start fails:
-   - Check that the meeting has audio playing
-   - Verify Granola is running: `pgrep -l Granola`
-   - Restart: right-click menu bar icon > **Restart Granola**
-
-**Root cause investigation:**
-- [ ] Calendar event has a video conferencing link (Zoom/Meet/Teams)
-- [ ] Calendar is connected in Settings > Calendar
-- [ ] Microphone permission granted
-- [ ] Screen & System Audio Recording permission granted (macOS)
-- [ ] Not running conflicting audio software (Loopback, BlackHole)
-
-**Backup:** Take manual notes. After fixing, re-record the next meeting.
-
----
-
-#### Incident: "Transcription Stops Mid-Meeting"
-
-**Severity:** P3
-
-**Immediate actions:**
-1. Check: is the computer awake? (Sleep kills transcription)
-2. Right-click Granola icon > **Restart Granola**
-3. Reopen your note — transcription may resume
-4. If using Bluetooth: switch to wired audio or built-in speakers
-
-**Root cause:** Granola stops transcription after ~15 minutes of no detected audio. Bluetooth devices can cause intermittent dropouts.
-
----
-
-#### Incident: "Enhancement/Processing Failed"
-
-**Severity:** P3
-
-**Immediate actions:**
-1. Wait 15 minutes — long meetings take longer to process
-2. Check internet connectivity
-3. Check [status.granola.ai](https://status.granola.ai) for service issues
-4. Restart Granola and reopen the note
-5. Click **Enhance Notes** again
-
-**If still failing after 30 minutes:** The transcript was captured but enhancement may be queued. Submit support ticket with the meeting date/time.
-
----
-
-#### Incident: "Integration Not Syncing" (Slack/Notion/HubSpot)
-
-**Severity:** P3
-
-**Immediate actions:**
-1. Settings > Integrations > check the target integration status
-2. Disconnect and reconnect the integration
-3. Re-share the note manually
-4. For Zapier: check Zap history at zapier.com for errors
-
-**Common causes:**
-| Integration | Likely Cause | Fix |
-|-------------|-------------|-----|
-| Slack | Bot removed from channel | `/invite @Granola` in the channel |
-| Notion | Database deleted | Reconnect (new database created) |
-| HubSpot | OAuth token expired | Reconnect in Settings |
-| Zapier | Connection expired | Re-authenticate Granola in Zapier |
-
----
-
-#### Incident: "Granola Service Outage" (P1)
-
-**Severity:** P1 Critical
-
-**Immediate actions:**
-1. Confirm at [status.granola.ai](https://status.granola.ai)
-2. Switch to **backup note-taking** immediately:
-   - Open a text editor or Google Doc
-   - Take manual notes for active meetings
-   - Notes can be combined with future Granola captures manually
-3. Communicate to your team via Slack:
-
-```
-:rotating_light: Granola is currently experiencing a service outage.
-
-Status: https://status.granola.ai
-Impact: Meeting recordings and AI enhancement are unavailable.
-
-Workaround: Take notes manually in Google Docs or your preferred editor.
-I'll update when service is restored.
-
-Next update: [time + 30 min]
-```
-
-4. Subscribe to status updates at status.granola.ai
-5. Resume normal operation when status returns to Operational
-
-### Step 3 — Escalation Path
-
-```
-Level 1: User Self-Service
-  → Restart Granola, check permissions, verify audio
-  → Time: 5 minutes
-
-Level 2: IT Support / Team Admin
-  → Run debug bundle (granola-debug-bundle)
-  → Check org-wide status, verify SSO/SCIM
-  → Time: 15-30 minutes
-
-Level 3: Granola Support
-  → Submit ticket at help.granola.ai
-  → Attach debug bundle
-  → Enterprise: Priority support, dedicated contact
-  → Time: 1-24 hours depending on severity
-
-Level 4: Granola Engineering (P1 only)
-  → Escalated by Granola Support for service outages
-  → Status page updates provided by Granola team
-```
-
-### Step 4 — Post-Incident Review
-
-After resolution, document:
-
-```markdown
-## Post-Incident Report
-
-**Date:** YYYY-MM-DD
-**Severity:** P1/P2/P3/P4
-**Duration:** [start time] — [resolution time]
-**Impact:** [# users affected, # meetings missed]
-
-**Timeline:**
-- HH:MM — Issue first reported
-- HH:MM — Triage and severity assigned
-- HH:MM — Workaround communicated
-- HH:MM — Root cause identified
-- HH:MM — Fix applied / service restored
-
-**Root Cause:** [description]
-**Resolution:** [what fixed it]
-**Prevention:** [what to change to prevent recurrence]
-**Action Items:**
-- [ ] [who] [what] [by when]
-```
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Incident triaged and severity assigned
-- Remediation applied or workaround enabled
-- Stakeholders notified with status updates
-- Post-incident review documented with prevention actions
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
-| Scenario | First Response |
-|----------|---------------|
-| Can't reach status.granola.ai | Check your internet; try from phone network |
-| Restart doesn't fix recording | Force quit (`pkill -9 Granola`), clear caches, relaunch |
-| Multiple users reporting same issue | Likely P1/P2 — check status page, post to team Slack |
-| Issue persists after all troubleshooting | Create debug bundle, submit to help@granola.ai |
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.granola.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-- [Granola Status Page](https://status.granola.ai)
-- [Help Center](https://help.granola.ai)
-- [Transcription Troubleshooting](https://docs.granola.ai/help-center/troubleshooting/transcription-issues)
-- [Granola Updates (Known Issues)](https://www.granola.ai/updates)
+- [Granola Status Page](https://status.granola.com)
+- [Granola Support](https://support.granola.com)
 
 ## Next Steps
-Proceed to `granola-data-handling` for data export, retention, and GDPR compliance.
+For data handling, see `granola-data-handling`.

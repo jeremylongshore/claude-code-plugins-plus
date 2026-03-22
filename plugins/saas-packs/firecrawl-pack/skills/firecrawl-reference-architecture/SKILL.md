@@ -1,248 +1,240 @@
 ---
 name: firecrawl-reference-architecture
 description: |
-  Implement Firecrawl reference architecture with scrape/crawl/map/extract pipelines.
-  Use when designing new Firecrawl integrations, reviewing project structure,
-  or building content ingestion pipelines for AI/RAG applications.
-  Trigger with phrases like "firecrawl architecture", "firecrawl project structure",
-  "firecrawl pipeline", "firecrawl RAG", "firecrawl knowledge base".
+  Implement FireCrawl reference architecture with best-practice project layout.
+  Use when designing new FireCrawl integrations, reviewing project structure,
+  or establishing architecture standards for FireCrawl applications.
+  Trigger with phrases like "firecrawl architecture", "firecrawl best practices",
+  "firecrawl project structure", "how to organize firecrawl", "firecrawl layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, firecrawl, firecrawl-reference]
-
+compatible-with: claude-code
+tags: [saas, firecrawl]
 ---
-# Firecrawl Reference Architecture
+
+# FireCrawl Reference Architecture
 
 ## Overview
-Production architecture for web scraping and content ingestion with Firecrawl. Covers three tiers: on-demand scraping, scheduled crawl pipelines, and real-time RAG ingestion. Uses all four Firecrawl endpoints: scrape, crawl, map, and extract.
+Production-ready architecture patterns for FireCrawl integrations.
 
-## Architecture Diagram
+## Prerequisites
+- Understanding of layered architecture
+- FireCrawl SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                   Firecrawl Pipeline                     │
-│                                                          │
-│  ┌──────────┐  ┌──────────┐  ┌──────┐  ┌───────────┐   │
-│  │ scrapeUrl│  │ crawlUrl │  │mapUrl│  │ extract   │   │
-│  │ (1 page) │  │ (N pages)│  │(URLs)│  │ (LLM+JSON)│   │
-│  └────┬─────┘  └────┬─────┘  └──┬───┘  └─────┬─────┘   │
-│       │              │            │            │          │
-│       ▼              ▼            ▼            ▼          │
-│  ┌───────────────────────────────────────────────────┐   │
-│  │            Content Processing Layer                │   │
-│  │  Clean MD │ Validate │ Deduplicate │ Chunk        │   │
-│  └─────────────────────┬─────────────────────────────┘   │
-│                         │                                 │
-│  ┌─────────────────────┴─────────────────────────────┐   │
-│  │              Storage & Output                      │   │
-│  │  Files │ Database │ Vector Store │ Search Index    │   │
-│  └───────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────┘
+my-firecrawl-project/
+├── src/
+│   ├── firecrawl/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── firecrawl/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── firecrawl/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── firecrawl/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── firecrawl/
+│   └── integration/
+│       └── firecrawl/
+├── config/
+│   ├── firecrawl.development.json
+│   ├── firecrawl.staging.json
+│   └── firecrawl.production.json
+└── docs/
+    └── firecrawl/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          FireCrawl Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/firecrawl/client.ts
+export class FireCrawlService {
+  private client: FireCrawlClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: FireCrawlConfig) {
+    this.client = new FireCrawlClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('firecrawl');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/firecrawl/errors.ts
+export class FireCrawlServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'FireCrawlServiceError';
+  }
+}
+
+export function wrapFireCrawlError(error: unknown): FireCrawlServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/firecrawl/health.ts
+export async function checkFireCrawlHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await firecrawlClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ FireCrawl    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ FireCrawl    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/firecrawl.ts
+export interface FireCrawlConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadFireCrawlConfig(): FireCrawlConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./firecrawl.${env}.json`);
+}
 ```
 
 ## Instructions
 
-### Step 1: Firecrawl Service Layer
-```typescript
-// src/firecrawl/service.ts
-import FirecrawlApp from "@mendable/firecrawl-js";
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-const firecrawl = new FirecrawlApp({
-  apiKey: process.env.FIRECRAWL_API_KEY!,
-});
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-// Single page scrape
-export async function scrapePage(url: string) {
-  return firecrawl.scrapeUrl(url, {
-    formats: ["markdown"],
-    onlyMainContent: true,
-    waitFor: 2000,
-  });
-}
+### Step 3: Add Error Handling
+Implement custom error classes for FireCrawl operations.
 
-// Site-wide crawl with safety limits
-export async function crawlSite(baseUrl: string, opts?: {
-  maxPages?: number;
-  paths?: string[];
-  excludePaths?: string[];
-}) {
-  return firecrawl.crawlUrl(baseUrl, {
-    limit: opts?.maxPages || 50,
-    maxDepth: 3,
-    includePaths: opts?.paths,
-    excludePaths: opts?.excludePaths || ["/blog/*", "/news/*"],
-    scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
-  });
-}
+### Step 4: Configure Health Checks
+Add health check endpoint for FireCrawl connectivity.
 
-// Fast URL discovery
-export async function discoverUrls(baseUrl: string) {
-  const map = await firecrawl.mapUrl(baseUrl);
-  return map.links || [];
-}
-
-// Structured data extraction
-export async function extractData(url: string, schema: object) {
-  return firecrawl.scrapeUrl(url, {
-    formats: ["extract"],
-    extract: { schema },
-  });
-}
-```
-
-### Step 2: Content Processing Pipeline
-```typescript
-// src/pipeline/processor.ts
-import { createHash } from "crypto";
-
-interface ProcessedPage {
-  url: string;
-  title: string;
-  markdown: string;
-  contentHash: string;
-  wordCount: number;
-  chunks: string[];
-}
-
-export function processPage(page: any): ProcessedPage | null {
-  const markdown = cleanMarkdown(page.markdown || "");
-  if (markdown.length < 100) return null; // skip thin content
-
-  return {
-    url: page.metadata?.sourceURL || "",
-    title: page.metadata?.title || "",
-    markdown,
-    contentHash: createHash("sha256").update(markdown).digest("hex"),
-    wordCount: markdown.split(/\s+/).length,
-    chunks: chunkMarkdown(markdown, 1000),
-  };
-}
-
-function cleanMarkdown(md: string): string {
-  return md
-    .replace(/\n{3,}/g, "\n\n")
-    .replace(/\[.*?\]\(javascript:.*?\)/g, "")
-    .replace(/<!--[\s\S]*?-->/g, "")
-    .trim();
-}
-
-function chunkMarkdown(md: string, maxWords: number): string[] {
-  const sections = md.split(/\n##\s/);
-  const chunks: string[] = [];
-  let current = "";
-
-  for (const section of sections) {
-    if (current.split(/\s+/).length + section.split(/\s+/).length > maxWords) {
-      if (current) chunks.push(current.trim());
-      current = section;
-    } else {
-      current += "\n## " + section;
-    }
-  }
-  if (current) chunks.push(current.trim());
-  return chunks;
-}
-```
-
-### Step 3: Map + Selective Scrape Pipeline
-```typescript
-// src/pipeline/intelligent-scrape.ts
-export async function intelligentScrape(siteUrl: string, opts: {
-  pathFilter: string;
-  maxPages: number;
-}) {
-  // 1. Map site structure (1 credit)
-  const allUrls = await discoverUrls(siteUrl);
-  const relevant = allUrls.filter(url => url.includes(opts.pathFilter));
-
-  console.log(`Map: ${allUrls.length} total, ${relevant.length} match "${opts.pathFilter}"`);
-
-  // 2. Batch scrape relevant URLs (N credits)
-  const targets = relevant.slice(0, opts.maxPages);
-  const result = await firecrawl.batchScrapeUrls(targets, {
-    formats: ["markdown"],
-    onlyMainContent: true,
-  });
-
-  // 3. Process and deduplicate
-  const seen = new Set<string>();
-  const processed = (result.data || [])
-    .map(processPage)
-    .filter((p): p is ProcessedPage => {
-      if (!p || seen.has(p.contentHash)) return false;
-      seen.add(p.contentHash);
-      return true;
-    });
-
-  return { total: allUrls.length, scraped: targets.length, processed: processed.length, pages: processed };
-}
-```
-
-### Step 4: Async Crawl with Storage
-```typescript
-// src/pipeline/crawl-pipeline.ts
-import { writeFileSync, mkdirSync } from "fs";
-
-export async function crawlAndStore(baseUrl: string, outputDir: string) {
-  mkdirSync(outputDir, { recursive: true });
-
-  const crawl = await firecrawl.crawlUrl(baseUrl, {
-    limit: 100,
-    scrapeOptions: { formats: ["markdown"], onlyMainContent: true },
-  });
-
-  const manifest = (crawl.data || [])
-    .map(processPage)
-    .filter((p): p is ProcessedPage => p !== null)
-    .map(page => {
-      const slug = new URL(page.url).pathname
-        .replace(/\//g, "_").replace(/^_|_$/g, "") || "index";
-      writeFileSync(`${outputDir}/${slug}.md`, page.markdown);
-      return { url: page.url, file: `${slug}.md`, words: page.wordCount, chunks: page.chunks.length };
-    });
-
-  writeFileSync(`${outputDir}/manifest.json`, JSON.stringify(manifest, null, 2));
-  return manifest;
-}
-```
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Timeout on scrape | JS-heavy page | Increase `waitFor` or use `actions` |
-| Empty markdown | Content behind paywall | Try different URL or authenticated scrape |
-| Crawl incomplete | Hit page limit | Increase `limit` or use `includePaths` |
-| Duplicate content | URL aliases or redirects | Hash content for deduplication |
-| Map returns few URLs | Site has no sitemap | Use `crawlUrl` for thorough discovery |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add FireCrawl types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-### Documentation Scraper
-```typescript
-const docs = await intelligentScrape("https://docs.firecrawl.dev", {
-  pathFilter: "/features/",
-  maxPages: 20,
-});
-console.log(`Scraped ${docs.processed} unique pages from ${docs.total} discovered`);
-```
-
-### RAG Knowledge Base Builder
-```typescript
-const pages = await crawlAndStore("https://docs.example.com", "./knowledge-base");
-// Feed chunks to vector store for RAG
-for (const page of pages) {
-  // Each page has pre-chunked content ready for embedding
-}
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/firecrawl/{handlers} src/services/firecrawl src/api/firecrawl
+touch src/firecrawl/{client,config,types,errors}.ts
+touch src/services/firecrawl/{index,sync,cache}.ts
 ```
 
 ## Resources
-- [Firecrawl API Reference](https://docs.firecrawl.dev/api-reference/introduction)
-- [Scrape Endpoint](https://docs.firecrawl.dev/features/scrape)
-- [Crawl Endpoint](https://docs.firecrawl.dev/features/crawl)
-- [Map Endpoint](https://docs.firecrawl.dev/features/map)
+- [FireCrawl SDK Documentation](https://docs.firecrawl.com/sdk)
+- [FireCrawl Best Practices](https://docs.firecrawl.com/best-practices)
 
-## Next Steps
+## Flagship Skills
 For multi-environment setup, see `firecrawl-multi-env-setup`.

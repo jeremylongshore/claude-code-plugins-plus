@@ -1,299 +1,224 @@
 ---
 name: cohere-enterprise-rbac
 description: |
-  Configure Cohere enterprise API key management, role-based access, and org controls.
-  Use when implementing multi-team API key management, per-team usage limits,
+  Configure Cohere enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
   or setting up organization-level controls for Cohere.
-  Trigger with phrases like "cohere enterprise", "cohere RBAC",
-  "cohere team keys", "cohere org management", "cohere access control".
+  Trigger with phrases like "cohere SSO", "cohere RBAC",
+  "cohere enterprise", "cohere roles", "cohere permissions", "cohere SAML".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, nlp, cohere]
 compatible-with: claude-code
+tags: [saas, cohere]
 ---
 
 # Cohere Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Cohere API v2 with multi-team API key management, per-team model/budget restrictions, and audit trails.
+Configure enterprise-grade access control for Cohere integrations.
 
 ## Prerequisites
-- Cohere production API keys
-- Understanding of your team/service structure
-- Secret management infrastructure
+- Cohere Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-## Cohere Access Model
+## Role Definitions
 
-Cohere uses **API key-based** access control (no built-in RBAC or SSO). Enterprise patterns are implemented in your application layer.
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-| Cohere Feature | Availability |
-|----------------|-------------|
-| API key auth | All tiers |
-| Multiple API keys | Via dashboard |
-| Per-key rate limits | Production: 1000/min |
-| Usage dashboard | dashboard.cohere.com |
-| SSO/SAML | Not available (API key only) |
-| Per-key scoping | Not available |
-
-## Instructions
-
-### Step 1: Multi-Team Key Strategy
+## Role Implementation
 
 ```typescript
-// Each team gets their own API key for tracking and revocation
-interface TeamConfig {
-  name: string;
-  apiKeyEnvVar: string;
-  allowedModels: string[];
-  maxTokensPerCall: number;
-  dailyBudgetUSD: number;
+enum CohereRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-const teamConfigs: Record<string, TeamConfig> = {
-  search: {
-    name: 'Search Team',
-    apiKeyEnvVar: 'CO_API_KEY_SEARCH',
-    allowedModels: ['embed-v4.0', 'rerank-v3.5', 'command-r-08-2024'],
-    maxTokensPerCall: 1000,
-    dailyBudgetUSD: 50,
-  },
-  chatbot: {
-    name: 'Chatbot Team',
-    apiKeyEnvVar: 'CO_API_KEY_CHATBOT',
-    allowedModels: ['command-a-03-2025', 'command-r7b-12-2024'],
-    maxTokensPerCall: 4096,
-    dailyBudgetUSD: 200,
-  },
-  ml: {
-    name: 'ML Team',
-    apiKeyEnvVar: 'CO_API_KEY_ML',
-    allowedModels: ['embed-v4.0', 'embed-multilingual-v3.0'],
-    maxTokensPerCall: 500,
-    dailyBudgetUSD: 100,
-  },
+interface CoherePermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<CohereRole, CoherePermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: CohereRole,
+  action: keyof CoherePermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Cohere SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://cohere.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/cohere/callback',
+};
+
+// Map IdP groups to Cohere roles
+const groupRoleMapping: Record<string, CohereRole> = {
+  'Engineering': CohereRole.Developer,
+  'Platform-Admins': CohereRole.Admin,
+  'Data-Team': CohereRole.Viewer,
 };
 ```
 
-### Step 2: Team-Scoped Client Factory
+### OAuth2/OIDC Integration
 
 ```typescript
-import { CohereClientV2 } from 'cohere-ai';
+import { OAuth2Client } from '@cohere/sdk';
 
-const clients = new Map<string, CohereClientV2>();
-
-export function getCohereForTeam(teamId: string): CohereClientV2 {
-  if (!clients.has(teamId)) {
-    const config = teamConfigs[teamId];
-    if (!config) throw new Error(`Unknown team: ${teamId}`);
-
-    const apiKey = process.env[config.apiKeyEnvVar];
-    if (!apiKey) throw new Error(`${config.apiKeyEnvVar} not set for team ${teamId}`);
-
-    clients.set(teamId, new CohereClientV2({ token: apiKey }));
-  }
-  return clients.get(teamId)!;
-}
+const oauthClient = new OAuth2Client({
+  clientId: process.env.COHERE_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.COHERE_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/cohere/callback',
+  scopes: ['read', 'write'],
+});
 ```
 
-### Step 3: Model Access Enforcement
+## Organization Management
 
 ```typescript
-function enforceModelAccess(teamId: string, requestedModel: string): void {
-  const config = teamConfigs[teamId];
-  if (!config) throw new Error(`Unknown team: ${teamId}`);
-
-  if (!config.allowedModels.includes(requestedModel)) {
-    throw new Error(
-      `Team ${config.name} is not authorized to use model ${requestedModel}. ` +
-      `Allowed: ${config.allowedModels.join(', ')}`
-    );
-  }
+interface CohereOrganization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: CohereRole;
 }
 
-// Enforced chat wrapper
-export async function teamChat(
-  teamId: string,
-  message: string,
-  model: string
-): Promise<string> {
-  enforceModelAccess(teamId, model);
-
-  const config = teamConfigs[teamId];
-  const cohere = getCohereForTeam(teamId);
-
-  const response = await cohere.chat({
-    model,
-    messages: [{ role: 'user', content: message }],
-    maxTokens: config.maxTokensPerCall,
+async function createOrganization(
+  config: CohereOrganization
+): Promise<void> {
+  await cohereClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
   });
-
-  return response.message?.content?.[0]?.text ?? '';
 }
 ```
 
-### Step 4: Per-Team Budget Enforcement
+## Access Control Middleware
 
 ```typescript
-class TeamBudgetTracker {
-  private dailySpend = new Map<string, number>();
-  private lastReset = new Date();
+function requireCoherePermission(
+  requiredPermission: keyof CoherePermissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { cohereRole: CohereRole };
 
-  track(teamId: string, tokens: { input: number; output: number }): void {
-    // Reset daily at midnight
-    const now = new Date();
-    if (now.getDate() !== this.lastReset.getDate()) {
-      this.dailySpend.clear();
-      this.lastReset = now;
+    if (!checkPermission(user.cohereRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
     }
 
-    const current = this.dailySpend.get(teamId) ?? 0;
-    // Rough cost estimate per 1M tokens (check cohere.com/pricing)
-    const cost = (tokens.input / 1_000_000) * 0.5 + (tokens.output / 1_000_000) * 1.5;
-    this.dailySpend.set(teamId, current + cost);
-  }
-
-  canProceed(teamId: string): boolean {
-    const config = teamConfigs[teamId];
-    if (!config) return false;
-    const spent = this.dailySpend.get(teamId) ?? 0;
-    return spent < config.dailyBudgetUSD;
-  }
-
-  getSpend(teamId: string): number {
-    return this.dailySpend.get(teamId) ?? 0;
-  }
-}
-
-const budgetTracker = new TeamBudgetTracker();
-
-// Budget-enforced call
-export async function budgetedChat(teamId: string, message: string, model: string): Promise<string> {
-  if (!budgetTracker.canProceed(teamId)) {
-    throw new Error(`Team ${teamId} has exceeded daily budget of $${teamConfigs[teamId].dailyBudgetUSD}`);
-  }
-
-  const response = await teamChat(teamId, message, model);
-
-  // Track usage after successful call
-  // Note: actual usage comes from response.usage.billedUnits
-  return response;
-}
-```
-
-### Step 5: API Gateway Middleware
-
-```typescript
-import { Request, Response, NextFunction } from 'express';
-
-// Extract team from auth header or JWT
-function extractTeamId(req: Request): string {
-  const apiKey = req.headers['x-api-key'] as string;
-  // Map API keys to teams (store in DB, not code)
-  const teamMap = new Map<string, string>([
-    ['search-api-key-hash', 'search'],
-    ['chatbot-api-key-hash', 'chatbot'],
-    ['ml-api-key-hash', 'ml'],
-  ]);
-
-  const teamId = teamMap.get(apiKey);
-  if (!teamId) throw new Error('Invalid API key');
-  return teamId;
-}
-
-function cohereAccessControl(allowedEndpoints: string[]) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const teamId = extractTeamId(req);
-
-      // Check budget
-      if (!budgetTracker.canProceed(teamId)) {
-        return res.status(429).json({ error: 'Daily budget exceeded' });
-      }
-
-      // Attach team context
-      (req as any).cohereTeam = teamId;
-      next();
-    } catch (err) {
-      res.status(403).json({ error: (err as Error).message });
-    }
+    next();
   };
 }
 
 // Usage
-app.post('/api/chat', cohereAccessControl(['chat']), chatHandler);
-app.post('/api/embed', cohereAccessControl(['embed']), embedHandler);
+app.delete('/cohere/resource/:id',
+  requireCoherePermission('delete'),
+  deleteResourceHandler
+);
 ```
 
-### Step 6: Audit Trail
+## Audit Trail
 
 ```typescript
-interface CohereAccessLog {
+interface CohereAuditEntry {
   timestamp: Date;
-  teamId: string;
-  endpoint: string;
-  model: string;
-  tokensUsed: { input: number; output: number };
-  costEstimate: number;
+  userId: string;
+  role: CohereRole;
+  action: string;
+  resource: string;
   success: boolean;
-  errorCode?: number;
+  ipAddress: string;
 }
 
-async function logAccess(entry: CohereAccessLog): Promise<void> {
-  // Write to your audit database
-  await db.cohereAccessLog.insert(entry);
+async function logCohereAccess(entry: CohereAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
 
-  // Alert on suspicious patterns
-  if (entry.costEstimate > 10) {
-    console.warn(`High-cost call: team=${entry.teamId} cost=$${entry.costEstimate.toFixed(2)}`);
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
   }
 }
-
-// Usage reporting query
-// SELECT team_id, SUM(cost_estimate), COUNT(*) as calls
-// FROM cohere_access_log
-// WHERE timestamp > NOW() - INTERVAL '24 hours'
-// GROUP BY team_id
-// ORDER BY SUM(cost_estimate) DESC;
 ```
 
-## Key Rotation Per Team
+## Instructions
 
-```bash
-# Rotate a team's API key
-# 1. Generate new key at dashboard.cohere.com
-# 2. Update the team's secret
-aws secretsmanager update-secret \
-  --secret-id cohere/search-team/api-key \
-  --secret-string "new-key-here"
+### Step 1: Define Roles
+Map organizational roles to Cohere permissions.
 
-# 3. Restart team's services
-kubectl rollout restart deployment/search-service
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
 
-# 4. Verify and revoke old key
-# 5. Update audit log with rotation event
-```
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Multi-team API key management with separate keys per team
-- Model access enforcement (search team cannot use chat models)
-- Per-team daily budget limits with automatic cutoff
-- Audit trail for all Cohere API calls with team attribution
-- API gateway middleware for access control
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Team key missing | Env var not set | Check secret manager |
-| Model access denied | Not in allowedModels | Update team config |
-| Budget exceeded | High usage | Increase limit or optimize |
-| Key rotation gap | Old key revoked too early | Overlap keys during rotation |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [Cohere API Keys](https://dashboard.cohere.com/api-keys)
-- [Cohere Pricing](https://cohere.com/pricing)
-- [Cohere Rate Limits](https://docs.cohere.com/docs/rate-limits)
+- [Cohere Enterprise Guide](https://docs.cohere.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
 For major migrations, see `cohere-migration-deep-dive`.

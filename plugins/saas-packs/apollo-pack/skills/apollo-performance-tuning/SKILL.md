@@ -1,235 +1,216 @@
 ---
 name: apollo-performance-tuning
 description: |
-  Optimize Apollo.io API performance.
-  Use when improving API response times, reducing latency,
-  or optimizing bulk operations.
+  Optimize Apollo API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Apollo integrations.
   Trigger with phrases like "apollo performance", "optimize apollo",
-  "apollo slow", "apollo latency", "speed up apollo".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
+  "apollo latency", "apollo caching", "apollo slow", "apollo batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, apollo, api, performance]
-
+compatible-with: claude-code
+tags: [saas, apollo]
 ---
+
 # Apollo Performance Tuning
 
 ## Overview
-Optimize Apollo.io API performance through response caching, connection pooling, bulk operations, parallel fetching, and result slimming. Key insight: **search is free but slow (~500ms), enrichment costs credits** — cache aggressively and batch enrichment calls.
+Optimize Apollo API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Valid Apollo API key
-- Node.js 18+
+- Apollo SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Connection Pooling
-Reuse TCP connections to avoid TLS handshake overhead on every request.
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedApolloRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
 
 ```typescript
-// src/apollo/optimized-client.ts
-import axios from 'axios';
-import https from 'https';
+import DataLoader from 'dataloader';
 
-const httpsAgent = new https.Agent({
+const apolloLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Apollo
+    const results = await apolloClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  apolloLoader.load('id-1'),
+  apolloLoader.load('id-2'),
+  apolloLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 30_000,
+  timeout: 30000,
 });
 
-export const optimizedClient = axios.create({
-  baseURL: 'https://api.apollo.io/api/v1',
-  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
-  httpsAgent,
-  timeout: 15_000,
+const client = new ApolloClient({
+  apiKey: process.env.APOLLO_API_KEY!,
+  httpAgent: agent,
 });
 ```
 
-### Step 2: Response Caching with Per-Endpoint TTLs
-```typescript
-// src/apollo/cache.ts
-import { LRUCache } from 'lru-cache';
-
-// Different TTLs based on data volatility
-const CACHE_TTLS: Record<string, number> = {
-  '/organizations/enrich': 24 * 60 * 60 * 1000,    // 24h — company data rarely changes
-  '/people/match': 4 * 60 * 60 * 1000,              // 4h — contact data changes occasionally
-  '/mixed_people/api_search': 15 * 60 * 1000,       // 15min — search results are dynamic
-  '/mixed_companies/search': 30 * 60 * 1000,         // 30min — company search
-  '/contact_stages': 60 * 60 * 1000,                 // 1h — stages rarely change
-};
-
-const cache = new LRUCache<string, { data: any; at: number }>({
-  max: 5000,
-  maxSize: 50 * 1024 * 1024,
-  sizeCalculation: (v) => JSON.stringify(v).length,
-});
-
-function cacheKey(endpoint: string, params: any): string {
-  return `${endpoint}:${JSON.stringify(params)}`;
-}
-
-export async function cachedRequest<T>(
-  endpoint: string,
-  requestFn: () => Promise<T>,
-  params: any,
-): Promise<T> {
-  const key = cacheKey(endpoint, params);
-  const ttl = CACHE_TTLS[endpoint] ?? 15 * 60 * 1000;
-  const cached = cache.get(key);
-
-  if (cached && Date.now() - cached.at < ttl) return cached.data;
-
-  const data = await requestFn();
-  cache.set(key, { data, at: Date.now() });
-  return data;
-}
-
-export function getCacheStats() {
-  return { entries: cache.size, sizeBytes: cache.calculatedSize };
-}
-```
-
-### Step 3: Use Bulk Endpoints Over Single Calls
-Apollo's bulk enrichment endpoint handles 10 records per call vs 1. Massive performance gain.
+## Pagination Optimization
 
 ```typescript
-// src/apollo/bulk-ops.ts
-import { optimizedClient } from './optimized-client';
-import PQueue from 'p-queue';
+async function* paginatedApolloList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
 
-const queue = new PQueue({ concurrency: 3, intervalCap: 2, interval: 1000 });
-
-// Enrich 100 people: 100 individual calls = 100 requests @ 500ms = 50s
-// Batch of 10: 10 bulk calls @ 600ms = 6s (8x faster, same credits)
-export async function batchEnrich(
-  details: Array<{ email?: string; linkedin_url?: string; first_name?: string; last_name?: string; organization_domain?: string }>,
-): Promise<any[]> {
-  const results: any[] = [];
-
-  for (let i = 0; i < details.length; i += 10) {
-    const batch = details.slice(i, i + 10);
-    const result = await queue.add(async () => {
-      const { data } = await optimizedClient.post('/people/bulk_match', {
-        details: batch,
-        reveal_personal_emails: false,
-        reveal_phone_number: false,
-      });
-      return data.matches ?? [];
-    });
-    results.push(...(result ?? []));
-  }
-
-  return results;
-}
-```
-
-### Step 4: Parallel Search with Concurrency Control
-```typescript
-export async function parallelSearch(
-  domains: string[],
-  concurrency: number = 5,
-): Promise<Map<string, any[]>> {
-  const searchQueue = new PQueue({ concurrency });
-  const results = new Map<string, any[]>();
-
-  await searchQueue.addAll(
-    domains.map((domain) => async () => {
-      const data = await cachedRequest(
-        '/mixed_people/api_search',
-        () => optimizedClient.post('/mixed_people/api_search', {
-          q_organization_domains_list: [domain],
-          person_seniorities: ['vp', 'director', 'c_suite'],
-          per_page: 25,
-        }).then((r) => r.data),
-        { domain },
-      );
-      results.set(domain, data.people ?? []);
-    }),
-  );
-
-  return results;
-}
-```
-
-### Step 5: Slim Response Payloads
-Apollo returns large person objects (~2KB each). Extract only needed fields to reduce memory.
-
-```typescript
-interface SlimPerson {
-  id: string;
-  name: string;
-  title: string;
-  email?: string;
-  company: string;
-  seniority: string;
-}
-
-function slimPerson(raw: any): SlimPerson {
-  return {
-    id: raw.id,
-    name: raw.name,
-    title: raw.title,
-    email: raw.email,
-    company: raw.organization?.name ?? '',
-    seniority: raw.seniority ?? '',
-  };
-}
-
-// Use immediately after API call to free memory
-const { data } = await optimizedClient.post('/mixed_people/api_search', { ... });
-const slim = data.people.map(slimPerson);  // ~200 bytes each instead of ~2KB
-```
-
-### Step 6: Benchmark Your Endpoints
-```typescript
-async function benchmark() {
-  const endpoints = [
-    { name: 'People Search', fn: () => optimizedClient.post('/mixed_people/api_search',
-        { q_organization_domains_list: ['apollo.io'], per_page: 1 }) },
-    { name: 'Org Enrich', fn: () => optimizedClient.get('/organizations/enrich',
-        { params: { domain: 'apollo.io' } }) },
-    { name: 'Auth Health', fn: () => optimizedClient.get('/auth/health') },
-  ];
-
-  for (const ep of endpoints) {
-    const times: number[] = [];
-    for (let i = 0; i < 5; i++) {
-      const start = Date.now();
-      try { await ep.fn(); } catch {}
-      times.push(Date.now() - start);
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
     }
-    const avg = Math.round(times.reduce((a, b) => a + b) / times.length);
-    const p95 = times.sort((a, b) => a - b)[Math.floor(times.length * 0.95)];
-    console.log(`${ep.name}: avg=${avg}ms, p95=${p95}ms`);
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedApolloList(cursor =>
+  apolloClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredApolloCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
   }
 }
 ```
+
+## Instructions
+
+### Step 1: Establish Baseline
+Measure current latency for critical Apollo operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
-- Connection pooling with `keepAlive` and configurable `maxSockets`
-- LRU cache with per-endpoint TTLs (24h org, 4h contact, 15m search)
-- Bulk enrichment via `/people/bulk_match` (10x fewer requests)
-- Parallel search with `p-queue` concurrency control
-- Response slimming reducing memory from ~2KB to ~200B per person
-- Benchmarking script measuring avg and p95 latency
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-| Issue | Resolution |
-|-------|------------|
-| High latency | Enable connection pooling, check for stale cache |
-| Cache misses | Increase TTL for stable data (org enrichment) |
-| Rate limits with parallelism | Reduce p-queue concurrency |
-| Memory growth | Lower LRU max entries, slim response payloads |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredApolloCall(name, () =>
+    cachedApolloRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
-- [Node.js HTTPS Agent](https://nodejs.org/api/https.html#class-httpsagent)
-- [LRU Cache](https://github.com/isaacs/node-lru-cache)
-- [p-queue](https://github.com/sindresorhus/p-queue)
+- [Apollo Performance Guide](https://docs.apollo.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-Proceed to `apollo-cost-tuning` for cost optimization.
+For cost optimization, see `apollo-cost-tuning`.

@@ -1,96 +1,71 @@
 ---
 name: guidewire-core-workflow-a
 description: |
-  Execute Guidewire primary workflow: Policy lifecycle in PolicyCenter.
-  Use when implementing quoting, binding, issuing, endorsing, or renewing policies.
-  Trigger: "policycenter workflow", "create policy", "bind submission", "issue policy".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Execute Guidewire primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "guidewire main workflow",
+  "primary task with guidewire".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
-# Guidewire Core Workflow A: Policy Lifecycle
+# Guidewire Core Workflow A
 
 ## Overview
+Primary money-path workflow for Guidewire. This is the most common use case.
 
-The complete policy lifecycle in PolicyCenter: account creation, submission, quoting, binding, issuance, endorsements, and renewals via Cloud API.
-
-## Policy Lifecycle States
-
-```
-Account -> Submission -> Quote -> Bind -> Issue -> In-Force
-                                                    |
-                                          Endorse / Renew / Cancel
-```
+## Prerequisites
+- Completed `guidewire-install-auth` setup
+- Understanding of Guidewire core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Create Account
-
+### Step 1: Initialize
 ```typescript
-const account = await fetch(`${GW_PC}/account/v1/accounts`, {
-  method: 'POST', headers,
-  body: JSON.stringify({
-    data: { attributes: {
-      accountHolderContact: {
-        firstName: 'John', lastName: 'Smith',
-        primaryAddress: { addressLine1: '123 Main St', city: 'Atlanta', state: 'GA', postalCode: '30301' },
-        dateOfBirth: '1985-03-15',
-      },
-      producerCodes: [{ id: 'pc:100' }],
-    }}
-  }),
-}).then(r => r.json());
-console.log(`Account: ${account.data.attributes.accountNumber}`);
+// Step 1 implementation
 ```
 
-### Step 2: Create Submission
-
+### Step 2: Execute
 ```typescript
-const submission = await fetch(`${GW_PC}/job/v1/submissions`, {
-  method: 'POST', headers,
-  body: JSON.stringify({
-    data: { attributes: {
-      account: { id: account.data.id },
-      baseState: 'GA', effectiveDate: '2025-04-01',
-      product: { code: 'PersonalAuto' },
-      producerCode: { id: 'pc:100' },
-    }}
-  }),
-}).then(r => r.json());
+// Step 2 implementation
 ```
 
-### Step 3: Quote -> Bind -> Issue
-
+### Step 3: Finalize
 ```typescript
-// Quote the submission
-await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/quote`, { method: 'POST', headers });
-
-// Bind
-await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/bind`, { method: 'POST', headers });
-
-// Issue
-await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/issue`, { method: 'POST', headers });
-console.log('Policy issued successfully');
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from Guidewire API
+- Success confirmation or error details
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Cannot quote` | Missing coverages/vehicles | Add required data before quoting |
-| `UW hold` | Underwriting referral | Process UW approval in PolicyCenter |
-| `Rating error` | Rate table issue | Check product configuration |
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
 
-For detailed Gosu and API examples, see: [implementation guide](references/implementation-guide.md)
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-
-- [PolicyCenter Cloud API](https://docs.guidewire.com/cloud/pc/202503/apiref/)
+- [Guidewire Documentation](https://docs.guidewire.com)
+- [Guidewire API Reference](https://docs.guidewire.com/api)
 
 ## Next Steps
-
-For claims processing, see `guidewire-core-workflow-b`.
+For secondary workflow, see `guidewire-core-workflow-b`.

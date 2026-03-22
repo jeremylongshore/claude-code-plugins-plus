@@ -1,363 +1,292 @@
 ---
 name: supabase-reliability-patterns
 description: |
-  Implement Supabase reliability patterns: circuit breakers around Supabase calls,
-  idempotent writes, bulkhead isolation, and dead letter queues.
-  Use when building fault-tolerant integrations, implementing retry strategies,
+  Implement Supabase reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Use when building fault-tolerant Supabase integrations, implementing retry strategies,
   or adding resilience to production Supabase services.
   Trigger with phrases like "supabase reliability", "supabase circuit breaker",
-  "supabase idempotent", "supabase resilience", "supabase fallback".
+  "supabase idempotent", "supabase resilience", "supabase fallback", "supabase bulkhead".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, reliability, resilience]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Reliability Patterns
 
 ## Overview
-Production reliability patterns for Supabase: circuit breakers preventing cascading failures, idempotent writes for safe retries, bulkhead isolation for priority queues, graceful degradation during outages, and dead letter queues for failed operations.
+Production-grade reliability patterns for Supabase integrations.
 
 ## Prerequisites
-- Supabase SDK installed
 - Understanding of circuit breaker pattern
-- Optional: Redis for distributed state
+- opossum or similar library installed
+- Queue infrastructure for DLQ
+- Caching layer for fallbacks
+
+## Circuit Breaker
+
+```typescript
+import CircuitBreaker from 'opossum';
+
+const supabaseBreaker = new CircuitBreaker(
+  async (operation: () => Promise<any>) => operation(),
+  {
+    timeout: 30000,
+    errorThresholdPercentage: 50,
+    resetTimeout: 30000,
+    volumeThreshold: 10,
+  }
+);
+
+// Events
+supabaseBreaker.on('open', () => {
+  console.warn('Supabase circuit OPEN - requests failing fast');
+  alertOps('Supabase circuit breaker opened');
+});
+
+supabaseBreaker.on('halfOpen', () => {
+  console.info('Supabase circuit HALF-OPEN - testing recovery');
+});
+
+supabaseBreaker.on('close', () => {
+  console.info('Supabase circuit CLOSED - normal operation');
+});
+
+// Usage
+async function safeSupabaseCall<T>(fn: () => Promise<T>): Promise<T> {
+  return supabaseBreaker.fire(fn);
+}
+```
+
+## Idempotency Keys
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic idempotency key from input
+function generateIdempotencyKey(
+  operation: string,
+  params: Record<string, any>
+): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+// Or use random key with storage
+class IdempotencyManager {
+  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
+
+  getOrCreate(operationId: string): string {
+    const existing = this.store.get(operationId);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.key;
+    }
+
+    const key = uuidv4();
+    this.store.set(operationId, {
+      key,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return key;
+  }
+}
+```
+
+## Bulkhead Pattern
+
+```typescript
+import PQueue from 'p-queue';
+
+// Separate queues for different operations
+const supabaseQueues = {
+  critical: new PQueue({ concurrency: 10 }),
+  normal: new PQueue({ concurrency: 5 }),
+  bulk: new PQueue({ concurrency: 2 }),
+};
+
+async function prioritizedSupabaseCall<T>(
+  priority: 'critical' | 'normal' | 'bulk',
+  fn: () => Promise<T>
+): Promise<T> {
+  return supabaseQueues[priority].add(fn);
+}
+
+// Usage
+await prioritizedSupabaseCall('critical', () =>
+  supabaseClient.processPayment(order)
+);
+
+await prioritizedSupabaseCall('bulk', () =>
+  supabaseClient.syncCatalog(products)
+);
+```
+
+## Timeout Hierarchy
+
+```typescript
+const TIMEOUT_CONFIG = {
+  connect: 5000,      // Initial connection
+  request: 30000,     // Standard requests
+  upload: 120000,     // File uploads
+  longPoll: 300000,   // Webhook long-polling
+};
+
+async function timedoutSupabaseCall<T>(
+  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+  fn: () => Promise<T>
+): Promise<T> {
+  const timeout = TIMEOUT_CONFIG[operation];
+
+  return Promise.race([
+    fn(),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Supabase ${operation} timeout`)), timeout)
+    ),
+  ]);
+}
+```
+
+## Graceful Degradation
+
+```typescript
+interface SupabaseFallback {
+  enabled: boolean;
+  data: any;
+  staleness: 'fresh' | 'stale' | 'very_stale';
+}
+
+async function withSupabaseFallback<T>(
+  fn: () => Promise<T>,
+  fallbackFn: () => Promise<T>
+): Promise<{ data: T; fallback: boolean }> {
+  try {
+    const data = await fn();
+    // Update cache for future fallback
+    await updateFallbackCache(data);
+    return { data, fallback: false };
+  } catch (error) {
+    console.warn('Supabase failed, using fallback:', error.message);
+    const data = await fallbackFn();
+    return { data, fallback: true };
+  }
+}
+```
+
+## Dead Letter Queue
+
+```typescript
+interface DeadLetterEntry {
+  id: string;
+  operation: string;
+  payload: any;
+  error: string;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+class SupabaseDeadLetterQueue {
+  private queue: DeadLetterEntry[] = [];
+
+  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
+    this.queue.push({
+      ...entry,
+      id: uuidv4(),
+      lastAttempt: new Date(),
+    });
+  }
+
+  async processOne(): Promise<boolean> {
+    const entry = this.queue.shift();
+    if (!entry) return false;
+
+    try {
+      await supabaseClient[entry.operation](entry.payload);
+      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
+      return true;
+    } catch (error) {
+      entry.attempts++;
+      entry.lastAttempt = new Date();
+
+      if (entry.attempts < 5) {
+        this.queue.push(entry);
+      } else {
+        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
+        await alertOnPermanentFailure(entry);
+      }
+      return false;
+    }
+  }
+}
+```
+
+## Health Check with Degraded State
+
+```typescript
+type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+
+async function supabaseHealthCheck(): Promise<{
+  status: HealthStatus;
+  details: Record<string, any>;
+}> {
+  const checks = {
+    api: await checkApiConnectivity(),
+    circuitBreaker: supabaseBreaker.stats(),
+    dlqSize: deadLetterQueue.size(),
+  };
+
+  const status: HealthStatus =
+    !checks.api.connected ? 'unhealthy' :
+    checks.circuitBreaker.state === 'open' ? 'degraded' :
+    checks.dlqSize > 100 ? 'degraded' :
+    'healthy';
+
+  return { status, details: checks };
+}
+```
 
 ## Instructions
 
-### Pattern 1: Circuit Breaker
+### Step 1: Implement Circuit Breaker
+Wrap Supabase calls with circuit breaker.
 
-```typescript
-// lib/circuit-breaker.ts
-type CircuitState = 'CLOSED' | 'OPEN' | 'HALF_OPEN'
+### Step 2: Add Idempotency Keys
+Generate deterministic keys for operations.
 
-class CircuitBreaker {
-  private state: CircuitState = 'CLOSED'
-  private failureCount = 0
-  private lastFailure = 0
-  private successCount = 0
+### Step 3: Configure Bulkheads
+Separate queues for different priorities.
 
-  constructor(
-    private readonly threshold: number = 5,      // failures to trip
-    private readonly resetTimeout: number = 30000, // ms before half-open
-    private readonly halfOpenMax: number = 3       // test requests in half-open
-  ) {}
-
-  async execute<T>(fn: () => Promise<T>, fallback?: () => T): Promise<T> {
-    if (this.state === 'OPEN') {
-      if (Date.now() - this.lastFailure > this.resetTimeout) {
-        this.state = 'HALF_OPEN'
-        this.successCount = 0
-      } else {
-        if (fallback) return fallback()
-        throw new Error('Circuit breaker is OPEN — Supabase calls blocked')
-      }
-    }
-
-    try {
-      const result = await fn()
-
-      if (this.state === 'HALF_OPEN') {
-        this.successCount++
-        if (this.successCount >= this.halfOpenMax) {
-          this.state = 'CLOSED'
-          this.failureCount = 0
-        }
-      }
-
-      return result
-    } catch (error) {
-      this.failureCount++
-      this.lastFailure = Date.now()
-
-      if (this.failureCount >= this.threshold) {
-        this.state = 'OPEN'
-        console.error(`[CIRCUIT_BREAKER] OPEN after ${this.failureCount} failures`)
-      }
-
-      if (fallback) return fallback()
-      throw error
-    }
-  }
-
-  get currentState(): CircuitState { return this.state }
-}
-
-// One circuit breaker per Supabase service
-export const dbCircuit = new CircuitBreaker(5, 30000)
-export const storageCircuit = new CircuitBreaker(3, 60000)
-export const authCircuit = new CircuitBreaker(3, 15000)
-```
-
-```typescript
-// Usage in services
-import { dbCircuit } from '../lib/circuit-breaker'
-
-const TodoService = {
-  async list(userId: string) {
-    return dbCircuit.execute(
-      async () => {
-        const { data, error } = await supabase
-          .from('todos')
-          .select('id, title, is_complete')
-          .eq('user_id', userId)
-        if (error) throw error
-        return data
-      },
-      () => []  // fallback: return empty list when circuit is open
-    )
-  },
-}
-```
-
-### Pattern 2: Idempotent Writes
-
-```sql
--- Idempotency key table
-create table public.idempotency_keys (
-  key text primary key,
-  response jsonb not null,
-  created_at timestamptz default now(),
-  expires_at timestamptz default now() + interval '24 hours'
-);
-
--- Auto-cleanup expired keys
-select cron.schedule('cleanup-idempotency', '0 * * * *',
-  $$DELETE FROM public.idempotency_keys WHERE expires_at < now()$$
-);
-```
-
-```typescript
-// lib/idempotent.ts
-import { createHash } from 'crypto'
-
-export async function idempotentWrite<T>(
-  key: string,
-  writeFn: () => Promise<T>
-): Promise<T> {
-  // Check for existing result
-  const { data: existing } = await supabase
-    .from('idempotency_keys')
-    .select('response')
-    .eq('key', key)
-    .maybeSingle()
-
-  if (existing) {
-    return existing.response as T
-  }
-
-  // Execute the write
-  const result = await writeFn()
-
-  // Store for deduplication
-  await supabase.from('idempotency_keys').insert({
-    key,
-    response: result as any,
-    expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-  })
-
-  return result
-}
-
-// Usage: payment processing
-const payment = await idempotentWrite(
-  `payment:${orderId}:${amount}`,
-  async () => {
-    const { data } = await supabase
-      .from('payments')
-      .insert({ order_id: orderId, amount, status: 'completed' })
-      .select()
-      .single()
-    return data
-  }
-)
-```
-
-### Pattern 3: Bulkhead Isolation
-
-```typescript
-// lib/bulkhead.ts
-class Bulkhead {
-  private active = 0
-
-  constructor(
-    private readonly maxConcurrent: number,
-    private readonly name: string
-  ) {}
-
-  async execute<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.active >= this.maxConcurrent) {
-      throw new Error(`[BULKHEAD:${this.name}] Rejected: ${this.active}/${this.maxConcurrent} slots in use`)
-    }
-
-    this.active++
-    try {
-      return await fn()
-    } finally {
-      this.active--
-    }
-  }
-
-  get usage() { return { active: this.active, max: this.maxConcurrent } }
-}
-
-// Separate pools for different priority levels
-export const criticalBulkhead = new Bulkhead(20, 'critical')  // auth, payments
-export const normalBulkhead = new Bulkhead(30, 'normal')       // CRUD operations
-export const batchBulkhead = new Bulkhead(5, 'batch')          // bulk imports, reports
-
-// Usage
-const authResult = await criticalBulkhead.execute(
-  () => supabase.auth.signInWithPassword({ email, password })
-)
-
-const reportData = await batchBulkhead.execute(
-  () => supabase.from('analytics').select('*').limit(10000)
-)
-```
-
-### Pattern 4: Graceful Degradation
-
-```typescript
-// lib/degradation.ts
-interface DegradedResponse<T> {
-  data: T
-  degraded: boolean
-  source: 'live' | 'cache' | 'fallback'
-}
-
-async function withDegradation<T>(
-  liveFn: () => Promise<T>,
-  cacheFn: () => Promise<T | null>,
-  fallbackValue: T
-): Promise<DegradedResponse<T>> {
-  try {
-    const data = await liveFn()
-    // Update cache on successful fetch
-    return { data, degraded: false, source: 'live' }
-  } catch (error) {
-    console.warn('[DEGRADED] Live fetch failed, trying cache:', error)
-
-    try {
-      const cached = await cacheFn()
-      if (cached !== null) {
-        return { data: cached, degraded: true, source: 'cache' }
-      }
-    } catch {
-      // Cache also failed
-    }
-
-    return { data: fallbackValue, degraded: true, source: 'fallback' }
-  }
-}
-
-// Usage
-const { data: products, degraded } = await withDegradation(
-  () => supabase.from('products').select('*').then(r => r.data!),
-  () => cache.get('products'),
-  []  // fallback: empty product list
-)
-
-if (degraded) {
-  // Show banner: "Some data may be stale. We're working on it."
-}
-```
-
-### Pattern 5: Dead Letter Queue
-
-```sql
--- Dead letter queue for failed operations
-create table public.dead_letter_queue (
-  id bigint generated always as identity primary key,
-  operation text not null,
-  payload jsonb not null,
-  error_message text,
-  error_code text,
-  attempts int default 1,
-  max_attempts int default 5,
-  status text default 'pending' check (status in ('pending', 'retrying', 'exhausted', 'resolved')),
-  created_at timestamptz default now(),
-  last_attempted_at timestamptz default now()
-);
-```
-
-```typescript
-// lib/dlq.ts
-async function withDLQ<T>(
-  operation: string,
-  payload: any,
-  fn: () => Promise<T>,
-  maxRetries = 3
-): Promise<T> {
-  try {
-    return await fn()
-  } catch (error: any) {
-    // Enqueue to DLQ for later retry
-    await supabase.from('dead_letter_queue').insert({
-      operation,
-      payload,
-      error_message: error.message,
-      error_code: error.code,
-    })
-
-    console.error(`[DLQ] Enqueued failed ${operation}:`, error.message)
-    throw error
-  }
-}
-
-// Process DLQ items (run via cron or Edge Function)
-async function processDLQ() {
-  const { data: items } = await supabase
-    .from('dead_letter_queue')
-    .select('*')
-    .eq('status', 'pending')
-    .lt('attempts', 5)
-    .order('created_at')
-    .limit(10)
-
-  for (const item of items ?? []) {
-    try {
-      // Re-execute the operation based on type
-      await retryOperation(item.operation, item.payload)
-
-      await supabase.from('dead_letter_queue')
-        .update({ status: 'resolved' })
-        .eq('id', item.id)
-    } catch {
-      await supabase.from('dead_letter_queue')
-        .update({
-          attempts: item.attempts + 1,
-          last_attempted_at: new Date().toISOString(),
-          status: item.attempts + 1 >= item.max_attempts ? 'exhausted' : 'pending',
-        })
-        .eq('id', item.id)
-    }
-  }
-}
-```
+### Step 4: Set Up Dead Letter Queue
+Handle permanent failures gracefully.
 
 ## Output
-- Circuit breaker protecting Supabase calls with configurable thresholds
-- Idempotent write pattern preventing duplicate operations
-- Bulkhead isolation separating critical and batch operations
-- Graceful degradation returning cached/fallback data during outages
-- Dead letter queue capturing and replaying failed operations
+- Circuit breaker protecting Supabase calls
+- Idempotency preventing duplicates
+- Bulkhead isolation implemented
+- DLQ for failed operations
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit breaker stays OPEN | Supabase still down | Wait for `resetTimeout`; check status.supabase.com |
-| Idempotency key collision | Hash collision | Use longer key; include timestamp |
-| Bulkhead rejection | All slots in use | Increase pool or queue requests |
-| DLQ growing unbounded | Persistent failures | Alert on DLQ depth; fix root cause |
+| Circuit stays open | Threshold too low | Adjust error percentage |
+| Duplicate operations | Missing idempotency | Add idempotency key |
+| Queue full | Rate too high | Increase concurrency |
+| DLQ growing | Persistent failures | Investigate root cause |
+
+## Examples
+
+### Quick Circuit Check
+```typescript
+const state = supabaseBreaker.stats().state;
+console.log('Supabase circuit:', state);
+```
 
 ## Resources
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Idempotency Patterns](https://stripe.com/docs/api/idempotent_requests)
-- [Bulkhead Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/bulkhead)
+- [Opossum Documentation](https://nodeshift.dev/opossum/)
+- [Supabase Reliability Guide](https://supabase.com/docs/reliability)
 
 ## Next Steps
-For policy guardrails, see `supabase-policy-guardrails`.
+For policy enforcement, see `supabase-policy-guardrails`.

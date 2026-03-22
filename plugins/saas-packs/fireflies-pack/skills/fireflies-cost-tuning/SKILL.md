@@ -1,217 +1,203 @@
 ---
 name: fireflies-cost-tuning
 description: |
-  Optimize Fireflies.ai subscription costs through seat auditing, selective recording, and plan sizing.
-  Use when analyzing Fireflies.ai billing, reducing per-seat costs,
-  or implementing usage monitoring and right-sizing.
+  Optimize Fireflies.ai costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing Fireflies.ai billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
   Trigger with phrases like "fireflies cost", "fireflies billing",
   "reduce fireflies costs", "fireflies pricing", "fireflies expensive", "fireflies budget".
-allowed-tools: Read, Bash(curl:*), Grep
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, api, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, fireflies]
 ---
+
 # Fireflies.ai Cost Tuning
 
 ## Overview
-Optimize Fireflies.ai subscription costs. Fireflies charges per-seat per month. The main levers: remove unused seats, configure selective recording, manage storage, and right-size your plan tier.
+Optimize Fireflies.ai costs through smart tier selection, sampling, and usage monitoring.
 
-## Pricing Reference
+## Prerequisites
+- Access to Fireflies.ai billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-| Plan | Price | API Access | Key Features |
-|------|-------|-----------|--------------|
-| Free | $0 | 50 req/day | 800 min storage, limited transcription |
-| Pro | ~$18/seat/month | 50 req/day | 8,000 min/seat, AI summaries |
-| Business | ~$29/seat/month | 60 req/min | Unlimited transcription, CRM, analytics |
-| Enterprise | Custom | 60 req/min | SSO, Super Admin webhooks, custom |
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimateFireflies.aiCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class Fireflies.aiUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Fireflies.ai budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateFireflies.aiCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await firefliesClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => firefliesClient.get(id)));
+
+// Use batch endpoint (1 call)
+await firefliesClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new Fireflies.aiClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Fireflies.ai dashboard
+# Or use API if available:
+# Check Fireflies.ai documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM fireflies_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
 
 ## Instructions
 
-### Step 1: Audit Seat Utilization via API
-```bash
-set -euo pipefail
-# List all workspace users with their transcript counts
-curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ users { name email user_id num_transcripts minutes_consumed } }"}' \
-  | jq '.data.users | sort_by(.num_transcripts) | .[] | {name, email, transcripts: .num_transcripts, minutes: .minutes_consumed}'
-```
+### Step 1: Analyze Current Usage
+Review Fireflies.ai dashboard for usage patterns and costs.
 
-```typescript
-// Automated utilization report
-async function seatUtilizationReport() {
-  const data = await firefliesQuery(`{
-    users {
-      name email user_id
-      num_transcripts minutes_consumed
-      recent_meeting
-    }
-  }`);
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
 
-  const users = data.users;
-  const inactive = users.filter((u: any) => u.num_transcripts < 2);
-  const active = users.filter((u: any) => u.num_transcripts >= 2);
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
 
-  console.log(`Total seats: ${users.length}`);
-  console.log(`Active (2+ transcripts): ${active.length}`);
-  console.log(`Inactive (<2 transcripts): ${inactive.length}`);
-  console.log(`Potential savings: ${inactive.length} seats * $29/mo = $${inactive.length * 29}/mo`);
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
 
-  if (inactive.length > 0) {
-    console.log("\nInactive seats to review:");
-    for (const u of inactive) {
-      console.log(`  ${u.email}: ${u.num_transcripts} transcripts, last meeting: ${u.recent_meeting || "never"}`);
-    }
-  }
-
-  return { total: users.length, active: active.length, inactive, savings: inactive.length * 29 };
-}
-```
-
-### Step 2: Configure Selective Recording
-Instead of recording every meeting, configure auto-join rules in Fireflies Settings > Auto-Join:
-
-```yaml
-# Recommended recording policy
-record_always:
-  - External meetings (client/prospect calls)
-  - Meetings with 3+ participants
-  - Meetings with keywords: "review", "planning", "standup", "demo"
-
-skip_recording:
-  - 1-on-1 informal chats
-  - Social events
-  - Meetings shorter than 5 minutes
-  - Recurring "lunch" or "coffee" meetings
-```
-
-Estimated savings: Teams recording every meeting typically waste 30-50% of transcription credits on low-value meetings.
-
-### Step 3: Manage Storage to Avoid Forced Upgrades
-```typescript
-// Check storage and clean up old transcripts
-async function storageAudit() {
-  const data = await firefliesQuery(`{
-    transcripts(limit: 100) {
-      id title date duration
-    }
-    user { minutes_consumed }
-  }`);
-
-  const now = Date.now();
-  const transcripts = data.transcripts;
-
-  // Find transcripts older than 90 days
-  const old = transcripts.filter((t: any) => {
-    const age = (now - new Date(t.date).getTime()) / 86400000;
-    return age > 90;
-  });
-
-  console.log(`Total transcripts: ${transcripts.length}`);
-  console.log(`Older than 90 days: ${old.length}`);
-  console.log(`Minutes consumed: ${data.user.minutes_consumed}`);
-
-  return { total: transcripts.length, old, minutesUsed: data.user.minutes_consumed };
-}
-
-// Delete old transcripts to free storage
-async function deleteOldTranscripts(ids: string[]) {
-  for (const id of ids) {
-    await firefliesQuery(`
-      mutation($id: String!) {
-        deleteTranscript(transcript_id: $id)
-      }
-    `, { id });
-    console.log(`Deleted: ${id}`);
-    // deleteTranscript is rate limited: 10/min
-    await new Promise(r => setTimeout(r, 6500));
-  }
-}
-```
-
-### Step 4: Right-Size Your Plan
-```yaml
-# Decision matrix
-choose_pro:
-  when:
-    - Team averages <15 meetings/week per person
-    - No CRM integration needed
-    - Basic AI summaries sufficient
-  saves: $11/seat/month vs Business
-
-choose_business:
-  when:
-    - Sales team recording every call
-    - CRM integration required (Salesforce, HubSpot)
-    - Meeting analytics dashboards needed
-    - 20+ meetings/week per person
-
-choose_enterprise:
-  when:
-    - SSO/SAML required
-    - Super Admin webhooks needed (org-wide meeting data)
-    - Custom data retention policies
-    - Dedicated support
-```
-
-### Step 5: API Cost Optimization
-```typescript
-// Free/Pro plans: 50 requests/day. Make every request count.
-// Strategy: Fetch meeting list once, cache aggressively
-
-async function efficientDailySync() {
-  // One request: get all recent transcripts
-  const data = await firefliesQuery(`{
-    transcripts(limit: 50) {
-      id title date duration
-      summary { overview action_items }
-    }
-  }`);
-
-  // Process locally -- no additional API calls
-  const today = new Date().toDateString();
-  const todaysMeetings = data.transcripts.filter(
-    (t: any) => new Date(t.date).toDateString() === today
-  );
-
-  console.log(`Today's meetings: ${todaysMeetings.length}`);
-  console.log(`API requests used: 1 of 50 daily budget`);
-
-  return todaysMeetings;
-}
-```
-
-## Cost Savings Summary
-
-| Lever | Typical Savings |
-|-------|----------------|
-| Remove inactive seats | $29/seat/month |
-| Selective recording | 30-50% fewer transcriptions |
-| Pro vs Business downgrade | $11/seat/month |
-| Storage cleanup | Avoid forced tier upgrade |
-| API request caching | Stay within Free/Pro limits |
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't remove seat | User has admin role | Reassign admin first |
-| Storage limit warning | Too many transcripts | Delete old transcripts |
-| API daily limit hit | Free/Pro 50 req/day | Cache results, batch efficiently |
-| Unexpected invoice increase | Auto-provisioned members | Disable auto-provisioning |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
 
-## Output
-- Seat utilization report with inactive members identified
-- Selective recording policy configured
-- Storage audit with cleanup recommendations
-- Plan right-sizing recommendation
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateFireflies.aiCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
-- [Fireflies Pricing](https://fireflies.ai/pricing)
-- [Fireflies API Docs](https://docs.fireflies.ai/)
+- [Fireflies.ai Pricing](https://fireflies.com/pricing)
+- [Fireflies.ai Billing Dashboard](https://dashboard.fireflies.com/billing)
 
 ## Next Steps
-For architecture design, see `fireflies-reference-architecture`.
+For architecture patterns, see `fireflies-reference-architecture`.

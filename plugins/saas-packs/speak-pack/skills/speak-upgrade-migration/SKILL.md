@@ -1,113 +1,114 @@
 ---
 name: speak-upgrade-migration
 description: |
-  Upgrade Speak SDK versions, migrate between language learning platforms, and handle API version changes.
-  Use when implementing upgrade migration features,
-  or troubleshooting Speak language learning integration issues.
-  Trigger with phrases like "speak upgrade migration", "speak upgrade migration".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Analyze, plan, and execute Speak SDK upgrades with breaking change detection.
+  Use when upgrading Speak SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade speak", "speak migration",
+  "speak breaking changes", "update speak SDK", "analyze speak version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Upgrade & Migration
 
 ## Overview
-Upgrade Speak SDK versions, migrate between language learning platforms, and handle API version changes.
+Guide for upgrading Speak SDK versions and handling breaking changes.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- Current Speak SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-## Current State
-!`npm list @speak/language-sdk 2>/dev/null || echo 'Speak SDK not installed'`
-
 ### Step 1: Check Current Version
 ```bash
-npm list @speak/language-sdk
-npm outdated @speak/language-sdk
+npm list @speak/sdk
+npm view @speak/sdk version
 ```
 
-### Step 2: Upgrade SDK
+### Step 2: Review Changelog
 ```bash
-npm install @speak/language-sdk@latest
-npm test  # Run tests to verify compatibility
+open https://github.com/speak/sdk/releases
 ```
 
-### Step 3: API Version Migration
-```typescript
-// Check for deprecated endpoints
-const DEPRECATED_ENDPOINTS = [
-  '/v1/lessons/start',      // Replaced by /v1/conversations/start
-  '/v1/speech/score',       // Replaced by /v1/pronunciation/assess
-];
-
-// Migration map
-const ENDPOINT_MIGRATION = {
-  '/v1/lessons/start': '/v1/conversations/start',
-  '/v1/speech/score': '/v1/pronunciation/assess',
-};
-```
-
-### Step 4: Platform Migration (from Duolingo/Babbel APIs)
-```typescript
-// Map learning data between platforms
-interface MigrationMapper {
-  mapProficiencyLevel(source: string): 'beginner' | 'intermediate' | 'advanced';
-  mapLanguageCode(source: string): string;
-  mapProgress(source: any): SpeakProgress;
-}
-
-const duolingoMapper: MigrationMapper = {
-  mapProficiencyLevel(crowns: string) {
-    const c = parseInt(crowns);
-    if (c < 3) return 'beginner';
-    if (c < 6) return 'intermediate';
-    return 'advanced';
-  },
-  mapLanguageCode: (code) => code, // Same ISO codes
-  mapProgress: (duo) => ({
-    vocabulary: duo.words_learned,
-    level: duolingoMapper.mapProficiencyLevel(duo.crowns),
-  }),
-};
-```
-
-### Post-Upgrade Verification
+### Step 3: Create Upgrade Branch
 ```bash
+git checkout -b upgrade/speak-sdk-vX.Y.Z
+npm install @speak/sdk@latest
 npm test
-node -e "const s = require('@speak/language-sdk'); console.log('SDK version:', s.version || 'loaded OK')"
 ```
+
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Migration implementation complete
-- Speak API integration verified
-- Production-ready patterns applied
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
-| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
-| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
-| Session expired | Timeout after 30 min | Start a new conversation session |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-See `speak-prod-checklist` for production readiness.
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
 
 ## Examples
 
-**Basic**: Apply upgrade migration with default configuration for a standard Speak integration.
+### Import Changes
+```typescript
+// Before (v1.x)
+import { Client } from '@speak/sdk';
 
-**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.
+// After (v2.x)
+import { SpeakClient } from '@speak/sdk';
+```
+
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
+
+// After (v2.x)
+const client = new SpeakClient({
+  apiKey: 'xxx',
+});
+```
+
+### Rollback Procedure
+```bash
+npm install @speak/sdk@1.x.x --save-exact
+```
+
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Speak]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
+
+## Resources
+- [Speak Changelog](https://github.com/speak/sdk/releases)
+- [Speak Migration Guide](https://docs.speak.com/migration)
+
+## Next Steps
+For CI integration during upgrades, see `speak-ci-integration`.

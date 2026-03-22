@@ -1,57 +1,113 @@
 ---
 name: ramp-common-errors
 description: |
-  Ramp common errors — corporate card and expense management API integration.
-  Use when working with Ramp for card management, expenses, or accounting sync.
-  Trigger with phrases like "ramp common errors", "ramp-common-errors", "corporate card API".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Diagnose and fix Ramp common errors and exceptions.
+  Use when encountering Ramp errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "ramp error", "fix ramp",
+  "ramp not working", "debug ramp".
+allowed-tools: Read, Grep, Bash(curl:*)
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ramp, fintech, expenses, corporate-cards]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, ramp]
 ---
 
 # Ramp Common Errors
 
 ## Overview
-Implementation patterns for Ramp common errors using the Developer API with OAuth2 authentication.
+Quick reference for the top 10 most common Ramp errors and their solutions.
 
 ## Prerequisites
-- Completed `ramp-install-auth` setup
+- Ramp SDK installed
+- API credentials configured
+- Access to error logs
 
 ## Instructions
 
-### Step 1: API Call Pattern
-```python
-import os, requests
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-# Obtain token
-token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
-    "grant_type": "client_credentials",
-    "client_id": os.environ["RAMP_CLIENT_ID"],
-    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
-})
-access_token = token_resp.json()["access_token"]
-headers = {"Authorization": f"Bearer {access_token}"}
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
-print(f"Cards: {len(cards.json()['data'])}")
-```
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
 
 ## Output
-- Ramp API integration for common errors
+- Identified error cause
+- Applied fix
+- Verified resolution
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Expired token | Re-authenticate |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 403 Forbidden | Insufficient permissions | Check API app permissions |
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
+```
+
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
+```bash
+# Verify API key is set
+echo $RAMP_API_KEY
+```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `ramp-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Ramp status
+curl -s https://status.ramp.com
+
+# Verify API connectivity
+curl -I https://api.ramp.com
+
+# Check local configuration
+env | grep RAMP
+```
+
+### Escalation Path
+1. Collect evidence with `ramp-debug-bundle`
+2. Check Ramp status page
+3. Contact support with request ID
 
 ## Resources
-- [Ramp API Documentation](https://docs.ramp.com/)
-- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
+- [Ramp Status Page](https://status.ramp.com)
+- [Ramp Support](https://docs.ramp.com/support)
+- [Ramp Error Codes](https://docs.ramp.com/errors)
 
 ## Next Steps
-See related Ramp skills for more workflows.
+For comprehensive debugging, see `ramp-debug-bundle`.

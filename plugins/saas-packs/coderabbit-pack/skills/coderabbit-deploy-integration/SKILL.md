@@ -1,237 +1,211 @@
 ---
 name: coderabbit-deploy-integration
 description: |
-  Roll out CodeRabbit across an organization: multi-repo deployment, org-level config, and team onboarding.
-  Use when deploying CodeRabbit org-wide, creating shared configurations,
-  or onboarding development teams to AI code review.
-  Trigger with phrases like "deploy coderabbit", "coderabbit org rollout",
-  "coderabbit multi-repo", "coderabbit onboarding", "coderabbit team setup".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(git:*)
+  Deploy CodeRabbit integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying CodeRabbit-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy coderabbit", "coderabbit Vercel",
+  "coderabbit production deploy", "coderabbit Cloud Run", "coderabbit Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, coderabbit, deployment, onboarding]
-
+compatible-with: claude-code
+tags: [saas, coderabbit]
 ---
+
 # CodeRabbit Deploy Integration
 
 ## Overview
-Roll out CodeRabbit AI code review across an organization. Covers multi-repo deployment strategy, organization-level configuration, team-specific customization, and developer onboarding. CodeRabbit is a GitHub/GitLab App -- deployment means configuring the App installation, customizing review behavior, and integrating review status into merge workflows.
+Deploy CodeRabbit-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- GitHub Organization admin access
-- CodeRabbit GitHub App installed (https://github.com/apps/coderabbitai)
-- CodeRabbit Pro or Enterprise plan for private repos
-- List of target repositories
+- CodeRabbit API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add CodeRabbit secrets to Vercel
+vercel secrets add coderabbit_api_key sk_live_***
+vercel secrets add coderabbit_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "CODERABBIT_API_KEY": "@coderabbit_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-coderabbit-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set CodeRabbit secrets
+fly secrets set CODERABBIT_API_KEY=sk_live_***
+fly secrets set CODERABBIT_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="coderabbit-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=CODERABBIT_API_KEY=coderabbit-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/coderabbit.ts
+interface CodeRabbitConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getCodeRabbitConfig(): CodeRabbitConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.CODERABBIT_API_KEY!,
+    environment: env as CodeRabbitConfig['environment'],
+    webhookSecret: process.env.CODERABBIT_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const coderabbitStatus = await checkCodeRabbitConnection();
+
+  return Response.json({
+    status: coderabbitStatus ? 'healthy' : 'degraded',
+    services: {
+      coderabbit: coderabbitStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: Plan the Rollout
-```markdown
-# Phase 1 (Week 1): Pilot
-- Pick 2-3 high-activity repos with receptive teams
-- Use "chill" profile to minimize disruption
-- Collect feedback from pilot teams
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-# Phase 2 (Week 2-3): Expand
-- Roll out to remaining backend/frontend repos
-- Apply learnings from pilot (path instructions, exclusions)
-- Switch to "assertive" profile
+### Step 2: Configure Secrets
+Store CodeRabbit API keys securely using the platform's secrets management.
 
-# Phase 3 (Week 4+): Enforce
-- Add CodeRabbit as required status check on protected branches
-- Set up org-level defaults
-- Monitor adoption metrics
-```
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with CodeRabbit integration.
 
-### Step 2: Create Organization-Level Configuration
-```yaml
-# .github/.coderabbit.yaml (in the .github repository)
-# This is the org-level default applied to ALL repos in the org
-# Individual repos can override by adding their own .coderabbit.yaml
-
-language: "en-US"
-early_access: false
-
-reviews:
-  profile: "assertive"
-  request_changes_workflow: false    # Start with comments-only (non-blocking)
-  high_level_summary: true
-  high_level_summary_in_walkthrough: true
-  review_status: true
-  collapse_walkthrough: false
-  sequence_diagrams: true
-  poem: false
-
-  auto_review:
-    enabled: true
-    drafts: false
-    ignore_title_keywords:
-      - "WIP"
-      - "DO NOT MERGE"
-      - "chore: bump"
-      - "chore(deps)"
-
-  path_filters:
-    - "!**/*.lock"
-    - "!**/package-lock.json"
-    - "!**/pnpm-lock.yaml"
-    - "!**/*.snap"
-    - "!**/*.generated.*"
-    - "!dist/**"
-    - "!vendor/**"
-
-chat:
-  auto_reply: true
-```
-
-### Step 3: Create Team-Specific Repo Configs
-```yaml
-# .coderabbit.yaml for a backend API repo
-# Inherits org defaults, adds API-specific instructions
-reviews:
-  profile: "assertive"
-  auto_review:
-    enabled: true
-    base_branches: [main, develop]
-  path_instructions:
-    - path: "src/api/**"
-      instructions: |
-        Review for: input validation, proper HTTP status codes, auth middleware.
-        Flag missing error handling and unvalidated request bodies.
-    - path: "src/db/**"
-      instructions: |
-        Review for: parameterized queries, transaction boundaries, N+1 patterns.
-        Flag string concatenation in SQL.
-    - path: "src/auth/**"
-      instructions: |
-        SECURITY-CRITICAL. Review for: token validation, password hashing (bcrypt/argon2),
-        session management, CSRF protection. Flag any security bypass.
-    - path: ".github/workflows/**"
-      instructions: |
-        Review for: pinned action versions (SHA not tag), no secrets in logs,
-        timeout-minutes on all jobs.
-```
-
-```yaml
-# .coderabbit.yaml for a frontend React repo
-reviews:
-  profile: "assertive"
-  path_instructions:
-    - path: "src/components/**"
-      instructions: |
-        Review for: accessibility (aria labels, keyboard nav), performance
-        (no inline styles, memo for expensive renders), proper prop types.
-    - path: "src/hooks/**"
-      instructions: |
-        Review for: cleanup in useEffect, dependency arrays, race conditions.
-    - path: "**/*.test.*"
-      instructions: |
-        Review for: edge cases, async handling, user interaction testing.
-        Do NOT comment on import order or test naming conventions.
-```
-
-### Step 4: Script Multi-Repo Config Deployment
-```bash
-#!/bin/bash
-# deploy-coderabbit-config.sh - Deploy .coderabbit.yaml to multiple repos
-set -euo pipefail
-
-ORG="your-org"
-CONFIG_TEMPLATE=".coderabbit.yaml"
-REPOS=("backend-api" "frontend-app" "mobile-api" "infrastructure")
-
-for REPO in "${REPOS[@]}"; do
-  echo "Deploying to $ORG/$REPO..."
-
-  # Clone, add config, create PR
-  TMPDIR=$(mktemp -d)
-  gh repo clone "$ORG/$REPO" "$TMPDIR" -- --depth 1
-  cp "$CONFIG_TEMPLATE" "$TMPDIR/.coderabbit.yaml"
-
-  cd "$TMPDIR"
-  git checkout -b feat/add-coderabbit-config
-  git add .coderabbit.yaml
-  git commit -m "feat: add CodeRabbit AI code review configuration"
-  git push -u origin feat/add-coderabbit-config
-  gh pr create \
-    --title "feat: enable CodeRabbit AI code review" \
-    --body "Adding .coderabbit.yaml for automated AI code reviews. See CodeRabbit docs: https://docs.coderabbit.ai"
-  cd -
-  rm -rf "$TMPDIR"
-
-  echo "PR created for $ORG/$REPO"
-done
-```
-
-### Step 5: Set Up Branch Protection with CodeRabbit
-```bash
-set -euo pipefail
-ORG="your-org"
-REPOS=("backend-api" "frontend-app")
-
-for REPO in "${REPOS[@]}"; do
-  echo "Setting branch protection for $ORG/$REPO..."
-
-  gh api "repos/$ORG/$REPO/branches/main/protection" \
-    --method PUT \
-    --field 'required_status_checks={"strict":true,"contexts":["coderabbitai"]}' \
-    --field 'required_pull_request_reviews={"required_approving_review_count":1}' \
-    --field 'enforce_admins=false' \
-    --field 'restrictions=null'
-
-  echo "Branch protection set: CodeRabbit required for $ORG/$REPO"
-done
-```
-
-### Step 6: Developer Onboarding Guide
-```markdown
-# Share with your team:
-
-## CodeRabbit Quick Reference
-
-CodeRabbit automatically reviews your PRs. No action needed on your part.
-
-### What to expect:
-1. Open a PR → CodeRabbit posts a review in 2-5 minutes
-2. Walkthrough comment summarizes all changes
-3. Line-level comments suggest improvements
-4. Reply to any comment to discuss with the AI
-
-### Useful commands (post as PR comment):
-@coderabbitai full review     → Re-review all files from scratch
-@coderabbitai summary         → Regenerate the walkthrough summary
-@coderabbitai resolve         → Mark all CodeRabbit comments as resolved
-@coderabbitai configuration   → Show current active config
-@coderabbitai help            → List all available commands
-
-### Tips:
-- Keep PRs under 500 lines for best review quality
-- Reply to CodeRabbit comments to teach it your preferences
-- Add "WIP" to PR title to skip review on work-in-progress
-```
+### Step 4: Verify Health
+Test the health check endpoint to confirm CodeRabbit connectivity.
 
 ## Output
-- Organization-level CodeRabbit configuration deployed
-- Team-specific repo configs with path instructions
-- Multi-repo deployment script
-- Branch protection with CodeRabbit as required check
-- Developer onboarding guide
+- Application deployed to production
+- CodeRabbit secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Org config not applied | No `.github` repo | Create `.github` repo with `.coderabbit.yaml` |
-| Repo config ignored | YAML syntax error | Validate YAML, run `@coderabbitai configuration` |
-| Team resistance | Too many comments | Switch to `chill` profile initially |
-| PRs blocked by review | `request_changes_workflow: true` | Start with `false` until team is comfortable |
-| Bot accounts consuming seats | Bots opening PRs | Exclude bot accounts in seat management |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add coderabbit_api_key "$CODERABBIT_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set CODERABBIT_API_KEY="$CODERABBIT_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [CodeRabbit Getting Started](https://docs.coderabbit.ai/getting-started/yaml-configuration)
-- [CodeRabbit Configuration Reference](https://docs.coderabbit.ai/reference/configuration)
-- [Organization-Level Config](https://docs.coderabbit.ai/guides/organization-level-config)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [CodeRabbit Deploy Guide](https://docs.coderabbit.com/deploy)
 
 ## Next Steps
-For multi-environment configuration, see `coderabbit-multi-env-setup`.
+For webhook handling, see `coderabbit-webhooks-events`.

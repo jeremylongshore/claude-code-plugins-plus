@@ -1,67 +1,92 @@
 ---
 name: juicebox-install-auth
 description: |
-  Install and configure Juicebox PeopleGPT API authentication.
-  Use when setting up people search or initializing Juicebox.
-  Trigger: "install juicebox", "setup juicebox", "juicebox auth".
+  Install and configure Juicebox SDK/CLI authentication.
+  Use when setting up a new Juicebox integration, configuring API keys,
+  or initializing Juicebox in your project.
+  Trigger with phrases like "install juicebox", "setup juicebox",
+  "juicebox auth", "configure juicebox API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, recruiting, juicebox]
 compatible-with: claude-code
+tags: [saas, juicebox]
 ---
 
 # Juicebox Install & Auth
 
 ## Overview
-Set up Juicebox PeopleGPT API for AI-powered people search across 800M+ professional profiles.
+Set up Juicebox SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- Juicebox account at [app.juicebox.ai](https://app.juicebox.ai)
-- API key from Dashboard > Settings > API Keys
-- Node.js 18+ or Python 3.8+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Juicebox account with API access
+- API key from Juicebox dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
+# Node.js
 npm install @juicebox/sdk
-# or: pip install juicebox-sdk
+
+# Python
+pip install juicebox
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-export JUICEBOX_API_KEY="jb_live_..."
-echo 'JUICEBOX_API_KEY=jb_live_your-key' >> .env
+# Set environment variable
+export JUICEBOX_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'JUICEBOX_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection
 ```typescript
-import { JuiceboxClient } from '@juicebox/sdk';
-const client = new JuiceboxClient({ apiKey: process.env.JUICEBOX_API_KEY });
-
-const results = await client.search({ query: 'engineer', limit: 1 });
-console.log(`Connected! ${results.total} profiles available`);
+// Test connection code here
 ```
 
-```python
-from juicebox import JuiceboxClient
-client = JuiceboxClient(api_key=os.environ['JUICEBOX_API_KEY'])
-results = client.search(query='engineer', limit=1)
-print(f'Connected! {results.total} profiles')
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-| Error | Code | Solution |
-|-------|------|----------|
-| Invalid API key | 401 | Verify at app.juicebox.ai/settings |
-| Plan limit exceeded | 403 | Upgrade plan or check quota |
-| Rate limited | 429 | Check `Retry-After` header |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Incorrect or expired key | Verify key in Juicebox dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.juicebox.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { JuiceboxClient } from '@juicebox/sdk';
+
+const client = new JuiceboxClient({
+  apiKey: process.env.JUICEBOX_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from juicebox import JuiceboxClient
+
+client = JuiceboxClient(
+    api_key=os.environ.get('JUICEBOX_API_KEY')
+)
+```
 
 ## Resources
-- [Juicebox Docs](https://docs.juicebox.work)
-- [PeopleGPT](https://juicebox.ai/peoplegpt)
+- [Juicebox Documentation](https://docs.juicebox.com)
+- [Juicebox Dashboard](https://api.juicebox.com)
+- [Juicebox Status](https://status.juicebox.com)
 
 ## Next Steps
-After auth, proceed to `juicebox-hello-world`.
+After successful auth, proceed to `juicebox-hello-world` for your first API call.

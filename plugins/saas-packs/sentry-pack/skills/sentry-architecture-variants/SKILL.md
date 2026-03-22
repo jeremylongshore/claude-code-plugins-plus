@@ -1,315 +1,286 @@
 ---
 name: sentry-architecture-variants
 description: |
-  Sentry architecture patterns for different application types.
-  Use when setting up Sentry for monoliths, microservices,
-  serverless, or hybrid architectures.
-  Trigger with phrases like "sentry monolith setup", "sentry microservices",
-  "sentry serverless", "sentry architecture pattern".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*)
+  Choose and implement Sentry validated architecture blueprints for different scales.
+  Use when designing new Sentry integrations, choosing between monolith/service/microservice
+  architectures, or planning migration paths for Sentry applications.
+  Trigger with phrases like "sentry architecture", "sentry blueprint",
+  "how to structure sentry", "sentry project layout", "sentry microservice".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, serverless, microservices, architecture]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Architecture Variants
 
+## Overview
+Three validated architecture blueprints for Sentry integrations.
+
 ## Prerequisites
-- Application architecture documented
-- Service inventory available
-- Team ownership and deployment model defined
-- Tracing requirements understood
+- Understanding of team size and DAU requirements
+- Knowledge of deployment infrastructure
+- Clear SLA requirements
+- Growth projections available
+
+## Variant A: Monolith (Simple)
+
+**Best for:** MVPs, small teams, < 10K daily active users
+
+```
+my-app/
+├── src/
+│   ├── sentry/
+│   │   ├── client.ts          # Singleton client
+│   │   ├── types.ts           # Types
+│   │   └── middleware.ts      # Express middleware
+│   ├── routes/
+│   │   └── api/
+│   │       └── sentry.ts    # API routes
+│   └── index.ts
+├── tests/
+│   └── sentry.test.ts
+└── package.json
+```
+
+### Key Characteristics
+- Single deployment unit
+- Synchronous Sentry calls in request path
+- In-memory caching
+- Simple error handling
+
+### Code Pattern
+```typescript
+// Direct integration in route handler
+app.post('/api/create', async (req, res) => {
+  try {
+    const result = await sentryClient.create(req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+```
+
+---
+
+## Variant B: Service Layer (Moderate)
+
+**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+
+```
+my-app/
+├── src/
+│   ├── services/
+│   │   ├── sentry/
+│   │   │   ├── client.ts      # Client wrapper
+│   │   │   ├── service.ts     # Business logic
+│   │   │   ├── repository.ts  # Data access
+│   │   │   └── types.ts
+│   │   └── index.ts           # Service exports
+│   ├── controllers/
+│   │   └── sentry.ts
+│   ├── routes/
+│   ├── middleware/
+│   ├── queue/
+│   │   └── sentry-processor.ts  # Async processing
+│   └── index.ts
+├── config/
+│   └── sentry/
+└── package.json
+```
+
+### Key Characteristics
+- Separation of concerns
+- Background job processing
+- Redis caching
+- Circuit breaker pattern
+- Structured error handling
+
+### Code Pattern
+```typescript
+// Service layer abstraction
+class SentryService {
+  constructor(
+    private client: SentryClient,
+    private cache: CacheService,
+    private queue: QueueService
+  ) {}
+
+  async createResource(data: CreateInput): Promise<Resource> {
+    // Business logic before API call
+    const validated = this.validate(data);
+
+    // Check cache
+    const cached = await this.cache.get(cacheKey);
+    if (cached) return cached;
+
+    // API call with retry
+    const result = await this.withRetry(() =>
+      this.client.create(validated)
+    );
+
+    // Cache result
+    await this.cache.set(cacheKey, result, 300);
+
+    // Async follow-up
+    await this.queue.enqueue('sentry.post-create', result);
+
+    return result;
+  }
+}
+```
+
+---
+
+## Variant C: Microservice (Complex)
+
+**Best for:** Enterprise, 100K+ DAU, strict SLAs
+
+```
+sentry-service/              # Dedicated microservice
+├── src/
+│   ├── api/
+│   │   ├── grpc/
+│   │   │   └── sentry.proto
+│   │   └── rest/
+│   │       └── routes.ts
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── events/
+│   │   └── services/
+│   ├── infrastructure/
+│   │   ├── sentry/
+│   │   │   ├── client.ts
+│   │   │   ├── mapper.ts
+│   │   │   └── circuit-breaker.ts
+│   │   ├── cache/
+│   │   ├── queue/
+│   │   └── database/
+│   └── index.ts
+├── config/
+├── k8s/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   └── hpa.yaml
+└── package.json
+
+other-services/
+├── order-service/       # Calls sentry-service
+├── payment-service/
+└── notification-service/
+```
+
+### Key Characteristics
+- Dedicated Sentry microservice
+- gRPC for internal communication
+- Event-driven architecture
+- Database per service
+- Kubernetes autoscaling
+- Distributed tracing
+- Circuit breaker per service
+
+### Code Pattern
+```typescript
+// Event-driven with domain isolation
+class SentryAggregate {
+  private events: DomainEvent[] = [];
+
+  process(command: SentryCommand): void {
+    // Domain logic
+    const result = this.execute(command);
+
+    // Emit domain event
+    this.events.push(new SentryProcessedEvent(result));
+  }
+
+  getUncommittedEvents(): DomainEvent[] {
+    return [...this.events];
+  }
+}
+
+// Event handler
+@EventHandler(SentryProcessedEvent)
+class SentryEventHandler {
+  async handle(event: SentryProcessedEvent): Promise<void> {
+    // Saga orchestration
+    await this.sagaOrchestrator.continue(event);
+  }
+}
+```
+
+---
+
+## Decision Matrix
+
+| Factor | Monolith | Service Layer | Microservice |
+|--------|----------|---------------|--------------|
+| Team Size | 1-5 | 5-20 | 20+ |
+| DAU | < 10K | 10K-100K | 100K+ |
+| Deployment Frequency | Weekly | Daily | Continuous |
+| Failure Isolation | None | Partial | Full |
+| Operational Complexity | Low | Medium | High |
+| Time to Market | Fastest | Moderate | Slowest |
+
+## Migration Path
+
+```
+Monolith → Service Layer:
+1. Extract Sentry code to service/
+2. Add caching layer
+3. Add background processing
+
+Service Layer → Microservice:
+1. Create dedicated sentry-service repo
+2. Define gRPC contract
+3. Add event bus
+4. Deploy to Kubernetes
+5. Migrate traffic gradually
+```
 
 ## Instructions
 
-### 1. Monolith Architecture
+### Step 1: Assess Requirements
+Use the decision matrix to identify appropriate variant.
 
-Single application, single Sentry project:
+### Step 2: Choose Architecture
+Select Monolith, Service Layer, or Microservice based on needs.
 
-```typescript
-// instrument.mjs — monolith setup
-import * as Sentry from '@sentry/node';
+### Step 3: Implement Structure
+Set up project layout following the chosen blueprint.
 
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.NODE_ENV,
-  release: process.env.APP_VERSION,
-  tracesSampleRate: 0.1,
-
-  // Use tags to separate modules within the monolith
-  initialScope: {
-    tags: { app: 'monolith' },
-  },
-});
-
-// Tag errors by module
-function captureModuleError(module: string, error: Error) {
-  Sentry.withScope((scope) => {
-    scope.setTag('module', module);
-    scope.setTag('team', getTeamForModule(module));
-    Sentry.captureException(error);
-  });
-}
-
-// Usage
-captureModuleError('auth', new Error('Token expired'));
-captureModuleError('billing', new Error('Payment failed'));
-
-// Ownership rules in Sentry dashboard:
-// tags.module:auth -> #platform-team
-// tags.module:billing -> #payments-team
-```
-
-### 2. Microservices Architecture
-
-One Sentry project per service with distributed tracing:
-
-```typescript
-// packages/sentry-config/index.ts — shared across all services
-import * as Sentry from '@sentry/node';
-
-export function initServiceSentry(serviceName: string) {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.NODE_ENV,
-    release: `${serviceName}@${process.env.APP_VERSION}`,
-    serverName: serviceName,
-    tracesSampleRate: 0.1,
-    sendDefaultPii: false,
-
-    initialScope: {
-      tags: {
-        service: serviceName,
-        cluster: process.env.K8S_CLUSTER || 'default',
-        namespace: process.env.K8S_NAMESPACE || 'default',
-      },
-    },
-  });
-}
-
-// Each service initializes with its own name:
-// api-gateway/instrument.mjs:    initServiceSentry('api-gateway');
-// user-service/instrument.mjs:   initServiceSentry('user-service');
-// payment-service/instrument.mjs: initServiceSentry('payment-service');
-```
-
-**Distributed tracing across services:**
-```typescript
-// HTTP calls between services automatically propagate trace context
-// via sentry-trace and baggage headers (SDK v8 auto-handles this)
-
-// For non-HTTP communication (message queues, gRPC):
-import * as Sentry from '@sentry/node';
-
-// Producer service
-async function publishEvent(topic: string, payload: object) {
-  const span = Sentry.getActiveSpan();
-  const headers: Record<string, string> = {};
-
-  if (span) {
-    headers['sentry-trace'] = Sentry.spanToTraceHeader(span);
-    headers['baggage'] = Sentry.spanToBaggageHeader(span) || '';
-  }
-
-  await kafka.send({ topic, messages: [{ value: JSON.stringify(payload), headers }] });
-}
-
-// Consumer service
-async function handleMessage(message: KafkaMessage) {
-  const headers = message.headers || {};
-
-  Sentry.continueTrace(
-    {
-      sentryTrace: headers['sentry-trace']?.toString(),
-      baggage: headers['baggage']?.toString(),
-    },
-    () => {
-      Sentry.startSpan(
-        { name: `consume.${message.topic}`, op: 'queue.process' },
-        () => processMessage(message)
-      );
-    }
-  );
-}
-```
-
-### 3. Serverless Architecture (AWS Lambda)
-
-```typescript
-// handler.ts — AWS Lambda with Sentry
-import * as Sentry from '@sentry/aws-serverless';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  environment: process.env.STAGE,
-  tracesSampleRate: 0.1,
-});
-
-// Wrap handler with Sentry
-export const handler = Sentry.wrapHandler(async (event, context) => {
-  Sentry.setTag('function', context.functionName);
-  Sentry.setTag('region', process.env.AWS_REGION);
-
-  try {
-    const result = await processRequest(event);
-    return { statusCode: 200, body: JSON.stringify(result) };
-  } catch (error) {
-    Sentry.captureException(error);
-    return { statusCode: 500, body: 'Internal Server Error' };
-  }
-});
-```
-
-**Google Cloud Functions:**
-```typescript
-import * as Sentry from '@sentry/google-cloud-serverless';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-});
-
-export const myFunction = Sentry.wrapCloudEventFunction(async (event, context) => {
-  // Function logic
-});
-```
-
-### 4. Next.js / Full-Stack Framework
-
-```typescript
-// sentry.client.config.ts
-import * as Sentry from '@sentry/nextjs';
-
-Sentry.init({
-  dsn: process.env.NEXT_PUBLIC_SENTRY_DSN,
-  tracesSampleRate: 0.1,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-  integrations: [
-    Sentry.replayIntegration(),
-    Sentry.browserTracingIntegration(),
-  ],
-});
-
-// sentry.server.config.ts
-import * as Sentry from '@sentry/nextjs';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-});
-
-// sentry.edge.config.ts
-import * as Sentry from '@sentry/nextjs';
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-});
-```
-
-### 5. Multi-Tenant SaaS
-
-```typescript
-// Isolate tenant data in Sentry
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  tracesSampleRate: 0.1,
-
-  beforeSend(event) {
-    // Tag every event with tenant for filtering
-    // But NEVER include tenant-specific PII
-    return event;
-  },
-});
-
-// Middleware: set tenant context per request
-app.use((req, res, next) => {
-  const tenantId = req.headers['x-tenant-id'] || 'unknown';
-
-  Sentry.setTag('tenant_id', tenantId);
-  Sentry.setTag('tenant_plan', getTenantPlan(tenantId));
-
-  // Set user as tenant, not individual
-  Sentry.setUser({ id: `tenant:${tenantId}` });
-
-  next();
-});
-
-// Filter by tenant in Sentry dashboard:
-// Issues > Search: tags.tenant_id:acme-corp
-```
-
-### 6. Worker / Queue Architecture
-
-```typescript
-// Background job processor with Sentry
-import * as Sentry from '@sentry/node';
-
-class JobProcessor {
-  async processJob(job: Job) {
-    return Sentry.withScope(async (scope) => {
-      scope.setTag('job.type', job.type);
-      scope.setTag('job.queue', job.queue);
-      scope.setTag('job.attempt', String(job.attempts));
-      scope.setContext('job', {
-        id: job.id,
-        data: sanitizeJobData(job.data),
-        scheduled_at: job.scheduledAt,
-      });
-
-      try {
-        const result = await Sentry.startSpan(
-          { name: `job.${job.type}`, op: 'queue.task' },
-          () => this.execute(job)
-        );
-        return result;
-      } catch (error) {
-        scope.setLevel(job.attempts >= job.maxAttempts ? 'error' : 'warning');
-        Sentry.captureException(error);
-        throw error;
-      }
-    });
-  }
-}
-
-// Periodic flush for long-running workers
-setInterval(() => Sentry.flush(2000), 30_000);
-```
-
-### 7. Hybrid Architecture Decision Matrix
-
-| Architecture | Projects | Tracing | Key Pattern |
-|-------------|----------|---------|-------------|
-| Monolith | 1 project | Single-service spans | Module tags + ownership rules |
-| Microservices | 1 per service | Distributed tracing | Shared config package + trace headers |
-| Serverless | 1 per function group | Per-invocation spans | Wrapper function + cold start tracking |
-| Next.js | 1 project, 3 configs | Client + server + edge | Framework SDK with 3 config files |
-| Multi-tenant | 1 project | Per-tenant tagging | Tenant ID tags, no tenant PII |
-| Workers | 1 per worker type | Per-job spans | withScope per job, periodic flush |
+### Step 4: Plan Migration Path
+Document upgrade path for future scaling.
 
 ## Output
-- Architecture-appropriate Sentry configuration for each pattern
-- Distributed tracing configured across services (HTTP and message queue)
-- Serverless wrappers for AWS Lambda and Google Cloud Functions
-- Multi-tenant isolation using tags and scope
-- Worker pattern with per-job context and periodic flush
+- Architecture variant selected
+- Project structure implemented
+- Migration path documented
+- Appropriate patterns applied
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Distributed traces broken | Missing header propagation | Verify `sentry-trace` and `baggage` headers in all inter-service calls |
-| Lambda cold starts missing events | SDK not flushed before return | Use `Sentry.wrapHandler()` which auto-flushes |
-| Multi-tenant data leakage | Global scope pollution | Use `withScope()` per request, never `setTag()` globally |
-| Worker events lost | No periodic flush | Add `setInterval(() => Sentry.flush(2000), 30000)` |
+| Over-engineering | Wrong variant choice | Start simpler |
+| Performance issues | Wrong layer | Add caching/async |
+| Team friction | Complex architecture | Simplify or train |
+| Deployment complexity | Microservice overhead | Consider service layer |
+
+## Examples
+
+### Quick Variant Check
+```bash
+# Count team size and DAU to select variant
+echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
+echo "DAU: Check analytics dashboard"
+```
 
 ## Resources
-- [Node.js Guide](https://docs.sentry.io/platforms/javascript/guides/node/)
-- [Express Guide](https://docs.sentry.io/platforms/javascript/guides/express/)
-- [Next.js Guide](https://docs.sentry.io/platforms/javascript/guides/nextjs/)
-- [AWS Lambda](https://docs.sentry.io/platforms/javascript/guides/aws-lambda/)
-- [Google Cloud Functions](https://docs.sentry.io/platforms/javascript/guides/gcp-functions/)
-- [Distributed Tracing](https://docs.sentry.io/product/performance/distributed-tracing/)
+- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
+- [Microservices Guide](https://martinfowler.com/microservices/)
+- [Sentry Architecture Guide](https://docs.sentry.com/architecture)
+
+## Next Steps
+For common anti-patterns, see `sentry-known-pitfalls`.

@@ -1,27 +1,119 @@
 ---
 name: guidewire-local-dev-loop
 description: |
-  Configure Guidewire Studio local development with Gosu debugging, hot reload, and test data.
-  Trigger: "guidewire local dev loop", "local-dev-loop".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
+  Configure Guidewire local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Guidewire.
+  Trigger with phrases like "guidewire dev setup", "guidewire local development",
+  "guidewire dev environment", "develop with guidewire".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
 # Guidewire Local Dev Loop
 
 ## Overview
+Set up a fast, reproducible local development workflow for Guidewire.
 
-Guidewire Studio (IntelliJ-based): Gosu debugging with breakpoints, hot deploy of Gosu changes, GUnit tests, local test data via sample data loader. Use gradle runServer for local InsuranceSuite instance.
+## Prerequisites
+- Completed `guidewire-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
-For detailed implementation, see: [implementation guide](references/implementation-guide.md)
+## Instructions
+
+### Step 1: Create Project Structure
+```
+my-guidewire-project/
+├── src/
+│   ├── guidewire/
+│   │   ├── client.ts       # Guidewire client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── guidewire.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
+```
+
+### Step 2: Configure Environment
+```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}
+```
+
+### Step 4: Configure Testing
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { GuidewireClient } from '../src/guidewire/client';
+
+describe('Guidewire Client', () => {
+  it('should initialize with API key', () => {
+    const client = new GuidewireClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
+```
+
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Guidewire development
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Guidewire Responses
+```typescript
+vi.mock('@guidewire/sdk', () => ({
+  GuidewireClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=GUIDEWIRE=* npm run dev
+```
 
 ## Resources
+- [Guidewire SDK Reference](https://docs.guidewire.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
-- [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com)
-- [Gosu Language Guide](https://gosu-lang.github.io/)
+## Next Steps
+See `guidewire-sdk-patterns` for production-ready code patterns.

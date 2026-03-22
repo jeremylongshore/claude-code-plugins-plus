@@ -1,217 +1,240 @@
 ---
 name: openrouter-reference-architecture
 description: |
-  Design production architectures using OpenRouter as the LLM gateway. Use when planning system design, reviewing architecture, or scaling AI applications. Triggers: 'openrouter architecture', 'openrouter system design', 'openrouter at scale', 'llm gateway architecture'.
-allowed-tools: Read, Write, Edit, Bash, Grep
-version: 2.0.0
+  Implement OpenRouter reference architecture with best-practice project layout.
+  Use when designing new OpenRouter integrations, reviewing project structure,
+  or establishing architecture standards for OpenRouter applications.
+  Trigger with phrases like "openrouter architecture", "openrouter best practices",
+  "openrouter project structure", "how to organize openrouter", "openrouter layout".
+allowed-tools: Read, Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, architecture, system-design, scaling]
-
+compatible-with: claude-code
+tags: [saas, openrouter]
 ---
+
 # OpenRouter Reference Architecture
 
 ## Overview
+Production-ready architecture patterns for OpenRouter integrations.
 
-OpenRouter serves as a unified LLM gateway, abstracting provider complexity. A production architecture wraps it with caching, rate limiting, cost controls, observability, and async processing. This skill provides three reference architectures: simple (single service), standard (microservice), and enterprise (event-driven).
+## Prerequisites
+- Understanding of layered architecture
+- OpenRouter SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Architecture 1: Simple (Single Service)
-
-```
-┌─────────────┐     ┌──────────────────────────┐     ┌──────────────┐
-│  Your App   │────▶│  OpenRouter Client        │────▶│  OpenRouter  │
-│             │     │  - Retry (SDK built-in)   │     │  /api/v1     │
-│             │◀────│  - Cost tracking          │◀────│              │
-│             │     │  - Structured logging     │     └──────────────┘
-└─────────────┘     └──────────────────────────┘
-```
-
-```python
-import os, logging
-from openai import OpenAI
-
-log = logging.getLogger("llm")
-
-client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.environ["OPENROUTER_API_KEY"],
-    max_retries=3,
-    timeout=30.0,
-    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
-)
-
-def complete(prompt, model="openai/gpt-4o-mini", **kwargs):
-    kwargs.setdefault("max_tokens", 1024)
-    response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": prompt}],
-        **kwargs,
-    )
-    log.info(f"[{response.model}] {response.usage.prompt_tokens}+{response.usage.completion_tokens} tokens")
-    return response.choices[0].message.content
-```
-
-## Architecture 2: Standard (Microservice)
+## Project Structure
 
 ```
-┌─────────────┐     ┌─────────────────────┐     ┌──────────────┐
-│  API Gateway│────▶│  AI Service          │────▶│  OpenRouter  │
-│  (auth,     │     │  ┌─────────────┐    │     │  /api/v1     │
-│   rate-limit│     │  │ Router      │    │     └──────────────┘
-│   logging)  │     │  │ (task→model)│    │
-└─────────────┘     │  └─────────────┘    │
-                    │  ┌─────────────┐    │
-                    │  │ Cache       │◀──▶│── Redis
-                    │  │ (TTL-based) │    │
-                    │  └─────────────┘    │
-                    │  ┌─────────────┐    │
-                    │  │ Budget      │◀──▶│── SQLite/Postgres
-                    │  │ Enforcer    │    │
-                    │  └─────────────┘    │
-                    └─────────────────────┘
+my-openrouter-project/
+├── src/
+│   ├── openrouter/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── openrouter/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── openrouter/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── openrouter/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── openrouter/
+│   └── integration/
+│       └── openrouter/
+├── config/
+│   ├── openrouter.development.json
+│   ├── openrouter.staging.json
+│   └── openrouter.production.json
+└── docs/
+    └── openrouter/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-```python
-from fastapi import FastAPI, Depends, HTTPException
-from pydantic import BaseModel
+## Layer Architecture
 
-app = FastAPI()
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          OpenRouter Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
 
-class CompletionRequest(BaseModel):
-    prompt: str
-    task_type: str = "general"  # classification, code, analysis, etc.
-    max_tokens: int = 1024
-    user_id: str = "anonymous"
+## Key Components
 
-ROUTING_TABLE = {
-    "classification": "openai/gpt-4o-mini",
-    "code": "anthropic/claude-3.5-sonnet",
-    "analysis": "anthropic/claude-3.5-sonnet",
-    "general": "openai/gpt-4o-mini",
-    "budget": "meta-llama/llama-3.1-8b-instruct",
+### Step 1: Client Wrapper
+```typescript
+// src/openrouter/client.ts
+export class OpenRouterService {
+  private client: OpenRouterClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: OpenRouterConfig) {
+    this.client = new OpenRouterClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('openrouter');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/openrouter/errors.ts
+export class OpenRouterServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'OpenRouterServiceError';
+  }
 }
 
-@app.post("/v1/complete")
-async def complete(req: CompletionRequest):
-    model = ROUTING_TABLE.get(req.task_type, "openai/gpt-4o-mini")
+export function wrapOpenRouterError(error: unknown): OpenRouterServiceError {
+  // Transform SDK errors to application errors
+}
+```
 
-    # Check cache first (for deterministic requests)
-    cached = cache.get(model, req.prompt)
-    if cached:
-        return {"content": cached, "cached": True}
-
-    # Check budget
-    budget.check(req.user_id, model, estimate_tokens(req.prompt), req.max_tokens)
-
-    # Call OpenRouter
-    response = client.chat.completions.create(
-        model=model,
-        messages=[{"role": "user", "content": req.prompt}],
-        max_tokens=req.max_tokens,
-        extra_body={
-            "models": [model, "openai/gpt-4o-mini"],  # Fallback
-            "route": "fallback",
-        },
-    )
-
-    # Record cost and cache
-    budget.record(req.user_id, response.id)
-    cache.set(model, req.prompt, response.choices[0].message.content)
-
+### Step 3: Health Check
+```typescript
+// src/openrouter/health.ts
+export async function checkOpenRouterHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await openrouterClient.ping();
     return {
-        "content": response.choices[0].message.content,
-        "model": response.model,
-        "tokens": response.usage.prompt_tokens + response.usage.completion_tokens,
-    }
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
 ```
 
-## Architecture 3: Enterprise (Event-Driven)
+## Data Flow Diagram
 
 ```
-┌──────────┐    ┌───────────┐    ┌──────────────┐    ┌──────────────┐
-│  API     │───▶│  Queue    │───▶│  Workers     │───▶│  OpenRouter  │
-│  Gateway │    │  (Redis/  │    │  (auto-scale) │    │  /api/v1     │
-└──────────┘    │  SQS)     │    │  ┌──────────┐│    └──────────────┘
-                └───────────┘    │  │ Router   ││
-                     │           │  │ Cache    ││
-                     ▼           │  │ Budget   ││
-                ┌───────────┐    │  │ Audit    ││
-                │  Results  │◀───│  └──────────┘│
-                │  Store    │    └──────────────┘
-                └───────────┘
-                     │
-                ┌───────────┐    ┌──────────────┐
-                │  Metrics  │───▶│  Dashboard   │
-                │  (OTEL)   │    │  Alerts      │
-                └───────────┘    └──────────────┘
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ OpenRouter    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ OpenRouter    │
+│   API       │
+└─────────────┘
 ```
 
-```python
-# Worker that processes queued AI requests
-import json, redis
+## Configuration Management
 
-r = redis.Redis()
+```typescript
+// config/openrouter.ts
+export interface OpenRouterConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
 
-def worker_loop():
-    """Process AI requests from the queue."""
-    while True:
-        _, raw = r.brpop("ai:requests")
-        request = json.loads(raw)
-
-        try:
-            response = client.chat.completions.create(
-                model=request["model"],
-                messages=request["messages"],
-                max_tokens=request.get("max_tokens", 1024),
-                extra_body={
-                    "models": [request["model"], "openai/gpt-4o-mini"],
-                    "route": "fallback",
-                },
-            )
-            result = {
-                "id": request["id"],
-                "content": response.choices[0].message.content,
-                "model": response.model,
-                "status": "complete",
-            }
-        except Exception as e:
-            result = {"id": request["id"], "error": str(e), "status": "failed"}
-
-        r.lpush(f"ai:results:{request['id']}", json.dumps(result))
-        r.expire(f"ai:results:{request['id']}", 3600)
+export function loadOpenRouterConfig(): OpenRouterConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./openrouter.${env}.json`);
+}
 ```
 
-## Choosing an Architecture
+## Instructions
 
-| Factor | Simple | Standard | Enterprise |
-|--------|--------|----------|------------|
-| Team size | 1-3 | 3-10 | 10+ |
-| Requests/day | <1K | 1K-100K | 100K+ |
-| Latency needs | Tolerant | Low | Mixed (sync+async) |
-| Budget tracking | Basic | Per-user | Per-user + department |
-| Failure handling | SDK retries | Fallback chain | Queue + retry + DLQ |
-| Observability | Logging | Metrics + logging | Full OTEL tracing |
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for OpenRouter operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for OpenRouter connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add OpenRouter types |
+| Test isolation | Shared state | Use dependency injection |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Single point of failure | No redundancy in AI service | Deploy 2+ instances behind load balancer |
-| Queue backlog | Worker throughput < incoming rate | Auto-scale workers; implement backpressure |
-| Cache stampede | Many requests for same uncached key | Use cache locking or singleflight pattern |
-| Budget bypass | Direct calls skipping middleware | All calls must go through the AI service |
+## Examples
 
-## Enterprise Considerations
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/openrouter/{handlers} src/services/openrouter src/api/openrouter
+touch src/openrouter/{client,config,types,errors}.ts
+touch src/services/openrouter/{index,sync,cache}.ts
+```
 
-- Start with Architecture 1 and evolve to 2/3 as scale demands
-- Use the queue-based pattern for any request that can tolerate >1s latency (cost reports, batch processing)
-- OpenTelemetry traces should span from API gateway through AI service to OpenRouter
-- Implement dead letter queues (DLQ) for failed requests that exhaust all retries
-- Run separate worker pools for different priority levels (real-time vs batch)
-- All architectures should share the same OpenRouter client wrapper for consistent logging and cost tracking
+## Resources
+- [OpenRouter SDK Documentation](https://docs.openrouter.com/sdk)
+- [OpenRouter Best Practices](https://docs.openrouter.com/best-practices)
 
-## References
-
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [API Reference](https://openrouter.ai/docs/api/reference/overview) | [Model Routing](https://openrouter.ai/docs/features/model-routing)
+## Flagship Skills
+For multi-environment setup, see `openrouter-multi-env-setup`.

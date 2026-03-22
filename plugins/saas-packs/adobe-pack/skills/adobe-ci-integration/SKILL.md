@@ -1,46 +1,35 @@
 ---
 name: adobe-ci-integration
 description: |
-  Configure CI/CD pipelines for Adobe integrations with GitHub Actions,
-  including OAuth credential injection, PDF Services testing, Firefly API
-  smoke tests, and secret scanning for Adobe credential patterns.
+  Configure Adobe CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Adobe tests into your build process.
   Trigger with phrases like "adobe CI", "adobe GitHub Actions",
-  "adobe automated tests", "CI adobe", "adobe pipeline".
+  "adobe automated tests", "CI adobe".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
 compatible-with: claude-code
+tags: [saas, adobe]
 ---
 
 # Adobe CI Integration
 
 ## Overview
-
-Set up CI/CD pipelines for Adobe API integrations with proper credential management, unit/integration test separation, and secret scanning for Adobe-specific credential patterns.
+Set up CI/CD pipelines for Adobe integrations with automated testing.
 
 ## Prerequisites
-
 - GitHub repository with Actions enabled
-- Adobe Developer Console credentials for CI (separate from production)
-- npm/pnpm project with vitest configured
+- Adobe test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: Store Adobe Credentials as GitHub Secrets
-
-```bash
-# Set OAuth Server-to-Server credentials
-gh secret set ADOBE_CLIENT_ID --body "your-ci-client-id"
-gh secret set ADOBE_CLIENT_SECRET --body "your-ci-client-secret"
-gh secret set ADOBE_SCOPES --body "openid,AdobeID,firefly_api"
-```
-
-### Step 2: Create CI Workflow
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/adobe-integration.yml`:
 
 ```yaml
-# .github/workflows/adobe-integration.yml
 name: Adobe Integration Tests
 
 on:
@@ -49,9 +38,14 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  ADOBE_API_KEY: ${{ secrets.ADOBE_API_KEY }}
+
 jobs:
-  unit-tests:
+  test:
     runs-on: ubuntu-latest
+    env:
+      ADOBE_API_KEY: ${{ secrets.ADOBE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -60,103 +54,42 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm test -- --coverage
-        # Unit tests run with mocked Adobe APIs — no credentials needed
-
-  secret-scan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Scan for Adobe credentials
-        run: |
-          FOUND=0
-          # Adobe OAuth client secrets start with p8_
-          if grep -rE "p8_[A-Za-z0-9_-]{20,}" --include="*.ts" --include="*.js" --include="*.py" --include="*.json" . 2>/dev/null; then
-            echo "::error::Adobe client_secret pattern found in source"
-            FOUND=1
-          fi
-          # Adobe IMS access tokens
-          if grep -rE "eyJ[A-Za-z0-9_-]{50,}" --include="*.ts" --include="*.js" . 2>/dev/null; then
-            echo "::warning::Potential Adobe access token found"
-          fi
-          exit $FOUND
-
-  integration-tests:
-    needs: [unit-tests, secret-scan]
-    runs-on: ubuntu-latest
-    # Only run on main branch (uses real API credentials)
-    if: github.ref == 'refs/heads/main'
-    env:
-      ADOBE_CLIENT_ID: ${{ secrets.ADOBE_CLIENT_ID }}
-      ADOBE_CLIENT_SECRET: ${{ secrets.ADOBE_CLIENT_SECRET }}
-      ADOBE_SCOPES: ${{ secrets.ADOBE_SCOPES }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-
-      - name: Verify Adobe OAuth credentials
-        run: |
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
-            'https://ims-na1.adobelogin.com/ims/token/v3' \
-            -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=${ADOBE_SCOPES}")
-          if [ "$HTTP_CODE" != "200" ]; then
-            echo "::error::Adobe OAuth token generation failed (HTTP $HTTP_CODE)"
-            exit 1
-          fi
-          echo "Adobe credentials verified"
-
-      - name: Run integration tests
-        run: npm run test:integration
-        timeout-minutes: 5
+      - run: npm run test:integration
 ```
 
-### Step 3: Write CI-Friendly Integration Tests
+### Step 2: Configure Secrets
+```bash
+gh secret set ADOBE_API_KEY --body "sk_test_***"
+```
 
+### Step 3: Add Integration Tests
 ```typescript
-// tests/integration/adobe-api.test.ts
-import { describe, it, expect } from 'vitest';
-import { getAccessToken } from '../../src/adobe/client';
-
-const hasCredentials = !!(
-  process.env.ADOBE_CLIENT_ID && process.env.ADOBE_CLIENT_SECRET
-);
-
-describe.skipIf(!hasCredentials)('Adobe API Integration', () => {
-  it('should generate valid OAuth access token', async () => {
-    const token = await getAccessToken();
-    expect(token).toBeTruthy();
-    expect(token.length).toBeGreaterThan(100);
-  }, 10_000);
-
-  it('should call Firefly API health endpoint', async () => {
-    const token = await getAccessToken();
-    const response = await fetch('https://firefly-api.adobe.io/v3/images/generate', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'x-api-key': process.env.ADOBE_CLIENT_ID!,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt: 'solid blue square',
-        n: 1,
-        size: { width: 512, height: 512 },
-      }),
-    });
-
-    // 200 = success, 429 = rate limited (acceptable in CI)
-    expect([200, 429]).toContain(response.status);
-  }, 30_000);
+describe('Adobe Integration', () => {
+  it.skipIf(!process.env.ADOBE_API_KEY)('should connect', async () => {
+    const client = getAdobeClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
 });
 ```
 
-### Step 4: Release Workflow with Adobe Validation
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
 ```yaml
-# .github/workflows/release.yml
 on:
   push:
     tags: ['v*']
@@ -165,42 +98,29 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      ADOBE_CLIENT_ID: ${{ secrets.ADOBE_CLIENT_ID_PROD }}
-      ADOBE_CLIENT_SECRET: ${{ secrets.ADOBE_CLIENT_SECRET_PROD }}
-      ADOBE_SCOPES: ${{ secrets.ADOBE_SCOPES }}
+      ADOBE_API_KEY: ${{ secrets.ADOBE_API_KEY_PROD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '20' }
+        with:
+          node-version: '20'
       - run: npm ci
-      - run: npm test
-      - name: Verify Adobe production credentials
+      - name: Verify Adobe production readiness
         run: npm run test:integration
       - run: npm run build
       - run: npm publish
 ```
 
-## Output
-
-- Unit test pipeline (no credentials needed)
-- Secret scanning for Adobe credential patterns
-- Integration tests with real API (main branch only)
-- Release workflow with credential validation gate
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| `invalid_client` in CI | Wrong secret value | Re-set with `gh secret set` |
-| Integration test 429 | Rate limited | Accept 429 as valid CI result |
-| Secret scan false positive | Test fixture data | Exclude test directories from scan |
-| Timeout on Firefly test | API latency | Increase vitest timeout to 30s |
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "adobe-integration"
+```
 
 ## Resources
-
-- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
-- [Adobe Developer Console](https://developer.adobe.com/console)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Adobe CI Guide](https://docs.adobe.com/ci)
 
 ## Next Steps
-
 For deployment patterns, see `adobe-deploy-integration`.

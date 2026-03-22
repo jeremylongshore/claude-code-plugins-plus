@@ -1,196 +1,205 @@
 ---
 name: clay-incident-runbook
 description: |
-  Execute Clay incident response procedures for enrichment failures, credit exhaustion, and data flow outages.
-  Use when Clay enrichments stop working, webhook delivery fails,
-  or CRM sync breaks in production.
-  Trigger with phrases like "clay incident", "clay outage", "clay down",
-  "clay emergency", "clay broken", "clay enrichment stopped".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Execute Clay incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Clay-related outages, investigating errors,
+  or running post-incident reviews for Clay integration failures.
+  Trigger with phrases like "clay incident", "clay outage",
+  "clay down", "clay on-call", "clay emergency", "clay broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, incident-response]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Incident Runbook
 
 ## Overview
+Rapid incident response procedures for Clay-related outages.
 
-Rapid response procedures for Clay-related production incidents. Clay is a hosted SaaS platform, so incidents fall into two categories: (1) Clay-side issues (platform outage, provider degradation) and (2) your-side issues (webhook misconfiguration, credit exhaustion, handler failures).
+## Prerequisites
+- Access to Clay dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete data flow stopped | < 15 min | Credits exhausted, webhook URL expired, Clay outage |
-| P2 | Degraded enrichment | < 1 hour | Low hit rates, slow processing, CRM sync errors |
-| P3 | Minor impact | < 4 hours | Single provider down, intermittent webhook failures |
-| P4 | No user impact | Next business day | Monitoring gaps, cost optimization needed |
+| P1 | Complete outage | < 15 min | Clay API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Clay status
+curl -s https://status.clay.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.clay'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(clay_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=clay-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Clay API returning errors?
+├─ YES: Is status.clay.com showing incident?
+│   ├─ YES → Wait for Clay to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret clay-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Clay dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic clay-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/clay-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.clay.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/clay-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Clay for limit increase
+```
+
+### 500/503 - Clay Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/clay-integration CLAY_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Clay status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Clay Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Clay Integration Issue
+
+We're experiencing issues with our Clay integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/clay-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=clay-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=clay_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Clay [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Step 1: Quick Triage (2 Minutes)
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-```bash
-#!/bin/bash
-# clay-triage.sh — rapid diagnostic for Clay incidents
-set -euo pipefail
+### Step 2: Follow Decision Tree
+Determine if the issue is Clay-side or internal.
 
-echo "=== Clay Incident Triage ==="
-echo "Time: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-echo ""
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-# 1. Check Clay platform status
-echo "--- Clay Platform Status ---"
-curl -s -o /dev/null -w "clay.com: HTTP %{http_code}\n" https://www.clay.com
-echo ""
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
-# 2. Test webhook delivery
-echo "--- Webhook Test ---"
-if [ -n "${CLAY_WEBHOOK_URL:-}" ]; then
-  WEBHOOK_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-    -X POST "$CLAY_WEBHOOK_URL" \
-    -H "Content-Type: application/json" \
-    -d '{"_triage": true, "_ts": "'$(date -u +%s)'"}')
-  echo "Webhook: HTTP $WEBHOOK_CODE"
-  if [ "$WEBHOOK_CODE" = "200" ]; then echo "  -> Webhook OK"; fi
-  if [ "$WEBHOOK_CODE" = "404" ]; then echo "  -> ISSUE: Webhook URL invalid/expired"; fi
-  if [ "$WEBHOOK_CODE" = "429" ]; then echo "  -> ISSUE: Rate limited"; fi
-else
-  echo "CLAY_WEBHOOK_URL not set!"
-fi
-echo ""
-
-# 3. Test Enterprise API (if applicable)
-echo "--- Enterprise API Test ---"
-if [ -n "${CLAY_API_KEY:-}" ]; then
-  API_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
-    -X POST "https://api.clay.com/v1/people/enrich" \
-    -H "Authorization: Bearer $CLAY_API_KEY" \
-    -H "Content-Type: application/json" \
-    -d '{"email": "triage@test.com"}')
-  echo "Enterprise API: HTTP $API_CODE"
-  if [ "$API_CODE" = "401" ]; then echo "  -> ISSUE: API key invalid/expired"; fi
-  if [ "$API_CODE" = "403" ]; then echo "  -> ISSUE: Not on Enterprise plan or key revoked"; fi
-else
-  echo "No Enterprise API key configured"
-fi
-echo ""
-
-# 4. Check your callback endpoint
-echo "--- Callback Endpoint ---"
-CALLBACK_URL="${CLAY_CALLBACK_URL:-https://your-app.com/api/health}"
-curl -s -o /dev/null -w "Callback: HTTP %{http_code}\n" "$CALLBACK_URL" || echo "Callback endpoint unreachable!"
-```
-
-### Step 2: Decision Tree
-
-```
-Enrichment not running?
-├── Check Clay UI: any red error cells?
-│   ├── YES: Click cells, read error messages → go to Error Resolution
-│   └── NO: Continue
-├── Is auto-run enabled? (Table Settings > Auto-update)
-│   ├── NO: Enable auto-update at table level, then column level
-│   └── YES: Continue
-├── Do you have credits remaining? (Settings > Plans & Billing)
-│   ├── NO: Add credits or connect own provider API keys → P1
-│   └── YES: Continue
-├── Is the webhook accepting data? (Test with curl)
-│   ├── NO: Re-create webhook (50K limit may be hit) → P1
-│   └── YES: The issue is likely provider-side
-└── Check individual enrichment providers in Clay Settings > Connections
-    ├── Provider connection lost → Reconnect API key
-    └── Provider rate limited → Wait or switch to different provider
-```
-
-### Step 3: Common Incident Resolutions
-
-**P1: Credits Exhausted**
-```
-1. Check: Settings > Plans & Billing > Credit balance
-2. Immediate: Connect your own provider API keys (0 credits)
-3. Short-term: Add credit pack or upgrade plan
-4. Prevent: Set credit burn alerts (see clay-observability)
-```
-
-**P1: Webhook URL Expired (50K Limit)**
-```
-1. Check: Table > + Add > Webhooks — does existing webhook show "limit reached"?
-2. Fix: Create new webhook on same table
-3. Update: Change CLAY_WEBHOOK_URL in all deployment secrets
-4. Verify: Send test payload to new webhook URL
-```
-
-**P2: Low Enrichment Hit Rate**
-```
-1. Check: Sample 10 rows — are input domains valid?
-2. Check: Are providers connected? (Settings > Connections)
-3. Fix: Pre-filter invalid rows, reconnect providers
-4. Monitor: Track hit rate for next hour
-```
-
-**P2: CRM Sync Failures**
-```
-1. Check: HTTP API column errors (click red cells)
-2. Common: CRM API key expired → regenerate and update in column config
-3. Common: Field mapping changed → update column body JSON
-4. Test: Run HTTP API column on single row manually
-```
-
-### Step 4: Communication Template
-
-```markdown
-## Clay Incident Notification
-
-**Severity:** P[1/2/3]
-**Time detected:** [UTC timestamp]
-**Impact:** [What's not working]
-**Affected:** [Teams/workflows affected]
-
-**Current Status:** [Investigating / Mitigating / Resolved]
-
-**Actions Taken:**
-1. [Action 1]
-2. [Action 2]
-
-**Next Update:** [Time]
-
-**Root Cause:** [If known]
-**Resolution:** [Steps taken to fix]
-**Prevention:** [What we'll do to prevent recurrence]
-```
-
-### Step 5: Postmortem Template
-
-| Item | Details |
-|------|---------|
-| Incident Date | [Date] |
-| Duration | [X hours] |
-| Severity | P[1/2/3] |
-| Impact | [Leads not enriched / CRM not updated / Credits exhausted] |
-| Root Cause | [e.g., Webhook hit 50K limit without monitoring] |
-| Detection | [How was it discovered? Alert / user report / manual check] |
-| Resolution | [Steps taken] |
-| Credits Lost | [Estimate of wasted credits, if any] |
-| Prevention | [Monitoring gaps to close, safeguards to add] |
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't access Clay dashboard | Browser/network issue | Try incognito, different browser, or mobile |
-| Webhook test returns nothing | Webhook URL malformed | Re-copy full URL from Clay table |
-| All providers returning empty | Account-level issue | Contact Clay support at community.clay.com |
-| CRM pushing wrong data | Column references changed | Re-map HTTP API column body fields |
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.clay.status' || echo "UNHEALTHY"
+```
 
 ## Resources
-
-- [Clay Community Support](https://community.clay.com)
-- [Clay University](https://university.clay.com)
+- [Clay Status Page](https://status.clay.com)
+- [Clay Support](https://support.clay.com)
 
 ## Next Steps
-
-For data handling and compliance, see `clay-data-handling`.
+For data handling, see `clay-data-handling`.

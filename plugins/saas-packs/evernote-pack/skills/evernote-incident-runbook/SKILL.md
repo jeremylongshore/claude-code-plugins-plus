@@ -1,108 +1,205 @@
 ---
 name: evernote-incident-runbook
 description: |
-  Manage incident response for Evernote integration issues.
-  Use when troubleshooting production incidents, handling outages,
-  or responding to Evernote service issues.
+  Execute Evernote incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Evernote-related outages, investigating errors,
+  or running post-incident reviews for Evernote integration failures.
   Trigger with phrases like "evernote incident", "evernote outage",
-  "evernote emergency", "troubleshoot evernote production".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  "evernote down", "evernote on-call", "evernote emergency", "evernote broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, incident-response]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Incident Runbook
 
 ## Overview
-Step-by-step procedures for responding to Evernote integration incidents including API outages, rate limit escalations, authentication failures, data sync issues, and quota exhaustion.
+Rapid incident response procedures for Evernote-related outages.
 
 ## Prerequisites
-- Access to monitoring dashboards and production logs
-- Production Evernote API credentials
-- Communication channels for escalation (Slack, PagerDuty)
+- Access to Evernote dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
+
+## Severity Levels
+
+| Level | Definition | Response Time | Examples |
+|-------|------------|---------------|----------|
+| P1 | Complete outage | < 15 min | Evernote API unreachable |
+| P2 | Degraded service | < 1 hour | High latency, partial failures |
+| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps |
+
+## Quick Triage
+
+```bash
+# 1. Check Evernote status
+curl -s https://status.evernote.com | jq
+
+# 2. Check our integration health
+curl -s https://api.yourapp.com/health | jq '.services.evernote'
+
+# 3. Check error rate (last 5 min)
+curl -s localhost:9090/api/v1/query?query=rate(evernote_errors_total[5m])
+
+# 4. Recent error logs
+kubectl logs -l app=evernote-integration --since=5m | grep -i error | tail -20
+```
+
+## Decision Tree
+
+```
+Evernote API returning errors?
+├─ YES: Is status.evernote.com showing incident?
+│   ├─ YES → Wait for Evernote to resolve. Enable fallback.
+│   └─ NO → Our integration issue. Check credentials, config.
+└─ NO: Is our service healthy?
+    ├─ YES → Likely resolved or intermittent. Monitor.
+    └─ NO → Our infrastructure issue. Check pods, memory, network.
+```
+
+## Immediate Actions by Error Type
+
+### 401/403 - Authentication
+```bash
+# Verify API key is set
+kubectl get secret evernote-secrets -o jsonpath='{.data.api-key}' | base64 -d
+
+# Check if key was rotated
+# → Verify in Evernote dashboard
+
+# Remediation: Update secret and restart pods
+kubectl create secret generic evernote-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
+kubectl rollout restart deployment/evernote-integration
+```
+
+### 429 - Rate Limited
+```bash
+# Check rate limit headers
+curl -v https://api.evernote.com 2>&1 | grep -i rate
+
+# Enable request queuing
+kubectl set env deployment/evernote-integration RATE_LIMIT_MODE=queue
+
+# Long-term: Contact Evernote for limit increase
+```
+
+### 500/503 - Evernote Errors
+```bash
+# Enable graceful degradation
+kubectl set env deployment/evernote-integration EVERNOTE_FALLBACK=true
+
+# Notify users of degraded service
+# Update status page
+
+# Monitor Evernote status for resolution
+```
+
+## Communication Templates
+
+### Internal (Slack)
+```
+🔴 P1 INCIDENT: Evernote Integration
+Status: INVESTIGATING
+Impact: [Describe user impact]
+Current action: [What you're doing]
+Next update: [Time]
+Incident commander: @[name]
+```
+
+### External (Status Page)
+```
+Evernote Integration Issue
+
+We're experiencing issues with our Evernote integration.
+Some users may experience [specific impact].
+
+We're actively investigating and will provide updates.
+
+Last updated: [timestamp]
+```
+
+## Post-Incident
+
+### Evidence Collection
+```bash
+# Generate debug bundle
+./scripts/evernote-debug-bundle.sh
+
+# Export relevant logs
+kubectl logs -l app=evernote-integration --since=1h > incident-logs.txt
+
+# Capture metrics
+curl "localhost:9090/api/v1/query_range?query=evernote_errors_total&start=2h" > metrics.json
+```
+
+### Postmortem Template
+```markdown
+## Incident: Evernote [Error Type]
+**Date:** YYYY-MM-DD
+**Duration:** X hours Y minutes
+**Severity:** P[1-4]
+
+### Summary
+[1-2 sentence description]
+
+### Timeline
+- HH:MM - [Event]
+- HH:MM - [Event]
+
+### Root Cause
+[Technical explanation]
+
+### Impact
+- Users affected: N
+- Revenue impact: $X
+
+### Action Items
+- [ ] [Preventive measure] - Owner - Due date
+```
 
 ## Instructions
 
-### Incident Classification
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
 
-| Severity | Symptoms | Response Time |
-|----------|----------|---------------|
-| P1 - Critical | All Evernote API calls failing, data loss risk | 15 minutes |
-| P2 - High | Persistent rate limits, auth failures for multiple users | 1 hour |
-| P3 - Medium | Intermittent errors, degraded sync performance | 4 hours |
-| P4 - Low | Single user issues, non-critical feature affected | Next business day |
+### Step 2: Follow Decision Tree
+Determine if the issue is Evernote-side or internal.
 
-### Step 1: Triage
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
 
-Check Evernote's status page first. If Evernote is down, activate the circuit breaker and wait.
-
-```bash
-# Check Evernote service status
-curl -sf https://status.evernote.com/api/v2/status.json | jq '.status'
-
-# Check your API connectivity
-curl -sf -H "Authorization: Bearer $EVERNOTE_TOKEN" \
-  https://www.evernote.com/shard/s1/notestore | head -20
-
-# Check error rate in logs (last 15 min)
-grep -c 'EDAMSystemException' /var/log/evernote-app.log
-```
-
-### Step 2: Rate Limit Escalation
-
-If rate limits are persistent: reduce API call frequency, increase delays between batch operations, and contact Evernote developer support for a rate limit increase.
-
-### Step 3: Authentication Failure
-
-For auth failures: verify tokens are not expired (`edam_expires`), check that production credentials match the production endpoint (`sandbox: false`), and test with a fresh Developer Token to isolate the issue.
-
-### Step 4: Sync Failure Recovery
-
-For sync issues: compare local USN with server USN via `getSyncState()`. If gap is too large, reset to full sync from USN 0. Verify data integrity after re-sync.
-
-### Step 5: Mitigation Strategies
-
-- **Circuit breaker**: Disable Evernote API calls after N consecutive failures. Retry after cooldown period.
-- **Graceful degradation**: Serve cached data when API is unavailable. Queue writes for retry.
-- **Failover**: Switch to polling-based sync if webhooks stop arriving.
-
-### Post-Incident
-
-- Document root cause and timeline
-- Update runbook with new failure modes discovered
-- Adjust alert thresholds if false positive or missed detection
-- Review and improve circuit breaker settings
-
-For the complete diagnostic scripts, mitigation implementations, and communication templates, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Communicate Status
+Update internal and external stakeholders.
 
 ## Output
-- Incident severity classification table
-- Triage diagnostic commands for quick assessment
-- Rate limit, auth, and sync failure response procedures
-- Circuit breaker and graceful degradation patterns
-- Post-incident review checklist
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
 
 ## Error Handling
-| Incident Type | Diagnostic | Mitigation |
-|---------------|------------|------------|
-| API outage | Check `status.evernote.com` | Activate circuit breaker, serve cached data |
-| Rate limit storm | Check `evernote_rate_limits_total` metric | Reduce batch sizes, increase delays |
-| Mass auth failure | Verify token expiration dates in DB | Trigger re-auth flow for affected users |
-| Sync data loss | Compare local vs server note counts | Full re-sync from USN 0 |
-
-## Resources
-- [Evernote Status Page](https://status.evernote.com/)
-- [Evernote Developer Support](https://dev.evernote.com/support/)
-- [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
-
-## Next Steps
-For data handling best practices, see `evernote-data-handling`.
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
 
 ## Examples
 
-**API outage response**: Alert fires, on-call checks status page, confirms Evernote outage, activates circuit breaker, posts status update to internal Slack, monitors for recovery, then gradually re-enables API calls.
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.evernote.status' || echo "UNHEALTHY"
+```
 
-**Rate limit recovery**: Persistent `RATE_LIMIT_REACHED` errors detected. Reduce batch size from 100 to 10, increase delay to 500ms, clear the request queue, and contact Evernote support if limits continue after 1 hour.
+## Resources
+- [Evernote Status Page](https://status.evernote.com)
+- [Evernote Support](https://support.evernote.com)
+
+## Next Steps
+For data handling, see `evernote-data-handling`.

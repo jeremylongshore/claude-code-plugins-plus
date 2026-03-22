@@ -1,268 +1,252 @@
 ---
 name: replit-observability
 description: |
-  Monitor Replit deployments with health checks, uptime tracking, resource usage, and alerting.
-  Use when setting up monitoring for Replit apps, building health dashboards,
-  or configuring alerting for deployment health and performance.
+  Set up comprehensive observability for Replit integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Replit operations, setting up dashboards,
+  or configuring alerting for Replit integration health.
   Trigger with phrases like "replit monitoring", "replit metrics",
-  "replit observability", "monitor replit", "replit alerts", "replit uptime".
+  "replit observability", "monitor replit", "replit alerts", "replit tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, monitoring, observability, alerting]
-
+compatible-with: claude-code
+tags: [saas, replit]
 ---
+
 # Replit Observability
 
 ## Overview
-Monitor Replit deployment health, track cold starts, measure resource usage, and set up alerting. Covers Replit's built-in monitoring, external health checking, structured logging, and integration with monitoring services.
+Set up comprehensive observability for Replit integrations.
 
 ## Prerequisites
-- Replit app deployed (Autoscale or Reserved VM)
-- Health endpoint implemented (`/health`)
-- External monitoring service (UptimeRobot, Better Stack, or Prometheus)
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `replit_requests_total` | Counter | Total API requests |
+| `replit_request_duration_seconds` | Histogram | Request latency |
+| `replit_errors_total` | Counter | Error count by type |
+| `replit_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'replit_requests_total',
+  help: 'Total Replit API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'replit_request_duration_seconds',
+  help: 'Replit request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'replit_errors_total',
+  help: 'Replit errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('replit-client');
+
+async function tracedReplitCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`replit.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'replit',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logReplitOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'replit',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# replit_alerts.yaml
+groups:
+  - name: replit_alerts
+    rules:
+      - alert: ReplitHighErrorRate
+        expr: |
+          rate(replit_errors_total[5m]) /
+          rate(replit_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Replit error rate > 5%"
+
+      - alert: ReplitHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(replit_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Replit P95 latency > 2s"
+
+      - alert: ReplitDown
+        expr: up{job="replit"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Replit integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Replit Request Rate",
+      "targets": [{
+        "expr": "rate(replit_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Replit Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(replit_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### Step 1: Health Endpoint with Detailed Metrics
-```typescript
-// src/routes/health.ts — comprehensive health check
-import { Router } from 'express';
-import { pool } from '../services/postgres';
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-const router = Router();
-const startTime = Date.now();
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-router.get('/health', async (req, res) => {
-  const checks: Record<string, any> = {
-    status: 'ok',
-    uptime: process.uptime(),
-    bootTime: ((Date.now() - startTime) / 1000).toFixed(1) + 's ago',
-    timestamp: new Date().toISOString(),
-    repl: process.env.REPL_SLUG,
-    region: process.env.REPLIT_DEPLOYMENT_REGION,
-    env: process.env.NODE_ENV,
-  };
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-  // Database check
-  if (process.env.DATABASE_URL) {
-    const dbStart = Date.now();
-    try {
-      await pool.query('SELECT 1');
-      checks.database = {
-        status: 'connected',
-        latencyMs: Date.now() - dbStart,
-        pool: { total: pool.totalCount, idle: pool.idleCount },
-      };
-    } catch (err: any) {
-      checks.database = { status: 'disconnected', error: err.message };
-      checks.status = 'degraded';
-    }
-  }
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
-  // Memory metrics
-  const mem = process.memoryUsage();
-  checks.memory = {
-    heapMB: Math.round(mem.heapUsed / 1024 / 1024),
-    totalMB: Math.round(mem.heapTotal / 1024 / 1024),
-    rssMB: Math.round(mem.rss / 1024 / 1024),
-    percent: ((mem.heapUsed / mem.heapTotal) * 100).toFixed(1),
-  };
-
-  // Node.js info
-  checks.runtime = {
-    node: process.version,
-    platform: process.platform,
-    pid: process.pid,
-  };
-
-  res.status(checks.status === 'ok' ? 200 : 503).json(checks);
-});
-
-// Lightweight ping for uptime monitors
-router.get('/ping', (req, res) => res.send('pong'));
-
-export default router;
-```
-
-### Step 2: Structured Logging
-```typescript
-// src/utils/logger.ts — structured JSON logging
-const IS_PROD = process.env.NODE_ENV === 'production';
-
-type LogLevel = 'debug' | 'info' | 'warn' | 'error';
-
-function log(level: LogLevel, message: string, data?: Record<string, any>) {
-  if (level === 'debug' && IS_PROD) return;
-
-  const entry = {
-    timestamp: new Date().toISOString(),
-    level,
-    message,
-    repl: process.env.REPL_SLUG,
-    ...data,
-  };
-
-  // JSON format for machine parsing, human-readable in dev
-  if (IS_PROD) {
-    console[level === 'error' ? 'error' : 'log'](JSON.stringify(entry));
-  } else {
-    console[level === 'error' ? 'error' : 'log'](
-      `[${level.toUpperCase()}] ${message}`,
-      data || ''
-    );
-  }
-}
-
-export const logger = {
-  debug: (msg: string, data?: any) => log('debug', msg, data),
-  info: (msg: string, data?: any) => log('info', msg, data),
-  warn: (msg: string, data?: any) => log('warn', msg, data),
-  error: (msg: string, data?: any) => log('error', msg, data),
-};
-
-// Request logging middleware
-export function requestLogger(req: any, res: any, next: any) {
-  const start = Date.now();
-  res.on('finish', () => {
-    logger.info('request', {
-      method: req.method,
-      path: req.path,
-      status: res.statusCode,
-      durationMs: Date.now() - start,
-      userId: req.headers['x-replit-user-id'] || 'anonymous',
-    });
-  });
-  next();
-}
-```
-
-### Step 3: External Uptime Monitoring
-Set up external monitors to detect Autoscale cold starts and outages:
-
-```markdown
-UptimeRobot (free tier: 50 monitors):
-1. Create new monitor: HTTP(s)
-2. URL: https://your-app.replit.app/ping
-3. Interval: 5 minutes
-4. Alert contacts: email, Slack webhook
-
-Better Stack / Datadog / Grafana Cloud:
-- Same setup, more features
-- Track response time trends
-- Detect cold start patterns
-- Set up PagerDuty integration
-
-Key metrics to monitor externally:
-- Uptime percentage (target: 99.9%)
-- Response time P95 (target: < 2s)
-- Cold start frequency (Autoscale only)
-- SSL certificate expiry
-```
-
-### Step 4: Cold Start Detection
-```typescript
-// Track cold starts for Autoscale deployments
-const COLD_START_THRESHOLD_MS = 5000;
-let firstRequestTime: number | null = null;
-
-app.use((req, res, next) => {
-  if (!firstRequestTime) {
-    firstRequestTime = Date.now();
-    const bootTime = process.uptime();
-    if (bootTime < 30) { // Just started
-      logger.info('cold_start_detected', {
-        bootTimeMs: Math.round(bootTime * 1000),
-        path: req.path,
-      });
-    }
-  }
-  next();
-});
-```
-
-### Step 5: Alerting Rules
-```typescript
-// src/utils/alerts.ts — send alerts to Slack on issues
-async function alertSlack(message: string, severity: 'info' | 'warning' | 'critical') {
-  const webhookUrl = process.env.SLACK_WEBHOOK_URL;
-  if (!webhookUrl) return;
-
-  const emoji = { info: 'information_source', warning: 'warning', critical: 'rotating_light' };
-  await fetch(webhookUrl, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text: `:${emoji[severity]}: [${severity.toUpperCase()}] ${process.env.REPL_SLUG}\n${message}`,
-    }),
-  });
-}
-
-// Monitor memory usage
-setInterval(async () => {
-  const mem = process.memoryUsage();
-  const heapPercent = (mem.heapUsed / mem.heapTotal) * 100;
-
-  if (heapPercent > 90) {
-    await alertSlack(`Memory critical: ${heapPercent.toFixed(1)}% heap used`, 'critical');
-  } else if (heapPercent > 75) {
-    await alertSlack(`Memory warning: ${heapPercent.toFixed(1)}% heap used`, 'warning');
-  }
-}, 60000);
-
-// Monitor error rate
-let errorCount = 0;
-let requestCount = 0;
-
-app.use((req, res, next) => {
-  requestCount++;
-  res.on('finish', () => {
-    if (res.statusCode >= 500) errorCount++;
-  });
-  next();
-});
-
-setInterval(async () => {
-  if (requestCount > 0) {
-    const errorRate = (errorCount / requestCount) * 100;
-    if (errorRate > 5) {
-      await alertSlack(`Error rate: ${errorRate.toFixed(1)}% (${errorCount}/${requestCount})`, 'critical');
-    }
-  }
-  errorCount = 0;
-  requestCount = 0;
-}, 300000); // Check every 5 minutes
-```
-
-### Step 6: Replit Dashboard Monitoring
-```markdown
-Built-in monitoring in Replit:
-1. Deployment Settings > Logs: real-time stdout/stderr
-2. Deployment Settings > History: deploy timeline + rollbacks
-3. Database pane > Settings: storage usage + connection info
-4. Billing > Usage: compute, egress, and storage costs
-
-Check deployment logs:
-- Click on active deployment
-- View real-time log stream
-- Filter by error/warning
-- Logs persist across container restarts
-```
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cold starts undetected | No external monitor | Set up UptimeRobot or similar |
-| Deployment logs missing | Container restarted | Use external log aggregator |
-| Memory leak unnoticed | No memory monitoring | Add heap tracking + alerts |
-| DB pool exhaustion | Too many connections | Monitor pool.totalCount in health |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [Monitoring Deployments](https://docs.replit.com/cloud-services/deployments/monitoring-a-deployment)
-- [Replit Status Page](https://status.replit.com)
-- [UptimeRobot](https://uptimerobot.com)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Replit Observability Guide](https://docs.replit.com/observability)
 
 ## Next Steps
 For incident response, see `replit-incident-runbook`.

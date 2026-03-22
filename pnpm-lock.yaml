@@ -398,31 +398,93 @@ importers:
         specifier: ^4.0.17
         version: 4.0.17(@types/node@25.0.7)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.2)
 
+  plugins/saas-packs/abridge-pack: {}
+
+  plugins/saas-packs/adobe-pack: {}
+
+  plugins/saas-packs/alchemy-pack: {}
+
+  plugins/saas-packs/algolia-pack: {}
+
+  plugins/saas-packs/anima-pack: {}
+
+  plugins/saas-packs/anthropic-pack: {}
+
+  plugins/saas-packs/apify-pack: {}
+
   plugins/saas-packs/apollo-pack: {}
+
+  plugins/saas-packs/appfolio-pack: {}
+
+  plugins/saas-packs/apple-notes-pack: {}
+
+  plugins/saas-packs/assemblyai-pack: {}
+
+  plugins/saas-packs/attio-pack: {}
+
+  plugins/saas-packs/bamboohr-pack: {}
+
+  plugins/saas-packs/brightdata-pack: {}
+
+  plugins/saas-packs/canva-pack: {}
+
+  plugins/saas-packs/castai-pack: {}
+
+  plugins/saas-packs/clari-pack: {}
 
   plugins/saas-packs/clay-pack: {}
 
   plugins/saas-packs/clerk-pack: {}
 
+  plugins/saas-packs/clickhouse-pack: {}
+
+  plugins/saas-packs/clickup-pack: {}
+
   plugins/saas-packs/coderabbit-pack: {}
+
+  plugins/saas-packs/cohere-pack: {}
+
+  plugins/saas-packs/coreweave-pack: {}
 
   plugins/saas-packs/cursor-pack: {}
 
   plugins/saas-packs/customerio-pack: {}
 
+  plugins/saas-packs/databricks-pack: {}
+
   plugins/saas-packs/deepgram-pack: {}
 
   plugins/saas-packs/documenso-pack: {}
+
+  plugins/saas-packs/elevenlabs-pack: {}
 
   plugins/saas-packs/evernote-pack: {}
 
   plugins/saas-packs/exa-pack: {}
 
+  plugins/saas-packs/fathom-pack: {}
+
+  plugins/saas-packs/figma-pack: {}
+
+  plugins/saas-packs/finta-pack: {}
+
   plugins/saas-packs/firecrawl-pack: {}
 
   plugins/saas-packs/fireflies-pack: {}
 
+  plugins/saas-packs/flexport-pack: {}
+
+  plugins/saas-packs/flyio-pack: {}
+
+  plugins/saas-packs/fondo-pack: {}
+
+  plugins/saas-packs/framer-pack: {}
+
   plugins/saas-packs/gamma-pack: {}
+
+  plugins/saas-packs/glean-pack: {}
+
+  plugins/saas-packs/grammarly-pack: {}
 
   plugins/saas-packs/granola-pack: {}
 
@@ -430,51 +492,121 @@ importers:
 
   plugins/saas-packs/guidewire-pack: {}
 
+  plugins/saas-packs/hex-pack: {}
+
+  plugins/saas-packs/hootsuite-pack: {}
+
+  plugins/saas-packs/hubspot-pack: {}
+
   plugins/saas-packs/ideogram-pack: {}
 
   plugins/saas-packs/instantly-pack: {}
 
+  plugins/saas-packs/intercom-pack: {}
+
   plugins/saas-packs/juicebox-pack: {}
+
+  plugins/saas-packs/klaviyo-pack: {}
 
   plugins/saas-packs/klingai-pack: {}
 
   plugins/saas-packs/langchain-pack: {}
 
+  plugins/saas-packs/langfuse-pack: {}
+
   plugins/saas-packs/lindy-pack: {}
 
   plugins/saas-packs/linear-pack: {}
 
+  plugins/saas-packs/linktree-pack: {}
+
   plugins/saas-packs/lokalise-pack: {}
+
+  plugins/saas-packs/lucidchart-pack: {}
 
   plugins/saas-packs/maintainx-pack: {}
 
+  plugins/saas-packs/mindtickle-pack: {}
+
+  plugins/saas-packs/miro-pack: {}
+
   plugins/saas-packs/mistral-pack: {}
+
+  plugins/saas-packs/navan-pack: {}
+
+  plugins/saas-packs/notion-pack: {}
+
+  plugins/saas-packs/obsidian-pack: {}
+
+  plugins/saas-packs/onenote-pack: {}
 
   plugins/saas-packs/openevidence-pack: {}
 
   plugins/saas-packs/openrouter-pack: {}
 
+  plugins/saas-packs/oraclecloud-pack: {}
+
+  plugins/saas-packs/palantir-pack: {}
+
   plugins/saas-packs/perplexity-pack: {}
 
+  plugins/saas-packs/persona-pack: {}
+
+  plugins/saas-packs/podium-pack: {}
+
   plugins/saas-packs/posthog-pack: {}
+
+  plugins/saas-packs/procore-pack: {}
+
+  plugins/saas-packs/quicknode-pack: {}
+
+  plugins/saas-packs/ramp-pack: {}
+
+  plugins/saas-packs/remofirst-pack: {}
 
   plugins/saas-packs/replit-pack: {}
 
   plugins/saas-packs/retellai-pack: {}
 
+  plugins/saas-packs/runway-pack: {}
+
+  plugins/saas-packs/salesforce-pack: {}
+
+  plugins/saas-packs/salesloft-pack: {}
+
   plugins/saas-packs/sentry-pack: {}
+
+  plugins/saas-packs/serpapi-pack: {}
+
+  plugins/saas-packs/shopify-pack: {}
+
+  plugins/saas-packs/snowflake-pack: {}
 
   plugins/saas-packs/speak-pack: {}
 
+  plugins/saas-packs/stackblitz-pack: {}
+
   plugins/saas-packs/supabase-pack: {}
+
+  plugins/saas-packs/techsmith-pack: {}
+
+  plugins/saas-packs/together-pack: {}
 
   plugins/saas-packs/twinmind-pack: {}
 
   plugins/saas-packs/vastai-pack: {}
 
+  plugins/saas-packs/veeva-pack: {}
+
   plugins/saas-packs/vercel-pack: {}
 
+  plugins/saas-packs/webflow-pack: {}
+
   plugins/saas-packs/windsurf-pack: {}
+
+  plugins/saas-packs/wispr-pack: {}
+
+  plugins/saas-packs/workhuman-pack: {}
 
 packages:
 

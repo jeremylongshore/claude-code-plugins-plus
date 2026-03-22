@@ -1,289 +1,336 @@
 ---
 name: replit-known-pitfalls
 description: |
-  Avoid the top Replit anti-patterns: ephemeral filesystem, public secrets, port binding, Nix gotchas, and database limits.
-  Use when reviewing Replit code, onboarding developers,
-  or auditing existing Replit apps for common mistakes.
+  Identify and avoid Replit anti-patterns and common integration mistakes.
+  Use when reviewing Replit code for issues, onboarding new developers,
+  or auditing existing Replit integrations for best practices violations.
   Trigger with phrases like "replit mistakes", "replit anti-patterns",
   "replit pitfalls", "replit what not to do", "replit code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, audit, anti-patterns]
-
+compatible-with: claude-code
+tags: [saas, replit]
 ---
+
 # Replit Known Pitfalls
 
 ## Overview
-Real gotchas when building on Replit. Each pitfall includes what goes wrong, why, and the correct pattern. Based on common failures in Replit's ephemeral container model, Nix-based environment, and cloud hosting platform.
+Common mistakes and anti-patterns when integrating with Replit.
 
-## Pitfall Reference
+## Prerequisites
+- Access to Replit codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-### 1. Writing to Local Filesystem for Persistence
-**What happens:** Data is lost when the container restarts, deploys, or sleeps.
+## Pitfall #1: Synchronous API Calls in Request Path
 
-```python
-# BAD — files disappear on container restart
-with open("user_data.json", "w") as f:
-    json.dump(data, f)
-
-# GOOD — use Replit's persistent storage
-from replit import db
-db["user_data"] = data
-
-# For files, use Object Storage
-from replit.object_storage import Client
-storage = Client()
-storage.upload_from_text("user_data.json", json.dumps(data))
-```
-
-**Rule:** Anything written to the filesystem is ephemeral. Use PostgreSQL, KV Database, or Object Storage for data that must survive restarts.
-
----
-
-### 2. Hardcoding Secrets in Source Code
-**What happens:** Secrets are visible to anyone who views your Repl (public by default on free plans). Replit's Secret Scanner catches some cases but not all.
-
-```python
-# BAD — exposed in public Repl
-API_KEY = "sk-live-abc123"
-DATABASE_URL = "postgresql://user:password@host/db"
-
-# GOOD — use Replit Secrets (lock icon in sidebar)
-import os
-API_KEY = os.environ["API_KEY"]
-DATABASE_URL = os.environ["DATABASE_URL"]
-```
-
----
-
-### 3. Binding to localhost Instead of 0.0.0.0
-**What happens:** App starts but Webview is blank. Replit's proxy can't reach the app.
-
+### ❌ Anti-Pattern
 ```typescript
-// BAD — unreachable from Webview and deployments
-app.listen(3000, '127.0.0.1');
-app.listen(3000, 'localhost');
-
-// GOOD — accessible to Replit's proxy
-app.listen(3000, '0.0.0.0');
-
-// BEST — use PORT env var
-const PORT = parseInt(process.env.PORT || '3000');
-app.listen(PORT, '0.0.0.0');
+// User waits for Replit API call
+app.post('/checkout', async (req, res) => {
+  const payment = await replitClient.processPayment(req.body);  // 2-5s latency
+  const notification = await replitClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
----
-
-### 4. Ignoring Nix System Dependencies
-**What happens:** Python packages with C extensions (Pillow, psycopg2, cryptography) fail to build with cryptic errors.
-
-```nix
-# BAD — missing system libraries
-{ pkgs }: {
-  deps = [ pkgs.python311 ];
-}
-
-# GOOD — include system libraries for native packages
-{ pkgs }: {
-  deps = [
-    pkgs.python311
-    pkgs.python311Packages.pip
-    pkgs.zlib          # Required for Pillow
-    pkgs.libjpeg       # Required for Pillow
-    pkgs.libffi        # Required for cffi/cryptography
-    pkgs.openssl       # Required for cryptography
-    pkgs.postgresql    # Required for psycopg2
-  ];
-}
-```
-
-**After editing `replit.nix`:** Exit and re-enter the Shell tab to reload.
-
----
-
-### 5. Using Replit KV Database for Large Data
-**What happens:** Writes fail silently or throw errors after hitting the 50 MiB limit.
-
-```python
-# BAD — storing large blobs in KV (50 MiB limit, 5K keys)
-db["images"] = base64_encoded_images  # Hits limit quickly
-db["full_dataset"] = huge_json        # 5 MiB per value max
-
-# GOOD — use KV for metadata, PostgreSQL/Storage for data
-db["image_count"] = 42
-db["last_upload"] = "2025-01-15"
-
-# Large data in Object Storage
-storage.upload_from_text("data/full_dataset.json", json.dumps(data))
-
-# Structured data in PostgreSQL
-pool.query("INSERT INTO images (url, metadata) VALUES ($1, $2)", [url, meta])
-```
-
-**KV Limits:** 50 MiB total, 5,000 keys, 1 KB per key, 5 MiB per value.
-
----
-
-### 6. Expecting Auth Headers in Development
-**What happens:** `X-Replit-User-Id` is always undefined in Workspace Webview.
-
+### ✅ Better Approach
 ```typescript
-// BAD — breaks during development
-app.get('/api/me', (req, res) => {
-  const userId = req.headers['x-replit-user-id'] as string;
-  // userId is ALWAYS undefined in Workspace Webview
-  res.json({ userId }); // { userId: undefined }
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
 });
 
-// GOOD — provide dev fallback
-app.get('/api/me', (req, res) => {
-  let userId = req.headers['x-replit-user-id'] as string;
+// Background job
+async function processCheckout(data) {
+  const payment = await replitClient.processPayment(data);
+  await replitClient.sendEmail(payment);
+}
+```
 
-  if (!userId && process.env.NODE_ENV !== 'production') {
-    userId = 'dev-user-123'; // Mock user for development
+---
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await replitClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => replitClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new ReplitClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new ReplitClient({
+  apiKey: process.env.REPLIT_API_KEY,
+});
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+---
+
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await replitClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await replitClient.charge(order);  // Charged twice!
   }
-
-  if (!userId) return res.status(401).json({ error: 'Login required' });
-  res.json({ userId });
-});
+}
 ```
 
-**Auth only works on:** deployed `.replit.app` URLs, `.replit.dev` preview URLs, and custom domains.
-
----
-
-### 7. Using "Always On" Instead of Deployments
-**What happens:** Legacy "Always On" feature is more expensive and less reliable than modern Deployments.
-
-```markdown
-BAD (legacy):
-  Settings > Always On > Enable
-  - Keeps Repl running but uses more resources
-  - No build step, no rollbacks, no scaling
-
-GOOD (modern):
-  Deploy button > Autoscale or Reserved VM
-  - Built-in rollbacks
-  - Separate dev/prod databases
-  - Auto-scaling (Autoscale)
-  - Build step for optimization
-  - Custom domains with auto-SSL
-```
-
----
-
-### 8. Forgetting to Close Database Connections
-**What happens:** Connection pool exhaustion. New requests fail with timeout errors.
-
-```python
-# BAD — creates a new connection per request
-@app.route('/api/data')
-def get_data():
-    import psycopg2
-    conn = psycopg2.connect(os.environ["DATABASE_URL"])
-    # ... never closed!
-
-# GOOD — use a connection pool
-from psycopg2.pool import SimpleConnectionPool
-pool = SimpleConnectionPool(1, 10, os.environ["DATABASE_URL"])
-
-@app.route('/api/data')
-def get_data():
-    conn = pool.getconn()
-    try:
-        # ... use connection
-        pass
-    finally:
-        pool.putconn(conn)
-```
-
-```python
-# Also: close KV database on shutdown
-from replit import db
-import atexit
-
-atexit.register(db.close)  # Clean termination
-```
-
----
-
-### 9. Not Handling SIGTERM
-**What happens:** Container stops mid-request. In-progress work is lost.
-
+### ✅ Better Approach
 ```typescript
-// BAD — abrupt shutdown
-// (no signal handler — process killed immediately)
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
 
-// GOOD — graceful shutdown
-process.on('SIGTERM', async () => {
-  console.log('SIGTERM received, shutting down...');
-  server.close();           // Stop accepting new requests
-  await pool.end();         // Close database connections
-  await saveState();        // Persist in-memory state
-  process.exit(0);
+await replitClient.charge(order, {
+  idempotencyKey,  // Safe to retry
 });
 ```
 
 ---
 
-### 10. Mixing npm and System Packages
-**What happens:** Confusion between Nix system packages and npm/pip language packages.
+## Pitfall #5: Not Validating Webhooks
 
-```markdown
-Nix (replit.nix) = system packages:
-  - Node.js runtime, Python runtime
-  - System libraries (zlib, openssl, libjpeg)
-  - CLI tools (postgresql client, git)
-
-npm/pip = language packages:
-  - express, flask, react
-  - @replit/database, @replit/object-storage
-  - pg, psycopg2
-
-Both are needed:
-  1. replit.nix: pkgs.nodejs-20_x (provides Node.js)
-  2. Shell: npm install express (provides Express)
-
-Common mistake:
-  Expecting "npm install" to provide system libraries
-  → Need pkgs.openssl in replit.nix for crypto packages
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
 ```
 
-## Quick Audit Script
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-replit-signature'];
+    if (!verifyReplitSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await replitClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await replitClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof ReplitNotFoundError) {
+    return null;
+  }
+  if (error instanceof ReplitRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new ReplitClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.replit.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new ReplitClient({
+  timeout: parseInt(process.env.REPLIT_TIMEOUT || '30000'),
+  baseUrl: process.env.REPLIT_BASE_URL || 'https://api.replit.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Replit is down, every request hangs
+for (const user of users) {
+  await replitClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(replitClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Replit is down
+const recommendations = await replitClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await replitClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('replit', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
 ```bash
-#!/bin/bash
-echo "=== Replit Pitfall Audit ==="
-
-# Check for hardcoded secrets
-echo -n "Secrets in code: "
-grep -rn "sk[-_]\(live\|test\)" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | wc -l
-
-# Check port binding
-echo -n "Localhost binding: "
-grep -rn "localhost\|127\.0\.0\.1" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -c "listen\|bind"
-
-# Check filesystem writes
-echo -n "Filesystem writes: "
-grep -rn "writeFileSync\|open.*['\"]w['\"]" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v ".replit\|replit.nix" | wc -l
-
-# Check for replit.nix
-echo -n "replit.nix: "
-[ -f replit.nix ] && echo "exists" || echo "MISSING"
-
-# Check for SIGTERM handler
-echo -n "SIGTERM handler: "
-grep -rn "SIGTERM" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | wc -l
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
 ```
 
 ## Resources
-- [Replit Docs](https://docs.replit.com)
-- [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
-- [Replit Database](https://docs.replit.com/cloud-services/storage-and-databases/replit-database)
-- [Replit Deployments](https://docs.replit.com/hosting/deployments)
-- [Secure Vibe Coding](https://blog.replit.com/16-ways-to-vibe-code-securely)
+- [Replit Security Guide](https://docs.replit.com/security)
+- [Replit Best Practices](https://docs.replit.com/best-practices)
 
-## Next Steps
-For production readiness, see `replit-prod-checklist`.
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

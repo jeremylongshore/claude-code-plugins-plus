@@ -1,252 +1,211 @@
 ---
 name: databricks-deploy-integration
 description: |
-  Deploy Databricks jobs and pipelines with Declarative Automation Bundles.
-  Use when deploying jobs to different environments, managing deployments,
-  or setting up deployment automation.
-  Trigger with phrases like "databricks deploy", "asset bundles",
-  "databricks deployment", "deploy to production", "bundle deploy".
-allowed-tools: Read, Write, Edit, Bash(databricks:*)
+  Deploy Databricks integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Databricks-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy databricks", "databricks Vercel",
+  "databricks production deploy", "databricks Cloud Run", "databricks Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, deployment]
-
+compatible-with: claude-code
+tags: [saas, databricks]
 ---
+
 # Databricks Deploy Integration
 
 ## Overview
-Deploy Databricks jobs, DLT pipelines, and ML models using Declarative Automation Bundles (DABs, formerly Asset Bundles). Bundles provide infrastructure-as-code with `databricks.yml` defining resources, targets (dev/staging/prod), variables, and permissions. The CLI handles validation, deployment, and lifecycle management.
+Deploy Databricks-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Databricks CLI v0.200+ (`databricks --version`)
-- Workspace access with service principal for automated deploys
-- `databricks.yml` bundle configuration at project root
+- Databricks API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add Databricks secrets to Vercel
+vercel secrets add databricks_api_key sk_live_***
+vercel secrets add databricks_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "DATABRICKS_API_KEY": "@databricks_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-databricks-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Databricks secrets
+fly secrets set DATABRICKS_API_KEY=sk_live_***
+fly secrets set DATABRICKS_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="databricks-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=DATABRICKS_API_KEY=databricks-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/databricks.ts
+interface DatabricksConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getDatabricksConfig(): DatabricksConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.DATABRICKS_API_KEY!,
+    environment: env as DatabricksConfig['environment'],
+    webhookSecret: process.env.DATABRICKS_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const databricksStatus = await checkDatabricksConnection();
+
+  return Response.json({
+    status: databricksStatus ? 'healthy' : 'degraded',
+    services: {
+      databricks: databricksStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: Initialize a Bundle
-```bash
-# Create from a template
-databricks bundle init
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-# Available templates:
-# - default-python: Python notebook project
-# - default-sql: SQL project
-# - mlops-stacks: Full MLOps template with feature engineering
-```
+### Step 2: Configure Secrets
+Store Databricks API keys securely using the platform's secrets management.
 
-### Step 2: Configure `databricks.yml`
-```yaml
-# databricks.yml — single source of truth for project deployment
-bundle:
-  name: sales-etl-pipeline
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Databricks integration.
 
-workspace:
-  host: ${DATABRICKS_HOST}
-
-variables:
-  catalog:
-    description: Unity Catalog name
-    default: dev_catalog
-  alert_email:
-    description: Alert notification email
-    default: dev@company.com
-  warehouse_size:
-    default: "2X-Small"
-
-include:
-  - resources/*.yml
-
-targets:
-  dev:
-    default: true
-    mode: development
-    # dev mode auto-prefixes resources with [username] and enables debug
-    workspace:
-      root_path: /Users/${workspace.current_user.userName}/.bundle/${bundle.name}/dev
-    variables:
-      catalog: dev_catalog
-
-  staging:
-    workspace:
-      root_path: /Shared/.bundle/${bundle.name}/staging
-    variables:
-      catalog: staging_catalog
-      alert_email: staging-alerts@company.com
-
-  prod:
-    mode: production
-    # production mode prevents accidental destruction
-    workspace:
-      root_path: /Shared/.bundle/${bundle.name}/prod
-    variables:
-      catalog: prod_catalog
-      alert_email: oncall@company.com
-      warehouse_size: "Medium"
-```
-
-### Step 3: Define Resources
-```yaml
-# resources/jobs.yml
-resources:
-  jobs:
-    daily_etl:
-      name: "daily-etl-${bundle.target}"
-      max_concurrent_runs: 1
-      timeout_seconds: 14400
-
-      schedule:
-        quartz_cron_expression: "0 0 6 * * ?"
-        timezone_id: "UTC"
-
-      email_notifications:
-        on_failure: ["${var.alert_email}"]
-
-      tasks:
-        - task_key: extract
-          notebook_task:
-            notebook_path: ./src/extract.py
-            base_parameters:
-              catalog: "${var.catalog}"
-          job_cluster_key: etl
-
-        - task_key: transform
-          depends_on: [{task_key: extract}]
-          notebook_task:
-            notebook_path: ./src/transform.py
-          job_cluster_key: etl
-
-        - task_key: load
-          depends_on: [{task_key: transform}]
-          notebook_task:
-            notebook_path: ./src/load.py
-          job_cluster_key: etl
-
-      job_clusters:
-        - job_cluster_key: etl
-          new_cluster:
-            spark_version: "14.3.x-scala2.12"
-            node_type_id: "i3.xlarge"
-            autoscale:
-              min_workers: 1
-              max_workers: 4
-            aws_attributes:
-              availability: SPOT_WITH_FALLBACK
-              first_on_demand: 1
-```
-
-```yaml
-# resources/pipelines.yml (DLT)
-resources:
-  pipelines:
-    dlt_pipeline:
-      name: "dlt-pipeline-${bundle.target}"
-      target: "${var.catalog}.silver"
-      catalog: "${var.catalog}"
-      libraries:
-        - notebook:
-            path: ./src/dlt_pipeline.py
-      continuous: false
-      development: ${bundle.target == "dev"}
-```
-
-### Step 4: Deploy Lifecycle Commands
-```bash
-# Validate — checks YAML syntax, variable resolution, permissions
-databricks bundle validate -t staging
-
-# Deploy — creates/updates jobs, uploads notebooks, syncs config
-databricks bundle deploy -t staging
-
-# Summary — show what's deployed
-databricks bundle summary -t staging
-
-# Run — trigger a specific job/pipeline
-databricks bundle run daily_etl -t staging
-
-# Run and wait for completion
-databricks bundle run daily_etl -t staging --restart-all-workflows
-
-# Sync — live-reload files during development
-databricks bundle sync -t dev --watch
-
-# Destroy — remove all deployed resources (dev only!)
-databricks bundle destroy -t dev --auto-approve
-```
-
-### Step 5: Promote Staging to Production
-```bash
-# 1. Validate staging is clean
-databricks bundle validate -t staging
-
-# 2. Deploy and test on staging
-databricks bundle deploy -t staging
-RUN=$(databricks bundle run daily_etl -t staging --output json | jq -r '.run_id')
-databricks runs get --run-id $RUN | jq '.state.result_state'
-
-# 3. After staging passes, deploy to production
-databricks bundle validate -t prod
-databricks bundle deploy -t prod
-
-# 4. Verify production deployment
-databricks bundle summary -t prod
-databricks jobs list --output json | \
-  jq '.[] | select(.settings.name | contains("daily-etl-prod"))'
-```
-
-### Step 6: Permissions in Bundles
-```yaml
-# resources/jobs.yml — add permissions block
-resources:
-  jobs:
-    daily_etl:
-      name: "daily-etl-${bundle.target}"
-      permissions:
-        - group_name: data-engineers
-          level: CAN_MANAGE
-        - group_name: data-analysts
-          level: CAN_VIEW
-        - service_principal_name: cicd-service-principal
-          level: CAN_MANAGE_RUN
-```
+### Step 4: Verify Health
+Test the health check endpoint to confirm Databricks connectivity.
 
 ## Output
-- `databricks.yml` with multi-target deployment (dev/staging/prod)
-- Job and pipeline resources defined as code
-- Environment-specific variables (catalog, alerts, sizing)
-- Promotion workflow from staging to production
-- Permissions managed declaratively in bundle config
+- Application deployed to production
+- Databricks secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `bundle validate` fails | Invalid YAML or unresolved variable | Check variable definitions and target config |
-| `PERMISSION_DENIED` on deploy | Service principal lacks workspace access | Add SP to workspace in Account Console |
-| `RESOURCE_CONFLICT` | Resource name collision across targets | Bundle auto-prefixes in `development` mode |
-| `Cluster quota exceeded` | Too many active clusters | Use instance pools or terminate idle clusters |
-| `Cannot destroy production` | `mode: production` prevents accidental destroy | This is intentional — remove mode or use `--force` |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
 
 ## Examples
 
-### Override Variables per Target
+### Quick Deploy Script
 ```bash
-# Override a variable at deploy time
-databricks bundle deploy -t prod --var="warehouse_size=Large"
-```
-
-### Clean Slate Redeploy (Dev Only)
-```bash
-databricks bundle destroy -t dev --auto-approve
-databricks bundle deploy -t dev
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add databricks_api_key "$DATABRICKS_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set DATABRICKS_API_KEY="$DATABRICKS_API_KEY"
+    fly deploy
+    ;;
+esac
 ```
 
 ## Resources
-- [Declarative Automation Bundles](https://docs.databricks.com/aws/en/dev-tools/bundles/)
-- [Bundle Configuration Reference](https://docs.databricks.com/aws/en/dev-tools/bundles/reference)
-- [Bundle Resources](https://docs.databricks.com/aws/en/dev-tools/bundles/resources)
-- [Deployment Modes](https://docs.databricks.com/aws/en/dev-tools/bundles/deployment-modes)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Databricks Deploy Guide](https://docs.databricks.com/deploy)
 
 ## Next Steps
-For multi-environment setup, see `databricks-multi-env-setup`.
+For webhook handling, see `databricks-webhooks-events`.

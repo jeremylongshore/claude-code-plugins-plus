@@ -1,171 +1,121 @@
 ---
 name: openrouter-prod-checklist
 description: |
-  Validate production readiness of your OpenRouter integration. Use before launching to production or during operational reviews. Triggers: 'openrouter production', 'openrouter launch', 'production checklist openrouter', 'openrouter deploy'.
-allowed-tools: Read, Write, Edit, Bash, Grep
-version: 2.0.0
+  Execute OpenRouter production deployment checklist and rollback procedures.
+  Use when deploying OpenRouter integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "openrouter production", "deploy openrouter",
+  "openrouter go-live", "openrouter launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, production, deployment, checklist]
-
+compatible-with: claude-code
+tags: [saas, openrouter]
 ---
+
 # OpenRouter Production Checklist
 
 ## Overview
+Complete checklist for deploying OpenRouter integrations to production.
 
-A comprehensive production readiness checklist for OpenRouter integrations covering security, reliability, observability, cost management, and operational procedures. Each item includes the specific API endpoint or configuration needed to verify compliance.
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
-## Security Checklist
+## Instructions
 
-```python
-SECURITY = {
-    "api_key_storage": {
-        "check": "API keys stored in secrets manager (not .env files on disk)",
-        "verify": "grep -r 'sk-or-v1-' --include='*.py' --include='*.ts' . | grep -v node_modules",
-        "pass": "Zero matches",
-    },
-    "key_rotation": {
-        "check": "Keys rotated on 90-day schedule",
-        "verify": "Check key creation dates in OpenRouter dashboard",
-        "api": "GET /api/v1/keys (management key)",
-    },
-    "credit_limits": {
-        "check": "Per-key credit limits set to isolate blast radius",
-        "verify": "curl -s https://openrouter.ai/api/v1/auth/key -H 'Authorization: Bearer $KEY' | jq '.data.limit'",
-        "pass": "Non-null limit value",
-    },
-    "secret_scanning": {
-        "check": "CI pipeline includes secret scanning (gitleaks, trufflehog)",
-        "verify": "Check CI config for secret scanning step",
-    },
-    "https_enforced": {
-        "check": "All requests use https://openrouter.ai/api/v1",
-        "verify": "Grep codebase for 'http://openrouter' (should be zero)",
-    },
-}
-```
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-## Reliability Checklist
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all OpenRouter error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-```python
-RELIABILITY = {
-    "fallback_models": {
-        "check": "Fallback chain configured for critical models",
-        "config": """extra_body={"models": ["primary", "secondary", "tertiary"], "route": "fallback"}""",
-    },
-    "retry_logic": {
-        "check": "Retry with exponential backoff for 429 and 5xx errors",
-        "config": "OpenAI SDK max_retries=3 (built-in backoff)",
-    },
-    "timeouts": {
-        "check": "Per-request timeout configured",
-        "config": "OpenAI(timeout=30.0)  # 30s per request",
-    },
-    "circuit_breaker": {
-        "check": "Circuit breaker on primary model (3 failures → fallback)",
-        "verify": "Review client wrapper for circuit breaker pattern",
-    },
-    "max_tokens": {
-        "check": "max_tokens set on EVERY request",
-        "verify": "Grep codebase for .create( calls without max_tokens",
-    },
-}
-```
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes OpenRouter connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-## Observability Checklist
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-```python
-OBSERVABILITY = {
-    "structured_logging": {
-        "check": "Every API call logged with generation_id, model, latency, tokens, cost",
-        "fields": ["timestamp", "generation_id", "model", "latency_ms", "prompt_tokens",
-                   "completion_tokens", "cost", "status", "user_id"],
-    },
-    "error_alerting": {
-        "check": "Alerts on error rate spikes (>5% over 5 min window)",
-        "metric": "count(status=error) / count(*) over sliding 5min window",
-    },
-    "latency_monitoring": {
-        "check": "P50 and P95 latency tracked per model",
-        "threshold": "P95 < 10s for standard models, P95 < 30s for reasoning models",
-    },
-    "cost_tracking": {
-        "check": "Daily cost tracked and compared to budget",
-        "api": "GET /api/v1/generation?id={gen_id} for exact per-request cost",
-    },
-    "credit_balance_alert": {
-        "check": "Alert when credits drop below threshold",
-        "api": "GET /api/v1/auth/key → .data.usage vs .data.limit",
-    },
-}
-```
-
-## Pre-Launch Validation Script
-
+### Step 5: Deploy with Gradual Rollout
 ```bash
-#!/bin/bash
-echo "=== OpenRouter Production Readiness ==="
-PASS=0; FAIL=0
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.openrouter.com
 
-# 1. Auth works
-echo -n "1. API Authentication: "
-AUTH=$(curl -s https://openrouter.ai/api/v1/auth/key \
-  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq -r '.data.label // "FAIL"')
-if [ "$AUTH" != "FAIL" ]; then echo "PASS ($AUTH)"; ((PASS++)); else echo "FAIL"; ((FAIL++)); fi
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/openrouter-integration app=image:new --record
+kubectl rollout pause deployment/openrouter-integration
 
-# 2. Credit limit set
-echo -n "2. Credit Limit: "
-LIMIT=$(curl -s https://openrouter.ai/api/v1/auth/key \
-  -H "Authorization: Bearer $OPENROUTER_API_KEY" | jq -r '.data.limit // "NONE"')
-if [ "$LIMIT" != "NONE" ] && [ "$LIMIT" != "null" ]; then
-  echo "PASS (\$$LIMIT)"; ((PASS++))
-else echo "WARN (no limit set)"; ((FAIL++)); fi
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-# 3. Primary model available
-echo -n "3. Primary Model Available: "
-MODEL="anthropic/claude-3.5-sonnet"
-EXISTS=$(curl -s https://openrouter.ai/api/v1/models | jq --arg m "$MODEL" '[.data[] | select(.id == $m)] | length')
-if [ "$EXISTS" -gt 0 ]; then echo "PASS ($MODEL)"; ((PASS++)); else echo "FAIL"; ((FAIL++)); fi
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/openrouter-integration
+kubectl rollout pause deployment/openrouter-integration
+sleep 300
 
-# 4. Test request succeeds
-echo -n "4. Test Request: "
-TEST=$(curl -s https://openrouter.ai/api/v1/chat/completions \
-  -H "Authorization: Bearer $OPENROUTER_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"openai/gpt-4o-mini","messages":[{"role":"user","content":"hi"}],"max_tokens":1}' \
-  | jq -r '.choices[0].message.content // "FAIL"')
-if [ "$TEST" != "FAIL" ]; then echo "PASS"; ((PASS++)); else echo "FAIL"; ((FAIL++)); fi
-
-# 5. No hardcoded keys
-echo -n "5. No Hardcoded Keys: "
-KEYS=$(grep -r "sk-or-v1-" --include="*.py" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v ".env" | wc -l)
-if [ "$KEYS" -eq 0 ]; then echo "PASS"; ((PASS++)); else echo "FAIL ($KEYS found)"; ((FAIL++)); fi
-
-echo ""
-echo "Results: $PASS passed, $FAIL failed"
-[ $FAIL -eq 0 ] && echo "READY FOR PRODUCTION" || echo "FIX FAILURES BEFORE LAUNCH"
+# Complete rollout to 100%
+kubectl rollout resume deployment/openrouter-integration
+kubectl rollout status deployment/openrouter-integration
 ```
+
+## Output
+- Deployed OpenRouter integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Production key exposed | Key logged or committed | Rotate immediately; deploy from secrets manager |
-| No fallback configured | Primary model goes down | Add `models` array with `route: "fallback"` |
-| Missing monitoring | Errors go undetected | Set up alerting before launch |
-| No max_tokens | Runaway completion costs | Add max_tokens to every request |
+## Examples
 
-## Enterprise Considerations
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; openrouter: any }> {
+  const start = Date.now();
+  try {
+    await openrouterClient.ping();
+    return { status: 'healthy', openrouter: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', openrouter: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
 
-- Run the validation script in CI as a pre-deploy gate
-- Set up runbooks for common failure scenarios: rate limiting, credit exhaustion, provider outage
-- Load test at 2x expected peak traffic to validate rate limits and fallback behavior
-- Document escalation paths: when to contact OpenRouter support vs handle internally
-- Review and update this checklist quarterly as OpenRouter adds features
-- Keep a "break glass" procedure for emergency key rotation
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/openrouter-integration
+kubectl rollout status deployment/openrouter-integration
+```
 
-## References
+## Resources
+- [OpenRouter Status](https://status.openrouter.com)
+- [OpenRouter Support](https://docs.openrouter.com/support)
 
-- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
-- [API Reference](https://openrouter.ai/docs/api/reference/overview) | [Status](https://status.openrouter.ai)
+## Next Steps
+For version upgrades, see `openrouter-upgrade-migration`.

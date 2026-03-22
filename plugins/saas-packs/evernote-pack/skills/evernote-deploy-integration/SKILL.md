@@ -1,106 +1,211 @@
 ---
 name: evernote-deploy-integration
 description: |
-  Deploy Evernote integrations to production environments.
-  Use when deploying to cloud platforms, configuring production,
-  or setting up deployment pipelines.
-  Trigger with phrases like "deploy evernote", "evernote production deploy",
-  "release evernote", "evernote cloud deployment".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Deploy Evernote integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Evernote-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy evernote", "evernote Vercel",
+  "evernote production deploy", "evernote Cloud Run", "evernote Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, deployment]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Deploy Integration
 
 ## Overview
-Deploy Evernote integrations to production environments including Docker containers, AWS ECS/Lambda, Google Cloud Run, and Kubernetes, with proper secrets management and health checks.
+Deploy Evernote-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- CI/CD pipeline configured (see `evernote-ci-integration`)
-- Production API credentials approved by Evernote
-- Cloud platform account (AWS, GCP, or Azure)
-- Docker installed for containerized deployments
+- Evernote API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add Evernote secrets to Vercel
+vercel secrets add evernote_api_key sk_live_***
+vercel secrets add evernote_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "EVERNOTE_API_KEY": "@evernote_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-evernote-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Evernote secrets
+fly secrets set EVERNOTE_API_KEY=sk_live_***
+fly secrets set EVERNOTE_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="evernote-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=EVERNOTE_API_KEY=evernote-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/evernote.ts
+interface EvernoteConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getEvernoteConfig(): EvernoteConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.EVERNOTE_API_KEY!,
+    environment: env as EvernoteConfig['environment'],
+    webhookSecret: process.env.EVERNOTE_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const evernoteStatus = await checkEvernoteConnection();
+
+  return Response.json({
+    status: evernoteStatus ? 'healthy' : 'degraded',
+    services: {
+      evernote: evernoteStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: Docker Deployment
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-Create a multi-stage Dockerfile that builds the app and produces a minimal production image. Set `NODE_ENV=production` and configure the Evernote SDK for production endpoints.
+### Step 2: Configure Secrets
+Store Evernote API keys securely using the platform's secrets management.
 
-```dockerfile
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production
-COPY . .
-RUN npm run build
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Evernote integration.
 
-FROM node:20-alpine
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-ENV NODE_ENV=production EVERNOTE_SANDBOX=false
-EXPOSE 3000
-CMD ["node", "dist/index.js"]
-```
-
-### Step 2: Google Cloud Run Deployment
-
-Deploy the Docker image to Cloud Run with secrets mounted from Secret Manager. Cloud Run scales to zero when idle, making it cost-effective for webhook receivers.
-
-```bash
-gcloud run deploy evernote-app \
-  --image gcr.io/PROJECT/evernote-app:latest \
-  --set-secrets EVERNOTE_CONSUMER_KEY=evernote-key:latest \
-  --set-secrets EVERNOTE_CONSUMER_SECRET=evernote-secret:latest \
-  --allow-unauthenticated \
-  --region us-central1
-```
-
-### Step 3: AWS Lambda (Serverless)
-
-Package the webhook handler as a Lambda function behind API Gateway. Use AWS Secrets Manager for credentials. Lambda is ideal for event-driven Evernote integrations (webhook processing, scheduled sync).
-
-### Step 4: Kubernetes Deployment
-
-Create a Deployment with ConfigMap for non-secret settings and Kubernetes Secrets for API credentials. Include liveness and readiness probes that verify Evernote API connectivity.
-
-### Step 5: Deployment Verification
-
-After deployment, verify: health check endpoint returns `connected`, a test note can be created and retrieved, webhook endpoint is reachable, and monitoring is reporting metrics.
-
-For the full Dockerfile, Cloud Run config, Lambda handler, Kubernetes manifests, and deployment verification scripts, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Verify Health
+Test the health check endpoint to confirm Evernote connectivity.
 
 ## Output
-- Multi-stage Dockerfile for production builds
-- Google Cloud Run deployment with Secret Manager integration
-- AWS Lambda handler for serverless webhook processing
-- Kubernetes Deployment, Service, and Secret manifests
-- Deployment verification checklist and script
+- Application deployed to production
+- Evernote secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `Invalid consumer key` in production | Using sandbox credentials | Verify `EVERNOTE_SANDBOX=false` and production key |
-| Secret not mounted | Missing cloud secret resource | Create secret in Secret Manager/AWS Secrets Manager |
-| Health check failing | Evernote API unreachable from cloud | Check network/firewall rules, verify DNS resolution |
-| Cold start timeout | Lambda initialization too slow | Increase timeout, use provisioned concurrency |
-
-## Resources
-- [Google Cloud Run](https://cloud.google.com/run/docs)
-- [AWS Lambda](https://docs.aws.amazon.com/lambda/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [Docker Multi-stage Builds](https://docs.docker.com/build/building/multi-stage/)
-
-## Next Steps
-For webhook handling, see `evernote-webhooks-events`.
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
 
 ## Examples
 
-**Cloud Run webhook**: Deploy a webhook receiver to Cloud Run that processes Evernote note change notifications, syncs changes to a database, and scales to zero between events.
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add evernote_api_key "$EVERNOTE_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set EVERNOTE_API_KEY="$EVERNOTE_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
-**Lambda batch processor**: Deploy a scheduled Lambda that runs nightly to export all notes tagged "archive" to S3, using the sync API to fetch only changed notes since the last run.
+## Resources
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Evernote Deploy Guide](https://docs.evernote.com/deploy)
+
+## Next Steps
+For webhook handling, see `evernote-webhooks-events`.

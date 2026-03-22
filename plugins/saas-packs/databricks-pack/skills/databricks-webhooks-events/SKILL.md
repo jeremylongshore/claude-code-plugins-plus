@@ -1,248 +1,201 @@
 ---
 name: databricks-webhooks-events
 description: |
-  Configure Databricks job notifications, webhooks, and event handling.
-  Use when setting up Slack/Teams notifications, configuring alerts,
-  or integrating Databricks events with external systems.
-  Trigger with phrases like "databricks webhook", "databricks notifications",
-  "databricks alerts", "job failure notification", "databricks slack".
-allowed-tools: Read, Write, Edit, Bash(databricks:*)
+  Implement Databricks webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Databricks event notifications securely.
+  Trigger with phrases like "databricks webhook", "databricks events",
+  "databricks webhook signature", "handle databricks events", "databricks notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, webhooks]
-
+compatible-with: claude-code
+tags: [saas, databricks]
 ---
+
 # Databricks Webhooks & Events
 
 ## Overview
-Configure notifications and event-driven workflows for Databricks jobs. Covers notification destinations (Slack, Teams, PagerDuty, email, generic webhooks), job lifecycle events, SQL alerts with automated triggers, and system table queries for event auditing.
+Securely handle Databricks webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Databricks workspace admin access (for notification destinations)
-- Webhook endpoint URL (Slack incoming webhook, Teams connector, etc.)
-- Job permissions for notification configuration
+- Databricks webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Create Notification Destinations
-```python
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.service.settings import (
-    CreateNotificationDestinationRequest,
-    SlackConfig, EmailConfig, GenericWebhookConfig,
-)
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
 
-w = WorkspaceClient()
+const app = express();
 
-# Slack destination
-slack = w.notification_destinations.create(
-    display_name="Engineering Slack",
-    config=SlackConfig(url="https://hooks.slack.com/services/T00/B00/xxxx"),
-)
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/databricks',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-databricks-signature'] as string;
+    const timestamp = req.headers['x-databricks-timestamp'] as string;
 
-# Email destination
-email = w.notification_destinations.create(
-    display_name="Oncall Email",
-    config=EmailConfig(addresses=["oncall@company.com", "data-team@company.com"]),
-)
+    if (!verifyDatabricksSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
 
-# Generic webhook (PagerDuty, custom endpoint)
-pagerduty = w.notification_destinations.create(
-    display_name="PagerDuty",
-    config=GenericWebhookConfig(
-        url="https://events.pagerduty.com/integration/YOUR_KEY/enqueue",
-    ),
-)
+    const event = JSON.parse(req.body.toString());
+    await handleDatabricksEvent(event);
 
-print(f"Slack: {slack.id}, Email: {email.id}, PD: {pagerduty.id}")
-```
-
-### Step 2: Attach Notifications to Jobs
-```python
-from databricks.sdk.service.jobs import (
-    JobEmailNotifications, WebhookNotifications, Webhook,
-)
-
-# Update existing job with notifications
-w.jobs.update(
-    job_id=123,
-    new_settings={
-        "email_notifications": JobEmailNotifications(
-            on_start=["team@company.com"],
-            on_success=["team@company.com"],
-            on_failure=["oncall@company.com", "team@company.com"],
-            no_alert_for_skipped_runs=True,
-        ),
-        "webhook_notifications": WebhookNotifications(
-            on_start=[Webhook(id=slack.id)],
-            on_success=[Webhook(id=slack.id)],
-            on_failure=[Webhook(id=slack.id), Webhook(id=pagerduty.id)],
-        ),
-    },
-)
-```
-
-Or declaratively in Asset Bundles:
-```yaml
-# resources/jobs.yml
-resources:
-  jobs:
-    daily_etl:
-      email_notifications:
-        on_failure: ["oncall@company.com"]
-      webhook_notifications:
-        on_failure:
-          - id: "<notification-destination-id>"
-```
-
-### Step 3: Build Custom Webhook Handler
-Receive Databricks job events at your own endpoint.
-
-```python
-# webhook_handler.py — FastAPI endpoint
-from fastapi import FastAPI, Request
-import httpx
-
-app = FastAPI()
-
-@app.post("/databricks/webhook")
-async def handle_event(request: Request):
-    payload = await request.json()
-
-    event_type = payload.get("event_type")        # "jobs.on_failure", "jobs.on_success"
-    run_id = payload.get("run", {}).get("run_id")
-    job_name = payload.get("job", {}).get("name")
-    result = payload.get("run", {}).get("result_state")  # SUCCESS, FAILED, TIMED_OUT
-    error_msg = payload.get("run", {}).get("state_message", "")
-
-    if result == "FAILED":
-        # Route to PagerDuty
-        await httpx.AsyncClient().post(
-            "https://events.pagerduty.com/v2/enqueue",
-            json={
-                "routing_key": "YOUR_INTEGRATION_KEY",
-                "event_action": "trigger",
-                "payload": {
-                    "summary": f"Databricks job failed: {job_name}",
-                    "severity": "critical",
-                    "source": f"databricks-run-{run_id}",
-                    "custom_details": {"error": error_msg, "run_id": run_id},
-                },
-            },
-        )
-
-    return {"status": "ok"}
-```
-
-### Step 4: Monitor Events via System Tables
-Query `system.access.audit` for event monitoring without webhooks.
-
-```sql
--- Recent job events (last 6 hours)
-SELECT event_time, user_identity.email AS actor,
-       action_name, request_params.job_id, request_params.run_id,
-       response.status_code, response.error_message
-FROM system.access.audit
-WHERE service_name = 'jobs'
-  AND action_name IN ('runNow', 'submitRun', 'cancelRun', 'repairRun')
-  AND event_date >= current_date()
-  AND event_time > current_timestamp() - INTERVAL 6 HOURS
-ORDER BY event_time DESC;
-
--- Permission changes (security audit)
-SELECT event_time, user_identity.email, action_name, request_params
-FROM system.access.audit
-WHERE action_name IN ('changeJobPermissions', 'changeClusterPermissions',
-                       'updatePermissions', 'grantPermission')
-  AND event_date >= current_date() - 7
-ORDER BY event_time DESC;
-```
-
-### Step 5: SQL Alerts with Automated Triggers
-Create alerts that fire when query conditions are met.
-
-```sql
--- Alert query: detect excessive failures
--- Create in SQL Editor > Alerts > New Alert
--- Trigger: failure_count > 3
--- Schedule: every 15 minutes
--- Destination: Slack notification destination
-
-SELECT COUNT(*) AS failure_count,
-       COLLECT_LIST(DISTINCT job_name) AS failed_jobs
-FROM (
-    SELECT j.name AS job_name
-    FROM system.lakeflow.job_run_timeline r
-    JOIN system.lakeflow.jobs j ON r.job_id = j.job_id
-    WHERE r.result_state = 'FAILED'
-      AND r.start_time > current_timestamp() - INTERVAL 1 HOUR
+    res.status(200).json({ received: true });
+  }
 );
 ```
 
-```python
-# Create alert programmatically
-alert = w.alerts.create(
-    name="High Job Failure Rate",
-    query_id="<saved-query-id>",
-    options={"column": "failure_count", "op": ">", "value": "3"},
-    rearm=900,  # Re-alert after 15 min if still triggered
-)
+## Signature Verification
+
+```typescript
+function verifyDatabricksSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.DATABRICKS_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
 ```
 
-### Step 6: Slack Message Formatter
-```python
-def format_slack_message(payload: dict) -> dict:
-    """Format Databricks job event as a rich Slack Block Kit message."""
-    run = payload.get("run", {})
-    job = payload.get("job", {})
-    status = run.get("result_state", "UNKNOWN")
-    emoji = {"SUCCESS": ":white_check_mark:", "FAILED": ":x:", "TIMED_OUT": ":hourglass:"}.get(status, ":question:")
-    duration_sec = run.get("execution_duration", 0) // 1000
+## Event Handler Pattern
 
-    return {
-        "blocks": [
-            {"type": "header", "text": {"type": "plain_text", "text": f"{emoji} {job.get('name', 'Unknown')}"}},
-            {"type": "section", "fields": [
-                {"type": "mrkdwn", "text": f"*Status:* {status}"},
-                {"type": "mrkdwn", "text": f"*Run ID:* {run.get('run_id')}"},
-                {"type": "mrkdwn", "text": f"*Duration:* {duration_sec}s"},
-                {"type": "mrkdwn", "text": f"*Error:* {run.get('state_message', 'none')[:200]}"},
-            ]},
-        ]
-    }
+```typescript
+type DatabricksEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface DatabricksEvent {
+  id: string;
+  type: DatabricksEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<DatabricksEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleDatabricksEvent(event: DatabricksEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
 ```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `databricks:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `databricks:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Databricks CLI to send test events
+databricks webhooks trigger resource.created --url http://localhost:3000/webhooks/databricks
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Databricks dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Notification destinations registered (Slack, email, PagerDuty)
-- Job lifecycle notifications (on_start, on_success, on_failure)
-- Custom webhook handler for advanced routing
-- System table queries for event auditing
-- SQL alerts with automated triggers and destinations
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `RESOURCE_DOES_NOT_EXIST` for destination | Destination deleted or wrong workspace | `w.notification_destinations.list()` to verify |
-| Webhook not triggered | URL unreachable from Databricks network | Check firewall; Databricks needs outbound access to webhook URL |
-| Duplicate notifications | Same destination on job AND task level | Configure at job level only |
-| Alert never fires | Query returns 0 rows or wrong column | Test query in SQL Editor first |
-| System tables empty | Unity Catalog not enabled | Enable system tables in Account Console |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-### List All Notification Destinations
+### Testing Webhooks Locally
 ```bash
-databricks notification-destinations list --output json | \
-  jq '.[] | {name: .display_name, type: .destination_type, id: .id}'
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/databricks \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
 ```
 
 ## Resources
-- [Job Notifications](https://docs.databricks.com/aws/en/jobs/monitor)
-- [Notification Destinations](https://docs.databricks.com/aws/en/admin/notification-destinations)
-- [System Tables](https://docs.databricks.com/aws/en/admin/system-tables/)
-- [SQL Alerts](https://docs.databricks.com/aws/en/sql/user/alerts/)
+- [Databricks Webhooks Guide](https://docs.databricks.com/webhooks)
+- [Webhook Security Best Practices](https://docs.databricks.com/webhooks/security)
 
 ## Next Steps
-For performance tuning, see `databricks-performance-tuning`.
+For performance optimization, see `databricks-performance-tuning`.

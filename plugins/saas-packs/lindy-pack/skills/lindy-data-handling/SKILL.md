@@ -1,171 +1,222 @@
 ---
 name: lindy-data-handling
 description: |
-  Data handling best practices for Lindy AI agents.
-  Use when managing sensitive data in agent workflows,
-  implementing data privacy controls, or ensuring compliance.
-  Trigger with phrases like "lindy data", "lindy privacy",
-  "lindy PII", "lindy data handling", "lindy GDPR", "lindy HIPAA".
+  Implement Lindy PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Lindy integrations.
+  Trigger with phrases like "lindy data", "lindy PII",
+  "lindy GDPR", "lindy data retention", "lindy privacy", "lindy CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, compliance]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Data Handling
 
 ## Overview
-Lindy agents process data through triggers, LLM calls, actions, knowledge bases,
-and memory. Data flows through Lindy's managed infrastructure with AES-256
-encryption at rest and in transit. This skill covers data classification, PII
-handling, prompt-level data controls, and regulatory compliance.
+Handle sensitive data correctly when integrating with Lindy.
 
 ## Prerequisites
-- Understanding of data types processed by your agents
-- Knowledge of applicable regulations (GDPR, CCPA, HIPAA)
-- For HIPAA: Business Associate Agreement (BAA) with Lindy (Enterprise plan)
+- Understanding of GDPR/CCPA requirements
+- Lindy SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-## Lindy Data Architecture
+## Data Classification
 
-| Component | Data Storage | Retention |
-|-----------|-------------|-----------|
-| **Tasks** | Task inputs, outputs, step data | Visible in dashboard |
-| **Memory** | Persistent snippets across tasks | Until manually deleted |
-| **Context** | Per-task accumulated context | Task lifetime only |
-| **Knowledge Base** | Uploaded files, crawled sites | Until manually removed |
-| **Integrations** | OAuth tokens, connection data | Until disconnected |
-| **Computer Use** | Browser session, screenshots | 30 days after last use |
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Lindy request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupLindyData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.lindyLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupLindyData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const lindyData = await lindyClient.getUserData(userId);
+
+  return {
+    source: 'Lindy',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: lindyData.profile,
+      activities: lindyData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Lindy
+  await lindyClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.lindyUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'lindy',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await lindyClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Classify Data in Agent Workflows
-Map what data each agent processes:
+### Step 1: Classify Data
+Categorize all Lindy data by sensitivity level.
 
-| Data Category | Examples | Handling |
-|--------------|---------|----------|
-| **Public** | Product info, FAQs, pricing | No restrictions |
-| **Internal** | Sales reports, meeting notes | Limit to authorized agents |
-| **Confidential** | Customer emails, CRM data | Access controls + audit |
-| **Restricted** | PII, PHI, payment data | Minimize exposure + compliance |
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-### Step 2: PII Controls in Agent Prompts
-Add data handling instructions directly to agent prompts:
-```
-## Data Handling Rules
-- Never include full email addresses in summaries — use "[name]@[domain]"
-- Redact phone numbers in logs — show only last 4 digits
-- Do not forward customer personal information to Slack channels
-- When storing to spreadsheet, omit columns: email, phone, address
-- If asked to share customer data externally, decline and escalate
-```
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-### Step 3: Knowledge Base Data Safety
-Knowledge base files are searchable by the agent. Control what goes in:
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
-**DO upload**:
-- Product documentation
-- FAQ articles
-- Policy documents
-- Public knowledge articles
-
-**DO NOT upload**:
-- Customer databases with PII
-- Credentials or API keys
-- Internal HR documents (unless agent specifically needs them)
-- Financial records with account numbers
-
-**Resync considerations**: KB auto-refreshes every 24 hours. If you upload
-sensitive content by mistake, remove it AND trigger a manual Resync.
-
-### Step 4: Secure Memory Usage
-Agent memories persist across all future tasks. Be deliberate:
-```
-Safe memory: "Customer prefers email communication over phone"
-Safe memory: "Billing questions should escalate to finance@company.com"
-
-Risky memory: "John Smith's SSN is 123-45-6789"  ← NEVER store PII in memory
-Risky memory: "API key for Stripe: sk_live_xxxx"  ← NEVER store secrets
-```
-
-Add to agent prompt:
-```
-## Memory Rules
-- Never store personally identifiable information (PII) in memory
-- Never store credentials, API keys, or passwords in memory
-- Memories should contain preferences, patterns, and procedures only
-```
-
-### Step 5: Computer Use Data Isolation
-If using Computer Use (browser automation):
-- Sessions persist for 30 days with saved credentials
-- Enable **Incognito mode** for sessions handling sensitive data
-- Use **dedicated** (not shared) computer assignments for sensitive agents
-- Review screenshots captured during execution for data exposure
-
-### Step 6: Integration Account Isolation
-- Authorize dedicated service accounts per agent (not personal accounts)
-- Use Gmail with a team alias, not an individual inbox
-- Create read-only database credentials where possible
-- Revoke access immediately when an agent is decommissioned
-
-### Step 7: Regulatory Compliance
-
-**GDPR (EU Data Protection)**:
-- [ ] Document what personal data each agent processes
-- [ ] Ensure agents only process data with valid legal basis
-- [ ] Implement data subject access/deletion capabilities
-- [ ] Agent prompt includes "do not retain personal data beyond task completion"
-- [ ] Review Lindy's data processing agreement
-
-**CCPA (California Consumer Privacy)**:
-- [ ] Identify agents processing California resident data
-- [ ] Ensure opt-out mechanisms exist for data processing
-- [ ] Agent prompt prevents selling/sharing personal information
-
-**HIPAA (Healthcare)**:
-- [ ] Enterprise plan with BAA in place
-- [ ] Agents only access minimum necessary PHI
-- [ ] No PHI in agent memory or knowledge base
-- [ ] Audit trail enabled for all PHI access
-- [ ] Agent prompt includes PHI handling restrictions
-
-### Step 8: Data Retention Management
-```
-Agent Prompt Addition:
-## Data Retention
-- Do not reference data from tasks older than 30 days
-- Clear task context after each run (do not accumulate indefinitely)
-- When updating memory, remove outdated entries
-- Summarize customer interactions, do not store verbatim transcripts
-```
-
-## Data Handling Checklist
-- [ ] Each agent's data classification documented
-- [ ] PII handling rules in every agent prompt
-- [ ] Knowledge base audited for sensitive content
-- [ ] Memory creation restricted (no PII, no secrets)
-- [ ] Integration accounts isolated per agent
-- [ ] Computer Use sessions set to dedicated + incognito where needed
-- [ ] Regulatory compliance requirements mapped
-- [ ] BAA in place if handling healthcare data
-- [ ] Data retention policy defined and enforced in prompts
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in Slack channel | Agent forwarded customer email | Add "never forward PII to Slack" to prompt |
-| Sensitive file in KB | Uploaded by mistake | Remove file + trigger KB resync immediately |
-| Memory contains PII | Agent auto-created memory | Delete memory + add "never store PII" to prompt |
-| Audit finding | Agent accessing unnecessary data | Remove unused integrations from agent |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Lindy response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
-- [Lindy Security](https://www.lindy.ai/security)
-- [Lindy Privacy Policy](https://www.lindy.ai/privacy)
-- [GDPR Official](https://gdpr.eu/)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Lindy Privacy Guide](https://docs.lindy.com/privacy)
 
 ## Next Steps
-Proceed to `lindy-enterprise-rbac` for access control.
+For enterprise access control, see `lindy-enterprise-rbac`.

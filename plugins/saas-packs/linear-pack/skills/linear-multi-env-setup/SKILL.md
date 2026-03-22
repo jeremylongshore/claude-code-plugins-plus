@@ -2,317 +2,223 @@
 name: linear-multi-env-setup
 description: |
   Configure Linear across development, staging, and production environments.
-  Use when setting up per-environment API keys, secret management,
-  or environment-specific Linear configurations.
-  Trigger: "linear environments", "linear staging", "linear dev prod",
-  "linear environment setup", "multi-environment linear".
-allowed-tools: Read, Write, Edit, Bash(vault:*), Bash(gcloud:*), Bash(aws:*)
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Linear configurations.
+  Trigger with phrases like "linear environments", "linear staging",
+  "linear dev prod", "linear environment setup", "linear config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, linear, deployment, api]
-
+compatible-with: claude-code
+tags: [saas, linear]
 ---
+
 # Linear Multi-Environment Setup
 
 ## Overview
-Configure Linear integrations across dev, staging, and production with isolated API keys, secret management, environment guards, and per-environment webhook routing. Use separate Linear workspaces or at minimum separate API keys per environment.
+Configure Linear across development, staging, and production environments.
 
 ## Prerequisites
-- Separate Linear API keys per environment (dev, staging, prod)
-- Secret management (Vault, AWS Secrets Manager, GCP Secret Manager)
-- CI/CD pipeline with environment support
-- Node.js 18+
+- Separate Linear accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
-## Instructions
+## Environment Strategy
 
-### Step 1: Environment Configuration
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── linear/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${LINEAR_API_KEY}",
+  "baseUrl": "https://api-sandbox.linear.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${LINEAR_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.linear.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${LINEAR_API_KEY_PROD}",
+  "baseUrl": "https://api.linear.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
 ```typescript
-// src/config/linear.ts
-import { LinearClient } from "@linear/sdk";
+// src/linear/config.ts
+import baseConfig from '../../config/linear/base.json';
 
-interface LinearEnvConfig {
-  apiKey: string;
-  webhookSecret: string;
-  defaultTeamKey: string;
-  enableWebhooks: boolean;
-  enableDebugLogging: boolean;
-  cacheEnabled: boolean;
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
 }
 
-type Environment = "development" | "staging" | "production" | "test";
+export function getLinearConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/linear/${env}.json`);
 
-function getEnvironment(): Environment {
-  const env = process.env.NODE_ENV ?? "development";
-  if (!["development", "staging", "production", "test"].includes(env)) {
-    throw new Error(`Unknown NODE_ENV: ${env}`);
-  }
-  return env as Environment;
-}
-
-async function loadConfig(): Promise<LinearEnvConfig> {
-  const env = getEnvironment();
-
-  // In production, use secret manager instead of env vars
-  if (env === "production" || env === "staging") {
-    return {
-      apiKey: await getSecret(`linear-api-key-${env}`),
-      webhookSecret: await getSecret(`linear-webhook-secret-${env}`),
-      defaultTeamKey: process.env.LINEAR_DEFAULT_TEAM_KEY ?? "ENG",
-      enableWebhooks: true,
-      enableDebugLogging: env === "staging",
-      cacheEnabled: true,
-    };
-  }
-
-  // Dev/test: use environment variables
   return {
-    apiKey: process.env.LINEAR_API_KEY ?? "",
-    webhookSecret: process.env.LINEAR_WEBHOOK_SECRET ?? "",
-    defaultTeamKey: process.env.LINEAR_DEV_TEAM_KEY ?? "DEV",
-    enableWebhooks: false, // No webhook server in local dev
-    enableDebugLogging: true,
-    cacheEnabled: false,
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
   };
 }
 ```
 
-### Step 2: Secret Manager Integration
-```typescript
-// GCP Secret Manager
-import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
+## Secret Management by Environment
 
-async function getSecret(name: string): Promise<string> {
-  const client = new SecretManagerServiceClient();
-  const projectId = process.env.GCP_PROJECT_ID!;
-  const [version] = await client.accessSecretVersion({
-    name: `projects/${projectId}/secrets/${name}/versions/latest`,
-  });
-  return version.payload?.data?.toString() ?? "";
-}
-
-// AWS Secrets Manager
-import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
-
-async function getSecretAWS(name: string): Promise<string> {
-  const client = new SecretsManagerClient({});
-  const result = await client.send(new GetSecretValueCommand({ SecretId: name }));
-  return result.SecretString ?? "";
-}
-
-// HashiCorp Vault
-async function getSecretVault(path: string): Promise<string> {
-  const response = await fetch(`${process.env.VAULT_ADDR}/v1/${path}`, {
-    headers: { "X-Vault-Token": process.env.VAULT_TOKEN! },
-  });
-  const data = await response.json();
-  return data.data.data.value;
-}
+### Local Development
+```bash
+# .env.local (git-ignored)
+LINEAR_API_KEY=sk_test_dev_***
 ```
 
-### Step 3: Environment-Aware Client Factory
-```typescript
-let _client: LinearClient | null = null;
-let _config: LinearEnvConfig | null = null;
-
-export async function getLinearClient(): Promise<LinearClient> {
-  if (!_client) {
-    _config = await loadConfig();
-    if (!_config.apiKey) {
-      throw new Error(`LINEAR_API_KEY not configured for ${getEnvironment()}`);
-    }
-    _client = new LinearClient({ apiKey: _config.apiKey });
-  }
-  return _client;
-}
-
-export async function getConfig(): Promise<LinearEnvConfig> {
-  if (!_config) await getLinearClient(); // Triggers config load
-  return _config!;
-}
-
-// For tests: inject a mock or test client
-export function setTestClient(client: LinearClient) {
-  _client = client;
-}
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY_${{ matrix.environment }} }}
 ```
 
-### Step 4: Environment Guards
-Prevent dangerous operations from running in the wrong environment.
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id linear/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=linear-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/linear/production
+```
+
+## Environment Isolation
 
 ```typescript
-function requireProduction(operation: string) {
-  if (getEnvironment() !== "production") {
-    throw new Error(`${operation} is production-only (current: ${getEnvironment()})`);
-  }
-}
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getLinearConfig();
 
-function preventProduction(operation: string) {
-  if (getEnvironment() === "production") {
-    throw new Error(`${operation} is forbidden in production`);
+  if (config.environment !== 'production') {
+    console.warn(`[linear] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
   }
 }
 
 // Usage
-async function deleteAllTestIssues(teamKey: string) {
-  preventProduction("deleteAllTestIssues"); // Safety guard
-
-  const client = await getLinearClient();
-  const issues = await client.issues({
-    filter: {
-      team: { key: { eq: teamKey } },
-      title: { startsWith: "[TEST]" },
-    },
-  });
-
-  for (const issue of issues.nodes) {
-    await issue.delete();
-  }
-}
-
-// Safe delete: archives in prod, deletes in dev
-async function safeRemoveIssue(issueId: string) {
-  const client = await getLinearClient();
-  if (getEnvironment() === "production") {
-    await client.archiveIssue(issueId);
-  } else {
-    await client.deleteIssue(issueId);
-  }
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
 }
 ```
 
-### Step 5: Per-Environment Webhooks
+## Feature Flags by Environment
+
 ```typescript
-// Different webhook configs per environment
-const webhookConfigs: Record<Environment, {
-  resourceTypes: string[];
-  enabled: boolean;
-}> = {
+const featureFlags: Record<Environment, Record<string, boolean>> = {
   development: {
-    resourceTypes: [], // No webhooks in dev — use polling/ngrok manually
-    enabled: false,
+    newFeature: true,
+    betaApi: true,
   },
   staging: {
-    resourceTypes: ["Issue", "Comment", "Project", "Cycle"],
-    enabled: true,
+    newFeature: true,
+    betaApi: false,
   },
   production: {
-    resourceTypes: ["Issue", "Comment", "Project", "Cycle", "IssueLabel", "ProjectUpdate"],
-    enabled: true,
-  },
-  test: {
-    resourceTypes: [],
-    enabled: false,
+    newFeature: false,
+    betaApi: false,
   },
 };
 ```
 
-### Step 6: CI/CD with Environment Secrets
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
+## Instructions
 
-on:
-  push:
-    branches: [main, release/*]
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-jobs:
-  deploy-staging:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci && npm run build
-      - run: npm run deploy:staging
-        env:
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-          LINEAR_WEBHOOK_SECRET: ${{ secrets.LINEAR_WEBHOOK_SECRET }}
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
 
-  deploy-production:
-    if: startsWith(github.ref, 'refs/heads/release/')
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm ci && npm run build
-      - run: npm run deploy:production
-        env:
-          LINEAR_API_KEY: ${{ secrets.LINEAR_API_KEY }}
-          LINEAR_WEBHOOK_SECRET: ${{ secrets.LINEAR_WEBHOOK_SECRET }}
-```
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
 
-### Step 7: Environment Validation Script
-```typescript
-// scripts/validate-environment.ts
-async function validateEnvironment() {
-  const env = getEnvironment();
-  console.log(`Validating Linear config for: ${env}\n`);
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
-  const config = await loadConfig();
-
-  const checks = [
-    { name: "API Key", ok: config.apiKey.startsWith("lin_api_") },
-    { name: "Webhook Secret", ok: !config.enableWebhooks || config.webhookSecret.length > 10 },
-    { name: "Default Team", ok: config.defaultTeamKey.length > 0 },
-  ];
-
-  // Test API connectivity
-  try {
-    const client = new LinearClient({ apiKey: config.apiKey });
-    const viewer = await client.viewer;
-    const teams = await client.teams();
-    const team = teams.nodes.find(t => t.key === config.defaultTeamKey);
-
-    checks.push({ name: "API Auth", ok: true });
-    checks.push({ name: "Default Team Exists", ok: !!team });
-
-    console.log(`  User: ${viewer.name} (${viewer.email})`);
-    console.log(`  Teams: ${teams.nodes.map(t => t.key).join(", ")}`);
-  } catch (e: any) {
-    checks.push({ name: "API Auth", ok: false });
-    console.error(`  Auth failed: ${e.message}`);
-  }
-
-  for (const { name, ok } of checks) {
-    console.log(`  ${ok ? "PASS" : "FAIL"}: ${name}`);
-  }
-
-  const failed = checks.filter(c => !c.ok).length;
-  if (failed > 0) process.exit(1);
-}
-
-validateEnvironment();
-```
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment data | API key for wrong workspace | Verify secrets per environment |
-| Secret not found | Missing in secret manager | Add secret for the target environment |
-| Team not found | Wrong `defaultTeamKey` | Check team key matches the environment's workspace |
-| Permission denied | Insufficient API key scope | Regenerate with correct scopes |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
 ## Examples
 
-### Quick Validation
-```bash
-NODE_ENV=staging npx tsx scripts/validate-environment.ts
-# Output:
-# Validating Linear config for: staging
-#   User: CI Bot (ci@company.com)
-#   Teams: ENG, PRODUCT, DESIGN
-#   PASS: API Key
-#   PASS: Webhook Secret
-#   PASS: Default Team
-#   PASS: API Auth
-#   PASS: Default Team Exists
+### Quick Environment Check
+```typescript
+const env = getLinearConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
 ```
 
 ## Resources
-- [Linear API Authentication](https://linear.app/developers/graphql)
-- [12-Factor Config](https://12factor.net/config)
-- [GCP Secret Manager](https://cloud.google.com/secret-manager)
-- [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/)
+- [Linear Environments Guide](https://docs.linear.com/environments)
+- [12-Factor App Config](https://12factor.net/config)
+
+## Next Steps
+For observability setup, see `linear-observability`.

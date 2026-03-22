@@ -1,245 +1,216 @@
 ---
 name: vercel-performance-tuning
 description: |
-  Optimize Vercel deployment performance with caching, bundle optimization, and cold start reduction.
-  Use when experiencing slow page loads, optimizing Core Web Vitals,
-  or reducing serverless function cold start times.
+  Optimize Vercel API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Vercel integrations.
   Trigger with phrases like "vercel performance", "optimize vercel",
-  "vercel latency", "vercel caching", "vercel slow", "vercel cold start".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npx:*)
+  "vercel latency", "vercel caching", "vercel slow", "vercel batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, performance, caching, optimization]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Performance Tuning
 
 ## Overview
-Optimize Vercel deployment performance across four levers: edge caching, bundle size reduction, serverless function cold start elimination, and Core Web Vitals improvement. Uses real Vercel cache headers, ISR, and Edge Functions for maximum performance.
+Optimize Vercel API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Vercel project deployed with accessible URL
-- Access to Vercel Analytics (dashboard)
-- Bundle analyzer available (`@next/bundle-analyzer` or similar)
+- Vercel SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
+
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Cold Start (Serverless) | 250ms | 500ms | 1000ms |
+| Cold Start (Edge) | 5ms | 25ms | 50ms |
+| Build Time | 30s | 120s | 300s |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 31536000000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedVercelRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const vercelLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Vercel
+    const results = await vercelClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  vercelLoader.load('id-1'),
+  vercelLoader.load('id-2'),
+  vercelLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: None,
+  maxFreeSockets: 5,
+  timeout: 10000,
+});
+
+const client = new VercelClient({
+  apiKey: process.env.VERCEL_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedVercelList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedVercelList(cursor =>
+  vercelClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredVercelCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Establish Performance Baseline
-```bash
-# Check deployment size and function count
-vercel inspect https://my-app.vercel.app
+### Step 1: Establish Baseline
+Measure current latency for critical Vercel operations.
 
-# Run Lighthouse via CLI
-npx lighthouse https://my-app.vercel.app --output=json --quiet \
-  | jq '{performance: .categories.performance.score, lcp: .audits["largest-contentful-paint"].numericValue, cls: .audits["cumulative-layout-shift"].numericValue}'
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-# Check bundle size (Next.js)
-ANALYZE=true npx next build
-# Opens bundle analyzer report in browser
-```
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-Enable Vercel Analytics in the dashboard under **Analytics** tab for ongoing monitoring.
-
-### Step 2: Configure Edge Caching
-```typescript
-// api/cached-data.ts — cache API responses at the edge
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  // Cache at Vercel edge for 60s, serve stale for 300s while revalidating
-  res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-  res.json({ data: fetchData(), cachedAt: new Date().toISOString() });
-}
-```
-
-```json
-// vercel.json — cache static assets aggressively
-{
-  "headers": [
-    {
-      "source": "/static/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    },
-    {
-      "source": "/api/public-data",
-      "headers": [
-        { "key": "Cache-Control", "value": "s-maxage=3600, stale-while-revalidate=86400" }
-      ]
-    }
-  ]
-}
-```
-
-Cache header reference:
-| Header | Effect |
-|--------|--------|
-| `s-maxage=N` | Cache at Vercel edge for N seconds |
-| `stale-while-revalidate=N` | Serve stale while revalidating in background |
-| `max-age=N` | Cache in browser for N seconds |
-| `immutable` | Never revalidate (use with content-hashed filenames) |
-| `no-cache` | Always revalidate (edge still caches) |
-| `no-store` | Never cache anywhere |
-
-### Step 3: Incremental Static Regeneration (ISR)
-```typescript
-// app/products/[id]/page.tsx (Next.js App Router)
-export const revalidate = 60; // Revalidate every 60 seconds
-
-export default async function ProductPage({ params }) {
-  const product = await fetchProduct(params.id);
-  return <ProductView product={product} />;
-}
-
-// Generate static pages at build time, regenerate on-demand
-export async function generateStaticParams() {
-  const products = await fetchTopProducts(100);
-  return products.map(p => ({ id: p.id }));
-}
-```
-
-On-demand revalidation via API route:
-```typescript
-// api/revalidate.ts
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const secret = req.query.secret;
-  if (secret !== process.env.REVALIDATION_SECRET) {
-    return res.status(401).json({ error: 'Invalid secret' });
-  }
-
-  const path = req.query.path as string;
-  await res.revalidate(path);
-  res.json({ revalidated: true, path });
-}
-// Trigger: POST /api/revalidate?secret=xxx&path=/products/123
-```
-
-### Step 4: Reduce Cold Starts
-```typescript
-// Lazy initialization — don't import heavy modules at top level
-// BAD: Cold start loads everything
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient(); // Runs on every cold start
-
-// GOOD: Lazy singleton — only connects when first used
-let prisma: PrismaClient | null = null;
-function getDb(): PrismaClient {
-  if (!prisma) {
-    prisma = new PrismaClient();
-  }
-  return prisma;
-}
-
-export default async function handler(req, res) {
-  const users = await getDb().user.findMany();
-  res.json(users);
-}
-```
-
-Move latency-critical paths to Edge Functions (zero cold starts):
-```typescript
-// api/fast.ts
-export const config = { runtime: 'edge' };
-
-export default function handler(request: Request) {
-  return Response.json({ fast: true }); // No cold start, runs globally
-}
-```
-
-### Step 5: Bundle Size Optimization
-```javascript
-// next.config.js — tree-shaking and optimization
-module.exports = {
-  experimental: {
-    optimizePackageImports: ['lodash', '@mui/material', '@mui/icons-material'],
-  },
-  // Exclude server-only deps from client bundle
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = { fs: false, net: false, tls: false };
-    }
-    return config;
-  },
-};
-```
-
-```bash
-# Find large dependencies
-npx depcheck
-npx cost-of-modules
-
-# Replace heavy libraries with lighter alternatives
-# moment.js (300KB) → dayjs (2KB)
-# lodash (72KB) → lodash-es with tree-shaking
-# axios (29KB) → native fetch
-```
-
-### Step 6: Image Optimization
-```typescript
-// Use Vercel's built-in image optimization
-import Image from 'next/image';
-
-// Automatic: resizes, converts to WebP/AVIF, caches at edge
-<Image
-  src="/hero.jpg"
-  width={1200}
-  height={600}
-  alt="Hero"
-  priority  // Preload for LCP
-  sizes="(max-width: 768px) 100vw, 1200px"
-/>
-```
-
-```json
-// vercel.json — configure image optimization
-{
-  "images": {
-    "sizes": [640, 750, 828, 1080, 1200],
-    "domains": ["images.example.com"],
-    "formats": ["image/avif", "image/webp"],
-    "minimumCacheTTL": 86400
-  }
-}
-```
-
-## Performance Budget Reference
-
-| Metric | Target | Vercel Tool |
-|--------|--------|-------------|
-| LCP | < 2.5s | Vercel Analytics |
-| FID/INP | < 200ms | Vercel Analytics |
-| CLS | < 0.1 | Vercel Analytics |
-| TTFB | < 200ms | Edge caching |
-| Function cold start | < 500ms | Lazy init / Edge Functions |
-| Bundle size (gzipped) | < 200KB JS | Bundle analyzer |
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
-- Edge caching configured with optimal cache-control headers
-- ISR or on-demand revalidation for dynamic pages
-- Cold starts eliminated via lazy initialization and Edge Functions
-- Bundle size reduced through tree-shaking and import optimization
-- Image optimization configured
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache not hitting | Missing `s-maxage` header | Add to response or vercel.json headers |
-| ISR page always stale | `revalidate` set too high | Lower the revalidation interval |
-| Large bundle warning | Importing entire library | Use specific imports: `import { map } from 'lodash-es'` |
-| Cold start > 1s | Heavy top-level imports | Move to lazy initialization pattern |
-| Images not optimized | External domain not whitelisted | Add to `images.domains` in config |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredVercelCall(name, () =>
+    cachedVercelRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Vercel Caching](https://vercel.com/docs/edge-network/caching)
-- [ISR Documentation](https://vercel.com/docs/incremental-static-regeneration)
-- [Vercel Analytics](https://vercel.com/docs/analytics)
-- [Image Optimization](https://vercel.com/docs/image-optimization)
-- [Function Configuration](https://vercel.com/docs/functions/configuring-functions)
+- [Vercel Performance Guide](https://vercel.com/docs/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `vercel-cost-tuning`.

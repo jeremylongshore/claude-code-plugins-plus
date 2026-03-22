@@ -1,238 +1,246 @@
 ---
 name: vercel-migration-deep-dive
 description: |
-  Migrate to Vercel from other platforms or re-architecture existing Vercel deployments.
-  Use when migrating from Netlify, AWS, or Cloudflare to Vercel,
-  or when re-platforming an existing Vercel application.
-  Trigger with phrases like "migrate to vercel", "vercel migration",
-  "switch to vercel", "netlify to vercel", "aws to vercel", "vercel replatform".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(npm:*), Bash(npx:*)
+  Execute Vercel major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Vercel, performing major version upgrades,
+  or re-platforming existing integrations to Vercel.
+  Trigger with phrases like "migrate vercel", "vercel migration",
+  "switch to vercel", "vercel replatform", "vercel upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, migration, replatform]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Migration Deep Dive
 
 ## Overview
-Migrate applications to Vercel from Netlify, AWS (Lambda/CloudFront/S3), Cloudflare Workers, or traditional hosting. Covers configuration mapping, DNS cutover, feature parity validation, and incremental migration with the strangler fig pattern.
-
-## Current State
-!`vercel --version 2>/dev/null || echo 'Vercel CLI not installed'`
-!`cat package.json 2>/dev/null | jq -r '.name // "no package.json"' 2>/dev/null || echo 'N/A'`
+Comprehensive guide for migrating to or from Vercel, or major version upgrades.
 
 ## Prerequisites
-- Access to current hosting platform
-- Git repository with application source
-- DNS management access for domain cutover
-- Vercel account (Pro recommended for production)
+- Current system documentation
+- Vercel SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
+
+## Migration Types
+
+| Type | Complexity | Duration | Risk |
+|------|-----------|----------|------|
+| Fresh install | Low | Days | Low |
+| From competitor | Medium | Weeks | Medium |
+| Major version | Medium | Weeks | Medium |
+| Full replatform | High | Months | High |
+
+## Pre-Migration Assessment
+
+### Step 1: Current State Analysis
+```bash
+# Document current implementation
+find . -name "*.ts" -o -name "*.py" | xargs grep -l "vercel" > vercel-files.txt
+
+# Count integration points
+wc -l vercel-files.txt
+
+# Identify dependencies
+npm list | grep vercel
+pip freeze | grep vercel
+```
+
+### Step 2: Data Inventory
+```typescript
+interface MigrationInventory {
+  dataTypes: string[];
+  recordCounts: Record<string, number>;
+  dependencies: string[];
+  integrationPoints: string[];
+  customizations: string[];
+}
+
+async function assessVercelMigration(): Promise<MigrationInventory> {
+  return {
+    dataTypes: await getDataTypes(),
+    recordCounts: await getRecordCounts(),
+    dependencies: await analyzeDependencies(),
+    integrationPoints: await findIntegrationPoints(),
+    customizations: await documentCustomizations(),
+  };
+}
+```
+
+## Migration Strategy: Strangler Fig Pattern
+
+```
+Phase 1: Parallel Run
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   System    │ ──▶ │  Vercel   │
+│   (100%)    │     │   (0%)      │
+└─────────────┘     └─────────────┘
+
+Phase 2: Gradual Shift
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (50%)     │ ──▶ │   (50%)     │
+└─────────────┘     └─────────────┘
+
+Phase 3: Complete
+┌─────────────┐     ┌─────────────┐
+│   Old       │     │   New       │
+│   (0%)      │ ──▶ │   (100%)    │
+└─────────────┘     └─────────────┘
+```
+
+## Implementation Plan
+
+### Phase 1: Setup (Week 1-2)
+```bash
+# Install Vercel SDK
+npm install vercel
+
+# Configure credentials
+cp .env.example .env.vercel
+# Edit with new credentials
+
+# Verify connectivity
+node -e "require('vercel').ping()"
+```
+
+### Phase 2: Adapter Layer (Week 3-4)
+```typescript
+// src/adapters/vercel.ts
+interface ServiceAdapter {
+  create(data: CreateInput): Promise<Resource>;
+  read(id: string): Promise<Resource>;
+  update(id: string, data: UpdateInput): Promise<Resource>;
+  delete(id: string): Promise<void>;
+}
+
+class VercelAdapter implements ServiceAdapter {
+  async create(data: CreateInput): Promise<Resource> {
+    const vercelData = this.transform(data);
+    return vercelClient.create(vercelData);
+  }
+
+  private transform(data: CreateInput): VercelInput {
+    // Map from old format to Vercel format
+  }
+}
+```
+
+### Phase 3: Data Migration (Week 5-6)
+```typescript
+async function migrateVercelData(): Promise<MigrationResult> {
+  const batchSize = 100;
+  let processed = 0;
+  let errors: MigrationError[] = [];
+
+  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+    try {
+      const transformed = batch.map(transform);
+      await vercelClient.batchCreate(transformed);
+      processed += batch.length;
+    } catch (error) {
+      errors.push({ batch, error });
+    }
+
+    // Progress update
+    console.log(`Migrated ${processed} records`);
+  }
+
+  return { processed, errors };
+}
+```
+
+### Phase 4: Traffic Shift (Week 7-8)
+```typescript
+// Feature flag controlled traffic split
+function getServiceAdapter(): ServiceAdapter {
+  const vercelPercentage = getFeatureFlag('vercel_migration_percentage');
+
+  if (Math.random() * 100 < vercelPercentage) {
+    return new VercelAdapter();
+  }
+
+  return new LegacyAdapter();
+}
+```
+
+## Rollback Plan
+
+```bash
+# Immediate rollback
+kubectl set env deployment/app VERCEL_ENABLED=false
+kubectl rollout restart deployment/app
+
+# Data rollback (if needed)
+./scripts/restore-from-backup.sh --date YYYY-MM-DD
+
+# Verify rollback
+curl https://app.yourcompany.com/health | jq '.services.vercel'
+```
+
+## Post-Migration Validation
+
+```typescript
+async function validateVercelMigration(): Promise<ValidationReport> {
+  const checks = [
+    { name: 'Data count match', fn: checkDataCounts },
+    { name: 'API functionality', fn: checkApiFunctionality },
+    { name: 'Performance baseline', fn: checkPerformance },
+    { name: 'Error rates', fn: checkErrorRates },
+  ];
+
+  const results = await Promise.all(
+    checks.map(async c => ({ name: c.name, result: await c.fn() }))
+  );
+
+  return { checks: results, passed: results.every(r => r.result.success) };
+}
+```
 
 ## Instructions
 
-### Step 1: Configuration Mapping
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
 
-**From Netlify:**
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
 
-| Netlify | Vercel Equivalent |
-|---------|-------------------|
-| `netlify.toml` | `vercel.json` |
-| `_redirects` / `_headers` | `vercel.json` redirects/headers |
-| Netlify Functions (`netlify/functions/`) | API routes (`api/`) |
-| Netlify Edge Functions | Edge Middleware or Edge Functions |
-| `NETLIFY_ENV` | `VERCEL_ENV` |
-| Deploy previews | Preview deployments (automatic) |
-| Branch deploys | Branch preview URLs |
+### Step 3: Migrate Data
+Run batch data migration with error handling.
 
-```json
-// Netlify _redirects → vercel.json
-// FROM: /old-page /new-page 301
-// TO:
-{
-  "redirects": [
-    { "source": "/old-page", "destination": "/new-page", "permanent": true }
-  ]
-}
-
-// Netlify _headers → vercel.json
-// FROM: /* X-Frame-Options: DENY
-// TO:
-{
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        { "key": "X-Frame-Options", "value": "DENY" }
-      ]
-    }
-  ]
-}
-```
-
-**From AWS (Lambda + CloudFront + S3):**
-
-| AWS | Vercel Equivalent |
-|-----|-------------------|
-| Lambda functions | Serverless Functions (`api/`) |
-| Lambda@Edge | Edge Functions / Middleware |
-| CloudFront distributions | Automatic CDN |
-| S3 static hosting | `public/` directory |
-| API Gateway | Automatic routing |
-| CloudFront behaviors | `vercel.json` rewrites |
-| AWS SAM/CDK | `vercel.json` |
-| Secrets Manager | Environment Variables |
-
-```typescript
-// AWS Lambda handler → Vercel Function
-// FROM:
-export const handler = async (event) => {
-  return { statusCode: 200, body: JSON.stringify({ hello: 'world' }) };
-};
-
-// TO:
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-export default function handler(req: VercelRequest, res: VercelResponse) {
-  res.status(200).json({ hello: 'world' });
-}
-```
-
-**From Cloudflare Workers/Pages:**
-
-| Cloudflare | Vercel Equivalent |
-|------------|-------------------|
-| Workers | Edge Functions |
-| Pages Functions | API routes |
-| KV | Vercel KV or Edge Config |
-| R2 | Vercel Blob |
-| D1 | Vercel Postgres |
-| `wrangler.toml` | `vercel.json` |
-
-### Step 2: Migrate Functions
-```bash
-# Create Vercel project
-vercel link
-
-# Move function files to api/ directory
-mkdir -p api
-# Convert each function to Vercel format
-
-# Install Vercel types
-npm install --save-dev @vercel/node
-```
-
-### Step 3: Migrate Environment Variables
-```bash
-# Export from current platform, add to Vercel
-# Netlify:
-netlify env:list --json | jq -r '.[] | "\(.key)=\(.values[0].value)"' > .env.migration
-
-# Add each to Vercel with proper scoping
-while IFS='=' read -r key value; do
-  echo "$value" | vercel env add "$key" production preview development
-done < .env.migration
-
-# Verify
-vercel env ls
-```
-
-### Step 4: Incremental Migration (Strangler Fig)
-Route traffic incrementally from old platform to Vercel:
-
-```json
-// Phase 1: Route /api/* to Vercel, keep everything else on old platform
-// On old platform, add a rewrite/proxy:
-// /api/* → https://my-app.vercel.app/api/*
-
-// Phase 2: Move static pages to Vercel
-// Update DNS for staging subdomain first:
-// staging.example.com → cname.vercel-dns.com
-
-// Phase 3: Move production
-// Update DNS A record: example.com → 76.76.21.21
-```
-
-### Step 5: DNS Cutover
-```bash
-# Add domain to Vercel
-vercel domains add example.com
-
-# Verify domain ownership
-vercel domains inspect example.com
-
-# DNS records to set:
-# Apex domain (example.com):
-#   A → 76.76.21.21
-#
-# Subdomain (www.example.com):
-#   CNAME → cname.vercel-dns.com
-#
-# Or transfer nameservers to Vercel:
-#   NS → ns1.vercel-dns.com
-#   NS → ns2.vercel-dns.com
-
-# Wait for DNS propagation (check with dig)
-dig example.com A +short
-# Should return 76.76.21.21
-
-# SSL certificate auto-provisions after DNS verification
-```
-
-### Step 6: Validate Feature Parity
-```bash
-# Compare old and new deployments
-# Test all routes
-for path in "/" "/about" "/api/health" "/api/users"; do
-  echo "=== $path ==="
-  echo "Old:"
-  curl -sI "https://old.example.com${path}" | head -3
-  echo "New:"
-  curl -sI "https://my-app.vercel.app${path}" | head -3
-done
-
-# Compare headers
-diff <(curl -sI https://old.example.com/ | sort) \
-     <(curl -sI https://my-app.vercel.app/ | sort)
-
-# Check redirects still work
-curl -sI https://my-app.vercel.app/old-page | grep Location
-```
-
-## Migration Checklist
-
-| Step | Validated |
-|------|-----------|
-| All functions converted to Vercel format | Required |
-| Environment variables migrated with correct scoping | Required |
-| Redirects and headers ported to vercel.json | Required |
-| DNS configured and SSL provisioned | Required |
-| Preview deployment tested end-to-end | Required |
-| Performance baseline compared (old vs new) | Recommended |
-| Monitoring and alerting configured | Required |
-| Rollback plan documented (DNS revert) | Required |
-| Old platform kept running during validation period | Recommended |
+### Step 4: Shift Traffic
+Gradually route traffic to new Vercel integration.
 
 ## Output
-- Configuration mapped from source platform to Vercel
-- Functions converted to Vercel serverless/edge format
-- Environment variables migrated with proper scoping
-- DNS cutover completed with SSL auto-provisioning
-- Feature parity validated
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Vercel
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Function format mismatch | AWS/Netlify handler signature | Convert to `(req, res)` or Web API format |
-| Missing env var after migration | Not added to correct environment | Re-add with `vercel env add` |
-| DNS not resolving | Propagation delay | Wait 24-48 hours, check with `dig` |
-| SSL not provisioning | DNS records incorrect | Verify A/CNAME records match Vercel's requirements |
-| 404 on migrated routes | Different path conventions | Add rewrites in vercel.json |
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
+
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateVercelMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
 
 ## Resources
-- [Migrate to Vercel from Netlify](https://vercel.com/docs/getting-started/migration/netlify)
-- [Migrate to Vercel from Cloudflare](https://vercel.com/docs/getting-started/migration/cloudflare)
-- [Working with Domains](https://vercel.com/docs/domains/working-with-domains)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Vercel Migration Guide](https://vercel.com/docs/migration)
 
-## Next Steps
+## Flagship+ Skills
 For advanced troubleshooting, see `vercel-advanced-troubleshooting`.

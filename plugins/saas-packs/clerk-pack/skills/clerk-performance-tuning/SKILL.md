@@ -1,216 +1,216 @@
 ---
 name: clerk-performance-tuning
 description: |
-  Optimize Clerk authentication performance.
-  Use when improving auth response times, reducing latency,
-  or optimizing Clerk SDK usage.
-  Trigger with phrases like "clerk performance", "clerk optimization",
-  "clerk slow", "clerk latency", "optimize clerk".
-allowed-tools: Read, Write, Edit, Grep
+  Optimize Clerk API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Clerk integrations.
+  Trigger with phrases like "clerk performance", "optimize clerk",
+  "clerk latency", "clerk caching", "clerk slow", "clerk batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, performance, authentication]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Performance Tuning
 
 ## Overview
-Optimize Clerk authentication for best performance. Covers middleware optimization, user data caching, token handling, lazy loading, and edge runtime configuration.
+Optimize Clerk API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Clerk integration working
-- Performance monitoring in place (Lighthouse, Web Vitals)
-- Understanding of Next.js rendering strategies
+- Clerk SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
+
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedClerkRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const clerkLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Clerk
+    const results = await clerkClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  clerkLoader.load('id-1'),
+  clerkLoader.load('id-2'),
+  clerkLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new ClerkClient({
+  apiKey: process.env.CLERK_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedClerkList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedClerkList(cursor =>
+  clerkClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredClerkCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Optimize Middleware (Skip Static Assets)
-```typescript
-// middleware.ts — avoid running auth on static files
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
+### Step 1: Establish Baseline
+Measure current latency for critical Clerk operations.
 
-const isPublicRoute = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/api/webhooks(.*)'])
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublicRoute(req)) {
-    await auth.protect()
-  }
-})
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-// Restrict matcher to avoid processing static assets
-export const config = {
-  matcher: [
-    // Skip _next, static files, and images
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)',
-    '/(api|trpc)(.*)',
-  ],
-}
-```
-
-### Step 2: Cache User Data
-```typescript
-// lib/cached-user.ts
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { cache } from 'react'
-
-// React cache: deduplicates within a single request
-export const getAuthUser = cache(async () => {
-  const { userId } = await auth()
-  if (!userId) return null
-  return currentUser()
-})
-
-// Usage in multiple server components (only one Clerk API call per request):
-// const user = await getAuthUser()
-```
-
-For cross-request caching with `unstable_cache`:
-```typescript
-import { unstable_cache } from 'next/cache'
-import { clerkClient } from '@clerk/nextjs/server'
-
-export const getCachedUserProfile = unstable_cache(
-  async (userId: string) => {
-    const client = await clerkClient()
-    const user = await client.users.getUser(userId)
-    return {
-      id: user.id,
-      name: `${user.firstName} ${user.lastName}`,
-      email: user.emailAddresses[0]?.emailAddress,
-      imageUrl: user.imageUrl,
-    }
-  },
-  ['user-profile'],
-  { revalidate: 300 } // Cache for 5 minutes
-)
-```
-
-### Step 3: Optimize Token Handling
-```typescript
-// lib/token-cache.ts
-let tokenCache: { token: string; expiresAt: number } | null = null
-
-export async function getOptimizedToken(getToken: () => Promise<string | null>) {
-  // Reuse token if it has more than 30 seconds remaining
-  if (tokenCache && tokenCache.expiresAt > Date.now() + 30_000) {
-    return tokenCache.token
-  }
-
-  const token = await getToken()
-  if (token) {
-    const payload = JSON.parse(atob(token.split('.')[1]))
-    tokenCache = { token, expiresAt: payload.exp * 1000 }
-  }
-
-  return token
-}
-```
-
-### Step 4: Lazy Load Auth Components
-```typescript
-// components/lazy-auth.tsx
-'use client'
-import dynamic from 'next/dynamic'
-
-// Only load UserButton when needed (saves ~15KB)
-const UserButton = dynamic(
-  () => import('@clerk/nextjs').then((mod) => mod.UserButton),
-  { ssr: false, loading: () => <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" /> }
-)
-
-const SignInButton = dynamic(
-  () => import('@clerk/nextjs').then((mod) => mod.SignInButton),
-  { ssr: false }
-)
-
-export { UserButton, SignInButton }
-```
-
-### Step 5: Optimize Server Components
-```typescript
-// app/dashboard/page.tsx — parallel data fetching
-import { auth } from '@clerk/nextjs/server'
-import { Suspense } from 'react'
-
-export default async function Dashboard() {
-  const { userId } = await auth()
-  if (!userId) return null
-
-  return (
-    <div>
-      {/* Parallel loading with Suspense boundaries */}
-      <Suspense fallback={<div>Loading profile...</div>}>
-        <UserProfile userId={userId} />
-      </Suspense>
-      <Suspense fallback={<div>Loading activity...</div>}>
-        <RecentActivity userId={userId} />
-      </Suspense>
-    </div>
-  )
-}
-
-async function UserProfile({ userId }: { userId: string }) {
-  const profile = await getCachedUserProfile(userId)
-  return <div>{profile.name}</div>
-}
-
-async function RecentActivity({ userId }: { userId: string }) {
-  const activity = await db.activity.findMany({ where: { userId }, take: 10 })
-  return <ul>{activity.map((a) => <li key={a.id}>{a.description}</li>)}</ul>
-}
-```
-
-### Step 6: Edge Runtime for Middleware
-```typescript
-// middleware.ts — runs on Vercel Edge (cold start <50ms vs ~250ms Node)
-import { clerkMiddleware } from '@clerk/nextjs/server'
-
-export default clerkMiddleware()
-
-// Clerk middleware is Edge-compatible by default on Vercel
-export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-  runtime: 'edge', // Explicitly opt into Edge Runtime
-}
-```
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
 ## Output
-- Middleware skipping static assets (fewer auth checks)
-- React `cache()` deduplicating user fetches within requests
-- Cross-request user profile caching (5-minute TTL)
-- Lazy-loaded auth components reducing bundle size
-- Parallel Suspense boundaries for dashboard rendering
-- Edge Runtime middleware for faster cold starts
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Slow initial page load | Blocking auth calls | Use Suspense boundaries for parallel loading |
-| High Clerk API latency | No caching | Use `cache()` and `unstable_cache()` |
-| Large JS bundle | All Clerk components loaded | Use `dynamic()` imports for auth UI components |
-| Slow middleware cold start | Node.js runtime | Switch to Edge Runtime on Vercel |
-| Stale cached user data | Cache not invalidated | Invalidate on `user.updated` webhook |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
 ## Examples
 
-### Measure Clerk Auth Overhead
+### Quick Performance Wrapper
 ```typescript
-// lib/perf-measure.ts
-export async function measureAuthTime() {
-  const start = performance.now()
-  const { userId } = await auth()
-  const authMs = performance.now() - start
-  console.log(`[Perf] auth() took ${authMs.toFixed(1)}ms, userId: ${userId}`)
-  return { userId, authMs }
-}
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredClerkCall(name, () =>
+    cachedClerkRequest(`cache:${name}`, fn)
+  );
 ```
 
 ## Resources
-- [Next.js Performance Optimization](https://nextjs.org/docs/app/building-your-application/optimizing)
-- [Clerk Quickstart (Next.js)](https://clerk.com/docs/quickstarts/nextjs)
-- [Vercel Edge Runtime](https://vercel.com/docs/functions/runtimes/edge-runtime)
+- [Clerk Performance Guide](https://docs.clerk.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-Proceed to `clerk-cost-tuning` for cost optimization strategies.
+For cost optimization, see `clerk-cost-tuning`.

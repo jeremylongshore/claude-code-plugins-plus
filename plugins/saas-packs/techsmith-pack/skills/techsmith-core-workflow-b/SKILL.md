@@ -1,75 +1,73 @@
 ---
 name: techsmith-core-workflow-b
 description: |
-  TechSmith core workflow b for Snagit COM API and Camtasia automation.
-  Use when working with TechSmith screen capture and video editing automation.
-  Trigger: "techsmith core workflow b".
-allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
+  Execute TechSmith secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "techsmith secondary workflow",
+  "secondary task with techsmith".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
+tags: [saas, techsmith]
 ---
 
 # TechSmith Core Workflow B
 
 ## Overview
+Secondary workflow for TechSmith. Complements the primary workflow.
 
-Camtasia video editing automation: batch rendering, preset management, and template-based production.
+## Prerequisites
+- Completed `techsmith-install-auth` setup
+- Familiarity with `techsmith-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: List Available Presets
-
-```powershell
-$producer = "C:\Program Files\TechSmith\Camtasia 2025\CamtasiaProducer.exe"
-& $producer /listpresets
-# Common presets:
-# - "MP4 - Smart Player (up to 1080p)"
-# - "MP4 only (up to 1080p)"
-# - "Audio Only (M4A)"
-# - "Custom Production Settings"
+### Step 1: Setup
+```typescript
+// Step 1 implementation
 ```
 
-### Step 2: Multi-Format Export
-
-```powershell
-$project = "C:\Projects\tutorial.tscproj"
-$formats = @(
-    @{ Preset = "MP4 only (up to 1080p)"; Ext = "mp4" },
-    @{ Preset = "Audio Only (M4A)"; Ext = "m4a" }
-)
-
-foreach ($fmt in $formats) {
-    $output = "C:\Output\tutorial.$($fmt.Ext)"
-    & $producer /i "$project" /o "$output" /preset "$($fmt.Preset)"
-    Write-Host "Rendered: $output"
-}
+### Step 2: Process
+```typescript
+// Step 2 implementation
 ```
 
-### Step 3: Watermark and Branding
-
-```powershell
-& $producer `
-    /i "C:\Projects\tutorial.tscproj" `
-    /o "C:\Output\branded.mp4" `
-    /preset "MP4 only (up to 1080p)" `
-    /watermark "C:\Assets\logo.png"
+### Step 3: Complete
+```typescript
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow B execution
+- Results from TechSmith API
+- Success confirmation or error details
 
 ## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid preset | Typo in preset name | Use /listpresets to verify |
-| Render timeout | Long video | Increase timeout or use async |
-| Missing media | Moved source files | Keep project and media together |
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [Camtasia Batch Production](https://support.techsmith.com/)
+- [TechSmith Documentation](https://docs.techsmith.com)
+- [TechSmith API Reference](https://docs.techsmith.com/api)
 
 ## Next Steps
-
 For common errors, see `techsmith-common-errors`.

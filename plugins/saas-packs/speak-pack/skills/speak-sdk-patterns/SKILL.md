@@ -1,144 +1,149 @@
 ---
 name: speak-sdk-patterns
 description: |
-  Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
-  Use when implementing sdk patterns features,
-  or troubleshooting Speak language learning integration issues.
-  Trigger with phrases like "speak sdk patterns", "speak sdk patterns".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Apply production-ready Speak SDK patterns for TypeScript and Python.
+  Use when implementing Speak integrations, refactoring SDK usage,
+  or establishing team coding standards for Speak.
+  Trigger with phrases like "speak SDK patterns", "speak best practices",
+  "speak code patterns", "idiomatic speak".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak SDK Patterns
 
 ## Overview
-Production patterns for Speak language learning API: conversation sessions, pronunciation assessment, audio preprocessing, and batch operations.
+Production-ready patterns for Speak SDK usage in TypeScript and Python.
 
 ## Prerequisites
 - Completed `speak-install-auth` setup
-- Valid API credentials configured
-- ffmpeg installed for audio processing
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Pattern 1: Conversation Session Manager
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
-class ConversationManager {
-  private client: SpeakClient;
-  private sessions: Map<string, SessionState> = new Map();
+// src/speak/client.ts
+import { SpeakClient } from '@speak/sdk';
 
-  async startLesson(language: string, scenario: string, level: string) {
-    const session = await this.client.startConversation({
-      scenario, language, level, nativeLanguage: 'en',
+let instance: SpeakClient | null = null;
+
+export function getSpeakClient(): SpeakClient {
+  if (!instance) {
+    instance = new SpeakClient({
+      apiKey: process.env.SPEAK_API_KEY!,
+      // Additional options
     });
-    this.sessions.set(session.id, {
-      turns: [], startTime: Date.now(), language,
-    });
-    return session;
   }
+  return instance;
+}
+```
 
-  async submitResponse(sessionId: string, audioPath: string) {
-    const turn = await this.client.sendTurn(sessionId, { audioPath });
-    this.sessions.get(sessionId)?.turns.push(turn);
-    return turn;
-  }
+### Step 2: Add Error Handling Wrapper
+```typescript
+import { SpeakError } from '@speak/sdk';
 
-  async endAndReport(sessionId: string) {
-    const summary = await this.client.endSession(sessionId);
-    const state = this.sessions.get(sessionId)!;
-    return {
-      ...summary,
-      duration: (Date.now() - state.startTime) / 1000,
-      totalTurns: state.turns.length,
-      avgPronunciation: state.turns.reduce((s, t) =>
-        s + (t.pronunciationScore || 0), 0) / state.turns.length,
-    };
+async function safeSpeakCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof SpeakError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
+    }
+    return { data: null, error: err as Error };
   }
 }
 ```
 
-### Pattern 2: Audio Preprocessor
+### Step 3: Implement Retry Logic
 ```typescript
-import { execSync } from 'child_process';
-
-function preprocessAudio(inputPath: string): string {
-  const outputPath = inputPath.replace(/\.[^.]+$/, '.processed.wav');
-  // Convert to WAV 16kHz mono PCM — required by Speak API
-  execSync(
-    `ffmpeg -y -i "${inputPath}" -ar 16000 -ac 1 -c:a pcm_s16le "${outputPath}"`,
-    { stdio: 'pipe' }
-  );
-  return outputPath;
-}
-```
-
-### Pattern 3: Retry with Backoff
-```typescript
-async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let i = 0; i < maxRetries; i++) {
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await fn();
-    } catch (err: any) {
-      if (err.response?.status === 429 && i < maxRetries - 1) {
-        const wait = parseInt(err.response.headers['retry-after'] || '5');
-        await new Promise(r => setTimeout(r, wait * 1000));
-        continue;
-      }
-      throw err;
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Max retries exceeded');
-}
-```
-
-### Pattern 4: Progress Tracker
-```typescript
-class LearningProgress {
-  private history: SessionSummary[] = [];
-
-  addSession(summary: SessionSummary) {
-    this.history.push(summary);
-  }
-
-  getReport() {
-    const recent = this.history.slice(-10);
-    return {
-      totalSessions: this.history.length,
-      avgPronunciation: recent.reduce((s, h) => s + h.avgPronunciationScore, 0) / recent.length,
-      totalMinutes: this.history.reduce((s, h) => s + h.durationMinutes, 0),
-      vocabularyLearned: [...new Set(this.history.flatMap(h => h.newWords))].length,
-    };
-  }
+  throw new Error('Unreachable');
 }
 ```
 
 ## Output
-- Patterns implementation complete
-- Speak API integration verified
-- Production-ready patterns applied
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY environment variable |
-| 429 Rate Limited | Too many requests | Wait Retry-After seconds, use backoff |
-| Audio format error | Wrong codec/sample rate | Convert to WAV 16kHz mono with ffmpeg |
-| Session expired | Timeout after 30 min | Start a new conversation session |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-See `speak-prod-checklist` for production readiness.
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
 ## Examples
 
-**Basic**: Apply sdk patterns with default configuration for a standard Speak integration.
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, SpeakClient>();
 
-**Advanced**: Customize for production with error recovery, monitoring, and team-specific requirements.
+export function getClientForTenant(tenantId: string): SpeakClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new SpeakClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from speak import SpeakClient
+
+@asynccontextmanager
+async def get_speak_client():
+    client = SpeakClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const speakResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
+
+## Resources
+- [Speak SDK Reference](https://docs.speak.com/sdk)
+- [Speak API Types](https://docs.speak.com/types)
+- [Zod Documentation](https://zod.dev/)
+
+## Next Steps
+Apply patterns in `speak-core-workflow-a` for real-world usage.

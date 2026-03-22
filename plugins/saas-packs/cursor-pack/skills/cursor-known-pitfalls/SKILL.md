@@ -1,238 +1,336 @@
 ---
-name: "cursor-known-pitfalls"
+name: cursor-known-pitfalls
 description: |
-  Avoid common Cursor IDE pitfalls: AI feature mistakes, security gotchas, configuration errors, and
-  team workflow issues. Triggers on "cursor pitfalls", "cursor mistakes", "cursor gotchas", "cursor issues",
-  "cursor problems", "cursor tips".
-allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
+  Identify and avoid Cursor anti-patterns and common integration mistakes.
+  Use when reviewing Cursor code for issues, onboarding new developers,
+  or auditing existing Cursor integrations for best practices violations.
+  Trigger with phrases like "cursor mistakes", "cursor anti-patterns",
+  "cursor pitfalls", "cursor what not to do", "cursor code review".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
-author: "Jeremy Longshore <jeremy@intentsolutions.io>"
-compatible-with: claude-code, codex, openclaw
-tags: [saas, cursor, cursor-known]
-
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+compatible-with: claude-code
+tags: [saas, cursor]
 ---
+
 # Cursor Known Pitfalls
 
-Common Cursor IDE pitfalls and their solutions. Organized by category: AI behavior, security, configuration, performance, and team collaboration.
+## Overview
+Common mistakes and anti-patterns when integrating with Cursor.
 
-## AI Feature Pitfalls
+## Prerequisites
+- Access to Cursor codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
-### Pitfall 1: Blindly Applying Composer Changes
+## Pitfall #1: Synchronous API Calls in Request Path
 
-**Problem:** Clicking "Apply All" without reviewing diffs. Composer can generate code with wrong imports, hallucinated APIs, or logic errors.
-
-**Solution:**
-```
-1. Click each file in the Changes panel to review its diff
-2. Check imports: are they real packages in your project?
-3. Check function calls: do the methods actually exist?
-4. Run build after applying: npm run build
-5. Run tests: npm test
-6. Commit BEFORE running Composer (easy rollback with git checkout .)
-```
-
-### Pitfall 2: Context Window Overflow
-
-**Problem:** Adding too many `@Files`, `@Folders`, and `@Codebase` references. The model silently drops information, leading to:
-- Ignoring your instructions
-- Repeating itself
-- Generating generic instead of project-specific code
-
-**Solution:**
-```
-- Use @Files (specific) over @Folders (broad) over @Codebase (broadest)
-- Limit to 3-5 file references per prompt
-- Start new chats for new topics
-- Remove stale context pills by clicking X
+### ❌ Anti-Pattern
+```typescript
+// User waits for Cursor API call
+app.post('/checkout', async (req, res) => {
+  const payment = await cursorClient.processPayment(req.body);  // 2-5s latency
+  const notification = await cursorClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
 ```
 
-### Pitfall 3: Continuing Stale Conversations
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
 
-**Problem:** Reusing a 20+ turn conversation for a new task. The conversation history fills context, leaving no room for your new request.
+// Background job
+async function processCheckout(data) {
+  const payment = await cursorClient.processPayment(data);
+  await cursorClient.sendEmail(payment);
+}
+```
 
-**Solution:** `Cmd+N` to start a new chat for each distinct task.
-
-### Pitfall 4: AI Generates Deprecated Patterns
-
-**Problem:** AI uses old APIs (React class components, Express 4 syntax, CommonJS require).
-
-**Solution:** Pin versions in project rules:
-```yaml
-# .cursor/rules/stack.mdc
 ---
-description: "Tech stack versions"
-globs: ""
-alwaysApply: true
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await cursorClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => cursorClient.process(item));
+}
+```
+
 ---
-ALWAYS use these versions:
-- React 19 with Server Components (NOT class components)
-- Next.js 15 App Router (NOT Pages Router)
-- TypeScript 5.7 strict (NOT any casts)
-- ESM imports (NOT CommonJS require)
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new CursorClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
 ```
 
-### Pitfall 5: Tab Completion Fighting Manual Input
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new CursorClient({
+  apiKey: process.env.CURSOR_API_KEY,
+});
 
-**Problem:** Tab suggests text you do not want, and you accidentally accept it while pressing Tab for indentation.
-
-**Solution:**
-- Use `Esc` to dismiss before pressing Tab for indentation
-- Remap Tab acceptance: `Cmd+K Cmd+S` > search `acceptCursorTabSuggestion` > assign different key
-- Or temporarily disable Tab completion for specific tasks
-
-## Security Pitfalls
-
-### Pitfall 6: Pasting Secrets into Chat
-
-**Problem:** Copying an error message that includes an API key, database URL, or token and pasting it into Chat.
-
-**Solution:**
-```
-NEVER paste:
-- .env file contents
-- Error logs containing credentials
-- Database connection strings
-- API response headers with auth tokens
-
-INSTEAD:
-- Redact secrets before pasting: "API key sk-...XXXX returned 401"
-- Describe the error without the sensitive values
-- Use @Files to reference the code, not copy-paste
+// Use .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Pitfall 7: No .cursorignore
+---
 
-**Problem:** Without `.cursorignore`, sensitive files (.env, credentials, PII) may be included in AI context via `@Codebase` search or automatic context.
+## Pitfall #4: Ignoring Idempotency
 
-**Solution:** Create `.cursorignore` in every project:
-```gitignore
-.env*
-**/secrets/
-**/credentials/
-**/*.pem
-**/*.key
-```
-
-### Pitfall 8: Privacy Mode Off
-
-**Problem:** Without Privacy Mode, code may be retained by model providers for training.
-
-**Solution:**
-- Individual: `Cursor Settings` > `General` > Privacy Mode > ON
-- Team: Admin Dashboard > Privacy > Enforce for all members
-- Verify at cursor.com/settings
-
-### Pitfall 9: Trusting AI-Generated Security Code
-
-**Problem:** AI generates authentication, encryption, or authorization code that looks correct but has subtle vulnerabilities (timing attacks, SQL injection via string concatenation, missing CSRF protection).
-
-**Solution:**
-```
-- Security-critical code ALWAYS needs human expert review
-- Run SAST tools (Semgrep, Snyk) on AI-generated code
-- Never deploy AI-generated auth code without penetration testing
-- Add security rules in .cursor/rules/security.mdc
-```
-
-## Configuration Pitfalls
-
-### Pitfall 10: No Project Rules
-
-**Problem:** Without `.cursor/rules/`, the AI generates code without knowing your conventions, stack, or patterns. Result: inconsistent code that does not match your project.
-
-**Solution:** Create at minimum:
-1. `project.mdc` (stack, conventions, alwaysApply: true)
-2. `security.mdc` (security constraints, alwaysApply: true)
-3. Language-specific rules with glob patterns
-
-### Pitfall 11: Conflicting Rules
-
-**Problem:** Multiple `.mdc` rules with contradictory instructions (one says "use classes", another says "use functions").
-
-**Solution:**
-- Review all rules together for consistency
-- Use specific globs so rules apply only to relevant files
-- Test with `@Cursor Rules` in Chat to see which rules are active for a given file
-
-### Pitfall 12: Running Multiple AI Completion Extensions
-
-**Problem:** GitHub Copilot + Cursor Tab both enabled. Double ghost text, conflicting suggestions, UI glitches.
-
-**Solution:** Disable all other inline completion extensions:
-- GitHub Copilot
-- TabNine
-- Codeium
-- IntelliCode
-
-Only one inline completion provider should be active.
-
-## Performance Pitfalls
-
-### Pitfall 13: Opening Entire Monorepo
-
-**Problem:** Opening a monorepo root with 200K files. Indexing takes hours, `@Codebase` returns noise, editor is sluggish.
-
-**Solution:** Open specific packages: `cursor packages/api/`
-
-### Pitfall 14: No File Watcher Exclusions
-
-**Problem:** Cursor watches every file for changes, including `node_modules/`, `dist/`, and `.git/objects/`. Causes high CPU and memory.
-
-**Solution:**
-```json
-// settings.json
-{
-  "files.watcherExclude": {
-    "**/node_modules/**": true,
-    "**/.git/objects/**": true,
-    "**/dist/**": true,
-    "**/build/**": true
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await cursorClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await cursorClient.charge(order);  // Charged twice!
   }
 }
 ```
 
-### Pitfall 15: Never Clearing Chat History
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
 
-**Problem:** Running Cursor for weeks with dozens of open chat tabs. Memory grows, editor slows.
+await cursorClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
 
-**Solution:** Close old chat tabs. Start new conversations. Restart Cursor weekly during heavy use.
+---
 
-## Team Collaboration Pitfalls
+## Pitfall #5: Not Validating Webhooks
 
-### Pitfall 16: Rules Not in Version Control
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
 
-**Problem:** `.cursor/rules/` not committed to git. Each developer has different (or no) AI behavior rules.
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-cursor-signature'];
+    if (!verifyCursorSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
 
-**Solution:** Commit `.cursor/rules/` and `.cursorignore` to git. PR-review rule changes like any other configuration.
+---
 
-### Pitfall 17: No Code Review for AI Output
+## Pitfall #6: Missing Error Handling
 
-**Problem:** Developers commit AI-generated code without review. Bugs, wrong patterns, and security issues reach main branch.
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await cursorClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
 
-**Solution:**
-- Pre-commit hooks: lint + test (catches many AI errors)
-- PR reviews: all code (human or AI) needs review
-- Team policy: "AI output is a first draft, not production code"
+### ✅ Better Approach
+```typescript
+try {
+  const result = await cursorClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof CursorNotFoundError) {
+    return null;
+  }
+  if (error instanceof CursorRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
 
-### Pitfall 18: Inconsistent Model Selection
+---
 
-**Problem:** Some developers use Opus for everything (consuming quota fast), others use cursor-small (poor quality).
+## Pitfall #7: Hardcoding Configuration
 
-**Solution:**
-- Set team default model in admin dashboard
-- Document model selection guidance in onboarding
-- Use Auto mode as default (Cursor selects appropriate model)
+### ❌ Anti-Pattern
+```typescript
+const client = new CursorClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.cursor.com',  // Can't change for staging
+});
+```
 
-## Enterprise Considerations
+### ✅ Better Approach
+```typescript
+const client = new CursorClient({
+  timeout: parseInt(process.env.CURSOR_TIMEOUT || '30000'),
+  baseUrl: process.env.CURSOR_BASE_URL || 'https://api.cursor.com',
+});
+```
 
-- **Risk register**: Add Cursor-specific risks (AI hallucinations, data exposure) to your enterprise risk register
-- **Training**: Quarterly refresher on pitfalls, especially security-related ones
-- **Incident response**: Have a plan for "AI-generated code caused production incident" scenario
-- **Vendor risk**: Review Cursor's security page annually as their practices evolve
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Cursor is down, every request hangs
+for (const user of users) {
+  await cursorClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(cursorClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Cursor is down
+const recommendations = await cursorClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await cursorClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('cursor', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
+- [Cursor Security Guide](https://docs.cursor.com/security)
+- [Cursor Best Practices](https://docs.cursor.com/best-practices)
 
-- [Cursor Security](https://cursor.com/security)
-- [Cursor Data Use Policy](https://cursor.com/data-use)
-- [Cursor Community Forum](https://forum.cursor.com)
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

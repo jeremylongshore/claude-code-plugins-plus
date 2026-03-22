@@ -1,349 +1,224 @@
 ---
 name: deepgram-enterprise-rbac
 description: |
-  Configure enterprise role-based access control for Deepgram integrations.
-  Use when implementing team permissions, managing API key scopes,
-  or setting up organization-level access controls.
-  Trigger: "deepgram RBAC", "deepgram permissions", "deepgram access control",
-  "deepgram team roles", "deepgram enterprise", "deepgram key scopes".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Configure Deepgram enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for Deepgram.
+  Trigger with phrases like "deepgram SSO", "deepgram RBAC",
+  "deepgram enterprise", "deepgram roles", "deepgram permissions", "deepgram SAML".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, rbac, enterprise]
-
+compatible-with: claude-code
+tags: [saas, deepgram]
 ---
+
 # Deepgram Enterprise RBAC
 
 ## Overview
-Role-based access control for enterprise Deepgram deployments. Maps five application roles to Deepgram API key scopes, implements scoped key provisioning via the Deepgram Management API, Express permission middleware, team management with auto-provisioned keys, and automated key rotation.
+Configure enterprise-grade access control for Deepgram integrations.
 
-## Deepgram Scope Reference
+## Prerequisites
+- Deepgram Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
-| Scope | Permission | Used By |
-|-------|-----------|---------|
-| `member` | Full access (all scopes) | Admin only |
-| `listen` | STT transcription | Developers, Services |
-| `speak` | TTS synthesis | Developers, Services |
-| `manage` | Project/key management | Admin |
-| `usage:read` | View usage metrics | Analysts, Auditors |
-| `keys:read` | List API keys | Auditors |
-| `keys:write` | Create/delete keys | Admin |
+## Role Definitions
 
-## Instructions
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
 
-### Step 1: Define Roles and Scope Mapping
+## Role Implementation
 
 ```typescript
-interface Role {
-  name: string;
-  deepgramScopes: string[];
-  keyExpiry: number;        // Days
-  description: string;
+enum DeepgramRole {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
 }
 
-const ROLES: Record<string, Role> = {
-  admin: {
-    name: 'Admin',
-    deepgramScopes: ['member'],
-    keyExpiry: 90,
-    description: 'Full access — project and key management',
-  },
-  developer: {
-    name: 'Developer',
-    deepgramScopes: ['listen', 'speak'],
-    keyExpiry: 90,
-    description: 'STT and TTS — no management access',
-  },
-  analyst: {
-    name: 'Analyst',
-    deepgramScopes: ['usage:read'],
-    keyExpiry: 365,
-    description: 'Read-only usage metrics',
-  },
-  service: {
-    name: 'Service Account',
-    deepgramScopes: ['listen'],
-    keyExpiry: 90,
-    description: 'STT only — for automated systems',
-  },
-  auditor: {
-    name: 'Auditor',
-    deepgramScopes: ['usage:read', 'keys:read'],
-    keyExpiry: 30,
-    description: 'Read-only audit access',
-  },
+interface DeepgramPermissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<DeepgramRole, DeepgramPermissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: DeepgramRole,
+  action: keyof DeepgramPermissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// Deepgram SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://deepgram.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/deepgram/callback',
+};
+
+// Map IdP groups to Deepgram roles
+const groupRoleMapping: Record<string, DeepgramRole> = {
+  'Engineering': DeepgramRole.Developer,
+  'Platform-Admins': DeepgramRole.Admin,
+  'Data-Team': DeepgramRole.Viewer,
 };
 ```
 
-### Step 2: Scoped Key Provisioning
+### OAuth2/OIDC Integration
 
 ```typescript
-import { createClient } from '@deepgram/sdk';
+import { OAuth2Client } from '@deepgram/sdk';
 
-class DeepgramKeyManager {
-  private admin: ReturnType<typeof createClient>;
-  private projectId: string;
-
-  constructor(adminKey: string, projectId: string) {
-    this.admin = createClient(adminKey);
-    this.projectId = projectId;
-  }
-
-  async createScopedKey(userId: string, roleName: string): Promise<{
-    keyId: string;
-    key: string;
-    scopes: string[];
-    expiresAt: string;
-  }> {
-    const role = ROLES[roleName];
-    if (!role) throw new Error(`Unknown role: ${roleName}`);
-
-    const expirationDate = new Date(Date.now() + role.keyExpiry * 86400000);
-
-    const { result, error } = await this.admin.manage.createProjectKey(
-      this.projectId,
-      {
-        comment: `${roleName}:${userId}:${new Date().toISOString().split('T')[0]}`,
-        scopes: role.deepgramScopes,
-        expiration_date: expirationDate.toISOString(),
-      }
-    );
-
-    if (error) throw new Error(`Key creation failed: ${error.message}`);
-
-    console.log(`Created ${roleName} key for ${userId} (expires ${expirationDate.toISOString().split('T')[0]})`);
-
-    return {
-      keyId: result.key_id,
-      key: result.key,
-      scopes: role.deepgramScopes,
-      expiresAt: expirationDate.toISOString(),
-    };
-  }
-
-  async revokeKey(keyId: string) {
-    const { error } = await this.admin.manage.deleteProjectKey(
-      this.projectId, keyId
-    );
-    if (error) throw new Error(`Key revocation failed: ${error.message}`);
-    console.log(`Revoked key: ${keyId}`);
-  }
-
-  async listKeys() {
-    const { result, error } = await this.admin.manage.getProjectKeys(this.projectId);
-    if (error) throw error;
-
-    return result.api_keys.map((k: any) => ({
-      keyId: k.api_key_id,
-      comment: k.comment,
-      scopes: k.scopes,
-      created: k.created,
-      expiration: k.expiration_date,
-    }));
-  }
-}
+const oauthClient = new OAuth2Client({
+  clientId: process.env.DEEPGRAM_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.DEEPGRAM_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/deepgram/callback',
+  scopes: ['read', 'write'],
+});
 ```
 
-### Step 3: Permission Middleware
+## Organization Management
 
 ```typescript
-import { Request, Response, NextFunction } from 'express';
-
-interface AuthenticatedRequest extends Request {
-  user?: { id: string; role: string; deepgramKeyId: string };
-}
-
-function requireRole(...allowedRoles: string[]) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    if (!allowedRoles.includes(req.user.role)) {
-      console.warn(`Access denied: user ${req.user.id} (${req.user.role}) tried to access ${req.path}`);
-      return res.status(403).json({
-        error: 'Insufficient permissions',
-        required: allowedRoles,
-        current: req.user.role,
-      });
-    }
-
-    next();
-  };
-}
-
-function requireScope(...requiredScopes: string[]) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-    if (!req.user) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    const role = ROLES[req.user.role];
-    const hasScopes = requiredScopes.every(
-      s => role.deepgramScopes.includes(s) || role.deepgramScopes.includes('member')
-    );
-
-    if (!hasScopes) {
-      return res.status(403).json({
-        error: 'Missing required Deepgram scopes',
-        required: requiredScopes,
-        current: role.deepgramScopes,
-      });
-    }
-
-    next();
-  };
-}
-
-// Route examples:
-app.post('/api/transcribe', requireScope('listen'), transcribeHandler);
-app.post('/api/tts', requireScope('speak'), ttsHandler);
-app.get('/api/usage', requireScope('usage:read'), usageHandler);
-app.post('/api/keys', requireRole('admin'), createKeyHandler);
-app.get('/api/audit', requireRole('admin', 'auditor'), auditHandler);
-```
-
-### Step 4: Team Management
-
-```typescript
-interface Team {
+interface DeepgramOrganization {
   id: string;
   name: string;
-  projectId: string;       // Deepgram project ID
-  members: Array<{
-    userId: string;
-    role: string;
-    keyId: string;
-    joinedAt: string;
-  }>;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: DeepgramRole;
 }
 
-class TeamManager {
-  private keyManager: DeepgramKeyManager;
-
-  constructor(adminKey: string, projectId: string) {
-    this.keyManager = new DeepgramKeyManager(adminKey, projectId);
-  }
-
-  async addMember(team: Team, userId: string, role: string) {
-    // Provision Deepgram key with role scopes
-    const key = await this.keyManager.createScopedKey(userId, role);
-
-    team.members.push({
-      userId,
-      role,
-      keyId: key.keyId,
-      joinedAt: new Date().toISOString(),
-    });
-
-    console.log(`Added ${userId} to ${team.name} as ${role}`);
-    return key;
-  }
-
-  async removeMember(team: Team, userId: string) {
-    const member = team.members.find(m => m.userId === userId);
-    if (!member) throw new Error(`User ${userId} not in team`);
-
-    // Revoke Deepgram key
-    await this.keyManager.revokeKey(member.keyId);
-
-    team.members = team.members.filter(m => m.userId !== userId);
-    console.log(`Removed ${userId} from ${team.name}, key revoked`);
-  }
-
-  async changeRole(team: Team, userId: string, newRole: string) {
-    const member = team.members.find(m => m.userId === userId);
-    if (!member) throw new Error(`User ${userId} not in team`);
-
-    // Revoke old key, create new key with new role scopes
-    await this.keyManager.revokeKey(member.keyId);
-    const newKey = await this.keyManager.createScopedKey(userId, newRole);
-
-    member.role = newRole;
-    member.keyId = newKey.keyId;
-
-    console.log(`Changed ${userId} role to ${newRole}`);
-    return newKey;
-  }
+async function createOrganization(
+  config: DeepgramOrganization
+): Promise<void> {
+  await deepgramClient.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
 }
 ```
 
-### Step 5: Automated Key Rotation
+## Access Control Middleware
 
 ```typescript
-async function rotateExpiringKeys(
-  keyManager: DeepgramKeyManager,
-  db: any,
-  daysBeforeExpiry = 7
+function requireDeepgramPermission(
+  requiredPermission: keyof DeepgramPermissions
 ) {
-  const keys = await keyManager.listKeys();
-  const now = Date.now();
-  const threshold = now + daysBeforeExpiry * 86400000;
-  let rotated = 0;
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { deepgramRole: DeepgramRole };
 
-  for (const key of keys) {
-    if (!key.expiration) continue;
-    const expiresAt = new Date(key.expiration).getTime();
-
-    if (expiresAt < threshold) {
-      // Parse role from comment (format: "role:userId:date")
-      const [role, userId] = (key.comment ?? '').split(':');
-      if (!role || !userId) {
-        console.warn(`Cannot rotate key ${key.keyId} — unknown format: ${key.comment}`);
-        continue;
-      }
-
-      console.log(`Rotating key for ${userId} (${role}), expires ${key.expiration}`);
-
-      // Create new key
-      const newKey = await keyManager.createScopedKey(userId, role);
-
-      // Update database with new key ID
-      await db.query(
-        'UPDATE team_members SET key_id = $1 WHERE user_id = $2',
-        [newKey.keyId, userId]
-      );
-
-      // Revoke old key (after a grace period, or immediately)
-      await keyManager.revokeKey(key.keyId);
-      rotated++;
+    if (!checkPermission(user.deepgramRole, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
     }
-  }
 
-  console.log(`Rotated ${rotated} keys expiring within ${daysBeforeExpiry} days`);
-  return rotated;
+    next();
+  };
+}
+
+// Usage
+app.delete('/deepgram/resource/:id',
+  requireDeepgramPermission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface DeepgramAuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: DeepgramRole;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function logDeepgramAccess(entry: DeepgramAuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
 }
 ```
 
-### Step 6: Access Control Matrix
+## Instructions
 
-| Action | Admin | Developer | Analyst | Service | Auditor |
-|--------|-------|-----------|---------|---------|---------|
-| Transcribe (STT) | Yes | Yes | No | Yes | No |
-| Text-to-Speech | Yes | Yes | No | No | No |
-| View usage | Yes | No | Yes | No | Yes |
-| Manage keys | Yes | No | No | No | No |
-| View audit logs | Yes | No | No | No | Yes |
-| Create projects | Yes | No | No | No | No |
+### Step 1: Define Roles
+Map organizational roles to Deepgram permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
 
 ## Output
-- Five-role permission model with Deepgram scope mapping
-- Scoped API key provisioning via Management API
-- Express middleware (role-based and scope-based)
-- Team management with auto-provisioned/revoked keys
-- Automated key rotation for expiring keys
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 403 Forbidden | Key lacks scope | Create new key with correct scopes |
-| Key expired | No rotation configured | Enable automated rotation |
-| `manage.createProjectKey` fails | Admin key missing `member` scope | Use key with `member` scope |
-| Team member can't transcribe | Wrong role assigned | Change role to `developer` or `service` |
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
 
 ## Resources
-- [API Key Management](https://developers.deepgram.com/docs/api-key-management)
-- [Project Management](https://developers.deepgram.com/docs/projects)
-- [Deepgram Enterprise](https://deepgram.com/enterprise)
+- [Deepgram Enterprise Guide](https://docs.deepgram.com/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Next Steps
+For major migrations, see `deepgram-migration-deep-dive`.

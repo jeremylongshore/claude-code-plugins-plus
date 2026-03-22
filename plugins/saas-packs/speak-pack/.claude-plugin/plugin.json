@@ -1,7 +1,7 @@
 {
   "name": "speak-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Speak AI Language Learning Platform (24 skills)",
+  "description": "Claude Code skill pack for Speak (18 skills)",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
@@ -9,10 +9,9 @@
   "license": "MIT",
   "keywords": [
     "speak",
-    "language-learning",
-    "ai-tutor",
-    "speech-recognition",
+    "speak",
     "saas",
+    "sdk",
     "integration"
   ]
 }

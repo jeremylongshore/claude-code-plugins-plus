@@ -6,96 +6,87 @@ description: |
   or initializing Hex in your project.
   Trigger with phrases like "install hex", "setup hex",
   "hex auth", "configure hex API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
 compatible-with: claude-code
+tags: [saas, hex]
 ---
 
 # Hex Install & Auth
 
 ## Overview
-
-Configure Hex API authentication using OAuth 2.0 Bearer tokens. The Hex API at `app.hex.tech/api/v1/` lets you programmatically trigger project runs, check status, manage users, and configure connections. Tokens are generated per-user in the Hex workspace settings.
+Set up Hex SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-
-- Hex account (Team or Enterprise plan)
-- Workspace admin access for API token generation
-- At least one published Hex project
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Hex account with API access
+- API key from Hex dashboard
 
 ## Instructions
 
-### Step 1: Generate API Token
-
-1. Open Hex workspace settings
-2. Navigate to **API tokens** section
-3. Click **New Token**
-4. Set description and expiration
-5. Select scopes: "Read projects" and/or "Run projects"
-
-### Step 2: Configure Environment
-
+### Step 1: Install SDK
 ```bash
-# .env (NEVER commit)
-HEX_API_TOKEN=hex_token_abc123...
-HEX_WORKSPACE_URL=https://app.hex.tech
+# Node.js
+npm install @hex/sdk
 
-# .gitignore
-.env
-.env.local
+# Python
+pip install hex
+```
+
+### Step 2: Configure Authentication
+```bash
+# Set environment variable
+export HEX_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'HEX_API_KEY=your-api-key' >> .env
 ```
 
 ### Step 3: Verify Connection
-
 ```typescript
-// verify-hex.ts
-import 'dotenv/config';
-
-const TOKEN = process.env.HEX_API_TOKEN!;
-
-async function verify() {
-  const response = await fetch('https://app.hex.tech/api/v1/projects', {
-    headers: { 'Authorization': `Bearer ${TOKEN}`, 'Content-Type': 'application/json' },
-  });
-  if (!response.ok) throw new Error(`Hex API ${response.status}`);
-  const projects = await response.json();
-  console.log(`Connected! Found ${projects.length} projects`);
-  return projects;
-}
-
-verify().catch(console.error);
+// Test connection code here
 ```
 
-```bash
-# curl verification
-curl -s -H "Authorization: Bearer $HEX_API_TOKEN" \
-  https://app.hex.tech/api/v1/projects | python3 -m json.tool
-```
-
-## Token Scopes
-
-| Scope | Endpoints | Use Case |
-|-------|-----------|----------|
-| Read projects | ListProjects, GetProjectRuns, GetRunStatus | Monitoring |
-| Run projects | RunProject, CancelRun (+ all read) | Orchestration |
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid or expired token | Regenerate in workspace settings |
-| `403 Forbidden` | Missing scope | Create token with "Run projects" scope |
-| `404 Not Found` | Wrong workspace URL | Verify HEX_WORKSPACE_URL |
+| Invalid API Key | Incorrect or expired key | Verify key in Hex dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.hex.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { HexClient } from '@hex/sdk';
+
+const client = new HexClient({
+  apiKey: process.env.HEX_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from hex import HexClient
+
+client = HexClient(
+    api_key=os.environ.get('HEX_API_KEY')
+)
+```
 
 ## Resources
-
-- [Hex API Overview](https://learn.hex.tech/docs/api/api-overview)
-- [Hex API Reference](https://learn.hex.tech/docs/api/api-reference)
-- [Scheduled Runs](https://learn.hex.tech/docs/share-insights/scheduled-runs)
+- [Hex Documentation](https://docs.hex.com)
+- [Hex Dashboard](https://api.hex.com)
+- [Hex Status](https://status.hex.com)
 
 ## Next Steps
-
-After auth, proceed to `hex-hello-world`.
+After successful auth, proceed to `hex-hello-world` for your first API call.

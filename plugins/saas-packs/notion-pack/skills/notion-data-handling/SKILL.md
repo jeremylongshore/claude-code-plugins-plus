@@ -1,284 +1,222 @@
 ---
 name: notion-data-handling
 description: |
-  Implement data handling, PII protection, and GDPR/CCPA compliance for Notion integrations.
-  Use when handling sensitive data from Notion pages, implementing data redaction,
-  or ensuring compliance with privacy regulations.
+  Implement Notion PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Notion integrations.
   Trigger with phrases like "notion data", "notion PII",
   "notion GDPR", "notion data retention", "notion privacy", "notion CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, productivity, notion]
 compatible-with: claude-code
+tags: [saas, notion]
 ---
 
 # Notion Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Notion: PII detection in page content, data redaction for logging, and GDPR/CCPA compliance patterns.
+Handle sensitive data correctly when integrating with Notion.
 
 ## Prerequisites
 - Understanding of GDPR/CCPA requirements
-- `@notionhq/client` installed
-- Audit logging infrastructure
+- Notion SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-## Instructions
+## Data Classification
 
-### Step 1: Identify Sensitive Data in Notion
-Notion pages and databases can contain PII in any property type:
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
 
 ```typescript
-import { Client } from '@notionhq/client';
-import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
 
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
 
-// Scan page properties for PII
-function scanPageForPII(page: PageObjectResponse): string[] {
-  const findings: string[] = [];
-
-  for (const [name, prop] of Object.entries(page.properties)) {
-    // Email properties directly contain PII
-    if (prop.type === 'email' && prop.email) {
-      findings.push(`PII: email in property "${name}"`);
-    }
-
-    // Phone properties
-    if (prop.type === 'phone_number' && prop.phone_number) {
-      findings.push(`PII: phone in property "${name}"`);
-    }
-
-    // People properties contain user info
-    if (prop.type === 'people' && prop.people.length > 0) {
-      findings.push(`PII: user references in property "${name}"`);
-    }
-
-    // Rich text and title may contain embedded PII
-    if (prop.type === 'rich_text' || prop.type === 'title') {
-      const text = (prop.type === 'title' ? prop.title : prop.rich_text)
-        .map(t => t.plain_text).join('');
-      if (containsPII(text)) {
-        findings.push(`PII: detected in text property "${name}"`);
-      }
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
     }
   }
 
   return findings;
 }
-
-// Pattern-based PII detection
-const PII_PATTERNS = [
-  { type: 'email', pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', pattern: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', pattern: /\b\d{3}-\d{2}-\d{4}\b/g },
-];
-
-function containsPII(text: string): boolean {
-  return PII_PATTERNS.some(p => p.pattern.test(text));
-}
 ```
 
-### Step 2: Redact PII from Logs and Exports
-```typescript
-// Redact sensitive property values before logging
-function redactPageProperties(page: PageObjectResponse): Record<string, any> {
-  const redacted: Record<string, any> = { id: page.id };
+## Data Redaction
 
-  for (const [name, prop] of Object.entries(page.properties)) {
-    switch (prop.type) {
-      case 'email':
-        redacted[name] = prop.email ? '[REDACTED_EMAIL]' : null;
-        break;
-      case 'phone_number':
-        redacted[name] = prop.phone_number ? '[REDACTED_PHONE]' : null;
-        break;
-      case 'people':
-        redacted[name] = `[${prop.people.length} users]`;
-        break;
-      case 'title':
-        redacted[name] = prop.title.map(t => t.plain_text).join('');
-        break;
-      case 'select':
-        redacted[name] = prop.select?.name ?? null;
-        break;
-      case 'number':
-        redacted[name] = prop.number;
-        break;
-      case 'checkbox':
-        redacted[name] = prop.checkbox;
-        break;
-      default:
-        redacted[name] = `[${prop.type}]`;
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
     }
   }
 
   return redacted;
 }
 
-// Safe logging
-console.log('Processing page:', JSON.stringify(redactPageProperties(page)));
-// Instead of: console.log('Page:', JSON.stringify(page)); // LEAKS PII
+// Use in logging
+console.log('Notion request:', redactPII(requestData));
 ```
 
-### Step 3: Data Minimization in API Calls
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
 ```typescript
-// Only request properties you need via filter_properties
-// (Available on pages.retrieve and databases.query)
-
-async function getTaskStatuses(dbId: string) {
-  const response = await notion.databases.query({
-    database_id: dbId,
-    // filter_properties limits which properties are returned
-    filter_properties: ['Status', 'Name'],
-    page_size: 100,
-  });
-  // Response only contains Status and Name — no email, phone, etc.
-  return response;
-}
-```
-
-### Step 4: GDPR Right of Access (Data Export)
-```typescript
-async function exportUserData(userId: string, databaseIds: string[]) {
-  const export_: Record<string, any> = {
-    exportedAt: new Date().toISOString(),
-    source: 'Notion Integration',
-    databases: {},
-  };
-
-  for (const dbId of databaseIds) {
-    // Find all pages where the user is referenced
-    const response = await notion.databases.query({
-      database_id: dbId,
-      filter: {
-        property: 'Assignee',
-        people: { contains: userId },
-      },
-    });
-
-    export_.databases[dbId] = response.results
-      .filter((p): p is PageObjectResponse => 'properties' in p)
-      .map(page => ({
-        id: page.id,
-        created: page.created_time,
-        lastEdited: page.last_edited_time,
-        properties: page.properties,
-      }));
-  }
-
-  return export_;
-}
-```
-
-### Step 5: GDPR Right of Deletion
-```typescript
-async function deleteUserData(userId: string, databaseIds: string[]) {
-  const deletionLog: { pageId: string; action: string }[] = [];
-
-  for (const dbId of databaseIds) {
-    const pages = await notion.databases.query({
-      database_id: dbId,
-      filter: {
-        property: 'Assignee',
-        people: { contains: userId },
-      },
-    });
-
-    for (const page of pages.results) {
-      // Option 1: Archive the page (soft delete — recoverable)
-      await notion.pages.update({
-        page_id: page.id,
-        archived: true,
-      });
-      deletionLog.push({ pageId: page.id, action: 'archived' });
-
-      // Option 2: Clear PII fields (if keeping the record)
-      // await notion.pages.update({
-      //   page_id: page.id,
-      //   properties: {
-      //     Email: { email: null },
-      //     Phone: { phone_number: null },
-      //     Assignee: { people: [] },
-      //   },
-      // });
-    }
-  }
-
-  // Audit log the deletion (required for compliance)
-  console.log(JSON.stringify({
-    event: 'gdpr_deletion',
-    userId,
-    pagesAffected: deletionLog.length,
-    timestamp: new Date().toISOString(),
-    log: deletionLog,
-  }));
-
-  return deletionLog;
-}
-```
-
-### Step 6: Data Retention Cleanup
-```typescript
-async function archiveOldPages(dbId: string, retentionDays: number) {
+async function cleanupNotionData(retentionDays: number): Promise<void> {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - retentionDays);
 
-  const oldPages = await notion.databases.query({
-    database_id: dbId,
-    filter: {
-      timestamp: 'last_edited_time',
-      last_edited_time: { before: cutoff.toISOString() },
-    },
+  await db.notionLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
   });
+}
 
-  let archived = 0;
-  for (const page of oldPages.results) {
-    await notion.pages.update({ page_id: page.id, archived: true });
-    archived++;
-    // Respect rate limits
-    if (archived % 3 === 0) await new Promise(r => setTimeout(r, 1000));
-  }
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupNotionData(30));
+```
 
-  console.log(`Archived ${archived} pages older than ${retentionDays} days`);
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const notionData = await notionClient.getUserData(userId);
+
+  return {
+    source: 'Notion',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: notionData.profile,
+      activities: notionData.activities,
+      // Include all user-related data
+    },
+  };
 }
 ```
 
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Notion
+  await notionClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.notionUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'notion',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await notionClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Notion data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
+
 ## Output
-- PII detection scanning page properties and content
-- Redacted logging preventing PII leakage
-- Data minimization via `filter_properties`
-- GDPR export and deletion endpoints
-- Retention-based archival
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Use `redactPageProperties` wrapper |
-| Deletion fails on some pages | Permission issue | Verify integration has Update capability |
-| Export incomplete | Pagination needed | Use pagination for large datasets |
-| Audit gap | Async logging failed | Use synchronous audit logging |
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
 ## Examples
 
 ### Quick PII Scan
 ```typescript
-const pages = await notion.databases.query({ database_id: dbId });
-for (const page of pages.results) {
-  if ('properties' in page) {
-    const pii = scanPageForPII(page as PageObjectResponse);
-    if (pii.length > 0) {
-      console.warn(`Page ${page.id}: ${pii.join(', ')}`);
-    }
-  }
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
 }
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Notion response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
 ```
 
 ## Resources
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [Notion API Page Properties](https://developers.notion.com/reference/page-property-values)
-- [Query Databases with filter_properties](https://developers.notion.com/reference/post-database-query)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Notion Privacy Guide](https://docs.notion.com/privacy)
 
 ## Next Steps
 For enterprise access control, see `notion-enterprise-rbac`.

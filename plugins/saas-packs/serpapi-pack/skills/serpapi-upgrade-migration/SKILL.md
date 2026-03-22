@@ -1,92 +1,114 @@
 ---
 name: serpapi-upgrade-migration
 description: |
-  Migrate between SerpApi client versions and handle package changes.
-  Use when upgrading from google-search-results to serpapi package,
-  or handling API response schema changes.
-  Trigger: "upgrade serpapi", "serpapi migration", "serpapi new package".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
+  Analyze, plan, and execute SerpApi SDK upgrades with breaking change detection.
+  Use when upgrading SerpApi SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade serpapi", "serpapi migration",
+  "serpapi breaking changes", "update serpapi SDK", "analyze serpapi version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, seo, serpapi]
 compatible-with: claude-code
+tags: [saas, serpapi]
 ---
 
 # SerpApi Upgrade & Migration
 
 ## Overview
+Guide for upgrading SerpApi SDK versions and handling breaking changes.
 
-The main migration path: `google-search-results` (legacy) to `serpapi` (current official package). The API itself is stable -- changes are in client library interfaces, not the REST API.
+## Prerequisites
+- Current SerpApi SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
 ## Instructions
 
-### Python: google-search-results to serpapi
-
-```python
-# BEFORE: Legacy package
-from serpapi import GoogleSearch
-search = GoogleSearch({"q": "test", "api_key": key})
-result = search.get_dict()
-
-# AFTER: New official package
-import serpapi
-client = serpapi.Client(api_key=key)
-result = client.search(engine="google", q="test")
-# Result is already a dict -- no get_dict() needed
-```
-
+### Step 1: Check Current Version
 ```bash
-# Migration steps
-pip uninstall google-search-results
-pip install serpapi
-
-# Update imports across codebase
-# OLD: from serpapi import GoogleSearch
-# NEW: import serpapi
+npm list @serpapi/sdk
+npm view @serpapi/sdk version
 ```
 
-### Node.js: google-search-results-nodejs to serpapi
+### Step 2: Review Changelog
+```bash
+open https://github.com/serpapi/sdk/releases
+```
 
+### Step 3: Create Upgrade Branch
+```bash
+git checkout -b upgrade/serpapi-sdk-vX.Y.Z
+npm install @serpapi/sdk@latest
+npm test
+```
+
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
+
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
+
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
 ```typescript
-// BEFORE: Legacy
-import { GoogleSearch } from 'google-search-results-nodejs';
-const search = new GoogleSearch('api_key');
-search.json({ q: 'test', engine: 'google' }, (result) => { ... });
+// Before (v1.x)
+import { Client } from '@serpapi/sdk';
 
-// AFTER: Current (Promise-based)
-import { getJson } from 'serpapi';
-const result = await getJson({ engine: 'google', q: 'test', api_key: key });
-// No callbacks -- uses Promises natively
+// After (v2.x)
+import { SerpApiClient } from '@serpapi/sdk';
 ```
 
-### Key Changes
+### Configuration Changes
+```typescript
+// Before (v1.x)
+const client = new Client({ key: 'xxx' });
 
-| Aspect | Legacy | Current |
-|--------|--------|---------|
-| Python import | `from serpapi import GoogleSearch` | `import serpapi` |
-| Python init | `GoogleSearch(params_dict)` | `serpapi.Client(api_key=key)` |
-| Python search | `search.get_dict()` | `client.search(engine="google", q=...)` |
-| Node import | `google-search-results-nodejs` | `serpapi` |
-| Node pattern | Callback-based | Promise/async-await |
-| Engine param | Via class name (GoogleSearch, BingSearch) | Via `engine` parameter |
+// After (v2.x)
+const client = new SerpApiClient({
+  apiKey: 'xxx',
+});
+```
 
-### Migration Checklist
+### Rollback Procedure
+```bash
+npm install @serpapi/sdk@1.x.x --save-exact
+```
 
-- [ ] Replace package: `pip install serpapi` / `npm install serpapi`
-- [ ] Update all imports
-- [ ] Replace class-per-engine with `engine` parameter
-- [ ] Replace callbacks with async/await (Node.js)
-- [ ] Remove `.get_dict()` calls (Python -- result is already dict)
-- [ ] Test all search queries return expected structure
-- [ ] Update CI dependencies
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[SerpApi]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
 ## Resources
-
-- [serpapi Python](https://github.com/serpapi/serpapi-python)
-- [serpapi Node.js](https://www.npmjs.com/package/serpapi)
-- [Legacy Python](https://github.com/serpapi/google-search-results-python)
+- [SerpApi Changelog](https://github.com/serpapi/sdk/releases)
+- [SerpApi Migration Guide](https://docs.serpapi.com/migration)
 
 ## Next Steps
-
-For CI integration, see `serpapi-ci-integration`.
+For CI integration during upgrades, see `serpapi-ci-integration`.

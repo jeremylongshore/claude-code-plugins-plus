@@ -1,81 +1,92 @@
 ---
 name: retellai-install-auth
 description: |
-  Retell AI install auth — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell install auth", "retellai-install-auth", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Install and configure Retell AI SDK/CLI authentication.
+  Use when setting up a new Retell AI integration, configuring API keys,
+  or initializing Retell AI in your project.
+  Trigger with phrases like "install retellai", "setup retellai",
+  "retellai auth", "configure retellai API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
-# Retell AI Install Auth
+# Retell AI Install & Auth
 
 ## Overview
-Install the Retell AI SDK and configure API key authentication for building voice agents.
+Set up Retell AI SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- Retell AI account at retellai.com
-- API key from the Retell AI dashboard
-- Node.js 18+ or Python 3.9+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Retell AI account with API access
+- API key from Retell AI dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-set -euo pipefail
 # Node.js
-npm install retell-sdk
+npm install @retellai/sdk
 
 # Python
-pip install retell-sdk
+pip install retellai
 ```
 
-### Step 2: Configure Environment
+### Step 2: Configure Authentication
 ```bash
-# .env
-RETELL_API_KEY=key_xxxxxxxxxxxxxxxxxxxxxxxx
+# Set environment variable
+export RETELLAI_API_KEY="your-api-key"
+
+# Or create .env file
+echo 'RETELLAI_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Initialize Client (Node.js)
+### Step 3: Verify Connection
 ```typescript
-import Retell from 'retell-sdk';
-
-const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
-
-// Verify connection — list agents
-const agents = await retell.agent.list();
-console.log(`Connected! ${agents.length} agent(s) configured.`);
-```
-
-### Step 4: Initialize Client (Python)
-```python
-from retell import Retell
-import os
-
-retell = Retell(api_key=os.environ["RETELL_API_KEY"])
-agents = retell.agent.list()
-print(f"Connected! {len(agents)} agent(s) configured.")
+// Test connection code here
 ```
 
 ## Output
-- `retell-sdk` installed
-- API key configured
-- Connection verified with agent listing
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Verify key in Retell Dashboard |
-| `ModuleNotFoundError` | SDK not installed | `npm install retell-sdk` |
-| Connection timeout | Network issue | Check firewall allows HTTPS |
+| Invalid API Key | Incorrect or expired key | Verify key in Retell AI dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.retellai.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { RetellAIClient } from '@retellai/sdk';
+
+const client = new RetellAIClient({
+  apiKey: process.env.RETELLAI_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from retellai import RetellAIClient
+
+client = RetellAIClient(
+    api_key=os.environ.get('RETELLAI_API_KEY')
+)
+```
 
 ## Resources
-- [Retell AI SDKs](https://docs.retellai.com/get-started/sdk)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [Retell AI Dashboard](https://api.retellai.com)
+- [Retell AI Status](https://status.retellai.com)
 
 ## Next Steps
-Create your first agent: `retellai-hello-world`
+After successful auth, proceed to `retellai-hello-world` for your first API call.

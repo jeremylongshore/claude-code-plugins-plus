@@ -1,216 +1,121 @@
 ---
 name: vercel-prod-checklist
 description: |
-  Vercel production deployment checklist with rollback and promotion procedures.
-  Use when deploying to production, preparing for launch,
-  or implementing go-live and instant rollback procedures.
-  Trigger with phrases like "vercel production", "deploy vercel prod",
-  "vercel go-live", "vercel launch checklist", "vercel promote".
-allowed-tools: Read, Bash(vercel:*), Bash(curl:*), Grep
+  Execute Vercel production deployment checklist and rollback procedures.
+  Use when deploying Vercel integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "vercel production", "deploy vercel",
+  "vercel go-live", "vercel launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, deployment, production, checklist]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
-# Vercel Prod Checklist
+
+# Vercel Production Checklist
 
 ## Overview
-Complete pre-production checklist for Vercel deployments covering environment variables, domain configuration, performance, security, monitoring, and instant rollback procedures.
+Complete checklist for deploying Vercel integrations to production.
 
 ## Prerequisites
-- Staging deployment tested and verified
-- Production domain DNS configured
-- Production environment variables set
-- Monitoring and alerting configured
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Step 1: Pre-Deploy Verification
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
+
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Vercel error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
+
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Vercel connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
+
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
 ```bash
-# Verify production env vars are set
-vercel env ls --environment=production
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://www.vercel-status.com
 
-# Required production variables (example):
-# DATABASE_URL — production database
-# API_SECRET — production API key (type: sensitive)
-# NEXT_PUBLIC_API_URL — public API endpoint
-# SENTRY_DSN — error tracking
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/vercel-integration app=image:new --record
+kubectl rollout pause deployment/vercel-integration
 
-# Build locally to catch errors before deploying
-vercel build --prod
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
 
-# Run test suite
-npm test
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/vercel-integration
+kubectl rollout pause deployment/vercel-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/vercel-integration
+kubectl rollout status deployment/vercel-integration
 ```
 
-### Step 2: Production Deploy
-```bash
-# Option A: Deploy directly to production
-vercel --prod
+## Output
+- Deployed Vercel integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
-# Option B: Promote an existing preview deployment
-vercel promote https://my-app-git-main-team.vercel.app
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-# Option C: Deploy via API
-curl -X POST "https://api.vercel.com/v13/deployments" \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "my-app",
-    "target": "production",
-    "gitSource": {
-      "type": "github",
-      "repoId": "123456789",
-      "ref": "main",
-      "sha": "abc123"
-    }
-  }'
-```
+## Examples
 
-### Step 3: Domain Configuration
-```bash
-# Add production domain
-vercel domains add yourdomain.com
-
-# Verify domain DNS
-vercel domains inspect yourdomain.com
-
-# DNS setup for apex domain (yourdomain.com):
-# A record → 76.76.21.21
-# AAAA record → (Vercel provides)
-
-# DNS setup for subdomain (www.yourdomain.com):
-# CNAME → cname.vercel-dns.com
-
-# SSL is automatically provisioned after DNS verification
-```
-
-### Step 4: Post-Deploy Health Checks
-```bash
-# Verify production is responding
-curl -sI https://yourdomain.com | head -5
-
-# Test API endpoints
-curl -s https://yourdomain.com/api/health | jq .
-
-# Check SSL certificate
-curl -vI https://yourdomain.com 2>&1 | grep "SSL certificate"
-
-# Verify security headers
-curl -sI https://yourdomain.com | grep -i "strict-transport\|x-frame\|x-content-type"
-
-# Test from multiple regions (using Vercel's edge)
-for region in iad1 sfo1 cdg1 hnd1; do
-  echo "Region: $region"
-  curl -s -H "x-vercel-ip-country: US" https://yourdomain.com/api/health
-done
-```
-
-### Step 5: Instant Rollback Procedure
-```bash
-# If something goes wrong — instant rollback (no rebuild needed)
-vercel rollback
-
-# Or rollback to a specific deployment
-vercel rollback dpl_xxxxxxxxxxxx
-
-# Or via API
-curl -X POST "https://api.vercel.com/v9/projects/my-app/promote" \
-  -H "Authorization: Bearer $VERCEL_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"deploymentId": "dpl_previous_good_deployment"}'
-
-# Verify rollback succeeded
-vercel ls --prod
-curl -s https://yourdomain.com/api/health
-```
-
-### Step 6: Configure Function Regions and Limits
-```json
-// vercel.json — production optimization
-{
-  "regions": ["iad1"],
-  "functions": {
-    "api/**/*.ts": {
-      "memory": 1024,
-      "maxDuration": 30
-    },
-    "api/heavy-compute.ts": {
-      "memory": 3008,
-      "maxDuration": 60
-    }
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; vercel: any }> {
+  const start = Date.now();
+  try {
+    await vercelClient.ping();
+    return { status: 'healthy', vercel: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', vercel: { connected: false, latencyMs: Date.now() - start } };
   }
 }
 ```
 
-## Production Checklist
-
-### Build & Deploy
-- [ ] `npm run build` succeeds locally
-- [ ] All tests passing
-- [ ] No TypeScript errors (`npx tsc --noEmit`)
-- [ ] Preview deployment tested by team
-- [ ] `vercel --prod` or promotion executed
-
-### Environment Variables
-- [ ] All required vars set for Production environment
-- [ ] Secrets typed as `sensitive` (hidden in logs)
-- [ ] No `NEXT_PUBLIC_` prefix on secrets
-- [ ] Database URLs point to production instances
-
-### Domain & SSL
-- [ ] Custom domain added and DNS verified
-- [ ] SSL certificate auto-provisioned and valid
-- [ ] `www` subdomain redirects correctly
-- [ ] HSTS header enabled
-
-### Security
-- [ ] Security headers configured (CSP, X-Frame-Options, etc.)
-- [ ] Preview deployment protection enabled
-- [ ] API routes require authentication
-- [ ] CORS configured for production origins only
-
-### Performance
-- [ ] Function regions set closest to your database
-- [ ] `maxDuration` set appropriately per function
-- [ ] Cache-Control headers configured
-- [ ] Bundle size within budget (check with `vercel inspect`)
-- [ ] Core Web Vitals in green (LCP < 2.5s, CLS < 0.1)
-
-### Monitoring
-- [ ] Error tracking configured (Sentry, Datadog, etc.)
-- [ ] Vercel Analytics enabled in dashboard
-- [ ] Runtime logs accessible
-- [ ] Alert on error rate spikes
-
-### Rollback
-- [ ] Previous production deployment identified for rollback
-- [ ] `vercel rollback` tested in staging
-- [ ] Team knows rollback procedure
-
-## Output
-- Production deployment live on custom domain
-- Health checks passing
-- Security headers verified
-- Rollback procedure documented and tested
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `DEPLOYMENT_BLOCKED` | Branch protection or deployment freeze | Check team settings in dashboard |
-| SSL not provisioned | DNS not propagated | Wait for DNS propagation, verify records |
-| Env var undefined | Not scoped to Production | Add via `vercel env add <key> production` |
-| Function cold starts in prod | No warm-up traffic | Enable concurrency scaling or use edge functions |
-| Rollback fails | Previous deployment expired | Redeploy from known good commit |
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/vercel-integration
+kubectl rollout status deployment/vercel-integration
+```
 
 ## Resources
-- [Production Deployments](https://vercel.com/docs/deployments)
-- [Instant Rollback](https://vercel.com/docs/instant-rollback)
-- [Promoting Deployments](https://vercel.com/docs/deployments/promoting-a-deployment)
-- [Custom Domains](https://vercel.com/docs/domains/working-with-domains)
-- [Function Configuration](https://vercel.com/docs/functions/configuring-functions)
+- [Vercel Status](https://www.vercel-status.com)
+- [Vercel Support](https://vercel.com/docs/support)
 
 ## Next Steps
 For version upgrades, see `vercel-upgrade-migration`.

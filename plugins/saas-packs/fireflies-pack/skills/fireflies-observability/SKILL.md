@@ -1,249 +1,252 @@
 ---
 name: fireflies-observability
 description: |
-  Monitor Fireflies.ai integration health with metrics, alerts, and dashboards.
-  Use when implementing monitoring, setting up alerting,
-  or tracking transcript processing reliability.
+  Set up comprehensive observability for Fireflies.ai integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Fireflies.ai operations, setting up dashboards,
+  or configuring alerting for Fireflies.ai integration health.
   Trigger with phrases like "fireflies monitoring", "fireflies metrics",
-  "fireflies observability", "monitor fireflies", "fireflies alerts".
+  "fireflies observability", "monitor fireflies", "fireflies alerts", "fireflies tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, fireflies, monitoring, observability]
-
+compatible-with: claude-code
+tags: [saas, fireflies]
 ---
+
 # Fireflies.ai Observability
 
 ## Overview
-Monitor Fireflies.ai integration health: API connectivity, webhook delivery, transcript processing latency, and seat utilization. Built for Prometheus/Grafana but adaptable to any metrics system.
+Set up comprehensive observability for Fireflies.ai integrations.
 
 ## Prerequisites
-- Fireflies Business+ plan (for full API access)
-- Prometheus + Grafana (or equivalent metrics stack)
-- Webhook endpoint deployed and receiving events
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Instructions
+## Metrics Collection
 
-### Step 1: Instrument the GraphQL Client
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `fireflies_requests_total` | Counter | Total API requests |
+| `fireflies_request_duration_seconds` | Histogram | Request latency |
+| `fireflies_errors_total` | Counter | Error count by type |
+| `fireflies_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
 ```typescript
-// lib/fireflies-instrumented.ts
-import { Counter, Histogram, Gauge } from "prom-client";
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
-const apiRequests = new Counter({
-  name: "fireflies_api_requests_total",
-  help: "Total Fireflies API requests",
-  labelNames: ["operation", "status"],
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'fireflies_requests_total',
+  help: 'Total Fireflies.ai API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
 });
 
-const apiLatency = new Histogram({
-  name: "fireflies_api_latency_seconds",
-  help: "Fireflies API request latency",
-  labelNames: ["operation"],
-  buckets: [0.1, 0.25, 0.5, 1, 2, 5, 10],
+const requestDuration = new Histogram({
+  name: 'fireflies_request_duration_seconds',
+  help: 'Fireflies.ai request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
 });
 
-const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+const errorCounter = new Counter({
+  name: 'fireflies_errors_total',
+  help: 'Fireflies.ai errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
 
-export async function firefliesQueryInstrumented(
-  operation: string,
-  query: string,
-  variables?: any
-) {
-  const timer = apiLatency.startTimer({ operation });
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
   try {
-    const res = await fetch(FIREFLIES_API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}`,
-      },
-      body: JSON.stringify({ query, variables }),
-    });
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
 
-    const json = await res.json();
+## Distributed Tracing
 
-    if (json.errors) {
-      apiRequests.inc({ operation, status: json.errors[0].code || "error" });
-      throw new Error(json.errors[0].message);
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('fireflies-client');
+
+async function tracedFireflies.aiCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`fireflies.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
     }
-
-    apiRequests.inc({ operation, status: "success" });
-    return json.data;
-  } catch (err) {
-    apiRequests.inc({ operation, status: "failure" });
-    throw err;
-  } finally {
-    timer();
-  }
+  });
 }
 ```
 
-### Step 2: Webhook Event Metrics
+## Logging Strategy
+
+### Structured Logging
+
 ```typescript
-const webhookEvents = new Counter({
-  name: "fireflies_webhook_events_total",
-  help: "Webhook events received",
-  labelNames: ["event_type", "status"],
+import pino from 'pino';
+
+const logger = pino({
+  name: 'fireflies',
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-const webhookProcessingTime = new Histogram({
-  name: "fireflies_webhook_processing_seconds",
-  help: "Time to process webhook events",
-  buckets: [0.1, 0.5, 1, 5, 10, 30],
-});
-
-const transcriptQueue = new Gauge({
-  name: "fireflies_transcript_queue_depth",
-  help: "Number of transcripts queued for processing",
-});
-
-export async function handleWebhookWithMetrics(event: any) {
-  const timer = webhookProcessingTime.startTimer();
-  transcriptQueue.inc();
-
-  try {
-    await processTranscriptReady(event.meetingId);
-    webhookEvents.inc({ event_type: event.eventType, status: "success" });
-  } catch (err) {
-    webhookEvents.inc({ event_type: event.eventType, status: "error" });
-    throw err;
-  } finally {
-    timer();
-    transcriptQueue.dec();
-  }
+function logFireflies.aiOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'fireflies',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
 }
 ```
 
-### Step 3: Health Check Probe
-```typescript
-const healthStatus = new Gauge({
-  name: "fireflies_health_status",
-  help: "Fireflies API health (1=healthy, 0=unhealthy)",
-});
+## Alert Configuration
 
-// Run every 5 minutes
-async function healthProbe() {
-  try {
-    const start = Date.now();
-    const data = await firefliesQueryInstrumented("health_check", "{ user { email } }");
-    const latencyMs = Date.now() - start;
+### Prometheus AlertManager Rules
 
-    healthStatus.set(1);
-    console.log(`Fireflies health: OK (${latencyMs}ms)`);
-  } catch (err) {
-    healthStatus.set(0);
-    console.error(`Fireflies health: FAILED - ${(err as Error).message}`);
-  }
-}
-
-setInterval(healthProbe, 5 * 60 * 1000);
-```
-
-### Step 4: Seat Utilization Tracking
-```typescript
-const seatUtilization = new Gauge({
-  name: "fireflies_seat_utilization",
-  help: "Transcripts per user",
-  labelNames: ["user_email"],
-});
-
-const totalSeats = new Gauge({
-  name: "fireflies_total_seats",
-  help: "Total Fireflies seats",
-});
-
-// Run daily
-async function trackSeatUtilization() {
-  const data = await firefliesQueryInstrumented("seat_audit", `{
-    users { email num_transcripts }
-  }`);
-
-  totalSeats.set(data.users.length);
-  for (const user of data.users) {
-    seatUtilization.set({ user_email: user.email }, user.num_transcripts);
-  }
-
-  const inactive = data.users.filter((u: any) => u.num_transcripts < 2);
-  if (inactive.length > 3) {
-    console.warn(`${inactive.length} seats with <2 transcripts -- review for cost savings`);
-  }
-}
-```
-
-### Step 5: Alerting Rules
 ```yaml
-# prometheus/rules/fireflies.yml
+# fireflies_alerts.yaml
 groups:
-  - name: fireflies
+  - name: fireflies_alerts
     rules:
-      - alert: FirefliesAPIDown
-        expr: fireflies_health_status == 0
-        for: 10m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Fireflies API unreachable for 10+ minutes"
-
-      - alert: FirefliesHighErrorRate
-        expr: rate(fireflies_api_requests_total{status!="success"}[5m]) > 0.1
+      - alert: Fireflies.aiHighErrorRate
+        expr: |
+          rate(fireflies_errors_total[5m]) /
+          rate(fireflies_requests_total[5m]) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Fireflies API error rate >10% over 5 minutes"
+          summary: "Fireflies.ai error rate > 5%"
 
-      - alert: FirefliesRateLimited
-        expr: rate(fireflies_api_requests_total{status="too_many_requests"}[5m]) > 0
+      - alert: Fireflies.aiHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(fireflies_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Fireflies API rate limiting detected"
+          summary: "Fireflies.ai P95 latency > 2s"
 
-      - alert: FirefliesWebhookBacklog
-        expr: fireflies_transcript_queue_depth > 50
-        for: 15m
+      - alert: Fireflies.aiDown
+        expr: up{job="fireflies"} == 0
+        for: 1m
         labels:
-          severity: warning
+          severity: critical
         annotations:
-          summary: "Webhook processing backlog exceeds 50 transcripts"
-
-      - alert: FirefliesSlowProcessing
-        expr: histogram_quantile(0.95, rate(fireflies_webhook_processing_seconds_bucket[1h])) > 30
-        labels:
-          severity: warning
-        annotations:
-          summary: "Webhook processing P95 exceeds 30 seconds"
+          summary: "Fireflies.ai integration is down"
 ```
 
-### Step 6: Dashboard Panels (Grafana)
-Key panels to create:
-- **API Health**: `fireflies_health_status` (stat panel, green/red)
-- **Request Rate**: `rate(fireflies_api_requests_total[5m])` by status
-- **Latency P50/P95/P99**: `histogram_quantile` on `fireflies_api_latency_seconds`
-- **Webhook Events/Hour**: `increase(fireflies_webhook_events_total[1h])`
-- **Queue Depth**: `fireflies_transcript_queue_depth` (gauge)
-- **Seat Utilization**: `fireflies_seat_utilization` (table, sorted ascending)
+## Dashboard
 
-## Error Handling
-| Alert | Cause | Response |
-|-------|-------|----------|
-| API Down | Fireflies outage or key revoked | Check status page, verify API key |
-| High Error Rate | Schema change or auth issue | Inspect error codes in logs |
-| Rate Limited | Burst of requests | Enable request queuing |
-| Webhook Backlog | Processing bottleneck | Scale webhook workers |
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Fireflies.ai Request Rate",
+      "targets": [{
+        "expr": "rate(fireflies_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Fireflies.ai Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(fireflies_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
+
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- Instrumented GraphQL client with latency and error metrics
-- Webhook event tracking with queue depth monitoring
-- Health probe running on 5-minute interval
-- Prometheus alerting rules for critical conditions
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [Fireflies API Docs](https://docs.fireflies.ai/)
-- [Prometheus Client](https://github.com/siimon/prom-client)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Fireflies.ai Observability Guide](https://docs.fireflies.com/observability)
 
 ## Next Steps
 For incident response, see `fireflies-incident-runbook`.

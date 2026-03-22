@@ -1,250 +1,222 @@
 ---
 name: clerk-data-handling
 description: |
-  Handle user data, privacy, and GDPR compliance with Clerk.
-  Use when implementing data export, user deletion,
-  or privacy compliance features.
-  Trigger with phrases like "clerk user data", "clerk GDPR",
-  "clerk privacy", "clerk data export", "clerk delete user".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Implement Clerk PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Clerk integrations.
+  Trigger with phrases like "clerk data", "clerk PII",
+  "clerk GDPR", "clerk data retention", "clerk privacy", "clerk CCPA".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, compliance]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Data Handling
 
 ## Overview
-Manage user data, implement privacy features, and ensure GDPR/CCPA compliance using the Clerk Backend API. Covers data export, right to be forgotten, consent management, and audit logging.
+Handle sensitive data correctly when integrating with Clerk.
 
 ## Prerequisites
-- Clerk integration working
 - Understanding of GDPR/CCPA requirements
-- Database with user-related data linked by Clerk user IDs
+- Clerk SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Clerk request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupClerkData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.clerkLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupClerkData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const clerkData = await clerkClient.getUserData(userId);
+
+  return {
+    source: 'Clerk',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: clerkData.profile,
+      activities: clerkData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Clerk
+  await clerkClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.clerkUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'clerk',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await clerkClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: User Data Export
-```typescript
-// app/api/privacy/export/route.ts
-import { auth, clerkClient } from '@clerk/nextjs/server'
+### Step 1: Classify Data
+Categorize all Clerk data by sensitivity level.
 
-export async function GET() {
-  const { userId } = await auth()
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 })
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-  const client = await clerkClient()
-  const clerkUser = await client.users.getUser(userId)
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-  // Gather data from Clerk
-  const clerkData = {
-    id: clerkUser.id,
-    emails: clerkUser.emailAddresses.map((e) => e.emailAddress),
-    firstName: clerkUser.firstName,
-    lastName: clerkUser.lastName,
-    createdAt: clerkUser.createdAt,
-    lastSignInAt: clerkUser.lastSignInAt,
-    publicMetadata: clerkUser.publicMetadata,
-  }
-
-  // Gather data from your database
-  const appData = await db.user.findUnique({
-    where: { clerkId: userId },
-    include: { posts: true, comments: true, preferences: true },
-  })
-
-  return Response.json({
-    exportDate: new Date().toISOString(),
-    clerkProfile: clerkData,
-    applicationData: appData,
-  })
-}
-```
-
-### Step 2: User Deletion (Right to be Forgotten)
-```typescript
-// app/api/privacy/delete/route.ts
-import { auth, clerkClient } from '@clerk/nextjs/server'
-
-export async function DELETE() {
-  const { userId } = await auth()
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const deletionLog: { step: string; status: string }[] = []
-
-  try {
-    // 1. Delete application data first
-    await db.comment.deleteMany({ where: { authorId: userId } })
-    deletionLog.push({ step: 'comments', status: 'deleted' })
-
-    await db.post.deleteMany({ where: { authorId: userId } })
-    deletionLog.push({ step: 'posts', status: 'deleted' })
-
-    await db.user.delete({ where: { clerkId: userId } })
-    deletionLog.push({ step: 'app_user', status: 'deleted' })
-
-    // 2. Delete from Clerk (this ends the session)
-    const client = await clerkClient()
-    await client.users.deleteUser(userId)
-    deletionLog.push({ step: 'clerk_user', status: 'deleted' })
-
-    // 3. Log deletion for compliance audit trail
-    await db.auditLog.create({
-      data: {
-        action: 'USER_DELETED',
-        subjectId: userId,
-        details: JSON.stringify(deletionLog),
-        timestamp: new Date(),
-      },
-    })
-
-    return Response.json({ deleted: true, log: deletionLog })
-  } catch (error) {
-    return Response.json({ error: 'Partial deletion', log: deletionLog }, { status: 500 })
-  }
-}
-```
-
-### Step 3: Consent Management with Metadata
-```typescript
-// lib/consent.ts
-import { clerkClient } from '@clerk/nextjs/server'
-
-interface ConsentRecord {
-  marketing: boolean
-  analytics: boolean
-  thirdParty: boolean
-  updatedAt: string
-}
-
-export async function updateConsent(userId: string, consent: Partial<ConsentRecord>) {
-  const client = await clerkClient()
-  const user = await client.users.getUser(userId)
-  const existing = (user.publicMetadata.consent as ConsentRecord) || {}
-
-  const updated: ConsentRecord = {
-    ...existing,
-    ...consent,
-    updatedAt: new Date().toISOString(),
-  }
-
-  await client.users.updateUser(userId, {
-    publicMetadata: { ...user.publicMetadata, consent: updated },
-  })
-
-  return updated
-}
-
-export async function getConsent(userId: string): Promise<ConsentRecord | null> {
-  const client = await clerkClient()
-  const user = await client.users.getUser(userId)
-  return (user.publicMetadata.consent as ConsentRecord) || null
-}
-```
-
-### Step 4: Consent UI Component
-```typescript
-'use client'
-import { useUser } from '@clerk/nextjs'
-import { useState } from 'react'
-
-export function ConsentManager() {
-  const { user } = useUser()
-  const consent = (user?.publicMetadata as any)?.consent || {}
-  const [marketing, setMarketing] = useState(consent.marketing ?? false)
-  const [analytics, setAnalytics] = useState(consent.analytics ?? true)
-
-  const saveConsent = async () => {
-    await fetch('/api/privacy/consent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ marketing, analytics }),
-    })
-  }
-
-  return (
-    <div>
-      <h3>Privacy Preferences</h3>
-      <label>
-        <input type="checkbox" checked={marketing} onChange={(e) => setMarketing(e.target.checked)} />
-        Marketing communications
-      </label>
-      <label>
-        <input type="checkbox" checked={analytics} onChange={(e) => setAnalytics(e.target.checked)} />
-        Analytics tracking
-      </label>
-      <button onClick={saveConsent}>Save Preferences</button>
-    </div>
-  )
-}
-```
-
-### Step 5: Audit Logging via Webhooks
-```typescript
-// app/api/webhooks/clerk/route.ts (audit section)
-async function logAuditEvent(evt: WebhookEvent) {
-  const auditEntry = {
-    eventType: evt.type,
-    userId: 'user_id' in evt.data ? evt.data.user_id : evt.data.id,
-    timestamp: new Date().toISOString(),
-    metadata: JSON.stringify(evt.data),
-  }
-
-  await db.auditLog.create({ data: auditEntry })
-
-  // Track compliance-relevant events
-  if (['user.deleted', 'user.updated'].includes(evt.type)) {
-    console.log(`[COMPLIANCE] ${evt.type} for user ${auditEntry.userId}`)
-  }
-}
-```
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- Data export API returning Clerk profile + application data
-- User deletion cascade (app data, then Clerk, then audit log)
-- Consent management stored in Clerk publicMetadata
-- Privacy preferences UI component
-- Audit logging for compliance events
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-| Scenario | Action |
-|----------|--------|
-| Partial deletion failure | Log completed steps, retry failed services, alert ops team |
-| Export timeout on large data | Queue export job, email user download link when ready |
-| Consent sync failure | Retry with exponential backoff, fall back to local storage |
-| Clerk API rate limit on bulk delete | Batch deletions with delays between requests |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
 ## Examples
 
-### Bulk User Data Cleanup Script
+### Quick PII Scan
 ```typescript
-// scripts/cleanup-orphaned-users.ts
-import { createClerkClient } from '@clerk/backend'
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
-
-async function cleanupOrphanedDbUsers() {
-  const dbUsers = await db.user.findMany({ select: { clerkId: true } })
-
-  for (const dbUser of dbUsers) {
-    try {
-      await clerk.users.getUser(dbUser.clerkId)
-    } catch (err: any) {
-      if (err.status === 404) {
-        console.log(`Orphaned user: ${dbUser.clerkId} — removing from DB`)
-        await db.user.delete({ where: { clerkId: dbUser.clerkId } })
-      }
-    }
-  }
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
 }
 ```
 
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Clerk response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
+
 ## Resources
-- [Clerk User API](https://clerk.com/docs/references/backend/user/get-user)
-- [Clerk Metadata](https://clerk.com/docs/users/metadata)
-- [GDPR Compliance Guide](https://gdpr.eu/checklist/)
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Clerk Privacy Guide](https://docs.clerk.com/privacy)
 
 ## Next Steps
-Proceed to `clerk-enterprise-rbac` for enterprise SSO and RBAC.
+For enterprise access control, see `clerk-enterprise-rbac`.

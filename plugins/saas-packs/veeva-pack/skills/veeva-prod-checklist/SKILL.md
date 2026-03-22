@@ -1,62 +1,121 @@
 ---
 name: veeva-prod-checklist
 description: |
-  Veeva Vault prod checklist for REST API and clinical operations.
-  Use when working with Veeva Vault document management and CRM.
-  Trigger: "veeva prod checklist".
-allowed-tools: Read, Write, Edit, Grep
+  Execute Veeva production deployment checklist and rollback procedures.
+  Use when deploying Veeva integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "veeva production", "deploy veeva",
+  "veeva go-live", "veeva launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, life-sciences, crm, veeva]
 compatible-with: claude-code
+tags: [saas, veeva]
 ---
 
-# Veeva Vault Prod Checklist
+# Veeva Production Checklist
 
 ## Overview
+Complete checklist for deploying Veeva integrations to production.
 
-Guidance for prod checklist with Veeva Vault REST API, VQL queries, and VAPIL Java SDK.
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Key Vault API Concepts
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-- **Authentication**: Session-based (username/password or OAuth 2.0)
-- **Base URL**: `https://{vault}.veevavault.com/api/v24.1/`
-- **VQL**: SQL-like query language for Vault data
-- **VAPIL**: Open-source Java SDK covering all Platform APIs
-- **Lifecycle**: Documents flow through states (Draft > In Review > Approved)
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all Veeva error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-### Common VQL Patterns
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes Veeva connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-```sql
--- List documents by type
-SELECT id, name__v FROM documents WHERE type__v = 'Trial Document'
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
--- Find objects
-SELECT id, name__v FROM site__v WHERE status__v = 'active__v'
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.veeva.com
 
--- Join related objects
-SELECT id, name__v, study__vr.name__v FROM study_country__v
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/veeva-integration app=image:new --record
+kubectl rollout pause deployment/veeva-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/veeva-integration
+kubectl rollout pause deployment/veeva-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/veeva-integration
+kubectl rollout status deployment/veeva-integration
 ```
 
-## Error Handling
+## Output
+- Deployed Veeva integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `INVALID_SESSION_ID` | Session expired | Re-authenticate |
-| `INSUFFICIENT_ACCESS` | Missing permissions | Check security profile |
-| `INVALID_DATA` | Bad VQL or field name | Validate against metadata |
-| `OPERATION_NOT_ALLOWED` | Lifecycle state conflict | Check document state |
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; veeva: any }> {
+  const start = Date.now();
+  try {
+    await veevaClient.ping();
+    return { status: 'healthy', veeva: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', veeva: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/veeva-integration
+kubectl rollout status deployment/veeva-integration
+```
 
 ## Resources
-
-- [Vault API Reference](https://developer.veevavault.com/api/)
-- [VQL Reference](https://developer.veevavault.com/vql/)
-- [VAPIL SDK](https://developer.veevavault.com/sdk/)
-- [Developer Portal](https://developer.veevavault.com/)
+- [Veeva Status](https://status.veeva.com)
+- [Veeva Support](https://docs.veeva.com/support)
 
 ## Next Steps
-
-See related Veeva Vault skills for more patterns.
+For version upgrades, see `veeva-upgrade-migration`.

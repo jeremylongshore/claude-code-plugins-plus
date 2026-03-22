@@ -1,159 +1,98 @@
 ---
 name: algolia-hello-world
 description: |
-  Create a minimal working Algolia example — index records and search them.
+  Create a minimal working Algolia example.
   Use when starting a new Algolia integration, testing your setup,
-  or learning the saveObjects/searchSingleIndex pattern.
-  Trigger: "algolia hello world", "algolia example", "algolia quick start", "first algolia search".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(npx:*)
+  or learning basic Algolia API patterns.
+  Trigger with phrases like "algolia hello world", "algolia example",
+  "algolia quick start", "simple algolia code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
 compatible-with: claude-code
+tags: [saas, algolia]
 ---
 
 # Algolia Hello World
 
 ## Overview
-
-Index records into Algolia and search them back — the two fundamental operations. Uses the `algoliasearch` v5 client where all methods live on the client directly (no `initIndex`).
+Minimal working example demonstrating core Algolia functionality.
 
 ## Prerequisites
-
-- `algoliasearch` v5 installed (`npm install algoliasearch`)
-- `ALGOLIA_APP_ID` and `ALGOLIA_ADMIN_KEY` environment variables set
-- See `algolia-install-auth` for setup
+- Completed `algolia-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Index Records with saveObjects
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
+### Step 2: Import and Initialize Client
 ```typescript
-import { algoliasearch } from 'algoliasearch';
+import { AlgoliaClient } from '@algolia/sdk';
 
-const client = algoliasearch(
-  process.env.ALGOLIA_APP_ID!,
-  process.env.ALGOLIA_ADMIN_KEY!
-);
-
-// saveObjects adds or replaces records. Each must have objectID
-// (or Algolia auto-generates one).
-const { taskID } = await client.saveObjects({
-  indexName: 'movies',
-  objects: [
-    { objectID: '1', title: 'The Matrix', year: 1999, genre: 'sci-fi' },
-    { objectID: '2', title: 'Inception', year: 2010, genre: 'sci-fi' },
-    { objectID: '3', title: 'Pulp Fiction', year: 1994, genre: 'crime' },
-  ],
-});
-
-// Wait for indexing to complete before searching
-await client.waitForTask({ indexName: 'movies', taskID });
-console.log('Indexing complete.');
-```
-
-### Step 2: Search with searchSingleIndex
-
-```typescript
-// Basic search — Algolia searches all searchableAttributes by default
-const { hits } = await client.searchSingleIndex({
-  indexName: 'movies',
-  searchParams: { query: 'matrix' },
-});
-
-console.log(`Found ${hits.length} results:`);
-hits.forEach(hit => {
-  // _highlightResult shows which parts matched
-  console.log(`  ${hit.title} (${hit.year})`);
+const client = new AlgoliaClient({
+  apiKey: process.env.ALGOLIA_API_KEY,
 });
 ```
 
-### Step 3: Configure Index Settings
-
+### Step 3: Make Your First API Call
 ```typescript
-// Settings define how Algolia ranks results
-await client.setSettings({
-  indexName: 'movies',
-  indexSettings: {
-    searchableAttributes: ['title', 'genre'],       // Fields to search
-    attributesForFaceting: ['genre', 'year'],        // Filterable fields
-    customRanking: ['desc(year)'],                   // Tie-breaker: newer first
-    attributesToRetrieve: ['title', 'year', 'genre'],// Fields returned in hits
-  },
-});
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
 ```
 
 ## Output
-
+- Working code file with Algolia client initialization
+- Successful API response confirming connection
+- Console output showing:
 ```
-Indexing complete.
-Found 1 results:
-  The Matrix (1999)
+Success! Your Algolia connection is working.
 ```
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Invalid Application-ID or API key` | Wrong credentials | Verify in dashboard > Settings > API Keys |
-| `Record is too big` | Object > 10KB (free) or 100KB (paid) | Reduce record size or split into smaller records |
-| `Index does not exist` (on search) | Index not created yet | `saveObjects` auto-creates the index |
-| `taskID` never resolves | Indexing queue backlog | Check dashboard > Indices > Operations |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
 
 ## Examples
 
-### Multi-Index Search (federated)
-
+### TypeScript Example
 ```typescript
-// Search multiple indices in one API call
-const { results } = await client.search({
-  requests: [
-    { indexName: 'movies', query: 'inception' },
-    { indexName: 'actors', query: 'inception' },
-  ],
+import { AlgoliaClient } from '@algolia/sdk';
+
+const client = new AlgoliaClient({
+  apiKey: process.env.ALGOLIA_API_KEY,
 });
 
-results.forEach(result => {
-  if ('hits' in result) {
-    console.log(`${result.index}: ${result.hits.length} hits`);
-  }
-});
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
 ```
 
-### Browse All Records (no query, iterate everything)
+### Python Example
+```python
+from algolia import AlgoliaClient
 
-```typescript
-// browse returns up to 1000 records per call — use for data export
-const { hits, cursor } = await client.browse({
-  indexName: 'movies',
-  browseParams: { hitsPerPage: 1000 },
-});
+client = AlgoliaClient()
 
-console.log(`First page: ${hits.length} records`);
-// Use cursor to fetch next pages
-```
-
-### Delete Records
-
-```typescript
-// Delete by objectID
-await client.deleteObject({ indexName: 'movies', objectID: '3' });
-
-// Delete by query match
-await client.deleteBy({
-  indexName: 'movies',
-  deleteByParams: { filters: 'genre:crime' },
-});
+# Your first API call here
 ```
 
 ## Resources
-
-- [saveObjects Reference](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/save-object/)
-- [searchSingleIndex Reference](https://www.algolia.com/doc/libraries/javascript/v5/methods/search/search-single-index/)
-- [Index Settings](https://www.algolia.com/doc/api-reference/api-methods/set-settings/)
-- [Algolia Quick Start](https://www.algolia.com/doc/guides/getting-started/quick-start/)
+- [Algolia Getting Started](https://docs.algolia.com/getting-started)
+- [Algolia API Reference](https://docs.algolia.com/api)
+- [Algolia Examples](https://docs.algolia.com/examples)
 
 ## Next Steps
-
 Proceed to `algolia-local-dev-loop` for development workflow setup.

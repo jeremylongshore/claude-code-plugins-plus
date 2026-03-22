@@ -1,254 +1,216 @@
 ---
 name: windsurf-performance-tuning
 description: |
-  Optimize Windsurf IDE performance: indexing speed, Cascade responsiveness, and memory usage.
-  Use when Windsurf is slow, indexing takes too long, Cascade times out,
-  or the IDE uses too much memory.
-  Trigger with phrases like "windsurf slow", "windsurf performance",
-  "optimize windsurf", "windsurf memory", "cascade slow", "indexing slow".
-allowed-tools: Read, Write, Edit, Grep
+  Optimize Windsurf API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Windsurf integrations.
+  Trigger with phrases like "windsurf performance", "optimize windsurf",
+  "windsurf latency", "windsurf caching", "windsurf slow", "windsurf batch".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, windsurf, performance, indexing, optimization]
-
+compatible-with: claude-code
+tags: [saas, windsurf]
 ---
+
 # Windsurf Performance Tuning
 
 ## Overview
-Optimize Windsurf's indexing engine, Cascade context building, Supercomplete latency, and overall IDE responsiveness. Most performance issues stem from indexing too many files or missing exclusion patterns.
+Optimize Windsurf API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Windsurf IDE installed
-- Understanding of workspace indexing
-- Access to Windsurf settings
+- Windsurf SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-## Instructions
+## Latency Benchmarks
 
-### Step 1: Optimize Workspace Indexing
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-The indexing engine is the #1 performance factor. Exclude everything that isn't source code:
+## Caching Strategy
 
-```gitignore
-# .codeiumignore — aggressive exclusion for large codebases
-# Build artifacts
-node_modules/
-dist/
-build/
-.next/
-.nuxt/
-.output/
-.svelte-kit/
-coverage/
-.cache/
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
 
-# Package manager
-pnpm-lock.yaml
-package-lock.json
-yarn.lock
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
 
-# Generated code
-*.min.js
-*.min.css
-*.bundle.js
-*.chunk.js
-**/*.map
-generated/
-__generated__/
+async function cachedWindsurfRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-# Binary and media files
-*.png
-*.jpg
-*.gif
-*.svg
-*.ico
-*.mp4
-*.woff
-*.woff2
-*.ttf
-*.eot
-
-# Data files
-*.sqlite
-*.db
-*.sql.gz
-*.csv
-
-# Python
-__pycache__/
-*.pyc
-.venv/
-venv/
-.tox/
-*.egg-info/
-
-# Go
-vendor/
-
-# Rust
-target/
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
 ```
 
-### Step 2: Open Focused Workspaces
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
 
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
 ```
-# DON'T: Open entire monorepo root
-windsurf ~/monorepo/          # Indexes ALL packages = slow
 
-# DO: Open specific service directories
-windsurf ~/monorepo/apps/web/        # Only indexes web app
-windsurf ~/monorepo/packages/api/    # Only indexes API
+## Request Batching
 
-# Each Windsurf window gets its own focused AI context
-# Cascade performs better with fewer, relevant files
-```
+```typescript
+import DataLoader from 'dataloader';
 
-### Step 3: Tune IDE Settings
-
-```json
-// settings.json — performance-focused configuration
-{
-  // Indexing limits
-  "codeium.indexing.maxFileSize": 524288,
-
-  // Reduce extension overhead
-  "extensions.autoUpdate": false,
-  "extensions.autoCheckUpdates": false,
-
-  // Editor performance
-  "editor.minimap.enabled": false,
-  "editor.renderWhitespace": "none",
-  "editor.bracketPairColorization.enabled": false,
-
-  // File watcher optimization
-  "files.watcherExclude": {
-    "**/node_modules/**": true,
-    "**/dist/**": true,
-    "**/.git/objects/**": true,
-    "**/build/**": true
+const windsurfLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Windsurf
+    const results = await windsurfClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
   },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
 
-  // Search exclusions
-  "search.exclude": {
-    "**/node_modules": true,
-    "**/dist": true,
-    "**/coverage": true,
-    "**/*.min.js": true
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  windsurfLoader.load('id-1'),
+  windsurfLoader.load('id-2'),
+  windsurfLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new WindsurfClient({
+  apiKey: process.env.WINDSURF_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedWindsurfList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedWindsurfList(cursor =>
+  windsurfClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredWindsurfCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
   }
 }
 ```
 
-### Step 4: Optimize Cascade Usage
+## Instructions
 
-```markdown
-## Cascade Performance Tips
+### Step 1: Establish Baseline
+Measure current latency for critical Windsurf operations.
 
-1. Start fresh sessions for new tasks
-   - Long conversations accumulate context, slowing responses
-   - Click + in Cascade panel to start new conversation
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-2. Use @ mentions instead of describing files
-   - BAD: "Look at the auth service file"
-   - GOOD: "@src/services/auth.ts fix the token refresh logic"
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-3. Scope prompts narrowly
-   - BAD: "Refactor the authentication system"
-   - GOOD: "Extract JWT validation from src/middleware/auth.ts into src/services/jwt.ts"
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
-4. Use Chat mode for questions, Write mode for edits
-   - Chat mode is lighter — doesn't build full edit context
-   - Switch modes based on intent
-
-5. Choose the right model for the task
-   - SWE-1 Lite: fast, lightweight questions (no credits)
-   - SWE-1: standard coding tasks
-   - SWE-1.5 / Claude: complex multi-file tasks (worth the wait)
-```
-
-### Step 5: Memory Management
-
-```markdown
-## Reduce Memory Usage
-
-1. Close unused editor tabs
-   - Each open file adds to memory footprint
-   - Cmd/Ctrl+K Cmd/Ctrl+U: close unused tabs
-
-2. Limit extensions
-   - Each extension consumes memory
-   - Disable extensions you don't actively use
-   - Check: Extensions > "@enabled" to review
-
-3. Disable unused Supercomplete languages
-   - Settings > codeium.autocomplete.languages
-   - Disable for languages you don't write
-
-4. Monitor process memory
-   - Help > Open Process Explorer
-   - Look for extensions consuming >200MB
-```
-
-### Step 6: Benchmark Your Setup
-
-```bash
-#!/bin/bash
-set -euo pipefail
-echo "=== Windsurf Performance Check ==="
-
-# Workspace size
-FILE_COUNT=$(find . -type f -not -path '*/node_modules/*' -not -path '*/.git/*' | wc -l)
-echo "Indexed files: ~$FILE_COUNT"
-
-# Config status
-echo "Has .codeiumignore: $([ -f .codeiumignore ] && echo 'YES' || echo 'NO (SLOW!)')"
-IGNORE_LINES=$(wc -l < .codeiumignore 2>/dev/null || echo 0)
-echo "Ignore patterns: $IGNORE_LINES"
-
-# Recommendations
-if [ "$FILE_COUNT" -gt 5000 ]; then
-  echo "WARNING: >5000 files. Add more patterns to .codeiumignore"
-fi
-if [ "$IGNORE_LINES" -lt 5 ]; then
-  echo "WARNING: Few ignore patterns. Add build artifacts, binaries, lock files"
-fi
-```
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Indexing never completes | Too many files | Add `.codeiumignore`, open subdirectory |
-| Cascade timeout | Complex prompt + large context | Narrow scope, start fresh session |
-| High memory usage | Too many extensions/tabs | Close tabs, disable unused extensions |
-| Supercomplete lag | Large file open | Split large files, add to maxFileSize limit |
-| IDE freezes | Extension conflict | Safe Mode: `windsurf --disable-extensions` |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
 
 ## Examples
 
-### Quick Performance Fix
-```bash
-# Create minimal .codeiumignore if missing
-[ -f .codeiumignore ] || cat > .codeiumignore << 'EOF'
-node_modules/
-dist/
-build/
-.next/
-coverage/
-*.min.js
-*.map
-EOF
-```
-
-### Reset Indexing
-```
-Command Palette (Cmd/Ctrl+Shift+P):
-"Codeium: Reset Indexing"
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredWindsurfCall(name, () =>
+    cachedWindsurfRequest(`cache:${name}`, fn)
+  );
 ```
 
 ## Resources
-- [Windsurf Context Awareness](https://docs.windsurf.com/context-awareness/overview)
-- [Windsurf Ignore](https://docs.windsurf.com/context-awareness/windsurf-ignore)
-- [Autocomplete Tips](https://docs.windsurf.com/autocomplete/tips)
+- [Windsurf Performance Guide](https://docs.windsurf.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `windsurf-cost-tuning`.

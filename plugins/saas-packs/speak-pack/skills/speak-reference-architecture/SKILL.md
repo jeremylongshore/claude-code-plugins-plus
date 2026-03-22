@@ -1,88 +1,240 @@
 ---
 name: speak-reference-architecture
 description: |
-  Production architecture for Speak language learning apps: client, API gateway, assessment engine, and progress store.
-  Use when implementing reference architecture,
-  or managing Speak language learning platform operations.
-  Trigger with phrases like "speak reference architecture", "speak reference architecture".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Implement Speak reference architecture with best-practice project layout.
+  Use when designing new Speak integrations, reviewing project structure,
+  or establishing architecture standards for Speak applications.
+  Trigger with phrases like "speak architecture", "speak best practices",
+  "speak project structure", "how to organize speak", "speak layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, speak, api]
-
+compatible-with: claude-code
+tags: [saas, speak]
 ---
+
 # Speak Reference Architecture
 
 ## Overview
-Production architecture for Speak language learning apps: client, API gateway, assessment engine, and progress store.
+Production-ready architecture patterns for Speak integrations.
 
 ## Prerequisites
-- Completed `speak-install-auth` setup
-- Valid API credentials configured
-- Understanding of Speak API patterns
+- Understanding of layered architecture
+- Speak SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-## Instructions
+## Project Structure
 
-### Step 1: Configuration
-
-Configure reference architecture for your Speak integration. Speak uses OpenAI's GPT-4o for AI tutoring and Whisper for speech recognition.
-
-```typescript
-// speak_reference_architecture_config.ts
-const config = {
-  apiKey: process.env.SPEAK_API_KEY!,
-  appId: process.env.SPEAK_APP_ID!,
-  environment: process.env.NODE_ENV || 'development',
-};
+```
+my-speak-project/
+├── src/
+│   ├── speak/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── speak/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── speak/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── speak/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── speak/
+│   └── integration/
+│       └── speak/
+├── config/
+│   ├── speak.development.json
+│   ├── speak.staging.json
+│   └── speak.production.json
+└── docs/
+    └── speak/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
-### Step 2: Implementation
+## Layer Architecture
 
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Speak Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
 ```typescript
-// Core implementation for speak reference architecture
-import { SpeakClient } from '@speak/language-sdk';
+// src/speak/client.ts
+export class SpeakService {
+  private client: SpeakClient;
+  private cache: Cache;
+  private monitor: Monitor;
 
-const client = new SpeakClient(config);
+  constructor(config: SpeakConfig) {
+    this.client = new SpeakClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('speak');
+  }
 
-// Production-ready implementation
-async function setup() {
-  const health = await client.health.check();
-  console.log("Status:", health.status);
-  return health;
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
 }
 ```
 
-### Step 3: Verification
+### Step 2: Error Boundary
+```typescript
+// src/speak/errors.ts
+export class SpeakServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'SpeakServiceError';
+  }
+}
 
-```bash
-curl -sf -H "Authorization: Bearer $SPEAK_API_KEY" https://api.speak.com/v1/health | jq .
+export function wrapSpeakError(error: unknown): SpeakServiceError {
+  // Transform SDK errors to application errors
+}
 ```
 
+### Step 3: Health Check
+```typescript
+// src/speak/health.ts
+export async function checkSpeakHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await speakClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Speak    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Speak    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/speak.ts
+export interface SpeakConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadSpeakConfig(): SpeakConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./speak.${env}.json`);
+}
+```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Speak operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Speak connectivity.
+
 ## Output
-- Speak Reference Architecture configured and verified
-- Production-ready Speak integration
-- Error handling and monitoring in place
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Verify SPEAK_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| Connection timeout | Network issue | Check connectivity to api.speak.com |
-| Audio format error | Wrong codec | Convert to WAV 16kHz mono |
-
-## Resources
-- [Speak Website](https://speak.com)
-- [OpenAI Realtime API](https://platform.openai.com/docs/guides/realtime)
-- [Speak GPT-4 Blog](https://speak.com/blog/speak-gpt-4)
-
-## Next Steps
-For production checklist, see `speak-prod-checklist`.
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Speak types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-**Basic**: Apply reference architecture with default settings for a standard Speak integration.
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/speak/{handlers} src/services/speak src/api/speak
+touch src/speak/{client,config,types,errors}.ts
+touch src/services/speak/{index,sync,cache}.ts
+```
 
-**Production**: Configure with monitoring, alerting, and team-specific language learning requirements.
+## Resources
+- [Speak SDK Documentation](https://docs.speak.com/sdk)
+- [Speak Best Practices](https://docs.speak.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `speak-multi-env-setup`.

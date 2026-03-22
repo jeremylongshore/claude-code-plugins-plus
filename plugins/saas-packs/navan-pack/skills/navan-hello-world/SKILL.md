@@ -2,70 +2,97 @@
 name: navan-hello-world
 description: |
   Create a minimal working Navan example.
-  Trigger: "navan hello world", "navan example", "test navan".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Use when starting a new Navan integration, testing your setup,
+  or learning basic Navan API patterns.
+  Trigger with phrases like "navan hello world", "navan example",
+  "navan quick start", "simple navan code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan, travel]
 compatible-with: claude-code
+tags: [saas, navan]
 ---
 
 # Navan Hello World
 
 ## Overview
-Minimal working examples demonstrating core Navan API functionality.
+Minimal working example demonstrating core Navan functionality.
+
+## Prerequisites
+- Completed `navan-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Search Flights
-```typescript
-const flights = await client.flights.search({
-  origin: 'SFO', destination: 'JFK',
-  departure_date: '2026-05-01',
-  return_date: '2026-05-05',
-  travelers: 1,
-  cabin_class: 'economy',
-  policy_check: true  // Validate against company travel policy
-});
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-flights.results.forEach(f =>
-  console.log(`${f.airline} ${f.flight_number}: $${f.price} | ${f.duration} | ${f.policy_compliant ? 'IN POLICY' : 'OUT OF POLICY'}`)
-);
+### Step 2: Import and Initialize Client
+```typescript
+import { NavanClient } from '@navan/sdk';
+
+const client = new NavanClient({
+  apiKey: process.env.NAVAN_API_KEY,
+});
 ```
 
-### Step 2: Book Trip
+### Step 3: Make Your First API Call
 ```typescript
-const booking = await client.bookings.create({
-  flight_id: flights.results[0].id,
-  traveler: { employee_id: 'emp_123', name: 'Jane Smith', email: 'jane@company.com' },
-  cost_center: 'engineering',
-  project_code: 'PROJ-456',
-  approver_id: 'mgr_789'
-});
-console.log(`Booking: ${booking.id} | Status: ${booking.status}`);
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
 ```
 
-### Step 3: Track Trips
-```typescript
-const activeTrips = await client.trips.list({
-  status: 'active',
-  department: 'engineering'
-});
-activeTrips.forEach(t =>
-  console.log(`${t.traveler.name}: ${t.origin} → ${t.destination} | ${t.dates}`)
-);
+## Output
+- Working code file with Navan client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your Navan connection is working.
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Auth error | Invalid credentials | Check NAVAN_API_KEY |
-| Not found | Invalid endpoint | Verify API URL |
-| Rate limit | Too many requests | Implement backoff |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { NavanClient } from '@navan/sdk';
+
+const client = new NavanClient({
+  apiKey: process.env.NAVAN_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from navan import NavanClient
+
+client = NavanClient()
+
+# Your first API call here
+```
 
 ## Resources
-- [Navan API Docs](https://app.navan.com/app/helpcenter)
+- [Navan Getting Started](https://docs.navan.com/getting-started)
+- [Navan API Reference](https://docs.navan.com/api)
+- [Navan Examples](https://docs.navan.com/examples)
 
 ## Next Steps
-See `navan-local-dev-loop`.
+Proceed to `navan-local-dev-loop` for development workflow setup.

@@ -1,212 +1,211 @@
 ---
 name: lindy-deploy-integration
 description: |
-  Deploy applications that integrate with Lindy AI agents.
-  Use when deploying webhook receivers, callback handlers,
-  or applications connected to Lindy agents.
-  Trigger with phrases like "deploy lindy", "lindy deployment",
-  "lindy production deploy", "release lindy integration".
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(docker:*), Bash(npm:*)
+  Deploy Lindy integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Lindy-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy lindy", "lindy Vercel",
+  "lindy production deploy", "lindy Cloud Run", "lindy Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, deployment]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Deploy Integration
 
 ## Overview
-Lindy agents run on Lindy's managed infrastructure. Deployment focuses on your
-**integration layer**: webhook receivers, callback handlers, and application code
-that Lindy agents interact with via HTTP Request actions and webhook triggers.
+Deploy Lindy-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- Lindy agents configured and tested
-- Application with webhook receiver endpoints
-- Deployment platform (Vercel, Railway, Docker, AWS, GCP)
-- Lindy API key and webhook secrets
+- Lindy API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
-## Instructions
+## Vercel Deployment
 
-### Step 1: Prepare Application for Deployment
-```typescript
-// src/server.ts — Production-ready Lindy webhook receiver
-import express from 'express';
-import helmet from 'helmet';
-
-const app = express();
-app.use(helmet());
-app.use(express.json({ limit: '1mb' }));
-
-// Health check for load balancer
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    version: process.env.APP_VERSION || 'unknown',
-  });
-});
-
-// Lindy webhook receiver with auth verification
-app.post('/lindy/callback', (req, res) => {
-  const auth = req.headers.authorization;
-  if (auth !== `Bearer ${process.env.LINDY_WEBHOOK_SECRET}`) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
-
-  // Respond immediately, process async
-  res.json({ received: true });
-
-  // Async processing
-  processWebhook(req.body).catch(err => {
-    console.error('Webhook processing error:', err);
-  });
-});
-
-async function processWebhook(payload: any) {
-  const { taskId, status, result } = payload;
-  // Your business logic here
-  console.log(`Task ${taskId}: ${status}`, result);
-}
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Listening on :${PORT}`));
-```
-
-### Step 2: Docker Deployment
-```dockerfile
-# Dockerfile
-FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production
-COPY dist/ ./dist/
-EXPOSE 3000
-ENV NODE_ENV=production
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -qO- http://localhost:3000/health || exit 1
-CMD ["node", "dist/server.js"]
-```
-
+### Environment Setup
 ```bash
-# Build and run
-docker build -t lindy-integration .
-docker run -d \
-  -p 3000:3000 \
-  -e LINDY_API_KEY="$LINDY_API_KEY" \
-  -e LINDY_WEBHOOK_SECRET="$LINDY_WEBHOOK_SECRET" \
-  --name lindy-app \
-  lindy-integration
-```
+# Add Lindy secrets to Vercel
+vercel secrets add lindy_api_key sk_live_***
+vercel secrets add lindy_webhook_secret whsec_***
 
-### Step 3: Vercel Deployment
-```bash
-# Install Vercel CLI
-npm i -g vercel
+# Link to project
+vercel link
 
-# Set secrets
-vercel secrets add lindy-api-key "$LINDY_API_KEY"
-vercel secrets add lindy-webhook-secret "$LINDY_WEBHOOK_SECRET"
+# Deploy preview
+vercel
 
-# Deploy
+# Deploy production
 vercel --prod
 ```
 
+### vercel.json Configuration
 ```json
-// vercel.json
 {
   "env": {
-    "LINDY_API_KEY": "@lindy-api-key",
-    "LINDY_WEBHOOK_SECRET": "@lindy-webhook-secret"
+    "LINDY_API_KEY": "@lindy_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
   }
 }
 ```
 
-### Step 4: Update Lindy Agent Webhook URLs
-After deployment, update all Lindy agents with production URLs:
+## Fly.io Deployment
 
-1. In Lindy dashboard, open each agent with a webhook trigger
-2. Navigate to the **HTTP Request** action (if agent calls your API)
-3. Update URL from dev/staging to production:
-   ```
-   OLD: https://abc123.ngrok.io/lindy/callback
-   NEW: https://api.yourapp.com/lindy/callback
-   ```
-4. For webhook triggers, callers need the Lindy-generated URL (unchanged)
-5. Test with a sample webhook to verify end-to-end
+### fly.toml
+```toml
+app = "my-lindy-app"
+primary_region = "iad"
 
-### Step 5: Post-Deploy Verification
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set Lindy secrets
+fly secrets set LINDY_API_KEY=sk_live_***
+fly secrets set LINDY_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
 ```bash
 #!/bin/bash
-echo "=== Post-Deploy Verification ==="
+# deploy-cloud-run.sh
 
-PROD_URL="https://api.yourapp.com"
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="lindy-service"
+REGION="us-central1"
 
-# Health check
-echo "[1/3] Health check..."
-curl -sf "$PROD_URL/health" | jq .
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Webhook endpoint reachable
-echo "[2/3] Webhook endpoint..."
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "$PROD_URL/lindy/callback" \
-  -H "Authorization: Bearer $LINDY_WEBHOOK_SECRET" \
-  -H "Content-Type: application/json" \
-  -d '{"test": true}')
-echo "Webhook endpoint: HTTP $STATUS (expect 200)"
-
-# Trigger a test agent run
-echo "[3/3] Agent trigger test..."
-curl -s -X POST "https://public.lindy.ai/api/v1/webhooks/YOUR_ID" \
-  -H "Authorization: Bearer $LINDY_WEBHOOK_SECRET" \
-  -H "Content-Type: application/json" \
-  -d '{"event": "deploy.verify", "env": "production"}'
-echo "Agent triggered — check Tasks tab in Lindy dashboard"
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=LINDY_API_KEY=lindy-api-key:latest
 ```
 
-### Step 6: Rollback Plan
-```bash
-# If deployment fails, rollback:
-# Vercel
-vercel rollback
+## Environment Configuration Pattern
 
-# Docker
-docker stop lindy-app
-docker run -d --name lindy-app-rollback \
-  -e LINDY_API_KEY="$LINDY_API_KEY" \
-  -e LINDY_WEBHOOK_SECRET="$LINDY_WEBHOOK_SECRET" \
-  lindy-integration:previous-tag
+```typescript
+// config/lindy.ts
+interface LindyConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
 
-# Update Lindy agents back to previous URLs if needed
+export function getLindyConfig(): LindyConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.LINDY_API_KEY!,
+    environment: env as LindyConfig['environment'],
+    webhookSecret: process.env.LINDY_WEBHOOK_SECRET,
+  };
+}
 ```
 
-## Deployment Checklist
+## Health Check Endpoint
 
-| Step | Verification |
-|------|-------------|
-| Build passes | `npm run build` exits 0 |
-| Tests pass | `npm test` all green |
-| Secrets configured | API key + webhook secret in platform |
-| Health check responds | `GET /health` returns 200 |
-| Webhook auth works | POST with valid token returns 200 |
-| Webhook auth rejects | POST without token returns 401 |
-| Lindy agent URLs updated | HTTP Request actions point to prod |
-| End-to-end test | Trigger agent, receive callback |
+```typescript
+// api/health.ts
+export async function GET() {
+  const lindyStatus = await checkLindyConnection();
+
+  return Response.json({
+    status: lindyStatus ? 'healthy' : 'degraded',
+    services: {
+      lindy: lindyStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Lindy API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Lindy integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Lindy connectivity.
+
+## Output
+- Application deployed to production
+- Lindy secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Webhook 502 | App crashed/not running | Check container logs, restart |
-| Webhook timeout | Slow processing | Respond 200 immediately, process async |
-| Wrong URL in Lindy | Not updated post-deploy | Update HTTP Request action URLs |
-| SSL error | Certificate issue | Verify HTTPS cert is valid |
-| Secret mismatch | Dev secret in prod | Verify production secrets match Lindy config |
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add lindy_api_key "$LINDY_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set LINDY_API_KEY="$LINDY_API_KEY"
+    fly deploy
+    ;;
+esac
+```
 
 ## Resources
-- [Lindy Webhooks](https://docs.lindy.ai/skills/by-lindy/webhooks)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Lindy Deploy Guide](https://docs.lindy.com/deploy)
 
 ## Next Steps
-See `lindy-webhooks-events` for advanced webhook patterns.
+For webhook handling, see `lindy-webhooks-events`.

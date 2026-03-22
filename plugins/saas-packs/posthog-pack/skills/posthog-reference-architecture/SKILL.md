@@ -1,264 +1,240 @@
 ---
 name: posthog-reference-architecture
 description: |
-  Production PostHog architecture: event taxonomy, SDK layering, feature flag
-  strategy, analytics module layout, and data pipeline integration patterns.
-  Trigger: "posthog architecture", "posthog best practices", "posthog project
-  structure", "how to organize posthog", "posthog design".
+  Implement PostHog reference architecture with best-practice project layout.
+  Use when designing new PostHog integrations, reviewing project structure,
+  or establishing architecture standards for PostHog applications.
+  Trigger with phrases like "posthog architecture", "posthog best practices",
+  "posthog project structure", "how to organize posthog", "posthog layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, posthog-reference]
+compatible-with: claude-code
+tags: [saas, posthog]
 ---
 
 # PostHog Reference Architecture
 
 ## Overview
-
-Production-grade architecture for PostHog analytics in a web application. Covers file structure, event taxonomy design, SDK initialization layers, feature flag management, group analytics for B2B, and data pipeline integration.
+Production-ready architecture patterns for PostHog integrations.
 
 ## Prerequisites
+- Understanding of layered architecture
+- PostHog SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-- PostHog Cloud or self-hosted instance
-- `posthog-js` and `posthog-node` SDKs
-- Next.js or React application (patterns adapt to other frameworks)
-
-## Architecture
+## Project Structure
 
 ```
-┌─────────────────────────────────────────────────────┐
-│  Browser (posthog-js)                                │
-│  $pageview, $autocapture, custom events, identify   │
-│  Feature flag evaluation, session recordings         │
-└────────────┬────────────────────────────────────────┘
-             │ HTTPS (direct or reverse proxy)
-             ▼
-┌─────────────────────────────────────────────────────┐
-│  PostHog Cloud (us.i.posthog.com)                    │
-│  ┌──────────┐  ┌──────────┐  ┌───────────────────┐  │
-│  │ Events   │  │ Feature  │  │ Session Replay    │  │
-│  │ Pipeline │  │ Flags    │  │ & Recordings      │  │
-│  └────┬─────┘  └────┬─────┘  └───────────────────┘  │
-│       │              │                                │
-│  ┌────┴──────────────┴────────────────────────────┐  │
-│  │  Analytics: Trends, Funnels, Retention, Paths  │  │
-│  │  HogQL (SQL), Dashboards, Cohorts              │  │
-│  └────────────────────────────────────────────────┘  │
-│  ┌────────────────────────────────────────────────┐  │
-│  │  CDP: Destinations (Webhook, Slack, S3, etc.)  │  │
-│  └────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────┘
-             ▲
-             │ posthog-node (server events, local flag eval)
-┌────────────┴────────────────────────────────────────┐
-│  Backend (API routes, webhooks, crons)               │
-│  Server-side capture, group identify, flag eval      │
-└─────────────────────────────────────────────────────┘
+my-posthog-project/
+├── src/
+│   ├── posthog/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── posthog/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── posthog/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── posthog/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── posthog/
+│   └── integration/
+│       └── posthog/
+├── config/
+│   ├── posthog.development.json
+│   ├── posthog.staging.json
+│   └── posthog.production.json
+└── docs/
+    └── posthog/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          PostHog Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/posthog/client.ts
+export class PostHogService {
+  private client: PostHogClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: PostHogConfig) {
+    this.client = new PostHogClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('posthog');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/posthog/errors.ts
+export class PostHogServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'PostHogServiceError';
+  }
+}
+
+export function wrapPostHogError(error: unknown): PostHogServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/posthog/health.ts
+export async function checkPostHogHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await posthogClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ PostHog    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ PostHog    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/posthog.ts
+export interface PostHogConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadPostHogConfig(): PostHogConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./posthog.${env}.json`);
+}
 ```
 
 ## Instructions
 
-### Step 1: Project File Structure
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```
-src/
-├── analytics/
-│   ├── posthog.ts           # Browser SDK init (singleton)
-│   ├── posthog-server.ts    # Server SDK init (singleton)
-│   ├── events.ts            # Typed event constants
-│   ├── flags.ts             # Feature flag key constants
-│   └── hooks/
-│       ├── useFeatureFlag.ts    # React hook for boolean flags
-│       └── useExperiment.ts     # React hook for A/B variants
-├── app/
-│   ├── providers.tsx        # PostHogProvider wrapper
-│   └── layout.tsx           # Root layout with provider
-└── lib/
-    └── analytics.ts         # High-level tracking functions
-```
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-### Step 2: Event Taxonomy
+### Step 3: Add Error Handling
+Implement custom error classes for PostHog operations.
 
-```typescript
-// analytics/events.ts
-// Naming convention: object_action (noun_verb)
-export const EVENTS = {
-  // User lifecycle (track conversion funnel)
-  USER_SIGNED_UP: 'user_signed_up',
-  USER_LOGGED_IN: 'user_logged_in',
-  USER_ONBOARDING_COMPLETED: 'user_onboarding_completed',
-  USER_INVITED_TEAMMATE: 'user_invited_teammate',
-
-  // Core product (track feature adoption)
-  FEATURE_USED: 'feature_used',           // with feature_name property
-  ITEM_CREATED: 'item_created',
-  ITEM_UPDATED: 'item_updated',
-  ITEM_DELETED: 'item_deleted',
-  SEARCH_PERFORMED: 'search_performed',
-  EXPORT_COMPLETED: 'export_completed',
-
-  // Revenue (track MRR and churn)
-  SUBSCRIPTION_STARTED: 'subscription_started',
-  SUBSCRIPTION_UPGRADED: 'subscription_upgraded',
-  SUBSCRIPTION_DOWNGRADED: 'subscription_downgraded',
-  SUBSCRIPTION_CANCELED: 'subscription_canceled',
-  PAYMENT_COMPLETED: 'payment_completed',
-
-  // Engagement (track stickiness)
-  NOTIFICATION_CLICKED: 'notification_clicked',
-  FEEDBACK_SUBMITTED: 'feedback_submitted',
-} as const;
-
-// Standard property schema
-interface BaseProps {
-  source?: 'web' | 'mobile' | 'api';
-  plan?: 'free' | 'pro' | 'enterprise';
-}
-
-// Type-safe capture
-type EventMap = {
-  [EVENTS.USER_SIGNED_UP]: BaseProps & { method: 'email' | 'google' | 'github' };
-  [EVENTS.FEATURE_USED]: BaseProps & { feature_name: string; duration_ms?: number };
-  [EVENTS.SUBSCRIPTION_STARTED]: BaseProps & { plan: string; interval: 'monthly' | 'annual'; mrr: number };
-};
-```
-
-### Step 3: Feature Flag Constants
-
-```typescript
-// analytics/flags.ts
-export const FLAGS = {
-  // Feature rollouts
-  NEW_DASHBOARD: 'new-dashboard-v2',
-  AI_SUMMARIZE: 'ai-summarize-beta',
-  BULK_EXPORT: 'bulk-export',
-
-  // Experiments
-  PRICING_PAGE: 'pricing-page-experiment',
-  ONBOARDING_FLOW: 'onboarding-flow-v3',
-  CHECKOUT_LAYOUT: 'checkout-layout-test',
-} as const;
-
-// Flag → default value mapping (used when flags fail to load)
-export const FLAG_DEFAULTS: Record<string, boolean | string> = {
-  [FLAGS.NEW_DASHBOARD]: false,
-  [FLAGS.AI_SUMMARIZE]: false,
-  [FLAGS.PRICING_PAGE]: 'control',
-  [FLAGS.ONBOARDING_FLOW]: 'control',
-};
-```
-
-### Step 4: High-Level Analytics Module
-
-```typescript
-// lib/analytics.ts
-import posthog from 'posthog-js';
-import { getPostHogServer } from '../analytics/posthog-server';
-import { EVENTS } from '../analytics/events';
-
-// Client-side tracking
-export function trackFeatureUsed(featureName: string, duration?: number) {
-  posthog.capture(EVENTS.FEATURE_USED, {
-    feature_name: featureName,
-    duration_ms: duration,
-    source: 'web',
-  });
-}
-
-export function trackSignup(method: 'email' | 'google' | 'github') {
-  posthog.capture(EVENTS.USER_SIGNED_UP, { method, source: 'web' });
-}
-
-export function identifyUser(userId: string, properties: {
-  email: string;
-  name: string;
-  plan: string;
-  companyId?: string;
-  companyName?: string;
-}) {
-  posthog.identify(userId, {
-    email: properties.email,
-    name: properties.name,
-    plan: properties.plan,
-  });
-
-  if (properties.companyId) {
-    posthog.group('company', properties.companyId, {
-      name: properties.companyName,
-      plan: properties.plan,
-    });
-  }
-}
-
-// Server-side tracking
-export function trackServerEvent(
-  userId: string,
-  event: string,
-  properties?: Record<string, any>
-) {
-  const ph = getPostHogServer();
-  ph.capture({
-    distinctId: userId,
-    event,
-    properties: { ...properties, source: 'api' },
-  });
-}
-```
-
-### Step 5: Data Pipeline Integration
-
-```typescript
-// PostHog → External Systems via CDP Destinations
-//
-// PostHog Cloud Data Pipeline:
-// 1. Events captured → PostHog stores in ClickHouse
-// 2. CDP Destinations fire webhooks to your endpoints
-// 3. HogQL queries available for custom analysis
-//
-// Common destination patterns:
-// - PostHog → Webhook → Your API → CRM sync
-// - PostHog → S3 export → Data warehouse
-// - PostHog → Slack → Team notifications
-// - PostHog → Webhook → Billing system (revenue events)
-
-// Server route to receive PostHog CDP webhooks
-export async function handlePostHogWebhook(event: string, payload: any) {
-  switch (event) {
-    case EVENTS.SUBSCRIPTION_STARTED:
-      await syncToStripe(payload);
-      break;
-    case EVENTS.USER_SIGNED_UP:
-      await syncToCRM(payload);
-      await notifySlack(payload);
-      break;
-  }
-}
-```
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Events not appearing | SDK not initialized | Verify `posthog.init()` runs before capture |
-| Flag always returns default | Flags not loaded | Use `posthog.onFeatureFlags()` callback |
-| Identity fragmentation | Inconsistent `distinct_id` | Use same user ID from auth system everywhere |
-| Group analytics empty | `posthog.group()` not called | Call `group()` before capture |
-| Server events lost | No `flush()` in serverless | Always `await posthog.shutdown()` |
+### Step 4: Configure Health Checks
+Add health check endpoint for PostHog connectivity.
 
 ## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
-- Organized analytics module with typed events and flags
-- Client and server SDK initialization (singleton pattern)
-- Event taxonomy following `object_action` naming convention
-- Feature flag constants with safe defaults
-- Data pipeline integration via CDP webhooks
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add PostHog types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/posthog/{handlers} src/services/posthog src/api/posthog
+touch src/posthog/{client,config,types,errors}.ts
+touch src/services/posthog/{index,sync,cache}.ts
+```
 
 ## Resources
+- [PostHog SDK Documentation](https://docs.posthog.com/sdk)
+- [PostHog Best Practices](https://docs.posthog.com/best-practices)
 
-- [PostHog Documentation](https://posthog.com/docs)
-- [PostHog JavaScript Web SDK](https://posthog.com/docs/libraries/js)
-- [PostHog Node.js SDK](https://posthog.com/docs/libraries/node)
-- [PostHog CDP Destinations](https://posthog.com/docs/cdp/destinations)
-- [PostHog Experiments Best Practices](https://posthog.com/docs/experiments/best-practices)
+## Flagship Skills
+For multi-environment setup, see `posthog-multi-env-setup`.

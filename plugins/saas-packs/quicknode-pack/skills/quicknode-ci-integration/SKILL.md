@@ -1,48 +1,126 @@
 ---
 name: quicknode-ci-integration
 description: |
-  QuickNode ci integration — blockchain RPC and Web3 infrastructure integration.
-  Use when working with QuickNode for blockchain development.
-  Trigger with phrases like "quicknode ci integration", "quicknode-ci-integration", "blockchain RPC".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Configure QuickNode CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating QuickNode tests into your build process.
+  Trigger with phrases like "quicknode CI", "quicknode GitHub Actions",
+  "quicknode automated tests", "CI quicknode".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, quicknode]
 ---
 
-# QuickNode Ci Integration
+# QuickNode CI Integration
 
 ## Overview
-Implementation patterns for QuickNode ci integration using blockchain RPC endpoints and the QuickNode SDK.
+Set up CI/CD pipelines for QuickNode integrations with automated testing.
 
 ## Prerequisites
-- Completed `quicknode-install-auth` setup
+- GitHub repository with Actions enabled
+- QuickNode test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Step 1: Connect to QuickNode
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/quicknode-integration.yml`:
+
+```yaml
+name: QuickNode Integration Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  QUICKNODE_API_KEY: ${{ secrets.QUICKNODE_API_KEY }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      QUICKNODE_API_KEY: ${{ secrets.QUICKNODE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
+
+### Step 2: Configure Secrets
+```bash
+gh secret set QUICKNODE_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
 ```typescript
-import { ethers } from 'ethers';
-const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
-const block = await provider.getBlockNumber();
-console.log(`Connected at block ${block}`);
+describe('QuickNode Integration', () => {
+  it.skipIf(!process.env.QUICKNODE_API_KEY)('should connect', async () => {
+    const client = getQuickNodeClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
 ```
 
 ## Output
-- QuickNode integration for ci integration
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
-| Rate limited | Too many requests | Implement backoff or upgrade plan |
-| Method not found | Add-on required | Enable in QuickNode Dashboard |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      QUICKNODE_API_KEY: ${{ secrets.QUICKNODE_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify QuickNode production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "quicknode-integration"
+```
 
 ## Resources
-- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
-- [Ethereum API](https://www.quicknode.com/docs/ethereum)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [QuickNode CI Guide](https://docs.quicknode.com/ci)
 
 ## Next Steps
-See related QuickNode skills for more workflows.
+For deployment patterns, see `quicknode-deploy-integration`.

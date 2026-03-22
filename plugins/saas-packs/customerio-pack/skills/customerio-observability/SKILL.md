@@ -1,369 +1,252 @@
 ---
 name: customerio-observability
 description: |
-  Set up Customer.io monitoring and observability.
-  Use when implementing metrics, structured logging, alerting,
-  or Grafana dashboards for Customer.io integrations.
-  Trigger: "customer.io monitoring", "customer.io metrics",
-  "customer.io dashboard", "customer.io alerts", "customer.io observability".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(npx:*), Glob, Grep
+  Set up comprehensive observability for Customer.io integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Customer.io operations, setting up dashboards,
+  or configuring alerting for Customer.io integration health.
+  Trigger with phrases like "customerio monitoring", "customerio metrics",
+  "customerio observability", "monitor customerio", "customerio alerts", "customerio tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, customer-io, monitoring, observability, prometheus]
-
+compatible-with: claude-code
+tags: [saas, customerio]
 ---
+
 # Customer.io Observability
 
 ## Overview
-
-Implement comprehensive observability for Customer.io integrations: Prometheus metrics (latency, error rates, delivery funnel), structured JSON logging with PII redaction, OpenTelemetry tracing, and Grafana dashboard definitions.
+Set up comprehensive observability for Customer.io integrations.
 
 ## Prerequisites
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-- Customer.io integration deployed
-- Prometheus + Grafana (or compatible metrics stack)
-- Structured logging system (pino recommended)
+## Metrics Collection
 
-## Key Metrics to Track
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `customerio_requests_total` | Counter | Total API requests |
+| `customerio_request_duration_seconds` | Histogram | Request latency |
+| `customerio_errors_total` | Counter | Error count by type |
+| `customerio_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-| Metric | Type | Description | Alert Threshold |
-|--------|------|-------------|----------------|
-| `cio_api_duration_ms` | Histogram | API call latency | p99 > 5000ms |
-| `cio_api_requests_total` | Counter | Total API requests by operation | N/A (rate) |
-| `cio_api_errors_total` | Counter | API errors by status code | > 1% error rate |
-| `cio_email_sent_total` | Counter | Transactional + campaign emails | N/A |
-| `cio_email_bounced_total` | Counter | Bounce count | > 5% of sends |
-| `cio_email_complained_total` | Counter | Spam complaints | > 0.1% of sends |
-| `cio_webhook_received_total` | Counter | Webhook events by metric type | N/A |
-| `cio_queue_depth` | Gauge | Pending items in event queue | > 10K |
-
-## Instructions
-
-### Step 1: Prometheus Metrics
+### Prometheus Metrics
 
 ```typescript
-// lib/customerio-metrics.ts
-import { Counter, Histogram, Gauge, Registry } from "prom-client";
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
 const registry = new Registry();
 
-export const cioMetrics = {
-  apiDuration: new Histogram({
-    name: "cio_api_duration_ms",
-    help: "Customer.io API call duration in milliseconds",
-    labelNames: ["operation", "status"] as const,
-    buckets: [10, 25, 50, 100, 250, 500, 1000, 2500, 5000],
-    registers: [registry],
-  }),
+const requestCounter = new Counter({
+  name: 'customerio_requests_total',
+  help: 'Total Customer.io API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
 
-  apiRequests: new Counter({
-    name: "cio_api_requests_total",
-    help: "Total Customer.io API requests",
-    labelNames: ["operation"] as const,
-    registers: [registry],
-  }),
+const requestDuration = new Histogram({
+  name: 'customerio_request_duration_seconds',
+  help: 'Customer.io request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
 
-  apiErrors: new Counter({
-    name: "cio_api_errors_total",
-    help: "Customer.io API errors",
-    labelNames: ["operation", "status_code"] as const,
-    registers: [registry],
-  }),
-
-  emailSent: new Counter({
-    name: "cio_email_sent_total",
-    help: "Emails sent via Customer.io",
-    labelNames: ["type"] as const,  // "transactional" or "campaign"
-    registers: [registry],
-  }),
-
-  emailBounced: new Counter({
-    name: "cio_email_bounced_total",
-    help: "Email bounces from Customer.io webhooks",
-    registers: [registry],
-  }),
-
-  emailComplained: new Counter({
-    name: "cio_email_complained_total",
-    help: "Spam complaints from Customer.io webhooks",
-    registers: [registry],
-  }),
-
-  webhookReceived: new Counter({
-    name: "cio_webhook_received_total",
-    help: "Webhook events received",
-    labelNames: ["metric"] as const,
-    registers: [registry],
-  }),
-
-  queueDepth: new Gauge({
-    name: "cio_queue_depth",
-    help: "Pending items in Customer.io event queue",
-    labelNames: ["queue"] as const,
-    registers: [registry],
-  }),
-};
-
-export { registry };
+const errorCounter = new Counter({
+  name: 'customerio_errors_total',
+  help: 'Customer.io errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
 ```
 
-### Step 2: Instrumented Client
+### Instrumented Client
 
 ```typescript
-// lib/customerio-instrumented.ts
-import { TrackClient, APIClient, SendEmailRequest, RegionUS } from "customerio-node";
-import { cioMetrics } from "./customerio-metrics";
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
-export class InstrumentedCioClient {
-  private track: TrackClient;
-  private app: APIClient;
-
-  constructor(siteId: string, trackKey: string, appKey: string) {
-    this.track = new TrackClient(siteId, trackKey, { region: RegionUS });
-    this.app = new APIClient(appKey, { region: RegionUS });
-  }
-
-  async identify(userId: string, attrs: Record<string, any>): Promise<void> {
-    const timer = cioMetrics.apiDuration.startTimer({ operation: "identify" });
-    cioMetrics.apiRequests.inc({ operation: "identify" });
-
-    try {
-      await this.track.identify(userId, attrs);
-      timer({ status: "success" });
-    } catch (err: any) {
-      const code = String(err.statusCode ?? "unknown");
-      timer({ status: "error" });
-      cioMetrics.apiErrors.inc({ operation: "identify", status_code: code });
-      throw err;
-    }
-  }
-
-  async trackEvent(
-    userId: string,
-    name: string,
-    data?: Record<string, any>
-  ): Promise<void> {
-    const timer = cioMetrics.apiDuration.startTimer({ operation: "track" });
-    cioMetrics.apiRequests.inc({ operation: "track" });
-
-    try {
-      await this.track.track(userId, { name, data });
-      timer({ status: "success" });
-    } catch (err: any) {
-      timer({ status: "error" });
-      cioMetrics.apiErrors.inc({
-        operation: "track",
-        status_code: String(err.statusCode ?? "unknown"),
-      });
-      throw err;
-    }
-  }
-
-  async sendEmail(request: SendEmailRequest): Promise<any> {
-    const timer = cioMetrics.apiDuration.startTimer({ operation: "send_email" });
-    cioMetrics.apiRequests.inc({ operation: "send_email" });
-
-    try {
-      const result = await this.app.sendEmail(request);
-      timer({ status: "success" });
-      cioMetrics.emailSent.inc({ type: "transactional" });
-      return result;
-    } catch (err: any) {
-      timer({ status: "error" });
-      cioMetrics.apiErrors.inc({
-        operation: "send_email",
-        status_code: String(err.statusCode ?? "unknown"),
-      });
-      throw err;
-    }
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
   }
 }
 ```
 
-### Step 3: Structured Logging with PII Redaction
+## Distributed Tracing
+
+### OpenTelemetry Setup
 
 ```typescript
-// lib/customerio-logger.ts
-import pino from "pino";
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('customerio-client');
+
+async function tracedCustomer.ioCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`customerio.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
 
 const logger = pino({
-  name: "customerio",
-  level: process.env.CUSTOMERIO_LOG_LEVEL ?? "info",
-  redact: {
-    paths: [
-      "*.email",
-      "*.phone",
-      "*.ip_address",
-      "*.password",
-      "attrs.email",
-      "attrs.phone",
-    ],
-    censor: "[REDACTED]",
-  },
+  name: 'customerio',
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-export function logCioOperation(
+function logCustomer.ioOperation(
   operation: string,
-  data: {
-    userId?: string;
-    event?: string;
-    latencyMs?: number;
-    statusCode?: number;
-    error?: string;
-    attrs?: Record<string, any>;
-  }
-): void {
-  if (data.error) {
-    logger.error({ operation, ...data }, `CIO ${operation} failed`);
-  } else {
-    logger.info({ operation, ...data }, `CIO ${operation} completed`);
-  }
-}
-
-// Usage:
-// logCioOperation("identify", {
-//   userId: "user-123",
-//   latencyMs: 85,
-//   attrs: { email: "user@example.com", plan: "pro" }
-// });
-// Output: {"level":"info","operation":"identify","userId":"user-123",
-//          "latencyMs":85,"attrs":{"email":"[REDACTED]","plan":"pro"},
-//          "msg":"CIO identify completed"}
-```
-
-### Step 4: Webhook Metrics Collection
-
-```typescript
-// Integrate with webhook handler (see customerio-webhooks-events skill)
-function recordWebhookMetrics(event: { metric: string }): void {
-  cioMetrics.webhookReceived.inc({ metric: event.metric });
-
-  switch (event.metric) {
-    case "bounced":
-      cioMetrics.emailBounced.inc();
-      break;
-    case "spammed":
-      cioMetrics.emailComplained.inc();
-      break;
-    case "sent":
-      cioMetrics.emailSent.inc({ type: "campaign" });
-      break;
-  }
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'customerio',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
 }
 ```
 
-### Step 5: Prometheus Metrics Endpoint
+## Alert Configuration
 
-```typescript
-// routes/metrics.ts
-import { Router } from "express";
-import { registry } from "../lib/customerio-metrics";
+### Prometheus AlertManager Rules
 
-const router = Router();
+```yaml
+# customerio_alerts.yaml
+groups:
+  - name: customerio_alerts
+    rules:
+      - alert: Customer.ioHighErrorRate
+        expr: |
+          rate(customerio_errors_total[5m]) /
+          rate(customerio_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Customer.io error rate > 5%"
 
-router.get("/metrics", async (_req, res) => {
-  res.set("Content-Type", registry.contentType);
-  res.end(await registry.metrics());
-});
+      - alert: Customer.ioHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(customerio_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Customer.io P95 latency > 2s"
 
-export default router;
+      - alert: Customer.ioDown
+        expr: up{job="customerio"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Customer.io integration is down"
 ```
 
-### Step 6: Grafana Dashboard (JSON Model)
+## Dashboard
+
+### Grafana Panel Queries
 
 ```json
 {
-  "title": "Customer.io Integration",
   "panels": [
     {
-      "title": "API Latency (p50/p95/p99)",
-      "type": "timeseries",
-      "targets": [
-        { "expr": "histogram_quantile(0.50, rate(cio_api_duration_ms_bucket[5m]))" },
-        { "expr": "histogram_quantile(0.95, rate(cio_api_duration_ms_bucket[5m]))" },
-        { "expr": "histogram_quantile(0.99, rate(cio_api_duration_ms_bucket[5m]))" }
-      ]
+      "title": "Customer.io Request Rate",
+      "targets": [{
+        "expr": "rate(customerio_requests_total[5m])"
+      }]
     },
     {
-      "title": "Request Rate by Operation",
-      "type": "timeseries",
-      "targets": [
-        { "expr": "rate(cio_api_requests_total[5m])" }
-      ]
-    },
-    {
-      "title": "Error Rate %",
-      "type": "stat",
-      "targets": [
-        { "expr": "rate(cio_api_errors_total[5m]) / rate(cio_api_requests_total[5m]) * 100" }
-      ]
-    },
-    {
-      "title": "Email Delivery Funnel",
-      "type": "bargauge",
-      "targets": [
-        { "expr": "cio_email_sent_total" },
-        { "expr": "cio_email_bounced_total" },
-        { "expr": "cio_email_complained_total" }
-      ]
+      "title": "Customer.io Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(customerio_request_duration_seconds_bucket[5m]))"
+      }]
     }
   ]
 }
 ```
 
-### Step 7: Alerting Rules
+## Instructions
 
-```yaml
-# prometheus/customerio-alerts.yml
-groups:
-  - name: customerio
-    rules:
-      - alert: CioHighErrorRate
-        expr: rate(cio_api_errors_total[5m]) / rate(cio_api_requests_total[5m]) > 0.05
-        for: 5m
-        labels: { severity: critical }
-        annotations:
-          summary: "Customer.io API error rate > 5%"
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
-      - alert: CioHighLatency
-        expr: histogram_quantile(0.99, rate(cio_api_duration_ms_bucket[5m])) > 5000
-        for: 5m
-        labels: { severity: warning }
-        annotations:
-          summary: "Customer.io p99 latency > 5 seconds"
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-      - alert: CioHighBounceRate
-        expr: rate(cio_email_bounced_total[1h]) / rate(cio_email_sent_total[1h]) > 0.05
-        for: 15m
-        labels: { severity: warning }
-        annotations:
-          summary: "Email bounce rate > 5%"
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-      - alert: CioSpamComplaints
-        expr: rate(cio_email_complained_total[1h]) / rate(cio_email_sent_total[1h]) > 0.001
-        for: 5m
-        labels: { severity: critical }
-        annotations:
-          summary: "Spam complaint rate > 0.1% — sender reputation at risk"
-```
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
-| Issue | Solution |
-|-------|----------|
-| High cardinality metrics | Don't use userId as a label — use operation + status only |
-| Log volume too high | Set `CUSTOMERIO_LOG_LEVEL=warn` in production |
-| Missing metrics | Check metric registration and scrape config |
-| PII in logs | Verify pino redact paths cover all sensitive fields |
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/)
-- [Grafana Dashboard Provisioning](https://grafana.com/docs/grafana/latest/dashboards/)
-- [pino Logger](https://getpino.io/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Customer.io Observability Guide](https://docs.customerio.com/observability)
 
 ## Next Steps
-
-After observability setup, proceed to `customerio-advanced-troubleshooting` for debugging.
+For incident response, see `customerio-incident-runbook`.

@@ -1,202 +1,252 @@
 ---
 name: databricks-observability
 description: |
-  Set up comprehensive observability for Databricks with metrics, traces, and alerts.
-  Use when implementing monitoring for Databricks jobs, setting up dashboards,
-  or configuring alerting for pipeline health.
+  Set up comprehensive observability for Databricks integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Databricks operations, setting up dashboards,
+  or configuring alerting for Databricks integration health.
   Trigger with phrases like "databricks monitoring", "databricks metrics",
-  "databricks observability", "monitor databricks", "databricks alerts", "databricks logging".
-allowed-tools: Read, Write, Edit, Bash(databricks:*)
+  "databricks observability", "monitor databricks", "databricks alerts", "databricks tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, databricks, monitoring, observability, dashboard]
-
+compatible-with: claude-code
+tags: [saas, databricks]
 ---
+
 # Databricks Observability
 
 ## Overview
-Monitor Databricks jobs, clusters, SQL warehouses, and costs using system tables in the `system` catalog. System tables provide queryable observability data: `system.lakeflow` (job runs), `system.billing` (costs), `system.query` (SQL history), `system.access` (audit logs), and `system.compute` (cluster metrics). Data updates throughout the day, not real-time.
+Set up comprehensive observability for Databricks integrations.
 
 ## Prerequisites
-- Databricks Premium or Enterprise with Unity Catalog enabled
-- Access to `system.billing`, `system.lakeflow`, `system.query`, and `system.access` schemas
-- SQL warehouse for running monitoring queries
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `databricks_requests_total` | Counter | Total API requests |
+| `databricks_request_duration_seconds` | Histogram | Request latency |
+| `databricks_errors_total` | Counter | Error count by type |
+| `databricks_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'databricks_requests_total',
+  help: 'Total Databricks API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'databricks_request_duration_seconds',
+  help: 'Databricks request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'databricks_errors_total',
+  help: 'Databricks errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('databricks-client');
+
+async function tracedDatabricksCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`databricks.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'databricks',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logDatabricksOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'databricks',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# databricks_alerts.yaml
+groups:
+  - name: databricks_alerts
+    rules:
+      - alert: DatabricksHighErrorRate
+        expr: |
+          rate(databricks_errors_total[5m]) /
+          rate(databricks_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Databricks error rate > 5%"
+
+      - alert: DatabricksHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(databricks_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Databricks P95 latency > 2s"
+
+      - alert: DatabricksDown
+        expr: up{job="databricks"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Databricks integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Databricks Request Rate",
+      "targets": [{
+        "expr": "rate(databricks_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Databricks Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(databricks_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
 
 ## Instructions
 
-### Step 1: Job Health Monitoring
-```sql
--- Job success/failure over last 24 hours
-SELECT
-    COUNT(CASE WHEN result_state = 'SUCCESS' THEN 1 END) AS succeeded,
-    COUNT(CASE WHEN result_state = 'FAILED' THEN 1 END) AS failed,
-    COUNT(CASE WHEN result_state = 'TIMED_OUT' THEN 1 END) AS timed_out,
-    ROUND(100.0 * COUNT(CASE WHEN result_state = 'SUCCESS' THEN 1 END) / COUNT(*), 1) AS success_rate_pct,
-    ROUND(AVG(TIMESTAMPDIFF(MINUTE, start_time, end_time)), 1) AS avg_duration_min
-FROM system.lakeflow.job_run_timeline
-WHERE start_time > current_timestamp() - INTERVAL 24 HOURS;
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
 
--- Failed jobs with error details
-SELECT job_id, run_name, result_state, start_time, end_time,
-       TIMESTAMPDIFF(MINUTE, start_time, end_time) AS duration_min,
-       error_message
-FROM system.lakeflow.job_run_timeline
-WHERE result_state = 'FAILED'
-  AND start_time > current_timestamp() - INTERVAL 24 HOURS
-ORDER BY start_time DESC;
-```
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
 
-### Step 2: Cluster Utilization and Costs
-```sql
--- DBU consumption by cluster (last 7 days)
-SELECT usage_metadata.cluster_id,
-       COALESCE(usage_metadata.cluster_name, 'unnamed') AS cluster_name,
-       sku_name,
-       SUM(usage_quantity) AS total_dbus,
-       ROUND(SUM(usage_quantity * p.pricing.default), 2) AS cost_usd
-FROM system.billing.usage u
-LEFT JOIN system.billing.list_prices p ON u.sku_name = p.sku_name
-WHERE u.usage_date >= current_date() - INTERVAL 7 DAYS
-GROUP BY usage_metadata.cluster_id, cluster_name, u.sku_name
-ORDER BY cost_usd DESC
-LIMIT 20;
-```
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
 
-### Step 3: SQL Warehouse Performance
-```sql
--- Slow queries (>30s) on SQL warehouses
-SELECT warehouse_id, statement_id, executed_by,
-       ROUND(total_duration_ms / 1000, 1) AS duration_sec,
-       rows_produced,
-       ROUND(bytes_scanned / 1048576, 1) AS scanned_mb,
-       LEFT(statement_text, 200) AS query_preview
-FROM system.query.history
-WHERE total_duration_ms > 30000
-  AND start_time > current_timestamp() - INTERVAL 24 HOURS
-ORDER BY total_duration_ms DESC
-LIMIT 50;
-
--- Warehouse queue times (right-sizing indicator)
-SELECT warehouse_id, warehouse_name,
-       COUNT(*) AS query_count,
-       ROUND(AVG(total_duration_ms) / 1000, 1) AS avg_sec,
-       ROUND(MAX(queue_duration_ms) / 1000, 1) AS max_queue_sec
-FROM system.query.history
-WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
-GROUP BY warehouse_id, warehouse_name;
-```
-
-### Step 4: Cost-per-Job Analysis
-```sql
-SELECT j.name AS job_name,
-       COUNT(DISTINCT r.run_id) AS run_count,
-       ROUND(AVG(TIMESTAMPDIFF(MINUTE, r.start_time, r.end_time)), 1) AS avg_min,
-       ROUND(SUM(b.usage_quantity), 1) AS total_dbus,
-       ROUND(SUM(b.usage_quantity * p.pricing.default), 2) AS total_cost_usd
-FROM system.lakeflow.job_run_timeline r
-JOIN system.lakeflow.jobs j ON r.job_id = j.job_id
-LEFT JOIN system.billing.usage b
-    ON r.run_id = b.usage_metadata.job_run_id
-LEFT JOIN system.billing.list_prices p ON b.sku_name = p.sku_name
-WHERE r.start_time > current_timestamp() - INTERVAL 7 DAYS
-GROUP BY j.name
-ORDER BY total_cost_usd DESC
-LIMIT 15;
-```
-
-### Step 5: SQL Alerts for Automated Notifications
-```sql
--- Create as SQL Alert: trigger when failure_count > 3
--- Schedule: every 15 minutes
--- Notification destination: Slack/email
-
-SELECT COUNT(*) AS failure_count
-FROM system.lakeflow.job_run_timeline
-WHERE result_state = 'FAILED'
-  AND start_time > current_timestamp() - INTERVAL 1 HOUR;
-```
-
-```python
-from databricks.sdk import WorkspaceClient
-
-w = WorkspaceClient()
-
-# Create SQL alert programmatically
-alert = w.alerts.create(
-    name="Hourly Job Failure Alert",
-    query_id="<saved-query-id>",
-    options={"column": "failure_count", "op": ">", "value": "3"},
-    rearm=900,  # re-alert after 15 min if still triggered
-)
-```
-
-### Step 6: Export Metrics to External Systems
-```python
-from databricks.sdk import WorkspaceClient
-
-w = WorkspaceClient()
-
-# Export cluster state metrics for Prometheus/Datadog
-for cluster in w.clusters.list():
-    if cluster.state.value == "RUNNING":
-        print(f"databricks_cluster_workers{{name=\"{cluster.cluster_name}\"}} "
-              f"{cluster.num_workers}")
-        print(f"databricks_cluster_running{{name=\"{cluster.cluster_name}\"}} 1")
-
-# Export job success rate for Grafana
-runs = list(w.jobs.list_runs(limit=100, completed_only=True))
-success = sum(1 for r in runs if r.state.result_state and r.state.result_state.value == "SUCCESS")
-print(f"databricks_job_success_rate {success / len(runs):.2f}")
-```
-
-### Step 7: Audit Log Monitoring
-```sql
--- Security: who accessed what in the last 7 days
-SELECT event_time, user_identity.email, action_name,
-       request_params, response.status_code
-FROM system.access.audit
-WHERE service_name IN ('unityCatalog', 'jobs', 'clusters')
-  AND event_date >= current_date() - 7
-  AND action_name NOT IN ('getStatus', 'list')  -- exclude noisy reads
-ORDER BY event_time DESC
-LIMIT 100;
-```
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- Job health dashboard (success rate, duration, failures)
-- Cluster cost breakdown by team and SKU
-- SQL warehouse performance report (slow queries, queue times)
-- Per-job cost analysis
-- Automated SQL alerts with Slack/email notifications
-- External metric export for Prometheus/Grafana
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| System tables empty | Unity Catalog not enabled | Enable in Account Console > Settings |
-| `TABLE_OR_VIEW_NOT_FOUND` | Schema not accessible | Request admin to grant `SELECT ON system.billing` |
-| Billing data delayed | System table refresh lag (up to 24h) | Use for trends and alerts, not real-time |
-| Query history missing | Serverless queries not tracked | Use classic SQL warehouse or check retention |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
 ## Examples
 
-### Daily Standup Dashboard
-```sql
--- Single query for daily pipeline health
-SELECT
-    'Last 24h' AS period,
-    COUNT(*) AS total_runs,
-    COUNT(CASE WHEN result_state = 'SUCCESS' THEN 1 END) AS ok,
-    COUNT(CASE WHEN result_state = 'FAILED' THEN 1 END) AS failed,
-    ROUND(AVG(TIMESTAMPDIFF(MINUTE, start_time, end_time)), 1) AS avg_min
-FROM system.lakeflow.job_run_timeline
-WHERE start_time > current_timestamp() - INTERVAL 24 HOURS;
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
 ```
 
 ## Resources
-- [System Tables](https://docs.databricks.com/aws/en/admin/system-tables/)
-- [Audit Logs](https://docs.databricks.com/aws/en/admin/system-tables/audit-logs)
-- [Observability Best Practices](https://docs.databricks.com/aws/en/data-engineering/observability-best-practices)
-- [SQL Alerts](https://docs.databricks.com/aws/en/sql/user/alerts/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Databricks Observability Guide](https://docs.databricks.com/observability)
+
+## Next Steps
+For incident response, see `databricks-incident-runbook`.

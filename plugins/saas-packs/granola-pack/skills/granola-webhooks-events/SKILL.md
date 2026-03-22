@@ -1,233 +1,201 @@
 ---
 name: granola-webhooks-events
 description: |
-  Build event-driven automations with Granola's Zapier webhook triggers.
-  Use when creating real-time notification systems, processing meeting events,
-  or building custom integrations that react to Granola note creation.
-  Trigger: "granola webhooks", "granola events", "granola triggers",
-  "granola real-time", "granola event-driven".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(node:*), Bash(python3:*)
+  Implement Granola webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Granola event notifications securely.
+  Trigger with phrases like "granola webhook", "granola events",
+  "granola webhook signature", "handle granola events", "granola notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, webhooks, automation]
-
+compatible-with: claude-code
+tags: [saas, granola]
 ---
+
 # Granola Webhooks & Events
 
 ## Overview
-Granola does not expose raw webhook endpoints. All event-driven automation flows through Zapier, which provides two trigger events. This skill covers the event model, webhook payload structure, event filtering, processing patterns, and building custom event handlers.
+Securely handle Granola webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- Granola Business plan (for Zapier access)
-- Zapier account (Free for basic Zaps, Paid for multi-step)
-- Optional: custom webhook endpoint (Express.js, FastAPI, or serverless function)
+- Granola webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/granola',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-granola-signature'] as string;
+    const timestamp = req.headers['x-granola-timestamp'] as string;
+
+    if (!verifyGranolaSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleGranolaEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyGranolaSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.GRANOLA_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type GranolaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface GranolaEvent {
+  id: string;
+  type: GranolaEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<GranolaEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleGranolaEvent(event: GranolaEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `granola:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `granola:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Granola CLI to send test events
+granola webhooks trigger resource.created --url http://localhost:3000/webhooks/granola
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
 
 ## Instructions
 
-### Step 1 — Understand the Event Model
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Granola dashboard.
 
-Granola fires events through Zapier triggers, not direct webhooks. Two triggers are available:
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-| Trigger | When It Fires | Use Case |
-|---------|--------------|----------|
-| **Note Added to Granola Folder** | A note is placed in a specific folder (automatic) | Auto-route by meeting type |
-| **Note Shared to Zapier** | You manually click Share > Zapier on a note | Selective sharing for important meetings |
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-### Step 2 — Webhook Payload Structure
-
-When a Zapier trigger fires, Granola sends this data:
-
-```json
-{
-  "title": "Sprint Planning — Q1 Week 12",
-  "creator_name": "Sarah Chen",
-  "creator_email": "sarah@company.com",
-  "attendees": [
-    {"name": "Sarah Chen", "email": "sarah@company.com"},
-    {"name": "Mike Johnson", "email": "mike@company.com"},
-    {"name": "Alex Kim", "email": "alex@external.com"}
-  ],
-  "calendar_event_title": "Sprint Planning",
-  "calendar_event_datetime": "2026-03-22T10:00:00Z",
-  "note_content": "## Summary\nDiscussed Q1 priorities...\n\n## Action Items\n- [ ] @sarah: Schedule design review..."
-}
-```
-
-**Key fields for filtering and routing:**
-- `attendees[].email` — detect internal vs. external meetings
-- `calendar_event_title` — match meeting type patterns
-- `note_content` — search for action items, decisions, keywords
-
-### Step 3 — Event Filtering Patterns
-
-Use Zapier Filter steps to route events:
-
-**Filter: Only External Meetings**
-```
-Filter: attendees.email DOES NOT contain "@company.com"
-(at least one attendee has a non-company email)
-```
-
-**Filter: Only Meetings with Action Items**
-```
-Filter: note_content contains "- [ ]"
-```
-
-**Filter: Only Sales Calls (by title keywords)**
-```
-Filter: calendar_event_title contains any of: "discovery", "demo", "sales", "prospect"
-```
-
-**Filter: Long Meetings Only (> 30 min)**
-```
-Use Zapier Code step to parse calendar_event_datetime and compare to note timestamp
-```
-
-### Step 4 — Build a Custom Webhook Handler
-
-Forward Granola events from Zapier to your own endpoint:
-
-```yaml
-# Zapier configuration
-Trigger: Granola — Note Added to Folder ("All Meetings")
-Action: Webhooks by Zapier — POST
-  URL: https://your-api.com/webhooks/granola
-  Payload Type: JSON
-  Data:
-    title: "{{title}}"
-    creator: "{{creator_email}}"
-    attendees: "{{attendees}}"
-    content: "{{note_content}}"
-    datetime: "{{calendar_event_datetime}}"
-    hmac: "{{your_webhook_secret}}"
-```
-
-**Express.js handler:**
-```javascript
-// webhook-handler.js
-import express from 'express';
-const app = express();
-app.use(express.json());
-
-app.post('/webhooks/granola', async (req, res) => {
-  const { title, creator, attendees, content, datetime } = req.body;
-
-  // Validate webhook (use HMAC or shared secret)
-  // if (!verifyHmac(req)) return res.status(401).send('Unauthorized');
-
-  console.log(`Meeting received: ${title} (${datetime})`);
-
-  // Extract action items
-  const actionItems = content
-    .split('\n')
-    .filter(line => line.match(/^- \[ \]/))
-    .map(line => line.replace('- [ ] ', ''));
-
-  // Route based on meeting type
-  const isExternal = attendees.some(a => !a.email?.endsWith('@company.com'));
-
-  if (isExternal) {
-    await handleExternalMeeting({ title, attendees, content, actionItems });
-  } else {
-    await handleInternalMeeting({ title, content, actionItems });
-  }
-
-  res.status(200).json({ processed: true, actions: actionItems.length });
-});
-
-async function handleExternalMeeting({ title, attendees, content, actionItems }) {
-  // CRM update, follow-up email draft, Slack #sales notification
-  console.log(`External meeting: ${title}, ${actionItems.length} action items`);
-}
-
-async function handleInternalMeeting({ title, content, actionItems }) {
-  // Linear tasks, Notion archive, Slack #team notification
-  console.log(`Internal meeting: ${title}, ${actionItems.length} action items`);
-}
-
-app.listen(3000, () => console.log('Granola webhook handler running on :3000'));
-```
-
-**Python FastAPI handler:**
-```python
-from fastapi import FastAPI, Request
-import re
-
-app = FastAPI()
-
-@app.post("/webhooks/granola")
-async def handle_granola_event(request: Request):
-    data = await request.json()
-    title = data.get("title", "Untitled")
-    content = data.get("content", "")
-    attendees = data.get("attendees", [])
-
-    # Extract action items
-    actions = re.findall(r"- \[ \] (.+)", content)
-
-    # Route by attendee type
-    external = [a for a in attendees if not a.get("email", "").endswith("@company.com")]
-
-    if external:
-        # Process external meeting
-        await process_external(title, actions, external)
-    else:
-        await process_internal(title, actions)
-
-    return {"processed": True, "action_count": len(actions)}
-```
-
-### Step 5 — Processing Patterns
-
-| Pattern | When to Use | Implementation |
-|---------|------------|----------------|
-| **Immediate** | Time-sensitive follow-ups | Direct Zapier actions, ~2 min latency |
-| **Batch** | Reduce noise, aggregate | Queue to SQS/Redis, process every 15 min |
-| **Conditional** | Route by meeting type | Zapier Paths or custom webhook with routing logic |
-| **Idempotent** | Prevent duplicate processing | Store processed note IDs, skip duplicates |
-
-### Step 6 — Error Handling and Retry
-
-Zapier handles retries automatically for failed actions. For custom webhooks:
-
-```javascript
-// Implement idempotency
-const processedNotes = new Set(); // Use Redis/DB in production
-
-app.post('/webhooks/granola', async (req, res) => {
-  const noteId = `${req.body.title}-${req.body.datetime}`;
-
-  if (processedNotes.has(noteId)) {
-    return res.status(200).json({ status: 'already_processed' });
-  }
-
-  processedNotes.add(noteId);
-  // ... process the event
-});
-```
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Zapier triggers configured for target folders
-- Event filtering routing meetings by type
-- Custom webhook handler processing events
-- Idempotency preventing duplicate processing
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
-| Error | Cause | Fix |
-|-------|-------|-----|
-| Trigger not firing | Wrong folder name in Zapier | Verify folder name matches exactly (case-sensitive) |
-| Empty note_content | Note still processing when trigger fires | Add 2-minute Delay step before processing actions |
-| Duplicate events | Zapier retry on timeout | Implement idempotency with note ID deduplication |
-| Webhook timeout | Handler takes > 30s | Return 200 immediately, process async |
-| Missing attendees | Calendar event has no attendee list | No fix — attendees come from calendar event data |
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/granola \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Zapier Granola Integration](https://zapier.com/apps/granola/integrations)
-- [Zapier Webhooks Documentation](https://zapier.com/help/create/code-webhooks)
-- [4 Ways to Automate Granola](https://zapier.com/blog/automate-granola/)
+- [Granola Webhooks Guide](https://docs.granola.com/webhooks)
+- [Webhook Security Best Practices](https://docs.granola.com/webhooks/security)
 
 ## Next Steps
-Proceed to `granola-performance-tuning` for transcription quality optimization.
+For performance optimization, see `granola-performance-tuning`.

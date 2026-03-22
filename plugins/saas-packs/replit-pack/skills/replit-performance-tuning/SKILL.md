@@ -1,247 +1,216 @@
 ---
 name: replit-performance-tuning
 description: |
-  Optimize Replit app performance: cold start, memory, Nix caching, and deployment speed.
-  Use when experiencing slow startup, high memory usage, deployment timeouts,
-  or optimizing Replit container resource usage.
+  Optimize Replit API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Replit integrations.
   Trigger with phrases like "replit performance", "optimize replit",
-  "replit slow", "replit cold start", "replit memory", "replit startup time".
+  "replit latency", "replit caching", "replit slow", "replit batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, replit, performance, optimization]
-
+compatible-with: claude-code
+tags: [saas, replit]
 ---
+
 # Replit Performance Tuning
 
 ## Overview
-Optimize Replit app performance across the entire lifecycle: cold start reduction, Nix environment caching, build speed, runtime memory management, and deployment configuration. Replit containers have resource limits — efficient usage is critical.
+Optimize Replit API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-- Replit app deployed or running in Workspace
-- Understanding of `.replit` and `replit.nix`
-- Access to deployment monitoring
+- Replit SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
+
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedReplitRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const replitLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Replit
+    const results = await replitClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  replitLoader.load('id-1'),
+  replitLoader.load('id-2'),
+  replitLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new ReplitClient({
+  apiKey: process.env.REPLIT_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedReplitList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedReplitList(cursor =>
+  replitClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredReplitCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Reduce Cold Start Time
-Autoscale deployments scale to zero when idle. First request triggers a cold start (10-30s). Minimize it:
+### Step 1: Establish Baseline
+Measure current latency for critical Replit operations.
 
-```typescript
-// 1. Lazy-load heavy modules — only import when needed
-// BAD: imports everything at startup
-import { heavyAnalytics } from './analytics'; // 500ms
-import { imageProcessor } from './images';     // 300ms
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-// GOOD: import on demand
-app.get('/api/analyze', async (req, res) => {
-  const { heavyAnalytics } = await import('./analytics');
-  res.json(await heavyAnalytics.process(req.query));
-});
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-// 2. Defer non-critical initialization
-let dbPool: Pool | null = null;
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
-function getDB(): Pool {
-  if (!dbPool) {
-    dbPool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
-      max: 5,  // Keep pool small for faster init
-    });
-  }
-  return dbPool;
-}
-
-// 3. Start server immediately, initialize after
-const app = express();
-const PORT = parseInt(process.env.PORT || '3000');
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server ready in ${process.uptime().toFixed(1)}s`);
-  // Warm up in background after server is accepting requests
-  warmup().catch(console.error);
-});
-
-async function warmup() {
-  await getDB().query('SELECT 1');  // Pre-connect
-}
-```
-
-### Step 2: Optimize Nix Environment
-```nix
-# replit.nix — only include what you actually need
-
-# BAD: kitchen-sink approach
-{ pkgs }: {
-  deps = [
-    pkgs.nodejs-20_x
-    pkgs.python311
-    pkgs.go
-    pkgs.rustc
-    pkgs.cargo
-    pkgs.postgresql
-    pkgs.redis
-    pkgs.imagemagick
-  ];
-}
-
-# GOOD: minimal deps for a Node.js app
-{ pkgs }: {
-  deps = [
-    pkgs.nodejs-20_x
-    pkgs.nodePackages.typescript-language-server
-  ];
-  # Only add postgresql if you need psql CLI:
-  # pkgs.postgresql
-}
-```
-
-```toml
-# .replit — pin Nix channel for cache hits
-[nix]
-channel = "stable-24_05"
-# Changing channel invalidates all Nix caches
-# Only upgrade when needed
-```
-
-### Step 3: Optimize Build Step
-```toml
-# .replit — fast production builds
-[deployment]
-build = ["sh", "-c", "npm ci --production && npm run build"]
-run = ["sh", "-c", "node dist/index.js"]
-```
-
-```json
-// package.json — optimize build scripts
-{
-  "scripts": {
-    "build": "tsc --incremental",
-    "start": "node dist/index.js",
-    "dev": "tsx watch src/index.ts"
-  }
-}
-```
-
-```json
-// tsconfig.json — incremental builds
-{
-  "compilerOptions": {
-    "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo",
-    "skipLibCheck": true
-  }
-}
-```
-
-Tips for faster builds:
-- Use `npm ci` (not `npm install`) — deterministic, faster
-- Add `--production` to skip devDependencies
-- Use TypeScript `--incremental` for rebuild caching
-- Avoid `postinstall` scripts that compile native addons
-
-### Step 4: Memory Management
-Replit containers have memory limits (512 MB to 16 GiB depending on plan/tier):
-
-```typescript
-// Monitor memory usage
-function logMemory() {
-  const usage = process.memoryUsage();
-  const mb = (bytes: number) => Math.round(bytes / 1024 / 1024);
-  console.log({
-    heapUsed: `${mb(usage.heapUsed)} MB`,
-    heapTotal: `${mb(usage.heapTotal)} MB`,
-    rss: `${mb(usage.rss)} MB`,
-    external: `${mb(usage.external)} MB`,
-  });
-}
-
-// Check every 60 seconds
-setInterval(logMemory, 60000);
-
-// Expose via health endpoint
-app.get('/health', (req, res) => {
-  const mem = process.memoryUsage();
-  res.json({
-    status: 'ok',
-    uptime: process.uptime(),
-    memoryMB: Math.round(mem.heapUsed / 1024 / 1024),
-    memoryPercent: ((mem.heapUsed / mem.heapTotal) * 100).toFixed(1),
-  });
-});
-```
-
-**Memory optimization patterns:**
-```typescript
-// Stream large files instead of loading into memory
-import { createReadStream } from 'fs';
-app.get('/download/:file', (req, res) => {
-  const stream = createReadStream(`/tmp/${req.params.file}`);
-  stream.pipe(res);
-});
-
-// Paginate database queries
-app.get('/api/items', async (req, res) => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = 50;
-  const offset = (page - 1) * limit;
-  const { rows } = await pool.query(
-    'SELECT * FROM items ORDER BY id LIMIT $1 OFFSET $2',
-    [limit, offset]
-  );
-  res.json({ items: rows, page, hasMore: rows.length === limit });
-});
-
-// Clear caches when memory is high
-const cache = new Map<string, any>();
-setInterval(() => {
-  if (process.memoryUsage().heapUsed > 400 * 1024 * 1024) {
-    cache.clear();
-    console.log('Cache cleared due to high memory');
-  }
-}, 30000);
-```
-
-### Step 5: Database Connection Efficiency
-```typescript
-// PostgreSQL pool tuning for Replit
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
-  max: 5,                    // Small pool — containers are limited
-  idleTimeoutMillis: 30000,  // Close idle connections after 30s
-  connectionTimeoutMillis: 5000,
-});
-
-// Use connection pooling, never create per-request connections
-// BAD: new Pool() per request
-// GOOD: single pool, shared across requests
-```
-
-### Step 6: Deployment Type Selection
-| Scenario | Best Type | Why |
-|----------|-----------|-----|
-| < 100 daily requests | Autoscale | Free when idle |
-| Consistent traffic | Reserved VM | No cold starts |
-| Static frontend | Static | Fastest, cheapest |
-| Latency-sensitive API | Reserved VM | Always warm |
-| Cron jobs / webhooks | Reserved VM | Must be always-on |
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cold start > 15s | Heavy imports | Lazy-load, defer init |
-| OOM killed | Exceeding memory limit | Stream data, reduce pool size |
-| Build timeout | Slow npm install | Use `npm ci --production` |
-| Slow first query | DB cold connection | Pre-connect in warmup() |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredReplitCall(name, () =>
+    cachedReplitRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Replit App Configuration](https://docs.replit.com/replit-app/configuration)
-- [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
-- [Nix Performance](https://blog.replit.com/nix-perf-improvements)
-- [Reserved VM Deployments](https://docs.replit.com/cloud-services/deployments/reserved-vm-deployments)
+- [Replit Performance Guide](https://docs.replit.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `replit-cost-tuning`.

@@ -1,66 +1,92 @@
 ---
 name: mindtickle-install-auth
 description: |
-  Install and configure MindTickle SDK/API authentication.
-  Use when setting up a new MindTickle integration.
-  Trigger: "install mindtickle", "setup mindtickle", "mindtickle auth".
+  Install and configure Mindtickle SDK/CLI authentication.
+  Use when setting up a new Mindtickle integration, configuring API keys,
+  or initializing Mindtickle in your project.
+  Trigger with phrases like "install mindtickle", "setup mindtickle",
+  "mindtickle auth", "configure mindtickle API key".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle, sales]
 compatible-with: claude-code
+tags: [saas, mindtickle]
 ---
 
-# MindTickle Install & Auth
+# Mindtickle Install & Auth
 
 ## Overview
-Set up MindTickle API for sales readiness, training content management, and rep performance analytics.
+Set up Mindtickle SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-- MindTickle account and API access
-- API key/credentials from MindTickle dashboard
-- Node.js 18+ or Python 3.8+
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Mindtickle account with API access
+- API key from Mindtickle dashboard
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
+# Node.js
 npm install @mindtickle/sdk
-# API key from MindTickle Admin > Integrations > API
+
+# Python
+pip install mindtickle
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-export MINDTICKLE_API_KEY="your-api-key-here"
+# Set environment variable
+export MINDTICKLE_API_KEY="your-api-key"
+
+# Or create .env file
 echo 'MINDTICKLE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection (TypeScript)
+### Step 3: Verify Connection
 ```typescript
-import { MindTickleClient } from '@mindtickle/sdk';
-const client = new MindTickleClient({ apiKey: process.env.MINDTICKLE_API_KEY });
-const users = await client.users.list({ limit: 5 });
-console.log(`Found ${users.total} users`);
+// Test connection code here
 ```
 
-### Step 4: Verify Connection (Python)
-```python
-import mindtickle
-client = mindtickle.Client(api_key=os.environ['MINDTICKLE_API_KEY'])
-users = client.users.list(limit=5)
-print(f'Found {users.total} users')
-```
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-| Error | Code | Solution |
-|-------|------|----------|
-| Invalid API key | 401 | Verify credentials in dashboard |
-| Permission denied | 403 | Check API scopes/permissions |
-| Rate limited | 429 | Implement backoff |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Incorrect or expired key | Verify key in Mindtickle dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.mindtickle.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { MindtickleClient } from '@mindtickle/sdk';
+
+const client = new MindtickleClient({
+  apiKey: process.env.MINDTICKLE_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from mindtickle import MindtickleClient
+
+client = MindtickleClient(
+    api_key=os.environ.get('MINDTICKLE_API_KEY')
+)
+```
 
 ## Resources
-- [MindTickle Documentation](https://www.mindtickle.com/platform/integrations/)
+- [Mindtickle Documentation](https://docs.mindtickle.com)
+- [Mindtickle Dashboard](https://api.mindtickle.com)
+- [Mindtickle Status](https://status.mindtickle.com)
 
 ## Next Steps
-After auth, proceed to `mindtickle-hello-world`.
+After successful auth, proceed to `mindtickle-hello-world` for your first API call.

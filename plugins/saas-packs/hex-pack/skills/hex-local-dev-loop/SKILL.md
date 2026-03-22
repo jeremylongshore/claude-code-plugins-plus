@@ -10,103 +10,110 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, analytics]
 compatible-with: claude-code
+tags: [saas, hex]
 ---
 
 # Hex Local Dev Loop
 
 ## Overview
+Set up a fast, reproducible local development workflow for Hex.
 
-Set up a development workflow for Hex API orchestration with mocked API responses and testing.
+## Prerequisites
+- Completed `hex-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Project Structure
-
+### Step 1: Create Project Structure
 ```
-hex-orchestrator/
-├── src/hex/
-│   ├── client.ts       # API client
-│   ├── orchestrator.ts # Pipeline runner
-│   └── types.ts        # TypeScript interfaces
+my-hex-project/
+├── src/
+│   ├── hex/
+│   │   ├── client.ts       # Hex client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
 ├── tests/
-│   ├── fixtures/       # Mock API responses
-│   └── orchestrator.test.ts
-├── .env.local
+│   └── hex.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
 └── package.json
 ```
 
-### Step 2: Typed Hex Client
+### Step 2: Configure Environment
+```bash
+# Copy environment template
+cp .env.example .env.local
 
-```typescript
-// src/hex/client.ts
-export class HexClient {
-  constructor(private token: string, private baseUrl = 'https://app.hex.tech/api/v1') {}
+# Install dependencies
+npm install
 
-  async listProjects() {
-    return this.get('/projects');
-  }
+# Start development server
+npm run dev
+```
 
-  async runProject(projectId: string, inputParams?: Record<string, any>) {
-    return this.post(`/project/${projectId}/run`, { inputParams: inputParams || {}, updateCacheResult: true });
-  }
-
-  async getRunStatus(projectId: string, runId: string) {
-    return this.get(`/project/${projectId}/run/${runId}`);
-  }
-
-  async cancelRun(projectId: string, runId: string) {
-    return this.delete(`/project/${projectId}/run/${runId}`);
-  }
-
-  private async get(path: string) {
-    const res = await fetch(`${this.baseUrl}${path}`, { headers: { 'Authorization': `Bearer ${this.token}` } });
-    if (!res.ok) throw new Error(`Hex API ${res.status}`);
-    return res.json();
-  }
-
-  private async post(path: string, body: any) {
-    const res = await fetch(`${this.baseUrl}${path}`, { method: 'POST', headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    if (!res.ok) throw new Error(`Hex API ${res.status}`);
-    return res.json();
-  }
-
-  private async delete(path: string) {
-    const res = await fetch(`${this.baseUrl}${path}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${this.token}` } });
-    return res.ok;
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   }
 }
 ```
 
-### Step 3: Mocked Tests
-
+### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-const mockFetch = vi.fn();
-vi.stubGlobal('fetch', mockFetch);
+import { HexClient } from '../src/hex/client';
 
-describe('HexClient', () => {
-  it('should list projects', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: true, json: async () => [{ projectId: 'p1', name: 'Test' }] });
-    const client = new HexClient('test-token');
-    const projects = await client.listProjects();
-    expect(projects).toHaveLength(1);
-  });
-
-  it('should trigger a run', async () => {
-    mockFetch.mockResolvedValueOnce({ ok: true, json: async () => ({ runId: 'r1', projectId: 'p1' }) });
-    const client = new HexClient('test-token');
-    const run = await client.runProject('p1', { date: '2025-01-01' });
-    expect(run.runId).toBe('r1');
+describe('Hex Client', () => {
+  it('should initialize with API key', () => {
+    const client = new HexClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
   });
 });
 ```
 
-## Resources
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Hex development
 
-- [Hex API](https://learn.hex.tech/docs/api/api-overview)
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Hex Responses
+```typescript
+vi.mock('@hex/sdk', () => ({
+  HexClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=HEX=* npm run dev
+```
+
+## Resources
+- [Hex SDK Reference](https://docs.hex.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-
-See `hex-sdk-patterns` for production patterns.
+See `hex-sdk-patterns` for production-ready code patterns.

@@ -6,143 +6,87 @@ description: |
   or initializing Hootsuite in your project.
   Trigger with phrases like "install hootsuite", "setup hootsuite",
   "hootsuite auth", "configure hootsuite API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
+tags: [saas, hootsuite]
 ---
 
 # Hootsuite Install & Auth
 
 ## Overview
-
-Configure Hootsuite REST API OAuth 2.0 authentication. Hootsuite uses OAuth 2.0 with Bearer tokens. You register an app in the Hootsuite Developer Portal, get client credentials, and exchange authorization codes for access tokens.
+Set up Hootsuite SDK/CLI and configure authentication credentials.
 
 ## Prerequisites
-
-- Hootsuite account (Business plan or higher for API access)
-- Registered app at https://developer.hootsuite.com
-- Client ID and Client Secret from your app
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
+- Hootsuite account with API access
+- API key from Hootsuite dashboard
 
 ## Instructions
 
-### Step 1: Register Your App
-
-1. Go to https://developer.hootsuite.com
-2. Create a new app
-3. Note your Client ID and Client Secret
-4. Set redirect URI to `https://your-app.com/callback`
-
-### Step 2: Configure Environment
-
+### Step 1: Install SDK
 ```bash
-# .env (NEVER commit)
-HOOTSUITE_CLIENT_ID=your_client_id
-HOOTSUITE_CLIENT_SECRET=your_client_secret
-HOOTSUITE_REDIRECT_URI=https://your-app.com/callback
-HOOTSUITE_ACCESS_TOKEN=  # Populated after OAuth flow
+# Node.js
+npm install @hootsuite/sdk
 
-# .gitignore
-.env
-.env.local
+# Python
+pip install hootsuite
 ```
 
-### Step 3: OAuth 2.0 Authorization Flow
+### Step 2: Configure Authentication
+```bash
+# Set environment variable
+export HOOTSUITE_API_KEY="your-api-key"
 
-```typescript
-// auth.ts — OAuth 2.0 authorization code flow
-import 'dotenv/config';
-
-const { HOOTSUITE_CLIENT_ID, HOOTSUITE_CLIENT_SECRET, HOOTSUITE_REDIRECT_URI } = process.env;
-
-// Step 1: Redirect user to authorize
-function getAuthUrl(): string {
-  const params = new URLSearchParams({
-    response_type: 'code',
-    client_id: HOOTSUITE_CLIENT_ID!,
-    redirect_uri: HOOTSUITE_REDIRECT_URI!,
-    scope: 'offline',
-  });
-  return `https://platform.hootsuite.com/oauth2/auth?${params}`;
-}
-
-// Step 2: Exchange authorization code for tokens
-async function exchangeCode(code: string) {
-  const response = await fetch('https://platform.hootsuite.com/oauth2/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(`${HOOTSUITE_CLIENT_ID}:${HOOTSUITE_CLIENT_SECRET}`).toString('base64')}`,
-    },
-    body: new URLSearchParams({
-      grant_type: 'authorization_code',
-      code,
-      redirect_uri: HOOTSUITE_REDIRECT_URI!,
-    }),
-  });
-
-  const tokens = await response.json();
-  console.log('Access Token:', tokens.access_token);
-  console.log('Refresh Token:', tokens.refresh_token);
-  console.log('Expires In:', tokens.expires_in, 'seconds');
-  return tokens;
-}
-
-// Step 3: Refresh expired token
-async function refreshToken(refreshToken: string) {
-  const response = await fetch('https://platform.hootsuite.com/oauth2/token', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': `Basic ${Buffer.from(`${HOOTSUITE_CLIENT_ID}:${HOOTSUITE_CLIENT_SECRET}`).toString('base64')}`,
-    },
-    body: new URLSearchParams({
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    }),
-  });
-  return response.json();
-}
+# Or create .env file
+echo 'HOOTSUITE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 4: Verify Connection
-
+### Step 3: Verify Connection
 ```typescript
-async function verifyConnection(accessToken: string) {
-  const response = await fetch('https://platform.hootsuite.com/v1/me', {
-    headers: { 'Authorization': `Bearer ${accessToken}` },
-  });
-  const user = await response.json();
-  console.log('Connected as:', user.data.fullName);
-  console.log('Organization:', user.data.organizationName);
-  return user;
-}
+// Test connection code here
 ```
 
 ## Output
-
-- OAuth 2.0 app credentials configured
-- Access token obtained via authorization code flow
-- Token refresh mechanism for long-lived access
-- Connection verified with user profile
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid or expired token | Refresh token or re-authorize |
-| `invalid_client` | Wrong client ID/secret | Check app credentials |
-| `invalid_grant` | Authorization code expired | Codes expire in 30s; re-authorize |
-| `redirect_uri_mismatch` | URI doesn't match | Must exactly match app registration |
+| Invalid API Key | Incorrect or expired key | Verify key in Hootsuite dashboard |
+| Rate Limited | Exceeded quota | Check quota at https://docs.hootsuite.com |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { HootsuiteClient } from '@hootsuite/sdk';
+
+const client = new HootsuiteClient({
+  apiKey: process.env.HOOTSUITE_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from hootsuite import HootsuiteClient
+
+client = HootsuiteClient(
+    api_key=os.environ.get('HOOTSUITE_API_KEY')
+)
+```
 
 ## Resources
-
-- [Hootsuite Developer Portal](https://developer.hootsuite.com)
-- [OAuth 2.0 Guide](https://developer.hootsuite.com/docs/using-rest-apis)
-- [API Overview](https://developer.hootsuite.com/docs/api-overview)
+- [Hootsuite Documentation](https://docs.hootsuite.com)
+- [Hootsuite Dashboard](https://api.hootsuite.com)
+- [Hootsuite Status](https://status.hootsuite.com)
 
 ## Next Steps
-
-After auth, proceed to `hootsuite-hello-world` for your first API call.
+After successful auth, proceed to `hootsuite-hello-world` for your first API call.

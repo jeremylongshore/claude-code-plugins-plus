@@ -1,139 +1,113 @@
 ---
 name: flexport-common-errors
 description: |
-  Diagnose and fix common Flexport API errors including HTTP status codes,
-  webhook failures, and data validation issues.
-  Trigger: "flexport error", "fix flexport", "flexport not working", "debug flexport API".
+  Diagnose and fix Flexport common errors and exceptions.
+  Use when encountering Flexport errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "flexport error", "fix flexport",
+  "flexport not working", "debug flexport".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, logistics, flexport]
 compatible-with: claude-code
+tags: [saas, flexport]
 ---
 
 # Flexport Common Errors
 
 ## Overview
+Quick reference for the top 10 most common Flexport errors and their solutions.
 
-Quick reference for the most common Flexport API v2 errors. The API returns standard HTTP codes with JSON error bodies containing `code`, `message`, and sometimes `details` fields.
+## Prerequisites
+- Flexport SDK installed
+- API credentials configured
+- Access to error logs
 
-## Error Reference
+## Instructions
 
-### 401 Unauthorized — Invalid or Missing API Key
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-```json
-{ "error": { "code": "UNAUTHORIZED", "message": "Invalid API key" } }
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
-**Causes:** Missing `Authorization` header, expired JWT token, revoked API key.
+**Cause:** API key is missing, expired, or invalid.
 
-**Fix:**
+**Solution:**
 ```bash
-# Verify key is set
-echo $FLEXPORT_API_KEY | head -c 10
-# Test with cURL
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $FLEXPORT_API_KEY" \
-  -H "Flexport-Version: 2" \
-  https://api.flexport.com/shipments?per=1
+# Verify API key is set
+echo $FLEXPORT_API_KEY
 ```
 
-### 403 Forbidden — Insufficient Permissions
+---
 
-**Causes:** API key lacks required scope, IP whitelist blocking, sandbox key used on production.
-
-**Fix:** Check key permissions in Flexport Portal > Settings > Developer. Ensure key scope includes the endpoint you are calling.
-
-### 404 Not Found — Resource Does Not Exist
-
-```json
-{ "error": { "code": "NOT_FOUND", "message": "Shipment shp_xxx not found" } }
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
 ```
 
-**Causes:** Wrong ID format, resource deleted, using test ID in production.
+**Cause:** Too many requests in a short period.
 
-**Fix:** List resources first to get valid IDs:
-```bash
-curl -s -H "Authorization: Bearer $FLEXPORT_API_KEY" \
-     -H "Flexport-Version: 2" \
-     https://api.flexport.com/shipments?per=1 | jq '.data.records[0].id'
+**Solution:**
+Implement exponential backoff. See `flexport-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
 ```
 
-### 422 Unprocessable Entity — Validation Failed
+**Cause:** Network connectivity or server latency issues.
 
-```json
-{ "error": { "code": "VALIDATION_ERROR", "message": "Invalid port code", "details": [...] } }
-```
-
-**Common validation failures:**
-
-| Field | Issue | Fix |
-|-------|-------|-----|
-| `origin_port.code` | Not a valid UN/LOCODE | Use `CNSHA`, `USLAX`, `DEHAM` format |
-| `hs_code` | Wrong format | Use 6-10 digit codes like `8479.89` |
-| `cargo_ready_date` | In the past | Use future ISO date |
-| `freight_type` | Unsupported value | Use `ocean`, `air`, or `trucking` |
-| `incoterm` | Invalid | Use `FOB`, `CIF`, `EXW`, `DDP` |
-
-### 429 Too Many Requests — Rate Limited
-
-```json
-{ "error": { "code": "RATE_LIMITED", "message": "Rate limit exceeded" } }
-```
-
-**Fix:** Check response headers and back off:
+**Solution:**
 ```typescript
-function handleRateLimit(res: Response): number {
-  const retryAfter = res.headers.get('Retry-After');
-  const remaining = res.headers.get('X-RateLimit-Remaining');
-  console.log(`Rate limited. Remaining: ${remaining}. Retry after: ${retryAfter}s`);
-  return parseInt(retryAfter || '60') * 1000;
-}
+// Increase timeout
+const client = new Client({ timeout: 60000 });
 ```
 
-### 500/502/503 — Server Errors
+## Examples
 
-**Causes:** Flexport internal issue, maintenance window, upstream provider failure.
-
-**Fix:**
+### Quick Diagnostic Commands
 ```bash
-# Check Flexport status page
-curl -s https://status.flexport.com/api/v2/status.json | jq '.status'
+# Check Flexport status
+curl -s https://status.flexport.com
+
+# Verify API connectivity
+curl -I https://api.flexport.com
+
+# Check local configuration
+env | grep FLEXPORT
 ```
 
-Retry with exponential backoff for transient 5xx errors. See `flexport-rate-limits`.
-
-## Diagnostic Script
-
-```bash
-#!/bin/bash
-echo "=== Flexport Diagnostics ==="
-echo "API Key set: ${FLEXPORT_API_KEY:+YES}"
-echo "Key prefix: ${FLEXPORT_API_KEY:0:8}..."
-echo -n "API status: "
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $FLEXPORT_API_KEY" \
-  -H "Flexport-Version: 2" \
-  https://api.flexport.com/shipments?per=1
-echo ""
-echo -n "Status page: "
-curl -s https://status.flexport.com/api/v2/status.json | jq -r '.status.description'
-```
-
-## Escalation Path
-
-1. Run diagnostic script above
-2. Collect request ID from response headers (`X-Request-Id`)
-3. Check [Flexport Status](https://status.flexport.com)
-4. Contact Flexport support with request ID and error details
+### Escalation Path
+1. Collect evidence with `flexport-debug-bundle`
+2. Check Flexport status page
+3. Contact support with request ID
 
 ## Resources
-
-- [Flexport API Reference](https://apidocs.flexport.com/)
 - [Flexport Status Page](https://status.flexport.com)
-- [Developer Portal](https://developers.flexport.com/)
+- [Flexport Support](https://docs.flexport.com/support)
+- [Flexport Error Codes](https://docs.flexport.com/errors)
 
 ## Next Steps
-
 For comprehensive debugging, see `flexport-debug-bundle`.

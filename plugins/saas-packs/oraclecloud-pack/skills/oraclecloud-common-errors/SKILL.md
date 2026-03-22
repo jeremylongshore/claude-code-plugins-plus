@@ -1,45 +1,113 @@
 ---
 name: oraclecloud-common-errors
 description: |
-  Diagnose and fix Oracle Cloud common errors.
-  Trigger: "oraclecloud error", "fix oraclecloud", "debug oraclecloud".
+  Diagnose and fix Oracle Cloud common errors and exceptions.
+  Use when encountering Oracle Cloud errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "oraclecloud error", "fix oraclecloud",
+  "oraclecloud not working", "debug oraclecloud".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, infrastructure]
 compatible-with: claude-code
+tags: [saas, oraclecloud]
 ---
 
 # Oracle Cloud Common Errors
 
 ## Overview
-Quick reference for Oracle Cloud API errors with solutions.
+Quick reference for the top 10 most common Oracle Cloud errors and their solutions.
 
-### 401 — Not Authenticated
-**Fix:** Check `~/.oci/config` has valid key and fingerprint.
+## Prerequisites
+- Oracle Cloud SDK installed
+- API credentials configured
+- Access to error logs
 
-### 404 — Not Found
-**Fix:** Verify OCID is correct and resource exists in compartment.
+## Instructions
 
-### 429 — Too Many Requests
-**Fix:** OCI API: varies by service. Implement backoff.
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
-### 500 — Internal Error
-**Fix:** Check OCI status at https://ocistatus.oraclecloud.com.
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
 
-### ServiceError: NotAuthorizedOrNotFound
-**Fix:** IAM policy missing. Add required policy statement.
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
 
-## Quick Diagnostic
-```bash
-# Check API connectivity
-curl -s -w "\nHTTP %{http_code}" https://iaas.us-phoenix-1.oraclecloud.com/20160918/health 2>/dev/null || echo "Endpoint check needed"
-echo $OCI_CONFIG_FILE | head -c 10
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
+```
+Authentication error: Invalid API key
 ```
 
+**Cause:** API key is missing, expired, or invalid.
+
+**Solution:**
+```bash
+# Verify API key is set
+echo $ORACLECLOUD_API_KEY
+```
+
+---
+
+### Rate Limit Exceeded
+**Error Message:**
+```
+Rate limit exceeded. Please retry after X seconds.
+```
+
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `oraclecloud-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
+```bash
+# Check Oracle Cloud status
+curl -s https://status.oraclecloud.com
+
+# Verify API connectivity
+curl -I https://api.oraclecloud.com
+
+# Check local configuration
+env | grep ORACLECLOUD
+```
+
+### Escalation Path
+1. Collect evidence with `oraclecloud-debug-bundle`
+2. Check Oracle Cloud status page
+3. Contact support with request ID
+
 ## Resources
-- [Oracle Cloud Docs](https://docs.oracle.com/en-us/iaas/api/)
+- [Oracle Cloud Status Page](https://status.oraclecloud.com)
+- [Oracle Cloud Support](https://docs.oraclecloud.com/support)
+- [Oracle Cloud Error Codes](https://docs.oraclecloud.com/errors)
 
 ## Next Steps
-See `oraclecloud-debug-bundle`.
+For comprehensive debugging, see `oraclecloud-debug-bundle`.

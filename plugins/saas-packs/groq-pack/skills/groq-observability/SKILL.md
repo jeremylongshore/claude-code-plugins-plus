@@ -1,259 +1,252 @@
 ---
 name: groq-observability
 description: |
-  Set up observability for Groq integrations: latency histograms, token throughput,
-  rate limit gauges, cost tracking, and Prometheus alerts.
+  Set up comprehensive observability for Groq integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Groq operations, setting up dashboards,
+  or configuring alerting for Groq integration health.
   Trigger with phrases like "groq monitoring", "groq metrics",
-  "groq observability", "monitor groq", "groq alerts", "groq dashboard".
+  "groq observability", "monitor groq", "groq alerts", "groq tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, monitoring, observability, dashboard]
-
+compatible-with: claude-code
+tags: [saas, groq]
 ---
+
 # Groq Observability
 
 ## Overview
-Monitor Groq LPU inference for latency, token throughput, rate limit utilization, and cost. Groq's defining advantage is speed (280-560 tok/s), so latency degradation is the highest-priority signal. The API returns rich timing metadata (`queue_time`, `prompt_time`, `completion_time`) and rate limit headers on every response.
+Set up comprehensive observability for Groq integrations.
 
-## Key Metrics to Track
+## Prerequisites
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-| Metric | Type | Source | Why |
-|--------|------|--------|-----|
-| TTFT (time to first token) | Histogram | Client-side timing | Groq's main value prop |
-| Tokens/second | Gauge | `usage.completion_time` | Throughput degradation |
-| Total latency | Histogram | Client-side timing | End-to-end performance |
-| Rate limit remaining | Gauge | `x-ratelimit-remaining-*` headers | Prevent 429s |
-| Token usage | Counter | `usage.total_tokens` | Cost attribution |
-| Error rate by code | Counter | Error handler | Availability |
-| Estimated cost | Counter | Tokens * model price | Budget tracking |
+## Metrics Collection
 
-## Instructions
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `groq_requests_total` | Counter | Total API requests |
+| `groq_request_duration_seconds` | Histogram | Request latency |
+| `groq_errors_total` | Counter | Error count by type |
+| `groq_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-### Step 1: Instrumented Groq Client
+### Prometheus Metrics
+
 ```typescript
-import Groq from "groq-sdk";
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
-const groq = new Groq();
+const registry = new Registry();
 
-interface GroqMetrics {
-  model: string;
-  latencyMs: number;
-  ttftMs: number;
-  tokensPerSec: number;
-  promptTokens: number;
-  completionTokens: number;
-  totalTokens: number;
-  queueTimeMs: number;
-  estimatedCostUsd: number;
+const requestCounter = new Counter({
+  name: 'groq_requests_total',
+  help: 'Total Groq API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: 'groq_request_duration_seconds',
+  help: 'Groq request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'groq_errors_total',
+  help: 'Groq errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
 }
+```
 
-const PRICE_PER_1M: Record<string, { input: number; output: number }> = {
-  "llama-3.1-8b-instant": { input: 0.05, output: 0.08 },
-  "llama-3.3-70b-versatile": { input: 0.59, output: 0.79 },
-  "llama-3.3-70b-specdec": { input: 0.59, output: 0.99 },
-  "meta-llama/llama-4-scout-17b-16e-instruct": { input: 0.11, output: 0.34 },
-};
+## Distributed Tracing
 
-async function trackedCompletion(
-  model: string,
-  messages: any[],
-  options?: { maxTokens?: number; temperature?: number }
-): Promise<{ result: any; metrics: GroqMetrics }> {
-  const start = performance.now();
+### OpenTelemetry Setup
 
-  const result = await groq.chat.completions.create({
-    model,
-    messages,
-    max_tokens: options?.maxTokens ?? 1024,
-    temperature: options?.temperature ?? 0.7,
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('groq-client');
+
+async function tracedGroqCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`groq.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
   });
-
-  const latencyMs = performance.now() - start;
-  const usage = result.usage!;
-  const pricing = PRICE_PER_1M[model] || { input: 0.10, output: 0.10 };
-
-  const metrics: GroqMetrics = {
-    model,
-    latencyMs: Math.round(latencyMs),
-    ttftMs: Math.round(((usage as any).prompt_time ?? 0) * 1000),
-    tokensPerSec: Math.round(
-      usage.completion_tokens / ((usage as any).completion_time || latencyMs / 1000)
-    ),
-    promptTokens: usage.prompt_tokens,
-    completionTokens: usage.completion_tokens,
-    totalTokens: usage.total_tokens,
-    queueTimeMs: Math.round(((usage as any).queue_time ?? 0) * 1000),
-    estimatedCostUsd:
-      (usage.prompt_tokens / 1_000_000) * pricing.input +
-      (usage.completion_tokens / 1_000_000) * pricing.output,
-  };
-
-  emitMetrics(metrics);
-  return { result, metrics };
 }
 ```
 
-### Step 2: Prometheus Metrics
+## Logging Strategy
+
+### Structured Logging
+
 ```typescript
-import { Histogram, Counter, Gauge } from "prom-client";
+import pino from 'pino';
 
-const groqLatency = new Histogram({
-  name: "groq_latency_ms",
-  help: "Groq API latency in milliseconds",
-  labelNames: ["model"],
-  buckets: [50, 100, 200, 500, 1000, 2000, 5000],
+const logger = pino({
+  name: 'groq',
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-const groqTokens = new Counter({
-  name: "groq_tokens_total",
-  help: "Total tokens processed",
-  labelNames: ["model", "direction"],
-});
-
-const groqThroughput = new Gauge({
-  name: "groq_tokens_per_second",
-  help: "Current tokens per second",
-  labelNames: ["model"],
-});
-
-const groqRateLimitRemaining = new Gauge({
-  name: "groq_ratelimit_remaining",
-  help: "Remaining rate limit quota",
-  labelNames: ["type"],
-});
-
-const groqCost = new Counter({
-  name: "groq_cost_usd",
-  help: "Estimated cost in USD",
-  labelNames: ["model"],
-});
-
-const groqErrors = new Counter({
-  name: "groq_errors_total",
-  help: "API errors by status code",
-  labelNames: ["model", "status_code"],
-});
-
-function emitMetrics(m: GroqMetrics) {
-  groqLatency.labels(m.model).observe(m.latencyMs);
-  groqTokens.labels(m.model, "input").inc(m.promptTokens);
-  groqTokens.labels(m.model, "output").inc(m.completionTokens);
-  groqThroughput.labels(m.model).set(m.tokensPerSec);
-  groqCost.labels(m.model).inc(m.estimatedCostUsd);
+function logGroqOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'groq',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
 }
 ```
 
-### Step 3: Rate Limit Header Tracking
-```typescript
-// Parse rate limit headers from any Groq response
-function trackRateLimitHeaders(headers: Record<string, string>) {
-  const remaining = {
-    requests: parseInt(headers["x-ratelimit-remaining-requests"] || "0"),
-    tokens: parseInt(headers["x-ratelimit-remaining-tokens"] || "0"),
-  };
+## Alert Configuration
 
-  groqRateLimitRemaining.labels("requests").set(remaining.requests);
-  groqRateLimitRemaining.labels("tokens").set(remaining.tokens);
+### Prometheus AlertManager Rules
 
-  return remaining;
-}
-```
-
-### Step 4: Prometheus Alert Rules
 ```yaml
-# prometheus/groq-alerts.yml
+# groq_alerts.yaml
 groups:
-  - name: groq
+  - name: groq_alerts
     rules:
-      - alert: GroqLatencyHigh
-        expr: histogram_quantile(0.95, rate(groq_latency_ms_bucket[5m])) > 1000
-        for: 2m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Groq P95 latency > 1s (normally < 200ms)"
-
-      - alert: GroqRateLimitCritical
-        expr: groq_ratelimit_remaining{type="requests"} < 5
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Groq rate limit nearly exhausted (< 5 requests remaining)"
-
-      - alert: GroqThroughputDrop
-        expr: groq_tokens_per_second < 100
+      - alert: GroqHighErrorRate
+        expr: |
+          rate(groq_errors_total[5m]) /
+          rate(groq_requests_total[5m]) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Groq throughput dropped below 100 tok/s (expected 280+)"
+          summary: "Groq error rate > 5%"
 
-      - alert: GroqErrorRateHigh
-        expr: rate(groq_errors_total[5m]) > 0.05
-        for: 2m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Groq API error rate elevated (> 5% of requests)"
-
-      - alert: GroqCostSpike
-        expr: increase(groq_cost_usd[1h]) > 10
+      - alert: GroqHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(groq_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Groq spend exceeded $10 in the past hour"
+          summary: "Groq P95 latency > 2s"
+
+      - alert: GroqDown
+        expr: up{job="groq"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Groq integration is down"
 ```
 
-### Step 5: Structured Request Logging
-```typescript
-// Structured JSON log for each Groq request
-function logGroqRequest(metrics: GroqMetrics, requestId?: string) {
-  const logEntry = {
-    ts: new Date().toISOString(),
-    service: "groq",
-    model: metrics.model,
-    latency_ms: metrics.latencyMs,
-    ttft_ms: metrics.ttftMs,
-    tokens_per_sec: metrics.tokensPerSec,
-    prompt_tokens: metrics.promptTokens,
-    completion_tokens: metrics.completionTokens,
-    queue_time_ms: metrics.queueTimeMs,
-    cost_usd: metrics.estimatedCostUsd.toFixed(6),
-    request_id: requestId,
-  };
+## Dashboard
 
-  // Output as structured JSON for log aggregation
-  console.log(JSON.stringify(logEntry));
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Groq Request Rate",
+      "targets": [{
+        "expr": "rate(groq_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Groq Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(groq_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
 }
 ```
 
-### Step 6: Dashboard Panels
-Key Grafana/dashboard panels for Groq monitoring:
+## Instructions
 
-1. **TTFT Distribution** (histogram) -- Groq's main value; alert if > 500ms
-2. **Tokens/Second by Model** (time series) -- should be 280-560 range
-3. **Rate Limit Utilization** (gauge, 0-100%) -- alert at 90%
-4. **Request Volume** (counter rate) -- by model
-5. **Error Rate** (counter rate) -- by status code (429, 5xx)
-6. **Cumulative Cost** (counter) -- by model, daily/weekly/monthly
-7. **Queue Time** (histogram) -- Groq-specific, should be < 50ms
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 429 with high retry-after | RPM or TPM exhausted | Implement request queuing |
-| Latency spike > 2s | Model overloaded or large prompt | Reduce prompt size or switch to lighter model |
-| 503 Service Unavailable | Groq capacity issue | Enable fallback to alternative provider |
-| Tokens/sec drop | Streaming disabled or large prompts | Enable streaming for better perceived performance |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-- [Groq API Reference (usage fields)](https://console.groq.com/docs/api-reference)
-- [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
-- [prom-client on npm](https://www.npmjs.com/package/prom-client)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Groq Observability Guide](https://docs.groq.com/observability)
 
 ## Next Steps
-For incident response procedures, see `groq-incident-runbook`.
+For incident response, see `groq-incident-runbook`.

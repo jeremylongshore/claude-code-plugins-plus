@@ -1,73 +1,71 @@
 ---
 name: oraclecloud-core-workflow-a
 description: |
-  Execute Oracle Cloud primary workflow: Compute Instance Management.
-  Trigger: "oraclecloud compute instance management", "primary oraclecloud workflow".
+  Execute Oracle Cloud primary workflow: Core Workflow A.
+  Use when implementing primary use case,
+  building main features, or core integration tasks.
+  Trigger with phrases like "oraclecloud main workflow",
+  "primary task with oraclecloud".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud, infrastructure]
 compatible-with: claude-code
+tags: [saas, oraclecloud]
 ---
 
-# Oracle Cloud — Compute Instance Management
+# Oracle Cloud Core Workflow A
 
 ## Overview
-Primary workflow for Oracle Cloud integration.
+Primary money-path workflow for Oracle Cloud. This is the most common use case.
+
+## Prerequisites
+- Completed `oraclecloud-install-auth` setup
+- Understanding of Oracle Cloud core concepts
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: List Instances
-```python
-import oci
-
-config = oci.config.from_file()
-compute = oci.core.ComputeClient(config)
-
-instances = compute.list_instances(compartment_id=config['tenancy'])
-for inst in instances.data:
-    print(f"{inst.display_name} | {inst.lifecycle_state} | {inst.shape}")
+### Step 1: Initialize
+```typescript
+// Step 1 implementation
 ```
 
-### Step 2: Launch an Instance
-```python
-launch_details = oci.core.models.LaunchInstanceDetails(
-    compartment_id=config['tenancy'],
-    availability_domain='Uocm:US-ASHBURN-AD-1',
-    display_name='my-instance',
-    shape='VM.Standard.E4.Flex',
-    shape_config=oci.core.models.LaunchInstanceShapeConfigDetails(
-        ocpus=2, memory_in_gbs=16
-    ),
-    source_details=oci.core.models.InstanceSourceViaImageDetails(
-        image_id='ocid1.image.oc1...',
-        boot_volume_size_in_gbs=50
-    ),
-    create_vnic_details=oci.core.models.CreateVnicDetails(
-        subnet_id='ocid1.subnet.oc1...'
-    ),
-    metadata={'ssh_authorized_keys': open(os.path.expanduser('~/.ssh/id_rsa.pub')).read()}
-)
-
-response = compute.launch_instance(launch_details)
-print(f"Launching: {response.data.id} | Status: {response.data.lifecycle_state}")
+### Step 2: Execute
+```typescript
+// Step 2 implementation
 ```
 
-### Step 3: Stop/Start Instance
-```python
-# Stop
-compute.instance_action(instance_id='ocid1.instance...', action='STOP')
-
-# Start
-compute.instance_action(instance_id='ocid1.instance...', action='START')
-
-# Terminate
-compute.terminate_instance(instance_id='ocid1.instance...')
+### Step 3: Finalize
+```typescript
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow A execution
+- Expected results from Oracle Cloud API
+- Success confirmation or error details
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Error 1 | Cause | Solution |
+| Error 2 | Cause | Solution |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Common Variations
+- Variation 1: Description
+- Variation 2: Description
 
 ## Resources
-- [Oracle Cloud Docs](https://docs.oracle.com/en-us/iaas/api/)
+- [Oracle Cloud Documentation](https://docs.oraclecloud.com)
+- [Oracle Cloud API Reference](https://docs.oraclecloud.com/api)
 
 ## Next Steps
-See `oraclecloud-core-workflow-b`.
+For secondary workflow, see `oraclecloud-core-workflow-b`.

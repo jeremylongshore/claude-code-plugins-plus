@@ -1,165 +1,111 @@
 ---
 name: algolia-observability
 description: |
-  Set up observability for Algolia: Prometheus metrics for search latency/errors,
-  OpenTelemetry tracing, structured logging, and Grafana dashboards.
-  Trigger: "algolia monitoring", "algolia metrics", "algolia observability",
-  "monitor algolia", "algolia alerts", "algolia tracing", "algolia dashboard".
+  Set up comprehensive observability for Algolia integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Algolia operations, setting up dashboards,
+  or configuring alerting for Algolia integration health.
+  Trigger with phrases like "algolia monitoring", "algolia metrics",
+  "algolia observability", "monitor algolia", "algolia alerts", "algolia tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, search, algolia]
 compatible-with: claude-code
+tags: [saas, algolia]
 ---
 
 # Algolia Observability
 
 ## Overview
+Set up comprehensive observability for Algolia integrations.
 
-Algolia provides built-in analytics in the dashboard, but production systems need application-level observability: latency histograms, error rate counters, distributed traces, and alerts. This skill instruments the `algoliasearch` v5 client with Prometheus, OpenTelemetry, and structured logging.
+## Prerequisites
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Key Metrics to Track
+## Metrics Collection
 
-| Metric | Type | Why It Matters |
-|--------|------|---------------|
-| Search latency (P50/P95/P99) | Histogram | User experience, SLA compliance |
-| Search requests/sec | Counter | Capacity planning, cost tracking |
-| Error rate by type | Counter | Detect API issues before users report |
-| Index freshness (last updated) | Gauge | Data pipeline health |
-| Record count | Gauge | Cost monitoring, data integrity |
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `algolia_requests_total` | Counter | Total API requests |
+| `algolia_request_duration_seconds` | Histogram | Request latency |
+| `algolia_errors_total` | Counter | Error count by type |
+| `algolia_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-## Instructions
-
-### Step 1: Instrumented Algolia Client Wrapper
+### Prometheus Metrics
 
 ```typescript
-// src/algolia/instrumented-client.ts
-import { algoliasearch, ApiError } from 'algoliasearch';
-import { Counter, Histogram, Gauge, Registry } from 'prom-client';
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
 const registry = new Registry();
 
-const searchLatency = new Histogram({
-  name: 'algolia_search_duration_seconds',
-  help: 'Algolia search request duration in seconds',
-  labelNames: ['index', 'status'],
-  buckets: [0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5],
+const requestCounter = new Counter({
+  name: 'algolia_requests_total',
+  help: 'Total Algolia API requests',
+  labelNames: ['method', 'status'],
   registers: [registry],
 });
 
-const searchTotal = new Counter({
-  name: 'algolia_search_requests_total',
-  help: 'Total Algolia search requests',
-  labelNames: ['index', 'status'],
+const requestDuration = new Histogram({
+  name: 'algolia_request_duration_seconds',
+  help: 'Algolia request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
   registers: [registry],
 });
 
-const searchErrors = new Counter({
+const errorCounter = new Counter({
   name: 'algolia_errors_total',
-  help: 'Total Algolia errors by type',
-  labelNames: ['index', 'error_type', 'status_code'],
+  help: 'Algolia errors by type',
+  labelNames: ['error_type'],
   registers: [registry],
 });
+```
 
-const indexRecords = new Gauge({
-  name: 'algolia_index_records',
-  help: 'Number of records in Algolia index',
-  labelNames: ['index'],
-  registers: [registry],
-});
+### Instrumented Client
 
-const client = algoliasearch(process.env.ALGOLIA_APP_ID!, process.env.ALGOLIA_ADMIN_KEY!);
-
-export async function instrumentedSearch<T = any>(
-  indexName: string,
-  searchParams: Record<string, any>
-) {
-  const timer = searchLatency.startTimer({ index: indexName });
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
   try {
-    const result = await client.searchSingleIndex<T>({ indexName, searchParams });
-    timer({ status: 'success' });
-    searchTotal.inc({ index: indexName, status: 'success' });
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
     return result;
-  } catch (error) {
-    timer({ status: 'error' });
-    searchTotal.inc({ index: indexName, status: 'error' });
-
-    if (error instanceof ApiError) {
-      searchErrors.inc({
-        index: indexName,
-        error_type: error.status === 429 ? 'rate_limit' : 'api_error',
-        status_code: String(error.status),
-      });
-    } else {
-      searchErrors.inc({
-        index: indexName,
-        error_type: 'network',
-        status_code: '0',
-      });
-    }
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
     throw error;
+  } finally {
+    timer();
   }
 }
-
-// Periodic index stats collection (run every 5 minutes)
-export async function collectIndexMetrics() {
-  const { items } = await client.listIndices();
-  for (const idx of items) {
-    indexRecords.set({ index: idx.name }, idx.entries || 0);
-  }
-}
-
-export { registry };
 ```
 
-### Step 2: Prometheus Metrics Endpoint
+## Distributed Tracing
+
+### OpenTelemetry Setup
 
 ```typescript
-// src/api/metrics.ts (Express example)
-import express from 'express';
-import { registry, collectIndexMetrics } from '../algolia/instrumented-client';
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-const app = express();
+const tracer = trace.getTracer('algolia-client');
 
-app.get('/metrics', async (_req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-
-// Collect index stats every 5 minutes
-setInterval(collectIndexMetrics, 5 * 60 * 1000);
-```
-
-### Step 3: OpenTelemetry Distributed Tracing
-
-```typescript
-// src/algolia/tracing.ts
-import { trace, SpanStatusCode, type Span } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('algolia-service', '1.0.0');
-
-export async function tracedSearch<T>(
-  indexName: string,
-  query: string,
-  searchParams: Record<string, any> = {}
+async function tracedAlgoliaCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
 ): Promise<T> {
-  return tracer.startActiveSpan(`algolia.search ${indexName}`, async (span: Span) => {
-    span.setAttribute('algolia.index', indexName);
-    span.setAttribute('algolia.query', query);
-    span.setAttribute('algolia.hitsPerPage', searchParams.hitsPerPage || 20);
-
+  return tracer.startActiveSpan(`algolia.${operationName}`, async (span) => {
     try {
-      const result = await client.searchSingleIndex<T>({
-        indexName,
-        searchParams: { query, ...searchParams },
-      });
-
-      span.setAttribute('algolia.nbHits', result.nbHits);
-      span.setAttribute('algolia.processingTimeMS', result.processingTimeMS);
+      const result = await operation();
       span.setStatus({ code: SpanStatusCode.OK });
-      return result as T;
+      return result;
     } catch (error: any) {
       span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
       span.recordException(error);
@@ -171,116 +117,136 @@ export async function tracedSearch<T>(
 }
 ```
 
-### Step 4: Structured Logging
+## Logging Strategy
+
+### Structured Logging
 
 ```typescript
-// src/algolia/logger.ts
 import pino from 'pino';
 
-const logger = pino({ name: 'algolia', level: process.env.LOG_LEVEL || 'info' });
+const logger = pino({
+  name: 'algolia',
+  level: process.env.LOG_LEVEL || 'info',
+});
 
-export function logSearch(params: {
-  index: string;
-  query: string;
-  nbHits: number;
-  processingTimeMS: number;
-  page: number;
-  userId?: string;
-}) {
+function logAlgoliaOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
   logger.info({
-    event: 'algolia.search',
-    index: params.index,
-    query: params.query,
-    hits: params.nbHits,
-    latency_ms: params.processingTimeMS,
-    page: params.page,
-    user: params.userId,
-  });
-}
-
-export function logSearchError(params: {
-  index: string;
-  query: string;
-  error: string;
-  statusCode?: number;
-}) {
-  logger.error({
-    event: 'algolia.search.error',
-    index: params.index,
-    query: params.query,
-    error: params.error,
-    status_code: params.statusCode,
+    service: 'algolia',
+    operation,
+    duration_ms: duration,
+    ...data,
   });
 }
 ```
 
-### Step 5: Alert Rules (Prometheus AlertManager)
+## Alert Configuration
+
+### Prometheus AlertManager Rules
 
 ```yaml
-# alerts/algolia.yml
+# algolia_alerts.yaml
 groups:
-  - name: algolia
+  - name: algolia_alerts
     rules:
       - alert: AlgoliaHighErrorRate
         expr: |
           rate(algolia_errors_total[5m]) /
-          rate(algolia_search_requests_total[5m]) > 0.05
+          rate(algolia_requests_total[5m]) > 0.05
         for: 5m
-        labels: { severity: warning }
+        labels:
+          severity: warning
         annotations:
-          summary: "Algolia error rate > 5% for 5 minutes"
+          summary: "Algolia error rate > 5%"
 
       - alert: AlgoliaHighLatency
         expr: |
           histogram_quantile(0.95,
-            rate(algolia_search_duration_seconds_bucket[5m])
-          ) > 0.5
+            rate(algolia_request_duration_seconds_bucket[5m])
+          ) > 2
         for: 5m
-        labels: { severity: warning }
+        labels:
+          severity: warning
         annotations:
-          summary: "Algolia P95 search latency > 500ms"
+          summary: "Algolia P95 latency > 2s"
 
-      - alert: AlgoliaRateLimited
-        expr: rate(algolia_errors_total{error_type="rate_limit"}[5m]) > 0
-        for: 2m
-        labels: { severity: critical }
+      - alert: AlgoliaDown
+        expr: up{job="algolia"} == 0
+        for: 1m
+        labels:
+          severity: critical
         annotations:
-          summary: "Algolia returning 429 rate limit errors"
-
-      - alert: AlgoliaIndexStale
-        expr: algolia_index_records == 0
-        for: 10m
-        labels: { severity: warning }
-        annotations:
-          summary: "Algolia index has 0 records — possible sync failure"
+          summary: "Algolia integration is down"
 ```
 
-## Grafana Dashboard Queries
+## Dashboard
 
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Algolia Request Rate",
+      "targets": [{
+        "expr": "rate(algolia_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Algolia Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(algolia_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
 ```
-# Search rate: rate(algolia_search_requests_total[5m])
-# Error rate: rate(algolia_errors_total[5m]) / rate(algolia_search_requests_total[5m])
-# P50 latency: histogram_quantile(0.5, rate(algolia_search_duration_seconds_bucket[5m]))
-# P95 latency: histogram_quantile(0.95, rate(algolia_search_duration_seconds_bucket[5m]))
-# Records per index: algolia_index_records
-```
+
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | Client not instrumented | Use `instrumentedSearch` wrapper |
-| High cardinality | Too many label values | Don't use query text as label |
-| Trace gaps | Missing context propagation | Ensure OTel context flows through async |
-| Alert storms | Thresholds too sensitive | Add `for: 5m` minimum duration |
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-
-- [Prometheus Client](https://www.npmjs.com/package/prom-client)
-- [OpenTelemetry JS](https://opentelemetry.io/docs/languages/js/)
-- [Algolia Dashboard Analytics](https://www.algolia.com/doc/guides/getting-analytics/search-analytics/)
-- [pino Logger](https://getpino.io/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Algolia Observability Guide](https://docs.algolia.com/observability)
 
 ## Next Steps
-
 For incident response, see `algolia-incident-runbook`.

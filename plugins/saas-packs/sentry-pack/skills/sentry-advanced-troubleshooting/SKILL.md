@@ -1,294 +1,263 @@
 ---
 name: sentry-advanced-troubleshooting
 description: |
-  Advanced Sentry troubleshooting techniques.
-  Use when debugging complex SDK issues, missing events,
-  source map problems, or performance anomalies.
-  Trigger with phrases like "sentry not working", "debug sentry",
-  "sentry events missing", "fix sentry issues".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*), Bash(npm:*), Bash(curl:*), Bash(sentry-cli:*)
+  Apply Sentry advanced debugging techniques for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating complex race conditions,
+  or preparing evidence bundles for Sentry support escalation.
+  Trigger with phrases like "sentry hard bug", "sentry mystery error",
+  "sentry impossible to debug", "difficult sentry issue", "sentry deep debug".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, debugging, performance, troubleshooting]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Advanced Troubleshooting
 
+## Overview
+Deep debugging techniques for complex Sentry issues that resist standard troubleshooting.
+
 ## Prerequisites
-- Debug mode enabled in SDK (`debug: true`)
-- Access to application logs and Sentry dashboard
-- Sentry CLI installed for source map debugging
-- Network diagnostic tools available (curl, dig)
+- Access to production logs and metrics
+- kubectl access to clusters
+- Network capture tools available
+- Understanding of distributed tracing
+
+## Evidence Collection Framework
+
+### Comprehensive Debug Bundle
+```bash
+#!/bin/bash
+# advanced-sentry-debug.sh
+
+BUNDLE="sentry-advanced-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+
+# 1. Extended logs (1 hour window)
+kubectl logs -l app=sentry-integration --since=1h > "$BUNDLE/logs/pods.log"
+journalctl -u sentry-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
+
+# 2. Metrics dump
+curl -s localhost:9090/api/v1/query?query=sentry_requests_total > "$BUNDLE/metrics/requests.json"
+curl -s localhost:9090/api/v1/query?query=sentry_errors_total > "$BUNDLE/metrics/errors.json"
+
+# 3. Network capture (30 seconds)
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
+
+# 4. Distributed traces
+curl -s localhost:16686/api/traces?service=sentry > "$BUNDLE/traces/jaeger.json"
+
+# 5. Configuration state
+kubectl get cm sentry-config -o yaml > "$BUNDLE/config/configmap.yaml"
+kubectl get secret sentry-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Advanced debug bundle: $BUNDLE.tar.gz"
+```
+
+## Systematic Isolation
+
+### Layer-by-Layer Testing
+
+```typescript
+// Test each layer independently
+async function diagnoseSentryIssue(): Promise<DiagnosisReport> {
+  const results: DiagnosisResult[] = [];
+
+  // Layer 1: Network connectivity
+  results.push(await testNetworkConnectivity());
+
+  // Layer 2: DNS resolution
+  results.push(await testDNSResolution('api.sentry.com'));
+
+  // Layer 3: TLS handshake
+  results.push(await testTLSHandshake('api.sentry.com'));
+
+  // Layer 4: Authentication
+  results.push(await testAuthentication());
+
+  // Layer 5: API response
+  results.push(await testAPIResponse());
+
+  // Layer 6: Response parsing
+  results.push(await testResponseParsing());
+
+  return { results, firstFailure: results.find(r => !r.success) };
+}
+```
+
+### Minimal Reproduction
+
+```typescript
+// Strip down to absolute minimum
+async function minimalRepro(): Promise<void> {
+  // 1. Fresh client, no customization
+  const client = new SentryClient({
+    apiKey: process.env.SENTRY_API_KEY!,
+  });
+
+  // 2. Simplest possible call
+  try {
+    const result = await client.ping();
+    console.log('Ping successful:', result);
+  } catch (error) {
+    console.error('Ping failed:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+  }
+}
+```
+
+## Timing Analysis
+
+```typescript
+class TimingAnalyzer {
+  private timings: Map<string, number[]> = new Map();
+
+  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    try {
+      return await fn();
+    } finally {
+      const duration = performance.now() - start;
+      const existing = this.timings.get(label) || [];
+      existing.push(duration);
+      this.timings.set(label, existing);
+    }
+  }
+
+  report(): TimingReport {
+    const report: TimingReport = {};
+    for (const [label, times] of this.timings) {
+      report[label] = {
+        count: times.length,
+        min: Math.min(...times),
+        max: Math.max(...times),
+        avg: times.reduce((a, b) => a + b, 0) / times.length,
+        p95: this.percentile(times, 95),
+      };
+    }
+    return report;
+  }
+}
+```
+
+## Memory and Resource Analysis
+
+```typescript
+// Detect memory leaks in Sentry client usage
+const heapUsed: number[] = [];
+
+setInterval(() => {
+  const usage = process.memoryUsage();
+  heapUsed.push(usage.heapUsed);
+
+  // Alert on sustained growth
+  if (heapUsed.length > 60) { // 1 hour at 1/min
+    const trend = heapUsed[59] - heapUsed[0];
+    if (trend > 100 * 1024 * 1024) { // 100MB growth
+      console.warn('Potential memory leak in sentry integration');
+    }
+  }
+}, 60000);
+```
+
+## Race Condition Detection
+
+```typescript
+// Detect concurrent access issues
+class SentryConcurrencyChecker {
+  private inProgress: Set<string> = new Set();
+
+  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.inProgress.has(key)) {
+      console.warn(`Concurrent access detected for ${key}`);
+    }
+
+    this.inProgress.add(key);
+    try {
+      return await fn();
+    } finally {
+      this.inProgress.delete(key);
+    }
+  }
+}
+```
+
+## Support Escalation Template
+
+```markdown
+## Sentry Support Escalation
+
+**Severity:** P[1-4]
+**Request ID:** [from error response]
+**Timestamp:** [ISO 8601]
+
+### Issue Summary
+[One paragraph description]
+
+### Steps to Reproduce
+1. [Step 1]
+2. [Step 2]
+
+### Expected vs Actual
+- Expected: [behavior]
+- Actual: [behavior]
+
+### Evidence Attached
+- [ ] Debug bundle (sentry-advanced-debug-*.tar.gz)
+- [ ] Minimal reproduction code
+- [ ] Timing analysis
+- [ ] Network capture (if relevant)
+
+### Workarounds Attempted
+1. [Workaround 1] - Result: [outcome]
+2. [Workaround 2] - Result: [outcome]
+```
 
 ## Instructions
 
-### 1. SDK Initialization Debugging
+### Step 1: Collect Evidence Bundle
+Run the comprehensive debug script to gather all relevant data.
 
-```typescript
-// Enable maximum debug output
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  debug: true, // Prints all SDK activity to console
+### Step 2: Systematic Isolation
+Test each layer independently to identify the failure point.
 
-  // Add transport debugging
-  transport: (options) => {
-    const transport = Sentry.makeNodeTransport(options);
-    return {
-      ...transport,
-      send: async (envelope) => {
-        console.log('[Sentry Transport] Sending envelope:', {
-          type: envelope[0]?.type,
-          items: envelope[1]?.length,
-        });
-        const result = await transport.send(envelope);
-        console.log('[Sentry Transport] Result:', result);
-        return result;
-      },
-    };
-  },
-});
+### Step 3: Create Minimal Reproduction
+Strip down to the simplest failing case.
 
-// Verify initialization
-const client = Sentry.getClient();
-if (!client) {
-  console.error('CRITICAL: Sentry client not initialized');
-  console.error('Check: DSN valid? Import order correct?');
-} else {
-  console.log('Sentry initialized:', {
-    dsn: client.getDsn()?.host,
-    release: client.getOptions().release,
-    environment: client.getOptions().environment,
-    integrations: client.getOptions().integrations?.map(i => i.name),
-  });
-}
-```
-
-### 2. Event Not Appearing — Systematic Diagnosis
-
-```typescript
-async function diagnoseEventCapture() {
-  // Step 1: Is the client initialized?
-  const client = Sentry.getClient();
-  if (!client) {
-    console.error('Client not initialized — check init order');
-    return;
-  }
-
-  // Step 2: Is DSN valid?
-  const dsn = client.getDsn();
-  console.log('DSN host:', dsn?.host);
-  console.log('DSN project:', dsn?.projectId);
-
-  // Step 3: Is beforeSend dropping events?
-  const options = client.getOptions();
-  if (options.beforeSend) {
-    console.log('beforeSend is configured — test with a known event');
-    // Temporarily bypass to test
-  }
-
-  // Step 4: Is sampling dropping events?
-  console.log('sampleRate:', options.sampleRate);
-  console.log('tracesSampleRate:', options.tracesSampleRate);
-
-  // Step 5: Can we send an event?
-  const eventId = Sentry.captureMessage('Diagnostic test', 'debug');
-  console.log('Event ID:', eventId || 'NONE — event was dropped');
-
-  // Step 6: Does flush succeed?
-  const flushed = await Sentry.flush(10000);
-  console.log('Flush:', flushed ? 'SUCCESS' : 'TIMEOUT — network issue');
-}
-```
-
-### 3. Source Map Debugging
-
-```bash
-# Step 1: Verify source maps exist in build output
-ls -la dist/*.map 2>/dev/null || echo "No source maps found in dist/"
-
-# Step 2: Verify source maps are uploaded to correct release
-RELEASE=$(node -e "console.log(process.env.SENTRY_RELEASE || 'unknown')")
-echo "Release: $RELEASE"
-sentry-cli releases files "$RELEASE" list 2>/dev/null || echo "No files for release"
-
-# Step 3: Use explain command for a specific event
-# Get event ID from Sentry dashboard or API
-sentry-cli sourcemaps explain \
-  --org "$SENTRY_ORG" \
-  --project "$SENTRY_PROJECT" \
-  "EVENT_ID_HERE"
-
-# Step 4: Check URL prefix alignment
-# In browser DevTools Network tab, check the URL of your JS files:
-# If served at: https://example.com/static/js/main.abc123.js
-# Then url-prefix should be: ~/static/js
-
-# Step 5: Validate source maps before upload
-sentry-cli sourcemaps upload \
-  --release="$RELEASE" \
-  --url-prefix="~/static/js" \
-  --validate \
-  --dry-run \
-  ./dist
-```
-
-### 4. Performance Monitoring Debugging
-
-```typescript
-// Why are transactions not appearing?
-
-// Check 1: Is tracing enabled?
-console.log('tracesSampleRate:', Sentry.getClient()?.getOptions().tracesSampleRate);
-// If 0, no transactions are captured
-
-// Check 2: Is tracesSampler returning 0?
-Sentry.init({
-  tracesSampler: (context) => {
-    const rate = calculateRate(context);
-    console.log(`[Sentry Sampler] ${context.name}: ${rate}`);
-    return rate;
-  },
-});
-
-// Check 3: Are spans being created?
-await Sentry.startSpan(
-  { name: 'debug.test', op: 'test' },
-  async (span) => {
-    console.log('Span created:', span ? 'YES' : 'NO');
-    console.log('Span ID:', span?.spanContext().spanId);
-    console.log('Trace ID:', span?.spanContext().traceId);
-    await new Promise(r => setTimeout(r, 100));
-  }
-);
-```
-
-### 5. Network Connectivity Issues
-
-```bash
-# Test DNS resolution
-dig +short o0.ingest.sentry.io
-
-# Test HTTPS connectivity
-curl -v https://sentry.io/api/0/ 2>&1 | head -30
-
-# Test ingest endpoint (replace with your DSN host)
-curl -v "https://o0.ingest.sentry.io/api/0/envelope/" \
-  -H "Content-Type: application/x-sentry-envelope" 2>&1 | grep "< HTTP"
-
-# Check for proxy interference
-env | grep -i proxy
-curl -v --proxy "" https://sentry.io/api/0/ 2>&1 | grep "HTTP"
-
-# Test with a raw envelope (minimal event submission)
-DSN_KEY=$(echo $SENTRY_DSN | sed 's/.*\/\///' | sed 's/@.*//')
-DSN_HOST=$(echo $SENTRY_DSN | sed 's/.*@//' | sed 's/\/.*//')
-PROJECT_ID=$(echo $SENTRY_DSN | sed 's/.*\///')
-
-curl -X POST "https://$DSN_HOST/api/$PROJECT_ID/envelope/" \
-  -H "Content-Type: application/x-sentry-envelope" \
-  -H "X-Sentry-Auth: Sentry sentry_version=7, sentry_key=$DSN_KEY" \
-  -d '{"event_id":"test123"}
-{"type":"event"}
-{"message":"connectivity test","level":"info"}'
-```
-
-### 6. SDK Conflict Resolution
-
-```typescript
-// Problem: Multiple Sentry.init() calls
-// Symptom: Some events missing, inconsistent behavior
-
-// Diagnosis: Search for multiple init calls
-// grep -r "Sentry.init" --include="*.ts" --include="*.js" src/
-
-// Fix: Single initialization point
-// instrument.mjs should be the ONLY file calling Sentry.init()
-
-// Problem: Multiple @sentry packages at different versions
-// Diagnosis:
-// npm ls @sentry/core @sentry/node @sentry/utils 2>/dev/null
-
-// Fix: Align all versions
-// npm install @sentry/node@8 @sentry/browser@8
-```
-
-### 7. Memory and Performance Impact
-
-```typescript
-// Measure Sentry's memory footprint
-const before = process.memoryUsage();
-
-Sentry.init({ /* config */ });
-
-const after = process.memoryUsage();
-console.log('Sentry memory overhead:', {
-  heapUsed: `${((after.heapUsed - before.heapUsed) / 1024 / 1024).toFixed(1)} MB`,
-  rss: `${((after.rss - before.rss) / 1024 / 1024).toFixed(1)} MB`,
-});
-
-// If overhead is too high:
-// - Reduce maxBreadcrumbs (default 100 -> 20)
-// - Remove unused integrations
-// - Lower tracesSampleRate
-// - Disable profiling and replay
-```
-
-### 8. Comprehensive Health Check Script
-
-```bash
-#!/bin/bash
-# scripts/sentry-diagnose.sh
-set -euo pipefail
-
-echo "=== Sentry Diagnostic Report ==="
-
-echo -e "\n--- Environment ---"
-echo "Node.js: $(node --version 2>/dev/null || echo N/A)"
-echo "SENTRY_DSN: $([ -n "${SENTRY_DSN:-}" ] && echo "SET" || echo "MISSING")"
-echo "SENTRY_RELEASE: ${SENTRY_RELEASE:-NOT SET}"
-echo "SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-NOT SET}"
-echo "NODE_ENV: ${NODE_ENV:-NOT SET}"
-
-echo -e "\n--- SDK Packages ---"
-npm list 2>/dev/null | grep @sentry || echo "No Sentry packages"
-
-echo -e "\n--- CLI ---"
-sentry-cli --version 2>/dev/null || echo "Not installed"
-sentry-cli info 2>/dev/null || echo "Auth failed or not configured"
-
-echo -e "\n--- Network ---"
-curl -s -o /dev/null -w "sentry.io: HTTP %{http_code} (%{time_total}s)\n" \
-  https://sentry.io/api/0/ 2>/dev/null || echo "UNREACHABLE"
-
-echo -e "\n--- Source Maps ---"
-RELEASE="${SENTRY_RELEASE:-unknown}"
-sentry-cli releases files "$RELEASE" list 2>/dev/null | head -5 \
-  || echo "No files or auth failed"
-
-echo -e "\n=== Done ==="
-```
+### Step 4: Escalate with Evidence
+Use the support template with all collected evidence.
 
 ## Output
-- Root cause identified for SDK issues via systematic diagnosis
-- Source map problems resolved with explain command
-- Event capture verified working with test events
-- Network connectivity confirmed to Sentry endpoints
-- Performance impact measured and optimized
+- Comprehensive debug bundle collected
+- Failure layer identified
+- Minimal reproduction created
+- Support escalation submitted
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `debug: true` shows nothing | SDK not initialized | Check import order; use `--import` flag for ESM |
-| `flush()` always times out | Network blocking outbound | Check firewall, proxy, VPN; test with curl |
-| Source maps resolve wrong file | URL prefix mismatch | Run `sourcemaps explain EVENT_ID` for exact mismatch |
-| Duplicate events | Multiple `Sentry.init()` calls | Search codebase for all init calls, consolidate to one |
-| High memory usage | Too many breadcrumbs or integrations | Reduce `maxBreadcrumbs`, remove unused integrations |
+| Can't reproduce | Race condition | Add timing analysis |
+| Intermittent failure | Timing-dependent | Increase sample size |
+| No useful logs | Missing instrumentation | Add debug logging |
+| Memory growth | Resource leak | Use heap profiling |
+
+## Examples
+
+### Quick Layer Test
+```bash
+# Test each layer in sequence
+curl -v https://api.sentry.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+```
 
 ## Resources
-- [Troubleshooting](https://docs.sentry.io/platforms/javascript/troubleshooting/)
-- [Source Maps Troubleshooting](https://docs.sentry.io/platforms/javascript/sourcemaps/troubleshooting_js/)
-- [Source Maps Explain](https://docs.sentry.io/cli/sourcemaps/#explain)
-- [Transport Configuration](https://docs.sentry.io/platforms/javascript/configuration/transports/)
+- [Sentry Support Portal](https://support.sentry.com)
+- [Sentry Status Page](https://status.sentry.com)
+
+## Next Steps
+For load testing, see `sentry-load-scale`.

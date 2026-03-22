@@ -1,342 +1,292 @@
 ---
 name: clay-reliability-patterns
 description: |
-  Build fault-tolerant Clay integrations with circuit breakers, dead letter queues, and graceful degradation.
-  Use when building production Clay pipelines that need resilience,
-  implementing retry strategies, or adding fault tolerance to enrichment workflows.
-  Trigger with phrases like "clay reliability", "clay circuit breaker", "clay resilience",
-  "clay fallback", "clay fault tolerance", "clay dead letter queue".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement Clay reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Use when building fault-tolerant Clay integrations, implementing retry strategies,
+  or adding resilience to production Clay services.
+  Trigger with phrases like "clay reliability", "clay circuit breaker",
+  "clay idempotent", "clay resilience", "clay fallback", "clay bulkhead".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clay, clay-reliability]
-
+compatible-with: claude-code
+tags: [saas, clay]
 ---
+
 # Clay Reliability Patterns
 
 ## Overview
-
-Production reliability patterns for Clay data enrichment pipelines. Clay's async enrichment model, credit-based billing, and dependency on 150+ external data providers require specific resilience strategies: credit budget circuit breakers, webhook delivery tracking, dead letter queues for failed batches, and graceful degradation when Clay is unavailable.
+Production-grade reliability patterns for Clay integrations.
 
 ## Prerequisites
+- Understanding of circuit breaker pattern
+- opossum or similar library installed
+- Queue infrastructure for DLQ
+- Caching layer for fallbacks
 
-- Clay integration in production or pre-production
-- Redis or similar for state tracking
-- Understanding of Clay's async enrichment model
-- Monitoring infrastructure (see `clay-observability`)
+## Circuit Breaker
+
+```typescript
+import CircuitBreaker from 'opossum';
+
+const clayBreaker = new CircuitBreaker(
+  async (operation: () => Promise<any>) => operation(),
+  {
+    timeout: 30000,
+    errorThresholdPercentage: 50,
+    resetTimeout: 30000,
+    volumeThreshold: 10,
+  }
+);
+
+// Events
+clayBreaker.on('open', () => {
+  console.warn('Clay circuit OPEN - requests failing fast');
+  alertOps('Clay circuit breaker opened');
+});
+
+clayBreaker.on('halfOpen', () => {
+  console.info('Clay circuit HALF-OPEN - testing recovery');
+});
+
+clayBreaker.on('close', () => {
+  console.info('Clay circuit CLOSED - normal operation');
+});
+
+// Usage
+async function safeClayCall<T>(fn: () => Promise<T>): Promise<T> {
+  return clayBreaker.fire(fn);
+}
+```
+
+## Idempotency Keys
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic idempotency key from input
+function generateIdempotencyKey(
+  operation: string,
+  params: Record<string, any>
+): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+// Or use random key with storage
+class IdempotencyManager {
+  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
+
+  getOrCreate(operationId: string): string {
+    const existing = this.store.get(operationId);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.key;
+    }
+
+    const key = uuidv4();
+    this.store.set(operationId, {
+      key,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return key;
+  }
+}
+```
+
+## Bulkhead Pattern
+
+```typescript
+import PQueue from 'p-queue';
+
+// Separate queues for different operations
+const clayQueues = {
+  critical: new PQueue({ concurrency: 10 }),
+  normal: new PQueue({ concurrency: 5 }),
+  bulk: new PQueue({ concurrency: 2 }),
+};
+
+async function prioritizedClayCall<T>(
+  priority: 'critical' | 'normal' | 'bulk',
+  fn: () => Promise<T>
+): Promise<T> {
+  return clayQueues[priority].add(fn);
+}
+
+// Usage
+await prioritizedClayCall('critical', () =>
+  clayClient.processPayment(order)
+);
+
+await prioritizedClayCall('bulk', () =>
+  clayClient.syncCatalog(products)
+);
+```
+
+## Timeout Hierarchy
+
+```typescript
+const TIMEOUT_CONFIG = {
+  connect: 5000,      // Initial connection
+  request: 30000,     // Standard requests
+  upload: 120000,     // File uploads
+  longPoll: 300000,   // Webhook long-polling
+};
+
+async function timedoutClayCall<T>(
+  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+  fn: () => Promise<T>
+): Promise<T> {
+  const timeout = TIMEOUT_CONFIG[operation];
+
+  return Promise.race([
+    fn(),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`Clay ${operation} timeout`)), timeout)
+    ),
+  ]);
+}
+```
+
+## Graceful Degradation
+
+```typescript
+interface ClayFallback {
+  enabled: boolean;
+  data: any;
+  staleness: 'fresh' | 'stale' | 'very_stale';
+}
+
+async function withClayFallback<T>(
+  fn: () => Promise<T>,
+  fallbackFn: () => Promise<T>
+): Promise<{ data: T; fallback: boolean }> {
+  try {
+    const data = await fn();
+    // Update cache for future fallback
+    await updateFallbackCache(data);
+    return { data, fallback: false };
+  } catch (error) {
+    console.warn('Clay failed, using fallback:', error.message);
+    const data = await fallbackFn();
+    return { data, fallback: true };
+  }
+}
+```
+
+## Dead Letter Queue
+
+```typescript
+interface DeadLetterEntry {
+  id: string;
+  operation: string;
+  payload: any;
+  error: string;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+class ClayDeadLetterQueue {
+  private queue: DeadLetterEntry[] = [];
+
+  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
+    this.queue.push({
+      ...entry,
+      id: uuidv4(),
+      lastAttempt: new Date(),
+    });
+  }
+
+  async processOne(): Promise<boolean> {
+    const entry = this.queue.shift();
+    if (!entry) return false;
+
+    try {
+      await clayClient[entry.operation](entry.payload);
+      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
+      return true;
+    } catch (error) {
+      entry.attempts++;
+      entry.lastAttempt = new Date();
+
+      if (entry.attempts < 5) {
+        this.queue.push(entry);
+      } else {
+        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
+        await alertOnPermanentFailure(entry);
+      }
+      return false;
+    }
+  }
+}
+```
+
+## Health Check with Degraded State
+
+```typescript
+type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+
+async function clayHealthCheck(): Promise<{
+  status: HealthStatus;
+  details: Record<string, any>;
+}> {
+  const checks = {
+    api: await checkApiConnectivity(),
+    circuitBreaker: clayBreaker.stats(),
+    dlqSize: deadLetterQueue.size(),
+  };
+
+  const status: HealthStatus =
+    !checks.api.connected ? 'unhealthy' :
+    checks.circuitBreaker.state === 'open' ? 'degraded' :
+    checks.dlqSize > 100 ? 'degraded' :
+    'healthy';
+
+  return { status, details: checks };
+}
+```
 
 ## Instructions
 
-### Step 1: Credit Budget Circuit Breaker
+### Step 1: Implement Circuit Breaker
+Wrap Clay calls with circuit breaker.
 
-Stop processing when credit burn exceeds budget to prevent runaway costs:
+### Step 2: Add Idempotency Keys
+Generate deterministic keys for operations.
 
-```typescript
-// src/clay/circuit-breaker.ts
-class CreditCircuitBreaker {
-  private state: 'closed' | 'open' | 'half-open' = 'closed';
-  private dailyCreditsUsed = 0;
-  private failureCount = 0;
-  private lastFailureAt: Date | null = null;
-  private readonly cooldownMs: number;
+### Step 3: Configure Bulkheads
+Separate queues for different priorities.
 
-  constructor(
-    private dailyLimit: number,
-    private failureThreshold: number = 5,
-    cooldownMinutes: number = 15,
-  ) {
-    this.cooldownMs = cooldownMinutes * 60 * 1000;
-  }
+### Step 4: Set Up Dead Letter Queue
+Handle permanent failures gracefully.
 
-  canProcess(estimatedCredits: number): { allowed: boolean; reason?: string } {
-    // Check circuit state
-    if (this.state === 'open') {
-      // Check if cooldown has elapsed
-      if (this.lastFailureAt && Date.now() - this.lastFailureAt.getTime() > this.cooldownMs) {
-        this.state = 'half-open';
-        console.log('Circuit breaker: half-open (testing)');
-      } else {
-        return { allowed: false, reason: `Circuit OPEN. Cooldown until ${new Date(this.lastFailureAt!.getTime() + this.cooldownMs).toISOString()}` };
-      }
-    }
-
-    // Check budget
-    if (this.dailyCreditsUsed + estimatedCredits > this.dailyLimit) {
-      return { allowed: false, reason: `Daily credit limit reached: ${this.dailyCreditsUsed}/${this.dailyLimit}` };
-    }
-
-    return { allowed: true };
-  }
-
-  recordSuccess(creditsUsed: number) {
-    this.dailyCreditsUsed += creditsUsed;
-    if (this.state === 'half-open') {
-      this.state = 'closed';
-      this.failureCount = 0;
-      console.log('Circuit breaker: closed (recovered)');
-    }
-  }
-
-  recordFailure() {
-    this.failureCount++;
-    this.lastFailureAt = new Date();
-    if (this.failureCount >= this.failureThreshold) {
-      this.state = 'open';
-      console.error(`Circuit breaker: OPEN after ${this.failureCount} failures`);
-    }
-  }
-
-  resetDaily() {
-    this.dailyCreditsUsed = 0;
-  }
-}
-```
-
-### Step 2: Dead Letter Queue for Failed Submissions
-
-```typescript
-// src/clay/dead-letter-queue.ts
-interface DLQEntry {
-  row: Record<string, unknown>;
-  error: string;
-  webhookUrl: string;
-  failedAt: string;
-  retryCount: number;
-  maxRetries: number;
-}
-
-class ClayDLQ {
-  private entries: DLQEntry[] = [];
-
-  addToQueue(row: Record<string, unknown>, error: string, webhookUrl: string): void {
-    this.entries.push({
-      row,
-      error,
-      webhookUrl,
-      failedAt: new Date().toISOString(),
-      retryCount: 0,
-      maxRetries: 3,
-    });
-    console.warn(`DLQ: Added row (${this.entries.length} total). Error: ${error}`);
-  }
-
-  async retryAll(): Promise<{ retried: number; succeeded: number; permanentFailures: number }> {
-    let succeeded = 0, permanentFailures = 0;
-    const remaining: DLQEntry[] = [];
-
-    for (const entry of this.entries) {
-      if (entry.retryCount >= entry.maxRetries) {
-        permanentFailures++;
-        continue;
-      }
-
-      try {
-        const res = await fetch(entry.webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(entry.row),
-        });
-
-        if (res.ok) {
-          succeeded++;
-        } else {
-          entry.retryCount++;
-          remaining.push(entry);
-        }
-      } catch {
-        entry.retryCount++;
-        remaining.push(entry);
-      }
-
-      await new Promise(r => setTimeout(r, 500)); // Pace retries
-    }
-
-    this.entries = remaining;
-    return { retried: this.entries.length + succeeded + permanentFailures, succeeded, permanentFailures };
-  }
-
-  getStats() {
-    return {
-      pending: this.entries.length,
-      byError: this.entries.reduce((acc, e) => {
-        acc[e.error] = (acc[e.error] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>),
-    };
-  }
-}
-```
-
-### Step 3: Webhook Health Monitor
-
-```typescript
-// src/clay/health-monitor.ts
-class WebhookHealthMonitor {
-  private successCount = 0;
-  private failureCount = 0;
-  private lastCheck: Date = new Date();
-  private readonly windowMs = 5 * 60 * 1000; // 5-minute window
-
-  record(success: boolean) {
-    if (success) this.successCount++;
-    else this.failureCount++;
-  }
-
-  getHealthScore(): { score: number; status: 'healthy' | 'degraded' | 'unhealthy' } {
-    const total = this.successCount + this.failureCount;
-    if (total === 0) return { score: 100, status: 'healthy' };
-
-    const score = (this.successCount / total) * 100;
-
-    // Reset window periodically
-    if (Date.now() - this.lastCheck.getTime() > this.windowMs) {
-      this.successCount = 0;
-      this.failureCount = 0;
-      this.lastCheck = new Date();
-    }
-
-    return {
-      score,
-      status: score > 95 ? 'healthy' : score > 80 ? 'degraded' : 'unhealthy',
-    };
-  }
-}
-```
-
-### Step 4: Graceful Degradation When Clay Is Down
-
-```typescript
-// src/clay/fallback.ts
-interface FallbackConfig {
-  cacheEnrichedData: boolean;     // Cache previously enriched domains
-  queueForLater: boolean;         // Queue submissions for when Clay recovers
-  useLocalFallback: boolean;      // Fall back to local enrichment (limited)
-}
-
-class ClayWithFallback {
-  private cache = new Map<string, Record<string, unknown>>();
-  private offlineQueue: Record<string, unknown>[] = [];
-
-  async enrichOrFallback(
-    lead: Record<string, unknown>,
-    webhookUrl: string,
-    config: FallbackConfig,
-  ): Promise<{ data: Record<string, unknown>; source: 'clay' | 'cache' | 'queued' | 'local' }> {
-    // Try Clay first
-    try {
-      const res = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(lead),
-        signal: AbortSignal.timeout(10_000),
-      });
-
-      if (res.ok) {
-        return { data: lead, source: 'clay' };
-      }
-    } catch {
-      console.warn('Clay webhook unavailable — using fallback');
-    }
-
-    // Fallback 1: Check cache for this domain
-    const domain = lead.domain as string;
-    if (config.cacheEnrichedData && this.cache.has(domain)) {
-      return { data: { ...lead, ...this.cache.get(domain) }, source: 'cache' };
-    }
-
-    // Fallback 2: Queue for later processing
-    if (config.queueForLater) {
-      this.offlineQueue.push(lead);
-      return { data: lead, source: 'queued' };
-    }
-
-    // Fallback 3: Minimal local enrichment (domain -> company guess)
-    if (config.useLocalFallback) {
-      return {
-        data: { ...lead, company_name: domain.replace(/\.\w+$/, '').replace(/-/g, ' ') },
-        source: 'local',
-      };
-    }
-
-    return { data: lead, source: 'local' };
-  }
-
-  async drainOfflineQueue(webhookUrl: string): Promise<number> {
-    let drained = 0;
-    while (this.offlineQueue.length > 0) {
-      const lead = this.offlineQueue.shift()!;
-      try {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(lead),
-        });
-        drained++;
-        await new Promise(r => setTimeout(r, 200));
-      } catch {
-        this.offlineQueue.unshift(lead); // Put back
-        break;
-      }
-    }
-    return drained;
-  }
-}
-```
-
-### Step 5: Combine All Patterns
-
-```typescript
-// src/clay/reliable-pipeline.ts
-const circuitBreaker = new CreditCircuitBreaker(500); // 500 credits/day
-const dlq = new ClayDLQ();
-const healthMonitor = new WebhookHealthMonitor();
-
-async function reliableEnrich(lead: Record<string, unknown>, webhookUrl: string): Promise<void> {
-  // Check circuit breaker
-  const { allowed, reason } = circuitBreaker.canProcess(6); // ~6 credits/lead
-  if (!allowed) {
-    dlq.addToQueue(lead, `Circuit breaker: ${reason}`, webhookUrl);
-    return;
-  }
-
-  try {
-    const res = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(lead),
-    });
-
-    if (res.ok) {
-      circuitBreaker.recordSuccess(6);
-      healthMonitor.record(true);
-    } else {
-      throw new Error(`HTTP ${res.status}`);
-    }
-  } catch (err) {
-    circuitBreaker.recordFailure();
-    healthMonitor.record(false);
-    dlq.addToQueue(lead, (err as Error).message, webhookUrl);
-  }
-}
-```
+## Output
+- Circuit breaker protecting Clay calls
+- Idempotency preventing duplicates
+- Bulkhead isolation implemented
+- DLQ for failed operations
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Runaway credit spend | No budget circuit breaker | Implement credit budget limiter |
-| Lost leads during outage | No DLQ | Queue failed submissions for retry |
-| Silent webhook failures | No health monitoring | Track success/failure rates |
-| Clay outage blocks pipeline | No fallback | Implement cache + queue fallback |
+| Circuit stays open | Threshold too low | Adjust error percentage |
+| Duplicate operations | Missing idempotency | Add idempotency key |
+| Queue full | Rate too high | Increase concurrency |
+| DLQ growing | Persistent failures | Investigate root cause |
+
+## Examples
+
+### Quick Circuit Check
+```typescript
+const state = clayBreaker.stats().state;
+console.log('Clay circuit:', state);
+```
 
 ## Resources
-
-- [Clay Community](https://community.clay.com)
-- [BullMQ Dead Letter Queue](https://docs.bullmq.io/guide/dead-letter-queue)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Opossum Documentation](https://nodeshift.dev/opossum/)
+- [Clay Reliability Guide](https://docs.clay.com/reliability)
 
 ## Next Steps
-
-For policy guardrails, see `clay-policy-guardrails`.
+For policy enforcement, see `clay-policy-guardrails`.

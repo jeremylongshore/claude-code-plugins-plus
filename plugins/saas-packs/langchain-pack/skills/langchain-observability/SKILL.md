@@ -1,233 +1,252 @@
 ---
 name: langchain-observability
 description: |
-  Set up comprehensive observability for LangChain applications
-  with LangSmith tracing, OpenTelemetry, Prometheus metrics, and alerts.
-  Trigger: "langchain monitoring", "langchain metrics", "langchain observability",
-  "langchain tracing", "LangSmith", "langchain alerts".
+  Set up comprehensive observability for LangChain integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for LangChain operations, setting up dashboards,
+  or configuring alerting for LangChain integration health.
+  Trigger with phrases like "langchain monitoring", "langchain metrics",
+  "langchain observability", "monitor langchain", "langchain alerts", "langchain tracing".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, langchain, monitoring, observability, dashboard]
-
+compatible-with: claude-code
+tags: [saas, langchain]
 ---
+
 # LangChain Observability
 
 ## Overview
+Set up comprehensive observability for LangChain integrations.
 
-Production observability for LangChain: LangSmith tracing (zero-code), custom Prometheus metrics, OpenTelemetry integration, structured logging, and Grafana dashboards.
+## Prerequisites
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Tier 1: LangSmith Tracing (Zero-Code Setup)
+## Metrics Collection
 
-LangSmith automatically traces all LangChain calls when env vars are set.
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `langchain_requests_total` | Counter | Total API requests |
+| `langchain_request_duration_seconds` | Histogram | Request latency |
+| `langchain_errors_total` | Counter | Error count by type |
+| `langchain_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-```bash
-# Add to .env — that's it. No code changes needed.
-LANGSMITH_TRACING=true
-LANGSMITH_API_KEY=lsv2_pt_...
-LANGSMITH_PROJECT=my-app-production
-
-# Optional: background callbacks for lower latency (non-serverless)
-LANGCHAIN_CALLBACKS_BACKGROUND=true
-```
-
-Every chain, LLM call, tool invocation, and retriever query is automatically traced with:
-- Input/output payloads
-- Token usage and cost
-- Latency per step
-- Error details with stack traces
-- Parent-child run relationships
-
-### Query Traces Programmatically
+### Prometheus Metrics
 
 ```typescript
-import { Client } from "langsmith";
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
-const client = new Client();
+const registry = new Registry();
 
-// Get recent failed runs
-const failedRuns = client.listRuns({
-  projectName: "my-app-production",
-  error: true,
-  limit: 10,
+const requestCounter = new Counter({
+  name: 'langchain_requests_total',
+  help: 'Total LangChain API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
 });
 
-for await (const run of failedRuns) {
-  console.log(`${run.name}: ${run.error} (${run.totalTokens} tokens)`);
-}
+const requestDuration = new Histogram({
+  name: 'langchain_request_duration_seconds',
+  help: 'LangChain request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'langchain_errors_total',
+  help: 'LangChain errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
 ```
 
-## Tier 2: Custom Metrics Callback
+### Instrumented Client
 
 ```typescript
-import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
-interface Metrics {
-  totalRequests: number;
-  totalErrors: number;
-  totalTokens: number;
-  latencies: number[];
-}
-
-class MetricsCallback extends BaseCallbackHandler {
-  name = "MetricsCallback";
-  metrics: Metrics = { totalRequests: 0, totalErrors: 0, totalTokens: 0, latencies: [] };
-  private startTimes = new Map<string, number>();
-
-  handleLLMStart(_llm: any, _prompts: string[], runId: string) {
-    this.metrics.totalRequests++;
-    this.startTimes.set(runId, Date.now());
-  }
-
-  handleLLMEnd(output: any, runId: string) {
-    const start = this.startTimes.get(runId);
-    if (start) {
-      this.metrics.latencies.push(Date.now() - start);
-      this.startTimes.delete(runId);
-    }
-    const usage = output.llmOutput?.tokenUsage;
-    if (usage) {
-      this.metrics.totalTokens += (usage.totalTokens ?? 0);
-    }
-  }
-
-  handleLLMError(_error: Error, runId: string) {
-    this.metrics.totalErrors++;
-    this.startTimes.delete(runId);
-  }
-
-  getReport() {
-    const latencies = this.metrics.latencies;
-    const sorted = [...latencies].sort((a, b) => a - b);
-    return {
-      requests: this.metrics.totalRequests,
-      errors: this.metrics.totalErrors,
-      errorRate: this.metrics.totalRequests > 0
-        ? (this.metrics.totalErrors / this.metrics.totalRequests * 100).toFixed(1) + "%"
-        : "0%",
-      totalTokens: this.metrics.totalTokens,
-      p50Latency: sorted[Math.floor(sorted.length * 0.5)] ?? 0,
-      p95Latency: sorted[Math.floor(sorted.length * 0.95)] ?? 0,
-      p99Latency: sorted[Math.floor(sorted.length * 0.99)] ?? 0,
-    };
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
   }
 }
+```
 
-// Usage
-const metrics = new MetricsCallback();
-const model = new ChatOpenAI({
-  model: "gpt-4o-mini",
-  callbacks: [metrics],
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('langchain-client');
+
+async function tracedLangChainCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`langchain.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'langchain',
+  level: process.env.LOG_LEVEL || 'info',
 });
 
-// After some operations:
-console.table(metrics.getReport());
+function logLangChainOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'langchain',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
 ```
 
-## Tier 3: Prometheus Exporter (Python)
+## Alert Configuration
 
-```python
-from prometheus_client import Counter, Histogram, start_http_server
-from langchain_core.callbacks import BaseCallbackHandler
-
-# Define metrics
-llm_requests = Counter("langchain_llm_requests_total", "LLM requests", ["model", "status"])
-llm_latency = Histogram("langchain_llm_latency_seconds", "LLM latency", ["model"])
-llm_tokens = Counter("langchain_llm_tokens_total", "Tokens used", ["model", "type"])
-
-class PrometheusCallback(BaseCallbackHandler):
-    def __init__(self):
-        self._start_times = {}
-
-    def on_llm_start(self, serialized, prompts, run_id, **kwargs):
-        self._start_times[str(run_id)] = time.time()
-
-    def on_llm_end(self, response, run_id, **kwargs):
-        model = "unknown"
-        elapsed = time.time() - self._start_times.pop(str(run_id), time.time())
-
-        llm_requests.labels(model=model, status="success").inc()
-        llm_latency.labels(model=model).observe(elapsed)
-
-        if response.llm_output and "token_usage" in response.llm_output:
-            usage = response.llm_output["token_usage"]
-            llm_tokens.labels(model=model, type="input").inc(usage.get("prompt_tokens", 0))
-            llm_tokens.labels(model=model, type="output").inc(usage.get("completion_tokens", 0))
-
-    def on_llm_error(self, error, run_id, **kwargs):
-        self._start_times.pop(str(run_id), None)
-        llm_requests.labels(model="unknown", status="error").inc()
-
-# Start metrics server on :9090
-start_http_server(9090)
-```
-
-## Tier 4: Grafana Dashboard Queries
-
-```
-# Request rate
-rate(langchain_llm_requests_total[5m])
-
-# P95 latency
-histogram_quantile(0.95, rate(langchain_llm_latency_seconds_bucket[5m]))
-
-# Error rate percentage
-sum(rate(langchain_llm_requests_total{status="error"}[5m]))
-/ sum(rate(langchain_llm_requests_total[5m])) * 100
-
-# Token usage per hour
-increase(langchain_llm_tokens_total[1h])
-```
-
-## Alerting Rules
+### Prometheus AlertManager Rules
 
 ```yaml
-# prometheus/rules/langchain.yml
+# langchain_alerts.yaml
 groups:
-  - name: langchain
+  - name: langchain_alerts
     rules:
-      - alert: HighErrorRate
+      - alert: LangChainHighErrorRate
         expr: |
-          sum(rate(langchain_llm_requests_total{status="error"}[5m]))
-          / sum(rate(langchain_llm_requests_total[5m])) > 0.05
+          rate(langchain_errors_total[5m]) /
+          rate(langchain_requests_total[5m]) > 0.05
         for: 5m
-        labels: { severity: critical }
+        labels:
+          severity: warning
         annotations:
-          summary: "LangChain error rate above 5%"
+          summary: "LangChain error rate > 5%"
 
-      - alert: HighLatency
+      - alert: LangChainHighLatency
         expr: |
-          histogram_quantile(0.95, rate(langchain_llm_latency_seconds_bucket[5m])) > 5
+          histogram_quantile(0.95,
+            rate(langchain_request_duration_seconds_bucket[5m])
+          ) > 2
         for: 5m
-        labels: { severity: warning }
+        labels:
+          severity: warning
         annotations:
-          summary: "LangChain P95 latency above 5 seconds"
+          summary: "LangChain P95 latency > 2s"
 
-      - alert: TokenBudgetExceeded
-        expr: increase(langchain_llm_tokens_total[1d]) > 1000000
-        labels: { severity: warning }
+      - alert: LangChainDown
+        expr: up{job="langchain"} == 0
+        for: 1m
+        labels:
+          severity: critical
         annotations:
-          summary: "Daily token usage exceeded 1M"
+          summary: "LangChain integration is down"
 ```
 
-## Error Handling
+## Dashboard
 
-| Issue | Cause | Fix |
-|-------|-------|-----|
-| Missing traces in LangSmith | Env vars not set | Verify `LANGSMITH_TRACING=true` |
-| Callback not firing | Not passed to model | Add to `callbacks: [handler]` in constructor |
-| Metrics missing in Prometheus | Server not started | Call `start_http_server(9090)` |
-| Alert storms | Thresholds too sensitive | Tune `for` duration and thresholds |
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "LangChain Request Rate",
+      "targets": [{
+        "expr": "rate(langchain_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "LangChain Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(langchain_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
+
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
+
+## Output
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
+
+## Examples
+
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
 ## Resources
-
-- [LangSmith Docs](https://docs.smith.langchain.com/)
-- [LangSmith Tracing Guide](https://docs.smith.langchain.com/observability/how_to_guides/trace_with_langchain)
-- [OpenTelemetry + LangSmith](https://docs.smith.langchain.com/observability/how_to_guides/trace_with_opentelemetry)
-- [Prometheus Python Client](https://prometheus.io/docs/instrumenting/clientlibs/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [LangChain Observability Guide](https://docs.langchain.com/observability)
 
 ## Next Steps
-
-Use `langchain-incident-runbook` for incident response procedures.
+For incident response, see `langchain-incident-runbook`.

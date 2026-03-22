@@ -3,192 +3,238 @@ name: documenso-reference-architecture
 description: |
   Implement Documenso reference architecture with best-practice project layout.
   Use when designing new Documenso integrations, reviewing project structure,
-  or establishing architecture standards for document signing applications.
+  or establishing architecture standards for Documenso applications.
   Trigger with phrases like "documenso architecture", "documenso best practices",
-  "documenso project structure", "how to organize documenso".
+  "documenso project structure", "how to organize documenso", "documenso layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, documenso, documenso-reference]
-
+compatible-with: claude-code
+tags: [saas, documenso]
 ---
+
 # Documenso Reference Architecture
 
 ## Overview
-
-Production-ready architecture for Documenso document signing integrations. Covers project layout, layered service architecture, webhook processing, and data flow.
+Production-ready architecture patterns for Documenso integrations.
 
 ## Prerequisites
+- Understanding of layered architecture
+- Documenso SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
-- Understanding of layered architecture principles
-- Documenso SDK knowledge (see `documenso-sdk-patterns`)
-- TypeScript project with Node.js 18+
-
-## Recommended Project Structure
+## Project Structure
 
 ```
-my-signing-app/
+my-documenso-project/
 ├── src/
 │   ├── documenso/
-│   │   ├── client.ts              # Singleton SDK client
-│   │   ├── errors.ts              # Custom error classes
-│   │   ├── retry.ts               # Retry/backoff logic
-│   │   └── types.ts               # Shared types
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
 │   ├── services/
-│   │   ├── document-service.ts    # Document CRUD operations
-│   │   ├── template-service.ts    # Template-based workflows
-│   │   └── signing-service.ts     # Orchestrates signing flows
-│   ├── webhooks/
-│   │   ├── handler.ts             # Express webhook router
-│   │   ├── verify.ts              # Secret verification
-│   │   └── processors/
-│   │       ├── document-completed.ts
-│   │       ├── document-signed.ts
-│   │       └── document-rejected.ts
+│   │   └── documenso/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
 │   ├── api/
-│   │   ├── health.ts              # Health check endpoint
-│   │   └── routes.ts              # API routes
-│   └── config/
-│       └── index.ts               # Environment configuration
-├── scripts/
-│   ├── verify-connection.ts       # Quick health check
-│   ├── create-test-doc.ts         # Test document generator
-│   └── cleanup-test-docs.ts       # Test data cleanup
+│   │   └── documenso/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── documenso/
+│           └── sync.ts         # Background sync job
 ├── tests/
 │   ├── unit/
-│   │   └── document-service.test.ts
-│   ├── integration/
-│   │   └── document-lifecycle.test.ts
-│   └── mocks/
-│       └── documenso.ts           # Mock client factory
-├── .env.development
-├── .env.production
-├── docker-compose.yml             # Self-hosted Documenso (dev)
-└── package.json
+│   │   └── documenso/
+│   └── integration/
+│       └── documenso/
+├── config/
+│   ├── documenso.development.json
+│   ├── documenso.staging.json
+│   └── documenso.production.json
+└── docs/
+    └── documenso/
+        ├── SETUP.md
+        └── RUNBOOK.md
 ```
 
 ## Layer Architecture
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  API / Controllers                                       │
-│  Routes, request validation, response formatting         │
-├─────────────────────────────────────────────────────────┤
-│  Service Layer                                           │
-│  Business logic, orchestration, authorization            │
-│  (document-service, template-service, signing-service)   │
-├─────────────────────────────────────────────────────────┤
-│  Documenso Client Layer                                  │
-│  SDK wrapper, retry, error handling, caching             │
-│  (client.ts, retry.ts, errors.ts)                       │
-├─────────────────────────────────────────────────────────┤
-│  External Services                                       │
-│  Documenso API, S3/GCS storage, email, database         │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Documenso Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
 ```
 
-**Rules:**
-- Controllers never call Documenso directly -- always go through services
-- Services never import `@documenso/sdk-typescript` directly -- use the client wrapper
-- Webhook processors are isolated -- one file per event type
-- Error handling happens at the client layer, not in controllers
+## Key Components
 
-## Data Flow
+### Step 1: Client Wrapper
+```typescript
+// src/documenso/client.ts
+export class DocumensoService {
+  private client: DocumensoClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: DocumensoConfig) {
+    this.client = new DocumensoClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('documenso');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/documenso/errors.ts
+export class DocumensoServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'DocumensoServiceError';
+  }
+}
+
+export function wrapDocumensoError(error: unknown): DocumensoServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/documenso/health.ts
+export async function checkDocumensoHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await documensoClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
 
 ```
 User Request
      │
      ▼
-┌──────────┐   POST /api/sign
-│   API    │──────────────────────────────┐
-│  Router  │                              │
-└──────────┘                              ▼
-                                   ┌──────────────┐
-                                   │   Signing    │
-                                   │   Service    │
-                                   └──────┬───────┘
-                                          │
-                    ┌─────────────────────┼─────────────────────┐
-                    ▼                     ▼                     ▼
-             ┌──────────┐         ┌──────────┐          ┌──────────┐
-             │ Template │         │ Document │          │   Your   │
-             │ Service  │         │ Service  │          │    DB    │
-             └────┬─────┘         └────┬─────┘          └──────────┘
-                  │                    │
-                  └────────┬───────────┘
-                           ▼
-                    ┌──────────────┐
-                    │  Documenso   │
-                    │  Client      │──→ Documenso API
-                    │  (singleton) │
-                    └──────────────┘
-
-Webhook Flow:
-Documenso API ──POST──→ /webhooks/documenso
-                             │
-                        ┌────▼────┐
-                        │ Verify  │──→ Check X-Documenso-Secret
-                        │ Secret  │
-                        └────┬────┘
-                             │
-                        ┌────▼────┐
-                        │ Router  │──→ Route by event type
-                        └────┬────┘
-                             │
-              ┌──────────────┼──────────────┐
-              ▼              ▼              ▼
-        completed.ts    signed.ts     rejected.ts
-        (archive PDF)  (update DB)  (alert sender)
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Documenso    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Documenso    │
+│   API       │
+└─────────────┘
 ```
 
-## Setup Script
+## Configuration Management
 
-```bash
-#!/bin/bash
-set -euo pipefail
+```typescript
+// config/documenso.ts
+export interface DocumensoConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
 
-mkdir -p src/{documenso,services,webhooks/processors,api,config}
-mkdir -p scripts tests/{unit,integration,mocks}
-
-# Create .env.example
-cat > .env.example << 'EOF'
-DOCUMENSO_API_KEY=
-DOCUMENSO_BASE_URL=https://app.documenso.com/api/v2
-DOCUMENSO_WEBHOOK_SECRET=
-LOG_LEVEL=info
-NODE_ENV=development
-EOF
-
-echo "Project scaffolded. Copy .env.example to .env and fill in values."
+export function loadDocumensoConfig(): DocumensoConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./documenso.${env}.json`);
+}
 ```
 
-## Key Design Decisions
+## Instructions
 
-| Decision | Rationale |
-|----------|-----------|
-| Singleton client | Avoids re-initialization overhead per request |
-| Service layer | Separates business logic from API details |
-| One processor per webhook event | Isolates side effects, easy to test |
-| Mock client for tests | Fast unit tests without API calls |
-| Template-first approach | Fewer API calls, consistent field placement |
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Documenso operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Documenso connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Services import client, never the reverse |
-| Config not loading | Wrong env file | Verify `NODE_ENV` matches config loader |
-| Webhook processor crash | Unhandled error in processor | Wrap each processor in try/catch |
-| Test isolation | Shared client state | Call `resetClient()` in `beforeEach` |
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Documenso types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/documenso/{handlers} src/services/documenso src/api/documenso
+touch src/documenso/{client,config,types,errors}.ts
+touch src/services/documenso/{index,sync,cache}.ts
+```
 
 ## Resources
+- [Documenso SDK Documentation](https://docs.documenso.com/sdk)
+- [Documenso Best Practices](https://docs.documenso.com/best-practices)
 
-- [Clean Architecture](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
-- [Documenso SDK](https://github.com/documenso/sdk-typescript)
-- [12-Factor App](https://12factor.net/)
-
-## Next Steps
-
+## Flagship Skills
 For multi-environment setup, see `documenso-multi-env-setup`.

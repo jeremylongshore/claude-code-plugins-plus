@@ -1,106 +1,142 @@
 ---
 name: twinmind-security-basics
 description: |
-  Security best practices for TwinMind: on-device audio processing, encrypted cloud backups, microphone permissions, and data privacy controls.
-  Use when implementing security basics,
-  or managing TwinMind meeting AI operations.
-  Trigger with phrases like "twinmind security basics", "twinmind security basics".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+  Apply TwinMind security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing TwinMind security configuration.
+  Trigger with phrases like "twinmind security", "twinmind secrets",
+  "secure twinmind", "twinmind API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: ['saas', 'twinmind', 'security']
-
+compatible-with: claude-code
+tags: [saas, twinmind]
 ---
+
 # TwinMind Security Basics
 
 ## Overview
-Security best practices for TwinMind: on-device audio processing, encrypted cloud backups, microphone permissions, and data privacy controls. TwinMind uses the Ear-3 speech model (5.26% WER, 3.8% DER) for transcription, with GPT-4, Claude, and Gemini for AI summarization.
+Security best practices for TwinMind API keys, tokens, and access control.
 
 ## Prerequisites
-- TwinMind account (Free, Pro $10/mo, or Enterprise)
-- Chrome extension installed and authenticated
-- Understanding of TwinMind workflow
+- TwinMind SDK installed
+- Understanding of environment variables
+- Access to TwinMind dashboard
 
 ## Instructions
 
-### Step 1: Setup
-
-TwinMind operates as a Chrome extension and mobile app with optional API access for Pro/Enterprise users.
-
-```javascript
-// TwinMind configuration
-const config = {
-  apiKey: process.env.TWINMIND_API_KEY,
-  model: "ear-3", // Transcription model
-  aiModels: ["gpt-4", "claude", "gemini"], // Summary models
-};
-```
-
-### Step 2: Implementation
-
-```javascript
-// TwinMind Security Basics implementation
-// Core TwinMind integration
-const twinmind = {
-  transcriptionModel: "ear-3",
-  languages: ["en", "es", "ko", "ja", "fr"],
-  features: ["transcription", "summary", "action-items"],
-  privacyMode: "on-device", // Audio never stored
-};
-
-// Check transcription capabilities
-async function verify() {
-  const health = await fetch("https://api.twinmind.com/v1/health");
-  console.log("TwinMind status:", await health.json());
-}
-```
-
-### Step 3: Verification
-
+### Step 1: Configure Environment Variables
 ```bash
-# Verify TwinMind integration
-curl -H "Authorization: Bearer $TWINMIND_API_KEY" https://api.twinmind.com/v1/health | jq .
+# .env (NEVER commit to git)
+TWINMIND_API_KEY=sk_live_***
+TWINMIND_SECRET=***
+
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-## Key TwinMind Specifications
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in TwinMind dashboard
+# 2. Update environment variable
+export TWINMIND_API_KEY="new_key_here"
 
-| Feature | Specification |
-|---------|--------------|
-| Transcription model | Ear-3 (5.26% WER) |
-| Speaker diarization | 3.8% DER |
-| Languages | 140+ supported |
-| Audio processing | On-device (no recordings stored) |
-| AI models | GPT-4, Claude, Gemini (auto-routed) |
-| Platforms | Chrome extension, iOS, Android |
-| Pricing | Free / Pro $10/mo / Enterprise custom |
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${TWINMIND_API_KEY}" \
+  https://api.twinmind.com/health
+
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
 ## Output
-- TwinMind Security Basics configured and verified
-- TwinMind integration operational
-- Meeting transcription workflow ready
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Microphone access denied | Browser permissions not granted | Enable in Chrome settings |
-| Transcription not starting | Audio source not detected | Check microphone selection |
-| API key invalid | Incorrect or expired key | Regenerate in TwinMind dashboard |
-| Sync failed | Network interruption | Check connection, retry |
-| Calendar disconnect | OAuth token expired | Re-authorize in Settings |
-
-## Resources
-- [TwinMind Website](https://twinmind.com)
-- [Chrome Extension](https://chromewebstore.google.com/detail/twinmind/agpbjhhcmoanaljagpoheldgjhclepdj)
-- [Ear-3 Model](https://www.marktechpost.com/2025/09/11/twinmind-introduces-ear-3-model/)
-- [iOS App](https://apps.apple.com/us/app/twinmind-ai-notes-memory/id6504585781)
-
-## Next Steps
-See `twinmind-prod-checklist` for production readiness.
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
 ## Examples
 
-**Basic**: Configure security basics with default TwinMind settings for standard meeting workflows.
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new TwinMindClient({
+    apiKey: process.env.TWINMIND_READ_KEY,
+  }),
+  writer: new TwinMindClient({
+    apiKey: process.env.TWINMIND_WRITE_KEY,
+  }),
+};
+```
 
-**Enterprise**: Customize for high-volume meeting transcription with monitoring and alerting.
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to TwinMind analytics
+  await twinmindClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'twinmind.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
+
+## Resources
+- [TwinMind Security Guide](https://docs.twinmind.com/security)
+- [TwinMind API Scopes](https://docs.twinmind.com/scopes)
+
+## Next Steps
+For production deployment, see `twinmind-prod-checklist`.

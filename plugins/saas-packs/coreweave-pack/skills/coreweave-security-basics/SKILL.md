@@ -1,74 +1,142 @@
 ---
 name: coreweave-security-basics
 description: |
-  Secure CoreWeave deployments with RBAC, network policies, and secrets management.
-  Use when hardening GPU workloads, managing model access,
-  or configuring namespace isolation.
-  Trigger with phrases like "coreweave security", "coreweave rbac",
-  "secure coreweave", "coreweave secrets".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
+  Apply CoreWeave security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing CoreWeave security configuration.
+  Trigger with phrases like "coreweave security", "coreweave secrets",
+  "secure coreweave", "coreweave API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
+tags: [saas, coreweave]
 ---
 
 # CoreWeave Security Basics
 
+## Overview
+Security best practices for CoreWeave API keys, tokens, and access control.
+
+## Prerequisites
+- CoreWeave SDK installed
+- Understanding of environment variables
+- Access to CoreWeave dashboard
+
 ## Instructions
 
-### Secrets for Model Access
-
+### Step 1: Configure Environment Variables
 ```bash
-# HuggingFace token
-kubectl create secret generic hf-token --from-literal=token="${HF_TOKEN}"
+# .env (NEVER commit to git)
+COREWEAVE_API_KEY=sk_live_***
+COREWEAVE_SECRET=***
 
-# Container registry credentials
-kubectl create secret docker-registry regcred \
-  --docker-server=ghcr.io \
-  --docker-username=$USER \
-  --docker-password=$TOKEN
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-### Network Policy for Inference Pods
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in CoreWeave dashboard
+# 2. Update environment variable
+export COREWEAVE_API_KEY="new_key_here"
 
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: inference-isolation
-spec:
-  podSelector:
-    matchLabels:
-      app: inference-server
-  policyTypes: [Ingress, Egress]
-  ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              role: api-gateway
-      ports:
-        - port: 8080
-  egress:
-    - to: []  # Allow all egress for model downloads
-      ports:
-        - port: 443
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${COREWEAVE_API_KEY}" \
+  https://api.coreweave.com/health
+
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
+
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new CoreWeaveClient({
+    apiKey: process.env.COREWEAVE_READ_KEY,
+  }),
+  writer: new CoreWeaveClient({
+    apiKey: process.env.COREWEAVE_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
 ```
 
 ### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
 
-- [ ] Kubeconfig stored securely, not in repos
-- [ ] Secrets used for model tokens (not env vars in YAML)
-- [ ] Network policies restrict inference endpoint access
-- [ ] RBAC limits namespace access per team
-- [ ] Container images scanned for CVEs
-- [ ] PVCs encrypted at rest
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to CoreWeave analytics
+  await coreweaveClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'coreweave.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-
-- [CoreWeave CKS Security](https://docs.coreweave.com/docs/products/cks)
+- [CoreWeave Security Guide](https://docs.coreweave.com/security)
+- [CoreWeave API Scopes](https://docs.coreweave.com/scopes)
 
 ## Next Steps
-
-For production readiness, see `coreweave-prod-checklist`.
+For production deployment, see `coreweave-prod-checklist`.

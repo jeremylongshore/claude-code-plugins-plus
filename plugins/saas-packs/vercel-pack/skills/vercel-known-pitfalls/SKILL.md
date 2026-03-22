@@ -3,300 +3,334 @@ name: vercel-known-pitfalls
 description: |
   Identify and avoid Vercel anti-patterns and common integration mistakes.
   Use when reviewing Vercel code for issues, onboarding new developers,
-  or auditing existing Vercel deployments for best practice violations.
+  or auditing existing Vercel integrations for best practices violations.
   Trigger with phrases like "vercel mistakes", "vercel anti-patterns",
   "vercel pitfalls", "vercel what not to do", "vercel code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, audit, anti-patterns, best-practices]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Known Pitfalls
 
 ## Overview
-Catalog of the most common Vercel anti-patterns with severity ratings, detection methods, and fixes. Organized by category: secret exposure, serverless function mistakes, edge runtime violations, configuration errors, and cost traps.
+Common mistakes and anti-patterns when integrating with Vercel.
 
 ## Prerequisites
 - Access to Vercel codebase for review
-- Understanding of Vercel's deployment model
-- Familiarity with `vercel-common-errors` for error codes
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
+
+## Pitfall #1: Synchronous API Calls in Request Path
+
+### ❌ Anti-Pattern
+```typescript
+// User waits for Vercel API call
+app.post('/checkout', async (req, res) => {
+  const payment = await vercelClient.processPayment(req.body);  // 2-5s latency
+  const notification = await vercelClient.sendEmail(payment);   // Another 1-2s
+  res.json({ success: true });  // User waited 3-7s
+});
+```
+
+### ✅ Better Approach
+```typescript
+// Return immediately, process async
+app.post('/checkout', async (req, res) => {
+  const jobId = await queue.enqueue('process-checkout', req.body);
+  res.json({ jobId, status: 'processing' });  // 50ms response
+});
+
+// Background job
+async function processCheckout(data) {
+  const payment = await vercelClient.processPayment(data);
+  await vercelClient.sendEmail(payment);
+}
+```
+
+---
+
+## Pitfall #2: Not Handling Rate Limits
+
+### ❌ Anti-Pattern
+```typescript
+// Blast requests, crash on 429
+for (const item of items) {
+  await vercelClient.process(item);  // Will hit rate limit
+}
+```
+
+### ✅ Better Approach
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(5);  // Max 5 concurrent
+const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
+
+for (const item of items) {
+  await rateLimiter.acquire();
+  await limit(() => vercelClient.process(item));
+}
+```
+
+---
+
+## Pitfall #3: Leaking API Keys
+
+### ❌ Anti-Pattern
+```typescript
+// In frontend code (visible to users!)
+const client = new VercelClient({
+  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
+});
+
+// In git history
+git commit -m "add API key"  // Exposed forever
+```
+
+### ✅ Better Approach
+```typescript
+// Backend only, environment variable
+const client = new VercelClient({
+  apiKey: process.env.VERCEL_API_KEY,
+});
+
+// Use .gitignore
+.env
+.env.local
+.env.*.local
+```
+
+---
+
+## Pitfall #4: Ignoring Idempotency
+
+### ❌ Anti-Pattern
+```typescript
+// Network error on response = duplicate charge!
+try {
+  await vercelClient.charge(order);
+} catch (error) {
+  if (error.code === 'NETWORK_ERROR') {
+    await vercelClient.charge(order);  // Charged twice!
+  }
+}
+```
+
+### ✅ Better Approach
+```typescript
+const idempotencyKey = `order-${order.id}-${Date.now()}`;
+
+await vercelClient.charge(order, {
+  idempotencyKey,  // Safe to retry
+});
+```
+
+---
+
+## Pitfall #5: Not Validating Webhooks
+
+### ❌ Anti-Pattern
+```typescript
+// Trust any incoming request
+app.post('/webhook', (req, res) => {
+  processWebhook(req.body);  // Attacker can send fake events
+  res.sendStatus(200);
+});
+```
+
+### ✅ Better Approach
+```typescript
+app.post('/webhook',
+  express.raw({ type: 'application/json' }),
+  (req, res) => {
+    const signature = req.headers['x-vercel-signature'];
+    if (!verifyVercelSignature(req.body, signature)) {
+      return res.sendStatus(401);
+    }
+    processWebhook(JSON.parse(req.body));
+    res.sendStatus(200);
+  }
+);
+```
+
+---
+
+## Pitfall #6: Missing Error Handling
+
+### ❌ Anti-Pattern
+```typescript
+// Crashes on any error
+const result = await vercelClient.get(id);
+console.log(result.data.nested.value);  // TypeError if missing
+```
+
+### ✅ Better Approach
+```typescript
+try {
+  const result = await vercelClient.get(id);
+  console.log(result?.data?.nested?.value ?? 'default');
+} catch (error) {
+  if (error instanceof VercelNotFoundError) {
+    return null;
+  }
+  if (error instanceof VercelRateLimitError) {
+    await sleep(error.retryAfter);
+    return this.get(id);  // Retry
+  }
+  throw error;  // Rethrow unknown errors
+}
+```
+
+---
+
+## Pitfall #7: Hardcoding Configuration
+
+### ❌ Anti-Pattern
+```typescript
+const client = new VercelClient({
+  timeout: 5000,  // Too short for some operations
+  baseUrl: 'https://api.vercel.com',  // Can't change for staging
+});
+```
+
+### ✅ Better Approach
+```typescript
+const client = new VercelClient({
+  timeout: parseInt(process.env.VERCEL_TIMEOUT || '30000'),
+  baseUrl: process.env.VERCEL_BASE_URL || 'https://api.vercel.com',
+});
+```
+
+---
+
+## Pitfall #8: Not Implementing Circuit Breaker
+
+### ❌ Anti-Pattern
+```typescript
+// When Vercel is down, every request hangs
+for (const user of users) {
+  await vercelClient.sync(user);  // All timeout sequentially
+}
+```
+
+### ✅ Better Approach
+```typescript
+import CircuitBreaker from 'opossum';
+
+const breaker = new CircuitBreaker(vercelClient.sync, {
+  timeout: 10000,
+  errorThresholdPercentage: 50,
+  resetTimeout: 30000,
+});
+
+// Fails fast when circuit is open
+for (const user of users) {
+  await breaker.fire(user).catch(handleFailure);
+}
+```
+
+---
+
+## Pitfall #9: Logging Sensitive Data
+
+### ❌ Anti-Pattern
+```typescript
+console.log('Request:', JSON.stringify(request));  // Logs API key, PII
+console.log('User:', user);  // Logs email, phone
+```
+
+### ✅ Better Approach
+```typescript
+const redacted = {
+  ...request,
+  apiKey: '[REDACTED]',
+  user: { id: user.id },  // Only non-sensitive fields
+};
+console.log('Request:', JSON.stringify(redacted));
+```
+
+---
+
+## Pitfall #10: No Graceful Degradation
+
+### ❌ Anti-Pattern
+```typescript
+// Entire feature broken if Vercel is down
+const recommendations = await vercelClient.getRecommendations(userId);
+return renderPage({ recommendations });  // Page crashes
+```
+
+### ✅ Better Approach
+```typescript
+let recommendations;
+try {
+  recommendations = await vercelClient.getRecommendations(userId);
+} catch (error) {
+  recommendations = await getFallbackRecommendations(userId);
+  reportDegradedService('vercel', error);
+}
+return renderPage({ recommendations, degraded: !recommendations });
+```
+
+---
 
 ## Instructions
 
-### Category 1: Secret Exposure (Critical)
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
 
-**P1: Secrets in NEXT_PUBLIC_ variables**
-```typescript
-// BAD — exposed in client JavaScript bundle, visible to anyone
-const apiKey = process.env.NEXT_PUBLIC_API_SECRET;
-// This value is inlined at build time into the browser bundle
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
 
-// GOOD — server-only access
-const apiKey = process.env.API_SECRET;
-// Only accessible in serverless functions and server components
-```
-- **Detection:** `grep -r 'NEXT_PUBLIC_.*SECRET\|NEXT_PUBLIC_.*KEY\|NEXT_PUBLIC_.*TOKEN' src/`
-- **Fix:** Remove `NEXT_PUBLIC_` prefix, rotate the exposed secret immediately
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
 
-**P2: Hardcoded credentials in source**
-```typescript
-// BAD
-const client = new Client({ apiKey: 'sk_live_abc123' });
-
-// GOOD
-const client = new Client({ apiKey: process.env.API_KEY });
-```
-- **Detection:** `grep -rE 'sk_live|sk_test|Bearer [a-zA-Z0-9]{20,}' src/ api/`
-- **Fix:** Move to environment variables, add pre-commit hook
-
-**P3: Secrets in vercel.json**
-```json
-// BAD — vercel.json is committed to git
-{
-  "env": { "API_KEY": "sk_live_abc123" }
-}
-
-// GOOD — use Vercel dashboard or CLI
-// vercel env add API_KEY production
-```
-
-### Category 2: Serverless Function Mistakes (High)
-
-**P4: Heavy initialization at module level**
-```typescript
-// BAD — runs on every cold start, adds 500ms+
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient(); // Connects on import
-const cache = await loadLargeDataset(); // Blocks cold start
-
-// GOOD — lazy initialization
-let prisma: PrismaClient | null = null;
-function getDb() {
-  if (!prisma) prisma = new PrismaClient();
-  return prisma;
-}
-
-export default async function handler(req, res) {
-  const db = getDb(); // Only connects on first request
-  // ...
-}
-```
-
-**P5: Not returning responses from all code paths**
-```typescript
-// BAD — some paths don't return, causing NO_RESPONSE_FROM_FUNCTION
-export default function handler(req, res) {
-  if (req.method === 'GET') {
-    res.json({ data: 'ok' });
-  }
-  // POST, PUT, DELETE — no response returned!
-}
-
-// GOOD
-export default function handler(req, res) {
-  if (req.method === 'GET') {
-    return res.json({ data: 'ok' });
-  }
-  return res.status(405).json({ error: 'Method not allowed' });
-}
-```
-
-**P6: Ignoring function timeout limits**
-```typescript
-// BAD — no timeout awareness, function silently killed
-export default async function handler(req, res) {
-  const results = await processMillionRecords(); // Takes 5 minutes
-  res.json(results);
-}
-
-// GOOD — chunk work, respect timeout
-export default async function handler(req, res) {
-  const batch = req.query.batch ?? 0;
-  const results = await processBatch(batch, 100); // Process 100 at a time
-  res.json({
-    results,
-    nextBatch: batch + 1,
-    done: results.length < 100,
-  });
-}
-```
-
-**P7: Connection pool exhaustion**
-```typescript
-// BAD — each function instance creates its own connection pool
-// With 100 concurrent functions × 10 pool connections = 1000 DB connections
-const pool = new Pool({ max: 10 });
-
-// GOOD — use a connection pooler
-// Use Prisma Accelerate, PgBouncer, or Supabase connection pooler
-// Configure pool size to 1-2 per function instance
-const pool = new Pool({ max: 2 });
-```
-
-### Category 3: Edge Runtime Violations (High)
-
-**P8: Node.js APIs in edge functions**
-```typescript
-// BAD — these crash silently in Edge Runtime
-export const config = { runtime: 'edge' };
-
-import fs from 'fs';           // Not available
-import path from 'path';       // Not available
-import crypto from 'crypto';   // Use crypto.subtle instead
-import { Buffer } from 'buffer'; // Use Uint8Array instead
-
-// GOOD — Web Standard APIs
-const hash = await crypto.subtle.digest('SHA-256', data);
-const encoded = btoa(String.fromCharCode(...new Uint8Array(hash)));
-```
-- **Detection:** `grep -rn "from 'fs'\|from 'path'\|from 'crypto'\|from 'child_process'" --include="*edge*" --include="*middleware*"`
-
-**P9: Dynamic code evaluation in edge**
-```typescript
-// BAD — throws "Dynamic Code Evaluation not allowed"
-export const config = { runtime: 'edge' };
-const fn = new Function('return 42'); // Not allowed
-eval('console.log("hi")');            // Not allowed
-
-// GOOD — use static code only
-const fn = () => 42;
-```
-
-### Category 4: Configuration Errors (Medium)
-
-**P10: Missing environment variable scoping**
-```bash
-# BAD — variable only in Production, preview deployments break
-vercel env add DATABASE_URL production
-
-# GOOD — add to all environments that need it
-vercel env add DATABASE_URL production preview development
-```
-
-**P11: Using deprecated builds property**
-```json
-// BAD (deprecated)
-{
-  "builds": [
-    { "src": "api/**/*.ts", "use": "@vercel/node" }
-  ]
-}
-
-// GOOD (current)
-{
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "nodejs20.x",
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-**P12: Middleware running on static assets**
-```typescript
-// BAD — middleware runs on every request including static files
-export function middleware(request) { /* auth check */ }
-
-// GOOD — exclude static assets
-export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-};
-```
-
-### Category 5: Cost Traps (Medium)
-
-**P13: Uncached high-traffic endpoints**
-```typescript
-// BAD — every request invokes a function
-export default function handler(req, res) {
-  res.json({ config: getConfig() }); // No cache headers
-}
-
-// GOOD — cache at the edge, save function invocations
-export default function handler(req, res) {
-  res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
-  res.json({ config: getConfig() });
-}
-```
-
-**P14: Over-allocated function memory**
-```json
-// BAD — 3GB for a simple JSON response
-{
-  "functions": { "api/config.ts": { "memory": 3008 } }
-}
-
-// GOOD — right-size per endpoint
-{
-  "functions": {
-    "api/config.ts": { "memory": 128 },
-    "api/image-process.ts": { "memory": 1024 }
-  }
-}
-```
-
-**P15: Middleware doing heavy work**
-```typescript
-// BAD — database query on every request
-export async function middleware(request) {
-  const user = await db.user.findUnique({ where: { id: token.sub } });
-  // Runs on EVERY matched request, expensive at scale
-}
-
-// GOOD — validate JWT locally, no DB call
-export function middleware(request) {
-  const token = request.cookies.get('session')?.value;
-  // Verify JWT signature locally (cheap, no external call)
-}
-```
-
-## Quick Audit Script
-```bash
-#!/usr/bin/env bash
-echo "=== Vercel Pitfall Audit ==="
-
-echo "P1: Secrets in NEXT_PUBLIC_:"
-grep -rn 'NEXT_PUBLIC_.*SECRET\|NEXT_PUBLIC_.*KEY\|NEXT_PUBLIC_.*TOKEN' src/ api/ 2>/dev/null || echo "  PASS"
-
-echo "P2: Hardcoded credentials:"
-grep -rnE 'sk_live|sk_test|Bearer [a-zA-Z0-9]{20,}' src/ api/ 2>/dev/null || echo "  PASS"
-
-echo "P8: Node.js APIs in edge files:"
-grep -rn "from 'fs'\|from 'path'\|from 'child_process'" src/middleware.ts api/*edge* 2>/dev/null || echo "  PASS"
-
-echo "P11: Deprecated builds:"
-jq -e '.builds' vercel.json 2>/dev/null && echo "  FAIL: deprecated builds" || echo "  PASS"
-
-echo "P12: Middleware without matcher:"
-grep -L 'matcher' src/middleware.ts 2>/dev/null && echo "  WARN: no matcher configured" || echo "  PASS"
-```
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
 
 ## Output
-- Anti-patterns identified and classified by severity (Critical/High/Medium)
-- Security issues fixed and exposed secrets rotated
-- Performance improvements from lazy initialization and caching
-- ESLint and CI prevention measures blocking future regressions
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
 
 ## Error Handling
-| Pitfall | Severity | Detection | Fix |
-|---------|----------|-----------|-----|
-| P1: NEXT_PUBLIC_ secrets | Critical | grep scan | Remove prefix, rotate secret |
-| P4: Heavy cold starts | High | Cold start timing | Lazy initialization |
-| P5: Missing response | High | 502 errors in logs | Return from all paths |
-| P7: Connection exhaustion | High | DB connection errors | Use connection pooler |
-| P8: Node.js in edge | High | EDGE_FUNCTION_INVOCATION_FAILED | Use Web APIs |
-| P13: No cache headers | Medium | High function invocations bill | Add s-maxage |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
 
 ## Resources
+- [Vercel Security Guide](https://vercel.com/docs/security)
 - [Vercel Best Practices](https://vercel.com/docs/best-practices)
-- [Edge Runtime Limitations](https://vercel.com/docs/functions/runtimes/edge)
-- [Function Configuration](https://vercel.com/docs/functions/configuring-functions)
-- [Vercel Security](https://vercel.com/docs/security)
-- [Vercel Limits](https://vercel.com/docs/limits)
 
-## Next Steps
-Return to `vercel-install-auth` for setup or `vercel-reference-architecture` for project structure.
+## Quick Reference Card
+
+| Pitfall | Detection | Prevention |
+|---------|-----------|------------|
+| Sync in request | High latency | Use queues |
+| Rate limit ignore | 429 errors | Implement backoff |
+| Key leakage | Git history scan | Env vars, .gitignore |
+| No idempotency | Duplicate records | Idempotency keys |
+| Unverified webhooks | Security audit | Signature verification |
+| Missing error handling | Crashes | Try-catch, types |
+| Hardcoded config | Code review | Environment variables |
+| No circuit breaker | Cascading failures | opossum, resilience4j |
+| Logging PII | Log audit | Redaction middleware |
+| No degradation | Total outages | Fallback systems |

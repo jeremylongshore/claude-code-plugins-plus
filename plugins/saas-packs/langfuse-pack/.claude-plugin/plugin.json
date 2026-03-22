@@ -1,9 +1,17 @@
 {
   "name": "langfuse-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Langfuse LLM observability (24 skills)",
-  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "description": "Claude Code skill pack for Langfuse (18 skills)",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
   "license": "MIT",
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
-  "keywords": ["langfuse", "llm", "observability", "tracing", "monitoring", "evaluation"]
+  "keywords": [
+    "langfuse",
+    "langfuse",
+    "saas",
+    "sdk",
+    "integration"
+  ]
 }

@@ -1,49 +1,149 @@
 ---
 name: wispr-sdk-patterns
 description: |
-  Wispr Flow sdk patterns for voice-to-text API integration.
-  Use when integrating Wispr Flow dictation, WebSocket streaming,
-  or building voice-powered applications.
-  Trigger: "wispr sdk patterns".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Apply production-ready Wispr SDK patterns for TypeScript and Python.
+  Use when implementing Wispr integrations, refactoring SDK usage,
+  or establishing team coding standards for Wispr.
+  Trigger with phrases like "wispr SDK patterns", "wispr best practices",
+  "wispr code patterns", "idiomatic wispr".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, dictation, wispr]
 compatible-with: claude-code
+tags: [saas, wispr]
 ---
 
-# Wispr Flow Sdk Patterns
+# Wispr SDK Patterns
 
 ## Overview
+Production-ready patterns for Wispr SDK usage in TypeScript and Python.
 
-Guidance for sdk patterns with Wispr Flow voice-to-text API.
+## Prerequisites
+- Completed `wispr-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
 ## Instructions
 
-### Key Wispr Flow Concepts
+### Step 1: Implement Singleton Pattern (Recommended)
+```typescript
+// src/wispr/client.ts
+import { WisprClient } from '@wispr/sdk';
 
-- **WebSocket API**: `wss://api.wisprflow.ai/api/v1/ws` (recommended, low latency)
-- **REST API**: `POST /api/v1/transcribe` (simpler, higher latency)
-- **Auth**: API key (backend) or access token (client-side)
-- **Audio format**: 16kHz mono PCM preferred
-- **Context awareness**: Understands code, CLI commands, dev jargon
-- **Platforms**: Mac, Windows, iOS, browser API
+let instance: WisprClient | null = null;
+
+export function getWisprClient(): WisprClient {
+  if (!instance) {
+    instance = new WisprClient({
+      apiKey: process.env.WISPR_API_KEY!,
+      // Additional options
+    });
+  }
+  return instance;
+}
+```
+
+### Step 2: Add Error Handling Wrapper
+```typescript
+import { WisprError } from '@wispr/sdk';
+
+async function safeWisprCall<T>(
+  operation: () => Promise<T>
+): Promise<{ data: T | null; error: Error | null }> {
+  try {
+    const data = await operation();
+    return { data, error: null };
+  } catch (err) {
+    if (err instanceof WisprError) {
+      console.error({
+        code: err.code,
+        message: err.message,
+      });
+    }
+    return { data: null, error: err as Error };
+  }
+}
+```
+
+### Step 3: Implement Retry Logic
+```typescript
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  backoffMs = 1000
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      const delay = backoffMs * Math.pow(2, attempt - 1);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
+```
+
+## Output
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
 ## Error Handling
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `401 Unauthorized` | Invalid key | Check at wisprflow.ai/developers |
-| WebSocket closed | Network issue | Reconnect with backoff |
-| Poor accuracy | Wrong context | Set context to 'programming' for code |
+## Examples
+
+### Factory Pattern (Multi-tenant)
+```typescript
+const clients = new Map<string, WisprClient>();
+
+export function getClientForTenant(tenantId: string): WisprClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new WisprClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
+}
+```
+
+### Python Context Manager
+```python
+from contextlib import asynccontextmanager
+from wispr import WisprClient
+
+@asynccontextmanager
+async def get_wispr_client():
+    client = WisprClient()
+    try:
+        yield client
+    finally:
+        await client.close()
+```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const wisprResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
 
 ## Resources
-
-- [Wispr Flow Developers](https://wisprflow.ai/developers)
-- [API Docs](https://api-docs.wisprflow.ai/introduction)
-- [WebSocket Quickstart](https://api-docs.wisprflow.ai/websocket_quickstart)
+- [Wispr SDK Reference](https://docs.wispr.com/sdk)
+- [Wispr API Types](https://docs.wispr.com/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-
-See related Wispr Flow skills for more patterns.
+Apply patterns in `wispr-core-workflow-a` for real-world usage.

@@ -1,252 +1,201 @@
 ---
 name: vercel-webhooks-events
 description: |
-  Implement Vercel webhook handling with signature verification and event processing.
-  Use when setting up webhook endpoints, processing deployment events,
-  or building integrations that react to Vercel deployment lifecycle.
+  Implement Vercel webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Vercel event notifications securely.
   Trigger with phrases like "vercel webhook", "vercel events",
-  "vercel deployment.ready", "handle vercel events", "vercel webhook signature".
+  "vercel webhook signature", "handle vercel events", "vercel notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, webhooks, events, integration]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Webhooks & Events
 
 ## Overview
-Handle Vercel webhook events (deployment.created, deployment.ready, deployment.error) with HMAC signature verification. Covers both integration webhooks (Vercel Marketplace) and project-level deploy hooks.
+Securely handle Vercel webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- HTTPS endpoint accessible from the internet
-- Webhook secret from Vercel dashboard or integration settings
-- `crypto` module for HMAC signature verification
+- Vercel webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Register a Webhook
-In the Vercel dashboard:
-1. Go to **Settings > Webhooks**
-2. Add your endpoint URL (must be HTTPS)
-3. Select events to subscribe to
-4. Copy the webhook secret for signature verification
-
-Or for Integration webhooks, configure in the Integration Console at `vercel.com/dashboard/integrations`.
-
-### Step 2: Verify Webhook Signature
+### Express.js
 ```typescript
-// api/webhooks/vercel.ts
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import express from 'express';
 import crypto from 'crypto';
 
-const WEBHOOK_SECRET = process.env.VERCEL_WEBHOOK_SECRET!;
+const app = express();
 
-function verifySignature(body: string, signature: string): boolean {
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/vercel',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-vercel-signature'] as string;
+    const timestamp = req.headers['x-vercel-timestamp'] as string;
+
+    if (!verifyVercelSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleVercelEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyVercelSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.VERCEL_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
   const expectedSignature = crypto
-    .createHmac('sha1', WEBHOOK_SECRET)
-    .update(body)
+    .createHmac('sha256', secret)
+    .update(signedPayload)
     .digest('hex');
+
+  // Timing-safe comparison
   return crypto.timingSafeEqual(
     Buffer.from(signature),
     Buffer.from(expectedSignature)
   );
 }
-
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Get raw body for signature verification
-  const rawBody = JSON.stringify(req.body);
-  const signature = req.headers['x-vercel-signature'] as string;
-
-  if (!signature || !verifySignature(rawBody, signature)) {
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
-
-  // Process the event
-  const event = req.body;
-  await handleEvent(event);
-
-  res.status(200).json({ received: true });
-}
 ```
 
-### Step 3: Handle Deployment Events
+## Event Handler Pattern
+
 ```typescript
-// lib/webhook-handlers.ts
-interface VercelWebhookEvent {
+type VercelEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface VercelEvent {
   id: string;
-  type: string;
-  createdAt: number;
-  payload: {
-    deployment: {
-      id: string;
-      name: string;
-      url: string;
-      meta: Record<string, string>;
-    };
-    project: {
-      id: string;
-      name: string;
-    };
-    target: 'production' | 'preview' | null;
-    user: { id: string; email: string; username: string };
-  };
+  type: VercelEventType;
+  data: Record<string, any>;
+  created: string;
 }
 
-async function handleEvent(event: VercelWebhookEvent): Promise<void> {
-  switch (event.type) {
-    case 'deployment.created':
-      console.log(`Deployment started: ${event.payload.deployment.url}`);
-      // Notify Slack, update status board, etc.
-      break;
+const eventHandlers: Record<VercelEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
 
-    case 'deployment.ready':
-      console.log(`Deployment ready: ${event.payload.deployment.url}`);
-      // Run smoke tests against the deployment URL
-      // Notify team of successful deploy
-      if (event.payload.target === 'production') {
-        await notifyProductionDeploy(event);
-      }
-      break;
+async function handleVercelEvent(event: VercelEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
 
-    case 'deployment.error':
-      console.error(`Deployment failed: ${event.payload.deployment.id}`);
-      // Alert on-call engineer
-      // Create incident ticket
-      await notifyDeploymentError(event);
-      break;
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
 
-    case 'deployment.canceled':
-      console.log(`Deployment canceled: ${event.payload.deployment.id}`);
-      break;
-
-    case 'project.created':
-      console.log(`New project: ${event.payload.project.name}`);
-      break;
-
-    case 'project.removed':
-      console.log(`Project removed: ${event.payload.project.name}`);
-      break;
-
-    default:
-      console.log(`Unhandled event type: ${event.type}`);
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
   }
 }
 ```
 
-### Step 4: Idempotency — Prevent Duplicate Processing
+## Idempotency Handling
+
 ```typescript
-// lib/idempotency.ts
-// Vercel may retry webhook delivery — track processed event IDs
-const processedEvents = new Set<string>(); // Use Redis in production
+import { Redis } from 'ioredis';
 
-async function processWebhookIdempotent(
-  event: VercelWebhookEvent,
-  handler: (e: VercelWebhookEvent) => Promise<void>
-): Promise<boolean> {
-  if (processedEvents.has(event.id)) {
-    console.log(`Skipping duplicate event: ${event.id}`);
-    return false;
-  }
+const redis = new Redis(process.env.REDIS_URL);
 
-  await handler(event);
-  processedEvents.add(event.id);
-  return true;
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `vercel:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `vercel:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
 }
 ```
 
-### Step 5: Slack Notification Example
-```typescript
-// lib/notifications.ts
-async function notifyProductionDeploy(event: VercelWebhookEvent): Promise<void> {
-  const { deployment, project, user } = event.payload;
+## Webhook Testing
 
-  await fetch(process.env.SLACK_WEBHOOK_URL!, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text: `Production deploy complete`,
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: [
-              `*${project.name}* deployed to production`,
-              `By: ${user.username}`,
-              `URL: https://${deployment.url}`,
-              `Commit: ${deployment.meta?.githubCommitMessage ?? 'N/A'}`,
-            ].join('\n'),
-          },
-        },
-      ],
-    }),
-  });
-}
-
-async function notifyDeploymentError(event: VercelWebhookEvent): Promise<void> {
-  await fetch(process.env.SLACK_WEBHOOK_URL!, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      text: `Deployment FAILED for ${event.payload.project.name} — ${event.payload.deployment.id}`,
-    }),
-  });
-}
-```
-
-### Step 6: Test Webhooks Locally
 ```bash
-# Use the Vercel CLI to test webhook signatures
-# Or use a tunnel service for local testing
-npx localtunnel --port 3000
-# Gives you a public URL like https://xxx.loca.lt
+# Use Vercel CLI to send test events
+vercel dev
 
-# Send a test webhook payload
-curl -X POST http://localhost:3000/api/webhooks/vercel \
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
   -H "Content-Type: application/json" \
-  -H "x-vercel-signature: $(echo -n '{"type":"deployment.ready","id":"test"}' | openssl dgst -sha1 -hmac 'your-secret' | awk '{print $2}')" \
-  -d '{"type":"deployment.ready","id":"test"}'
+  -d '{"type": "resource.created", "data": {}}'
 ```
 
-## Webhook Event Types
+## Instructions
 
-| Event | Trigger |
-|-------|---------|
-| `deployment.created` | New deployment started building |
-| `deployment.ready` | Deployment build completed successfully |
-| `deployment.error` | Deployment build failed |
-| `deployment.canceled` | Deployment was canceled |
-| `project.created` | New project created |
-| `project.removed` | Project deleted |
-| `domain.created` | Domain added to project |
-| `integration.configuration.removed` | Integration uninstalled |
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Vercel dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Webhook endpoint with HMAC signature verification
-- Event handlers for deployment lifecycle events
-- Idempotent processing preventing duplicates
-- Slack notifications for production deploys and failures
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `401 Invalid signature` | Wrong webhook secret or body mismatch | Verify secret matches dashboard, use raw body for HMAC |
-| Webhook not received | Endpoint not publicly accessible | Ensure HTTPS, check firewall rules |
-| Duplicate processing | Webhook retried by Vercel | Implement idempotency with event ID tracking |
-| `504 timeout` on webhook endpoint | Handler takes too long | Return 200 immediately, process async in background |
-| Missing `x-vercel-signature` | Not a real Vercel webhook | Reject requests without the signature header |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
+
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/vercel \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Vercel Webhooks API](https://vercel.com/docs/webhooks/webhooks-api)
-- [Setting Up Webhooks](https://vercel.com/docs/webhooks)
-- [Deploy Hooks](https://vercel.com/docs/deploy-hooks)
-- [Integration Webhooks](https://vercel.com/docs/integrations/create-integration)
+- [Vercel Webhooks Guide](https://vercel.com/docs/webhooks)
+- [Webhook Security Best Practices](https://vercel.com/docs/webhooks/security)
 
 ## Next Steps
 For performance optimization, see `vercel-performance-tuning`.

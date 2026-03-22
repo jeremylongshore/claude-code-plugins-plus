@@ -6,110 +6,68 @@ description: |
   or complementing primary workflow.
   Trigger with phrases like "hex secondary workflow",
   "secondary task with hex".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex, data, scheduling]
 compatible-with: claude-code
+tags: [saas, hex]
 ---
 
-# Hex Scheduled Runs & Admin API
+# Hex Core Workflow B
 
 ## Overview
+Secondary workflow for Hex. Complements the primary workflow.
 
-Configure scheduled runs and manage workspace resources via the Hex Admin API. Scheduled runs execute projects on cron-based intervals. The Admin API manages users, groups, and data connections.
+## Prerequisites
+- Completed `hex-install-auth` setup
+- Familiarity with `hex-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: List Project Runs
-
+### Step 1: Setup
 ```typescript
-const TOKEN = process.env.HEX_API_TOKEN!;
-const BASE = 'https://app.hex.tech/api/v1';
-
-async function getProjectRuns(projectId: string) {
-  const response = await fetch(`${BASE}/project/${projectId}/runs`, {
-    headers: { 'Authorization': `Bearer ${TOKEN}` },
-  });
-  const runs = await response.json();
-  for (const run of runs) {
-    console.log(`${run.runId}: ${run.status} (${run.startTime} → ${run.endTime || 'running'})`);
-  }
-  return runs;
-}
+// Step 1 implementation
 ```
 
-### Step 2: Scheduled Runs (via Hex UI + API Trigger)
-
-Schedules are configured in the Hex UI. For API-based scheduling, use external cron:
-
+### Step 2: Process
 ```typescript
-// cron-trigger.ts — run via cron job or CI
-import cron from 'node-cron';
-
-// Daily at 6 AM UTC
-cron.schedule('0 6 * * *', async () => {
-  console.log('Triggering daily report...');
-  await triggerRun({
-    projectId: 'daily-report-project-id',
-    inputParams: { date: new Date().toISOString().split('T')[0] },
-    updateCache: true,
-  });
-});
-
-// Weekly on Monday at 9 AM
-cron.schedule('0 9 * * 1', async () => {
-  await triggerRun({ projectId: 'weekly-summary-project-id' });
-});
+// Step 2 implementation
 ```
 
-### Step 3: User Management (Admin API)
-
+### Step 3: Complete
 ```typescript
-// List workspace users
-async function listUsers() {
-  const response = await fetch(`${BASE}/workspace/users`, {
-    headers: { 'Authorization': `Bearer ${TOKEN}` },
-  });
-  return response.json();
-}
-
-// List groups
-async function listGroups() {
-  const response = await fetch(`${BASE}/workspace/groups`, {
-    headers: { 'Authorization': `Bearer ${TOKEN}` },
-  });
-  return response.json();
-}
+// Step 3 implementation
 ```
 
-### Step 4: Data Connection Management
+## Output
+- Completed Core Workflow B execution
+- Results from Hex API
+- Success confirmation or error details
 
+## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
 ```typescript
-// List configured data connections
-async function listConnections() {
-  const response = await fetch(`${BASE}/workspace/connections`, {
-    headers: { 'Authorization': `Bearer ${TOKEN}` },
-  });
-  return response.json();
-}
+// Complete workflow example
 ```
 
-## Scheduling Options
-
-| Method | Intervals | Plan Required |
-|--------|-----------|---------------|
-| Hex UI | Hourly, daily, weekly, monthly | Team+ |
-| Hex UI (cron) | Any cron expression | Team+ |
-| API trigger + external cron | Any schedule | Team+ |
-| Airflow/Dagster integration | Any schedule | Team+ |
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [Scheduled Runs](https://learn.hex.tech/docs/share-insights/scheduled-runs)
-- [API Reference](https://learn.hex.tech/docs/api/api-reference)
+- [Hex Documentation](https://docs.hex.com)
+- [Hex API Reference](https://docs.hex.com/api)
 
 ## Next Steps
-
 For common errors, see `hex-common-errors`.

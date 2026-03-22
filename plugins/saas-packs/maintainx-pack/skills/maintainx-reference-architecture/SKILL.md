@@ -1,320 +1,240 @@
 ---
 name: maintainx-reference-architecture
 description: |
-  Production-grade architecture patterns for MaintainX integrations.
-  Use when designing system architecture, planning integrations,
-  or building enterprise-scale MaintainX solutions.
-  Trigger with phrases like "maintainx architecture", "maintainx design",
-  "maintainx system design", "maintainx enterprise", "maintainx patterns".
-allowed-tools: Read, Write, Edit
+  Implement MaintainX reference architecture with best-practice project layout.
+  Use when designing new MaintainX integrations, reviewing project structure,
+  or establishing architecture standards for MaintainX applications.
+  Trigger with phrases like "maintainx architecture", "maintainx best practices",
+  "maintainx project structure", "how to organize maintainx", "maintainx layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, scaling]
-
+compatible-with: claude-code
+tags: [saas, maintainx]
 ---
+
 # MaintainX Reference Architecture
 
 ## Overview
-Production-grade architecture patterns for building scalable, maintainable integrations between MaintainX and enterprise systems (ERP, SCADA, data warehouses).
+Production-ready architecture patterns for MaintainX integrations.
 
 ## Prerequisites
-- Understanding of distributed systems
-- Cloud platform experience (GCP, AWS, or Azure)
-- MaintainX API familiarity
+- Understanding of layered architecture
+- MaintainX SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
+```
+my-maintainx-project/
+├── src/
+│   ├── maintainx/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── maintainx/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── maintainx/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── maintainx/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── maintainx/
+│   └── integration/
+│       └── maintainx/
+├── config/
+│   ├── maintainx.development.json
+│   ├── maintainx.staging.json
+│   └── maintainx.production.json
+└── docs/
+    └── maintainx/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          MaintainX Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/maintainx/client.ts
+export class MaintainXService {
+  private client: MaintainXClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: MaintainXConfig) {
+    this.client = new MaintainXClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('maintainx');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/maintainx/errors.ts
+export class MaintainXServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'MaintainXServiceError';
+  }
+}
+
+export function wrapMaintainXError(error: unknown): MaintainXServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/maintainx/health.ts
+export async function checkMaintainXHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await maintainxClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ MaintainX    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ MaintainX    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/maintainx.ts
+export interface MaintainXConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadMaintainXConfig(): MaintainXConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./maintainx.${env}.json`);
+}
+```
 
 ## Instructions
 
-### Step 1: Event-Driven Sync Architecture
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-The recommended architecture for most MaintainX integrations. Uses webhooks for real-time updates and scheduled jobs for reconciliation.
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-```
-MaintainX API ──webhook──→ Cloud Run ──→ Pub/Sub ──→ Cloud Functions
-                                              │
-                                              ├──→ BigQuery (analytics)
-                                              ├──→ ERP System (SAP, Oracle)
-                                              └──→ Notification Service
-```
+### Step 3: Add Error Handling
+Implement custom error classes for MaintainX operations.
 
-```typescript
-// src/architecture/event-driven.ts
-import express from 'express';
-import { PubSub } from '@google-cloud/pubsub';
-
-const app = express();
-const pubsub = new PubSub();
-const topic = pubsub.topic('maintainx-events');
-
-// Webhook receiver publishes to Pub/Sub
-app.post('/webhooks/maintainx', async (req, res) => {
-  const { event, data } = req.body;
-
-  await topic.publishMessage({
-    data: Buffer.from(JSON.stringify({ event, data })),
-    attributes: { event, resourceId: String(data.id) },
-  });
-
-  res.status(200).json({ status: 'queued' });
-});
-
-// Subscriber processes events asynchronously
-const subscription = pubsub.subscription('maintainx-events-sub');
-subscription.on('message', async (message) => {
-  const { event, data } = JSON.parse(message.data.toString());
-
-  switch (event) {
-    case 'workorder.completed':
-      await syncToERP(data);
-      await updateAnalytics(data);
-      break;
-    case 'workorder.created':
-      if (data.priority === 'HIGH') {
-        await sendUrgentNotification(data);
-      }
-      break;
-  }
-
-  message.ack();
-});
-```
-
-### Step 2: Bi-Directional Sync Gateway
-
-For integrating MaintainX with ERP systems (SAP, Oracle) where changes flow both ways.
-
-```
-ERP (SAP/Oracle) ←──→ Sync Gateway ←──→ MaintainX API
-                          │
-                    Conflict Resolution
-                    + Audit Trail
-                    + Sync State DB
-```
-
-```typescript
-// src/architecture/sync-gateway.ts
-
-interface SyncRecord {
-  externalId: string;     // ERP system ID
-  maintainxId: number;    // MaintainX ID
-  lastSyncAt: string;
-  syncDirection: 'inbound' | 'outbound' | 'bidirectional';
-  hash: string;           // Content hash for change detection
-}
-
-class SyncGateway {
-  constructor(
-    private maintainx: MaintainXClient,
-    private erp: ERPClient,
-    private db: SyncStateDB,
-  ) {}
-
-  // MaintainX → ERP
-  async syncToERP(workOrder: any) {
-    const existing = await this.db.findByMaintainxId(workOrder.id);
-
-    if (existing && this.hash(workOrder) === existing.hash) {
-      return; // No change, skip
-    }
-
-    const erpRecord = this.mapToERP(workOrder);
-    if (existing) {
-      await this.erp.update(existing.externalId, erpRecord);
-    } else {
-      const created = await this.erp.create(erpRecord);
-      await this.db.create({
-        externalId: created.id,
-        maintainxId: workOrder.id,
-        lastSyncAt: new Date().toISOString(),
-        syncDirection: 'outbound',
-        hash: this.hash(workOrder),
-      });
-    }
-  }
-
-  // ERP → MaintainX
-  async syncFromERP(erpRecord: any) {
-    const existing = await this.db.findByExternalId(erpRecord.id);
-    const woData = this.mapFromERP(erpRecord);
-
-    if (existing) {
-      await this.maintainx.updateWorkOrder(existing.maintainxId, woData);
-    } else {
-      const created = await this.maintainx.createWorkOrder(woData);
-      await this.db.create({
-        externalId: erpRecord.id,
-        maintainxId: created.id,
-        lastSyncAt: new Date().toISOString(),
-        syncDirection: 'inbound',
-        hash: this.hash(created),
-      });
-    }
-  }
-
-  private mapToERP(wo: any) {
-    return {
-      title: wo.title,
-      status: this.mapStatus(wo.status),
-      priority: wo.priority,
-      completedAt: wo.completedAt,
-    };
-  }
-
-  private mapFromERP(erp: any) {
-    return {
-      title: erp.description,
-      priority: erp.urgency === 'HIGH' ? 'HIGH' : 'MEDIUM',
-    };
-  }
-
-  private mapStatus(status: string) {
-    const map: Record<string, string> = {
-      OPEN: 'PLANNED',
-      IN_PROGRESS: 'ACTIVE',
-      COMPLETED: 'FINISHED',
-      CLOSED: 'ARCHIVED',
-    };
-    return map[status] || 'UNKNOWN';
-  }
-
-  private hash(obj: any): string {
-    return require('crypto').createHash('md5')
-      .update(JSON.stringify(obj)).digest('hex');
-  }
-}
-```
-
-### Step 3: Analytics Data Pipeline
-
-```
-MaintainX API ──scheduled──→ Cloud Functions ──→ BigQuery
-                                                    │
-                                              Looker / Metabase
-                                                    │
-                                              KPI Dashboards:
-                                              - MTTR (Mean Time to Repair)
-                                              - PM Compliance %
-                                              - Work Order Backlog
-                                              - Asset Downtime
-```
-
-```typescript
-// src/architecture/analytics-pipeline.ts
-
-interface MaintenanceKPIs {
-  mttr: number;           // Mean Time to Repair (hours)
-  pmCompliance: number;   // Preventive Maintenance compliance %
-  backlog: number;        // Open work orders count
-  completionRate: number; // Orders completed / orders created
-}
-
-async function calculateKPIs(client: MaintainXClient): Promise<MaintenanceKPIs> {
-  const completed = await paginate(
-    (cursor) => client.getWorkOrders({ status: 'COMPLETED', limit: 100, cursor }),
-    'workOrders',
-  );
-
-  const open = await paginate(
-    (cursor) => client.getWorkOrders({ status: 'OPEN', limit: 100, cursor }),
-    'workOrders',
-  );
-
-  // MTTR: Average time from OPEN to COMPLETED
-  const repairTimes = completed
-    .filter((wo: any) => wo.createdAt && wo.completedAt)
-    .map((wo: any) => {
-      const created = new Date(wo.createdAt).getTime();
-      const completed = new Date(wo.completedAt).getTime();
-      return (completed - created) / 3600000; // hours
-    });
-
-  const mttr = repairTimes.length > 0
-    ? repairTimes.reduce((a: number, b: number) => a + b, 0) / repairTimes.length
-    : 0;
-
-  // PM Compliance
-  const pmOrders = completed.filter((wo: any) =>
-    wo.categories?.includes('PREVENTIVE'),
-  );
-  const allPM = [...pmOrders, ...open.filter((wo: any) =>
-    wo.categories?.includes('PREVENTIVE'),
-  )];
-  const pmCompliance = allPM.length > 0 ? (pmOrders.length / allPM.length) * 100 : 100;
-
-  return {
-    mttr: Math.round(mttr * 10) / 10,
-    pmCompliance: Math.round(pmCompliance),
-    backlog: open.length,
-    completionRate: completed.length / (completed.length + open.length) * 100,
-  };
-}
-```
-
-### Step 4: Multi-Site Architecture
-
-```
-Site A (Plant)           Site B (Warehouse)        Site C (Office)
-  └── Local Agent           └── Local Agent            └── Local Agent
-        │                         │                          │
-        └─────────── Central Hub (Cloud Run) ────────────────┘
-                          │
-                    MaintainX API
-                    (Org-level access)
-```
-
-```typescript
-// Central hub routing requests by site
-const siteConfigs = {
-  'plant-austin': { orgId: 'org-1', apiKey: process.env.MX_KEY_PLANT },
-  'warehouse-dallas': { orgId: 'org-2', apiKey: process.env.MX_KEY_WAREHOUSE },
-  'office-houston': { orgId: 'org-3', apiKey: process.env.MX_KEY_OFFICE },
-};
-
-function getClientForSite(siteId: string): MaintainXClient {
-  const config = siteConfigs[siteId as keyof typeof siteConfigs];
-  if (!config) throw new Error(`Unknown site: ${siteId}`);
-  return new MaintainXClient(config.apiKey, config.orgId);
-}
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for MaintainX connectivity.
 
 ## Output
-- Event-driven architecture with Pub/Sub for decoupled processing
-- Bi-directional sync gateway with conflict resolution and audit trail
-- Analytics pipeline calculating maintenance KPIs (MTTR, PM compliance)
-- Multi-site architecture with per-site API key isolation
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-| Pattern | Failure Mode | Mitigation |
-|---------|-------------|------------|
-| Event-driven | Pub/Sub delivery failure | Dead letter queue, retry policy |
-| Bi-directional sync | Conflict on same record | Last-write-wins or manual resolution |
-| Analytics pipeline | Incomplete data fetch | Retry with backfill, validate counts |
-| Multi-site | One site API key expired | Independent health checks per site |
-
-## Resources
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
-- [Google Cloud Pub/Sub](https://cloud.google.com/pubsub/docs)
-- [Event-Driven Architecture](https://martinfowler.com/articles/event-driven.html)
-
-## Next Steps
-For multi-environment setup, see `maintainx-multi-env-setup`.
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add MaintainX types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-**SCADA integration** (pulling sensor data into MaintainX work orders):
-
-```typescript
-// Auto-create work order when equipment sensor exceeds threshold
-async function handleSensorAlert(sensorId: string, value: number, threshold: number) {
-  const asset = await findAssetBySensorId(sensorId);
-
-  await client.createWorkOrder({
-    title: `Sensor Alert: ${asset.name} - ${sensorId} exceeded threshold`,
-    description: `Value: ${value} (threshold: ${threshold}). Auto-generated from SCADA.`,
-    priority: value > threshold * 1.5 ? 'HIGH' : 'MEDIUM',
-    assetId: asset.maintainxId,
-    categories: ['CORRECTIVE'],
-  });
-}
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/maintainx/{handlers} src/services/maintainx src/api/maintainx
+touch src/maintainx/{client,config,types,errors}.ts
+touch src/services/maintainx/{index,sync,cache}.ts
 ```
+
+## Resources
+- [MaintainX SDK Documentation](https://docs.maintainx.com/sdk)
+- [MaintainX Best Practices](https://docs.maintainx.com/best-practices)
+
+## Flagship Skills
+For multi-environment setup, see `maintainx-multi-env-setup`.

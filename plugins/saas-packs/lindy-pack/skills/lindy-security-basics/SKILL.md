@@ -1,166 +1,142 @@
 ---
 name: lindy-security-basics
 description: |
-  Implement security best practices for Lindy AI agents and integrations.
-  Use when securing API keys, configuring agent permissions,
-  verifying webhooks, or auditing agent access.
-  Trigger with phrases like "lindy security", "secure lindy",
-  "lindy API key security", "lindy permissions", "lindy audit".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Apply Lindy security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Lindy security configuration.
+  Trigger with phrases like "lindy security", "lindy secrets",
+  "secure lindy", "lindy API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, lindy, api, security]
-
+compatible-with: claude-code
+tags: [saas, lindy]
 ---
+
 # Lindy Security Basics
 
 ## Overview
-Security practices for Lindy AI agents. Agents are autonomous — they connect to
-external services, execute actions, and handle data. Security focuses on: API key
-management, webhook authentication, agent permission scoping, integration account
-isolation, and connection sharing controls.
+Security best practices for Lindy API keys, tokens, and access control.
 
 ## Prerequisites
-- Lindy account with API access
-- Understanding of which integrations your agents use
-- For Enterprise: SSO/SCIM configuration access
+- Lindy SDK installed
+- Understanding of environment variables
+- Access to Lindy dashboard
 
 ## Instructions
 
-### Step 1: API Key Management
+### Step 1: Configure Environment Variables
 ```bash
-# Store API key in environment variable — never in source code
-export LINDY_API_KEY="lnd_live_xxxxxxxxxxxxxxxxxxxx"
+# .env (NEVER commit to git)
+LINDY_API_KEY=sk_live_***
+LINDY_SECRET=***
 
-# Or use a secret manager
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name lindy/api-key \
-  --secret-string "$LINDY_API_KEY"
-
-# Google Secret Manager
-echo -n "$LINDY_API_KEY" | gcloud secrets create lindy-api-key \
-  --data-file=-
+# .gitignore
+.env
+.env.local
+.env.*.local
 ```
 
-**Key rotation schedule**:
-| Environment | Rotation Period | Method |
-|-------------|----------------|--------|
-| Development | 30 days | Manual regeneration |
-| Staging | 90 days | Automated via CI |
-| Production | 90 days | Secret manager + automated rotation |
-| Post-incident | Immediately | Manual regeneration + revoke old key |
+### Step 2: Implement Secret Rotation
+```bash
+# 1. Generate new key in Lindy dashboard
+# 2. Update environment variable
+export LINDY_API_KEY="new_key_here"
 
-### Step 2: Webhook Authentication
-Every webhook trigger generates a unique secret key. Verify it on every inbound request:
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${LINDY_API_KEY}" \
+  https://api.lindy.com/health
 
+# 4. Revoke old key in dashboard
+```
+
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
+
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
+### Service Account Pattern
 ```typescript
-// Webhook signature verification middleware
-function verifyLindyWebhook(
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction
-) {
-  const authHeader = req.headers.authorization;
-  const expectedToken = process.env.LINDY_WEBHOOK_SECRET;
+const clients = {
+  reader: new LindyClient({
+    apiKey: process.env.LINDY_READ_KEY,
+  }),
+  writer: new LindyClient({
+    apiKey: process.env.LINDY_WRITE_KEY,
+  }),
+};
+```
 
-  if (!authHeader || authHeader !== `Bearer ${expectedToken}`) {
-    console.warn('Rejected unauthorized webhook attempt', {
-      ip: req.ip,
-      path: req.path,
-      timestamp: new Date().toISOString(),
-    });
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
 
-  next();
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
 }
 
-app.post('/lindy/callback', verifyLindyWebhook, (req, res) => {
-  // Process verified webhook
-  handleWebhook(req.body);
-  res.json({ received: true });
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Lindy analytics
+  await lindyClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'lindy.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
 });
 ```
 
-### Step 3: Agent Permission Scoping
-Lindy agents access external services through authorized connections. Minimize blast radius:
-
-**Per-agent integration isolation**:
-- Authorize a dedicated Gmail account per agent (not your personal inbox)
-- Create Slack bot tokens scoped to specific channels
-- Use read-only database credentials where possible
-- Create separate API keys for each integration
-
-**Connection sharing controls**:
-| Sharing Level | When to Use |
-|--------------|-------------|
-| Private (default) | Personal agents, sensitive data |
-| Team shared | Team-wide automation agents |
-| Workspace shared | Organization-wide utility agents |
-
-### Step 4: Limit Agent Skill Surface Area
-Agents with Agent Steps can choose which skills to use. Reduce risk:
-- Start with 2-4 focused skills per agent (not the full catalog)
-- Avoid giving agents both read AND write access to the same service unless necessary
-- Separate "read" agents from "write" agents for critical systems
-- Use conditions to gate destructive actions behind human approval
-
-### Step 5: Data Handling in Agents
-```
-Agent Prompt Security Patterns:
-
-## Data Constraints
-- Never include API keys, passwords, or tokens in responses
-- Redact email addresses and phone numbers from summaries
-- Do not forward customer data to channels outside #support
-- If asked to perform an action outside your scope, respond:
-  "I cannot perform that action. Please contact an admin."
-```
-
-### Step 6: Audit Agent Activity
-1. **Task history**: Review agent Tasks tab for unexpected actions
-2. **Integration access**: Periodically review which services each agent can access
-3. **Credit anomalies**: Sudden credit spikes may indicate misuse or misconfiguration
-4. **Connection review**: Remove unused integrations from agents
-
-### Step 7: Enterprise Security Features
-Available on Enterprise plan:
-| Feature | Purpose |
-|---------|---------|
-| **SSO** | SAML-based single sign-on |
-| **SCIM** | Automated user provisioning/deprovisioning |
-| **Audit Logs** | Complete activity trail |
-| **Role-Based Access** | Owner/Editor/Viewer workspace roles |
-| **BAA** | HIPAA Business Associate Agreement |
-| **AES-256** | Encryption at rest and in transit |
-
-## Security Checklist
-- [ ] API keys stored in environment variables or secret manager
-- [ ] `.env` file in `.gitignore`
-- [ ] Webhook secrets generated and verified on every request
-- [ ] Each agent uses minimum necessary integrations
-- [ ] Separate integration credentials per agent where possible
-- [ ] Agent prompts include data handling constraints
-- [ ] Regular review of agent task history for anomalies
-- [ ] Key rotation schedule defined and followed
-- [ ] Enterprise: SSO enabled, SCIM configured
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Agent accesses wrong service | Over-permissioned | Remove unnecessary integrations |
-| Unauthorized webhook processed | No auth verification | Add Bearer token verification |
-| API key leaked in logs | Key in agent output | Add "never output credentials" to prompt |
-| Agent sends data to wrong channel | Shared connection | Use per-agent dedicated connections |
-
 ## Resources
-- [Lindy Security](https://www.lindy.ai/security)
-- [Lindy Privacy Policy](https://www.lindy.ai/privacy)
-- [Lindy Documentation](https://docs.lindy.ai)
+- [Lindy Security Guide](https://docs.lindy.com/security)
+- [Lindy API Scopes](https://docs.lindy.com/scopes)
 
 ## Next Steps
-Proceed to `lindy-prod-checklist` for production readiness.
+For production deployment, see `lindy-prod-checklist`.

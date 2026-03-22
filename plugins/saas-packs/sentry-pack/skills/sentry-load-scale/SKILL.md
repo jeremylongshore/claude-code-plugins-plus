@@ -1,279 +1,276 @@
 ---
 name: sentry-load-scale
 description: |
-  Scale Sentry for high-traffic applications.
-  Use when optimizing for high event volumes,
-  managing costs at scale, or tuning for performance.
-  Trigger with phrases like "sentry high traffic", "scale sentry",
-  "sentry high volume", "sentry millions events".
-allowed-tools: Read, Write, Edit, Grep, Bash(node:*)
+  Implement Sentry load testing, auto-scaling, and capacity planning strategies.
+  Use when running performance tests, configuring horizontal scaling,
+  or planning capacity for Sentry integrations.
+  Trigger with phrases like "sentry load test", "sentry scale",
+  "sentry performance test", "sentry capacity", "sentry k6", "sentry benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, performance, scaling, high-traffic]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Load & Scale
 
+## Overview
+Load testing, scaling strategies, and capacity planning for Sentry integrations.
+
 ## Prerequisites
-- High-traffic application metrics available (requests/sec, error rate)
-- Sentry quota and billing understood
-- Performance baseline established
-- Event volume estimates calculated per category
+- k6 load testing tool installed
+- Kubernetes cluster with HPA configured
+- Prometheus for metrics collection
+- Test environment API keys
+
+## Load Testing with k6
+
+### Basic Load Test
+```javascript
+// sentry-load-test.js
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+
+export const options = {
+  stages: [
+    { duration: '2m', target: 10 },   // Ramp up
+    { duration: '5m', target: 10 },   // Steady state
+    { duration: '2m', target: 50 },   // Ramp to peak
+    { duration: '5m', target: 50 },   // Stress test
+    { duration: '2m', target: 0 },    // Ramp down
+  ],
+  thresholds: {
+    http_req_duration: ['p(95)<500'],
+    http_req_failed: ['rate<0.01'],
+  },
+};
+
+export default function () {
+  const response = http.post(
+    'https://api.sentry.com/v1/resource',
+    JSON.stringify({ test: true }),
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${__ENV.SENTRY_API_KEY}`,
+      },
+    }
+  );
+
+  check(response, {
+    'status is 200': (r) => r.status === 200,
+    'latency < 500ms': (r) => r.timings.duration < 500,
+  });
+
+  sleep(1);
+}
+```
+
+### Run Load Test
+```bash
+# Install k6
+brew install k6  # macOS
+# or: sudo apt install k6  # Linux
+
+# Run test
+k6 run --env SENTRY_API_KEY=${SENTRY_API_KEY} sentry-load-test.js
+
+# Run with output to InfluxDB
+k6 run --out influxdb=http://localhost:8086/k6 sentry-load-test.js
+```
+
+## Scaling Patterns
+
+### Horizontal Scaling
+```yaml
+# kubernetes HPA
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: sentry-integration-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: sentry-integration
+  minReplicas: 2
+  maxReplicas: 20
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Pods
+      pods:
+        metric:
+          name: sentry_queue_depth
+        target:
+          type: AverageValue
+          averageValue: 100
+```
+
+### Connection Pooling
+```typescript
+import { Pool } from 'generic-pool';
+
+const sentryPool = Pool.create({
+  create: async () => {
+    return new SentryClient({
+      apiKey: process.env.SENTRY_API_KEY!,
+    });
+  },
+  destroy: async (client) => {
+    await client.close();
+  },
+  max: 20,
+  min: 5,
+  idleTimeoutMillis: 30000,
+});
+
+async function withSentryClient<T>(
+  fn: (client: SentryClient) => Promise<T>
+): Promise<T> {
+  const client = await sentryPool.acquire();
+  try {
+    return await fn(client);
+  } finally {
+    sentryPool.release(client);
+  }
+}
+```
+
+## Capacity Planning
+
+### Metrics to Monitor
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| CPU Utilization | > 70% | > 85% |
+| Memory Usage | > 75% | > 90% |
+| Request Queue Depth | > 100 | > 500 |
+| Error Rate | > 1% | > 5% |
+| P95 Latency | > 1000ms | > 3000ms |
+
+### Capacity Calculation
+```typescript
+interface CapacityEstimate {
+  currentRPS: number;
+  maxRPS: number;
+  headroom: number;
+  scaleRecommendation: string;
+}
+
+function estimateSentryCapacity(
+  metrics: SystemMetrics
+): CapacityEstimate {
+  const currentRPS = metrics.requestsPerSecond;
+  const avgLatency = metrics.p50Latency;
+  const cpuUtilization = metrics.cpuPercent;
+
+  // Estimate max RPS based on current performance
+  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
+  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+
+  return {
+    currentRPS,
+    maxRPS: Math.floor(maxRPS),
+    headroom: Math.round(headroom),
+    scaleRecommendation: headroom < 30
+      ? 'Scale up soon'
+      : headroom < 50
+      ? 'Monitor closely'
+      : 'Adequate capacity',
+  };
+}
+```
+
+## Benchmark Results Template
+
+```markdown
+## Sentry Performance Benchmark
+**Date:** YYYY-MM-DD
+**Environment:** [staging/production]
+**SDK Version:** X.Y.Z
+
+### Test Configuration
+- Duration: 10 minutes
+- Ramp: 10 → 100 → 10 VUs
+- Target endpoint: /v1/resource
+
+### Results
+| Metric | Value |
+|--------|-------|
+| Total Requests | 50,000 |
+| Success Rate | 99.9% |
+| P50 Latency | 120ms |
+| P95 Latency | 350ms |
+| P99 Latency | 800ms |
+| Max RPS Achieved | 150 |
+
+### Observations
+- [Key finding 1]
+- [Key finding 2]
+
+### Recommendations
+- [Scaling recommendation]
+```
 
 ## Instructions
 
-### 1. Adaptive Error Sampling
+### Step 1: Create Load Test Script
+Write k6 test script with appropriate thresholds.
 
-For applications with millions of requests/day, static sampling wastes quota on duplicates:
+### Step 2: Configure Auto-Scaling
+Set up HPA with CPU and custom metrics.
 
-```typescript
-// Adaptive sampling: reduce rate for high-frequency errors
-const errorCounts = new Map<string, number>();
-const WINDOW_MS = 60_000; // 1 minute window
+### Step 3: Run Load Test
+Execute test and collect metrics.
 
-setInterval(() => errorCounts.clear(), WINDOW_MS);
-
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-
-  beforeSend(event, hint) {
-    const error = hint?.originalException;
-    const key = error instanceof Error
-      ? `${error.name}:${error.message?.substring(0, 100)}`
-      : 'unknown';
-
-    const count = (errorCounts.get(key) || 0) + 1;
-    errorCounts.set(key, count);
-
-    // First occurrence: always send
-    if (count === 1) return event;
-
-    // 2-10 occurrences: send every 5th
-    if (count <= 10) return count % 5 === 0 ? event : null;
-
-    // 11-100: send every 25th
-    if (count <= 100) return count % 25 === 0 ? event : null;
-
-    // 100+: send every 100th (0.01% of duplicates)
-    return count % 100 === 0 ? event : null;
-  },
-});
-```
-
-### 2. Tiered Transaction Sampling
-
-```typescript
-Sentry.init({
-  tracesSampler: (samplingContext) => {
-    const { name, parentSampled } = samplingContext;
-
-    // Respect parent decision for distributed tracing consistency
-    if (parentSampled !== undefined) return parentSampled;
-
-    // Tier 0: Never sample (high-frequency, zero diagnostic value)
-    if (name?.match(/\/(health|ready|alive|ping|metrics|favicon)/)) return 0;
-    if (name?.match(/\.(css|js|png|jpg|svg|woff2?|ico)$/)) return 0;
-
-    // Tier 1: Always sample (business-critical, low volume)
-    if (name?.includes('/payment') || name?.includes('/checkout')) return 1.0;
-    if (name?.includes('/auth/login')) return 0.5;
-
-    // Tier 2: Moderate sampling (API endpoints)
-    if (name?.startsWith('POST /api/')) return 0.05; // 5%
-    if (name?.startsWith('GET /api/')) return 0.02;  // 2%
-
-    // Tier 3: Minimal sampling (everything else)
-    return 0.005; // 0.5%
-  },
-});
-```
-
-### 3. Minimize SDK Overhead
-
-```typescript
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-
-  // Reduce memory: fewer breadcrumbs
-  maxBreadcrumbs: 15, // Down from 100 default
-
-  // Reduce payload size
-  maxValueLength: 200,
-
-  // Disable integrations that add overhead
-  integrations: (defaults) => defaults.filter(i =>
-    !['Console', 'ContextLines'].includes(i.name)
-  ),
-
-  // No profiling at high scale
-  profilesSampleRate: 0,
-
-  // Limit context size
-  beforeSend(event) {
-    // Truncate large contexts
-    if (event.contexts) {
-      for (const [key, ctx] of Object.entries(event.contexts)) {
-        const str = JSON.stringify(ctx);
-        if (str.length > 2000) {
-          event.contexts[key] = { _truncated: true, size: str.length };
-        }
-      }
-    }
-    return event;
-  },
-});
-```
-
-### 4. Graceful Shutdown and Flush
-
-At high scale, ensure events are sent before process exit:
-
-```typescript
-import * as Sentry from '@sentry/node';
-
-// Handle graceful shutdown
-async function shutdown(signal: string) {
-  console.log(`${signal} received — flushing Sentry events`);
-
-  // Stop accepting new requests
-  server.close();
-
-  // Flush all pending Sentry events (2 second timeout)
-  const flushed = await Sentry.close(2000);
-  if (!flushed) {
-    console.warn('Sentry flush timed out — some events may be lost');
-  }
-
-  process.exit(0);
-}
-
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
-```
-
-### 5. Multi-Region and Load Balancer Considerations
-
-```typescript
-// Set server name for identifying which instance generated events
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-  serverName: process.env.HOSTNAME || process.env.POD_NAME || os.hostname(),
-
-  initialScope: {
-    tags: {
-      region: process.env.AWS_REGION || 'unknown',
-      cluster: process.env.K8S_CLUSTER || 'default',
-      pod: process.env.POD_NAME || 'unknown',
-      instance_id: process.env.INSTANCE_ID || 'unknown',
-    },
-  },
-});
-
-// In Sentry dashboard, filter by:
-// tags.region:us-east-1
-// tags.cluster:production
-// server_name:pod-abc-xyz
-```
-
-### 6. Background Worker Patterns
-
-```typescript
-// For queue workers processing millions of jobs/day:
-import * as Sentry from '@sentry/node';
-
-async function processJob(job: Job) {
-  return Sentry.withScope(async (scope) => {
-    scope.setTag('job.type', job.type);
-    scope.setTag('job.queue', job.queue);
-    scope.setContext('job', {
-      id: job.id,
-      attempts: job.attempts,
-      created: job.createdAt,
-    });
-
-    try {
-      // Only trace a sample of jobs
-      if (Math.random() < 0.01) { // 1% of jobs
-        return Sentry.startSpan(
-          { name: `job.${job.type}`, op: 'queue.task' },
-          () => executeJob(job)
-        );
-      }
-      return executeJob(job);
-    } catch (error) {
-      Sentry.captureException(error);
-      throw error; // Re-throw for retry logic
-    }
-  });
-}
-
-// Periodic flush for long-running workers
-setInterval(async () => {
-  await Sentry.flush(2000);
-}, 30_000); // Every 30 seconds
-```
-
-### 7. Rate Limit Handling
-
-```typescript
-// Monitor SDK rate limit status
-Sentry.init({
-  beforeSend(event) {
-    // The SDK automatically handles 429 responses
-    // No manual retry logic needed
-    return event;
-  },
-
-  // Set transport options for high-volume
-  transportOptions: {
-    // Buffer size for pending events
-    bufferSize: 100, // Default: 64
-  },
-});
-```
-
-### 8. Cost Estimation at Scale
-
-```
-Application: 10M requests/day, 0.1% error rate
-
-Error events:
-  10M * 0.001 = 10,000 errors/day
-  With sampleRate 0.5 = 5,000 errors/day = 150K/month
-
-Transaction events:
-  10M requests/day
-  With tracesSampleRate 0.005 = 50,000 txns/day = 1.5M/month
-
-Sentry Team plan: 50K errors + 100K transactions included
-  Error overage: 100K * $0.00029 = $29/month
-  Transaction overage: 1.4M * $0.000025 = $35/month
-
-  Total: $26 (base) + $29 + $35 = ~$90/month for 10M requests/day
-```
+### Step 4: Analyze and Document
+Record results in benchmark template.
 
 ## Output
-- Adaptive sampling reducing duplicate error volume by 90%+
-- Tiered transaction sampling with endpoint-specific rates
-- SDK overhead minimized for high-throughput environments
-- Graceful shutdown ensuring event delivery
-- Multi-region tagging for infrastructure visibility
-- Cost estimation model for budget planning
+- Load test script created
+- HPA configured
+- Benchmark results documented
+- Capacity recommendations defined
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Events silently dropped | SDK buffer full at high volume | Increase `bufferSize`, reduce event rate |
-| 429 rate limit responses | Quota exhausted | Reduce sample rates, enable spike protection |
-| Memory growing over time | Breadcrumbs not cleared | Reduce `maxBreadcrumbs`, check for scope leaks |
-| Lost events on shutdown | No `Sentry.close()` call | Add shutdown handler with `Sentry.close(timeout)` |
-| Inconsistent distributed traces | Mixed sampling decisions | Use `parentSampled` in `tracesSampler` |
+| k6 timeout | Rate limited | Reduce RPS |
+| HPA not scaling | Wrong metrics | Verify metric name |
+| Connection refused | Pool exhausted | Increase pool size |
+| Inconsistent results | Warm-up needed | Add ramp-up phase |
+
+## Examples
+
+### Quick k6 Test
+```bash
+k6 run --vus 10 --duration 30s sentry-load-test.js
+```
+
+### Check Current Capacity
+```typescript
+const metrics = await getSystemMetrics();
+const capacity = estimateSentryCapacity(metrics);
+console.log('Headroom:', capacity.headroom + '%');
+console.log('Recommendation:', capacity.scaleRecommendation);
+```
+
+### Scale HPA Manually
+```bash
+kubectl scale deployment sentry-integration --replicas=5
+kubectl get hpa sentry-integration-hpa
+```
 
 ## Resources
-- [Quota Management](https://docs.sentry.io/pricing/quotas/)
-- [Sampling](https://docs.sentry.io/platforms/javascript/configuration/sampling/)
-- [Transport Options](https://docs.sentry.io/platforms/javascript/configuration/transports/)
-- [Pricing Calculator](https://sentry.io/pricing/)
+- [k6 Documentation](https://k6.io/docs/)
+- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Sentry Rate Limits](https://docs.sentry.com/rate-limits)
+
+## Next Steps
+For reliability patterns, see `sentry-reliability-patterns`.

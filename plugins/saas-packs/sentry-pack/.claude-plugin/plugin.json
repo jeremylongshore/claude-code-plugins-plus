@@ -9,8 +9,7 @@
   "license": "MIT",
   "keywords": [
     "sentry",
-    "error-tracking",
-    "monitoring",
+    "sentry",
     "saas",
     "sdk",
     "integration"

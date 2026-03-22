@@ -1,110 +1,222 @@
 ---
 name: evernote-data-handling
 description: |
-  Best practices for handling Evernote data.
-  Use when implementing data storage, processing notes,
-  handling attachments, or ensuring data integrity.
-  Trigger with phrases like "evernote data", "handle evernote notes",
-  "evernote storage", "process evernote content".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Evernote PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Evernote integrations.
+  Trigger with phrases like "evernote data", "evernote PII",
+  "evernote GDPR", "evernote data retention", "evernote privacy", "evernote CCPA".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, evernote-data]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Data Handling
 
 ## Overview
-Best practices for handling Evernote data including ENML content processing, attachment management, local database sync, and ENEX export/import.
+Handle sensitive data correctly when integrating with Evernote.
 
 ## Prerequisites
-- Understanding of Evernote data model (Notes, Notebooks, Tags, Resources)
-- Database for local storage (SQLite, PostgreSQL, etc.)
-- File storage for attachments
+- Understanding of GDPR/CCPA requirements
+- Evernote SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
+
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('Evernote request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupEvernoteData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.evernoteLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupEvernoteData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const evernoteData = await evernoteClient.getUserData(userId);
+
+  return {
+    source: 'Evernote',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: evernoteData.profile,
+      activities: evernoteData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from Evernote
+  await evernoteClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.evernoteUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'evernote',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await evernoteClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Data Schema Design
+### Step 1: Classify Data
+Categorize all Evernote data by sensitivity level.
 
-Design a local database schema that mirrors Evernote's data model. Key tables: `notes` (guid, title, content, notebookGuid, created, updated, USN), `notebooks` (guid, name, stack), `tags` (guid, name), `resources` (guid, noteGuid, mime, hash, size). Track Update Sequence Numbers (USN) for incremental sync.
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-```sql
-CREATE TABLE notes (
-  guid TEXT PRIMARY KEY,
-  title TEXT NOT NULL,
-  content TEXT,
-  notebook_guid TEXT REFERENCES notebooks(guid),
-  created BIGINT,
-  updated BIGINT,
-  usn INTEGER DEFAULT 0
-);
-```
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-### Step 2: ENML Content Processing
-
-Parse ENML to extract plain text (strip tags), convert to HTML (replace `<en-note>` with `<body>`, resolve `<en-media>` to `<img>`/`<a>` tags), or convert to Markdown. Validate ENML before sending to the API by checking for required declarations and forbidden elements.
-
-```javascript
-function enmlToPlainText(enml) {
-  return enml
-    .replace(/<\?xml[^>]*\?>/g, '')
-    .replace(/<!DOCTYPE[^>]*>/g, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-```
-
-### Step 3: Resource (Attachment) Handling
-
-Download resources via `noteStore.getResource(guid, withData, ...)`. Store binary data locally with the MD5 hash as filename. Track MIME types for proper content-type serving. Compute hashes for integrity verification.
-
-### Step 4: Sync Data Manager
-
-Implement incremental sync using `getSyncState()` to get the current server USN, then `getSyncChunk()` to fetch changes since your last sync. Process chunks in order: notebooks first, then tags, then notes, then resources.
-
-```javascript
-const syncState = await noteStore.getSyncState();
-if (syncState.updateCount > lastSyncUSN) {
-  const chunk = await noteStore.getSyncChunk(lastSyncUSN, 100, true);
-  // Process chunk.notebooks, chunk.tags, chunk.notes, chunk.resources
-}
-```
-
-### Step 5: Data Export
-
-Export notes to ENEX (Evernote's XML export format), JSON, or Markdown. ENEX preserves the full note structure including resources and is compatible with Evernote import.
-
-For the complete data schema, sync manager, ENML processor, and export implementations, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- SQL schema for local Evernote data storage
-- ENML-to-text and ENML-to-HTML converters
-- Resource download and local storage manager
-- Incremental sync engine using USN tracking
-- ENEX, JSON, and Markdown export utilities
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| `BAD_DATA_FORMAT` | Malformed ENML during update | Validate ENML with DTD check before API call |
-| `QUOTA_REACHED` | Upload limit exceeded | Check `user.accounting.uploaded` before creating notes |
-| `DATA_CONFLICT` | Note modified since last read | Refetch note by GUID and merge changes |
-| Sync chunk gaps | Missed USN range | Request full sync from USN 0 |
-
-## Resources
-- [Evernote Data Model](https://dev.evernote.com/doc/articles/data_model.php)
-- [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
-- [Synchronization](https://dev.evernote.com/doc/articles/synchronization.php)
-- [ENEX Export Format](https://dev.evernote.com/doc/articles/enex.php)
-
-## Next Steps
-For enterprise features, see `evernote-enterprise-rbac`.
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
 
 ## Examples
 
-**Local mirror**: Sync all notes to a local SQLite database using incremental sync. Store resources on disk keyed by MD5 hash. Use the local mirror for full-text search without API calls.
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
 
-**Markdown export**: Convert all notes in a notebook to Markdown files, preserving folder structure from notebook stacks, and saving attachments to an `assets/` directory.
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Evernote response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
+
+## Resources
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Evernote Privacy Guide](https://docs.evernote.com/privacy)
+
+## Next Steps
+For enterprise access control, see `evernote-enterprise-rbac`.

@@ -2,78 +2,97 @@
 name: onenote-hello-world
 description: |
   Create a minimal working OneNote example.
-  Trigger: "onenote hello world", "onenote example", "test onenote".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Use when starting a new OneNote integration, testing your setup,
+  or learning basic OneNote API patterns.
+  Trigger with phrases like "onenote hello world", "onenote example",
+  "onenote quick start", "simple onenote code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote, microsoft]
 compatible-with: claude-code
+tags: [saas, onenote]
 ---
 
 # OneNote Hello World
 
 ## Overview
-Minimal working examples demonstrating core OneNote API functionality.
+Minimal working example demonstrating core OneNote functionality.
+
+## Prerequisites
+- Completed `onenote-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Create a Notebook
-```typescript
-const notebook = await client.api('/me/onenote/notebooks').post({
-  displayName: 'Project Notes'
-});
-console.log(`Notebook: ${notebook.id}`);
-```
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-### Step 2: Create a Section
+### Step 2: Import and Initialize Client
 ```typescript
-const section = await client.api(`/me/onenote/notebooks/${notebook.id}/sections`).post({
-  displayName: 'Sprint 1'
+import { OneNoteClient } from '@onenote/sdk';
+
+const client = new OneNoteClient({
+  apiKey: process.env.ONENOTE_API_KEY,
 });
 ```
 
-### Step 3: Create a Page with HTML Content
+### Step 3: Make Your First API Call
 ```typescript
-// Pages use HTML for content
-const htmlContent = `
-  <!DOCTYPE html>
-  <html>
-  <head><title>Meeting Notes</title></head>
-  <body>
-    <h1>Sprint Planning — March 22, 2026</h1>
-    <p>Attendees: Alice, Bob, Charlie</p>
-    <h2>Action Items</h2>
-    <ul>
-      <li data-tag="to-do">Deploy feature X by Friday</li>
-      <li data-tag="to-do">Review PR #123</li>
-    </ul>
-    <img src="name:diagram" alt="Architecture" />
-  </body>
-  </html>
-`;
+async function main() {
+  // Your first API call here
+}
 
-const page = await client.api(`/me/onenote/sections/${section.id}/pages`)
-  .header('Content-Type', 'text/html')
-  .post(htmlContent);
-console.log(`Page: ${page.id} — ${page.title}`);
+main().catch(console.error);
 ```
 
-### Step 4: Get Page Content
-```typescript
-const content = await client.api(`/me/onenote/pages/${page.id}/content`).get();
-// Returns HTML content of the page
+## Output
+- Working code file with OneNote client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your OneNote connection is working.
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Auth error | Invalid credentials | Check MICROSOFT_GRAPH_TOKEN |
-| Not found | Invalid endpoint | Verify API URL |
-| Rate limit | Too many requests | Implement backoff |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { OneNoteClient } from '@onenote/sdk';
+
+const client = new OneNoteClient({
+  apiKey: process.env.ONENOTE_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from onenote import OneNoteClient
+
+client = OneNoteClient()
+
+# Your first API call here
+```
 
 ## Resources
-- [OneNote API Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
+- [OneNote Getting Started](https://docs.onenote.com/getting-started)
+- [OneNote API Reference](https://docs.onenote.com/api)
+- [OneNote Examples](https://docs.onenote.com/examples)
 
 ## Next Steps
-See `onenote-local-dev-loop`.
+Proceed to `onenote-local-dev-loop` for development workflow setup.

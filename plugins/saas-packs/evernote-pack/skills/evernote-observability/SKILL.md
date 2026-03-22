@@ -1,123 +1,252 @@
 ---
 name: evernote-observability
 description: |
-  Implement observability for Evernote integrations.
-  Use when setting up monitoring, logging, tracing,
-  or alerting for Evernote applications.
-  Trigger with phrases like "evernote monitoring", "evernote logging",
-  "evernote metrics", "evernote observability".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Set up comprehensive observability for Evernote integrations with metrics, traces, and alerts.
+  Use when implementing monitoring for Evernote operations, setting up dashboards,
+  or configuring alerting for Evernote integration health.
+  Trigger with phrases like "evernote monitoring", "evernote metrics",
+  "evernote observability", "monitor evernote", "evernote alerts", "evernote tracing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, monitoring, observability, logging]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Observability
 
 ## Overview
-Comprehensive observability setup for Evernote integrations: Prometheus metrics for API call tracking, structured JSON logging, OpenTelemetry tracing, health check endpoints, and alerting rules.
+Set up comprehensive observability for Evernote integrations.
 
 ## Prerequisites
-- Monitoring infrastructure (Prometheus, Datadog, or CloudWatch)
-- Log aggregation (ELK, Loki, or CloudWatch Logs)
-- Alerting system (PagerDuty, Opsgenie, or Slack webhooks)
+- Prometheus or compatible metrics backend
+- OpenTelemetry SDK installed
+- Grafana or similar dashboarding tool
+- AlertManager configured
 
-## Instructions
+## Metrics Collection
 
-### Step 1: Metrics Collection
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `evernote_requests_total` | Counter | Total API requests |
+| `evernote_request_duration_seconds` | Histogram | Request latency |
+| `evernote_errors_total` | Counter | Error count by type |
+| `evernote_rate_limit_remaining` | Gauge | Rate limit headroom |
 
-Track key metrics with Prometheus counters and histograms: `evernote_api_calls_total` (by method and status), `evernote_api_duration_seconds` (latency histogram), `evernote_rate_limits_total` (rate limit hits), `evernote_quota_usage_bytes` (upload quota consumption).
+### Prometheus Metrics
 
-```javascript
-const { Counter, Histogram } = require('prom-client');
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 
-const apiCalls = new Counter({
-  name: 'evernote_api_calls_total',
-  help: 'Total Evernote API calls',
-  labelNames: ['method', 'status']
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: 'evernote_requests_total',
+  help: 'Total Evernote API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
 });
 
-const apiDuration = new Histogram({
-  name: 'evernote_api_duration_seconds',
-  help: 'Evernote API call duration',
+const requestDuration = new Histogram({
+  name: 'evernote_request_duration_seconds',
+  help: 'Evernote request duration',
   labelNames: ['method'],
-  buckets: [0.1, 0.5, 1, 2, 5, 10]
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: 'evernote_errors_total',
+  help: 'Evernote errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
 });
 ```
 
-### Step 2: Instrumented Client
+### Instrumented Client
 
-Wrap the NoteStore with a Proxy that automatically records metrics for every API call. Increment counters on success/failure, observe latency in histograms, and count rate limit events.
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
 
-### Step 3: Structured Logging
-
-Use JSON-formatted logs with consistent fields: `timestamp`, `level`, `method`, `duration`, `userId` (hashed), `noteGuid`. Redact access tokens from all log output.
-
-```javascript
-function logApiCall(method, duration, error) {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    service: 'evernote-integration',
-    method,
-    duration_ms: duration,
-    status: error ? 'error' : 'success',
-    error_code: error?.errorCode
-  };
-  console.log(JSON.stringify(entry));
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
 }
 ```
 
-### Step 4: Health and Readiness Endpoints
+## Distributed Tracing
 
-Implement `/health` (liveness: is the process running?) and `/ready` (readiness: can we reach Evernote API?). Include cache connectivity check.
+### OpenTelemetry Setup
 
-### Step 5: Alert Rules
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-Configure Prometheus alerts: rate limit hits > 5 in 10 minutes, API error rate > 10%, p95 latency > 5 seconds, quota usage > 90%.
+const tracer = trace.getTracer('evernote-client');
 
-```yaml
-# prometheus-alerts.yml
-groups:
-  - name: evernote
-    rules:
-      - alert: EvernoteRateLimited
-        expr: rate(evernote_rate_limits_total[10m]) > 0.5
-        for: 5m
-        labels: { severity: warning }
-        annotations:
-          summary: "Evernote rate limits detected"
+async function tracedEvernoteCall<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`evernote.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
 ```
 
-For the complete metrics setup, Grafana dashboard JSON, tracing configuration, and alert rules, see [Implementation Guide](references/implementation-guide.md).
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: 'evernote',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function logEvernoteOperation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: 'evernote',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# evernote_alerts.yaml
+groups:
+  - name: evernote_alerts
+    rules:
+      - alert: EvernoteHighErrorRate
+        expr: |
+          rate(evernote_errors_total[5m]) /
+          rate(evernote_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Evernote error rate > 5%"
+
+      - alert: EvernoteHighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate(evernote_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Evernote P95 latency > 2s"
+
+      - alert: EvernoteDown
+        expr: up{job="evernote"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Evernote integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "Evernote Request Rate",
+      "targets": [{
+        "expr": "rate(evernote_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "Evernote Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate(evernote_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
+
+## Instructions
+
+### Step 1: Set Up Metrics Collection
+Implement Prometheus counters, histograms, and gauges for key operations.
+
+### Step 2: Add Distributed Tracing
+Integrate OpenTelemetry for end-to-end request tracing.
+
+### Step 3: Configure Structured Logging
+Set up JSON logging with consistent field names.
+
+### Step 4: Create Alert Rules
+Define Prometheus alerting rules for error rates and latency.
 
 ## Output
-- Prometheus metrics: API calls, latency histogram, rate limits, quota usage
-- Instrumented NoteStore client with automatic metric recording
-- Structured JSON logging with token redaction
-- Health and readiness endpoints
-- Prometheus alert rules for rate limits, errors, and latency
+- Metrics collection enabled
+- Distributed tracing configured
+- Structured logging implemented
+- Alert rules deployed
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Metrics endpoint not scraped | Prometheus target missing | Add service to Prometheus scrape config |
-| Missing trace context | OpenTelemetry not initialized | Initialize tracer before creating Evernote client |
-| Log volume too high | Logging every API call | Sample debug logs, always log errors and rate limits |
-| Alert fatigue | Thresholds too low | Tune alert thresholds based on baseline metrics |
-
-## Resources
-- [Prometheus](https://prometheus.io/docs/)
-- [OpenTelemetry Node.js](https://opentelemetry.io/docs/languages/js/)
-- [Grafana](https://grafana.com/docs/)
-- [prom-client npm](https://www.npmjs.com/package/prom-client)
-
-## Next Steps
-For incident handling, see `evernote-incident-runbook`.
+| Missing metrics | No instrumentation | Wrap client calls |
+| Trace gaps | Missing propagation | Check context headers |
+| Alert storms | Wrong thresholds | Tune alert rules |
+| High cardinality | Too many labels | Reduce label values |
 
 ## Examples
 
-**Grafana dashboard**: Display API call rate, p50/p95/p99 latency, error rate, rate limit frequency, and quota usage on a single dashboard. Set time range to last 24 hours.
+### Quick Metrics Endpoint
+```typescript
+app.get('/metrics', async (req, res) => {
+  res.set('Content-Type', registry.contentType);
+  res.send(await registry.metrics());
+});
+```
 
-**Rate limit alerting**: Alert on-call when rate limit hits exceed 5 per 10-minute window. Include runbook link to `evernote-rate-limits` in the alert annotation.
+## Resources
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Evernote Observability Guide](https://docs.evernote.com/observability)
+
+## Next Steps
+For incident response, see `evernote-incident-runbook`.

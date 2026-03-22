@@ -1,272 +1,201 @@
 ---
 name: groq-webhooks-events
 description: |
-  Build event-driven architectures with Groq streaming, batch processing, and async patterns.
-  Use when setting up real-time SSE endpoints, batch processing pipelines,
-  or event-driven LLM processing with Groq.
-  Trigger with phrases like "groq streaming", "groq events",
-  "groq SSE", "groq batch", "groq async", "groq event-driven".
+  Implement Groq webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Groq event notifications securely.
+  Trigger with phrases like "groq webhook", "groq events",
+  "groq webhook signature", "handle groq events", "groq notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, webhooks]
-
+compatible-with: claude-code
+tags: [saas, groq]
 ---
-# Groq Events & Async Patterns
+
+# Groq Webhooks & Events
 
 ## Overview
-Build event-driven architectures around Groq's inference API. Groq does not provide native webhooks, but its sub-second latency enables unique patterns: real-time SSE streaming, batch processing with callbacks, queue-based pipelines, and event processors that use Groq as an LLM classification/extraction engine.
+Securely handle Groq webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- `groq-sdk` installed, `GROQ_API_KEY` set
-- Queue system for batch patterns (BullMQ, Redis, SQS)
-- Understanding of Server-Sent Events (SSE) for streaming
+- Groq webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/groq',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-groq-signature'] as string;
+    const timestamp = req.headers['x-groq-timestamp'] as string;
+
+    if (!verifyGroqSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleGroqEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyGroqSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.GROQ_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type GroqEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface GroqEvent {
+  id: string;
+  type: GroqEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<GroqEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleGroqEvent(event: GroqEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `groq:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `groq:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Groq CLI to send test events
+groq webhooks trigger resource.created --url http://localhost:3000/webhooks/groq
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
 
 ## Instructions
 
-### Step 1: SSE Streaming Endpoint
-```typescript
-import Groq from "groq-sdk";
-import express from "express";
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Groq dashboard.
 
-const groq = new Groq();
-const app = express();
-app.use(express.json());
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-app.post("/api/chat/stream", async (req, res) => {
-  const { messages, model = "llama-3.3-70b-versatile" } = req.body;
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-  res.writeHead(200, {
-    "Content-Type": "text/event-stream",
-    "Cache-Control": "no-cache",
-    Connection: "keep-alive",
-    "X-Accel-Buffering": "no",  // Disable nginx buffering
-  });
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
-  try {
-    const stream = await groq.chat.completions.create({
-      model,
-      messages,
-      stream: true,
-      max_tokens: 2048,
-    });
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) {
-        res.write(`data: ${JSON.stringify({ content, type: "token" })}\n\n`);
-      }
-    }
-
-    res.write(`data: ${JSON.stringify({ type: "done" })}\n\n`);
-  } catch (err: any) {
-    res.write(`data: ${JSON.stringify({ type: "error", message: err.message })}\n\n`);
-  }
-
-  res.end();
-});
-```
-
-### Step 2: Batch Processing with BullMQ
-```typescript
-import { Queue, Worker } from "bullmq";
-import Groq from "groq-sdk";
-import { randomUUID } from "crypto";
-
-const groq = new Groq();
-const groqQueue = new Queue("groq-batch", { connection: { host: "localhost" } });
-
-// Enqueue a batch of prompts
-async function submitBatch(
-  prompts: string[],
-  callbackUrl: string,
-  model = "llama-3.1-8b-instant"
-): Promise<string> {
-  const batchId = randomUUID();
-
-  for (const [index, prompt] of prompts.entries()) {
-    await groqQueue.add("inference", {
-      batchId,
-      index,
-      prompt,
-      model,
-      callbackUrl,
-      total: prompts.length,
-    });
-  }
-
-  return batchId;
-}
-
-// Worker processes queue items
-const worker = new Worker("groq-batch", async (job) => {
-  const { prompt, model, callbackUrl, batchId, index, total } = job.data;
-
-  const completion = await groq.chat.completions.create({
-    model,
-    messages: [{ role: "user", content: prompt }],
-    temperature: 0,
-  });
-
-  const result = {
-    batchId,
-    index,
-    total,
-    content: completion.choices[0].message.content,
-    model: completion.model,
-    usage: completion.usage,
-  };
-
-  // Fire callback on completion
-  if (callbackUrl) {
-    await fetch(callbackUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        event: "groq.batch.item_completed",
-        data: result,
-      }),
-    });
-  }
-
-  return result;
-}, {
-  connection: { host: "localhost" },
-  concurrency: 5,
-  limiter: { max: 25, duration: 60_000 },  // 25 RPM to stay under limits
-});
-```
-
-### Step 3: Webhook Event Processor
-```typescript
-// Use Groq as an LLM engine to process incoming webhook events
-async function processWebhookEvent(event: any) {
-  // Classify event type and extract key data using fast 8B model
-  const classification = await groq.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    messages: [
-      {
-        role: "system",
-        content: `Classify this webhook event and extract key fields.
-Respond with JSON: {"type": string, "priority": "high"|"medium"|"low", "summary": string, "action": string}`,
-      },
-      { role: "user", content: JSON.stringify(event) },
-    ],
-    response_format: { type: "json_object" },
-    temperature: 0,
-    max_tokens: 200,
-  });
-
-  return JSON.parse(classification.choices[0].message.content!);
-}
-
-// Express webhook receiver
-app.post("/webhook", async (req, res) => {
-  const event = req.body;
-
-  // Acknowledge immediately (don't block the sender)
-  res.status(202).json({ received: true });
-
-  // Process asynchronously with Groq
-  const analysis = await processWebhookEvent(event);
-
-  if (analysis.priority === "high") {
-    await notifySlack(`High priority event: ${analysis.summary}`);
-  }
-
-  await logEvent({ raw: event, analysis });
-});
-```
-
-### Step 4: Scheduled Health Monitor
-```typescript
-// Periodic Groq API health check with latency tracking
-async function monitorGroqHealth() {
-  const models = ["llama-3.1-8b-instant", "llama-3.3-70b-versatile"];
-  const results: Record<string, any> = {};
-
-  for (const model of models) {
-    const start = performance.now();
-    try {
-      const completion = await groq.chat.completions.create({
-        model,
-        messages: [{ role: "user", content: "OK" }],
-        max_tokens: 1,
-      });
-      results[model] = {
-        status: "ok",
-        latencyMs: Math.round(performance.now() - start),
-        tokensPerSec: completion.usage!.completion_tokens / ((completion.usage as any).completion_time || 1),
-      };
-    } catch (err: any) {
-      results[model] = {
-        status: "error",
-        latencyMs: Math.round(performance.now() - start),
-        error: `${err.status}: ${err.message}`,
-      };
-    }
-  }
-
-  return results;
-}
-
-// Run every 5 minutes
-setInterval(() => monitorGroqHealth().then(console.log), 5 * 60_000);
-```
-
-### Step 5: Python Async Batch Processing
-```python
-import asyncio
-from groq import AsyncGroq
-
-client = AsyncGroq()
-
-async def process_batch(prompts: list[str], model: str = "llama-3.1-8b-instant"):
-    """Process prompts concurrently with rate limit awareness."""
-    semaphore = asyncio.Semaphore(5)  # Max 5 concurrent requests
-
-    async def process_one(prompt: str):
-        async with semaphore:
-            return await client.chat.completions.create(
-                model=model,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=256,
-            )
-
-    results = await asyncio.gather(
-        *[process_one(p) for p in prompts],
-        return_exceptions=True,
-    )
-
-    return [
-        r.choices[0].message.content if not isinstance(r, Exception) else str(r)
-        for r in results
-    ]
-```
-
-## Event Pattern Summary
-
-| Pattern | Groq Model | Latency | Use Case |
-|---------|-----------|---------|----------|
-| SSE streaming | `llama-3.3-70b-versatile` | ~200ms TTFT | Real-time chat |
-| Batch queue | `llama-3.1-8b-instant` | ~80ms TTFT | Document processing |
-| Webhook processor | `llama-3.1-8b-instant` | ~80ms TTFT | Event classification |
-| Health monitor | `llama-3.1-8b-instant` | ~80ms TTFT | Uptime tracking |
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSE disconnect | Client timeout or network | Implement reconnection with last-event-id |
-| Batch item fails | Rate limit or model error | Queue retry with exponential backoff |
-| Webhook timeout | Processing takes too long | Acknowledge immediately (202), process async |
-| Health check 429 | Monitoring consuming quota | Reduce check frequency, use smallest model |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
+
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/groq \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Groq API Reference](https://console.groq.com/docs/api-reference)
-- [Groq Text Generation (streaming)](https://console.groq.com/docs/text-chat)
-- [BullMQ Documentation](https://docs.bullmq.io/)
+- [Groq Webhooks Guide](https://docs.groq.com/webhooks)
+- [Webhook Security Best Practices](https://docs.groq.com/webhooks/security)
 
 ## Next Steps
 For performance optimization, see `groq-performance-tuning`.

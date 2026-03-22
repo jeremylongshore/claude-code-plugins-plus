@@ -1,238 +1,263 @@
 ---
 name: supabase-advanced-troubleshooting
 description: |
-  Apply advanced Supabase debugging: query plan analysis, RLS policy debugging,
-  connection leak detection, lock contention, and support escalation with evidence.
-  Use when standard troubleshooting fails, investigating race conditions,
-  or preparing evidence for Supabase support.
+  Apply Supabase advanced debugging techniques for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating complex race conditions,
+  or preparing evidence bundles for Supabase support escalation.
   Trigger with phrases like "supabase hard bug", "supabase mystery error",
-  "supabase deep debug", "supabase explain analyze", "supabase support escalation".
-allowed-tools: Read, Grep, Bash(supabase:*), Bash(curl:*), Bash(psql:*)
+  "supabase impossible to debug", "difficult supabase issue", "supabase deep debug".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, debugging, advanced]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Advanced Troubleshooting
 
 ## Overview
-Advanced debugging techniques for hard-to-diagnose Supabase issues: query plan analysis with EXPLAIN ANALYZE, RLS policy debugging, connection pool inspection, lock contention detection, and building evidence bundles for Supabase support.
+Deep debugging techniques for complex Supabase issues that resist standard troubleshooting.
 
 ## Prerequisites
-- Access to Supabase SQL Editor or psql
-- `pg_stat_statements` enabled
-- Familiarity with PostgreSQL internals
+- Access to production logs and metrics
+- kubectl access to clusters
+- Network capture tools available
+- Understanding of distributed tracing
+
+## Evidence Collection Framework
+
+### Comprehensive Debug Bundle
+```bash
+#!/bin/bash
+# advanced-supabase-debug.sh
+
+BUNDLE="supabase-advanced-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+
+# 1. Extended logs (1 hour window)
+kubectl logs -l app=supabase-integration --since=1h > "$BUNDLE/logs/pods.log"
+journalctl -u supabase-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
+
+# 2. Metrics dump
+curl -s localhost:9090/api/v1/query?query=supabase_requests_total > "$BUNDLE/metrics/requests.json"
+curl -s localhost:9090/api/v1/query?query=supabase_errors_total > "$BUNDLE/metrics/errors.json"
+
+# 3. Network capture (30 seconds)
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
+
+# 4. Distributed traces
+curl -s localhost:16686/api/traces?service=supabase > "$BUNDLE/traces/jaeger.json"
+
+# 5. Configuration state
+kubectl get cm supabase-config -o yaml > "$BUNDLE/config/configmap.yaml"
+kubectl get secret supabase-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Advanced debug bundle: $BUNDLE.tar.gz"
+```
+
+## Systematic Isolation
+
+### Layer-by-Layer Testing
+
+```typescript
+// Test each layer independently
+async function diagnoseSupabaseIssue(): Promise<DiagnosisReport> {
+  const results: DiagnosisResult[] = [];
+
+  // Layer 1: Network connectivity
+  results.push(await testNetworkConnectivity());
+
+  // Layer 2: DNS resolution
+  results.push(await testDNSResolution('api.supabase.com'));
+
+  // Layer 3: TLS handshake
+  results.push(await testTLSHandshake('api.supabase.com'));
+
+  // Layer 4: Authentication
+  results.push(await testAuthentication());
+
+  // Layer 5: API response
+  results.push(await testAPIResponse());
+
+  // Layer 6: Response parsing
+  results.push(await testResponseParsing());
+
+  return { results, firstFailure: results.find(r => !r.success) };
+}
+```
+
+### Minimal Reproduction
+
+```typescript
+// Strip down to absolute minimum
+async function minimalRepro(): Promise<void> {
+  // 1. Fresh client, no customization
+  const client = new SupabaseClient({
+    apiKey: process.env.SUPABASE_API_KEY!,
+  });
+
+  // 2. Simplest possible call
+  try {
+    const result = await client.ping();
+    console.log('Ping successful:', result);
+  } catch (error) {
+    console.error('Ping failed:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+  }
+}
+```
+
+## Timing Analysis
+
+```typescript
+class TimingAnalyzer {
+  private timings: Map<string, number[]> = new Map();
+
+  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    try {
+      return await fn();
+    } finally {
+      const duration = performance.now() - start;
+      const existing = this.timings.get(label) || [];
+      existing.push(duration);
+      this.timings.set(label, existing);
+    }
+  }
+
+  report(): TimingReport {
+    const report: TimingReport = {};
+    for (const [label, times] of this.timings) {
+      report[label] = {
+        count: times.length,
+        min: Math.min(...times),
+        max: Math.max(...times),
+        avg: times.reduce((a, b) => a + b, 0) / times.length,
+        p95: this.percentile(times, 95),
+      };
+    }
+    return report;
+  }
+}
+```
+
+## Memory and Resource Analysis
+
+```typescript
+// Detect memory leaks in Supabase client usage
+const heapUsed: number[] = [];
+
+setInterval(() => {
+  const usage = process.memoryUsage();
+  heapUsed.push(usage.heapUsed);
+
+  // Alert on sustained growth
+  if (heapUsed.length > 60) { // 1 hour at 1/min
+    const trend = heapUsed[59] - heapUsed[0];
+    if (trend > 100 * 1024 * 1024) { // 100MB growth
+      console.warn('Potential memory leak in supabase integration');
+    }
+  }
+}, 60000);
+```
+
+## Race Condition Detection
+
+```typescript
+// Detect concurrent access issues
+class SupabaseConcurrencyChecker {
+  private inProgress: Set<string> = new Set();
+
+  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.inProgress.has(key)) {
+      console.warn(`Concurrent access detected for ${key}`);
+    }
+
+    this.inProgress.add(key);
+    try {
+      return await fn();
+    } finally {
+      this.inProgress.delete(key);
+    }
+  }
+}
+```
+
+## Support Escalation Template
+
+```markdown
+## Supabase Support Escalation
+
+**Severity:** P[1-4]
+**Request ID:** [from error response]
+**Timestamp:** [ISO 8601]
+
+### Issue Summary
+[One paragraph description]
+
+### Steps to Reproduce
+1. [Step 1]
+2. [Step 2]
+
+### Expected vs Actual
+- Expected: [behavior]
+- Actual: [behavior]
+
+### Evidence Attached
+- [ ] Debug bundle (supabase-advanced-debug-*.tar.gz)
+- [ ] Minimal reproduction code
+- [ ] Timing analysis
+- [ ] Network capture (if relevant)
+
+### Workarounds Attempted
+1. [Workaround 1] - Result: [outcome]
+2. [Workaround 2] - Result: [outcome]
+```
 
 ## Instructions
 
-### Technique 1: EXPLAIN ANALYZE for Slow Queries
+### Step 1: Collect Evidence Bundle
+Run the comprehensive debug script to gather all relevant data.
 
-```sql
--- Run EXPLAIN ANALYZE to see actual execution plan
-explain (analyze, buffers, timing, format text)
-select t.*, p.name as project_name
-from tasks t
-join projects p on p.id = t.project_id
-where t.assigned_to = 'user-uuid-here'
-  and t.status = 'in_progress'
-order by t.due_date asc
-limit 20;
+### Step 2: Systematic Isolation
+Test each layer independently to identify the failure point.
 
--- Look for:
--- - Seq Scan (missing index — add one on the filtered column)
--- - Nested Loop with high row estimates (consider a Hash Join hint)
--- - Sort with high memory usage (add index matching the ORDER BY)
--- - Buffers read >> shared hit (data not in cache — increase shared_buffers or optimize query)
+### Step 3: Create Minimal Reproduction
+Strip down to the simplest failing case.
 
--- Fix: add a composite index for this query pattern
-create index concurrently idx_tasks_assigned_status
-  on tasks (assigned_to, status, due_date)
-  where status != 'cancelled';
-```
-
-### Technique 2: Debug RLS Policies Step by Step
-
-```sql
--- Step 1: Test as a specific user (simulates their JWT)
-set request.jwt.claim.sub = 'target-user-uuid';
-set request.jwt.claim.role = 'authenticated';
-
--- Step 2: Run the failing query
-select * from todos where user_id = 'target-user-uuid';
--- If empty: RLS is filtering. If returns rows: RLS is fine, issue is elsewhere.
-
--- Step 3: Check which policies exist
-select policyname, cmd, permissive, qual, with_check
-from pg_policies
-where tablename = 'todos';
-
--- Step 4: Test each policy condition individually
-select auth.uid();  -- verify this returns the expected user ID
-select auth.jwt();  -- check the full JWT claims
-
--- Step 5: Compare with service role (bypasses RLS)
--- Use the admin client in application code to verify data exists
-
--- Reset after testing
-reset request.jwt.claim.sub;
-reset request.jwt.claim.role;
-```
-
-### Technique 3: Connection Pool Analysis
-
-```sql
--- Current connections by state
-select state, count(*), max(age(now(), state_change))::text as max_wait
-from pg_stat_activity
-where datname = current_database()
-group by state;
-
--- Identify connection leaks (idle connections held too long)
-select pid, usename, state, age(now(), state_change) as idle_time,
-       query_start, left(query, 80) as last_query
-from pg_stat_activity
-where state = 'idle'
-  and age(now(), state_change) > interval '5 minutes'
-order by state_change;
-
--- Find queries holding connections open
-select pid, usename, state, wait_event_type, wait_event,
-       age(now(), query_start) as query_duration,
-       left(query, 100) as query
-from pg_stat_activity
-where state = 'active'
-  and age(now(), query_start) > interval '10 seconds'
-order by query_start;
-
--- Kill a specific stuck connection (use with caution)
--- select pg_terminate_backend(<pid>);
-```
-
-### Technique 4: Lock Contention Detection
-
-```sql
--- Find blocked queries
-select
-  blocked.pid as blocked_pid,
-  age(now(), blocked.query_start) as blocked_duration,
-  left(blocked.query, 80) as blocked_query,
-  blocking.pid as blocking_pid,
-  left(blocking.query, 80) as blocking_query
-from pg_stat_activity blocked
-join pg_locks bl on bl.pid = blocked.pid and not bl.granted
-join pg_locks kl on kl.locktype = bl.locktype
-  and kl.database is not distinct from bl.database
-  and kl.relation is not distinct from bl.relation
-  and kl.page is not distinct from bl.page
-  and kl.tuple is not distinct from bl.tuple
-  and kl.pid != bl.pid
-  and kl.granted
-join pg_stat_activity blocking on blocking.pid = kl.pid
-where blocked.state = 'active';
-
--- Check lock types on a specific table
-select locktype, mode, granted, pid
-from pg_locks
-where relation = 'todos'::regclass;
-```
-
-### Technique 5: Realtime Debugging
-
-```typescript
-// Debug Realtime subscription issues
-const channel = supabase.channel('debug-channel', {
-  config: { broadcast: { self: true } },
-})
-
-channel
-  .on('system', {}, (payload) => {
-    console.log('[SYSTEM]', payload)
-    // Look for: SUBSCRIBED, CHANNEL_ERROR, TIMED_OUT
-  })
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'todos' }, (payload) => {
-    console.log('[CHANGE]', payload.eventType, payload.new)
-  })
-  .subscribe((status, err) => {
-    console.log('[STATUS]', status, err ?? '')
-  })
-
-// Check if Realtime is enabled on the table
-// SQL: select * from pg_publication_tables where pubname = 'supabase_realtime';
-```
-
-```sql
--- Verify table is in the Realtime publication
-select * from pg_publication_tables
-where pubname = 'supabase_realtime';
-
--- Add table to Realtime publication if missing
-alter publication supabase_realtime add table public.todos;
-```
-
-### Technique 6: Edge Function Debugging
-
-```bash
-# Check Edge Function logs
-supabase functions logs process-order --linked
-
-# Test locally with verbose output
-supabase functions serve process-order --debug --env-file .env.local
-
-# Check function status
-supabase functions list --linked
-```
-
-### Technique 7: Build Support Evidence Bundle
-
-```sql
--- Collect evidence for Supabase support ticket
--- Save each output to a file
-
--- 1. Postgres version and settings
-select version();
-show shared_buffers;
-show max_connections;
-show statement_timeout;
-
--- 2. Table and index sizes
-select relname, pg_size_pretty(pg_total_relation_size(relid)) as size
-from pg_stat_user_tables order by pg_total_relation_size(relid) desc limit 20;
-
--- 3. Slow query stats
-select query, calls, mean_exec_time::numeric(10,2) as avg_ms
-from pg_stat_statements order by mean_exec_time desc limit 10;
-
--- 4. RLS policies
-select tablename, policyname, cmd, qual from pg_policies where schemaname = 'public';
-
--- 5. Extensions
-select extname, extversion from pg_extension order by extname;
-```
+### Step 4: Escalate with Evidence
+Use the support template with all collected evidence.
 
 ## Output
-- Query plans analyzed with specific index recommendations
-- RLS policies debugged by simulating specific user JWTs
-- Connection leaks and idle connections identified
-- Lock contention detected with blocking query identification
-- Realtime publication membership verified
-- Support evidence bundle collected with all diagnostic data
+- Comprehensive debug bundle collected
+- Failure layer identified
+- Minimal reproduction created
+- Support escalation submitted
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Seq Scan on large table | Missing index | Add index on filter/join columns |
-| All connections in `idle` state | Connection leak | Review connection pool settings; add idle timeout |
-| Lock contention causing timeouts | Long-running transaction | Kill blocking query or optimize transaction scope |
-| Realtime events not arriving | Table not in publication | `ALTER PUBLICATION supabase_realtime ADD TABLE ...` |
+| Can't reproduce | Race condition | Add timing analysis |
+| Intermittent failure | Timing-dependent | Increase sample size |
+| No useful logs | Missing instrumentation | Add debug logging |
+| Memory growth | Resource leak | Use heap profiling |
+
+## Examples
+
+### Quick Layer Test
+```bash
+# Test each layer in sequence
+curl -v https://api.supabase.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+```
 
 ## Resources
-- [PostgreSQL EXPLAIN Documentation](https://www.postgresql.org/docs/current/sql-explain.html)
-- [Supabase Performance Advisor](https://supabase.com/docs/guides/database/inspect)
-- [RLS Debugging](https://supabase.com/docs/guides/troubleshooting/rls-simplified-BJTcS8)
-- [Supabase Support](https://supabase.com/support)
+- [Supabase Support Portal](https://support.supabase.com)
+- [Supabase Status Page](https://status.supabase.com)
 
 ## Next Steps
-For load testing and scaling, see `supabase-load-scale`.
+For load testing, see `supabase-load-scale`.

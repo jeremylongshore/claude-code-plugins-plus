@@ -1,124 +1,113 @@
 ---
 name: evernote-debug-bundle
 description: |
-  Debug Evernote API issues with diagnostic tools and techniques.
-  Use when troubleshooting API calls, inspecting requests/responses,
-  or diagnosing integration problems.
-  Trigger with phrases like "debug evernote", "evernote diagnostic",
-  "troubleshoot evernote", "evernote logs", "inspect evernote".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
+  Collect Evernote debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent issues, preparing support tickets,
+  or collecting diagnostic information for Evernote problems.
+  Trigger with phrases like "evernote debug", "evernote support bundle",
+  "collect evernote logs", "evernote diagnostic".
+allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, evernote, api, debugging]
-
+compatible-with: claude-code
+tags: [saas, evernote]
 ---
+
 # Evernote Debug Bundle
 
-## Current State
-!`node --version 2>/dev/null || echo 'N/A'`
-!`python3 --version 2>/dev/null || echo 'N/A'`
-
 ## Overview
-Comprehensive debugging toolkit for Evernote API integrations, including request/response logging, ENML validation with auto-fix, token inspection, and diagnostic CLI utilities.
+Collect all necessary diagnostic information for Evernote support tickets.
 
 ## Prerequisites
 - Evernote SDK installed
-- Node.js environment
-- Understanding of common Evernote errors (see `evernote-common-errors`)
+- Access to application logs
+- Permission to collect environment info
 
 ## Instructions
 
-### Step 1: Debug Logger
+### Step 1: Create Debug Bundle Script
+```bash
+#!/bin/bash
+# evernote-debug-bundle.sh
 
-Create a logger that captures API method names, arguments (with token redaction), response times, and error details. Write to both console and file for post-mortem analysis.
+BUNDLE_DIR="evernote-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE_DIR"
 
-```javascript
-class EvernoteDebugLogger {
-  constructor(logFile = 'evernote-debug.log') {
-    this.logFile = logFile;
-    this.requests = [];
-  }
-
-  logRequest(method, args, response, duration, error) {
-    const entry = {
-      timestamp: new Date().toISOString(),
-      method,
-      duration: `${duration}ms`,
-      success: !error,
-      error: error?.message || error?.errorCode
-    };
-    this.requests.push(entry);
-    fs.appendFileSync(this.logFile, JSON.stringify(entry) + '\n');
-  }
-}
+echo "=== Evernote Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 2: Instrumented Client Wrapper
-
-Wrap the NoteStore with a Proxy that automatically logs every API call, measures response time, and catches errors. This adds zero-config debugging to any existing integration.
-
-```javascript
-function instrumentNoteStore(noteStore, logger) {
-  return new Proxy(noteStore, {
-    get(target, prop) {
-      if (typeof target[prop] !== 'function') return target[prop];
-      return async (...args) => {
-        const start = Date.now();
-        try {
-          const result = await target[prop](...args);
-          logger.logRequest(prop, args, result, Date.now() - start);
-          return result;
-        } catch (error) {
-          logger.logRequest(prop, args, null, Date.now() - start, error);
-          throw error;
-        }
-      };
-    }
-  });
-}
+### Step 2: Collect Environment Info
+```bash
+# Environment info
+echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+echo "EVERNOTE_API_KEY: ${EVERNOTE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 ```
 
-### Step 3: ENML Validator
+### Step 3: Gather SDK and Logs
+```bash
+# SDK version
+npm list @evernote/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
 
-Validate ENML content against the DTD rules: check for XML declaration, DOCTYPE, `<en-note>` root, forbidden elements, and unclosed tags. Optionally auto-fix common issues (add missing headers, close tags, strip forbidden elements).
+# Recent logs (redacted)
+grep -i "evernote" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
 
-### Step 4: Token Inspector
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
 
-Check token validity by calling `userStore.getUser()`. Report token owner, expiration date (`edam_expires`), account type, and remaining upload quota.
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" https://api.evernote.com/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
+```
 
-### Step 5: Diagnostic CLI
-
-Create a CLI script with commands: `diagnose` (run all checks), `validate-enml <file>` (validate ENML content), `inspect-token` (show token info), `test-api` (verify API connectivity).
-
-For the full debug logger, instrumented client, ENML auto-fixer, token inspector, and diagnostic CLI, see [Implementation Guide](references/implementation-guide.md).
+### Step 4: Package Bundle
+```bash
+tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+echo "Bundle created: $BUNDLE_DIR.tar.gz"
+```
 
 ## Output
-- `EvernoteDebugLogger` with file and console output
-- Proxy-based instrumented NoteStore wrapper
-- ENML validator with auto-fix capability
-- Token and account inspector utility
-- Diagnostic CLI with `diagnose`, `validate-enml`, `inspect-token` commands
+- `evernote-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
+  - `summary.txt` - Environment and SDK info
+  - `logs.txt` - Recent redacted logs
+  - `config-redacted.txt` - Configuration (secrets removed)
 
 ## Error Handling
-| Issue | Diagnostic | Solution |
-|-------|------------|----------|
-| Auth failures | Run `inspect-token` to check expiration | Re-authenticate if expired |
-| ENML errors | Run `validate-enml` on content | Auto-fix or manually correct |
-| Rate limits | Check request frequency in debug log | Increase delay between calls |
-| Missing data | Inspect response in debug log | Verify API parameters (withContent flags) |
-
-## Resources
-- [Error Handling](https://dev.evernote.com/doc/articles/error_handling.php)
-- [ENML DTD](http://xml.evernote.com/pub/enml2.dtd)
-- [API Reference](https://dev.evernote.com/doc/reference/)
-
-## Next Steps
-For rate limit handling, see `evernote-rate-limits`.
+| Item | Purpose | Included |
+|------|---------|----------|
+| Environment versions | Compatibility check | ✓ |
+| SDK version | Version-specific bugs | ✓ |
+| Error logs (redacted) | Root cause analysis | ✓ |
+| Config (redacted) | Configuration issues | ✓ |
+| Network test | Connectivity issues | ✓ |
 
 ## Examples
 
-**Request tracing**: Wrap NoteStore with the instrumented proxy, run your workflow, then review `evernote-debug.log` for slow calls (>2s), failed requests, and rate limit hits.
+### Sensitive Data Handling
+**ALWAYS REDACT:**
+- API keys and tokens
+- Passwords and secrets
+- PII (emails, names, IDs)
 
-**ENML debugging**: Pipe note content through the ENML validator to find missing DOCTYPE, forbidden `<script>` tags, or unclosed elements. Use auto-fix mode to correct issues automatically.
+**Safe to Include:**
+- Error messages
+- Stack traces (redacted)
+- SDK/runtime versions
+
+### Submit to Support
+1. Create bundle: `bash evernote-debug-bundle.sh`
+2. Review for sensitive data
+3. Upload to Evernote support portal
+
+## Resources
+- [Evernote Support](https://docs.evernote.com/support)
+- [Evernote Status](https://status.evernote.com)
+
+## Next Steps
+For rate limit issues, see `evernote-rate-limits`.

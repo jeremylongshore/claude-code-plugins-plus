@@ -1,146 +1,113 @@
 ---
 name: flyio-common-errors
 description: |
-  Diagnose and fix common Fly.io errors including deployment failures, health check
-  failures, machine issues, and networking problems.
-  Trigger: "fly.io error", "fly deploy failed", "fly.io not working", "fly health check".
-allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
+  Diagnose and fix Fly.io common errors and exceptions.
+  Use when encountering Fly.io errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "flyio error", "fix flyio",
+  "flyio not working", "debug flyio".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
+tags: [saas, flyio]
 ---
 
 # Fly.io Common Errors
 
 ## Overview
+Quick reference for the top 10 most common Fly.io errors and their solutions.
 
-Quick reference for the most common Fly.io deployment and runtime errors with solutions.
+## Prerequisites
+- Fly.io SDK installed
+- API credentials configured
+- Access to error logs
 
-## Error Reference
+## Instructions
 
-### Health Check Failed
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
 
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Authentication Failed
+**Error Message:**
 ```
-Error: health checks for machine e784... failed
+Authentication error: Invalid API key
 ```
 
-**Causes:** App not listening on correct port, slow startup, missing dependencies.
+**Cause:** API key is missing, expired, or invalid.
 
-**Fix:**
+**Solution:**
 ```bash
-# Check logs for startup errors
-fly logs -a my-app
-
-# Verify internal_port matches your app
-grep internal_port fly.toml
-
-# SSH in and test manually
-fly ssh console -C "curl localhost:3000/health"
-
-# Increase health check grace period
-```
-```toml
-# fly.toml — give app more time to start
-[http_service.checks]
-  grace_period = "30s"
-  interval = "15s"
-  timeout = "5s"
+# Verify API key is set
+echo $FLYIO_API_KEY
 ```
 
-### Deployment Failed — Image Build
+---
 
+### Rate Limit Exceeded
+**Error Message:**
 ```
-Error: failed to build: exit code 1
+Rate limit exceeded. Please retry after X seconds.
 ```
 
-**Fix:**
+**Cause:** Too many requests in a short period.
+
+**Solution:**
+Implement exponential backoff. See `flyio-rate-limits` skill.
+
+---
+
+### Network Timeout
+**Error Message:**
+```
+Request timeout after 30000ms
+```
+
+**Cause:** Network connectivity or server latency issues.
+
+**Solution:**
+```typescript
+// Increase timeout
+const client = new Client({ timeout: 60000 });
+```
+
+## Examples
+
+### Quick Diagnostic Commands
 ```bash
-# Test Docker build locally first
-docker build -t test .
-docker run -p 3000:3000 test
+# Check Fly.io status
+curl -s https://status.flyio.com
 
-# Check Dockerfile — common issues:
-# - Missing EXPOSE directive
-# - Wrong WORKDIR
-# - npm install before COPY (layer caching)
+# Verify API connectivity
+curl -I https://api.flyio.com
+
+# Check local configuration
+env | grep FLYIO
 ```
 
-### Machine Won't Start
-
-```
-Error: machine e784... failed to start
-```
-
-**Fix:**
-```bash
-# Check machine events
-fly machine status e784...
-
-# Common cause: OOM — increase memory
-fly scale vm shared-cpu-1x --memory 512
-
-# Or check for crash loops in logs
-fly logs --instance e784...
-```
-
-### Connection Refused on .internal
-
-```
-Error: connection refused my-api.internal:3000
-```
-
-**Fix:**
-```bash
-# Verify target app is running
-fly status -a my-api
-
-# Check the app listens on correct port
-fly ssh console -a my-api -C "ss -tlnp"
-
-# Ensure apps are in same organization
-fly orgs list
-```
-
-### Volume Mount Failures
-
-```
-Error: volume vol_xxx not found in region iad
-```
-
-**Fix:**
-```bash
-# Volume must be in same region as machine
-fly volumes list -a my-app  # Check region
-fly volumes create data --size 10 --region iad  # Match region
-```
-
-### Rate Limited by Machines API
-
-```
-HTTP 429 Too Many Requests
-```
-
-**Fix:** Implement backoff. See `flyio-rate-limits`.
-
-## Quick Diagnostic Commands
-
-```bash
-fly status -a my-app              # App and machine status
-fly logs -a my-app                # Recent logs
-fly machine list -a my-app        # All machines
-fly ssh console -a my-app         # Shell access
-fly doctor                        # Check flyctl health
-fly platform status               # Fly.io platform status
-```
+### Escalation Path
+1. Collect evidence with `flyio-debug-bundle`
+2. Check Fly.io status page
+3. Contact support with request ID
 
 ## Resources
-
-- [Fly.io Status](https://status.flyio.net/)
-- [Fly.io Community](https://community.fly.io/)
-- [Fly Docs](https://fly.io/docs/)
+- [Fly.io Status Page](https://status.flyio.com)
+- [Fly.io Support](https://docs.flyio.com/support)
+- [Fly.io Error Codes](https://docs.flyio.com/errors)
 
 ## Next Steps
-
 For comprehensive debugging, see `flyio-debug-bundle`.

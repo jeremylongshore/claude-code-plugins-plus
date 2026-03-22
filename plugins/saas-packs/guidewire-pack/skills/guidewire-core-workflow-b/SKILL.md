@@ -1,96 +1,73 @@
 ---
 name: guidewire-core-workflow-b
 description: |
-  Execute Guidewire claims workflow in ClaimCenter: FNOL, investigation, reserves, and settlement.
-  Trigger: "claimcenter workflow", "create claim", "FNOL", "claim settlement", "process claim".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Execute Guidewire secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "guidewire secondary workflow",
+  "secondary task with guidewire".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, insurance, guidewire]
 compatible-with: claude-code
+tags: [saas, guidewire]
 ---
 
-# Guidewire Core Workflow B: Claims Processing
+# Guidewire Core Workflow B
 
 ## Overview
+Secondary workflow for Guidewire. Complements the primary workflow.
 
-Claims lifecycle in ClaimCenter: First Notice of Loss (FNOL), investigation, reserve setting, payment processing, and settlement.
-
-## Claims Lifecycle
-
-```
-FNOL -> Investigation -> Reserve -> Payment -> Settlement -> Close
-```
+## Prerequisites
+- Completed `guidewire-install-auth` setup
+- Familiarity with `guidewire-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Create Claim (FNOL)
-
+### Step 1: Setup
 ```typescript
-const claim = await fetch(`${GW_CC}/claim/v1/claims`, {
-  method: 'POST', headers,
-  body: JSON.stringify({
-    data: { attributes: {
-      lossDate: '2025-03-15T14:30:00Z',
-      lossCause: { code: 'vehcollision' },
-      lossType: { code: 'AUTO' },
-      policyNumber: 'PA-000001',
-      description: 'Rear-end collision at intersection',
-      reporter: {
-        firstName: 'John', lastName: 'Smith',
-        primaryPhone: { phoneNumber: '555-0100' },
-      },
-    }}
-  }),
-}).then(r => r.json());
-console.log(`Claim created: ${claim.data.attributes.claimNumber}`);
+// Step 1 implementation
 ```
 
-### Step 2: Set Reserves
-
+### Step 2: Process
 ```typescript
-await fetch(`${GW_CC}/claim/v1/claims/${claimId}/reserves`, {
-  method: 'POST', headers,
-  body: JSON.stringify({
-    data: { attributes: {
-      reserveAmount: { amount: 5000, currency: 'usd' },
-      costType: { code: 'claimcost' },
-      costCategory: { code: 'body' },
-    }}
-  }),
-});
+// Step 2 implementation
 ```
 
-### Step 3: Create Payment
-
+### Step 3: Complete
 ```typescript
-await fetch(`${GW_CC}/claim/v1/claims/${claimId}/payments`, {
-  method: 'POST', headers,
-  body: JSON.stringify({
-    data: { attributes: {
-      paymentType: { code: 'partial' },
-      amount: { amount: 3000, currency: 'usd' },
-      payee: { contact: { id: claimantContactId } },
-    }}
-  }),
-});
+// Step 3 implementation
 ```
+
+## Output
+- Completed Core Workflow B execution
+- Results from Guidewire API
+- Success confirmation or error details
 
 ## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `Policy not found` | Invalid policy number | Verify policy exists and is in-force |
-| `Reserve exceeds limit` | Authority level exceeded | Escalate to supervisor approval |
-| `Payment validation` | Missing payee info | Add contact details before payment |
+## Examples
 
-For detailed implementation, see: [implementation guide](references/implementation-guide.md)
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [ClaimCenter Cloud API](https://docs.guidewire.com/cloud/cc/202407/apiref/)
+- [Guidewire Documentation](https://docs.guidewire.com)
+- [Guidewire API Reference](https://docs.guidewire.com/api)
 
 ## Next Steps
-
 For common errors, see `guidewire-common-errors`.

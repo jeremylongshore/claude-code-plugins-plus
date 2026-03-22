@@ -1,262 +1,73 @@
 ---
 name: posthog-core-workflow-b
 description: |
-  Implement PostHog feature flags, A/B experiments, and cohort management.
-  Use when rolling out features with flags, running A/B tests, creating cohorts,
-  or evaluating multivariate experiments with PostHog.
-  Trigger: "posthog feature flag", "posthog experiment", "posthog A/B test",
-  "posthog cohort", "feature rollout posthog", "posthog multivariate".
+  Execute PostHog secondary workflow: Core Workflow B.
+  Use when implementing secondary use case,
+  or complementing primary workflow.
+  Trigger with phrases like "posthog secondary workflow",
+  "secondary task with posthog".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, workflow, feature-flags, experiments]
+compatible-with: claude-code
+tags: [saas, posthog]
 ---
 
-# PostHog Core Workflow B — Feature Flags & Experiments
+# PostHog Core Workflow B
 
 ## Overview
-
-Feature flag management, A/B experiment evaluation, and cohort analysis with PostHog. Covers boolean and multivariate flags, local evaluation for performance, experiment setup and statistical significance, and cohort creation via the API.
+Secondary workflow for PostHog. Complements the primary workflow.
 
 ## Prerequisites
-
 - Completed `posthog-install-auth` setup
-- Familiarity with `posthog-core-workflow-a` (event capture)
-- Personal API key (`phx_...`) for flag management API
+- Familiarity with `posthog-core-workflow-a`
+- Valid API credentials configured
 
 ## Instructions
 
-### Step 1: Evaluate Feature Flags (Browser)
-
+### Step 1: Setup
 ```typescript
-import posthog from 'posthog-js';
-
-// Boolean flag
-if (posthog.isFeatureEnabled('new-checkout-flow')) {
-  renderNewCheckout();
-} else {
-  renderLegacyCheckout();
-}
-
-// Multivariate flag (returns string variant name)
-const variant = posthog.getFeatureFlag('pricing-page-experiment');
-switch (variant) {
-  case 'control':
-    renderOriginalPricing();
-    break;
-  case 'annual-first':
-    renderAnnualFirstPricing();
-    break;
-  case 'social-proof':
-    renderSocialProofPricing();
-    break;
-  default:
-    renderOriginalPricing(); // Fallback if flag not loaded yet
-}
-
-// Get flag payload (JSON data attached to a flag variant)
-const payload = posthog.getFeatureFlagPayload('banner-config');
-// payload: { text: "Spring sale!", color: "#ff6b35", discount: 20 }
-
-// React: Wait for flags to load before rendering
-posthog.onFeatureFlags(() => {
-  // Flags are now loaded and ready
-  const enabled = posthog.isFeatureEnabled('new-feature');
-  setFeatureEnabled(enabled ?? false);
-});
+// Step 1 implementation
 ```
 
-### Step 2: Evaluate Feature Flags (Server — posthog-node)
-
+### Step 2: Process
 ```typescript
-import { PostHog } from 'posthog-node';
-
-const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  host: 'https://us.i.posthog.com',
-  // Personal API key enables local evaluation (no network call per flag check)
-  personalApiKey: process.env.POSTHOG_PERSONAL_API_KEY,
-});
-
-// Single flag evaluation
-async function checkFlag(userId: string): Promise<boolean> {
-  const enabled = await posthog.isFeatureEnabled('new-api-version', userId);
-  return enabled ?? false;
-}
-
-// Multivariate flag
-async function getVariant(userId: string): Promise<string> {
-  const variant = await posthog.getFeatureFlag('onboarding-experiment', userId, {
-    personProperties: { plan: 'pro', country: 'US' },
-  });
-  return (variant as string) || 'control';
-}
-
-// Get ALL flags for a user at once (one network call)
-async function getUserFlags(userId: string) {
-  const flags = await posthog.getAllFlags(userId, {
-    personProperties: { plan: 'enterprise' },
-    groupProperties: { company: { name: 'Acme' } },
-  });
-  // flags: { 'new-checkout': true, 'pricing-experiment': 'variant-a', ... }
-  return flags;
-}
-
-// Get all flags with their payloads
-async function getFlagsAndPayloads(userId: string) {
-  const result = await posthog.getAllFlagsAndPayloads(userId);
-  // result.featureFlags: { 'banner': true }
-  // result.featureFlagPayloads: { 'banner': { text: 'Sale!' } }
-  return result;
-}
+// Step 2 implementation
 ```
 
-### Step 3: Create Feature Flags via API
-
-```bash
-set -euo pipefail
-# Create a boolean feature flag with percentage rollout
-curl -X POST "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/feature_flags/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "key": "new-dashboard-v2",
-    "name": "New Dashboard V2",
-    "active": true,
-    "filters": {
-      "groups": [{
-        "rollout_percentage": 25,
-        "properties": []
-      }]
-    }
-  }'
-
-# Create a multivariate flag for A/B testing
-curl -X POST "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/feature_flags/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "key": "checkout-experiment",
-    "name": "Checkout Flow Experiment",
-    "active": true,
-    "filters": {
-      "multivariate": {
-        "variants": [
-          {"key": "control", "rollout_percentage": 50},
-          {"key": "streamlined", "rollout_percentage": 50}
-        ]
-      },
-      "groups": [{"rollout_percentage": 100, "properties": []}]
-    }
-  }'
-```
-
-### Step 4: Set Up an Experiment
-
+### Step 3: Complete
 ```typescript
-// Track experiment exposure and goal metrics
-async function runExperiment(userId: string) {
-  const posthog = new PostHog(process.env.NEXT_PUBLIC_POSTHOG_KEY!);
-
-  // PostHog automatically tracks $feature_flag_called when you evaluate
-  const variant = await posthog.getFeatureFlag('checkout-experiment', userId);
-
-  // Track the goal metric
-  posthog.capture({
-    distinctId: userId,
-    event: 'purchase_completed',
-    properties: {
-      variant,
-      order_value: 49.99,
-      // PostHog will attribute this to the experiment automatically
-    },
-  });
-
-  await posthog.flush();
-  return variant;
-}
+// Step 3 implementation
 ```
-
-### Step 5: Query Experiment Results via API
-
-```bash
-set -euo pipefail
-# List experiments and their status
-curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/experiments/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '.results[] | {id, name, start_date, end_date, feature_flag_key}'
-
-# Get experiment results
-curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/experiments/EXPERIMENT_ID/results/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '{
-    variants: [.result.variants[] | {key, count, conversion_rate: .absolute_exposure}],
-    significance: .result.significance_code,
-    probability: .result.probability
-  }'
-```
-
-### Step 6: Manage Cohorts via API
-
-```bash
-set -euo pipefail
-# Create a behavioral cohort (users who signed up in last 30 days)
-curl -X POST "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/cohorts/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Recent Signups (30d)",
-    "is_calculating": true,
-    "filters": {
-      "properties": {
-        "type": "AND",
-        "values": [{
-          "type": "AND",
-          "values": [{
-            "key": "user_signed_up",
-            "type": "behavioral",
-            "value": "performed_event",
-            "time_value": 30,
-            "time_interval": "day"
-          }]
-        }]
-      }
-    }
-  }'
-
-# List cohorts
-curl "https://app.posthog.com/api/projects/$POSTHOG_PROJECT_ID/cohorts/" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '.results[] | {id, name, count, is_calculating}'
-```
-
-## Error Handling
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Flag always returns `undefined` | Flags not loaded yet | Use `posthog.onFeatureFlags()` callback |
-| Flag returns default on server | No `personalApiKey` set | Add personal API key for local evaluation |
-| Experiment not tracking | Goal event name mismatch | Verify event name matches experiment config |
-| Cohort stuck `is_calculating` | Large dataset | Wait for calculation; check PostHog status |
-| `getAllFlags` slow | No local evaluation | Set `personalApiKey` in PostHog constructor |
 
 ## Output
+- Completed Core Workflow B execution
+- Results from PostHog API
+- Success confirmation or error details
 
-- Feature flag evaluation (boolean and multivariate)
-- Server-side local evaluation for low-latency flag checks
-- A/B experiment setup with goal metric tracking
-- Cohort creation and management via API
-- Experiment results with statistical significance
+## Error Handling
+| Aspect | Workflow A | Workflow B |
+|--------|------------|------------|
+| Use Case | Primary | Secondary |
+| Complexity | Medium | Lower |
+| Performance | Standard | Optimized |
+
+## Examples
+
+### Complete Workflow
+```typescript
+// Complete workflow example
+```
+
+### Error Recovery
+```typescript
+// Error handling code
+```
 
 ## Resources
-
-- [Feature Flags Overview](https://posthog.com/docs/feature-flags)
-- [Adding Feature Flag Code](https://posthog.com/docs/feature-flags/adding-feature-flag-code)
-- [Local Evaluation](https://posthog.com/docs/feature-flags/local-evaluation)
-- [Experiments](https://posthog.com/docs/experiments)
-- [Cohorts API](https://posthog.com/docs/api/cohorts)
+- [PostHog Documentation](https://docs.posthog.com)
+- [PostHog API Reference](https://docs.posthog.com/api)
 
 ## Next Steps
-
 For common errors, see `posthog-common-errors`.

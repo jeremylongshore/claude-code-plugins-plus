@@ -1,99 +1,119 @@
 ---
 name: coreweave-local-dev-loop
 description: |
-  Set up local development workflow for CoreWeave GPU deployments.
-  Use when building containers locally, testing YAML manifests,
-  or iterating on model serving configurations before deploying.
-  Trigger with phrases like "coreweave dev setup", "coreweave local testing",
-  "develop for coreweave", "coreweave container build".
-allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(docker:*), Grep
+  Configure CoreWeave local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with CoreWeave.
+  Trigger with phrases like "coreweave dev setup", "coreweave local development",
+  "coreweave dev environment", "develop with coreweave".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
+tags: [saas, coreweave]
 ---
 
 # CoreWeave Local Dev Loop
 
 ## Overview
-
-Local development workflow for CoreWeave: build containers, test YAML manifests with dry-run, push to registry, and deploy to CoreWeave CKS.
+Set up a fast, reproducible local development workflow for CoreWeave.
 
 ## Prerequisites
-
 - Completed `coreweave-install-auth` setup
-- Docker installed locally
-- Container registry access (Docker Hub, GHCR, or CoreWeave registry)
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Project Structure
-
+### Step 1: Create Project Structure
 ```
-my-inference-service/
-├── Dockerfile
+my-coreweave-project/
 ├── src/
-│   ├── server.py          # Inference server code
-│   └── model_config.py    # Model configuration
-├── k8s/
-│   ├── deployment.yaml    # GPU deployment manifest
-│   ├── service.yaml       # Service and ingress
-│   └── hpa.yaml           # Horizontal pod autoscaler
-├── scripts/
-│   ├── build.sh           # Build and push container
-│   └── deploy.sh          # Deploy to CoreWeave
-├── .env.local
-└── Makefile
+│   ├── coreweave/
+│   │   ├── client.ts       # CoreWeave client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── coreweave.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
 ```
 
-### Step 2: Build and Push Container
-
+### Step 2: Configure Environment
 ```bash
-# Build locally
-docker build -t my-inference:latest .
+# Copy environment template
+cp .env.example .env.local
 
-# Tag for registry
-docker tag my-inference:latest ghcr.io/myorg/my-inference:v1.0.0
+# Install dependencies
+npm install
 
-# Push
-docker push ghcr.io/myorg/my-inference:v1.0.0
+# Start development server
+npm run dev
 ```
 
-### Step 3: Validate Manifests Before Deploy
-
-```bash
-# Dry-run against CoreWeave cluster
-kubectl apply -f k8s/deployment.yaml --dry-run=server
-
-# Diff against current state
-kubectl diff -f k8s/deployment.yaml
-
-# Check resource requests match available GPU types
-kubectl get nodes -l gpu.nvidia.com/class=A100_PCIE_80GB --no-headers | wc -l
+### Step 3: Setup Hot Reload
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}
 ```
 
-### Step 4: Deploy and Watch
+### Step 4: Configure Testing
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { CoreWeaveClient } from '../src/coreweave/client';
 
-```bash
-kubectl apply -f k8s/
-kubectl rollout status deployment/my-inference
-kubectl logs -f deployment/my-inference
+describe('CoreWeave Client', () => {
+  it('should initialize with API key', () => {
+    const client = new CoreWeaveClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
 ```
+
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for CoreWeave development
 
 ## Error Handling
-
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Image pull backoff | Wrong registry or no pull secret | Create imagePullSecret |
-| CUDA mismatch | Driver vs container version | Match CUDA version to node drivers |
-| Dry-run fails | Invalid manifest | Fix YAML syntax |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock CoreWeave Responses
+```typescript
+vi.mock('@coreweave/sdk', () => ({
+  CoreWeaveClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=COREWEAVE=* npm run dev
+```
 
 ## Resources
-
-- [CoreWeave CKS Docs](https://docs.coreweave.com/docs/products/cks)
-- [kubectl dry-run](https://kubernetes.io/docs/reference/kubectl/)
+- [CoreWeave SDK Reference](https://docs.coreweave.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-
-See `coreweave-sdk-patterns` for inference client patterns.
+See `coreweave-sdk-patterns` for production-ready code patterns.

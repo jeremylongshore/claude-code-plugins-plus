@@ -1,297 +1,222 @@
 ---
 name: posthog-data-handling
 description: |
-  PostHog PII handling, GDPR compliance, consent management, data deletion,
-  property sanitization, and privacy-safe analytics configuration.
-  Trigger: "posthog data", "posthog PII", "posthog GDPR", "posthog data
-  retention", "posthog privacy", "posthog CCPA", "posthog consent".
+  Implement PostHog PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for PostHog integrations.
+  Trigger with phrases like "posthog data", "posthog PII",
+  "posthog GDPR", "posthog data retention", "posthog privacy", "posthog CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, posthog, compliance]
+compatible-with: claude-code
+tags: [saas, posthog]
 ---
 
 # PostHog Data Handling
 
 ## Overview
-
-Privacy-safe analytics with PostHog. Covers property sanitization to strip PII before events leave the browser, consent-based tracking (opt-in/opt-out), GDPR data subject access requests and deletion, and PostHog's built-in privacy controls (IP masking, session recording masking).
+Handle sensitive data correctly when integrating with PostHog.
 
 ## Prerequisites
+- Understanding of GDPR/CCPA requirements
+- PostHog SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
-- PostHog project (Cloud or self-hosted)
-- `posthog-js` and/or `posthog-node` installed
-- Privacy policy covering analytics data collection
-- Cookie consent mechanism (e.g., CookieConsent banner)
+## Data Classification
+
+| Category | Examples | Handling |
+|----------|----------|----------|
+| PII | Email, name, phone | Encrypt, minimize |
+| Sensitive | API keys, tokens | Never log, rotate |
+| Business | Usage metrics | Aggregate when possible |
+| Public | Product names | Standard handling |
+
+## PII Detection
+
+```typescript
+const PII_PATTERNS = [
+  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
+  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
+  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
+  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+];
+
+function detectPII(text: string): { type: string; match: string }[] {
+  const findings: { type: string; match: string }[] = [];
+
+  for (const pattern of PII_PATTERNS) {
+    const matches = text.matchAll(pattern.regex);
+    for (const match of matches) {
+      findings.push({ type: pattern.type, match: match[0] });
+    }
+  }
+
+  return findings;
+}
+```
+
+## Data Redaction
+
+```typescript
+function redactPII(data: Record<string, any>): Record<string, any> {
+  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
+  const redacted = { ...data };
+
+  for (const field of sensitiveFields) {
+    if (redacted[field]) {
+      redacted[field] = '[REDACTED]';
+    }
+  }
+
+  return redacted;
+}
+
+// Use in logging
+console.log('PostHog request:', redactPII(requestData));
+```
+
+## Data Retention Policy
+
+### Retention Periods
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| API logs | 30 days | Debugging |
+| Error logs | 90 days | Root cause analysis |
+| Audit logs | 7 years | Compliance |
+| PII | Until deletion request | GDPR/CCPA |
+
+### Automatic Cleanup
+
+```typescript
+async function cleanupPostHogData(retentionDays: number): Promise<void> {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - retentionDays);
+
+  await db.posthogLogs.deleteMany({
+    createdAt: { $lt: cutoff },
+    type: { $nin: ['audit', 'compliance'] },
+  });
+}
+
+// Schedule daily cleanup
+cron.schedule('0 3 * * *', () => cleanupPostHogData(30));
+```
+
+## GDPR/CCPA Compliance
+
+### Data Subject Access Request (DSAR)
+
+```typescript
+async function exportUserData(userId: string): Promise<DataExport> {
+  const posthogData = await posthogClient.getUserData(userId);
+
+  return {
+    source: 'PostHog',
+    exportedAt: new Date().toISOString(),
+    data: {
+      profile: posthogData.profile,
+      activities: posthogData.activities,
+      // Include all user-related data
+    },
+  };
+}
+```
+
+### Right to Deletion
+
+```typescript
+async function deleteUserData(userId: string): Promise<DeletionResult> {
+  // 1. Delete from PostHog
+  await posthogClient.deleteUser(userId);
+
+  // 2. Delete local copies
+  await db.posthogUserCache.deleteMany({ userId });
+
+  // 3. Audit log (required to keep)
+  await auditLog.record({
+    action: 'GDPR_DELETION',
+    userId,
+    service: 'posthog',
+    timestamp: new Date(),
+  });
+
+  return { success: true, deletedAt: new Date() };
+}
+```
+
+## Data Minimization
+
+```typescript
+// Only request needed fields
+const user = await posthogClient.getUser(userId, {
+  fields: ['id', 'name'], // Not email, phone, address
+});
+
+// Don't store unnecessary data
+const cacheData = {
+  id: user.id,
+  name: user.name,
+  // Omit sensitive fields
+};
+```
 
 ## Instructions
 
-### Step 1: Privacy-Safe Initialization
+### Step 1: Classify Data
+Categorize all PostHog data by sensitivity level.
 
-```typescript
-import posthog from 'posthog-js';
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: 'https://us.i.posthog.com',
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
 
-  // Disable autocapture to control exactly what's captured
-  autocapture: false,
-
-  // Respect browser Do Not Track setting
-  respect_dnt: true,
-
-  // Don't capture until user consents
-  opt_out_capturing_by_default: false, // Set true for opt-in model
-
-  // Sanitize ALL properties before they leave the browser
-  sanitize_properties: (properties, eventName) => {
-    // Remove IP address
-    delete properties['$ip'];
-
-    // Remove potentially identifying properties
-    delete properties['$device_id'];
-
-    // Redact URLs containing tokens or auth info
-    if (properties['$current_url']) {
-      properties['$current_url'] = properties['$current_url']
-        .replace(/token=[^&]+/g, 'token=[REDACTED]')
-        .replace(/key=[^&]+/g, 'key=[REDACTED]')
-        .replace(/session=[^&]+/g, 'session=[REDACTED]');
-    }
-
-    // Redact referrer tokens
-    if (properties['$referrer']) {
-      properties['$referrer'] = properties['$referrer']
-        .replace(/token=[^&]+/g, 'token=[REDACTED]');
-    }
-
-    return properties;
-  },
-
-  // Session recording privacy
-  session_recording: {
-    maskAllInputs: true,           // Mask all input fields
-    maskTextSelector: '.pii-data', // Mask specific elements
-  },
-});
-```
-
-### Step 2: Consent-Based Tracking
-
-```typescript
-// Cookie consent integration
-interface ConsentState {
-  analytics: boolean;
-  functional: boolean;
-  marketing: boolean;
-}
-
-export function handleConsentChange(consent: ConsentState) {
-  if (consent.analytics) {
-    // User opted in — start capturing
-    posthog.opt_in_capturing();
-  } else {
-    // User opted out — stop capturing and clear local data
-    posthog.opt_out_capturing();
-    posthog.reset(); // Clears distinct_id, device_id, session data
-  }
-}
-
-// Check consent before identifying (PII)
-export function identifyWithConsent(
-  userId: string,
-  properties: Record<string, any>,
-  hasAnalyticsConsent: boolean
-) {
-  if (!hasAnalyticsConsent) return;
-
-  // Only send non-PII properties by default
-  const safeProperties: Record<string, any> = {
-    plan: properties.plan,
-    signup_date: properties.signupDate,
-    account_type: properties.accountType,
-    // Do NOT include: email, name, phone, address
-  };
-
-  posthog.identify(userId, safeProperties);
-}
-
-// On page load: restore consent state
-export function restoreConsent() {
-  const consent = getCookieConsent(); // Your consent mechanism
-  if (consent?.analytics === false) {
-    posthog.opt_out_capturing();
-  }
-}
-```
-
-### Step 3: GDPR Data Subject Access Request (SAR)
-
-```typescript
-// Find a person by email and export their data
-async function handleSubjectAccessRequest(email: string) {
-  const personalKey = process.env.POSTHOG_PERSONAL_API_KEY!;
-  const projectId = process.env.POSTHOG_PROJECT_ID!;
-
-  // 1. Find the person by email property
-  const searchResponse = await fetch(
-    `https://app.posthog.com/api/projects/${projectId}/persons/?properties=[{"key":"email","value":"${encodeURIComponent(email)}","type":"person"}]`,
-    { headers: { Authorization: `Bearer ${personalKey}` } }
-  );
-  const searchData = await searchResponse.json();
-
-  if (!searchData.results?.length) {
-    return { found: false, message: 'No person found with that email' };
-  }
-
-  const person = searchData.results[0];
-  const distinctId = person.distinct_ids[0];
-
-  // 2. Export their events (strip PII from export)
-  const eventsResponse = await fetch(
-    `https://app.posthog.com/api/projects/${projectId}/query/`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${personalKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: {
-          kind: 'HogQLQuery',
-          query: `SELECT event, timestamp, properties FROM events WHERE distinct_id = '${distinctId}' ORDER BY timestamp DESC LIMIT 1000`,
-        },
-      }),
-    }
-  );
-  const eventsData = await eventsResponse.json();
-
-  return {
-    found: true,
-    person: {
-      distinct_ids: person.distinct_ids,
-      properties: person.properties,
-      created_at: person.created_at,
-    },
-    events_count: eventsData.results?.length || 0,
-    events: eventsData.results,
-  };
-}
-```
-
-### Step 4: GDPR Right to Erasure (Data Deletion)
-
-```typescript
-// Delete a person and all their events
-async function handleDeletionRequest(email: string) {
-  const personalKey = process.env.POSTHOG_PERSONAL_API_KEY!;
-  const projectId = process.env.POSTHOG_PROJECT_ID!;
-
-  // 1. Find the person
-  const searchResponse = await fetch(
-    `https://app.posthog.com/api/projects/${projectId}/persons/?properties=[{"key":"email","value":"${encodeURIComponent(email)}","type":"person"}]`,
-    { headers: { Authorization: `Bearer ${personalKey}` } }
-  );
-  const searchData = await searchResponse.json();
-
-  if (!searchData.results?.length) {
-    return { deleted: false, reason: 'Person not found' };
-  }
-
-  const personId = searchData.results[0].id;
-
-  // 2. Delete the person (PostHog also deletes associated events)
-  const deleteResponse = await fetch(
-    `https://app.posthog.com/api/projects/${projectId}/persons/${personId}/`,
-    {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${personalKey}` },
-    }
-  );
-
-  if (!deleteResponse.ok) {
-    throw new Error(`Deletion failed: ${deleteResponse.status}`);
-  }
-
-  return {
-    deleted: true,
-    personId,
-    timestamp: new Date().toISOString(),
-  };
-}
-```
-
-### Step 5: Property Filtering for Data Exports
-
-```typescript
-// Strip PII from HogQL query results before exporting
-const BLOCKED_PROPERTIES = ['$ip', 'email', 'phone', 'name', 'address', 'ssn'];
-
-async function safeExport(hogql: string) {
-  const response = await fetch(
-    `https://app.posthog.com/api/projects/${process.env.POSTHOG_PROJECT_ID}/query/`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.POSTHOG_PERSONAL_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query: { kind: 'HogQLQuery', query: hogql } }),
-    }
-  );
-  const data = await response.json();
-
-  // Remove blocked columns from results
-  if (data.columns && data.results) {
-    const blockedIndexes = new Set(
-      data.columns.map((col: string, i: number) =>
-        BLOCKED_PROPERTIES.some(b => col.toLowerCase().includes(b)) ? i : -1
-      ).filter((i: number) => i >= 0)
-    );
-
-    data.columns = data.columns.filter((_: string, i: number) => !blockedIndexes.has(i));
-    data.results = data.results.map((row: any[]) =>
-      row.filter((_: any, i: number) => !blockedIndexes.has(i))
-    );
-  }
-
-  return data;
-}
-```
-
-## Error Handling
-
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in autocapture events | Form data captured automatically | Disable autocapture, use manual capture |
-| IP address in events | Not stripped by sanitize_properties | Add `delete properties['$ip']` |
-| Consent not persisted | opt_out state lost on reload | Store consent in cookie, call opt_out on load |
-| Deletion API returns 404 | Wrong person ID or already deleted | Search by email first, check response |
-| Session recordings show PII | Text not masked | Add `maskAllInputs: true` and `maskTextSelector` |
-
-## GDPR Compliance Checklist
-
-- [ ] `sanitize_properties` strips PII before events leave browser
-- [ ] Consent mechanism with `opt_in_capturing` / `opt_out_capturing`
-- [ ] `respect_dnt: true` in PostHog init
-- [ ] Session recording masks all inputs
-- [ ] Subject Access Request handler implemented
-- [ ] Data Deletion handler implemented
-- [ ] Privacy policy updated to mention PostHog analytics
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
 
 ## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
 
-- Privacy-safe PostHog initialization with property sanitization
-- Consent-based tracking with opt-in/opt-out
-- GDPR Subject Access Request handler
-- GDPR Data Deletion handler
-- PII-safe data export function
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('PostHog response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
 
 ## Resources
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [PostHog Privacy Guide](https://docs.posthog.com/privacy)
 
-- [PostHog Privacy Controls](https://posthog.com/docs/privacy)
-- [PostHog GDPR Compliance](https://posthog.com/docs/privacy/gdpr-compliance)
-- [PostHog Persons API](https://posthog.com/docs/api/persons)
-- [PostHog Data Collection Controls](https://posthog.com/docs/privacy/data-collection)
+## Next Steps
+For enterprise access control, see `posthog-enterprise-rbac`.

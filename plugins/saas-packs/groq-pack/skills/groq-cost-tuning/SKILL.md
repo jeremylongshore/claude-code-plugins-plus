@@ -1,7 +1,7 @@
 ---
 name: groq-cost-tuning
 description: |
-  Optimize Groq costs through model routing, token management, and usage monitoring.
+  Optimize Groq costs through tier selection, sampling, and usage monitoring.
   Use when analyzing Groq billing, reducing API costs,
   or implementing usage monitoring and budget alerts.
   Trigger with phrases like "groq cost", "groq billing",
@@ -10,220 +10,194 @@ allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, groq, api, monitoring, cost-optimization]
-
+compatible-with: claude-code
+tags: [saas, groq]
 ---
+
 # Groq Cost Tuning
 
 ## Overview
-Optimize Groq inference costs through smart model routing, token minimization, and caching. Groq pricing is already extremely competitive, but at high volume the savings from routing classification to 8B vs 70B are 12x per request.
+Optimize Groq costs through smart tier selection, sampling, and usage monitoring.
 
-## Groq Pricing (per million tokens)
+## Prerequisites
+- Access to Groq billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
-| Model | Input | Output |
-|-------|-------|--------|
-| `llama-3.1-8b-instant` | ~$0.05 | ~$0.08 |
-| `llama-3.3-70b-versatile` | ~$0.59 | ~$0.79 |
-| `llama-3.3-70b-specdec` | ~$0.59 | ~$0.99 |
-| `meta-llama/llama-4-scout-17b-16e-instruct` | ~$0.11 | ~$0.34 |
-| `whisper-large-v3-turbo` | ~$0.04/hr | — |
+## Pricing Tiers
 
-Check current pricing at [groq.com/pricing](https://groq.com/pricing).
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| Free | $0 | 1,000 requests | N/A |
+| Pro | $99 | 100,000 requests | $0.001/request |
+| Enterprise | Custom | Unlimited | Volume discounts |
 
-## Instructions
+## Cost Estimation
 
-### Step 1: Smart Model Routing
 ```typescript
-import Groq from "groq-sdk";
-
-const groq = new Groq();
-
-// Route to cheapest model that meets quality requirements
-interface ModelConfig {
-  model: string;
-  inputCostPer1M: number;
-  outputCostPer1M: number;
-}
-
-const ROUTING: Record<string, ModelConfig> = {
-  classification: { model: "llama-3.1-8b-instant", inputCostPer1M: 0.05, outputCostPer1M: 0.08 },
-  extraction:     { model: "llama-3.1-8b-instant", inputCostPer1M: 0.05, outputCostPer1M: 0.08 },
-  summarization:  { model: "llama-3.1-8b-instant", inputCostPer1M: 0.05, outputCostPer1M: 0.08 },
-  reasoning:      { model: "llama-3.3-70b-versatile", inputCostPer1M: 0.59, outputCostPer1M: 0.79 },
-  codeReview:     { model: "llama-3.3-70b-versatile", inputCostPer1M: 0.59, outputCostPer1M: 0.79 },
-  chat:           { model: "llama-3.3-70b-versatile", inputCostPer1M: 0.59, outputCostPer1M: 0.79 },
-  vision:         { model: "meta-llama/llama-4-scout-17b-16e-instruct", inputCostPer1M: 0.11, outputCostPer1M: 0.34 },
-};
-
-function getModel(useCase: string): string {
-  return ROUTING[useCase]?.model || "llama-3.1-8b-instant";
-}
-
-// Classification on 8B: $0.05/M  vs  70B: $0.59/M  =  12x savings
-```
-
-### Step 2: Minimize Tokens Per Request
-```typescript
-// COST SAVINGS: Reduce system prompt tokens
-// Groq charges for BOTH input and output tokens
-
-// Verbose system prompt: ~200 tokens ($0.012 per 1000 calls on 70B)
-const expensive = "You are a highly skilled AI assistant specializing in text classification. When given a piece of text, carefully analyze the sentiment, considering tone, word choice, connotation...";
-
-// Concise system prompt: ~15 tokens ($0.001 per 1000 calls on 70B)
-const cheap = "Classify sentiment: positive/negative/neutral. One word.";
-
-// COST SAVINGS: Limit output tokens
-async function cheapClassify(text: string): Promise<string> {
-  const result = await groq.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    messages: [
-      { role: "system", content: "Reply with one word: positive, negative, or neutral." },
-      { role: "user", content: text },
-    ],
-    max_tokens: 3,       // One word = 1-2 tokens
-    temperature: 0,       // Deterministic = cacheable
-  });
-  return result.choices[0].message.content!.trim();
-}
-```
-
-### Step 3: Batch to Reduce Overhead
-```typescript
-// Batch 10 items in one request instead of 10 separate requests
-// Saves on per-request overhead and reduces RPM usage
-
-async function batchClassify(items: string[]): Promise<string[]> {
-  const batchPrompt = items.map((item, i) => `${i + 1}. ${item}`).join("\n");
-
-  const result = await groq.chat.completions.create({
-    model: "llama-3.1-8b-instant",
-    messages: [
-      {
-        role: "system",
-        content: "Classify each numbered item as positive/negative/neutral. Reply with numbered results only.",
-      },
-      { role: "user", content: batchPrompt },
-    ],
-    max_tokens: items.length * 10,
-    temperature: 0,
-  });
-
-  // Parse numbered results
-  return result.choices[0].message.content!
-    .split("\n")
-    .map((line) => line.replace(/^\d+\.\s*/, "").trim())
-    .filter(Boolean);
-}
-// 10 items in 1 API call vs 10 API calls = ~90% reduction in overhead
-```
-
-### Step 4: Cache Deterministic Requests
-```typescript
-import { createHash } from "crypto";
-
-const cache = new Map<string, { result: string; ts: number }>();
-const CACHE_TTL = 60 * 60_000; // 1 hour
-
-async function cachedCompletion(
-  messages: any[],
-  model: string
-): Promise<string> {
-  const key = createHash("md5")
-    .update(JSON.stringify({ messages, model }))
-    .digest("hex");
-
-  const cached = cache.get(key);
-  if (cached && Date.now() - cached.ts < CACHE_TTL) {
-    return cached.result; // Zero cost, zero latency
-  }
-
-  const response = await groq.chat.completions.create({
-    model,
-    messages,
-    temperature: 0, // Required for cache consistency
-  });
-
-  const result = response.choices[0].message.content!;
-  cache.set(key, { result, ts: Date.now() });
-  return result;
-}
-```
-
-### Step 5: Usage Tracking
-```typescript
-interface UsageRecord {
-  timestamp: string;
-  model: string;
-  promptTokens: number;
-  completionTokens: number;
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
   estimatedCost: number;
+  recommendation?: string;
 }
 
-const usageLog: UsageRecord[] = [];
-
-function trackUsage(model: string, usage: any): void {
-  const config = Object.values(ROUTING).find((r) => r.model === model)
-    || { inputCostPer1M: 0.10, outputCostPer1M: 0.10 };
-
-  usageLog.push({
-    timestamp: new Date().toISOString(),
-    model,
-    promptTokens: usage.prompt_tokens,
-    completionTokens: usage.completion_tokens,
-    estimatedCost:
-      (usage.prompt_tokens / 1_000_000) * config.inputCostPer1M +
-      (usage.completion_tokens / 1_000_000) * config.outputCostPer1M,
-  });
-}
-
-function dailyCostReport(): { totalCost: string; byModel: Record<string, string> } {
-  const totalCost = usageLog.reduce((sum, r) => sum + r.estimatedCost, 0);
-  const byModel: Record<string, number> = {};
-  for (const r of usageLog) {
-    byModel[r.model] = (byModel[r.model] || 0) + r.estimatedCost;
+function estimateGroqCost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= 1000) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
   }
+
+  if (requestsPerMonth <= 100000) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
+  }
+
+  const proOverage = (requestsPerMonth - 100000) * 0.001;
+  const proCost = 99 + proOverage;
+
   return {
-    totalCost: `$${totalCost.toFixed(4)}`,
-    byModel: Object.fromEntries(
-      Object.entries(byModel).map(([k, v]) => [k, `$${v.toFixed(4)}`])
-    ),
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > 500
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
   };
 }
 ```
 
-### Step 6: Spending Limits in Console
-In Groq Console > Organization > Billing:
-1. Set monthly spending cap (e.g., $100/month)
-2. Enable alerts at 50% ($50) and 80% ($80)
-3. Configure auto-pause when cap is reached
-4. Review usage dashboard weekly
+## Usage Monitoring
 
-Check your limits at [console.groq.com/settings/limits](https://console.groq.com/settings/limits).
+```typescript
+class GroqUsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
 
-## Cost Comparison Example
-Processing 100,000 customer messages:
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
 
-| Strategy | Model | Est. Cost |
-|----------|-------|-----------|
-| Naive (70B, verbose prompts) | 70b-versatile | ~$60 |
-| Smart routing (8B for classification) | 8b-instant | ~$5 |
-| + Caching (50% hit rate) | 8b-instant | ~$2.50 |
-| + Batching (10 per request) | 8b-instant | ~$2.00 |
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching Groq budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimateGroqCost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### Step 1: Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await groqClient.trackEvent(event);
+}
+```
+
+### Step 2: Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => groqClient.get(id)));
+
+// Use batch endpoint (1 call)
+await groqClient.batchGet(ids);
+```
+
+### Step 3: Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### Step 4: Compression
+```typescript
+const client = new GroqClient({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in Groq dashboard
+# Or use API if available:
+# Check Groq documentation for billing APIs
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * 0.001 as estimated_cost
+FROM groq_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review Groq dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Costs higher than expected | 70B for simple tasks | Route classification/extraction to 8B |
-| Spending cap hit | Budget exhausted | Increase cap or reduce volume |
-| Cache not effective | Unique prompts | Normalize prompts before caching |
-| Rate limits causing retries | RPM cap hit | Batch requests, spread across time |
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimateGroqCost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
 
 ## Resources
 - [Groq Pricing](https://groq.com/pricing)
-- [Groq Spend Limits](https://console.groq.com/docs/spend-limits)
-- [Groq Usage Dashboard](https://console.groq.com/settings/usage)
+- [Groq Billing Dashboard](https://dashboard.groq.com/billing)
 
 ## Next Steps
 For architecture patterns, see `groq-reference-architecture`.

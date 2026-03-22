@@ -1,250 +1,276 @@
 ---
 name: shopify-load-scale
 description: |
-  Load test Shopify integrations respecting API rate limits, plan capacity with
-  k6, and scale for Shopify Plus burst events (flash sales, BFCM).
+  Implement Shopify load testing, auto-scaling, and capacity planning strategies.
+  Use when running performance tests, configuring horizontal scaling,
+  or planning capacity for Shopify integrations.
   Trigger with phrases like "shopify load test", "shopify scale",
-  "shopify BFCM", "shopify flash sale", "shopify capacity", "shopify k6 test".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(curl:*)
+  "shopify performance test", "shopify capacity", "shopify k6", "shopify benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ecommerce, shopify]
 compatible-with: claude-code
+tags: [saas, shopify]
 ---
 
 # Shopify Load & Scale
 
 ## Overview
-
-Load test Shopify app integrations while respecting API rate limits. Plan capacity for high-traffic events like Black Friday / Cyber Monday (BFCM).
+Load testing, scaling strategies, and capacity planning for Shopify integrations.
 
 ## Prerequisites
+- k6 load testing tool installed
+- Kubernetes cluster with HPA configured
+- Prometheus for metrics collection
+- Test environment API keys
 
-- k6 load testing tool installed (`brew install k6`)
-- Test store with API access (never load test production)
-- Understanding of Shopify rate limits per plan
+## Load Testing with k6
 
-## Instructions
-
-### Step 1: Understand Capacity Constraints
-
-Your app's throughput is bounded by Shopify's rate limits, not your infrastructure:
-
-| Plan | GraphQL Points | Restore Rate | Max Sustained QPS | Burst Capacity |
-|------|---------------|-------------|-------------------|----------------|
-| Standard | 1,000 | 50/sec | ~10 queries/sec | 1,000 points burst |
-| Shopify Plus | 2,000 | 100/sec | ~20 queries/sec | 2,000 points burst |
-
-A typical product query costs 10-50 points. At 50 points/query, Standard supports ~1 query/second sustained.
-
-### Step 2: k6 Load Test Script
-
+### Basic Load Test
 ```javascript
 // shopify-load-test.js
-import http from "k6/http";
-import { check, sleep } from "k6";
-import { Rate, Counter, Trend } from "k6/metrics";
-
-// Custom metrics
-const shopifyErrors = new Rate("shopify_errors");
-const throttledRequests = new Counter("shopify_throttled");
-const queryCost = new Trend("shopify_query_cost");
+import http from 'k6/http';
+import { check, sleep } from 'k6';
 
 export const options = {
   stages: [
-    { duration: "1m", target: 2 },    // Warm up — 2 VUs
-    { duration: "3m", target: 5 },    // Normal load
-    { duration: "2m", target: 10 },   // Peak load
-    { duration: "1m", target: 0 },    // Ramp down
+    { duration: '2m', target: 10 },   // Ramp up
+    { duration: '5m', target: 10 },   // Steady state
+    { duration: '2m', target: 50 },   // Ramp to peak
+    { duration: '5m', target: 50 },   // Stress test
+    { duration: '2m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ["p(95)<2000"],  // 95% under 2s
-    shopify_errors: ["rate<0.05"],      // < 5% error rate
-    shopify_throttled: ["count<10"],    // < 10 throttled requests
+    http_req_duration: ['p(95)<500'],
+    http_req_failed: ['rate<0.01'],
   },
 };
 
-const STORE = __ENV.SHOPIFY_STORE;
-const TOKEN = __ENV.SHOPIFY_ACCESS_TOKEN;
-const API_VERSION = "2024-10";
-
 export default function () {
-  const query = JSON.stringify({
-    query: `{
-      products(first: 10) {
-        edges {
-          node { id title status totalInventory }
-        }
-      }
-    }`,
-  });
-
-  const res = http.post(
-    `https://${STORE}/admin/api/${API_VERSION}/graphql.json`,
-    query,
+  const response = http.post(
+    'https://api.shopify.com/v1/resource',
+    JSON.stringify({ test: true }),
     {
       headers: {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": TOKEN,
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${__ENV.SHOPIFY_API_KEY}`,
       },
     }
   );
 
-  const body = JSON.parse(res.body);
-
-  // Track GraphQL-level throttling (returns 200 with THROTTLED error)
-  const isThrottled = body.errors?.some(
-    (e) => e.extensions?.code === "THROTTLED"
-  );
-
-  if (isThrottled) {
-    throttledRequests.add(1);
-    // Wait for restore rate to refill
-    const available = body.extensions?.cost?.throttleStatus?.currentlyAvailable || 0;
-    const restoreRate = body.extensions?.cost?.throttleStatus?.restoreRate || 50;
-    const waitTime = Math.max(1, (100 - available) / restoreRate);
-    sleep(waitTime);
-    return;
-  }
-
-  // Track query cost
-  if (body.extensions?.cost?.actualQueryCost) {
-    queryCost.add(body.extensions.cost.actualQueryCost);
-  }
-
-  check(res, {
-    "status is 200": (r) => r.status === 200,
-    "no errors": () => !body.errors,
-    "has products": () => body.data?.products?.edges?.length > 0,
+  check(response, {
+    'status is 200': (r) => r.status === 200,
+    'latency < 500ms': (r) => r.timings.duration < 500,
   });
 
-  shopifyErrors.add(res.status !== 200 || !!body.errors);
-
-  // Pace requests to stay within rate limits
-  // Standard: 50 points/sec restore, queries ~10 points each
-  sleep(0.5); // ~2 queries/sec per VU
+  sleep(1);
 }
 ```
 
-### Step 3: Run Load Test
-
+### Run Load Test
 ```bash
-# Against a test store — NEVER production
-k6 run \
-  --env SHOPIFY_STORE=dev-store.myshopify.com \
-  --env SHOPIFY_ACCESS_TOKEN=shpat_test_token \
-  shopify-load-test.js
+# Install k6
+brew install k6  # macOS
+# or: sudo apt install k6  # Linux
 
-# Output results to InfluxDB for Grafana dashboards
+# Run test
+k6 run --env SHOPIFY_API_KEY=${SHOPIFY_API_KEY} shopify-load-test.js
+
+# Run with output to InfluxDB
 k6 run --out influxdb=http://localhost:8086/k6 shopify-load-test.js
 ```
 
-### Step 4: BFCM / Flash Sale Preparation
+## Scaling Patterns
 
-```typescript
-// Pre-BFCM checklist for Shopify apps
-
-// 1. Pre-fetch and cache product data before the sale starts
-async function prewarmCache(productIds: string[]): Promise<void> {
-  console.log(`Pre-warming cache for ${productIds.length} products`);
-  for (const id of productIds) {
-    await cachedQuery(`product:${id}`, () =>
-      shopifyQuery(shop, PRODUCT_QUERY, { id })
-    );
-    await new Promise((r) => setTimeout(r, 100)); // Pace for rate limits
-  }
-}
-
-// 2. Use Storefront API for customer-facing queries (separate rate limits)
-// Admin API rate limits are shared across all apps
-// Storefront API has its own higher limits
-
-// 3. Use bulk operations to sync inventory before the event
-// Don't rely on real-time inventory queries during peak traffic
-
-// 4. Queue webhook processing — don't process inline during peak
-async function handleOrderWebhook(payload: any): Promise<void> {
-  // Queue for later processing instead of immediate API calls
-  await queue.add("process-order", payload, {
-    attempts: 5,
-    backoff: { type: "exponential", delay: 5000 },
-  });
-}
-```
-
-### Step 5: Scaling Your App (Not Shopify's Limits)
-
-Your infrastructure must handle the webhook volume:
-
+### Horizontal Scaling
 ```yaml
-# BFCM webhook volume estimates:
-# 100 orders/hour → 100 orders/create webhooks/hour
-# 1,000 orders/hour → 1,000 webhooks/hour (Plus stores during BFCM)
-# Each webhook must respond 200 within 5 seconds
-
-# Kubernetes HPA for webhook processing
+# kubernetes HPA
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: shopify-webhook-processor
+  name: shopify-integration-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: shopify-webhook-processor
+    name: shopify-integration
   minReplicas: 2
   maxReplicas: 20
   metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
     - type: Pods
       pods:
         metric:
-          name: webhook_queue_depth
+          name: shopify_queue_depth
         target:
           type: AverageValue
-          averageValue: "50"
+          averageValue: 100
 ```
 
-## Output
+### Connection Pooling
+```typescript
+import { Pool } from 'generic-pool';
 
-- Load test script calibrated to Shopify rate limits
-- Performance baseline documented
-- BFCM preparation checklist completed
-- Infrastructure scaling configured for webhook volume
+const shopifyPool = Pool.create({
+  create: async () => {
+    return new ShopifyClient({
+      apiKey: process.env.SHOPIFY_API_KEY!,
+    });
+  },
+  destroy: async (client) => {
+    await client.close();
+  },
+  max: 20,
+  min: 5,
+  idleTimeoutMillis: 30000,
+});
+
+async function withShopifyClient<T>(
+  fn: (client: ShopifyClient) => Promise<T>
+): Promise<T> {
+  const client = await shopifyPool.acquire();
+  try {
+    return await fn(client);
+  } finally {
+    shopifyPool.release(client);
+  }
+}
+```
+
+## Capacity Planning
+
+### Metrics to Monitor
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| CPU Utilization | > 70% | > 85% |
+| Memory Usage | > 75% | > 90% |
+| Request Queue Depth | > 100 | > 500 |
+| Error Rate | > 1% | > 5% |
+| P95 Latency | > 1000ms | > 3000ms |
+
+### Capacity Calculation
+```typescript
+interface CapacityEstimate {
+  currentRPS: number;
+  maxRPS: number;
+  headroom: number;
+  scaleRecommendation: string;
+}
+
+function estimateShopifyCapacity(
+  metrics: SystemMetrics
+): CapacityEstimate {
+  const currentRPS = metrics.requestsPerSecond;
+  const avgLatency = metrics.p50Latency;
+  const cpuUtilization = metrics.cpuPercent;
+
+  // Estimate max RPS based on current performance
+  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
+  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+
+  return {
+    currentRPS,
+    maxRPS: Math.floor(maxRPS),
+    headroom: Math.round(headroom),
+    scaleRecommendation: headroom < 30
+      ? 'Scale up soon'
+      : headroom < 50
+      ? 'Monitor closely'
+      : 'Adequate capacity',
+  };
+}
+```
+
+## Benchmark Results Template
+
+```markdown
+## Shopify Performance Benchmark
+**Date:** YYYY-MM-DD
+**Environment:** [staging/production]
+**SDK Version:** X.Y.Z
+
+### Test Configuration
+- Duration: 10 minutes
+- Ramp: 10 → 100 → 10 VUs
+- Target endpoint: /v1/resource
+
+### Results
+| Metric | Value |
+|--------|-------|
+| Total Requests | 50,000 |
+| Success Rate | 99.9% |
+| P50 Latency | 120ms |
+| P95 Latency | 350ms |
+| P99 Latency | 800ms |
+| Max RPS Achieved | 150 |
+
+### Observations
+- [Key finding 1]
+- [Key finding 2]
+
+### Recommendations
+- [Scaling recommendation]
+```
+
+## Instructions
+
+### Step 1: Create Load Test Script
+Write k6 test script with appropriate thresholds.
+
+### Step 2: Configure Auto-Scaling
+Set up HPA with CPU and custom metrics.
+
+### Step 3: Run Load Test
+Execute test and collect metrics.
+
+### Step 4: Analyze and Document
+Record results in benchmark template.
+
+## Output
+- Load test script created
+- HPA configured
+- Benchmark results documented
+- Capacity recommendations defined
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 shows high error rate | Hitting rate limits | Reduce VUs, increase sleep between requests |
-| All requests THROTTLED | Exceeding 50 points/sec | Space queries further apart |
-| Webhooks backing up | Slow processing | Respond 200 immediately, queue processing |
-| Cache stampede on sale start | All caches expire at once | Stagger cache TTLs, pre-warm |
+| k6 timeout | Rate limited | Reduce RPS |
+| HPA not scaling | Wrong metrics | Verify metric name |
+| Connection refused | Pool exhausted | Increase pool size |
+| Inconsistent results | Warm-up needed | Add ramp-up phase |
 
 ## Examples
 
-### Quick Capacity Estimate
-
+### Quick k6 Test
 ```bash
-# How many queries can you sustain?
-# Standard plan: 50 points/sec restore
-# Your query costs: check with debug header
+k6 run --vus 10 --duration 30s shopify-load-test.js
+```
 
-curl -sf "https://$STORE/admin/api/2024-10/graphql.json" \
-  -H "X-Shopify-Access-Token: $TOKEN" \
-  -H "Content-Type: application/json" \
-  -H "Shopify-GraphQL-Cost-Debug: 1" \
-  -d '{"query": "{ products(first: 10) { edges { node { id title } } } }"}' \
-  | jq '"Query cost: \(.extensions.cost.actualQueryCost) points. Max sustained: \(50 / .extensions.cost.actualQueryCost) queries/sec"'
+### Check Current Capacity
+```typescript
+const metrics = await getSystemMetrics();
+const capacity = estimateShopifyCapacity(metrics);
+console.log('Headroom:', capacity.headroom + '%');
+console.log('Recommendation:', capacity.scaleRecommendation);
+```
+
+### Scale HPA Manually
+```bash
+kubectl scale deployment shopify-integration --replicas=5
+kubectl get hpa shopify-integration-hpa
 ```
 
 ## Resources
-
-- [Shopify Rate Limits](https://shopify.dev/docs/api/usage/rate-limits)
-- [Shopify Plus Rate Limits](https://shopify.dev/changelog/increased-admin-api-rate-limits-for-shopify-plus)
 - [k6 Documentation](https://k6.io/docs/)
-- [BFCM Preparation Guide](https://www.shopify.com/blog/bfcm-checklist)
+- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Shopify Rate Limits](https://docs.shopify.com/rate-limits)
 
 ## Next Steps
-
 For reliability patterns, see `shopify-reliability-patterns`.

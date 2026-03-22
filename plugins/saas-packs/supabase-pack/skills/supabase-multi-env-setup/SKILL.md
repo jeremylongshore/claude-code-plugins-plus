@@ -1,214 +1,224 @@
 ---
 name: supabase-multi-env-setup
 description: |
-  Configure Supabase across development, staging, and production with separate projects,
-  environment-specific secrets, and safe deployment promotion.
-  Use when setting up multi-environment deployments, isolating dev from prod data,
-  or configuring per-environment Supabase projects.
+  Configure Supabase across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Supabase configurations.
   Trigger with phrases like "supabase environments", "supabase staging",
-  "supabase dev prod", "supabase environment setup", "supabase multi-project".
-allowed-tools: Read, Write, Edit, Bash(supabase:*), Bash(vercel:*), Grep
+  "supabase dev prod", "supabase environment setup", "supabase config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, supabase, deployment, environments]
-
+compatible-with: claude-code
+tags: [saas, supabase]
 ---
+
 # Supabase Multi-Environment Setup
 
 ## Overview
-Configure isolated Supabase environments (dev, staging, production) using separate Supabase projects with consistent schema management, safe migration promotion, and environment-specific configuration.
+Configure Supabase across development, staging, and production environments.
 
 ## Prerequisites
-- Separate Supabase projects for each environment (create at supabase.com/dashboard)
-- Supabase CLI installed
-- Secret management solution (Vercel env vars, GitHub Secrets, etc.)
+- Separate Supabase accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
-## Instructions
+## Environment Strategy
 
-### Step 1: Project Layout
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
 
 ```
-# One Supabase CLI project, multiple linked remotes
-my-app/
+config/
 ├── supabase/
-│   ├── config.toml              # Local config
-│   ├── migrations/              # Shared migrations across all envs
-│   ├── seed.sql                 # Dev seed data only
-│   └── functions/               # Edge Functions (deployed per env)
-├── .env.local                   # Local dev (points to supabase start)
-├── .env.staging                 # Staging project credentials
-├── .env.production              # Production project credentials (NEVER commit)
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
 ```
 
-### Step 2: Environment Configuration
-
-```bash
-# .env.local (local development)
-NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...local-anon-key
-SUPABASE_SERVICE_ROLE_KEY=eyJ...local-service-key
-DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:54322/postgres
-
-# .env.staging
-NEXT_PUBLIC_SUPABASE_URL=https://staging-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...staging-anon-key
-SUPABASE_SERVICE_ROLE_KEY=eyJ...staging-service-key
-DATABASE_URL=postgres://postgres.staging-ref:pwd@aws-0-region.pooler.supabase.com:6543/postgres
-
-# .env.production
-NEXT_PUBLIC_SUPABASE_URL=https://prod-ref.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...prod-anon-key
-SUPABASE_SERVICE_ROLE_KEY=eyJ...prod-service-key
-DATABASE_URL=postgres://postgres.prod-ref:pwd@aws-0-region.pooler.supabase.com:6543/postgres
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
 ```
 
-### Step 3: Environment-Aware Client
+### development.json
+```json
+{
+  "apiKey": "${SUPABASE_API_KEY}",
+  "baseUrl": "https://api-sandbox.supabase.com",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${SUPABASE_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.supabase.com",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${SUPABASE_API_KEY_PROD}",
+  "baseUrl": "https://api.supabase.com",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
 
 ```typescript
-// lib/config.ts
-type Environment = 'local' | 'staging' | 'production'
+// src/supabase/config.ts
+import baseConfig from '../../config/supabase/base.json';
 
-export function getEnvironment(): Environment {
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('127.0.0.1')) return 'local'
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL?.includes('staging')) return 'staging'
-  return 'production'
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
 }
 
-export const config = {
-  supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  supabaseAnonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  isProduction: getEnvironment() === 'production',
+export function getSupabaseConfig() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/supabase/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
 }
-
-// lib/supabase.ts
-import { createClient } from '@supabase/supabase-js'
-import { config, getEnvironment } from './config'
-
-export const supabase = createClient(config.supabaseUrl, config.supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-  },
-  global: {
-    headers: {
-      'x-environment': getEnvironment(),
-    },
-  },
-})
 ```
 
-### Step 4: Migration Promotion Workflow
+## Secret Management by Environment
 
+### Local Development
 ```bash
-# Development: create and test migrations locally
-supabase start
-supabase migration new add_feature_x
-# Edit the migration SQL
-supabase db reset  # Test locally
-
-# Staging: push migrations to staging project
-supabase link --project-ref <staging-ref>
-supabase db push
-# Run integration tests against staging
-
-# Production: push same migrations to production
-supabase link --project-ref <prod-ref>
-supabase db push
-# Verify with health check
-
-# Edge Functions: deploy per environment
-supabase link --project-ref <staging-ref>
-supabase functions deploy --project-ref <staging-ref>
-
-supabase link --project-ref <prod-ref>
-supabase functions deploy --project-ref <prod-ref>
+# .env.local (git-ignored)
+SUPABASE_API_KEY=sk_test_dev_***
 ```
 
-### Step 5: Production Safeguards
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY_${{ matrix.environment }} }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id supabase/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret=supabase-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/supabase/production
+```
+
+## Environment Isolation
 
 ```typescript
-// Prevent accidental destructive operations in production
-import { getEnvironment } from '../lib/config'
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = getSupabaseConfig();
 
-export function requireNonProduction(operation: string) {
-  if (getEnvironment() === 'production') {
-    throw new Error(`[BLOCKED] ${operation} is not allowed in production`)
+  if (config.environment !== 'production') {
+    console.warn(`[supabase] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
   }
 }
 
-// Usage in services
-async function resetTestData() {
-  requireNonProduction('resetTestData')
-  await supabase.from('test_data').delete().neq('id', '')
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
 }
-
-// Protect seed data from running in production
-// supabase/seed.sql should ONLY run via supabase db reset (local only)
 ```
 
-### Step 6: CI/CD Per Environment
+## Feature Flags by Environment
 
-```yaml
-# .github/workflows/deploy-staging.yml
-name: Deploy to Staging
-on:
-  push:
-    branches: [develop]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: supabase/setup-cli@v1
-      - name: Deploy migrations to staging
-        run: |
-          supabase link --project-ref ${{ secrets.STAGING_PROJECT_REF }}
-          supabase db push
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-          SUPABASE_DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
-
-      - name: Deploy Edge Functions to staging
-        run: supabase functions deploy --project-ref ${{ secrets.STAGING_PROJECT_REF }}
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
 ```
 
-### Step 7: Generate Types Per Environment
+## Instructions
 
-```bash
-# Generate types from the linked environment
-supabase link --project-ref <staging-ref>
-supabase gen types typescript --linked > lib/database.types.ts
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
 
-# Or from local (recommended for development)
-supabase gen types typescript --local > lib/database.types.ts
-```
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
 
 ## Output
-- Separate Supabase projects for dev, staging, and production
-- Environment-specific configuration files
-- Migration promotion workflow (local -> staging -> production)
-- Production safeguards blocking destructive operations
-- CI/CD pipelines per environment
-- Type generation from any environment
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong project linked | `supabase link` to wrong ref | Verify with `supabase projects list` |
-| Migration drift between envs | Skipped staging | Always promote through staging first |
-| Secrets in wrong env | Copy-paste error | Use separate secret names per environment |
-| Seed data in production | `db reset` on production | Seed only runs on `db reset`; never reset production |
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getSupabaseConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
 
 ## Resources
-- [Managing Environments](https://supabase.com/docs/guides/deployment/managing-environments)
-- [Database Migrations](https://supabase.com/docs/guides/deployment/database-migrations)
+- [Supabase Environments Guide](https://supabase.com/docs/environments)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
-For monitoring and observability, see `supabase-observability`.
+For observability setup, see `supabase-observability`.

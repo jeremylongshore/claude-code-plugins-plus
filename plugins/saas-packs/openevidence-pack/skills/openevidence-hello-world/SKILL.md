@@ -2,71 +2,97 @@
 name: openevidence-hello-world
 description: |
   Create a minimal working OpenEvidence example.
-  Trigger: "openevidence hello world", "openevidence example", "test openevidence".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Use when starting a new OpenEvidence integration, testing your setup,
+  or learning basic OpenEvidence API patterns.
+  Trigger with phrases like "openevidence hello world", "openevidence example",
+  "openevidence quick start", "simple openevidence code".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, openevidence, healthcare]
 compatible-with: claude-code
+tags: [saas, openevidence]
 ---
 
 # OpenEvidence Hello World
 
 ## Overview
-Minimal working examples demonstrating core OpenEvidence API functionality.
+Minimal working example demonstrating core OpenEvidence functionality.
+
+## Prerequisites
+- Completed `openevidence-install-auth` setup
+- Valid API credentials configured
+- Development environment ready
 
 ## Instructions
 
-### Step 1: Clinical Query
-```typescript
-const result = await client.query({
-  question: 'What is the recommended treatment for acute migraine in adults?',
-  context: 'emergency_department',
-  evidence_level: 'high',  // Filter by evidence quality
-  max_citations: 10
-});
+### Step 1: Create Entry File
+Create a new file for your hello world example.
 
-console.log('Answer:', result.answer);
-console.log('Confidence:', result.confidence);
-result.citations.forEach(c =>
-  console.log(`  [${c.journal}] ${c.title} (${c.year}) — ${c.evidence_level}`)
-);
+### Step 2: Import and Initialize Client
+```typescript
+import { OpenEvidenceClient } from '@openevidence/sdk';
+
+const client = new OpenEvidenceClient({
+  apiKey: process.env.OPENEVIDENCE_API_KEY,
+});
 ```
 
-### Step 2: Drug Interaction Check
+### Step 3: Make Your First API Call
 ```typescript
-const interactions = await client.interactions.check({
-  medications: ['metformin', 'lisinopril', 'atorvastatin'],
-  patient_context: { age: 65, conditions: ['diabetes', 'hypertension'] }
-});
+async function main() {
+  // Your first API call here
+}
 
-interactions.forEach(i =>
-  console.log(`${i.drug1} + ${i.drug2}: ${i.severity} — ${i.description}`)
-);
+main().catch(console.error);
 ```
 
-### Step 3: Guideline Lookup
-```typescript
-const guidelines = await client.guidelines.search({
-  condition: 'hypertension',
-  source: ['ACC/AHA', 'ESC'],
-  year_min: 2023
-});
-guidelines.forEach(g =>
-  console.log(`${g.source}: ${g.title} (${g.year})`)
-);
+## Output
+- Working code file with OpenEvidence client initialization
+- Successful API response confirming connection
+- Console output showing:
+```
+Success! Your OpenEvidence connection is working.
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Auth error | Invalid credentials | Check OPENEVIDENCE_API_KEY |
-| Not found | Invalid endpoint | Verify API URL |
-| Rate limit | Too many requests | Implement backoff |
+| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
+| Auth Error | Invalid credentials | Check environment variable is set |
+| Timeout | Network issues | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with exponential backoff |
+
+## Examples
+
+### TypeScript Example
+```typescript
+import { OpenEvidenceClient } from '@openevidence/sdk';
+
+const client = new OpenEvidenceClient({
+  apiKey: process.env.OPENEVIDENCE_API_KEY,
+});
+
+async function main() {
+  // Your first API call here
+}
+
+main().catch(console.error);
+```
+
+### Python Example
+```python
+from openevidence import OpenEvidenceClient
+
+client = OpenEvidenceClient()
+
+# Your first API call here
+```
 
 ## Resources
-- [OpenEvidence API Docs](https://www.openevidence.com)
+- [OpenEvidence Getting Started](https://docs.openevidence.com/getting-started)
+- [OpenEvidence API Reference](https://docs.openevidence.com/api)
+- [OpenEvidence Examples](https://docs.openevidence.com/examples)
 
 ## Next Steps
-See `openevidence-local-dev-loop`.
+Proceed to `openevidence-local-dev-loop` for development workflow setup.

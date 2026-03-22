@@ -1,260 +1,211 @@
 ---
 name: maintainx-deploy-integration
 description: |
-  Deploy MaintainX integrations to production environments.
-  Use when deploying to cloud platforms, configuring production environments,
-  or automating deployment pipelines for MaintainX integrations.
-  Trigger with phrases like "deploy maintainx", "maintainx deployment",
-  "maintainx cloud deploy", "maintainx kubernetes", "maintainx docker".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(docker:*), Bash(kubectl:*)
+  Deploy MaintainX integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying MaintainX-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy maintainx", "maintainx Vercel",
+  "maintainx production deploy", "maintainx Cloud Run", "maintainx Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, maintainx, deployment, docker, kubernetes]
-
+compatible-with: claude-code
+tags: [saas, maintainx]
 ---
+
 # MaintainX Deploy Integration
 
 ## Overview
-Deploy MaintainX integrations to production using Docker, Google Cloud Run, and Kubernetes with proper health checks and secret management.
+Deploy MaintainX-powered applications to popular platforms with proper secrets management.
 
 ## Prerequisites
-- MaintainX integration tested and passing CI
-- Docker installed
-- Cloud platform account (GCP recommended)
-- `MAINTAINX_API_KEY` for production environment
+- MaintainX API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add MaintainX secrets to Vercel
+vercel secrets add maintainx_api_key sk_live_***
+vercel secrets add maintainx_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "MAINTAINX_API_KEY": "@maintainx_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-maintainx-app"
+primary_region = "iad"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set MaintainX secrets
+fly secrets set MAINTAINX_API_KEY=sk_live_***
+fly secrets set MAINTAINX_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="maintainx-service"
+REGION="us-central1"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=MAINTAINX_API_KEY=maintainx-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/maintainx.ts
+interface MaintainXConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function getMaintainXConfig(): MaintainXConfig {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.MAINTAINX_API_KEY!,
+    environment: env as MaintainXConfig['environment'],
+    webhookSecret: process.env.MAINTAINX_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const maintainxStatus = await checkMaintainXConnection();
+
+  return Response.json({
+    status: maintainxStatus ? 'healthy' : 'degraded',
+    services: {
+      maintainx: maintainxStatus,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
 
 ## Instructions
 
-### Step 1: Dockerfile
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
 
-```dockerfile
-# Dockerfile
-FROM node:20-slim AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --production=false
-COPY tsconfig.json ./
-COPY src/ ./src/
-RUN npm run build
+### Step 2: Configure Secrets
+Store MaintainX API keys securely using the platform's secrets management.
 
-FROM node:20-slim
-WORKDIR /app
-RUN addgroup --system app && adduser --system --ingroup app app
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY package*.json ./
-USER app
-EXPOSE 3000
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-  CMD curl -f http://localhost:3000/health || exit 1
-CMD ["node", "dist/index.js"]
-```
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with MaintainX integration.
 
-### Step 2: Health Check Endpoint
-
-```typescript
-// src/health.ts
-import express from 'express';
-import { MaintainXClient } from './client';
-
-const app = express();
-
-app.get('/health', async (req, res) => {
-  const checks: Record<string, string> = {
-    server: 'ok',
-    apiKey: process.env.MAINTAINX_API_KEY ? 'configured' : 'missing',
-  };
-
-  try {
-    const client = new MaintainXClient();
-    await client.getUsers({ limit: 1 });
-    checks.maintainxApi = 'ok';
-  } catch (err: any) {
-    checks.maintainxApi = `error: ${err.response?.status || err.message}`;
-  }
-
-  const allOk = Object.values(checks).every((v) => v === 'ok' || v === 'configured');
-  res.status(allOk ? 200 : 503).json({
-    status: allOk ? 'healthy' : 'degraded',
-    checks,
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString(),
-  });
-});
-
-app.get('/ready', (req, res) => {
-  res.status(process.env.MAINTAINX_API_KEY ? 200 : 503).json({
-    ready: !!process.env.MAINTAINX_API_KEY,
-  });
-});
-
-export { app };
-```
-
-### Step 3: Deploy to Google Cloud Run
-
-```bash
-# Build and push container
-PROJECT_ID="your-gcp-project"
-REGION="us-central1"
-SERVICE="maintainx-integration"
-
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE
-
-# Deploy with secrets
-gcloud run deploy $SERVICE \
-  --image gcr.io/$PROJECT_ID/$SERVICE \
-  --region $REGION \
-  --platform managed \
-  --set-secrets "MAINTAINX_API_KEY=maintainx-api-key:latest" \
-  --min-instances 1 \
-  --max-instances 10 \
-  --memory 512Mi \
-  --cpu 1 \
-  --port 3000 \
-  --allow-unauthenticated  # Only if webhook endpoint
-```
-
-### Step 4: Docker Compose for Multi-Service
-
-```yaml
-# docker-compose.yml
-services:
-  maintainx-sync:
-    build: .
-    env_file: .env.production
-    ports: ["3000:3000"]
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-
-  redis:
-    image: redis:7-alpine
-    ports: ["6379:6379"]
-    volumes: ["redis-data:/data"]
-
-volumes:
-  redis-data:
-```
-
-### Step 5: Kubernetes Deployment
-
-```yaml
-# k8s/deployment.yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: maintainx-integration
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: maintainx-integration
-  template:
-    metadata:
-      labels:
-        app: maintainx-integration
-    spec:
-      containers:
-        - name: app
-          image: gcr.io/your-project/maintainx-integration:latest
-          ports:
-            - containerPort: 3000
-          env:
-            - name: MAINTAINX_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: maintainx-secrets
-                  key: api-key
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 10
-            periodSeconds: 30
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 3000
-            initialDelaySeconds: 5
-            periodSeconds: 10
-          resources:
-            requests:
-              memory: "256Mi"
-              cpu: "250m"
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: maintainx-integration
-spec:
-  selector:
-    app: maintainx-integration
-  ports:
-    - port: 80
-      targetPort: 3000
-  type: ClusterIP
-```
-
-```bash
-# Create secret and deploy
-kubectl create secret generic maintainx-secrets \
-  --from-literal=api-key="$MAINTAINX_API_KEY"
-
-kubectl apply -f k8s/deployment.yaml
-kubectl rollout status deployment/maintainx-integration
-```
+### Step 4: Verify Health
+Test the health check endpoint to confirm MaintainX connectivity.
 
 ## Output
-- Multi-stage Dockerfile with non-root user and health check
-- `/health` and `/ready` endpoints for container orchestration
-- Google Cloud Run deployment with Secret Manager integration
-- Docker Compose setup for local production testing
-- Kubernetes manifests with probes, secrets, and resource limits
+- Application deployed to production
+- MaintainX secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Container crashes on start | Missing `MAINTAINX_API_KEY` | Verify secret is mounted correctly |
-| Health check fails | API key expired or network issue | Check `/health` response, rotate key |
-| High memory usage | Unbounded caching or data retention | Set memory limits, add cache eviction |
-| Cold start latency | Cloud Run scaling from zero | Set `min-instances: 1` |
-
-## Resources
-- [MaintainX API Reference](https://developer.maintainx.com/reference)
-- [Google Cloud Run Docs](https://cloud.google.com/run/docs)
-- [Kubernetes Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
-- [Docker Best Practices](https://docs.docker.com/build/building/best-practices/)
-
-## Next Steps
-For webhook integration, see `maintainx-webhooks-events`.
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
 
 ## Examples
 
-**AWS Lambda deployment (serverless)**:
-
-```typescript
-// lambda.ts
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import { MaintainXClient } from './client';
-
-export const handler: APIGatewayProxyHandler = async (event) => {
-  const client = new MaintainXClient(process.env.MAINTAINX_API_KEY);
-
-  if (event.path === '/webhook' && event.httpMethod === 'POST') {
-    const body = JSON.parse(event.body || '{}');
-    await processWebhook(body);
-    return { statusCode: 200, body: '{"ok":true}' };
-  }
-
-  return { statusCode: 404, body: '{"error":"not found"}' };
-};
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add maintainx_api_key "$MAINTAINX_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set MAINTAINX_API_KEY="$MAINTAINX_API_KEY"
+    fly deploy
+    ;;
+esac
 ```
+
+## Resources
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [MaintainX Deploy Guide](https://docs.maintainx.com/deploy)
+
+## Next Steps
+For webhook handling, see `maintainx-webhooks-events`.

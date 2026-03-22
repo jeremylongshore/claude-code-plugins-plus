@@ -1,62 +1,126 @@
 ---
 name: techsmith-ci-integration
 description: |
-  TechSmith ci integration for Snagit COM API and Camtasia automation.
-  Use when working with TechSmith screen capture and video editing automation.
-  Trigger: "techsmith ci integration".
-allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
+  Configure TechSmith CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating TechSmith tests into your build process.
+  Trigger with phrases like "techsmith CI", "techsmith GitHub Actions",
+  "techsmith automated tests", "CI techsmith".
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
+tags: [saas, techsmith]
 ---
 
-# TechSmith Ci Integration
+# TechSmith CI Integration
 
 ## Overview
+Set up CI/CD pipelines for TechSmith integrations with automated testing.
 
-Guidance for ci integration with TechSmith Snagit COM API and Camtasia automation.
+## Prerequisites
+- GitHub repository with Actions enabled
+- TechSmith test API key
+- npm/pnpm project configured
 
 ## Instructions
 
-### Key Considerations
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/techsmith-integration.yml`:
 
-- Snagit COM API is Windows-only (requires COM registration)
-- Camtasia Producer CLI for batch rendering
-- PowerShell is the primary scripting language
-- Python interop via `pywin32` (`pip install pywin32`)
+```yaml
+name: TechSmith Integration Tests
 
-### Snagit COM Input Types
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
-| Value | Constant | Description |
-|-------|----------|-------------|
-| 0 | siiDesktop | Full desktop |
-| 2 | siiRegion | User-selected region |
-| 4 | siiWindow | Active window |
-| 5 | siiFile | From file |
+env:
+  TECHSMITH_API_KEY: ${{ secrets.TECHSMITH_API_KEY }}
 
-### Snagit COM Output Types
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      TECHSMITH_API_KEY: ${{ secrets.TECHSMITH_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
+```
 
-| Value | Constant | Description |
-|-------|----------|-------------|
-| 1 | sioClipboard | Copy to clipboard |
-| 2 | sioFile | Save to file |
-| 4 | sioPrinter | Send to printer |
+### Step 2: Configure Secrets
+```bash
+gh secret set TECHSMITH_API_KEY --body "sk_test_***"
+```
+
+### Step 3: Add Integration Tests
+```typescript
+describe('TechSmith Integration', () => {
+  it.skipIf(!process.env.TECHSMITH_API_KEY)('should connect', async () => {
+    const client = getTechSmithClient();
+    const result = await client.healthCheck();
+    expect(result.status).toBe('ok');
+  });
+});
+```
+
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
 ## Error Handling
-
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| COM not registered | Snagit not installed | Install and register COM server |
-| Permission denied | Not running as admin | Elevate PowerShell |
-| File locked | Snagit Editor has file open | Close editor first |
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
+```yaml
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      TECHSMITH_API_KEY: ${{ secrets.TECHSMITH_API_KEY_PROD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify TechSmith production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
+```
+
+### Branch Protection
+```yaml
+required_status_checks:
+  - "test"
+  - "techsmith-integration"
+```
 
 ## Resources
-
-- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
-- [TechSmith Support](https://support.techsmith.com/)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [TechSmith CI Guide](https://docs.techsmith.com/ci)
 
 ## Next Steps
-
-See related TechSmith skills for more automation patterns.
+For deployment patterns, see `techsmith-deploy-integration`.

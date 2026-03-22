@@ -1,227 +1,263 @@
 ---
 name: vercel-advanced-troubleshooting
 description: |
-  Advanced debugging for hard-to-diagnose Vercel issues including cold starts, edge errors, and function tracing.
-  Use when standard troubleshooting fails, investigating intermittent failures,
-  or preparing evidence for Vercel support escalation.
+  Apply Vercel advanced debugging techniques for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating complex race conditions,
+  or preparing evidence bundles for Vercel support escalation.
   Trigger with phrases like "vercel hard bug", "vercel mystery error",
-  "vercel intermittent failure", "difficult vercel issue", "vercel deep debug".
-allowed-tools: Read, Grep, Bash(vercel:*), Bash(curl:*), Bash(jq:*)
+  "vercel impossible to debug", "difficult vercel issue", "vercel deep debug".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, vercel, debugging, advanced, troubleshooting]
-
+compatible-with: claude-code
+tags: [saas, vercel]
 ---
+
 # Vercel Advanced Troubleshooting
 
 ## Overview
-Diagnose hard-to-find Vercel issues: intermittent cold start failures, edge function crashes, region-specific behavior, function bundling problems, and serverless concurrency issues. Uses systematic isolation, request tracing, and Vercel-specific debugging techniques.
+Deep debugging techniques for complex Vercel issues that resist standard troubleshooting.
 
 ## Prerequisites
-- Vercel CLI with access to production logs
-- Familiarity with `vercel-common-errors` (standard debugging)
-- `curl` and `jq` for API inspection
-- Access to deployment inspection tools
+- Access to production logs and metrics
+- kubectl access to clusters
+- Network capture tools available
+- Understanding of distributed tracing
+
+## Evidence Collection Framework
+
+### Comprehensive Debug Bundle
+```bash
+#!/bin/bash
+# advanced-vercel-debug.sh
+
+BUNDLE="vercel-advanced-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+
+# 1. Extended logs (1 hour window)
+kubectl logs -l app=vercel-integration --since=1h > "$BUNDLE/logs/pods.log"
+journalctl -u vercel-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
+
+# 2. Metrics dump
+curl -s localhost:9090/api/v1/query?query=vercel_requests_total > "$BUNDLE/metrics/requests.json"
+curl -s localhost:9090/api/v1/query?query=vercel_errors_total > "$BUNDLE/metrics/errors.json"
+
+# 3. Network capture (30 seconds)
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
+
+# 4. Distributed traces
+curl -s localhost:16686/api/traces?service=vercel > "$BUNDLE/traces/jaeger.json"
+
+# 5. Configuration state
+kubectl get cm vercel-config -o yaml > "$BUNDLE/config/configmap.yaml"
+kubectl get secret vercel-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Advanced debug bundle: $BUNDLE.tar.gz"
+```
+
+## Systematic Isolation
+
+### Layer-by-Layer Testing
+
+```typescript
+// Test each layer independently
+async function diagnoseVercelIssue(): Promise<DiagnosisReport> {
+  const results: DiagnosisResult[] = [];
+
+  // Layer 1: Network connectivity
+  results.push(await testNetworkConnectivity());
+
+  // Layer 2: DNS resolution
+  results.push(await testDNSResolution('api.vercel.com'));
+
+  // Layer 3: TLS handshake
+  results.push(await testTLSHandshake('api.vercel.com'));
+
+  // Layer 4: Authentication
+  results.push(await testAuthentication());
+
+  // Layer 5: API response
+  results.push(await testAPIResponse());
+
+  // Layer 6: Response parsing
+  results.push(await testResponseParsing());
+
+  return { results, firstFailure: results.find(r => !r.success) };
+}
+```
+
+### Minimal Reproduction
+
+```typescript
+// Strip down to absolute minimum
+async function minimalRepro(): Promise<void> {
+  // 1. Fresh client, no customization
+  const client = new VercelClient({
+    apiKey: process.env.VERCEL_API_KEY!,
+  });
+
+  // 2. Simplest possible call
+  try {
+    const result = await client.ping();
+    console.log('Ping successful:', result);
+  } catch (error) {
+    console.error('Ping failed:', {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+    });
+  }
+}
+```
+
+## Timing Analysis
+
+```typescript
+class TimingAnalyzer {
+  private timings: Map<string, number[]> = new Map();
+
+  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
+    const start = performance.now();
+    try {
+      return await fn();
+    } finally {
+      const duration = performance.now() - start;
+      const existing = this.timings.get(label) || [];
+      existing.push(duration);
+      this.timings.set(label, existing);
+    }
+  }
+
+  report(): TimingReport {
+    const report: TimingReport = {};
+    for (const [label, times] of this.timings) {
+      report[label] = {
+        count: times.length,
+        min: Math.min(...times),
+        max: Math.max(...times),
+        avg: times.reduce((a, b) => a + b, 0) / times.length,
+        p95: this.percentile(times, 95),
+      };
+    }
+    return report;
+  }
+}
+```
+
+## Memory and Resource Analysis
+
+```typescript
+// Detect memory leaks in Vercel client usage
+const heapUsed: number[] = [];
+
+setInterval(() => {
+  const usage = process.memoryUsage();
+  heapUsed.push(usage.heapUsed);
+
+  // Alert on sustained growth
+  if (heapUsed.length > 60) { // 1 hour at 1/min
+    const trend = heapUsed[59] - heapUsed[0];
+    if (trend > 100 * 1024 * 1024) { // 100MB growth
+      console.warn('Potential memory leak in vercel integration');
+    }
+  }
+}, 60000);
+```
+
+## Race Condition Detection
+
+```typescript
+// Detect concurrent access issues
+class VercelConcurrencyChecker {
+  private inProgress: Set<string> = new Set();
+
+  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
+    if (this.inProgress.has(key)) {
+      console.warn(`Concurrent access detected for ${key}`);
+    }
+
+    this.inProgress.add(key);
+    try {
+      return await fn();
+    } finally {
+      this.inProgress.delete(key);
+    }
+  }
+}
+```
+
+## Support Escalation Template
+
+```markdown
+## Vercel Support Escalation
+
+**Severity:** P[1-4]
+**Request ID:** [from error response]
+**Timestamp:** [ISO 8601]
+
+### Issue Summary
+[One paragraph description]
+
+### Steps to Reproduce
+1. [Step 1]
+2. [Step 2]
+
+### Expected vs Actual
+- Expected: [behavior]
+- Actual: [behavior]
+
+### Evidence Attached
+- [ ] Debug bundle (vercel-advanced-debug-*.tar.gz)
+- [ ] Minimal reproduction code
+- [ ] Timing analysis
+- [ ] Network capture (if relevant)
+
+### Workarounds Attempted
+1. [Workaround 1] - Result: [outcome]
+2. [Workaround 2] - Result: [outcome]
+```
 
 ## Instructions
 
-### Step 1: Request-Level Tracing
-```bash
-# Trace a single request through Vercel's edge network
-curl -v https://yourdomain.com/api/endpoint 2>&1 | grep -E "x-vercel|cf-ray|age|cache"
+### Step 1: Collect Evidence Bundle
+Run the comprehensive debug script to gather all relevant data.
 
-# Key headers to check:
-# x-vercel-id: <region>::<function-id> — which region served the request
-# x-vercel-cache: HIT/MISS/STALE — edge cache status
-# x-vercel-execution-region: iad1 — function execution region
-# age: 45 — seconds since edge cached the response
-# x-matched-path: /api/endpoint — routing match result
-```
+### Step 2: Systematic Isolation
+Test each layer independently to identify the failure point.
 
-### Step 2: Cold Start Investigation
-```typescript
-// Instrument cold start timing in your function
-let coldStart = true;
-const initTime = Date.now();
+### Step 3: Create Minimal Reproduction
+Strip down to the simplest failing case.
 
-export default function handler(req, res) {
-  const isCold = coldStart;
-  coldStart = false;
-
-  const handlerStart = Date.now();
-  // ... your logic ...
-
-  res.setHeader('x-cold-start', String(isCold));
-  res.setHeader('x-init-duration', String(handlerStart - initTime));
-  res.json({
-    coldStart: isCold,
-    initDuration: isCold ? handlerStart - initTime : 0,
-    handlerDuration: Date.now() - handlerStart,
-    region: process.env.VERCEL_REGION,
-  });
-}
-```
-
-```bash
-# Measure cold start frequency over N requests
-for i in $(seq 1 20); do
-  curl -s https://yourdomain.com/api/endpoint \
-    | jq '{coldStart, initDuration, region}'
-  sleep 2  # Wait between requests to allow isolate recycling
-done
-```
-
-### Step 3: Function Bundle Analysis
-```bash
-# Check what's being bundled into your function
-vercel inspect https://my-app-xxx.vercel.app
-
-# Check function sizes in the deployment
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v13/deployments/dpl_xxx" \
-  | jq '.functions | to_entries[] | {path: .key, size: .value.size, regions: .value.regions}'
-
-# Locally — check what @vercel/nft traces for a function
-npx @vercel/nft print api/heavy-endpoint.ts 2>/dev/null | head -50
-# Shows all files that will be bundled
-
-# Find unexpectedly large dependencies
-npx @vercel/nft print api/heavy-endpoint.ts 2>/dev/null \
-  | xargs -I {} du -sh {} 2>/dev/null | sort -rh | head -20
-```
-
-### Step 4: Region-Specific Debugging
-```bash
-# Test from different regions to isolate geographic issues
-# Use Vercel's deployment URL with region hints
-for region in iad1 sfo1 cdg1 hnd1; do
-  echo "=== Region: $region ==="
-  curl -s -w "HTTP %{http_code} | Time: %{time_total}s\n" \
-    -H "x-vercel-ip-country: US" \
-    https://yourdomain.com/api/endpoint
-done
-
-# Check if the issue is region-dependent
-# If latency varies wildly, check:
-# 1. Function region vs database region (cross-region latency)
-# 2. Edge middleware adding delay
-# 3. External API calls from wrong region
-```
-
-### Step 5: Edge Function Crash Debugging
-```typescript
-// Edge functions crash silently on Node.js API usage
-// Common crashes and their symptoms:
-
-// Symptom: EDGE_FUNCTION_INVOCATION_FAILED with no error details
-// Cause: Using Node.js Buffer, fs, crypto.createHash in edge runtime
-
-// Diagnostic: check if imports are edge-compatible
-export const config = { runtime: 'edge' };
-
-export default function handler(request: Request) {
-  // This will crash silently:
-  // const hash = require('crypto').createHash('sha256');
-
-  // Use Web Crypto instead:
-  const encoder = new TextEncoder();
-  const data = encoder.encode('test');
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-
-  return Response.json({ ok: true });
-}
-```
-
-```bash
-# Check if a module is edge-compatible
-npx edge-runtime --eval "import('your-module')" 2>&1
-# Errors here mean the module won't work in edge functions
-```
-
-### Step 6: Concurrency and Throttling Debug
-```bash
-# Check current function concurrency limits
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v9/projects/my-app" \
-  | jq '{plan: .plan, concurrency: .concurrencyBucketName}'
-
-# Hobby: 10 concurrent, Pro: 1000, Enterprise: 100000
-
-# Load test to find throttling threshold
-npx autocannon -c 50 -d 10 https://yourdomain.com/api/endpoint
-# Watch for 429 responses indicating FUNCTION_THROTTLED
-```
-
-### Step 7: Systematic Isolation
-```
-Issue persists? Isolate systematically:
-
-1. Does it happen on preview deployments?
-   └── No → Production-only env var or domain issue
-
-2. Does it happen with a minimal function?
-   └── No → Issue is in your code, not Vercel platform
-
-3. Does it happen in all regions?
-   └── No → Region-specific infrastructure issue
-
-4. Does it happen with edge runtime?
-   └── No → Node.js-specific issue (cold starts, module compat)
-
-5. Does it happen without middleware?
-   └── No → Middleware is interfering — check matcher scope
-
-6. Create minimal reproduction:
-   └── api/test.ts with only the failing behavior
-   └── Deploy standalone and test
-```
-
-### Step 8: Vercel Support Escalation
-```bash
-# Collect comprehensive evidence
-mkdir vercel-debug && cd vercel-debug
-
-# Deployment details
-vercel inspect https://yourdomain.com > inspect.txt
-vercel logs https://yourdomain.com --limit=200 > logs.txt
-
-# Request trace
-curl -v https://yourdomain.com/api/failing-endpoint 2>&1 > curl-trace.txt
-
-# Function analysis
-curl -s -H "Authorization: Bearer $VERCEL_TOKEN" \
-  "https://api.vercel.com/v13/deployments/dpl_xxx" > deployment.json
-
-# Platform status at time of issue
-curl -s "https://www.vercel-status.com/api/v2/summary.json" > status.json
-
-tar czf vercel-debug-$(date +%Y%m%d).tar.gz .
-```
+### Step 4: Escalate with Evidence
+Use the support template with all collected evidence.
 
 ## Output
-- Request traced through Vercel's edge network with region and cache data
-- Cold start frequency and duration quantified
-- Function bundle analyzed for size issues
-- Issue isolated to specific layer (edge, runtime, region, middleware)
-- Evidence bundle ready for support escalation
+- Comprehensive debug bundle collected
+- Failure layer identified
+- Minimal reproduction created
+- Support escalation submitted
 
 ## Error Handling
-| Symptom | Likely Cause | Debug Approach |
-|---------|-------------|---------------|
-| Intermittent 500 errors | Cold start + unhandled async | Add global error handler, check init code |
-| Latency spikes every ~15 min | Function isolate recycling (cold start) | Measure with x-cold-start header |
-| Works in preview, fails in prod | Env var scope mismatch | Compare env vars across environments |
-| EDGE_FUNCTION_INVOCATION_FAILED | Node.js API in edge runtime | Check imports for Node.js-only modules |
-| Function works locally, fails deployed | Missing dependency or env var | Run `vercel build` locally, check output |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reproduce | Race condition | Add timing analysis |
+| Intermittent failure | Timing-dependent | Increase sample size |
+| No useful logs | Missing instrumentation | Add debug logging |
+| Memory growth | Resource leak | Use heap profiling |
+
+## Examples
+
+### Quick Layer Test
+```bash
+# Test each layer in sequence
+curl -v https://api.vercel.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+```
 
 ## Resources
-- [Vercel Error Codes](https://vercel.com/docs/errors)
-- [Function Limitations](https://vercel.com/docs/functions/limitations)
-- [Edge Runtime API](https://vercel.com/docs/functions/runtimes/edge)
-- [Vercel Support](https://vercel.com/support)
-- [@vercel/nft](https://github.com/vercel/nft)
+- [Vercel Support Portal](https://support.vercel.com)
+- [Vercel Status Page](https://www.vercel-status.com)
 
 ## Next Steps
-For load testing and scaling, see `vercel-load-scale`.
+For load testing, see `vercel-load-scale`.

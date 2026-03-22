@@ -1,259 +1,240 @@
 ---
 name: clerk-reference-architecture
 description: |
-  Reference architecture patterns for Clerk authentication.
-  Use when designing application architecture, planning auth flows,
-  or implementing enterprise-grade authentication.
-  Trigger with phrases like "clerk architecture", "clerk design",
-  "clerk system design", "clerk integration patterns".
-allowed-tools: Read, Write, Edit, Grep
+  Implement Clerk reference architecture with best-practice project layout.
+  Use when designing new Clerk integrations, reviewing project structure,
+  or establishing architecture standards for Clerk applications.
+  Trigger with phrases like "clerk architecture", "clerk best practices",
+  "clerk project structure", "how to organize clerk", "clerk layout".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, authentication]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Reference Architecture
 
 ## Overview
-Reference architectures for implementing Clerk in common application patterns: Next.js full-stack, microservices with shared auth, multi-tenant SaaS, and mobile + web with shared backend.
+Production-ready architecture patterns for Clerk integrations.
 
 ## Prerequisites
-- Understanding of web application architecture
-- Familiarity with authentication patterns (JWT, sessions, OAuth)
-- Knowledge of your tech stack and scaling requirements
+- Understanding of layered architecture
+- Clerk SDK knowledge
+- TypeScript project setup
+- Testing framework configured
+
+## Project Structure
+
+```
+my-clerk-project/
+├── src/
+│   ├── clerk/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── clerk/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── clerk/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── clerk/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── clerk/
+│   └── integration/
+│       └── clerk/
+├── config/
+│   ├── clerk.development.json
+│   ├── clerk.staging.json
+│   └── clerk.production.json
+└── docs/
+    └── clerk/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          Clerk Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### Step 1: Client Wrapper
+```typescript
+// src/clerk/client.ts
+export class ClerkService {
+  private client: ClerkClient;
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: ClerkConfig) {
+    this.client = new ClerkClient(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('clerk');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### Step 2: Error Boundary
+```typescript
+// src/clerk/errors.ts
+export class ClerkServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = 'ClerkServiceError';
+  }
+}
+
+export function wrapClerkError(error: unknown): ClerkServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### Step 3: Health Check
+```typescript
+// src/clerk/health.ts
+export async function checkClerkHealth(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await clerkClient.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ Clerk    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Clerk    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/clerk.ts
+export interface ClerkConfig {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function loadClerkConfig(): ClerkConfig {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./clerk.${env}.json`);
+}
+```
 
 ## Instructions
 
-### Architecture 1: Next.js Full-Stack Application
-```
-Browser
-  │
-  ├─▸ Next.js Middleware (clerkMiddleware)
-  │     └─▸ Validates session token on every request
-  │
-  ├─▸ Server Components (auth(), currentUser())
-  │     └─▸ Direct access to user data, no network call
-  │
-  ├─▸ Client Components (useUser(), useAuth())
-  │     └─▸ Real-time auth state via ClerkProvider
-  │
-  ├─▸ API Routes (auth() for userId, getToken() for JWT)
-  │     └─▸ Call external services with Clerk JWT
-  │
-  └─▸ Webhooks (/api/webhooks/clerk)
-        └─▸ Sync user data to database
-```
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
 
-```typescript
-// app/layout.tsx — entry point
-import { ClerkProvider } from '@clerk/nextjs'
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <ClerkProvider>
-      <html><body>{children}</body></html>
-    </ClerkProvider>
-  )
-}
-```
+### Step 3: Add Error Handling
+Implement custom error classes for Clerk operations.
 
-```typescript
-// middleware.ts — auth boundary
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
-const isPublic = createRouteMatcher(['/', '/sign-in(.*)', '/sign-up(.*)', '/api/webhooks(.*)'])
-
-export default clerkMiddleware(async (auth, req) => {
-  if (!isPublic(req)) await auth.protect()
-})
-```
-
-### Architecture 2: Microservices with Shared Auth
-```
-Browser ─▸ API Gateway / BFF (Next.js + Clerk)
-              │
-              ├─▸ Service A (Node.js) ──── verifies JWT
-              ├─▸ Service B (Python) ──── verifies JWT
-              └─▸ Service C (Go) ──────── verifies JWT
-```
-
-```typescript
-// BFF: Generate service-specific JWT
-// app/api/proxy/[service]/route.ts
-import { auth } from '@clerk/nextjs/server'
-
-export async function GET(req: Request, { params }: { params: { service: string } }) {
-  const { userId, getToken } = await auth()
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 })
-
-  // Get JWT with service-specific claims
-  const token = await getToken({ template: params.service })
-
-  const serviceUrls: Record<string, string> = {
-    billing: process.env.BILLING_SERVICE_URL!,
-    analytics: process.env.ANALYTICS_SERVICE_URL!,
-    notifications: process.env.NOTIFICATION_SERVICE_URL!,
-  }
-
-  const response = await fetch(`${serviceUrls[params.service]}/api/data`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-
-  return Response.json(await response.json())
-}
-```
-
-```typescript
-// Downstream service: Verify Clerk JWT
-// services/billing/src/middleware.ts (Express)
-import { clerkMiddleware, requireAuth } from '@clerk/express'
-
-app.use(clerkMiddleware())
-app.get('/api/data', requireAuth(), (req, res) => {
-  // req.auth.userId is available
-  res.json({ userId: req.auth.userId })
-})
-```
-
-### Architecture 3: Multi-Tenant SaaS
-```
-Tenant A (org_abc) ──┐
-Tenant B (org_def) ──┤──▸ Shared App ──▸ Shared DB (tenant-scoped queries)
-Tenant C (org_ghi) ──┘
-```
-
-```typescript
-// lib/tenant.ts — tenant-scoped data access
-import { auth } from '@clerk/nextjs/server'
-
-export async function getTenantData<T>(query: (orgId: string) => Promise<T>): Promise<T> {
-  const { orgId } = await auth()
-  if (!orgId) throw new Error('No organization selected')
-  return query(orgId)
-}
-
-// Usage:
-export async function getProjects() {
-  return getTenantData((orgId) =>
-    db.project.findMany({ where: { organizationId: orgId } })
-  )
-}
-```
-
-```typescript
-// middleware.ts — enforce org context on tenant routes
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
-
-const isTenantRoute = createRouteMatcher(['/app(.*)'])
-
-export default clerkMiddleware(async (auth, req) => {
-  if (isTenantRoute(req)) {
-    const { orgId } = await auth.protect()
-    if (!orgId) {
-      // Redirect to org selector if no org is active
-      return Response.redirect(new URL('/select-org', req.url))
-    }
-  }
-})
-```
-
-```typescript
-// app/select-org/page.tsx
-import { OrganizationSwitcher } from '@clerk/nextjs'
-
-export default function SelectOrg() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div>
-        <h1>Select Your Organization</h1>
-        <OrganizationSwitcher
-          afterSelectOrganizationUrl="/app/dashboard"
-          hidePersonal={true}
-        />
-      </div>
-    </div>
-  )
-}
-```
-
-### Architecture 4: Mobile + Web with Shared Backend
-```
-Web App (Next.js + @clerk/nextjs)  ──┐
-Mobile App (React Native + @clerk/clerk-expo) ──┤──▸ Backend API (Express + @clerk/express)
-                                                └──▸ Database
-```
-
-```typescript
-// Backend API: Express with Clerk
-// server.ts
-import express from 'express'
-import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express'
-
-const app = express()
-
-// Apply Clerk middleware globally
-app.use(clerkMiddleware())
-
-// Public endpoint
-app.get('/api/public', (req, res) => {
-  res.json({ message: 'Public endpoint' })
-})
-
-// Protected endpoint (works with both web and mobile clients)
-app.get('/api/profile', requireAuth(), async (req, res) => {
-  const { userId } = getAuth(req)
-  const user = await db.user.findUnique({ where: { clerkId: userId } })
-  res.json({ user })
-})
-
-app.listen(3001)
-```
+### Step 4: Configure Health Checks
+Add health check endpoint for Clerk connectivity.
 
 ## Output
-- Next.js full-stack architecture with middleware, server/client components, and webhooks
-- Microservices architecture with BFF proxy and JWT-based service auth
-- Multi-tenant SaaS with organization-scoped data access
-- Mobile + web with shared Express backend using `@clerk/express`
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
 
 ## Error Handling
-| Pattern | Common Issue | Solution |
-|---------|-------------|----------|
-| Full-stack | Middleware redirect loop | Add sign-in route to public routes |
-| Microservices | JWT template not configured | Create JWT template in Dashboard per service |
-| Multi-tenant | No org selected | Redirect to org selector before tenant routes |
-| Mobile + Web | Token not sent from mobile | Include `Authorization: Bearer <token>` in mobile fetch |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Clerk types |
+| Test isolation | Shared state | Use dependency injection |
 
 ## Examples
 
-### Database Schema for Clerk Integration
-```prisma
-// prisma/schema.prisma
-model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  posts     Post[]
-  orgMemberships OrgMembership[]
-}
-
-model OrgMembership {
-  id     String @id @default(cuid())
-  userId String
-  orgId  String  // Clerk organization ID
-  role   String  // org:admin, org:member, etc.
-  user   User   @relation(fields: [userId], references: [id])
-  @@unique([userId, orgId])
-}
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/clerk/{handlers} src/services/clerk src/api/clerk
+touch src/clerk/{client,config,types,errors}.ts
+touch src/services/clerk/{index,sync,cache}.ts
 ```
 
 ## Resources
-- [Clerk Architecture Patterns](https://clerk.com/docs/quickstarts/nextjs)
-- [Clerk Organizations (Multi-Tenant)](https://clerk.com/docs/organizations/overview)
-- [Clerk Express Integration](https://clerk.com/docs/quickstarts/express)
+- [Clerk SDK Documentation](https://docs.clerk.com/sdk)
+- [Clerk Best Practices](https://docs.clerk.com/best-practices)
 
-## Next Steps
-Proceed to `clerk-multi-env-setup` for multi-environment configuration.
+## Flagship Skills
+For multi-environment setup, see `clerk-multi-env-setup`.

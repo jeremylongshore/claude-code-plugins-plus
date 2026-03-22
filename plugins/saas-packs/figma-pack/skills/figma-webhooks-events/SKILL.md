@@ -1,234 +1,201 @@
 ---
 name: figma-webhooks-events
 description: |
-  Implement Figma Webhooks V2 for real-time file, comment, and library events.
-  Use when setting up webhook endpoints, handling FILE_UPDATE events,
-  or building event-driven Figma automation.
+  Implement Figma webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Figma event notifications securely.
   Trigger with phrases like "figma webhook", "figma events",
-  "figma FILE_UPDATE", "figma notifications", "figma real-time".
+  "figma webhook signature", "handle figma events", "figma notifications".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, figma]
 compatible-with: claude-code
+tags: [saas, figma]
 ---
 
 # Figma Webhooks & Events
 
 ## Overview
-Figma Webhooks V2 push real-time notifications when files change, comments are posted, or libraries are published. Webhooks can be scoped to teams, projects, or individual files. Authentication uses a passcode echoed back in each payload.
+Securely handle Figma webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- HTTPS endpoint accessible from the internet
-- `FIGMA_PAT` with `webhooks:write` scope
-- Team ID (from Figma URL: `figma.com/files/team/<TEAM_ID>/...`)
+- Figma webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
-## Instructions
+## Webhook Endpoint Setup
 
-### Step 1: Create a Webhook
-```bash
-# POST /v2/webhooks -- requires webhooks:write scope
-curl -X POST https://api.figma.com/v2/webhooks \
-  -H "X-Figma-Token: ${FIGMA_PAT}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "event_type": "FILE_UPDATE",
-    "team_id": "123456789",
-    "endpoint": "https://yourapp.com/webhooks/figma",
-    "passcode": "your-secret-passcode",
-    "description": "Sync design tokens on file update"
-  }'
-
-# Response:
-# { "id": "wh_abc123", "event_type": "FILE_UPDATE", "status": "ACTIVE", ... }
-```
-
-**Available event types:**
-
-| Event Type | Trigger | Payload Contains |
-|------------|---------|-----------------|
-| `FILE_UPDATE` | File saved to version history | `file_key`, `file_name`, `timestamp` |
-| `FILE_DELETE` | File deleted | `file_key`, `file_name` |
-| `FILE_VERSION_UPDATE` | Named version created | `file_key`, `version_id`, `label` |
-| `FILE_COMMENT` | Comment added | `file_key`, `comment`, `comment_id` |
-| `LIBRARY_PUBLISH` | Library published | `file_key`, `description`, variables |
-
-### Step 2: Handle Webhook Events
+### Express.js
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
 
 const app = express();
-app.use(express.json());
 
-// Figma webhook payload types
-interface FigmaWebhookBase {
-  event_type: string;
-  passcode: string;
-  timestamp: string;
-  webhook_id: string;
-}
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/figma',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-figma-signature'] as string;
+    const timestamp = req.headers['x-figma-timestamp'] as string;
 
-interface FileUpdateEvent extends FigmaWebhookBase {
-  event_type: 'FILE_UPDATE';
-  file_key: string;
-  file_name: string;
-  triggered_by: { id: string; handle: string };
-}
+    if (!verifyFigmaSignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
 
-interface FileCommentEvent extends FigmaWebhookBase {
-  event_type: 'FILE_COMMENT';
-  file_key: string;
-  file_name: string;
-  comment: Array<{ text: string }>;
-  comment_id: string;
-  triggered_by: { id: string; handle: string };
-}
+    const event = JSON.parse(req.body.toString());
+    await handleFigmaEvent(event);
 
-interface LibraryPublishEvent extends FigmaWebhookBase {
-  event_type: 'LIBRARY_PUBLISH';
-  file_key: string;
-  file_name: string;
-  description: string;
-  triggered_by: { id: string; handle: string };
-}
-
-type FigmaWebhookEvent = FileUpdateEvent | FileCommentEvent | LibraryPublishEvent;
-
-app.post('/webhooks/figma', (req, res) => {
-  const event: FigmaWebhookEvent = req.body;
-
-  // 1. Verify passcode (timing-safe)
-  const expected = process.env.FIGMA_WEBHOOK_PASSCODE!;
-  if (event.passcode.length !== expected.length ||
-      !crypto.timingSafeEqual(Buffer.from(event.passcode), Buffer.from(expected))) {
-    return res.status(401).json({ error: 'Invalid passcode' });
+    res.status(200).json({ received: true });
   }
-
-  // 2. Respond quickly (Figma expects 200 within seconds)
-  res.status(200).json({ received: true });
-
-  // 3. Process async
-  processEvent(event).catch(err =>
-    console.error(`Failed to process ${event.event_type}:`, err)
-  );
-});
-
-async function processEvent(event: FigmaWebhookEvent) {
-  switch (event.event_type) {
-    case 'FILE_UPDATE':
-      console.log(`File updated: ${event.file_name} by ${event.triggered_by.handle}`);
-      // Re-extract design tokens, invalidate cache, notify Slack
-      await syncDesignTokens(event.file_key);
-      break;
-
-    case 'FILE_COMMENT':
-      console.log(`Comment on ${event.file_name}: ${event.comment[0]?.text}`);
-      // Forward to Slack, create Jira ticket, etc.
-      break;
-
-    case 'LIBRARY_PUBLISH':
-      console.log(`Library published: ${event.file_name}`);
-      // Trigger downstream rebuilds
-      await triggerTokenRebuild(event.file_key);
-      break;
-  }
-}
+);
 ```
 
-### Step 3: Manage Webhooks
+## Signature Verification
+
 ```typescript
-const FIGMA_API = 'https://api.figma.com';
+function verifyFigmaSignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.FIGMA_WEBHOOK_SECRET!;
 
-// List all webhooks for a team
-async function listWebhooks(teamId: string) {
-  const res = await fetch(`${FIGMA_API}/v2/webhooks?team_id=${teamId}`, {
-    headers: { 'X-Figma-Token': process.env.FIGMA_PAT! },
-  });
-  return res.json(); // { webhooks: [...] }
-}
-
-// Delete a webhook
-async function deleteWebhook(webhookId: string) {
-  await fetch(`${FIGMA_API}/v2/webhooks/${webhookId}`, {
-    method: 'DELETE',
-    headers: { 'X-Figma-Token': process.env.FIGMA_PAT! },
-  });
-}
-
-// Update a webhook (e.g., change endpoint)
-async function updateWebhook(webhookId: string, updates: Record<string, any>) {
-  const res = await fetch(`${FIGMA_API}/v2/webhooks/${webhookId}`, {
-    method: 'PUT',
-    headers: {
-      'X-Figma-Token': process.env.FIGMA_PAT!,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(updates),
-  });
-  return res.json();
-}
-```
-
-### Step 4: Idempotency for Duplicate Events
-```typescript
-// Figma may deliver the same event multiple times
-const processedEvents = new Set<string>();
-
-function deduplicateEvent(event: FigmaWebhookEvent): boolean {
-  const key = `${event.webhook_id}:${event.timestamp}`;
-  if (processedEvents.has(key)) {
-    console.log(`Duplicate event skipped: ${key}`);
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
     return false;
   }
-  processedEvents.add(key);
-  // Clean up old entries (keep last 1000)
-  if (processedEvents.size > 1000) {
-    const oldest = Array.from(processedEvents).slice(0, 500);
-    oldest.forEach(k => processedEvents.delete(k));
-  }
-  return true;
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
 }
 ```
 
+## Event Handler Pattern
+
+```typescript
+type FigmaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface FigmaEvent {
+  id: string;
+  type: FigmaEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<FigmaEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleFigmaEvent(event: FigmaEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `figma:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `figma:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Figma CLI to send test events
+figma webhooks trigger resource.created --url http://localhost:3000/webhooks/figma
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Figma dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
 ## Output
-- Webhook created and receiving Figma events
-- Passcode verification on every incoming request
-- Event handlers for FILE_UPDATE, FILE_COMMENT, LIBRARY_PUBLISH
-- Idempotency preventing duplicate processing
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Webhook not firing | Endpoint not HTTPS | Figma requires TLS |
-| Invalid passcode | Wrong secret configured | Verify passcode in webhook creation |
-| Webhook status PAUSED | Too many delivery failures | Fix endpoint, then recreate webhook |
-| Missing `triggered_by` | Older event format | Check webhook V2 vs V1 |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
 
 ## Examples
 
-### Test Webhook Locally
+### Testing Webhooks Locally
 ```bash
 # Use ngrok to expose local server
 ngrok http 3000
 
-# Create webhook pointing to ngrok URL
-curl -X POST https://api.figma.com/v2/webhooks \
-  -H "X-Figma-Token: ${FIGMA_PAT}" \
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/figma \
   -H "Content-Type: application/json" \
-  -d '{
-    "event_type": "FILE_UPDATE",
-    "team_id": "YOUR_TEAM_ID",
-    "endpoint": "https://YOUR-NGROK.ngrok.io/webhooks/figma",
-    "passcode": "test-passcode"
-  }'
+  -d '{"type": "test", "data": {}}'
 ```
 
 ## Resources
-- [Figma Webhooks V2](https://developers.figma.com/docs/rest-api/webhooks/)
-- [Webhook Event Types](https://developers.figma.com/docs/rest-api/webhooks-types/)
-- [Webhook Endpoints](https://developers.figma.com/docs/rest-api/webhooks-endpoints/)
+- [Figma Webhooks Guide](https://docs.figma.com/webhooks)
+- [Webhook Security Best Practices](https://docs.figma.com/webhooks/security)
 
 ## Next Steps
 For performance optimization, see `figma-performance-tuning`.

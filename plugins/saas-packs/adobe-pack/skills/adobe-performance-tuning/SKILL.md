@@ -1,212 +1,216 @@
 ---
 name: adobe-performance-tuning
 description: |
-  Optimize Adobe API performance with token caching, async job batching,
-  connection pooling, and response caching for Firefly, PDF Services,
-  and Photoshop API workflows.
+  Optimize Adobe API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
+  or optimizing request throughput for Adobe integrations.
   Trigger with phrases like "adobe performance", "optimize adobe",
   "adobe latency", "adobe caching", "adobe slow", "adobe batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, design, adobe]
 compatible-with: claude-code
+tags: [saas, adobe]
 ---
 
 # Adobe Performance Tuning
 
 ## Overview
-
-Optimize Adobe API performance across Firefly Services, PDF Services, and Photoshop APIs. Key bottlenecks include IMS token generation, async job polling overhead, and cold-start latency on serverless platforms.
+Optimize Adobe API performance with caching, batching, and connection pooling.
 
 ## Prerequisites
-
-- Adobe SDK installed and functional
-- Understanding of which APIs your app uses most
+- Adobe SDK installed
+- Understanding of async patterns
 - Redis or in-memory cache available (optional)
 - Performance monitoring in place
 
-## Latency Benchmarks (Real-World)
+## Latency Benchmarks
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
-| IMS Token Generation | 200ms | 500ms | 1s |
-| Firefly Text-to-Image (sync) | 5s | 12s | 20s |
-| Firefly Text-to-Image (async poll) | 8s | 15s | 25s |
-| PDF Extract (10-page doc) | 3s | 8s | 15s |
-| PDF Create from HTML | 2s | 5s | 10s |
-| Photoshop Remove Background | 4s | 10s | 18s |
-| Lightroom Auto Tone | 3s | 8s | 15s |
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
 
-## Instructions
+## Caching Strategy
 
-### Optimization 1: Cache IMS Access Tokens (Biggest Win)
-
-The IMS token endpoint returns tokens valid for 24 hours. Never re-generate per request:
-
-```typescript
-// WRONG: generates new token every call (adds 200-500ms each time)
-async function makeRequest() {
-  const token = await getAccessToken(); // hits IMS every time
-}
-
-// RIGHT: cache token and only refresh when expiring
-let tokenCache: { token: string; expiresAt: number } | null = null;
-
-async function getCachedToken(): Promise<string> {
-  if (tokenCache && tokenCache.expiresAt > Date.now() + 300_000) {
-    return tokenCache.token; // Cache hit — 0ms
-  }
-  const res = await fetch('https://ims-na1.adobelogin.com/ims/token/v3', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({
-      client_id: process.env.ADOBE_CLIENT_ID!,
-      client_secret: process.env.ADOBE_CLIENT_SECRET!,
-      grant_type: 'client_credentials',
-      scope: process.env.ADOBE_SCOPES!,
-    }),
-  });
-  const data = await res.json();
-  tokenCache = { token: data.access_token, expiresAt: Date.now() + data.expires_in * 1000 };
-  return tokenCache.token;
-}
-```
-
-### Optimization 2: Parallel Async Job Submission
-
-Firefly and Photoshop APIs are async — submit all jobs first, then poll all:
-
-```typescript
-// SLOW: sequential (total = sum of all job times)
-for (const prompt of prompts) {
-  const result = await generateImageSync(prompt); // 5-20s each
-}
-
-// FAST: parallel submit + parallel poll (total = max job time)
-async function batchFireflyGenerate(prompts: string[]) {
-  const token = await getCachedToken();
-
-  // 1. Submit all jobs simultaneously
-  const jobSubmissions = await Promise.all(
-    prompts.map(prompt =>
-      fetch('https://firefly-api.adobe.io/v3/images/generate-async', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'x-api-key': process.env.ADOBE_CLIENT_ID!,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt, n: 1, size: { width: 1024, height: 1024 } }),
-      }).then(r => r.json())
-    )
-  );
-
-  // 2. Poll all jobs in parallel
-  const results = await Promise.all(
-    jobSubmissions.map(job => pollUntilDone(job.statusUrl, token))
-  );
-
-  return results;
-}
-```
-
-### Optimization 3: Response Caching for Repeated Operations
-
+### Response Caching
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-// Cache PDF extraction results (same PDF = same output)
-const extractionCache = new LRUCache<string, any>({
-  max: 100,
-  ttl: 3600_000, // 1 hour
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
 });
 
-async function cachedPdfExtract(pdfHash: string, pdfPath: string) {
-  const cached = extractionCache.get(pdfHash);
-  if (cached) {
-    console.log('PDF extraction cache hit');
-    return cached;
-  }
+async function cachedAdobeRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
 
-  const result = await extractPdfContent(pdfPath);
-  extractionCache.set(pdfHash, result);
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
   return result;
 }
 ```
 
-### Optimization 4: Connection Keep-Alive
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const adobeLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Adobe
+    const results = await adobeClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  adobeLoader.load('id-1'),
+  adobeLoader.load('id-2'),
+  adobeLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
 
 ```typescript
 import { Agent } from 'https';
 
-// Reuse TCP connections to Adobe endpoints
-const adobeAgent = new Agent({
+// Keep-alive connection pooling
+const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 60_000,
+  timeout: 30000,
 });
 
-// Use with node-fetch or undici
-const response = await fetch(url, {
-  // @ts-ignore — agent option supported by node-fetch
-  agent: adobeAgent,
-  headers: { ... },
+const client = new AdobeClient({
+  apiKey: process.env.ADOBE_API_KEY!,
+  httpAgent: agent,
 });
 ```
 
-### Optimization 5: Smart Polling Intervals
+## Pagination Optimization
 
 ```typescript
-// Adaptive polling: start fast, slow down over time
-async function adaptivePoll(statusUrl: string, token: string) {
-  const intervals = [1000, 2000, 3000, 5000, 5000, 10000]; // ms
-  let attempt = 0;
+async function* paginatedAdobeList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
 
-  while (true) {
-    const res = await fetch(statusUrl, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'x-api-key': process.env.ADOBE_CLIENT_ID!,
-      },
-    });
-    const status = await res.json();
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
 
-    if (status.status === 'succeeded') return status;
-    if (status.status === 'failed') throw new Error(status.error?.message);
+// Usage
+for await (const item of paginatedAdobeList(cursor =>
+  adobeClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
 
-    const delay = intervals[Math.min(attempt, intervals.length - 1)];
-    await new Promise(r => setTimeout(r, delay));
-    attempt++;
+## Performance Monitoring
+
+```typescript
+async function measuredAdobeCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
   }
 }
 ```
 
-## Output
+## Instructions
 
-- IMS token cached for 24h (eliminates 200-500ms per request)
-- Parallel job submission for batch operations
-- LRU response caching for repeated extractions
-- Connection keep-alive reducing TLS handshake overhead
-- Adaptive polling reducing unnecessary API calls
+### Step 1: Establish Baseline
+Measure current latency for critical Adobe operations.
+
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
+
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
+
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
+
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
-
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Stale cached token | Token revoked mid-lifecycle | Catch 401, clear cache, retry once |
-| Parallel rate limiting | Too many concurrent jobs | Add p-queue concurrency limit |
-| Cache memory pressure | Too many cached results | Set LRU max size |
-| Connection pool exhaustion | Too many parallel requests | Limit maxSockets to 10-20 |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredAdobeCall(name, () =>
+    cachedAdobeRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-
-- [Firefly Async API Guide](https://developer.adobe.com/firefly-services/docs/firefly-api/guides/how-tos/using-async-apis)
-- [PDF Services Quickstart](https://developer.adobe.com/document-services/docs/overview/pdf-services-api/quickstarts/nodejs/)
-- [LRU Cache npm](https://github.com/isaacs/node-lru-cache)
+- [Adobe Performance Guide](https://docs.adobe.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-
 For cost optimization, see `adobe-cost-tuning`.

@@ -1,171 +1,216 @@
 ---
 name: exa-performance-tuning
 description: |
-  Optimize Exa API performance with search type selection, caching, and parallelization.
-  Use when experiencing slow responses, implementing caching strategies,
+  Optimize Exa API performance with caching, batching, and connection pooling.
+  Use when experiencing slow API responses, implementing caching strategies,
   or optimizing request throughput for Exa integrations.
   Trigger with phrases like "exa performance", "optimize exa",
-  "exa latency", "exa caching", "exa slow", "exa fast".
+  "exa latency", "exa caching", "exa slow", "exa batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, exa, api, performance, optimization]
-
+compatible-with: claude-code
+tags: [saas, exa]
 ---
+
 # Exa Performance Tuning
 
 ## Overview
-Optimize Exa search API response times for production workloads. Key levers: search type selection (instant < fast < auto < neural < deep), result count reduction, content scope control, result caching, and parallel query execution.
+Optimize Exa API performance with caching, batching, and connection pooling.
 
-## Latency by Search Type
+## Prerequisites
+- Exa SDK installed
+- Understanding of async patterns
+- Redis or in-memory cache available (optional)
+- Performance monitoring in place
 
-| Type | Typical Latency | Use Case |
-|------|----------------|----------|
-| `instant` | < 150ms | Real-time autocomplete, typeahead |
-| `fast` | p50 < 425ms | Speed-critical user-facing search |
-| `auto` | 300-1500ms | General purpose (default) |
-| `neural` | 500-2000ms | Best semantic quality |
-| `deep` | 2-5s | Maximum coverage, light deep search |
-| `deep-reasoning` | 5-15s | Complex research questions |
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| Read | 50ms | 150ms | 300ms |
+| Write | 100ms | 250ms | 500ms |
+| List | 75ms | 200ms | 400ms |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 60000, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cachedExaRequest<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const exaLoader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from Exa
+    const results = await exaClient.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: 100,
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  exaLoader.load('id-1'),
+  exaLoader.load('id-2'),
+  exaLoader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30000,
+});
+
+const client = new ExaClient({
+  apiKey: process.env.EXA_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginatedExaList<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginatedExaList(cursor =>
+  exaClient.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measuredExaCall<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
 
 ## Instructions
 
-### Step 1: Match Search Type to Latency Budget
-```typescript
-import Exa from "exa-js";
+### Step 1: Establish Baseline
+Measure current latency for critical Exa operations.
 
-const exa = new Exa(process.env.EXA_API_KEY);
+### Step 2: Implement Caching
+Add response caching for frequently accessed data.
 
-function selectSearchType(latencyBudgetMs: number) {
-  if (latencyBudgetMs < 200) return "instant";
-  if (latencyBudgetMs < 500) return "fast";
-  if (latencyBudgetMs < 1500) return "auto";
-  if (latencyBudgetMs < 3000) return "neural";
-  return "deep";
-}
+### Step 3: Enable Batching
+Use DataLoader or similar for automatic request batching.
 
-async function optimizedSearch(query: string, latencyBudgetMs: number) {
-  const type = selectSearchType(latencyBudgetMs);
-  const numResults = latencyBudgetMs < 500 ? 3 : latencyBudgetMs < 2000 ? 5 : 10;
+### Step 4: Optimize Connections
+Configure connection pooling with keep-alive.
 
-  return exa.search(query, { type, numResults });
-}
-```
-
-### Step 2: Minimize Content Retrieval
-```typescript
-// Each content option adds latency. Only request what you need.
-
-// Fastest: metadata only (no content retrieval)
-const metadataOnly = await exa.search("query", { numResults: 5 });
-
-// Medium: highlights only (much smaller than full text)
-const highlightsOnly = await exa.searchAndContents("query", {
-  numResults: 5,
-  highlights: { maxCharacters: 300 },
-  // No text or summary — saves content retrieval time
-});
-
-// Slower: full text (use maxCharacters to limit)
-const withText = await exa.searchAndContents("query", {
-  numResults: 3,  // fewer results = faster
-  text: { maxCharacters: 1000 },  // limit content size
-});
-```
-
-### Step 3: Cache Search Results
-```typescript
-import { LRUCache } from "lru-cache";
-
-const searchCache = new LRUCache<string, any>({
-  max: 5000,
-  ttl: 2 * 3600 * 1000, // 2-hour TTL
-});
-
-async function cachedSearch(query: string, opts: any) {
-  const key = `${query}:${opts.type || "auto"}:${opts.numResults || 10}`;
-  const cached = searchCache.get(key);
-  if (cached) return cached; // Cache hit: 0ms vs 500-2000ms
-
-  const results = await exa.search(query, opts);
-  searchCache.set(key, results);
-  return results;
-}
-```
-
-### Step 4: Parallelize Independent Searches
-```typescript
-// Run independent queries concurrently instead of sequentially
-async function parallelSearch(queries: string[]) {
-  const searches = queries.map(q =>
-    cachedSearch(q, { type: "auto", numResults: 3 })
-  );
-  return Promise.all(searches);
-  // 3 parallel searches: ~600ms total (limited by slowest)
-  // 3 sequential searches: ~1800ms total
-}
-```
-
-### Step 5: Two-Phase Search Pattern
-```typescript
-// Phase 1: Fast search for URLs only
-// Phase 2: Selective content retrieval for top results only
-async function twoPhaseSearch(query: string) {
-  // Phase 1: metadata only (fast)
-  const results = await exa.search(query, { type: "auto", numResults: 10 });
-
-  // Phase 2: get content only for top 3 results
-  const topUrls = results.results.slice(0, 3).map(r => r.url);
-  const contents = await exa.getContents(topUrls, {
-    text: { maxCharacters: 2000 },
-    highlights: { maxCharacters: 500, query },
-  });
-
-  return contents;
-  // Saves content retrieval time for 7 results you won't use
-}
-```
-
-### Step 6: Query Normalization for Cache Hits
-```typescript
-function normalizeQuery(query: string): string {
-  return query
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, " ")       // collapse whitespace
-    .replace(/[?.!,;:]+$/, ""); // strip trailing punctuation
-}
-
-async function normalizedSearch(query: string, opts: any) {
-  return cachedSearch(normalizeQuery(query), opts);
-}
-// Increases cache hit rate by 20-40% for user-generated queries
-```
-
-## Performance Comparison
-
-| Strategy | Latency Savings | Implementation |
-|----------|----------------|----------------|
-| `instant` type | 5-10x faster than neural | One-line change |
-| Reduce numResults (10 -> 3) | ~200-500ms saved | One-line change |
-| Highlights instead of text | ~100-300ms saved | Replace `text` with `highlights` |
-| LRU cache | 100% for cache hits | ~20 lines |
-| Parallel queries | 2-3x throughput | `Promise.all` wrapper |
-| Two-phase search | ~30-50% for large result sets | ~15 lines |
+## Output
+- Reduced API latency
+- Caching layer implemented
+- Request batching enabled
+- Connection pooling configured
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Search taking 3s+ | Neural search on complex query | Switch to `fast` or `auto` type |
-| Timeout on content | Large pages, slow sources | Set `maxCharacters` limit |
-| Cache miss rate high | Unique queries each time | Normalize queries before caching |
-| Rate limit (429) | Too many concurrent searches | Add request queue with concurrency limit |
+| Cache miss storm | TTL expired | Use stale-while-revalidate |
+| Batch timeout | Too many items | Reduce batch size |
+| Connection exhausted | No pooling | Configure max sockets |
+| Memory pressure | Cache too large | Set max cache entries |
+
+## Examples
+
+### Quick Performance Wrapper
+```typescript
+const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
+  measuredExaCall(name, () =>
+    cachedExaRequest(`cache:${name}`, fn)
+  );
+```
 
 ## Resources
-- [Exa Search Types](https://docs.exa.ai/reference/search)
-- [Exa Contents Retrieval](https://docs.exa.ai/reference/contents-retrieval)
+- [Exa Performance Guide](https://docs.exa.com/performance)
+- [DataLoader Documentation](https://github.com/graphql/dataloader)
+- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
-For cost optimization, see `exa-cost-tuning`. For reliability, see `exa-reliability-patterns`.
+For cost optimization, see `exa-cost-tuning`.

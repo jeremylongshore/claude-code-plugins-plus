@@ -1,206 +1,142 @@
 ---
 name: sentry-security-basics
 description: |
-  Configure Sentry security settings and data protection.
-  Use when setting up data scrubbing, managing sensitive data,
-  or configuring security policies.
-  Trigger with phrases like "sentry security", "sentry PII",
-  "sentry data scrubbing", "secure sentry".
-allowed-tools: Read, Write, Edit, Grep
+  Apply Sentry security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Sentry security configuration.
+  Trigger with phrases like "sentry security", "sentry secrets",
+  "secure sentry", "sentry API key security".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, sentry, security, pii, data-scrubbing]
-
+compatible-with: claude-code
+tags: [saas, sentry]
 ---
+
 # Sentry Security Basics
 
+## Overview
+Security best practices for Sentry API keys, tokens, and access control.
+
 ## Prerequisites
-- Sentry project with admin access
-- Compliance requirements identified (GDPR, SOC 2, HIPAA)
-- Sensitive data patterns documented (PII, API keys, tokens)
-- Access control requirements defined
+- Sentry SDK installed
+- Understanding of environment variables
+- Access to Sentry dashboard
 
 ## Instructions
 
-### 1. DSN Security
+### Step 1: Configure Environment Variables
+```bash
+# .env (NEVER commit to git)
+SENTRY_API_KEY=sk_live_***
+SENTRY_SECRET=***
 
-The DSN is a public key — it identifies your project but cannot read data. Still, treat it carefully:
-
-```typescript
-// Store in environment variables, never hardcode
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-});
-
-// .gitignore
+# .gitignore
 .env
 .env.local
-.env.production
+.env.*.local
 ```
 
+### Step 2: Implement Secret Rotation
 ```bash
-# Verify no hardcoded DSNs in codebase
-grep -r "ingest.sentry.io" --include="*.ts" --include="*.js" \
-  --exclude-dir=node_modules --exclude-dir=dist src/
+# 1. Generate new key in Sentry dashboard
+# 2. Update environment variable
+export SENTRY_API_KEY="new_key_here"
+
+# 3. Verify new key works
+curl -H "Authorization: Bearer ${SENTRY_API_KEY}" \
+  https://api.sentry.com/health
+
+# 4. Revoke old key in dashboard
 ```
 
-### 2. Disable Default PII Collection
-
-```typescript
-Sentry.init({
-  dsn: process.env.SENTRY_DSN,
-
-  // CRITICAL: disable automatic PII collection
-  sendDefaultPii: false, // Default is false, but be explicit
-
-  // Disable debug in production
-  debug: process.env.NODE_ENV !== 'production',
-});
-```
-
-When `sendDefaultPii: false`:
-- No IP addresses collected
-- No cookie values sent
-- No user-agent strings in request data
-- No request body data
-
-### 3. Client-Side Data Scrubbing with beforeSend
-
-```typescript
-Sentry.init({
-  beforeSend(event) {
-    // Scrub authorization headers
-    if (event.request?.headers) {
-      delete event.request.headers['Authorization'];
-      delete event.request.headers['Cookie'];
-      delete event.request.headers['X-Api-Key'];
-    }
-
-    // Scrub request body data
-    if (event.request?.data) {
-      const data = typeof event.request.data === 'string'
-        ? JSON.parse(event.request.data)
-        : event.request.data;
-
-      const sensitiveFields = ['password', 'ssn', 'credit_card', 'token', 'secret'];
-      sensitiveFields.forEach(field => {
-        if (data[field]) data[field] = '[REDACTED]';
-      });
-
-      event.request.data = JSON.stringify(data);
-    }
-
-    // Scrub PII from error messages
-    if (event.exception?.values) {
-      event.exception.values.forEach(exc => {
-        if (exc.value) {
-          // Redact email addresses
-          exc.value = exc.value.replace(
-            /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g,
-            '[EMAIL_REDACTED]'
-          );
-          // Redact credit card numbers
-          exc.value = exc.value.replace(
-            /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g,
-            '[CC_REDACTED]'
-          );
-        }
-      });
-    }
-
-    return event;
-  },
-});
-```
-
-### 4. Server-Side Data Scrubbing
-
-Configure in **Project Settings > Security & Privacy**:
-
-- **Data Scrubber** — automatically scrubs fields matching common PII patterns
-- **Sensitive Fields** — add custom field names: `password`, `ssn`, `credit_card_number`, `api_key`, `secret`, `token`
-- **Safe Fields** — exclude fields from scrubbing (e.g., `transaction_id`)
-- **IP Address Scrubbing** — remove or hash IP addresses
-- **Scrub Credit Cards** — detect and remove card numbers
-
-### 5. Auth Token Security
-
-```bash
-# Generate tokens with MINIMAL required scopes
-# For CI releases: project:releases (read + write)
-# For issue management: project:read, event:read
-# NEVER use org:admin scope in CI
-
-# Store in CI secrets, not in code
-# GitHub Actions: Settings > Secrets > SENTRY_AUTH_TOKEN
-# GitLab CI: Settings > CI/CD > Variables (protected + masked)
-```
-
-Token hygiene:
-- Create separate tokens per CI pipeline
-- Set token expiration dates
-- Rotate tokens quarterly
-- Revoke unused tokens immediately
-- Never use the same token for dev and production
-
-### 6. Team Access Control
-
-```bash
-# Create team with API
-curl -X POST \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"slug": "backend-team"}' \
-  "https://sentry.io/api/0/organizations/$SENTRY_ORG/teams/"
-
-# Assign project to team (limits who can see project errors)
-curl -X POST \
-  -H "Authorization: Bearer $SENTRY_AUTH_TOKEN" \
-  "https://sentry.io/api/0/projects/$SENTRY_ORG/$SENTRY_PROJECT/teams/backend-team/"
-```
-
-### 7. Allowed Domains (Browser SDK)
-
-Restrict which domains can send events to your DSN:
-
-Configure in **Project Settings > Client Keys > Allowed Domains**:
-```
-example.com
-*.example.com
-staging.example.com
-```
-
-This prevents other sites from sending spam events to your project using your public DSN.
-
-### 8. Audit Logging
-
-Enable audit logging in **Organization Settings > Audit Log** (Business/Enterprise plan):
-- Tracks member additions/removals
-- Records permission changes
-- Logs project creation/deletion
-- Monitors integration changes
+### Step 3: Apply Least Privilege
+| Environment | Recommended Scopes |
+|-------------|-------------------|
+| Development | `read:*` |
+| Staging | `read:*, write:limited` |
+| Production | `Only required scopes` |
 
 ## Output
-- `sendDefaultPii: false` configured explicitly
-- Client-side scrubbing removing sensitive headers, bodies, and PII patterns
-- Server-side data scrubber enabled with custom sensitive fields
-- Auth tokens created with minimal scopes and expiration dates
-- Allowed domains restricting event sources (browser projects)
-- Audit logging enabled for compliance tracking
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
 
 ## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| PII in error events | `sendDefaultPii: true` or PII in error messages | Set `sendDefaultPii: false`, add `beforeSend` scrubbing |
-| Token compromised | Token in source code or leaked | Revoke immediately at sentry.io/settings/auth-tokens/, rotate |
-| Unauthorized events | DSN used from unauthorized domain | Configure allowed domains in Client Keys settings |
-| Audit log gaps | Organization plan doesn't include audit logs | Upgrade to Business or Enterprise plan |
+## Examples
+
+### Service Account Pattern
+```typescript
+const clients = {
+  reader: new SentryClient({
+    apiKey: process.env.SENTRY_READ_KEY,
+  }),
+  writer: new SentryClient({
+    apiKey: process.env.SENTRY_WRITE_KEY,
+  }),
+};
+```
+
+### Webhook Signature Verification
+```typescript
+import crypto from 'crypto';
+
+function verifyWebhookSignature(
+  payload: string, signature: string, secret: string
+): boolean {
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+- [ ] Audit logging enabled
+
+### Audit Logging
+```typescript
+interface AuditEntry {
+  timestamp: Date;
+  action: string;
+  userId: string;
+  resource: string;
+  result: 'success' | 'failure';
+  metadata?: Record<string, any>;
+}
+
+async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
+  const log: AuditEntry = { ...entry, timestamp: new Date() };
+
+  // Log to Sentry analytics
+  await sentryClient.track('audit', log);
+
+  // Also log locally for compliance
+  console.log('[AUDIT]', JSON.stringify(log));
+}
+
+// Usage
+await auditLog({
+  action: 'sentry.api.call',
+  userId: currentUser.id,
+  resource: '/v1/resource',
+  result: 'success',
+});
+```
 
 ## Resources
-- [Data Privacy](https://docs.sentry.io/product/data-management-settings/data-privacy/)
-- [Data Scrubbing](https://docs.sentry.io/product/data-management-settings/scrubbing/)
-- [Security Policy](https://sentry.io/security/)
-- [Auth Tokens](https://docs.sentry.io/api/guides/create-auth-token/)
+- [Sentry Security Guide](https://docs.sentry.com/security)
+- [Sentry API Scopes](https://docs.sentry.com/scopes)
+
+## Next Steps
+For production deployment, see `sentry-prod-checklist`.

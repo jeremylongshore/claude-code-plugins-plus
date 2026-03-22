@@ -1,62 +1,121 @@
 ---
 name: techsmith-prod-checklist
 description: |
-  TechSmith prod checklist for Snagit COM API and Camtasia automation.
-  Use when working with TechSmith screen capture and video editing automation.
-  Trigger: "techsmith prod checklist".
-allowed-tools: Read, Write, Edit, Bash(powershell:*), Grep
+  Execute TechSmith production deployment checklist and rollback procedures.
+  Use when deploying TechSmith integrations to production, preparing for launch,
+  or implementing go-live procedures.
+  Trigger with phrases like "techsmith production", "deploy techsmith",
+  "techsmith go-live", "techsmith launch checklist".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, screen-capture, video, techsmith]
 compatible-with: claude-code
+tags: [saas, techsmith]
 ---
 
-# TechSmith Prod Checklist
+# TechSmith Production Checklist
 
 ## Overview
+Complete checklist for deploying TechSmith integrations to production.
 
-Guidance for prod checklist with TechSmith Snagit COM API and Camtasia automation.
+## Prerequisites
+- Staging environment tested and verified
+- Production API keys available
+- Deployment pipeline configured
+- Monitoring and alerting ready
 
 ## Instructions
 
-### Key Considerations
+### Step 1: Pre-Deployment Configuration
+- [ ] Production API keys in secure vault
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
 
-- Snagit COM API is Windows-only (requires COM registration)
-- Camtasia Producer CLI for batch rendering
-- PowerShell is the primary scripting language
-- Python interop via `pywin32` (`pip install pywin32`)
+### Step 2: Code Quality Verification
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all TechSmith error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate
 
-### Snagit COM Input Types
+### Step 3: Infrastructure Setup
+- [ ] Health check endpoint includes TechSmith connectivity
+- [ ] Monitoring/alerting configured
+- [ ] Circuit breaker pattern implemented
+- [ ] Graceful degradation configured
 
-| Value | Constant | Description |
-|-------|----------|-------------|
-| 0 | siiDesktop | Full desktop |
-| 2 | siiRegion | User-selected region |
-| 4 | siiWindow | Active window |
-| 5 | siiFile | From file |
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
 
-### Snagit COM Output Types
+### Step 5: Deploy with Gradual Rollout
+```bash
+# Pre-flight checks
+curl -f https://staging.example.com/health
+curl -s https://status.techsmith.com
 
-| Value | Constant | Description |
-|-------|----------|-------------|
-| 1 | sioClipboard | Copy to clipboard |
-| 2 | sioFile | Save to file |
-| 4 | sioPrinter | Send to printer |
+# Gradual rollout - start with canary (10%)
+kubectl apply -f k8s/production.yaml
+kubectl set image deployment/techsmith-integration app=image:new --record
+kubectl rollout pause deployment/techsmith-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/techsmith-integration
+kubectl rollout pause deployment/techsmith-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/techsmith-integration
+kubectl rollout status deployment/techsmith-integration
+```
+
+## Output
+- Deployed TechSmith integration
+- Health checks passing
+- Monitoring active
+- Rollback procedure documented
 
 ## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > 5000ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| COM not registered | Snagit not installed | Install and register COM server |
-| Permission denied | Not running as admin | Elevate PowerShell |
-| File locked | Snagit Editor has file open | Close editor first |
+## Examples
+
+### Health Check Implementation
+```typescript
+async function healthCheck(): Promise<{ status: string; techsmith: any }> {
+  const start = Date.now();
+  try {
+    await techsmithClient.ping();
+    return { status: 'healthy', techsmith: { connected: true, latencyMs: Date.now() - start } };
+  } catch (error) {
+    return { status: 'degraded', techsmith: { connected: false, latencyMs: Date.now() - start } };
+  }
+}
+```
+
+### Immediate Rollback
+```bash
+kubectl rollout undo deployment/techsmith-integration
+kubectl rollout status deployment/techsmith-integration
+```
 
 ## Resources
-
-- [Snagit COM Samples](https://github.com/TechSmith/Snagit-COM-Samples)
-- [TechSmith Support](https://support.techsmith.com/)
+- [TechSmith Status](https://status.techsmith.com)
+- [TechSmith Support](https://docs.techsmith.com/support)
 
 ## Next Steps
-
-See related TechSmith skills for more automation patterns.
+For version upgrades, see `techsmith-upgrade-migration`.

@@ -1,102 +1,201 @@
 ---
 name: retellai-webhooks-events
 description: |
-  Retell AI webhooks events — AI voice agent and phone call automation.
-  Use when working with Retell AI for voice agents, phone calls, or telephony.
-  Trigger with phrases like "retell webhooks events", "retellai-webhooks-events", "voice agent".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
-version: 2.0.0
+  Implement Retell AI webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling Retell AI event notifications securely.
+  Trigger with phrases like "retellai webhook", "retellai events",
+  "retellai webhook signature", "handle retellai events", "retellai notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
+version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, retellai, voice, telephony, ai-agents]
-compatible-with: claude-code, codex, openclaw
+compatible-with: claude-code
+tags: [saas, retellai]
 ---
 
-# Retell AI Webhooks Events
+# Retell AI Webhooks & Events
 
 ## Overview
-Handle Retell AI webhook events for call lifecycle, transcripts, and function execution.
+Securely handle Retell AI webhooks with signature validation and replay protection.
 
 ## Prerequisites
-- HTTPS webhook endpoint
-- Agent configured with webhook URL
+- Retell AI webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
+
+## Webhook Endpoint Setup
+
+### Express.js
+```typescript
+import express from 'express';
+import crypto from 'crypto';
+
+const app = express();
+
+// IMPORTANT: Raw body needed for signature verification
+app.post('/webhooks/retellai',
+  express.raw({ type: 'application/json' }),
+  async (req, res) => {
+    const signature = req.headers['x-retellai-signature'] as string;
+    const timestamp = req.headers['x-retellai-timestamp'] as string;
+
+    if (!verifyRetell AISignature(req.body, signature, timestamp)) {
+      return res.status(401).json({ error: 'Invalid signature' });
+    }
+
+    const event = JSON.parse(req.body.toString());
+    await handleRetell AIEvent(event);
+
+    res.status(200).json({ received: true });
+  }
+);
+```
+
+## Signature Verification
+
+```typescript
+function verifyRetell AISignature(
+  payload: Buffer,
+  signature: string,
+  timestamp: string
+): boolean {
+  const secret = process.env.RETELLAI_WEBHOOK_SECRET!;
+
+  // Reject old timestamps (replay attack protection)
+  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
+  if (timestampAge > 300000) { // 5 minutes
+    console.error('Webhook timestamp too old');
+    return false;
+  }
+
+  // Compute expected signature
+  const signedPayload = `${timestamp}.${payload.toString()}`;
+  const expectedSignature = crypto
+    .createHmac('sha256', secret)
+    .update(signedPayload)
+    .digest('hex');
+
+  // Timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+```
+
+## Event Handler Pattern
+
+```typescript
+type Retell AIEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+
+interface Retell AIEvent {
+  id: string;
+  type: Retell AIEventType;
+  data: Record<string, any>;
+  created: string;
+}
+
+const eventHandlers: Record<Retell AIEventType, (data: any) => Promise<void>> = {
+  'resource.created': async (data) => { /* handle */ },
+  'resource.updated': async (data) => { /* handle */ },
+  'resource.deleted': async (data) => { /* handle */ }
+};
+
+async function handleRetell AIEvent(event: Retell AIEvent): Promise<void> {
+  const handler = eventHandlers[event.type];
+
+  if (!handler) {
+    console.log(`Unhandled event type: ${event.type}`);
+    return;
+  }
+
+  try {
+    await handler(event.data);
+    console.log(`Processed ${event.type}: ${event.id}`);
+  } catch (error) {
+    console.error(`Failed to process ${event.type}: ${event.id}`, error);
+    throw error; // Rethrow to trigger retry
+  }
+}
+```
+
+## Idempotency Handling
+
+```typescript
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function isEventProcessed(eventId: string): Promise<boolean> {
+  const key = `retellai:event:${eventId}`;
+  const exists = await redis.exists(key);
+  return exists === 1;
+}
+
+async function markEventProcessed(eventId: string): Promise<void> {
+  const key = `retellai:event:${eventId}`;
+  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+}
+```
+
+## Webhook Testing
+
+```bash
+# Use Retell AI CLI to send test events
+retellai webhooks trigger resource.created --url http://localhost:3000/webhooks/retellai
+
+# Or use webhook.site for debugging
+curl -X POST https://webhook.site/your-uuid \
+  -H "Content-Type: application/json" \
+  -d '{"type": "resource.created", "data": {}}'
+```
 
 ## Instructions
 
-### Step 1: Configure Webhook URL
-```typescript
-// Set webhook URL in agent configuration
-await retell.agent.update(agentId, {
-  webhook_url: 'https://your-app.com/webhooks/retell',
-});
-```
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the Retell AI dashboard.
 
-### Step 2: Webhook Endpoint
-```typescript
-import express from 'express';
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
 
-const app = express();
-app.post('/webhooks/retell', express.json(), async (req, res) => {
-  const { event, call } = req.body;
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
 
-  switch (event) {
-    case 'call_started':
-      console.log(`Call started: ${call.call_id} from ${call.from_number}`);
-      break;
-
-    case 'call_ended':
-      console.log(`Call ended: ${call.call_id}`);
-      console.log(`  Duration: ${call.duration_ms}ms`);
-      console.log(`  Status: ${call.call_status}`);
-      if (call.transcript) {
-        await saveTranscript(call.call_id, call.transcript);
-      }
-      break;
-
-    case 'call_analyzed':
-      console.log(`Analysis ready: ${call.call_id}`);
-      console.log(`  Summary: ${call.call_analysis?.call_summary}`);
-      break;
-
-    default:
-      console.log(`Unhandled event: ${event}`);
-  }
-
-  res.status(200).json({ received: true });
-});
-```
-
-### Step 3: Handle Function Calls During Conversation
-```typescript
-// When agent triggers a function, Retell calls your URL
-app.post('/functions/book-appointment', express.json(), async (req, res) => {
-  const { patient_name, phone, date, time } = req.body.args;
-
-  // Process the booking
-  const booking = await bookAppointment(patient_name, phone, date, time);
-
-  // Return response for agent to speak
-  res.json({
-    result: `Appointment booked for ${patient_name} on ${date} at ${time}. Confirmation number: ${booking.id}`,
-  });
-});
-```
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Webhook handling for call lifecycle events
-- Transcript storage on call completion
-- Function execution during live calls
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| No webhook events | URL not configured | Set webhook_url on agent |
-| Function timeout | Slow backend | Respond within 5 seconds |
-| Missing transcript | Short call | Transcript only for calls > 5 seconds |
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
+
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/retellai \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
 
 ## Resources
-- [Retell AI Documentation](https://docs.retellai.com)
-- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
+- [Retell AI Webhooks Guide](https://docs.retellai.com/webhooks)
+- [Webhook Security Best Practices](https://docs.retellai.com/webhooks/security)
 
 ## Next Steps
-Common errors: `retellai-common-errors`
+For performance optimization, see `retellai-performance-tuning`.

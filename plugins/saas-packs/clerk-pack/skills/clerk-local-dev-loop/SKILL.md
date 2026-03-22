@@ -1,201 +1,119 @@
 ---
 name: clerk-local-dev-loop
 description: |
-  Set up local development workflow with Clerk.
-  Use when configuring development environment, testing auth locally,
-  or setting up hot reload with Clerk.
-  Trigger with phrases like "clerk local dev", "clerk development",
-  "test clerk locally", "clerk dev environment".
+  Configure Clerk local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Clerk.
+  Trigger with phrases like "clerk dev setup", "clerk local development",
+  "clerk dev environment", "develop with clerk".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, clerk, testing, authentication, workflow]
-
+compatible-with: claude-code
+tags: [saas, clerk]
 ---
+
 # Clerk Local Dev Loop
 
 ## Overview
-Configure an efficient local development workflow with Clerk authentication, including test users, hot reload, and mock auth for unit tests.
+Set up a fast, reproducible local development workflow for Clerk.
 
 ## Prerequisites
-- Clerk SDK installed (`clerk-install-auth` completed)
-- Development instance created in Clerk Dashboard
-- Node.js development environment
+- Completed `clerk-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
 ## Instructions
 
-### Step 1: Configure Development Instance
-Create a separate Clerk development instance to isolate test data from production.
+### Step 1: Create Project Structure
+```
+my-clerk-project/
+├── src/
+│   ├── clerk/
+│   │   ├── client.ts       # Clerk client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── clerk.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
+```
 
+### Step 2: Configure Environment
 ```bash
-# .env.local — use test keys (pk_test_ / sk_test_)
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
+# Copy environment template
+cp .env.example .env.local
 
-# Optional: Enable Clerk debug logging
-CLERK_DEBUG=true
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-Clerk development instances provide:
-- No email verification required
-- Test phone numbers accepted
-- Relaxed rate limits
-- OAuth with test credentials
-
-### Step 2: Set Up Test Users
-```typescript
-// scripts/seed-test-users.ts
-import { createClerkClient } from '@clerk/backend'
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY! })
-
-async function seedTestUsers() {
-  const users = [
-    { emailAddress: ['admin@test.com'], password: 'test1234', firstName: 'Admin', lastName: 'User' },
-    { emailAddress: ['member@test.com'], password: 'test1234', firstName: 'Member', lastName: 'User' },
-  ]
-
-  for (const user of users) {
-    try {
-      await clerk.users.createUser(user)
-      console.log(`Created: ${user.emailAddress[0]}`)
-    } catch (err: any) {
-      if (err.status === 422) {
-        console.log(`Already exists: ${user.emailAddress[0]}`)
-      } else {
-        throw err
-      }
-    }
-  }
-}
-
-seedTestUsers()
-```
-
-Run with:
-```bash
-npx tsx scripts/seed-test-users.ts
-```
-
-### Step 3: Configure Hot Reload
-```typescript
-// next.config.ts — ensure Clerk works with hot reload
-const nextConfig = {
-  // Clerk SDK is compatible with Turbopack
-  experimental: {
-    // turbo: {}, // Uncomment if using Turbopack
-  },
-  // Prevent Clerk SDK from being bundled incorrectly
-  serverExternalPackages: ['@clerk/backend'],
-}
-
-export default nextConfig
-```
-
-```bash
-# Start dev server with HTTPS (required for some Clerk features)
-npx next dev --experimental-https
-```
-
-### Step 4: Development Scripts
+### Step 3: Setup Hot Reload
 ```json
-// package.json scripts
 {
   "scripts": {
-    "dev": "next dev",
-    "dev:https": "next dev --experimental-https",
-    "dev:seed": "tsx scripts/seed-test-users.ts",
-    "dev:tunnel": "ngrok http 3000",
-    "dev:webhook": "ngrok http 3000 --log stdout"
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   }
 }
 ```
 
-### Step 5: Mock Authentication for Tests
+### Step 4: Configure Testing
 ```typescript
-// test/helpers/clerk-mock.ts
-import { vi } from 'vitest'
+import { describe, it, expect, vi } from 'vitest';
+import { ClerkClient } from '../src/clerk/client';
 
-export function mockClerkAuth(overrides: { userId?: string; orgId?: string } = {}) {
-  const mockAuth = {
-    userId: overrides.userId || 'user_test_123',
-    orgId: overrides.orgId || null,
-    getToken: vi.fn().mockResolvedValue('mock_token'),
-    has: vi.fn().mockReturnValue(true),
-  }
-
-  vi.mock('@clerk/nextjs/server', () => ({
-    auth: vi.fn().mockResolvedValue(mockAuth),
-    currentUser: vi.fn().mockResolvedValue({
-      id: mockAuth.userId,
-      firstName: 'Test',
-      lastName: 'User',
-      emailAddresses: [{ emailAddress: 'test@test.com' }],
-    }),
-    clerkMiddleware: vi.fn(() => (req: any, res: any, next: any) => next()),
-  }))
-
-  return mockAuth
-}
-```
-
-```typescript
-// test/api/data.test.ts
-import { describe, it, expect, beforeEach } from 'vitest'
-import { mockClerkAuth } from '../helpers/clerk-mock'
-
-describe('GET /api/data', () => {
-  beforeEach(() => {
-    mockClerkAuth({ userId: 'user_test_123' })
-  })
-
-  it('returns data for authenticated user', async () => {
-    const res = await fetch('/api/data')
-    expect(res.status).toBe(200)
-  })
-})
+describe('Clerk Client', () => {
+  it('should initialize with API key', () => {
+    const client = new ClerkClient({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
 ```
 
 ## Output
-- Development instance with test keys configured
-- Test users seeded via script
-- HTTPS dev server running for Clerk compatibility
-- Vitest mock helpers for auth in unit tests
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Clerk development
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Dev/prod key mismatch | Using `pk_live_` in dev | Switch to `pk_test_` / `sk_test_` keys |
-| SSL required | Clerk needs HTTPS locally | Run `next dev --experimental-https` |
-| Cookies not set | Wrong domain config | Check Clerk Dashboard domain settings |
-| Session not persisting | Browser storage issue | Clear cookies, check localhost domain |
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
 
 ## Examples
 
-### Playwright Auth Fixture for E2E Tests
+### Mock Clerk Responses
 ```typescript
-// e2e/fixtures/auth.ts
-import { test as base } from '@playwright/test'
+vi.mock('@clerk/sdk', () => ({
+  ClerkClient: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
 
-export const test = base.extend({
-  authenticatedPage: async ({ page }, use) => {
-    await page.goto('/sign-in')
-    await page.fill('input[name="identifier"]', 'admin@test.com')
-    await page.click('button:has-text("Continue")')
-    await page.fill('input[name="password"]', 'test1234')
-    await page.click('button:has-text("Continue")')
-    await page.waitForURL('/dashboard')
-    await use(page)
-  },
-})
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=CLERK=* npm run dev
 ```
 
 ## Resources
-- [Clerk Development Mode](https://clerk.com/docs/deployments/overview)
-- [Clerk Testing Guide](https://clerk.com/docs/testing/overview)
-- [Next.js HTTPS Dev](https://nextjs.org/docs/app/api-reference/cli/next#https-for-local-development)
+- [Clerk SDK Reference](https://docs.clerk.com/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
-Proceed to `clerk-sdk-patterns` for common SDK usage patterns.
+See `clerk-sdk-patterns` for production-ready code patterns.
