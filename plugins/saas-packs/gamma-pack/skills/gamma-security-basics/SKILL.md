@@ -162,16 +162,5 @@ function createAuditedClient(userId: string) {
 - [OWASP API Security](https://owasp.org/API-Security/)
 
 ## Next Steps
+
 Proceed to `gamma-prod-checklist` for production readiness.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Examples
-
-**Basic usage**: Apply gamma security basics to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma security basics for production environments with multiple constraints and team-specific requirements.

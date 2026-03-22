@@ -202,10 +202,5 @@ jobs:
 - [Google Cloud Run](https://cloud.google.com/run/docs)
 
 ## Next Steps
+
 Proceed to `gamma-webhooks-events` for event handling.
-
-## Examples
-
-**Basic usage**: Apply gamma deploy integration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma deploy integration for production environments with multiple constraints and team-specific requirements.
