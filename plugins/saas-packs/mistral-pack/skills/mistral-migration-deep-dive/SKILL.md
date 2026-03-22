@@ -1,12 +1,12 @@
 ---
 name: mistral-migration-deep-dive
 description: |
-  Execute Mistral AI major migrations and re-architecture strategies.
+  Execute migration to Mistral AI from OpenAI, Anthropic, or other providers.
   Use when migrating to Mistral AI from another provider, performing major refactoring,
   or re-platforming existing AI integrations to Mistral AI.
   Trigger with phrases like "migrate to mistral", "mistral migration",
-  "switch to mistral", "mistral replatform", "openai to mistral".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  "switch to mistral", "openai to mistral", "anthropic to mistral".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,97 +17,233 @@ tags: [saas, mistral, migration]
 # Mistral AI Migration Deep Dive
 
 ## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
-
-## Table of Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
+!`npm list openai @anthropic-ai/sdk @mistralai/mistralai 2>/dev/null | grep -E "openai|anthropic|mistral" || echo 'No AI SDKs found'`
 
 ## Overview
-Comprehensive guide for migrating to Mistral AI from other providers (OpenAI, Anthropic) or performing major version upgrades. Covers assessment, adapter pattern, feature-flag rollout, model mapping, validation testing, and rollback.
+Comprehensive migration guide from OpenAI or Anthropic to Mistral AI using the adapter pattern with feature-flag controlled rollout. Covers model mapping, API differences, prompt adjustments, validation testing, and rollback procedures.
 
 ## Prerequisites
-- Current system documentation
-- Mistral AI SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+- Current AI integration documented
+- Mistral AI SDK installed (`@mistralai/mistralai`)
+- Feature flag infrastructure (env vars or LaunchDarkly)
+- Rollback plan tested
 
-## Migration Types
+## Migration Complexity
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| OpenAI to Mistral | Medium | Weeks | Medium |
-| Multi-provider | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+| Migration | Effort | Duration | Risk |
+|-----------|--------|----------|------|
+| Fresh install (no existing AI) | Low | Days | Low |
+| OpenAI to Mistral | Medium | 1-2 weeks | Medium |
+| Anthropic to Mistral | Medium | 1-2 weeks | Medium |
+| Multi-provider to Mistral | High | 2-4 weeks | Medium |
 
 ## Instructions
 
-### Step 1: Pre-Migration Assessment
-Audit current AI code: find all files with AI imports, count integration points (chat completions, embeddings, function calling, streaming). Detect current provider and estimate effort (>10 points = high, >3 = medium, else low).
+### Step 1: Assessment — Find All AI Touchpoints
 
-### Step 2: Create Provider-Agnostic Adapter
-Define `AIAdapter` interface with `chat()`, `chatStream()`, and `embed()` methods. Use `Message`, `ChatOptions`, and `ChatResponse` types to abstract away provider differences.
+```bash
+set -euo pipefail
+# Count integration points
+echo "=== AI Integration Assessment ==="
+echo "OpenAI imports: $(grep -r "from 'openai'" src/ --include='*.ts' -l 2>/dev/null | wc -l)"
+echo "Anthropic imports: $(grep -r "from '@anthropic'" src/ --include='*.ts' -l 2>/dev/null | wc -l)"
+echo "Chat completions: $(grep -r "chat\.completions\|messages\.create" src/ --include='*.ts' -c 2>/dev/null | wc -l)"
+echo "Embeddings: $(grep -r "embeddings\.create" src/ --include='*.ts' -c 2>/dev/null | wc -l)"
+echo "Streaming: $(grep -r "stream\|for await" src/ --include='*.ts' -c 2>/dev/null | wc -l)"
+```
 
-### Step 3: Implement OpenAI Adapter
-Build `OpenAIAdapter` implementing `AIAdapter` that wraps `openai` SDK. Maps OpenAI-specific fields (prompt_tokens, completion_tokens) to normalized types.
+### Step 2: Model Mapping
 
-### Step 4: Implement Mistral Adapter
-Build `MistralAdapter` implementing `AIAdapter` that wraps `@mistralai/mistralai` SDK. Maps Mistral-specific fields (promptTokens, completionTokens) to normalized types.
+| OpenAI | Anthropic | Mistral | Notes |
+|--------|-----------|---------|-------|
+| gpt-4o | claude-3-5-sonnet | `mistral-large-latest` | Complex reasoning |
+| gpt-4o-mini | claude-3-5-haiku | `mistral-small-latest` | Fast, cheap |
+| gpt-3.5-turbo | — | `mistral-small-latest` | General purpose |
+| text-embedding-3-small | — | `mistral-embed` | 1024 dims (vs 1536) |
+| — | — | `codestral-latest` | Code-specialized |
+| gpt-4-vision | claude-3-5-sonnet | `pixtral-large-latest` | Vision + text |
 
-### Step 5: Feature Flag Migration
-Create `createAIAdapter()` factory using `MISTRAL_ROLLOUT_PERCENT` env var. Random percentage check routes traffic to Mistral or OpenAI adapter.
+### Step 3: Provider-Agnostic Adapter
 
-### Step 6: Gradual Rollout
-Phase rollout: 0% (validation) -> 5% (canary) -> 25% -> 50% -> 100%. Monitor errors and latency at each phase for 24-48 hours before advancing.
+```typescript
+// adapters/types.ts
+export interface Message {
+  role: 'system' | 'user' | 'assistant' | 'tool';
+  content: string;
+}
 
-### Step 7: Model Mapping
-Map models: gpt-3.5-turbo -> mistral-small-latest, gpt-4/gpt-4-turbo -> mistral-large-latest, text-embedding-ada-002 -> mistral-embed (1024 dimensions).
+export interface ChatOptions {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+  stream?: boolean;
+}
 
-### Step 8: Validation Testing
-Run A/B comparison tests with identical prompts at temperature=0. Verify both providers return non-empty content. Log results for manual quality review.
+export interface ChatResponse {
+  content: string;
+  usage: { inputTokens: number; outputTokens: number };
+  model: string;
+}
 
-### Step 9: Rollback Plan
-Set `MISTRAL_ROLLOUT_PERCENT=0` to immediately route all traffic back to OpenAI. Verify health and notify team.
+export interface AIAdapter {
+  chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse>;
+  chatStream(messages: Message[], options?: ChatOptions): AsyncGenerator<string>;
+  embed(texts: string[]): Promise<number[][]>;
+}
+```
 
-## Output
-- Migration assessment with effort estimation
-- Provider-agnostic adapter interface
-- OpenAI and Mistral adapter implementations
-- Feature-flag controlled gradual rollout
-- Model mapping configuration
-- A/B validation test suite
-- Rollback procedure
+### Step 4: Mistral Adapter
+
+```typescript
+// adapters/mistral.adapter.ts
+import { Mistral } from '@mistralai/mistralai';
+import type { AIAdapter, Message, ChatOptions, ChatResponse } from './types.js';
+
+export class MistralAdapter implements AIAdapter {
+  private client: Mistral;
+  private defaultModel: string;
+
+  constructor(apiKey: string, defaultModel = 'mistral-small-latest') {
+    this.client = new Mistral({ apiKey });
+    this.defaultModel = defaultModel;
+  }
+
+  async chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse> {
+    const response = await this.client.chat.complete({
+      model: options?.model ?? this.defaultModel,
+      messages,
+      temperature: options?.temperature,
+      maxTokens: options?.maxTokens,
+    });
+
+    return {
+      content: response.choices?.[0]?.message?.content ?? '',
+      usage: {
+        inputTokens: response.usage?.promptTokens ?? 0,
+        outputTokens: response.usage?.completionTokens ?? 0,
+      },
+      model: response.model ?? this.defaultModel,
+    };
+  }
+
+  async *chatStream(messages: Message[], options?: ChatOptions): AsyncGenerator<string> {
+    const stream = await this.client.chat.stream({
+      model: options?.model ?? this.defaultModel,
+      messages,
+      temperature: options?.temperature,
+      maxTokens: options?.maxTokens,
+    });
+
+    for await (const event of stream) {
+      const content = event.data?.choices?.[0]?.delta?.content;
+      if (content) yield content;
+    }
+  }
+
+  async embed(texts: string[]): Promise<number[][]> {
+    const response = await this.client.embeddings.create({
+      model: 'mistral-embed',
+      inputs: texts,
+    });
+    return response.data.map(d => d.embedding);
+  }
+}
+```
+
+### Step 5: Feature-Flag Controlled Rollout
+
+```typescript
+// adapters/factory.ts
+import { MistralAdapter } from './mistral.adapter.js';
+import { OpenAIAdapter } from './openai.adapter.js';
+
+export function createAdapter(): AIAdapter {
+  const rolloutPercent = parseInt(process.env.MISTRAL_ROLLOUT_PERCENT ?? '0');
+  const useMistral = Math.random() * 100 < rolloutPercent;
+
+  if (useMistral) {
+    console.log('[AI] Using Mistral');
+    return new MistralAdapter(process.env.MISTRAL_API_KEY!);
+  }
+
+  console.log('[AI] Using OpenAI (legacy)');
+  return new OpenAIAdapter(process.env.OPENAI_API_KEY!);
+}
+```
+
+### Step 6: Gradual Rollout Plan
+
+| Phase | Rollout % | Duration | Criteria to Advance |
+|-------|-----------|----------|---------------------|
+| 0. Validation | 0% | 1-2 days | A/B tests pass |
+| 1. Canary | 5% | 2-3 days | Error rate < 1%, latency OK |
+| 2. Partial | 25% | 3-5 days | Quality metrics match |
+| 3. Majority | 50% | 5-7 days | Cost reduction confirmed |
+| 4. Full | 100% | — | Remove old adapter code |
+
+```bash
+# Advance rollout
+export MISTRAL_ROLLOUT_PERCENT=5   # Canary
+export MISTRAL_ROLLOUT_PERCENT=25  # Partial
+export MISTRAL_ROLLOUT_PERCENT=100 # Full migration
+export MISTRAL_ROLLOUT_PERCENT=0   # Emergency rollback
+```
+
+### Step 7: A/B Validation Testing
+
+```typescript
+async function validateMigration(adapter1: AIAdapter, adapter2: AIAdapter) {
+  const testPrompts = [
+    'Summarize: TypeScript adds static typing to JavaScript.',
+    'Classify: "The app crashes on login" — bug, feature, or question?',
+    'What is 2+2?',
+  ];
+
+  for (const prompt of testPrompts) {
+    const messages = [{ role: 'user' as const, content: prompt }];
+    const [r1, r2] = await Promise.all([
+      adapter1.chat(messages, { temperature: 0 }),
+      adapter2.chat(messages, { temperature: 0 }),
+    ]);
+
+    console.log(`Prompt: ${prompt.slice(0, 50)}...`);
+    console.log(`  Provider 1: ${r1.content.slice(0, 100)} (${r1.usage.outputTokens} tokens)`);
+    console.log(`  Provider 2: ${r2.content.slice(0, 100)} (${r2.usage.outputTokens} tokens)`);
+    console.log();
+  }
+}
+```
+
+### Key API Differences
+
+| Feature | OpenAI | Mistral |
+|---------|--------|---------|
+| SDK import | `import OpenAI from 'openai'` | `import { Mistral } from '@mistralai/mistralai'` |
+| Chat method | `client.chat.completions.create()` | `client.chat.complete()` |
+| Stream events | `chunk.choices[0]?.delta?.content` | `event.data?.choices?.[0]?.delta?.content` |
+| Embeddings | `client.embeddings.create()` | `client.embeddings.create()` (same) |
+| Tool calling | Identical JSON Schema format | Identical JSON Schema format |
+| JSON mode | `response_format: { type: 'json_object' }` | `responseFormat: { type: 'json_object' }` |
+| Vision | Base64 in content array | Same approach with `pixtral` models |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Different output format | API differences | Normalize in adapter |
-| Missing feature | Not supported by Mistral | Implement fallback |
-| Performance difference | Model characteristics | Adjust timeouts |
-| Cost increase | Token differences | Monitor and optimize |
-
-## Examples
-
-### Quick A/B Comparison
-```typescript
-const [openaiResponse, mistralResponse] = await Promise.all([
-  openaiAdapter.chat(messages, { temperature: 0 }),
-  mistralAdapter.chat(messages, { temperature: 0 }),
-]);
-console.log('OpenAI tokens:', openaiResponse.usage);
-console.log('Mistral tokens:', mistralResponse.usage);
-```
-
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
+| Different output quality | Model differences | Adjust prompts, tune temperature |
+| Embedding dimension mismatch | 1536 vs 1024 | Re-embed all vectors, update vector DB config |
+| Missing feature | Not supported by Mistral | Implement fallback in adapter |
+| Cost increase | Token counting differs | Monitor and optimize prompts |
 
 ## Resources
 - [Mistral AI Documentation](https://docs.mistral.ai/)
+- [Mistral vs OpenAI Comparison](https://docs.mistral.ai/getting-started/models/)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Feature Flags Best Practices](https://www.martinfowler.com/articles/feature-toggles.html)
+
+## Output
+- Integration assessment with effort estimation
+- Provider-agnostic adapter interface
+- Mistral adapter implementation
+- Feature-flag controlled gradual rollout
+- Model mapping and API difference reference
+- A/B validation test suite
+- Rollback procedure (set MISTRAL_ROLLOUT_PERCENT=0)

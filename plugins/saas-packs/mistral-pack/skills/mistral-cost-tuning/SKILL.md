@@ -5,7 +5,7 @@ description: |
   Use when analyzing Mistral billing, reducing API costs,
   or implementing usage monitoring and budget alerts.
   Trigger with phrases like "mistral cost", "mistral billing",
-  "reduce mistral costs", "mistral pricing", "mistral expensive", "mistral budget".
+  "reduce mistral costs", "mistral pricing", "mistral budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,175 +17,130 @@ tags: [saas, mistral, api, monitoring, cost-optimization]
 # Mistral AI Cost Tuning
 
 ## Overview
-Optimize Mistral AI costs through smart model selection, token management, and usage monitoring.
+Optimize Mistral AI costs through model selection, token management, caching, batch inference, and budget monitoring. Mistral offers the best price-performance in the market with models from $0.1/M tokens (Ministral/Small) to $0.5/M tokens (Large).
 
 ## Prerequisites
-- Access to Mistral AI console
+- Access to [Mistral AI console](https://console.mistral.ai/) for usage data
 - Understanding of current usage patterns
 - Database for usage tracking (optional)
-- Alerting system configured (optional)
 
-## Pricing Overview
+## Pricing Reference (as of 2025)
 
-| Model | Input (per 1M tokens) | Output (per 1M tokens) | Best For |
-|-------|----------------------|------------------------|----------|
-| mistral-small-latest | $0.20 | $0.60 | Fast, simple tasks |
-| mistral-large-latest | $2.00 | $6.00 | Complex reasoning |
-| mistral-embed | $0.10 | - | Embeddings |
+| Model | Input $/M tokens | Output $/M tokens | Best For |
+|-------|------------------|--------------------|----------|
+| `ministral-latest` (3B) | $0.10 | $0.10 | Simple tasks, edge |
+| `mistral-small-latest` | $0.10 | $0.30 | General purpose, fast |
+| `codestral-latest` | $0.30 | $0.90 | Code generation |
+| `mistral-large-latest` | $0.50 | $1.50 | Complex reasoning |
+| `pixtral-large-latest` | $2.00 | $6.00 | Vision + text |
+| `mistral-embed` | $0.10 | — | Embeddings |
+| Batch API (any model) | **50% off** | **50% off** | Non-realtime bulk |
 
-**Note:** Prices subject to change. Check console.mistral.ai for current pricing.
+**Always check [docs.mistral.ai/deployment/laplateforme/pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/) for current rates.**
 
 ## Instructions
 
-### Step 1: Cost Estimation Calculator
+### Step 1: Cost Calculator
 
 ```typescript
-interface TokenUsage {
-  inputTokens: number;
-  outputTokens: number;
+const PRICING: Record<string, { input: number; output: number }> = {
+  'ministral-latest':      { input: 0.10, output: 0.10 },
+  'mistral-small-latest':  { input: 0.10, output: 0.30 },
+  'codestral-latest':      { input: 0.30, output: 0.90 },
+  'mistral-large-latest':  { input: 0.50, output: 1.50 },
+  'pixtral-large-latest':  { input: 2.00, output: 6.00 },
+  'mistral-embed':         { input: 0.10, output: 0 },
+};
+
+function calculateCost(
+  model: string,
+  inputTokens: number,
+  outputTokens: number,
+  isBatch = false,
+): number {
+  const p = PRICING[model] ?? PRICING['mistral-small-latest'];
+  const multiplier = isBatch ? 0.5 : 1.0;
+  return ((inputTokens / 1e6) * p.input + (outputTokens / 1e6) * p.output) * multiplier;
 }
 
-interface CostEstimate {
-  model: string;
-  inputCost: number;
-  outputCost: number;
-  totalCost: number;
-  currency: string;
-}
-
-const PRICING = {
-  'mistral-small-latest': { input: 0.20, output: 0.60 },
-  'mistral-large-latest': { input: 2.00, output: 6.00 },
-  'mistral-embed': { input: 0.10, output: 0 },
-} as const;
-
-function estimateCost(model: keyof typeof PRICING, usage: TokenUsage): CostEstimate {
-  const prices = PRICING[model];
-  const inputCost = (usage.inputTokens / 1_000_000) * prices.input;
-  const outputCost = (usage.outputTokens / 1_000_000) * prices.output;
-
-  return {
-    model,
-    inputCost,
-    outputCost,
-    totalCost: inputCost + outputCost,
-    currency: 'USD',
-  };
-}
-
-// Usage
-const cost = estimateCost('mistral-small-latest', {
-  inputTokens: 500_000,
-  outputTokens: 200_000,
-});
-console.log(`Estimated cost: $${cost.totalCost.toFixed(4)}`);
-// Estimated cost: $0.2200
+// Example: 100K requests/month, avg 500 in + 200 out tokens
+const monthlySmall = calculateCost('mistral-small-latest', 50_000_000, 20_000_000);
+const monthlyLarge = calculateCost('mistral-large-latest', 50_000_000, 20_000_000);
+console.log(`Small: $${monthlySmall.toFixed(2)}/month`);  // $11.00
+console.log(`Large: $${monthlyLarge.toFixed(2)}/month`);  // $55.00
 ```
 
-### Step 2: Model Selection by Task
+### Step 2: Smart Model Router
 
 ```typescript
-type TaskType = 'simple' | 'moderate' | 'complex' | 'embedding';
+type TaskComplexity = 'trivial' | 'simple' | 'moderate' | 'complex';
 
-interface ModelRecommendation {
-  model: string;
-  reason: string;
-  estimatedCostPer1000Requests: number;  # 1000ms = 1 second
-}
-
-function recommendModel(
-  taskType: TaskType,
-  avgInputTokens: number,
-  avgOutputTokens: number
-): ModelRecommendation {
-  switch (taskType) {
-    case 'simple':
-      // Classification, extraction, simple Q&A
-      return {
-        model: 'mistral-small-latest',
-        reason: 'Fast and cost-effective for simple tasks',
-        estimatedCostPer1000Requests:
-          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,  # 1 second in ms
-      };
-
-    case 'moderate':
-      // Summarization, translation, basic coding
-      return {
-        model: 'mistral-small-latest',
-        reason: 'Good balance of capability and cost',
-        estimatedCostPer1000Requests:
-          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,  # 1 second in ms
-      };
-
-    case 'complex':
-      // Complex reasoning, code generation, analysis
-      return {
-        model: 'mistral-large-latest',
-        reason: 'Required for complex tasks',
-        estimatedCostPer1000Requests:
-          (avgInputTokens * 2.00 + avgOutputTokens * 6.00) / 1000,  # 1 second in ms
-      };
-
-    case 'embedding':
-      return {
-        model: 'mistral-embed',
-        reason: 'Specialized for embeddings',
-        estimatedCostPer1000Requests: (avgInputTokens * 0.10) / 1000,  # 1 second in ms
-      };
+function selectModel(complexity: TaskComplexity): string {
+  switch (complexity) {
+    case 'trivial':  return 'ministral-latest';       // $0.10/M — yes/no, extract, format
+    case 'simple':   return 'mistral-small-latest';   // $0.10/M — classify, summarize, Q&A
+    case 'moderate': return 'codestral-latest';       // $0.30/M — code gen, moderate reasoning
+    case 'complex':  return 'mistral-large-latest';   // $0.50/M — multi-step reasoning, analysis
   }
 }
 
-// Usage
-const rec = recommendModel('simple', 500, 200);  # 200: HTTP 500 Internal Server Error
-console.log(`Recommended: ${rec.model} - $${rec.estimatedCostPer1000Requests.toFixed(4)}/1000 req`);  # 1 second in ms
+// Auto-detect complexity by prompt characteristics
+function estimateComplexity(prompt: string): TaskComplexity {
+  const tokens = Math.ceil(prompt.length / 4);
+  if (tokens < 50) return 'trivial';
+  if (tokens < 200) return 'simple';
+  if (prompt.includes('code') || prompt.includes('analyze')) return 'moderate';
+  return 'complex';
+}
 ```
 
-### Step 3: Token Budget Management
+### Step 3: Token Budget Manager
 
 ```typescript
-class TokenBudgetManager {
-  private dailyBudget: number;
-  private monthlyBudget: number;
-  private dailyUsage: Map<string, number> = new Map();
-  private monthlyUsage = 0;
+class BudgetManager {
+  private dailyBudgetUsd: number;
+  private monthlyBudgetUsd: number;
+  private dailySpend = 0;
+  private monthlySpend = 0;
+  private lastResetDay = new Date().getDate();
 
   constructor(dailyBudget: number, monthlyBudget: number) {
-    this.dailyBudget = dailyBudget;
-    this.monthlyBudget = monthlyBudget;
+    this.dailyBudgetUsd = dailyBudget;
+    this.monthlyBudgetUsd = monthlyBudget;
   }
 
-  recordUsage(model: string, tokens: number): void {
-    const today = new Date().toISOString().split('T')[0];
-    const key = `${today}:${model}`;
-
-    const current = this.dailyUsage.get(key) || 0;
-    this.dailyUsage.set(key, current + tokens);
-    this.monthlyUsage += tokens;
-
-    this.checkBudgetAlerts();
+  canAfford(model: string, estimatedInputTokens: number, estimatedOutputTokens: number): boolean {
+    const cost = calculateCost(model, estimatedInputTokens, estimatedOutputTokens);
+    this.maybeResetDaily();
+    return this.dailySpend + cost <= this.dailyBudgetUsd
+        && this.monthlySpend + cost <= this.monthlyBudgetUsd;
   }
 
-  canMakeRequest(model: string, estimatedTokens: number): boolean {
-    const today = new Date().toISOString().split('T')[0];
-    const key = `${today}:${model}`;
-    const todayUsage = this.dailyUsage.get(key) || 0;
-
-    return (
-      todayUsage + estimatedTokens <= this.dailyBudget &&
-      this.monthlyUsage + estimatedTokens <= this.monthlyBudget
-    );
+  recordSpend(model: string, usage: { promptTokens: number; completionTokens: number }): void {
+    const cost = calculateCost(model, usage.promptTokens, usage.completionTokens);
+    this.dailySpend += cost;
+    this.monthlySpend += cost;
+    this.checkAlerts();
   }
 
-  private checkBudgetAlerts(): void {
-    if (this.monthlyUsage > this.monthlyBudget * 0.8) {
-      console.warn(`Budget alert: ${((this.monthlyUsage / this.monthlyBudget) * 100).toFixed(1)}% of monthly budget used`);
+  private checkAlerts(): void {
+    const monthPct = (this.monthlySpend / this.monthlyBudgetUsd) * 100;
+    if (monthPct > 90) console.error(`BUDGET CRITICAL: ${monthPct.toFixed(1)}% of monthly budget`);
+    else if (monthPct > 80) console.warn(`Budget warning: ${monthPct.toFixed(1)}% of monthly budget`);
+  }
+
+  private maybeResetDaily(): void {
+    const today = new Date().getDate();
+    if (today !== this.lastResetDay) {
+      this.dailySpend = 0;
+      this.lastResetDay = today;
     }
   }
 
-  getUsageReport(): { daily: Record<string, number>; monthly: number } {
+  report() {
     return {
-      daily: Object.fromEntries(this.dailyUsage),
-      monthly: this.monthlyUsage,
+      daily: { spent: this.dailySpend, budget: this.dailyBudgetUsd },
+      monthly: { spent: this.monthlySpend, budget: this.monthlyBudgetUsd },
     };
   }
 }
@@ -194,187 +149,102 @@ class TokenBudgetManager {
 ### Step 4: Prompt Optimization
 
 ```typescript
-// Optimize prompts to reduce token usage
-function optimizePrompt(prompt: string): string {
-  return prompt
-    .replace(/\s+/g, ' ')           // Remove extra whitespace
-    .replace(/\n\s*\n/g, '\n')      // Remove blank lines
+// Reduce tokens = reduce cost directly
+function optimizeForCost(systemPrompt: string): string {
+  // Remove filler words
+  return systemPrompt
+    .replace(/please\s+/gi, '')
+    .replace(/I would like you to\s+/gi, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-// Use system prompts efficiently
-const EFFICIENT_SYSTEM_PROMPT = `
-You are a helpful assistant. Be concise. Answer in 1-2 sentences when possible.
-`.trim();
+// Before: "I would like you to please provide a comprehensive and detailed explanation of how REST APIs work." (~25 tokens)
+// After: "Explain REST APIs concisely." (~6 tokens, 76% reduction)
 
-// Compare token counts
-function countTokensEstimate(text: string): number {
-  // Rough estimate: 1 token ≈ 4 characters
-  return Math.ceil(text.length / 4);
-}
-
-// Example: Reduce prompt size
-const originalPrompt = `
-  I would like you to help me with the following task.
-  Please provide a comprehensive and detailed explanation
-  of how to implement a REST API in Node.js.
-`;
-
-const optimizedPrompt = `Explain implementing a REST API in Node.js. Be concise.`;
-
-console.log(`Original: ~${countTokensEstimate(originalPrompt)} tokens`);
-console.log(`Optimized: ~${countTokensEstimate(optimizedPrompt)} tokens`);
-// Original: ~47 tokens
-// Optimized: ~13 tokens (72% reduction)
+// Set maxTokens to prevent runaway output
+const response = await client.chat.complete({
+  model: 'mistral-small-latest',
+  messages,
+  maxTokens: 200, // Cap output — prevents 4000-token essays
+});
 ```
 
-### Step 5: Caching for Cost Reduction
+### Step 5: Batch API for Bulk Workloads
 
 ```typescript
-import crypto from 'crypto';
-import { LRUCache } from 'lru-cache';
+// Batch API = 50% cost reduction for non-realtime processing
+// Instead of 100K individual API calls at $11/month (small)
+// Use batch: $5.50/month for the same work
 
-const responseCache = new LRUCache<string, { response: string; cost: number }>({
-  max: 10000,  # 10000: 10 seconds in ms
-  ttl: 24 * 60 * 60 * 1000, // 24 hours  # 1000: 1 second in ms
-});
+// Supported endpoints:
+// /v1/chat/completions, /v1/embeddings, /v1/fim/completions,
+// /v1/moderations, /v1/ocr, /v1/classifications
 
-interface CachedResult {
-  response: string;
-  cached: boolean;
-  cost: number;
-  savedCost: number;
-}
-
-async function costAwareChat(
-  client: Mistral,
-  messages: any[],
-  model: string
-): Promise<CachedResult> {
-  const cacheKey = crypto
-    .createHash('sha256')
-    .update(JSON.stringify({ messages, model }))
-    .digest('hex');
-
-  const cached = responseCache.get(cacheKey);
-  if (cached) {
-    return {
-      response: cached.response,
-      cached: true,
-      cost: 0,
-      savedCost: cached.cost,
-    };
-  }
-
-  const response = await client.chat.complete({ model, messages });
-  const content = response.choices?.[0]?.message?.content ?? '';
-
-  const cost = estimateCost(model as any, {
-    inputTokens: response.usage?.promptTokens || 0,
-    outputTokens: response.usage?.completionTokens || 0,
-  }).totalCost;
-
-  responseCache.set(cacheKey, { response: content, cost });
-
-  return {
-    response: content,
-    cached: false,
-    cost,
-    savedCost: 0,
-  };
-}
+// See mistral-webhooks-events for implementation details
 ```
 
-### Step 6: Usage Dashboard Query
+### Step 6: Usage Tracking SQL
 
 ```sql
--- Track usage in your database
 CREATE TABLE mistral_usage (
   id SERIAL PRIMARY KEY,
-  model VARCHAR(50),
-  input_tokens INTEGER,
-  output_tokens INTEGER,
-  cost_usd DECIMAL(10, 6),
+  model VARCHAR(50) NOT NULL,
+  input_tokens INTEGER NOT NULL,
+  output_tokens INTEGER NOT NULL,
+  cost_usd DECIMAL(10, 6) NOT NULL,
+  is_batch BOOLEAN DEFAULT FALSE,
+  endpoint VARCHAR(50),
   user_id VARCHAR(50),
   created_at TIMESTAMP DEFAULT NOW()
 );
 
 -- Daily cost report
 SELECT
-  DATE(created_at) as date,
+  DATE(created_at) AS day,
   model,
-  SUM(input_tokens) as total_input,
-  SUM(output_tokens) as total_output,
-  SUM(cost_usd) as total_cost
+  SUM(input_tokens) AS total_input,
+  SUM(output_tokens) AS total_output,
+  SUM(cost_usd) AS total_cost
 FROM mistral_usage
 WHERE created_at >= NOW() - INTERVAL '30 days'
 GROUP BY 1, 2
-ORDER BY 1 DESC, 3 DESC;
+ORDER BY 1 DESC, 5 DESC;
 
--- User cost breakdown
-SELECT
-  user_id,
-  SUM(cost_usd) as total_cost,
-  COUNT(*) as request_count
+-- Highest-cost users
+SELECT user_id, SUM(cost_usd) AS cost, COUNT(*) AS requests
 FROM mistral_usage
 WHERE created_at >= DATE_TRUNC('month', NOW())
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 10;
+GROUP BY 1 ORDER BY 2 DESC LIMIT 10;
 ```
-
-## Output
-- Optimized model selection
-- Token budget management
-- Usage monitoring implemented
-- Cost reduction strategies applied
 
 ## Cost Reduction Strategies
 
 | Strategy | Savings | Effort |
 |----------|---------|--------|
-| Model selection | 50-90% | Low |
+| Use mistral-small instead of large | 80% | Low |
+| Batch API for bulk | 50% | Medium |
+| Response caching (temp=0) | 30-80% | Medium |
 | Prompt optimization | 20-50% | Low |
-| Response caching | 30-80% | Medium |
-| Batch processing | 10-30% | Medium |
-| Max tokens limit | 10-40% | Low |
+| Set maxTokens | 10-40% | Low |
+| Use ministral for simple tasks | 90% vs large | Low |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected costs | Untracked usage | Implement monitoring |
-| Budget exceeded | No alerts | Set up budget alerts |
-| Inefficient model | Wrong selection | Use task-based selection |
-| Long responses | No limit | Set maxTokens |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost
-const monthlyRequests = 100_000;
-const avgInputTokens = 500;  # HTTP 500 Internal Server Error
-const avgOutputTokens = 200;  # HTTP 200 OK
-
-const smallCost = estimateCost('mistral-small-latest', {
-  inputTokens: avgInputTokens * monthlyRequests,
-  outputTokens: avgOutputTokens * monthlyRequests,
-});
-
-const largeCost = estimateCost('mistral-large-latest', {
-  inputTokens: avgInputTokens * monthlyRequests,
-  outputTokens: avgOutputTokens * monthlyRequests,
-});
-
-console.log(`Small model: $${smallCost.totalCost.toFixed(2)}/month`);
-console.log(`Large model: $${largeCost.totalCost.toFixed(2)}/month`);
-// Small model: $22.00/month
-// Large model: $220.00/month
-```
+| Unexpected costs | Untracked usage | Implement BudgetManager |
+| Budget exceeded | No alerts | Set alerts at 80% and 90% |
+| Wrong model | No routing logic | Use complexity-based model selection |
+| Long responses | No maxTokens | Always set maxTokens |
 
 ## Resources
-- [Mistral AI Pricing](https://mistral.ai/pricing/)
-- [Mistral AI Console](https://console.mistral.ai/)
+- [Mistral Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
+- [Mistral Console](https://console.mistral.ai/)
+- [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
 
-## Next Steps
-For architecture patterns, see `mistral-reference-architecture`.
+## Output
+- Cost calculator with current pricing
+- Smart model router by task complexity
+- Token budget manager with alerts
+- Prompt optimization patterns
+- Usage tracking SQL schema

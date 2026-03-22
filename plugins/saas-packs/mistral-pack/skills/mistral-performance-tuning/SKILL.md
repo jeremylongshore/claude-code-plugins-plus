@@ -5,7 +5,7 @@ description: |
   Use when experiencing slow API responses, implementing caching strategies,
   or optimizing request throughput for Mistral AI integrations.
   Trigger with phrases like "mistral performance", "optimize mistral",
-  "mistral latency", "mistral caching", "mistral slow", "mistral batch".
+  "mistral latency", "mistral caching", "mistral slow".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,127 +17,197 @@ tags: [saas, mistral, api, performance]
 # Mistral AI Performance Tuning
 
 ## Overview
-Optimize Mistral AI API response times and throughput for production integrations. Key performance factors include model selection (mistral-small: ~200-500ms, mistral-large: ~500-2000ms), prompt length (directly affects time-to-first-token), streaming vs non-streaming (streaming gives perceived speed), and concurrent request management against per-key rate limits.
+Optimize Mistral AI API response times and throughput. Key levers: model selection (Mistral Small ~200ms TTFT vs Large ~500ms), prompt length (fewer tokens = faster), streaming (perceived speed), caching (zero-latency repeats), and concurrent request management.
 
 ## Prerequisites
 - Mistral API integration in production
-- Understanding of per-endpoint rate limits (RPM and TPM)
-- Application architecture that supports streaming responses
+- Understanding of RPM/TPM limits for your tier
+- Application architecture supporting streaming
 
 ## Instructions
 
-### Step 1: Choose the Right Model for Latency Requirements
-```typescript
-// Model selection by latency budget
-const MODEL_BY_LATENCY: Record<string, { model: string; typicalMs: string }> = {
-  'realtime_chat':     { model: 'mistral-small-latest',  typicalMs: '200-500ms' },  # HTTP 200 OK
-  'code_completion':   { model: 'codestral-latest',      typicalMs: '150-400ms' },
-  'background_analysis': { model: 'mistral-large-latest', typicalMs: '500-2000ms' },  # HTTP 500 Internal Server Error
-  'embeddings':        { model: 'mistral-embed',         typicalMs: '50-150ms' },
-};
+### Step 1: Model Selection by Latency Budget
 
-function selectModel(useCase: string): string {
-  return MODEL_BY_LATENCY[useCase]?.model || 'mistral-small-latest';
-}
+```typescript
+const MODELS_BY_USE_CASE: Record<string, { model: string; ttftMs: string; note: string }> = {
+  realtime_chat:     { model: 'mistral-small-latest',  ttftMs: '~200ms',  note: '256k ctx, cheapest' },
+  code_completion:   { model: 'codestral-latest',      ttftMs: '~150ms',  note: 'Optimized for code + FIM' },
+  code_agents:       { model: 'devstral-latest',       ttftMs: '~300ms',  note: 'Agentic coding tasks' },
+  reasoning:         { model: 'mistral-large-latest',  ttftMs: '~500ms',  note: '256k ctx, strongest' },
+  vision:            { model: 'pixtral-large-latest',  ttftMs: '~600ms',  note: 'Image + text multimodal' },
+  embeddings:        { model: 'mistral-embed',         ttftMs: '~50ms',   note: '1024-dim, batch-friendly' },
+  edge_devices:      { model: 'ministral-latest',      ttftMs: '~100ms',  note: '3B-14B, fastest' },
+};
 ```
 
-### Step 2: Enable Streaming for User-Facing Responses
+### Step 2: Streaming for User-Facing Responses
+
+Streaming reduces perceived latency from 1-2s (full response) to ~200ms (first token):
+
 ```typescript
-import Mistral from '@mistralai/mistralai';
+import { Mistral } from '@mistralai/mistralai';
 
 const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
-// Streaming delivers first tokens in ~200ms vs waiting 1-2s for full response
-async function* streamChat(model: string, messages: any[]) {
+async function* streamChat(messages: any[], model = 'mistral-small-latest') {
   const stream = await client.chat.stream({ model, messages });
   for await (const chunk of stream) {
-    const content = chunk.data.choices[0]?.delta?.content;
+    const content = chunk.data?.choices?.[0]?.delta?.content;
     if (content) yield content;
   }
 }
-// TTFT (time to first token) drops from 500-2000ms to ~200ms with streaming  # HTTP 500 Internal Server Error
+
+// Web Response with SSE
+function streamToSSE(messages: any[]): Response {
+  const encoder = new TextEncoder();
+  const readable = new ReadableStream({
+    async start(controller) {
+      for await (const text of streamChat(messages)) {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`));
+      }
+      controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+      controller.close();
+    },
+  });
+  return new Response(readable, {
+    headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' },
+  });
+}
 ```
 
-### Step 3: Cache Identical Requests
+### Step 3: Response Caching
+
 ```typescript
 import { createHash } from 'crypto';
 import { LRUCache } from 'lru-cache';
 
-const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });  # 5000: 5 seconds in ms
+const cache = new LRUCache<string, any>({
+  max: 5000,
+  ttl: 3_600_000, // 1 hour
+});
 
-async function cachedCompletion(model: string, messages: any[], temperature: number = 0) {
-  // Only cache deterministic requests (temperature=0)
-  if (temperature > 0) return client.chat.complete({ model, messages, temperature });
+async function cachedChat(
+  messages: any[],
+  model: string,
+  temperature = 0,
+): Promise<any> {
+  // Only cache deterministic requests
+  if (temperature > 0) {
+    return client.chat.complete({ model, messages, temperature });
+  }
 
-  const key = createHash('md5').update(JSON.stringify({ model, messages })).digest('hex');
-  const cached = responseCache.get(key);
-  if (cached) return cached;
+  const key = createHash('sha256')
+    .update(JSON.stringify({ model, messages }))
+    .digest('hex');
+
+  const cached = cache.get(key);
+  if (cached) {
+    console.debug('Cache HIT');
+    return cached;
+  }
 
   const result = await client.chat.complete({ model, messages, temperature: 0 });
-  responseCache.set(key, result);
+  cache.set(key, result);
   return result;
 }
 ```
 
-### Step 4: Optimize Prompt Length
+### Step 4: Prompt Length Optimization
+
 ```typescript
-// Reduce input tokens to decrease TTFT and total latency
-const OPTIMIZATION = {
-  // Keep system prompts concise
-  systemPrompt: 'You are a helpful assistant. Be brief.',  // ~10 tokens, not 200  # HTTP 200 OK
+// Shorter prompts = faster TTFT and lower cost
+function optimizePrompt(systemPrompt: string, maxChars = 500): string {
+  return systemPrompt
+    .replace(/\s+/g, ' ')        // Collapse whitespace
+    .replace(/\n\s*\n/g, '\n')   // Remove blank lines
+    .trim()
+    .slice(0, maxChars);
+}
 
-  // Limit context window usage
-  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices  # 4000: dev server port
-
-  // Trim conversation history
-  maxHistoryTurns: 5,       // Keep last 5 turns, not entire conversation
-};
-
-function trimMessages(messages: any[], maxTurns: number = 5): any[] {
+// Trim conversation history to last N turns
+function trimHistory(messages: any[], maxTurns = 10): any[] {
   const system = messages.filter(m => m.role === 'system');
   const history = messages.filter(m => m.role !== 'system').slice(-maxTurns * 2);
   return [...system, ...history];
 }
+
+// Impact: Reducing from 4000 to 500 input tokens saves ~50% TTFT
 ```
 
-### Step 5: Manage Concurrent Requests
+### Step 5: Concurrent Request Queue
+
 ```typescript
 import PQueue from 'p-queue';
 
-// Respect RPM limits while maximizing throughput
-const requestQueue = new PQueue({
-  concurrency: 10,     // Max parallel requests
-  interval: 60_000,    // Per minute
-  intervalCap: 100,    // RPM limit for your key
+// Match concurrency to your workspace RPM limit
+const queue = new PQueue({
+  concurrency: 10,
+  interval: 60_000,
+  intervalCap: 100, // RPM limit
 });
 
-async function queuedCompletion(model: string, messages: any[]) {
-  return requestQueue.add(() => client.chat.complete({ model, messages }));
+async function queuedChat(messages: any[], model = 'mistral-small-latest') {
+  return queue.add(() => client.chat.complete({ model, messages }));
 }
+
+// Process 100 requests respecting RPM
+const prompts = Array.from({ length: 100 }, (_, i) => `Question ${i}`);
+const results = await Promise.all(
+  prompts.map(p => queuedChat([{ role: 'user', content: p }]))
+);
 ```
+
+### Step 6: Batch API for Non-Realtime Workloads
+
+Use Batch API for 50% cost savings when latency is not critical:
+
+```typescript
+// Batch API processes requests asynchronously (minutes to hours)
+// Supports: /v1/chat/completions, /v1/embeddings, /v1/fim/completions, /v1/moderations
+// See mistral-webhooks-events for full batch implementation
+```
+
+### Step 7: FIM (Fill-in-the-Middle) for Code
+
+```typescript
+// Codestral supports FIM — faster than full chat for code completion
+const response = await client.fim.complete({
+  model: 'codestral-latest',
+  prompt: 'function fibonacci(n) {\n  if (n <= 1) return n;\n',
+  suffix: '\n}\n',
+  maxTokens: 100,
+});
+// Returns just the middle part — minimal tokens, minimal latency
+```
+
+## Performance Benchmarks
+
+| Optimization | Typical Impact |
+|-------------|----------------|
+| mistral-small vs mistral-large | 2-4x faster TTFT |
+| Streaming vs non-streaming | 5-10x perceived speed |
+| Response caching (temp=0) | 100x faster (cache hit) |
+| Prompt trimming (4k to 500 tokens) | 30-50% faster TTFT |
+| Batch API | Not faster, but 50% cheaper |
+| FIM vs chat for code | 2-3x fewer tokens |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| `429 rate_limit_exceeded` | RPM or TPM cap hit | Use PQueue with RPM limit, add exponential backoff |
-| High TTFT (>1s) | Prompt too long or model too large | Trim prompt, use mistral-small for latency-sensitive |
-| Streaming connection dropped | Network timeout | Implement reconnection with resume from last chunk |
-| Cache ineffective | High temperature (non-deterministic) | Only cache temperature=0 requests |
-
-## Examples
-
-**Basic usage**: Apply mistral performance tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize mistral performance tuning for production environments with multiple constraints and team-specific requirements.
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+| `429 rate_limit_exceeded` | RPM/TPM cap hit | Use PQueue with interval cap |
+| High TTFT (>1s) | Prompt too long or large model | Trim prompt, use mistral-small |
+| Stream disconnected | Network timeout | Implement reconnection |
+| Cache thrashing | High cardinality prompts | Increase cache size or reduce TTL |
 
 ## Resources
+- [Models Overview](https://docs.mistral.ai/getting-started/models/)
+- [Batch Inference](https://docs.mistral.ai/capabilities/batch/)
+- [FIM/Code Generation](https://docs.mistral.ai/capabilities/code_generation/)
+- [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
 
-- Official ORM documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+## Output
+- Model selection optimized for latency requirements
+- Streaming endpoints for perceived speed
+- LRU response cache for deterministic requests
+- Prompt optimization reducing token count
+- Concurrent request queue respecting RPM limits

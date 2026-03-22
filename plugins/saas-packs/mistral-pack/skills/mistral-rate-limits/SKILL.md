@@ -17,156 +17,216 @@ tags: [saas, mistral, api]
 # Mistral Rate Limits
 
 ## Overview
-Rate limit management for Mistral AI API. Mistral enforces per-minute request and token limits that vary by model tier and subscription plan.
+Rate limit management for Mistral AI API. Mistral enforces per-workspace RPM (requests/minute) and TPM (tokens/minute) limits that vary by usage tier (Experiment free tier vs Scale pay-as-you-go). View your workspace limits at [admin.mistral.ai/plateforme/limits](https://admin.mistral.ai/plateforme/limits).
 
 ## Prerequisites
 - Mistral API key configured
-- Understanding of token vs request rate limits
-- Retry infrastructure
+- Understanding of workspace tier (Experiment vs Scale)
+- Application with retry infrastructure
 
-## Mistral Rate Limits by Tier
+## Mistral Rate Limit Architecture
 
-| Model | Requests/min | Tokens/min | Tokens/month |
-|-------|-------------|------------|--------------|
-| mistral-small | 120 | 500,000 | Varies by plan |
-| mistral-medium | 60 | 500,000 | Varies by plan |
-| mistral-large | 30 | 200,000 | Varies by plan |
-| mistral-embed | 300 | 1,000,000 | Varies by plan |
+Limits are set at the **workspace** level, not per key. All API keys in a workspace share the same RPM/TPM budget.
+
+| Endpoint | What's limited |
+|----------|---------------|
+| `/v1/chat/completions` | RPM + TPM (input + output) |
+| `/v1/embeddings` | RPM + TPM (input only) |
+| `/v1/fim/completions` | RPM + TPM |
+| `/v1/moderations` | RPM |
+
+**Headers returned on every response:**
+- `x-ratelimit-limit-requests` — your RPM cap
+- `x-ratelimit-remaining-requests` — remaining RPM
+- `x-ratelimit-limit-tokens` — your TPM cap
+- `x-ratelimit-remaining-tokens` — remaining TPM
+- `Retry-After` — seconds to wait (on 429 only)
 
 ## Instructions
 
 ### Step 1: Token-Aware Rate Limiter
 
-Mistral limits both requests and tokens per minute. Track both.
+```typescript
+class MistralRateLimiter {
+  private requestTimes: number[] = [];
+  private tokenBuckets: Array<{ time: number; tokens: number }> = [];
+  private readonly rpm: number;
+  private readonly tpm: number;
 
-```python
-import time, threading
+  constructor(rpm: number, tpm: number) {
+    this.rpm = rpm;
+    this.tpm = tpm;
+  }
 
-class MistralRateLimiter:
-    def __init__(self, rpm: int = 60, tpm: int = 200000):  # 200000 = 200K limit
-        self.rpm = rpm
-        self.tpm = tpm
-        self.request_times = []
-        self.token_usage = []
-        self.lock = threading.Lock()
+  async waitIfNeeded(estimatedTokens: number): Promise<void> {
+    const now = Date.now();
+    const windowStart = now - 60_000;
 
-    def wait_if_needed(self, estimated_tokens: int = 1000):  # 1000: 1 second in ms
-        with self.lock:
-            now = time.time()
-            cutoff = now - 60
-            self.request_times = [t for t in self.request_times if t > cutoff]
-            self.token_usage = [(t, n) for t, n in self.token_usage if t > cutoff]
+    // Prune old entries
+    this.requestTimes = this.requestTimes.filter(t => t > windowStart);
+    this.tokenBuckets = this.tokenBuckets.filter(b => b.time > windowStart);
 
-            current_rpm = len(self.request_times)
-            current_tpm = sum(n for _, n in self.token_usage)
+    // Check RPM
+    if (this.requestTimes.length >= this.rpm) {
+      const waitMs = this.requestTimes[0] - windowStart + 100;
+      console.warn(`RPM limit (${this.rpm}), waiting ${waitMs}ms`);
+      await new Promise(r => setTimeout(r, waitMs));
+    }
 
-            if current_rpm >= self.rpm:
-                sleep_time = self.request_times[0] - cutoff
-                time.sleep(sleep_time + 0.1)
+    // Check TPM
+    const currentTPM = this.tokenBuckets.reduce((sum, b) => sum + b.tokens, 0);
+    if (currentTPM + estimatedTokens > this.tpm) {
+      const waitMs = this.tokenBuckets[0].time - windowStart + 100;
+      console.warn(`TPM limit (${this.tpm}), waiting ${waitMs}ms`);
+      await new Promise(r => setTimeout(r, waitMs));
+    }
 
-            if current_tpm + estimated_tokens > self.tpm:
-                sleep_time = self.token_usage[0][0] - cutoff
-                time.sleep(sleep_time + 0.1)
+    this.requestTimes.push(Date.now());
+  }
 
-            self.request_times.append(time.time())
-
-    def record_usage(self, tokens: int):
-        with self.lock:
-            self.token_usage.append((time.time(), tokens))
-
-# Usage
-limiter = MistralRateLimiter(rpm=30, tpm=200000)
-
-def rate_limited_chat(client, messages, model="mistral-large-latest"):
-    estimated = sum(len(m["content"]) // 4 for m in messages)
-    limiter.wait_if_needed(estimated)
-    response = client.chat.complete(model=model, messages=messages)
-    limiter.record_usage(response.usage.total_tokens)
-    return response
+  recordUsage(tokens: number): void {
+    this.tokenBuckets.push({ time: Date.now(), tokens });
+  }
+}
 ```
 
-### Step 2: Handle 429 Responses
+### Step 2: Retry with Retry-After Header
+
+```typescript
+import { Mistral } from '@mistralai/mistralai';
+
+async function chatWithRetry(
+  client: Mistral,
+  params: { model: string; messages: any[] },
+  maxRetries = 5,
+): Promise<any> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await client.chat.complete(params);
+    } catch (error: any) {
+      if (error.status !== 429 || attempt === maxRetries) throw error;
+
+      // Respect Retry-After header from Mistral
+      const retryAfter = error.headers?.get?.('retry-after');
+      const waitSec = retryAfter ? parseInt(retryAfter) : Math.min(2 ** attempt, 60);
+      console.warn(`429 — retrying in ${waitSec}s (attempt ${attempt + 1}/${maxRetries})`);
+      await new Promise(r => setTimeout(r, waitSec * 1000));
+    }
+  }
+}
+```
+
+### Step 3: Rate-Limited Client Wrapper
+
+```typescript
+const limiter = new MistralRateLimiter(100, 500_000);
+const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
+
+async function rateLimitedChat(messages: any[], model = 'mistral-small-latest') {
+  const estimatedTokens = messages.reduce(
+    (sum, m) => sum + Math.ceil((m.content?.length ?? 0) / 4), 0
+  );
+
+  await limiter.waitIfNeeded(estimatedTokens);
+  const response = await client.chat.complete({ model, messages });
+
+  if (response.usage) {
+    limiter.recordUsage(
+      (response.usage.promptTokens ?? 0) + (response.usage.completionTokens ?? 0)
+    );
+  }
+  return response;
+}
+```
+
+### Step 4: Model Fallback for Throughput
+
+```typescript
+class ModelRouter {
+  private limiters: Record<string, MistralRateLimiter>;
+
+  constructor() {
+    this.limiters = {
+      'mistral-large-latest': new MistralRateLimiter(30, 200_000),
+      'mistral-small-latest': new MistralRateLimiter(120, 500_000),
+    };
+  }
+
+  async chat(messages: any[], preferred = 'mistral-large-latest') {
+    try {
+      return await rateLimitedChat(messages, preferred);
+    } catch (error: any) {
+      if (error.status === 429 && preferred !== 'mistral-small-latest') {
+        console.warn(`Falling back to mistral-small-latest`);
+        return rateLimitedChat(messages, 'mistral-small-latest');
+      }
+      throw error;
+    }
+  }
+}
+```
+
+### Step 5: Batch Embedding with Rate Awareness
 
 ```python
 import time
+from mistralai import Mistral
 
-def chat_with_retry(client, messages, model, max_retries=5):
-    for attempt in range(max_retries):
-        try:
-            return client.chat.complete(model=model, messages=messages)
-        except Exception as e:
-            if hasattr(e, 'status_code') and e.status_code == 429:  # HTTP 429 Too Many Requests
-                wait = min(2 ** attempt + 1, 60)
-                print(f"Rate limited, waiting {wait}s (attempt {attempt+1})")
-                time.sleep(wait)
-            else:
-                raise
-    raise Exception("Max retries exceeded")
-```
-
-### Step 3: Model-Tier Routing for Throughput
-
-Route requests to cheaper models when premium capacity is exhausted.
-
-```python
-class ModelRouter:
-    def __init__(self):
-        self.limiters = {
-            "mistral-large-latest": MistralRateLimiter(rpm=30, tpm=200000),  # 200000 = 200K limit
-            "mistral-small-latest": MistralRateLimiter(rpm=120, tpm=500000),  # 500000 = configured value
-        }
-
-    def get_available_model(self, preferred: str = "mistral-large-latest") -> str:
-        limiter = self.limiters[preferred]
-        if limiter.has_capacity():
-            return preferred
-        # Fall back to smaller model with more capacity
-        return "mistral-small-latest"
-```
-
-### Step 4: Batch Embedding with Rate Awareness
-
-```python
-def batch_embed(client, texts: list[str], batch_size: int = 32):
-    limiter = MistralRateLimiter(rpm=300, tpm=1000000)  # 1000000: 300: timeout: 5 minutes
+def batch_embed(client: Mistral, texts: list[str], batch_size: int = 32) -> list:
+    """Batch embed with automatic rate limiting."""
     all_embeddings = []
     for i in range(0, len(texts), batch_size):
-        batch = texts[i:i+batch_size]
-        estimated_tokens = sum(len(t) // 4 for t in batch)
-        limiter.wait_if_needed(estimated_tokens)
-        response = client.embeddings.create(model="mistral-embed", inputs=batch)
-        all_embeddings.extend([d.embedding for d in response.data])
-        limiter.record_usage(response.usage.total_tokens)
+        batch = texts[i:i + batch_size]
+        try:
+            response = client.embeddings.create(
+                model="mistral-embed", inputs=batch
+            )
+            all_embeddings.extend([d.embedding for d in response.data])
+        except Exception as e:
+            if hasattr(e, "status_code") and e.status_code == 429:
+                time.sleep(10)
+                response = client.embeddings.create(
+                    model="mistral-embed", inputs=batch
+                )
+                all_embeddings.extend([d.embedding for d in response.data])
+            else:
+                raise
     return all_embeddings
+```
+
+### Step 6: Usage Dashboard
+
+```typescript
+function rateLimitStatus(limiter: MistralRateLimiter) {
+  const now = Date.now();
+  const windowStart = now - 60_000;
+  const activeRequests = limiter['requestTimes'].filter(t => t > windowStart).length;
+  const activeTokens = limiter['tokenBuckets']
+    .filter(b => b.time > windowStart)
+    .reduce((sum, b) => sum + b.tokens, 0);
+
+  return {
+    rpm: { used: activeRequests, limit: limiter['rpm'], pct: (activeRequests / limiter['rpm'] * 100).toFixed(1) },
+    tpm: { used: activeTokens, limit: limiter['tpm'], pct: (activeTokens / limiter['tpm'] * 100).toFixed(1) },
+  };
+}
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 429 errors | Exceeded RPM or TPM | Use rate limiter, exponential backoff |
-| Inconsistent limits | Different limits per model | Configure limiter per model tier |
-| Batch embedding failures | Too many tokens per batch | Reduce batch size |
-| Spike traffic blocked | No smoothing | Queue requests, spread over time |
-
-## Examples
-
-### Rate Limit Dashboard
-```python
-status = {
-    "rpm_used": len(limiter.request_times),
-    "rpm_limit": limiter.rpm,
-    "tpm_used": sum(n for _, n in limiter.token_usage),
-    "tpm_limit": limiter.tpm,
-    "utilization_pct": len(limiter.request_times) / limiter.rpm * 100
-}
-```
+| `429` errors | Exceeded RPM or TPM | Use rate limiter + exponential backoff |
+| Inconsistent limits | All keys share workspace budget | Coordinate across services |
+| Batch failures | Too many tokens per batch | Reduce batch size for embeddings |
+| Spike traffic blocked | No request smoothing | Queue requests, spread over window |
 
 ## Resources
-- [Mistral Rate Limits](https://docs.mistral.ai/capabilities/rate-limiting/)
-- [Mistral API Reference](https://docs.mistral.ai/api/)
+- [Rate Limits & Usage Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
+- [Pricing](https://docs.mistral.ai/deployment/laplateforme/pricing/)
+- [Batch Inference](https://docs.mistral.ai/capabilities/batch/) — 50% cheaper, no rate limits
 
 ## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+- Token-aware rate limiter with RPM + TPM tracking
+- Retry logic respecting Retry-After headers
+- Model fallback routing for throughput
+- Rate limit dashboard for monitoring

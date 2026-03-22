@@ -16,90 +16,206 @@ tags: [saas, mistral, deployment]
 ---
 # Mistral AI Production Checklist
 
-## Table of Contents
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Instructions](#instructions)
-- [Output](#output)
-- [Error Handling](#error-handling)
-- [Examples](#examples)
-- [Resources](#resources)
-
 ## Overview
-Complete checklist for deploying Mistral AI integrations to production. Covers credential verification, code quality checks, health endpoints, circuit breaker resilience, gradual rollout, and rollback procedures.
+Complete checklist for deploying Mistral AI integrations to production. Covers credential management, code quality gates, health endpoints, circuit breaker resilience, gradual rollout, and rollback procedures.
 
 ## Prerequisites
 - Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Production API keys from La Plateforme
+- Deployment pipeline (CI/CD) configured
+- Monitoring and alerting ready (see `mistral-observability`)
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-Store production API key in secure vault (AWS Secrets Manager, GCP Secret Manager). Set environment variables in deployment platform. Validate key with test request to `https://api.mistral.ai/v1/models`. Prepare fallback configuration.
+### Step 1: Pre-Deployment Verification
 
-### Step 2: Code Quality Verification
-Run full test suite, typecheck, and lint. Scan for hardcoded credentials (`grep -r "sk-" src/`). Verify error handling covers 401, 429, and 500+ status codes. Confirm rate limiting/backoff is implemented and logging excludes sensitive data.
+**Credentials**
+- [ ] Production API key stored in secret manager (never in env files or code)
+- [ ] Key tested with `curl -H "Authorization: Bearer $KEY" https://api.mistral.ai/v1/models`
+- [ ] Key has appropriate model access scope
+- [ ] Fallback key available for rotation
 
-### Step 3: Infrastructure Setup
-Implement `/health` endpoint that tests Mistral API connectivity with latency measurement. Configure readiness and liveness probes. Set up Prometheus/Datadog metrics, alert rules (error rate, latency, rate limits), and dashboard.
+**Code Quality**
+- [ ] `npm run typecheck` passes
+- [ ] `npm test` passes (unit + integration)
+- [ ] No hardcoded keys: `grep -r "MISTRAL_API_KEY\|sk-" src/ --include="*.ts"`
+- [ ] Error handling covers 401, 429, 500+ status codes
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging excludes message content and API keys
 
-### Step 4: Implement Circuit Breaker
-Build `MistralCircuitBreaker` with failure threshold (5), reset timeout (60s), and fallback support. Circuit opens after threshold failures and auto-resets after timeout. Provides graceful degradation when Mistral is unavailable.
+**Model Configuration**
+- [ ] Using versioned model IDs or `-latest` aliases intentionally
+- [ ] `maxTokens` set to prevent runaway costs
+- [ ] `temperature` set appropriately (0 for deterministic, 0.7 for creative)
+- [ ] Token budget alerts configured
 
-### Step 5: Documentation Requirements
-Create incident runbook, key rotation procedure, rollback procedure, on-call escalation path, and API usage limits documentation.
+### Step 2: Health Check Endpoint
 
-### Step 6: Gradual Rollout
-Deploy to canary (10% traffic), monitor 10 minutes for errors, expand to 50%, then complete to 100%. Use `kubectl rollout pause/resume` for staged deployment.
+```typescript
+import { Mistral } from '@mistralai/mistralai';
 
-### Step 7: Post-Deployment Verification
-Hit health endpoint, test chat endpoint with sample request, check logs for errors. Verify monitoring dashboards show expected metrics.
+interface HealthStatus {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  provider: 'mistral';
+  latencyMs: number;
+  model?: string;
+  error?: string;
+}
+
+export async function checkHealth(): Promise<HealthStatus> {
+  const start = performance.now();
+  try {
+    const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY! });
+    const models = await client.models.list();
+    const latencyMs = Math.round(performance.now() - start);
+
+    return {
+      status: latencyMs > 5000 ? 'degraded' : 'healthy',
+      provider: 'mistral',
+      latencyMs,
+      model: models.data?.[0]?.id,
+    };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      provider: 'mistral',
+      latencyMs: Math.round(performance.now() - start),
+      error: error.message,
+    };
+  }
+}
+
+// Express route
+app.get('/health', async (req, res) => {
+  const health = await checkHealth();
+  res.status(health.status === 'unhealthy' ? 503 : 200).json(health);
+});
+```
+
+### Step 3: Circuit Breaker
+
+```typescript
+class MistralCircuitBreaker {
+  private failures = 0;
+  private lastFailure = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
+  private readonly threshold = 5;
+  private readonly resetMs = 60_000;
+
+  async execute<T>(fn: () => Promise<T>, fallback?: () => T): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailure > this.resetMs) {
+        this.state = 'half-open';
+      } else if (fallback) {
+        return fallback();
+      } else {
+        throw new Error('Circuit breaker open — Mistral unavailable');
+      }
+    }
+
+    try {
+      const result = await fn();
+      if (this.state === 'half-open') {
+        this.state = 'closed';
+        this.failures = 0;
+      }
+      return result;
+    } catch (error: any) {
+      if (error.status >= 500 || error.status === 429) {
+        this.failures++;
+        this.lastFailure = Date.now();
+        if (this.failures >= this.threshold) {
+          this.state = 'open';
+        }
+      }
+      throw error;
+    }
+  }
+}
+```
+
+### Step 4: Gradual Rollout
+
+```bash
+set -euo pipefail
+# Deploy to canary (10% traffic)
+kubectl set image deployment/mistral-app app=mistral-app:v2
+kubectl rollout pause deployment/mistral-app
+
+# Monitor for 10 minutes
+echo "Monitoring canary..."
+for i in $(seq 1 10); do
+  curl -sf https://yourapp.com/health | jq '.services.mistral'
+  sleep 60
+done
+
+# If healthy, resume rollout
+kubectl rollout resume deployment/mistral-app
+kubectl rollout status deployment/mistral-app
+```
+
+### Step 5: Post-Deployment Verification
+
+```bash
+set -euo pipefail
+# 1. Health check
+curl -sf https://yourapp.com/health | jq '.'
+
+# 2. Smoke test
+curl -X POST https://yourapp.com/api/chat \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"ping"}]}' | jq '.choices[0].message.content'
+
+# 3. Check error rate in monitoring
+echo "Check Grafana/Datadog for mistral_errors_total"
+```
+
+### Step 6: Emergency Rollback
+
+```bash
+set -euo pipefail
+# Immediate rollback
+kubectl rollout undo deployment/mistral-app
+kubectl rollout status deployment/mistral-app
+
+# Verify
+curl -sf https://yourapp.com/health | jq '.'
+```
 
 ## Alert Configuration
 
 | Alert | Condition | Severity |
 |-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 - Critical |
-| High Latency | p99 > 5000ms for 5min | P2 - High |
-| Rate Limited | 429 errors > 5/min | P2 - High |
-| Auth Failures | 401 errors > 0 | P1 - Critical |
-| Circuit Open | Circuit breaker triggered | P2 - High |
+| API Down | 5xx errors > 10/min | P1 |
+| High Latency | p95 > 5000ms for 5min | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failure | Any 401 error | P1 |
+| Circuit Open | Breaker triggered | P2 |
+| Cost Spike | Spend > $10/hour | P3 |
+
+## Documentation Requirements
+- [ ] Incident runbook created (see `mistral-incident-runbook`)
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure tested
+- [ ] On-call escalation path defined
+- [ ] API usage limits documented
 
 ## Output
-- Deployed Mistral AI integration with verified credentials
-- Health checks passing with latency monitoring
-- Circuit breaker resilience active
-- Monitoring and alerting configured
-- Rollback procedure documented and tested
+- Production deployment with verified credentials
+- Health check endpoint with latency monitoring
+- Circuit breaker for graceful degradation
+- Gradual rollout procedure
+- Emergency rollback tested
 
 ## Error Handling
 | Issue | Detection | Resolution |
 |-------|-----------|------------|
-| Deployment failure | kubectl rollout status | Rollback with `kubectl rollout undo` |
-| Health check failing | 503 response | Check Mistral API status, verify credentials |
-| Circuit breaker open | Alert triggered | Investigate Mistral availability, wait for reset |
+| Deploy failure | `kubectl rollout status` | `kubectl rollout undo` |
+| Health check 503 | Alert triggered | Check Mistral status, verify credentials |
+| Circuit open | Metrics alert | Investigate availability, wait for reset |
 | High error rate | Monitoring alert | Check logs, consider rollback |
-
-## Examples
-
-### Quick Health Check
-```bash
-set -euo pipefail
-curl -sf https://yourapp.com/health | jq '.services.mistral'
-```
-
-### Emergency Rollback
-```bash
-set -euo pipefail
-kubectl rollout undo deployment/mistral-app
-kubectl rollout status deployment/mistral-app
-curl -sf https://yourapp.com/health | jq
-```
-
-See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
 
 ## Resources
 - [Mistral AI Status](https://status.mistral.ai/)
 - [Mistral AI Console](https://console.mistral.ai/)
+- [Rate Limits](https://docs.mistral.ai/deployment/ai-studio/tier/)

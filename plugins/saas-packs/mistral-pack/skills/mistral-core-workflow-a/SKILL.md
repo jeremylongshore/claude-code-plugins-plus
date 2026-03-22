@@ -1,11 +1,11 @@
 ---
 name: mistral-core-workflow-a
 description: |
-  Execute Mistral AI primary workflow: Chat Completions and Streaming.
+  Execute Mistral AI chat completions with streaming, multi-turn, and guardrails.
   Use when implementing chat interfaces, building conversational AI,
   or integrating Mistral for text generation.
   Trigger with phrases like "mistral chat", "mistral completion",
-  "mistral streaming", "mistral conversation".
+  "mistral streaming", "mistral conversation", "mistral guardrails".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,26 +17,23 @@ tags: [saas, mistral, workflow]
 # Mistral AI Core Workflow A: Chat Completions
 
 ## Overview
-Primary money-path workflow for Mistral AI: Chat completions with streaming support.
+Production chat completion patterns for Mistral AI: multi-turn conversations, streaming responses, JSON mode structured output, guardrails/moderation, and model selection. Uses the `@mistralai/mistralai` SDK.
 
 ## Prerequisites
 - Completed `mistral-install-auth` setup
-- Understanding of Mistral AI models
-- Valid API credentials configured
+- `MISTRAL_API_KEY` environment variable set
+- Understanding of Mistral model tiers
 
 ## Instructions
 
 ### Step 1: Basic Chat Completion
 
-**TypeScript**
 ```typescript
-import Mistral from '@mistralai/mistralai';
+import { Mistral } from '@mistralai/mistralai';
 
-const client = new Mistral({
-  apiKey: process.env.MISTRAL_API_KEY,
-});
+const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
-async function basicChat(userMessage: string): Promise<string> {
+async function chat(userMessage: string): Promise<string> {
   const response = await client.chat.complete({
     model: 'mistral-small-latest',
     messages: [
@@ -44,16 +41,11 @@ async function basicChat(userMessage: string): Promise<string> {
       { role: 'user', content: userMessage },
     ],
   });
-
   return response.choices?.[0]?.message?.content ?? '';
 }
-
-// Usage
-const answer = await basicChat('What is the capital of France?');
-console.log(answer); // Paris is the capital of France...
 ```
 
-### Step 2: Multi-Turn Conversation
+### Step 2: Multi-Turn Conversation Manager
 
 ```typescript
 interface Message {
@@ -72,7 +64,7 @@ class MistralConversation {
     this.messages.push({ role: 'system', content: systemPrompt });
   }
 
-  async chat(userMessage: string): Promise<string> {
+  async send(userMessage: string): Promise<string> {
     this.messages.push({ role: 'user', content: userMessage });
 
     const response = await this.client.chat.complete({
@@ -80,150 +72,49 @@ class MistralConversation {
       messages: this.messages,
     });
 
-    const assistantMessage = response.choices?.[0]?.message?.content ?? '';
-    this.messages.push({ role: 'assistant', content: assistantMessage });
-
-    return assistantMessage;
+    const reply = response.choices?.[0]?.message?.content ?? '';
+    this.messages.push({ role: 'assistant', content: reply });
+    return reply;
   }
 
-  getHistory(): Message[] {
-    return [...this.messages];
-  }
-
-  clearHistory(): void {
-    const systemMessage = this.messages[0];
-    this.messages = [systemMessage];
+  // Prevent context window overflow
+  trimHistory(maxTurns = 20): void {
+    const system = this.messages[0];
+    const recent = this.messages.slice(1).slice(-maxTurns * 2);
+    this.messages = [system, ...recent];
   }
 }
 
 // Usage
-const conv = new MistralConversation('You are a helpful coding assistant.');
-const response1 = await conv.chat('How do I create a list in Python?');
-const response2 = await conv.chat('How do I add items to it?');
+const conv = new MistralConversation('You are a coding tutor.');
+await conv.send('How do I reverse a list in Python?');
+await conv.send('What about in-place?');
 ```
 
 ### Step 3: Streaming Responses
 
 ```typescript
-async function streamingChat(
-  userMessage: string,
-  onChunk: (chunk: string) => void
+async function streamChat(
+  messages: Message[],
+  onChunk: (text: string) => void,
 ): Promise<string> {
-  const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-
   const stream = await client.chat.stream({
     model: 'mistral-small-latest',
-    messages: [
-      { role: 'user', content: userMessage },
-    ],
+    messages,
   });
 
-  let fullResponse = '';
-
+  let full = '';
   for await (const event of stream) {
-    const content = event.data?.choices?.[0]?.delta?.content;
-    if (content) {
-      fullResponse += content;
-      onChunk(content);
+    const text = event.data?.choices?.[0]?.delta?.content;
+    if (text) {
+      full += text;
+      onChunk(text);
     }
   }
-
-  return fullResponse;
+  return full;
 }
 
-// Usage
-const response = await streamingChat(
-  'Write a short poem about coding.',
-  (chunk) => process.stdout.write(chunk)
-);
-```
-
-### Step 4: With Generation Parameters
-
-```typescript
-interface ChatConfig {
-  temperature?: number;      // 0-1, default 0.7
-  maxTokens?: number;        // Max tokens to generate
-  topP?: number;             // Nucleus sampling, 0-1
-  randomSeed?: number;       // For reproducibility
-  safePrompt?: boolean;      // Enable safety checks
-}
-
-async function configuredChat(
-  messages: Message[],
-  config: ChatConfig = {}
-): Promise<{ content: string; usage: any }> {
-  const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-
-  const response = await client.chat.complete({
-    model: 'mistral-large-latest',
-    messages,
-    temperature: config.temperature ?? 0.7,
-    maxTokens: config.maxTokens,
-    topP: config.topP,
-    randomSeed: config.randomSeed,
-    safePrompt: config.safePrompt ?? false,
-  });
-
-  return {
-    content: response.choices?.[0]?.message?.content ?? '',
-    usage: response.usage,
-  };
-}
-
-// Example: Deterministic output
-const result = await configuredChat(
-  [{ role: 'user', content: 'Summarize quantum computing in 2 sentences.' }],
-  { temperature: 0, randomSeed: 42, maxTokens: 100 }
-);
-```
-
-### Step 5: Model Selection
-
-```typescript
-type MistralModel =
-  | 'mistral-large-latest'   // Most capable, complex reasoning
-  | 'mistral-medium-latest'  // Balanced
-  | 'mistral-small-latest'   // Fast, cost-effective
-  | 'open-mistral-7b'        // Open source
-  | 'open-mixtral-8x7b';     // Open source MoE
-
-function selectModel(task: 'complex' | 'balanced' | 'fast'): MistralModel {
-  switch (task) {
-    case 'complex':
-      return 'mistral-large-latest';
-    case 'balanced':
-      return 'mistral-medium-latest';
-    case 'fast':
-      return 'mistral-small-latest';
-  }
-}
-```
-
-## Output
-- Chat completions with configurable parameters
-- Multi-turn conversation management
-- Real-time streaming responses
-- Model selection based on task
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| 401 Unauthorized | Invalid API key | Check MISTRAL_API_KEY |
-| 429 Rate Limited | Too many requests | Implement backoff |
-| 400 Bad Request | Invalid parameters | Check model/message format |
-| Context Exceeded | Too many tokens | Reduce conversation history |
-
-## Examples
-
-### Express.js Streaming Endpoint
-```typescript
-import express from 'express';
-import Mistral from '@mistralai/mistralai';
-
-const app = express();
-const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-
+// Express.js SSE endpoint
 app.post('/chat/stream', async (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -240,35 +131,110 @@ app.post('/chat/stream', async (req, res) => {
       res.write(`data: ${JSON.stringify({ content })}\n\n`);
     }
   }
-
   res.write('data: [DONE]\n\n');
   res.end();
 });
 ```
 
-### Token Usage Tracking
+### Step 4: JSON Mode and JSON Schema Mode
+
 ```typescript
-let totalTokens = 0;
+// JSON mode — model returns valid JSON
+const jsonResponse = await client.chat.complete({
+  model: 'mistral-small-latest',
+  messages: [
+    { role: 'user', content: 'List 3 countries with capitals as JSON array.' },
+  ],
+  responseFormat: { type: 'json_object' },
+});
+const data = JSON.parse(jsonResponse.choices?.[0]?.message?.content ?? '{}');
 
-async function trackedChat(messages: Message[]): Promise<string> {
-  const response = await client.chat.complete({
-    model: 'mistral-small-latest',
-    messages,
-  });
+// JSON Schema mode — guarantees structure conformance
+const schemaResponse = await client.chat.complete({
+  model: 'mistral-small-latest',
+  messages: [
+    { role: 'user', content: 'Classify this ticket: "Login page crashes on mobile"' },
+  ],
+  responseFormat: {
+    type: 'json_schema',
+    jsonSchema: {
+      name: 'ticket_classification',
+      schema: {
+        type: 'object',
+        properties: {
+          category: { type: 'string', enum: ['bug', 'feature', 'question'] },
+          severity: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] },
+          summary: { type: 'string' },
+        },
+        required: ['category', 'severity', 'summary'],
+      },
+    },
+  },
+});
+```
 
-  if (response.usage) {
-    totalTokens += response.usage.totalTokens || 0;
-    console.log(`Tokens used: ${response.usage.totalTokens}, Total: ${totalTokens}`);
-  }
+### Step 5: Guardrails and Moderation
 
-  return response.choices?.[0]?.message?.content ?? '';
+```typescript
+// Built-in safe_prompt flag — injects safety system prompt
+const safeResponse = await client.chat.complete({
+  model: 'mistral-small-latest',
+  messages: [{ role: 'user', content: userInput }],
+  safePrompt: true,
+});
+
+// Dedicated moderation API — classify text against policy categories
+const moderation = await client.classifiers.moderate({
+  model: 'mistral-moderation-latest',
+  inputs: [userInput],
+});
+
+const flagged = moderation.results[0].categories;
+// Check: flagged.sexual, flagged.hate_and_discrimination, flagged.violence, etc.
+if (Object.values(flagged).some(Boolean)) {
+  throw new Error('Content flagged by moderation');
 }
 ```
 
+### Step 6: Model Selection Guide
+
+```typescript
+type UseCase = 'realtime' | 'analysis' | 'code' | 'vision' | 'embedding';
+
+const MODEL_MAP: Record<UseCase, { model: string; note: string }> = {
+  realtime:  { model: 'mistral-small-latest',   note: '256k ctx, fast, $0.1/M in' },
+  analysis:  { model: 'mistral-large-latest',   note: '256k ctx, reasoning, $0.5/M in' },
+  code:      { model: 'codestral-latest',        note: '256k ctx, code + FIM, $0.3/M in' },
+  vision:    { model: 'pixtral-large-latest',    note: '128k ctx, multimodal' },
+  embedding: { model: 'mistral-embed',           note: '1024-dim vectors, $0.1/M in' },
+};
+
+function selectModel(use: UseCase): string {
+  return MODEL_MAP[use].model;
+}
+```
+
+## Output
+- Chat completions with configurable parameters
+- Multi-turn conversation management with history trimming
+- Real-time streaming responses
+- JSON and JSON Schema structured output
+- Content moderation via guardrails
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid API key | Verify `MISTRAL_API_KEY` |
+| `429 Rate Limited` | RPM or TPM exceeded | Implement backoff (see `mistral-rate-limits`) |
+| `400 Bad Request` | Invalid model or params | Check model ID and message format |
+| Context exceeded | Too many tokens | Trim conversation history |
+| Empty JSON response | Missing instruction | Tell model to respond in JSON in prompt |
+
 ## Resources
-- [Mistral AI Chat Completions](https://docs.mistral.ai/api/#tag/chat)
-- [Mistral AI Models](https://docs.mistral.ai/getting-started/models/)
-- [Mistral AI Streaming](https://docs.mistral.ai/capabilities/completion/#streaming)
+- [Chat Completions API](https://docs.mistral.ai/api/endpoint/chat/)
+- [JSON Mode](https://docs.mistral.ai/capabilities/structured_output/json_mode/)
+- [Guardrails](https://docs.mistral.ai/capabilities/guardrailing/)
+- [Models Overview](https://docs.mistral.ai/getting-started/models/)
 
 ## Next Steps
 For embeddings and function calling, see `mistral-core-workflow-b`.

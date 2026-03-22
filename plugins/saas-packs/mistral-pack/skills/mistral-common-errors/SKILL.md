@@ -17,131 +17,134 @@ tags: [saas, mistral, debugging]
 # Mistral AI Common Errors
 
 ## Overview
-Quick reference for the most common Mistral AI errors and their solutions.
+Quick reference for diagnosing and fixing Mistral AI API errors. Covers HTTP status codes, SDK-specific issues, streaming failures, and tool calling problems with real solutions.
 
 ## Prerequisites
 - Mistral AI SDK installed
-- API credentials configured
-- Access to error logs
+- `MISTRAL_API_KEY` configured
+- Access to application logs
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message, status code, and request ID in your logs or console.
+### Step 1: Quick Diagnostic
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
-
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### 401 Unauthorized - Authentication Failed
-**Error Message:**
-```
-Error: Authentication failed. Invalid API key.
-Status: 401  # HTTP 401 Unauthorized
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
 ```bash
 set -euo pipefail
-# Verify API key is set
-echo $MISTRAL_API_KEY
+# Test API connectivity and auth
+curl -s -w "\nHTTP Status: %{http_code}\n" \
+  -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
+  https://api.mistral.ai/v1/models | jq '.data[].id' 2>/dev/null || echo "FAILED"
 
-# Test API key
-curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
-  https://api.mistral.ai/v1/models
+# Check env
+echo "Key set: ${MISTRAL_API_KEY:+yes}"
+echo "Key length: ${#MISTRAL_API_KEY}"
 ```
 
-**Code Fix:**
+### Step 2: Error Reference
+
+---
+
+#### 401 Unauthorized
+```
+Error: Authentication failed. Invalid API key.
+```
+
+**Causes:** Key missing, expired, revoked, or wrong workspace.
+
+**Fix:**
 ```typescript
-// Ensure API key is loaded
 const apiKey = process.env.MISTRAL_API_KEY;
-if (!apiKey) {
-  throw new Error('MISTRAL_API_KEY is not set');
-}
+if (!apiKey) throw new Error('MISTRAL_API_KEY is not set');
+
+// Test the key
 const client = new Mistral({ apiKey });
+try {
+  await client.models.list();
+} catch (e: any) {
+  if (e.status === 401) {
+    console.error('API key invalid — regenerate at console.mistral.ai');
+  }
+}
+```
+
+**Verify manually:**
+```bash
+set -euo pipefail
+curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" https://api.mistral.ai/v1/models
 ```
 
 ---
 
-### 429 Too Many Requests - Rate Limited
-**Error Message:**
+#### 429 Too Many Requests
 ```
-Error: Rate limit exceeded. Please retry after X seconds.
-Status: 429  # HTTP 429 Too Many Requests
-Headers: Retry-After: 60
+Error: Rate limit exceeded. Retry-After: 60
 ```
 
-**Cause:** Too many requests in a short period.
+**Causes:** Exceeded RPM (requests/min) or TPM (tokens/min) for your tier.
 
-**Solution:**
-Implement exponential backoff. See `mistral-rate-limits` skill.
-
+**Fix:**
 ```typescript
-// Quick fix: Add delay and retry
-async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
-  for (let i = 0; i < maxRetries; i++) {
+async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
+  for (let i = 0; i <= maxRetries; i++) {
     try {
       return await fn();
     } catch (error: any) {
-      if (error.status === 429 && i < maxRetries - 1) {  # HTTP 429 Too Many Requests
-        const retryAfter = parseInt(error.headers?.['retry-after'] || '60');
-        console.log(`Rate limited. Waiting ${retryAfter}s...`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1000: 1 second in ms
-      } else {
-        throw error;
-      }
+      if (error.status !== 429 || i === maxRetries) throw error;
+      const wait = Math.min(2 ** i * 1000, 60_000);
+      console.warn(`Rate limited, retrying in ${wait}ms...`);
+      await new Promise(r => setTimeout(r, wait));
     }
   }
   throw new Error('Max retries exceeded');
 }
 ```
 
+**Check your limits:** Visit [console.mistral.ai/limits](https://admin.mistral.ai/plateforme/limits) for workspace RPM/TPM caps.
+
 ---
 
-### 400 Bad Request - Invalid Parameters
-**Error Message:**
+#### 400 Bad Request — Invalid Model
 ```
-Error: Invalid request. Check your parameters.
-Status: 400  # HTTP 400 Bad Request
-{"message": "Invalid model: mistral-ultra"}
+{"message": "Unknown model: mistral-ultra"}
 ```
 
-**Cause:** Invalid model name, malformed messages, or incorrect parameters.
-
-**Solution:**
+**Fix:** Use valid model IDs:
 ```typescript
-// Valid model names
 const VALID_MODELS = [
   'mistral-large-latest',
-  'mistral-medium-latest',  // Deprecated - use small or large
   'mistral-small-latest',
-  'open-mistral-7b',
-  'open-mixtral-8x7b',
+  'codestral-latest',
+  'pixtral-large-latest',
   'mistral-embed',
+  'mistral-moderation-latest',
 ] as const;
+```
 
-// Validate before request
-function validateRequest(model: string, messages: any[]) {
-  if (!VALID_MODELS.includes(model as any)) {
-    throw new Error(`Invalid model: ${model}`);
-  }
-  if (!messages || messages.length === 0) {
-    throw new Error('Messages array cannot be empty');
-  }
+**List available models dynamically:**
+```bash
+set -euo pipefail
+curl -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
+  https://api.mistral.ai/v1/models | jq -r '.data[].id' | sort
+```
+
+---
+
+#### 400 Bad Request — Invalid Messages
+```
+{"message": "messages must be a non-empty array"}
+```
+
+**Fix:** Validate message structure before sending:
+```typescript
+function validateMessages(messages: any[]): void {
+  if (!messages?.length) throw new Error('Messages array empty');
+  const validRoles = ['system', 'user', 'assistant', 'tool'];
   for (const msg of messages) {
-    if (!['system', 'user', 'assistant', 'tool'].includes(msg.role)) {
-      throw new Error(`Invalid role: ${msg.role}`);
+    if (!validRoles.includes(msg.role)) {
+      throw new Error(`Invalid role: "${msg.role}"`);
+    }
+    if (!msg.content && !msg.toolCalls) {
+      throw new Error(`Message with role "${msg.role}" has no content`);
     }
   }
 }
@@ -149,190 +152,147 @@ function validateRequest(model: string, messages: any[]) {
 
 ---
 
-### 413 Payload Too Large - Context Exceeded
-**Error Message:**
+#### 400 Bad Request — Tool Call Errors
 ```
-Error: Request too large. Maximum context length exceeded.
-Status: 413  # 413 = configured value
+{"message": "tool_call_id is required for tool messages"}
 ```
 
-**Cause:** Too many tokens in the request.
-
-**Solution:**
+**Fix:** Every tool result must include the matching `toolCallId`:
 ```typescript
-// Truncate conversation history
-function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {  # 30000: 30 seconds in ms
-  // Keep system message
-  const systemMsg = messages.find(m => m.role === 'system');
-  const otherMsgs = messages.filter(m => m.role !== 'system');
-
-  // Estimate ~4 chars per token
-  let tokenEstimate = systemMsg ? systemMsg.content.length / 4 : 0;
-  const truncated: Message[] = systemMsg ? [systemMsg] : [];
-
-  // Add messages from most recent
-  for (let i = otherMsgs.length - 1; i >= 0; i--) {
-    const msgTokens = otherMsgs[i].content.length / 4;
-    if (tokenEstimate + msgTokens > maxTokens) break;
-    tokenEstimate += msgTokens;
-    truncated.unshift(otherMsgs[i]);
-  }
-
-  return truncated;
+// After receiving tool_calls from the model
+for (const call of response.choices[0].message.toolCalls) {
+  const result = await executeFunction(call.function.name, call.function.arguments);
+  messages.push({
+    role: 'tool',
+    name: call.function.name,
+    content: JSON.stringify(result),
+    toolCallId: call.id,  // REQUIRED — must match call.id
+  });
 }
 ```
 
 ---
 
-### 500/503 Server Error - Mistral Service Issue
-**Error Message:**
+#### 413 / Context Length Exceeded
+```
+Error: Maximum context length exceeded
+```
+
+**Fix:** Trim conversation history, keeping system message:
+```typescript
+function trimToFit(messages: any[], maxChars = 100_000): any[] {
+  const system = messages.find(m => m.role === 'system');
+  const rest = messages.filter(m => m.role !== 'system');
+  const kept: any[] = system ? [system] : [];
+  let chars = system?.content?.length ?? 0;
+
+  // Keep most recent messages that fit
+  for (let i = rest.length - 1; i >= 0; i--) {
+    const msgChars = JSON.stringify(rest[i]).length;
+    if (chars + msgChars > maxChars) break;
+    chars += msgChars;
+    kept.splice(system ? 1 : 0, 0, rest[i]);
+  }
+  return kept;
+}
+```
+
+---
+
+#### 500/503 Server Error
 ```
 Error: Internal server error
-Status: 500/503  # 503: HTTP 500 Internal Server Error
 ```
 
-**Cause:** Mistral AI service experiencing issues.
+**Causes:** Mistral service issue (temporary).
 
-**Solution:**
-```bash
-set -euo pipefail
-# Check Mistral status
-curl -s https://status.mistral.ai/ | head -20
-
-# Implement circuit breaker
-```
-
+**Fix:**
 ```typescript
 class CircuitBreaker {
   private failures = 0;
-  private lastFailure?: Date;
+  private lastFailure = 0;
   private readonly threshold = 5;
-  private readonly resetTimeout = 60000; // 1 minute  # 60000: 1 minute in ms
+  private readonly resetMs = 60_000;
 
   async call<T>(fn: () => Promise<T>): Promise<T> {
-    if (this.isOpen()) {
-      throw new Error('Circuit breaker is open');
+    if (this.failures >= this.threshold) {
+      if (Date.now() - this.lastFailure < this.resetMs) {
+        throw new Error('Circuit breaker open — Mistral service unavailable');
+      }
+      this.failures = 0; // Reset after timeout
     }
-
     try {
       const result = await fn();
       this.failures = 0;
       return result;
     } catch (error: any) {
-      if (error.status >= 500) {  # HTTP 500 Internal Server Error
+      if (error.status >= 500) {
         this.failures++;
-        this.lastFailure = new Date();
+        this.lastFailure = Date.now();
       }
       throw error;
     }
-  }
-
-  private isOpen(): boolean {
-    if (this.failures < this.threshold) return false;
-    const elapsed = Date.now() - (this.lastFailure?.getTime() || 0);
-    return elapsed < this.resetTimeout;
   }
 }
 ```
 
 ---
 
-### Network Timeout
-**Error Message:**
+#### ERR_REQUIRE_ESM (Node.js)
 ```
-Error: Request timeout after 30000ms
+Error [ERR_REQUIRE_ESM]: require() of ES Module not supported
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** `@mistralai/mistralai` is ESM-only since v1.x.
 
-**Solution:**
+**Fix:** Either use `import` syntax (recommended) or dynamic import:
 ```typescript
-// Increase timeout
-const client = new Mistral({
-  apiKey: process.env.MISTRAL_API_KEY,
-  timeout: 60000, // 60 seconds  # 60000: 1 minute in ms
-});
+// Option 1: Convert to ESM
+// package.json: "type": "module"
+import { Mistral } from '@mistralai/mistralai';
 
-// For streaming, use longer timeout
-const client = new Mistral({
-  apiKey: process.env.MISTRAL_API_KEY,
-  timeout: 120000, // 2 minutes for long responses  # 120000 = configured value
-});
+// Option 2: Dynamic import in CJS
+const { Mistral } = await import('@mistralai/mistralai');
 ```
 
 ---
 
-### Invalid Tool/Function Schema
-**Error Message:**
+#### Network Timeout
 ```
-Error: Invalid tool definition
-{"message": "function.parameters must be a valid JSON Schema"}
+Error: Request timeout after 30000ms
 ```
 
-**Cause:** Malformed function calling schema.
-
-**Solution:**
+**Fix:**
 ```typescript
-// Correct tool schema
-const tool = {
-  type: 'function',
-  function: {
-    name: 'get_weather', // lowercase, underscores
-    description: 'Get weather for a location',
-    parameters: {
-      type: 'object',
-      properties: {
-        location: {
-          type: 'string', // Valid JSON Schema types
-          description: 'City name',
-        },
-      },
-      required: ['location'], // Array of required property names
-    },
-  },
-};
-```
+const client = new Mistral({
+  apiKey: process.env.MISTRAL_API_KEY,
+  timeoutMs: 60_000, // Increase for long completions
+});
 
-## Quick Diagnostic Commands
-
-```bash
-set -euo pipefail
-# Check API connectivity
-curl -I https://api.mistral.ai/v1/models \
-  -H "Authorization: Bearer ${MISTRAL_API_KEY}"
-
-# List available models
-curl https://api.mistral.ai/v1/models \
-  -H "Authorization: Bearer ${MISTRAL_API_KEY}" | jq '.data[].id'
-
-# Check local configuration
-env | grep MISTRAL
-
-# Test basic chat
-curl https://api.mistral.ai/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
-  -d '{
-    "model": "mistral-small-latest",
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'
+// For streaming, the timeout applies to initial connection
+// Individual chunks have no timeout
 ```
 
 ## Escalation Path
 1. Collect evidence with `mistral-debug-bundle`
-2. Check Mistral status page: https://status.mistral.ai/
-3. Contact support via Discord or email
+2. Check [status.mistral.ai](https://status.mistral.ai/)
+3. Contact support via [Discord](https://discord.gg/mistralai) or console.mistral.ai
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401` | Auth failure | Regenerate key at console.mistral.ai |
+| `429` | Rate limit | Backoff + check tier limits |
+| `400` | Bad params | Validate model, messages, tools |
+| `413` | Context overflow | Trim conversation history |
+| `5xx` | Service error | Retry with circuit breaker |
+| `ERR_REQUIRE_ESM` | CJS import | Use ESM `import` syntax |
 
 ## Resources
-- [Mistral AI Status Page](https://status.mistral.ai/)
-- [Mistral AI Discord](https://discord.gg/mistralai)
-- [Mistral AI API Reference](https://docs.mistral.ai/api/)
+- [Mistral API Reference](https://docs.mistral.ai/api/)
+- [Rate Limits & Tiers](https://docs.mistral.ai/deployment/ai-studio/tier/)
+- [Status Page](https://status.mistral.ai/)
+- [Discord Community](https://discord.gg/mistralai)
 
 ## Next Steps
 For comprehensive debugging, see `mistral-debug-bundle`.
-
-## Examples
-
-**Basic usage**: Apply mistral common errors to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize mistral common errors for production environments with multiple constraints and team-specific requirements.
