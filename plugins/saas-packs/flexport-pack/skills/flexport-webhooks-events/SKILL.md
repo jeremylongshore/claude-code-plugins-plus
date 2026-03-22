@@ -1,201 +1,170 @@
 ---
 name: flexport-webhooks-events
 description: |
-  Implement Flexport webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Flexport event notifications securely.
-  Trigger with phrases like "flexport webhook", "flexport events",
-  "flexport webhook signature", "handle flexport events", "flexport notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement Flexport webhook event handling for shipment milestones, booking updates,
+  purchase order events, and invoice notifications.
+  Trigger: "flexport webhooks", "flexport events", "flexport milestones",
+  "flexport shipment tracking webhook".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Webhooks & Events
 
 ## Overview
-Securely handle Flexport webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Flexport webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+Flexport sends webhook notifications for shipment milestones, booking confirmations, PO updates, invoice events, and document availability. Webhooks are configured in Portal > Settings with a secret token for HMAC-SHA256 signature verification via the `X-Hub-Signature` header.
 
-## Webhook Endpoint Setup
+## Webhook Event Types
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/flexport',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-flexport-signature'] as string;
-    const timestamp = req.headers['x-flexport-timestamp'] as string;
-
-    if (!verifyFlexportSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleFlexportEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyFlexportSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.FLEXPORT_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type FlexportEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface FlexportEvent {
-  id: string;
-  type: FlexportEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<FlexportEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleFlexportEvent(event: FlexportEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `flexport:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `flexport:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Flexport CLI to send test events
-flexport webhooks trigger resource.created --url http://localhost:3000/webhooks/flexport
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Category | Events | Use Case |
+|----------|--------|----------|
+| Milestones | `cargo_ready`, `departed`, `arrived`, `customs_cleared`, `delivered` | Shipment tracking |
+| Transit | `estimated_departure`, `estimated_arrival`, `actual_departure` | ETA updates |
+| Bookings | `booking_confirmed`, `booking_amended` | Booking lifecycle |
+| Purchase Orders | `po_created`, `po_updated`, `po_archived` | PO management |
+| Invoices | `invoice_created`, `freight_invoice_ready` | Billing |
+| Documents | `document_uploaded`, `bill_of_lading_ready` | Document management |
+| Container | `container_loaded`, `container_unloaded` | Container tracking |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Flexport dashboard.
+### Step 1: Create Webhook Endpoint in Flexport
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+Navigate to Portal > Settings > Webhooks > Add Endpoint:
+- URL: `https://your-app.com/webhooks/flexport`
+- Secret: Generate a strong random string
+- Events: Select event types to subscribe to
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+### Step 2: Implement Webhook Handler
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+```typescript
+import crypto from 'crypto';
+import express from 'express';
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+const app = express();
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+// IMPORTANT: Use raw body for signature verification
+app.post('/webhooks/flexport', express.raw({ type: '*/*' }), async (req, res) => {
+  // Step 1: Verify signature
+  const signature = req.headers['x-hub-signature'] as string;
+  const expected = 'sha256=' + crypto
+    .createHmac('sha256', process.env.FLEXPORT_WEBHOOK_SECRET!)
+    .update(req.body)
+    .digest('hex');
 
-## Examples
+  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+    console.error('Invalid webhook signature');
+    return res.status(401).send('Invalid signature');
+  }
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+  // Step 2: Parse and route event
+  const event = JSON.parse(req.body.toString());
+  console.log(`Webhook: ${event.type} | ID: ${event.data?.id}`);
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/flexport \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  try {
+    await routeEvent(event);
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error('Webhook processing failed:', err);
+    res.status(500).send('Processing error');
+    // Dead letter: store for retry
+  }
+});
+
+// Step 3: Route events to handlers
+async function routeEvent(event: { type: string; data: any }) {
+  switch (event.type) {
+    case 'shipment.milestone':
+      await handleMilestone(event.data);
+      break;
+    case 'shipment.eta_updated':
+      await handleETAUpdate(event.data);
+      break;
+    case 'booking.confirmed':
+      await handleBookingConfirmed(event.data);
+      break;
+    case 'invoice.created':
+      await handleInvoice(event.data);
+      break;
+    case 'document.uploaded':
+      await handleDocument(event.data);
+      break;
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
+  }
+}
 ```
 
+### Step 3: Handle Shipment Milestones
+
+```typescript
+async function handleMilestone(data: {
+  shipment_id: string;
+  milestone: string;
+  occurred_at: string;
+  location?: { name: string; country: string };
+}) {
+  console.log(`Milestone: ${data.milestone} for ${data.shipment_id}`);
+  console.log(`  At: ${data.occurred_at} | Location: ${data.location?.name}`);
+
+  // Update your database
+  await db.shipments.update({
+    where: { flexportId: data.shipment_id },
+    data: {
+      status: data.milestone,
+      lastMilestoneAt: new Date(data.occurred_at),
+      currentLocation: data.location?.name,
+    },
+  });
+
+  // Notify stakeholders for key milestones
+  if (['departed', 'arrived', 'delivered'].includes(data.milestone)) {
+    await notifyStakeholders(data.shipment_id, data.milestone);
+  }
+}
+```
+
+### Step 4: Idempotent Processing
+
+```typescript
+// Flexport may retry webhooks — ensure idempotent handling
+async function processWebhookIdempotently(event: any) {
+  const eventId = event.id || crypto.createHash('sha256')
+    .update(JSON.stringify(event)).digest('hex');
+
+  // Check if already processed
+  const exists = await db.webhookLog.findUnique({ where: { eventId } });
+  if (exists) {
+    console.log(`Duplicate webhook ${eventId}, skipping`);
+    return;
+  }
+
+  await db.$transaction([
+    db.webhookLog.create({ data: { eventId, type: event.type, processedAt: new Date() } }),
+    routeEvent(event),
+  ]);
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 401 signature mismatch | Wrong secret or body parsing | Use `express.raw()`, verify secret matches Portal |
+| Duplicate events | Flexport retries on timeout | Implement idempotency with event ID dedup |
+| Missing events | Endpoint unreachable | Monitor uptime, use dead letter queue |
+| Slow processing | Complex handler logic | Acknowledge fast (200), process async |
+
 ## Resources
-- [Flexport Webhooks Guide](https://docs.flexport.com/webhooks)
-- [Webhook Security Best Practices](https://docs.flexport.com/webhooks/security)
+
+- [Flexport Webhook API](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
+- [Flexport Developer Portal](https://developers.flexport.com/)
 
 ## Next Steps
+
 For performance optimization, see `flexport-performance-tuning`.

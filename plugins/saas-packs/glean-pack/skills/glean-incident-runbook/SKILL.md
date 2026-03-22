@@ -1,205 +1,24 @@
 ---
 name: glean-incident-runbook
 description: |
-  Execute Glean incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Glean-related outages, investigating errors,
-  or running post-incident reviews for Glean integration failures.
-  Trigger with phrases like "glean incident", "glean outage",
-  "glean down", "glean on-call", "glean emergency", "glean broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Triage: Is search returning results? Check Glean status page.
+  Trigger: "glean incident runbook", "incident-runbook".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Glean-related outages.
 
-## Prerequisites
-- Access to Glean dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Glean API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
-
-```bash
-# 1. Check Glean status
-curl -s https://status.glean.com | jq
-
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.glean'
-
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(glean_errors_total[5m])
-
-# 4. Recent error logs
-kubectl logs -l app=glean-integration --since=5m | grep -i error | tail -20
-```
-
-## Decision Tree
-
-```
-Glean API returning errors?
-├─ YES: Is status.glean.com showing incident?
-│   ├─ YES → Wait for Glean to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret glean-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Glean dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic glean-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/glean-integration
-```
-
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.glean.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/glean-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Glean for limit increase
-```
-
-### 500/503 - Glean Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/glean-integration GLEAN_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Glean status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Glean Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Glean Integration Issue
-
-We're experiencing issues with our Glean integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/glean-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=glean-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=glean_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
-```markdown
-## Incident: Glean [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Glean-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.glean.status' || echo "UNHEALTHY"
-```
+Triage: Is search returning results? Check Glean status page. Is content stale? Check connector last successful run. Are permissions wrong? Verify datasource config with getdatasourceconfig. Is specific content missing? Check document ID with direct search. Escalate to Glean support with datasource name and error details.
 
 ## Resources
-- [Glean Status Page](https://status.glean.com)
-- [Glean Support](https://support.glean.com)
 
-## Next Steps
-For data handling, see `glean-data-handling`.
+- [Glean Developer Portal](https://developers.glean.com/)
+- [Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
+- [Search API](https://developers.glean.com/api/client-api/search/overview)

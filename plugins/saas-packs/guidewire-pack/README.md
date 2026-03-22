@@ -1,6 +1,10 @@
 # Guidewire Skill Pack
 
-> Claude Code skill pack for Guidewire InsuranceSuite integration (24 skills)
+> 24 production-ready Claude Code skills for Guidewire InsuranceSuite -- real Cloud API calls, Gosu patterns, and PolicyCenter/ClaimCenter/BillingCenter workflows.
+
+## What This Is
+
+A complete skill pack for building, deploying, and operating Guidewire InsuranceSuite integrations. Every skill contains real Guidewire Cloud API code: OAuth2 authentication via Guidewire Hub, policy lifecycle management, claims processing (FNOL through settlement), and Gosu server-side patterns. Uses actual Cloud API endpoints (`/account/v1/accounts`, `/job/v1/submissions`, `/claim/v1/claims`).
 
 ## Installation
 
@@ -8,69 +12,71 @@
 /plugin install guidewire-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
-|-------|-------------|
-| `guidewire-install-auth` | Install Auth - Set up Guidewire SDK, Studio, and configure Cloud API authentication |
-| `guidewire-hello-world` | Hello World - First API calls to PolicyCenter, ClaimCenter, and BillingCenter |
-| `guidewire-local-dev-loop` | Local Dev Loop - Configure Guidewire Studio and local development workflow |
-| `guidewire-sdk-patterns` | SDK Patterns - Digital SDK, REST API Client, and Gosu patterns |
-| `guidewire-core-workflow-a` | Core Workflow A - Policy lifecycle management (quote, bind, issue, endorse) |
-| `guidewire-core-workflow-b` | Core Workflow B - Claims processing (FNOL, investigation, settlement) |
-| `guidewire-common-errors` | Common Errors - InsuranceSuite error codes and resolution patterns |
-| `guidewire-debug-bundle` | Debug Bundle - Debugging Gosu, Cloud API, and integration issues |
-| `guidewire-rate-limits` | Rate Limits - Cloud API quotas and throttling management |
-| `guidewire-security-basics` | Security Basics - OAuth2, JWT, API roles, and secure Gosu coding |
-| `guidewire-prod-checklist` | Prod Checklist - Production deployment readiness for Guidewire Cloud |
-| `guidewire-upgrade-migration` | Upgrade Migration - Version upgrades and Cloud migration paths |
+
+| # | Skill | What It Does |
+|---|-------|-------------|
+| S01 | `guidewire-install-auth` | Guidewire Hub OAuth2, Cloud Console setup, JWT token acquisition |
+| S02 | `guidewire-hello-world` | First API calls to PolicyCenter, ClaimCenter, BillingCenter |
+| S03 | `guidewire-local-dev-loop` | Guidewire Studio, Gosu debugging, GUnit tests, local server |
+| S04 | `guidewire-sdk-patterns` | REST API Client, Jutro Digital SDK, Gosu entity patterns |
+| S05 | `guidewire-core-workflow-a` | Policy lifecycle: account -> submission -> quote -> bind -> issue |
+| S06 | `guidewire-core-workflow-b` | Claims lifecycle: FNOL -> investigation -> reserve -> payment -> settle |
+| S07 | `guidewire-common-errors` | Fix 400/401/403/404/409/422, Gosu exceptions, validation errors |
+| S08 | `guidewire-debug-bundle` | Cloud API diagnostics, Gosu stack traces, GCC logs |
+| S09 | `guidewire-rate-limits` | Cloud API quotas, batch endpoints, throttling management |
+| S10 | `guidewire-security-basics` | OAuth2 JWT, API roles, Gosu secure coding, SAML SSO |
+| S11 | `guidewire-prod-checklist` | Configuration promotion, GUnit tests, monitoring setup |
+| S12 | `guidewire-upgrade-migration` | Version upgrades, Gosu migration, Cloud environment management |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
-|-------|-------------|
-| `guidewire-ci-integration` | CI Integration - Automated testing and build pipelines for Guidewire |
-| `guidewire-deploy-integration` | Deploy Integration - Guidewire Cloud deployment strategies |
-| `guidewire-webhooks-events` | Webhooks Events - App Events, message queuing, and async integration |
-| `guidewire-performance-tuning` | Performance Tuning - Query optimization and batch processing |
-| `guidewire-cost-tuning` | Cost Tuning - License optimization and cloud resource management |
-| `guidewire-reference-architecture` | Reference Architecture - Enterprise InsuranceSuite architecture patterns |
+
+| # | Skill | What It Does |
+|---|-------|-------------|
+| P13 | `guidewire-ci-integration` | Gosu compilation, GUnit tests, configuration deployment pipelines |
+| P14 | `guidewire-deploy-integration` | GCC deployment, configuration packages, environment promotion |
+| P15 | `guidewire-webhooks-events` | App Events, SQS/SNS consumers, event-driven integration |
+| P16 | `guidewire-performance-tuning` | Gosu query optimization, batch processing, JVM tuning |
+| P17 | `guidewire-cost-tuning` | License management, compute right-sizing, API optimization |
+| P18 | `guidewire-reference-architecture` | Enterprise architecture with Jutro, DataHub, Integration Gateway |
 
 ### Flagship Skills (F19-F24)
-| Skill | Description |
-|-------|-------------|
-| `guidewire-multi-env-setup` | Multi Env Setup - Dev, staging, and production environment configuration |
-| `guidewire-observability` | Observability - Logging, monitoring, and alerting for InsuranceSuite |
-| `guidewire-incident-runbook` | Incident Runbook - Production incident response procedures |
-| `guidewire-data-handling` | Data Handling - Entity management, data migration, and batch operations |
-| `guidewire-enterprise-rbac` | Enterprise RBAC - Role-based access control and API permissions |
-| `guidewire-migration-deep-dive` | Migration Deep Dive - Self-managed to Cloud migration strategies |
 
-## Usage
+| # | Skill | What It Does |
+|---|-------|-------------|
+| F19 | `guidewire-multi-env-setup` | Dev/staging/prod with GCC configuration promotion |
+| F20 | `guidewire-observability` | GCC monitoring, log export, performance dashboards |
+| F21 | `guidewire-incident-runbook` | Production triage, batch failure recovery, escalation |
+| F22 | `guidewire-data-handling` | Entity management, data migration, GDPR purge rules |
+| F23 | `guidewire-enterprise-rbac` | API roles, user permissions, AD/SAML group mapping |
+| F24 | `guidewire-migration-deep-dive` | Self-managed to Cloud migration, data migration, cutover |
 
-Skills trigger automatically when you discuss Guidewire topics. For example:
+## Key Guidewire Concepts
 
-- "Help me set up Guidewire" triggers `guidewire-install-auth`
-- "Debug this PolicyCenter error" triggers `guidewire-common-errors`
-- "Deploy my Guidewire integration" triggers `guidewire-deploy-integration`
-- "Create a new claim in ClaimCenter" triggers `guidewire-core-workflow-b`
+- **InsuranceSuite**: PolicyCenter (policy admin) + ClaimCenter (claims) + BillingCenter (billing)
+- **Cloud API**: RESTful APIs with Swagger 2.0, OAuth2 JWT auth via Guidewire Hub
+- **Gosu**: JVM language for server-side business logic (custom rules, workflows, validations)
+- **Jutro**: React-based Digital Platform for building insurance portals
+- **GCC**: Guidewire Cloud Console for environment management, deployments, monitoring
+- **API Roles**: Endpoint-level permissions configured in GCC > Identity & Access
 
 ## About Guidewire
 
-Guidewire is the leading platform for P&C (Property & Casualty) insurance carriers. The InsuranceSuite includes:
-
-- **PolicyCenter** - Policy administration for quoting, binding, and policy lifecycle
-- **ClaimCenter** - Claims management from FNOL to settlement
-- **BillingCenter** - Premium billing and payment processing
-- **Jutro Digital Platform** - Modern frontend framework for insurance portals
-- **Cloud Platform** - Managed cloud infrastructure and APIs
+Guidewire is the leading platform for P&C (Property & Casualty) insurance carriers:
+- **PolicyCenter** -- Policy administration (quoting, binding, issuance, endorsements)
+- **ClaimCenter** -- Claims management (FNOL through settlement)
+- **BillingCenter** -- Premium billing and payment processing
+- **Jutro Digital Platform** -- Modern frontend framework
+- **Cloud Platform** -- Managed infrastructure, APIs, and DevOps
 
 ## Resources
 
 - [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Guidewire Documentation](https://docs.guidewire.com/)
 - [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Gosu Programming Language](https://gosu-lang.github.io/)
+- [Gosu Language](https://gosu-lang.github.io/)
+- [Guidewire Cloud Console](https://gcc.guidewire.com/)
 
 ## License
 

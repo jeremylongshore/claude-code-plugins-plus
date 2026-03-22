@@ -1,6 +1,10 @@
 # Fondo Skill Pack
 
-> Claude Code skill pack for Fondo integration (18 skills)
+> 18 production-ready Claude Code skills for Fondo startup bookkeeping, R&D tax credits, and financial operations -- real workflows with actual provider integrations.
+
+## What This Is
+
+A complete skill pack for managing startup finances with Fondo. Every skill covers real Fondo workflows: connecting Gusto/QuickBooks/Plaid integrations, monthly bookkeeping close, R&D tax credit claims (Form 6765), and financial reporting. Includes code for building internal dashboards using data from shared providers (Stripe, Gusto API).
 
 ## Installation
 
@@ -8,41 +12,43 @@
 /plugin install fondo-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
-|-------|-------------|
-| `fondo-install-auth` | Install Auth |
-| `fondo-hello-world` | Hello World |
-| `fondo-local-dev-loop` | Local Dev Loop |
-| `fondo-sdk-patterns` | Sdk Patterns |
-| `fondo-core-workflow-a` | Core Workflow A |
-| `fondo-core-workflow-b` | Core Workflow B |
-| `fondo-common-errors` | Common Errors |
-| `fondo-debug-bundle` | Debug Bundle |
-| `fondo-rate-limits` | Rate Limits |
-| `fondo-security-basics` | Security Basics |
-| `fondo-prod-checklist` | Prod Checklist |
-| `fondo-upgrade-migration` | Upgrade Migration |
+
+| # | Skill | What It Does |
+|---|-------|-------------|
+| S01 | `fondo-install-auth` | Connect Gusto, QuickBooks, Plaid, Stripe, and bank accounts |
+| S02 | `fondo-hello-world` | Verify bank sync, review auto-categorization, check R&D eligibility |
+| S03 | `fondo-local-dev-loop` | Parse Fondo CSV exports, build burn rate calculator |
+| S04 | `fondo-sdk-patterns` | Gusto API, QuickBooks API, Zod-typed CSV parsers |
+| S05 | `fondo-core-workflow-a` | Monthly bookkeeping close timeline, financial statements, metrics |
+| S06 | `fondo-core-workflow-b` | R&D tax credit workflow, Form 6765, payroll tax offset |
+| S07 | `fondo-common-errors` | Sync failures, categorization errors, R&D qualification issues |
+| S08 | `fondo-debug-bundle` | Diagnostic checklist for support tickets |
+| S09 | `fondo-rate-limits` | Provider API limits (Gusto, QuickBooks, Stripe, Plaid) |
+| S10 | `fondo-security-basics` | OAuth management, financial data protection, access control |
+| S11 | `fondo-prod-checklist` | Year-end tax filing readiness, key deadlines |
+| S12 | `fondo-upgrade-migration` | Migrate from other bookkeeping services, plan upgrades |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
-|-------|-------------|
-| `fondo-ci-integration` | Ci Integration |
-| `fondo-deploy-integration` | Deploy Integration |
-| `fondo-webhooks-events` | Webhooks Events |
-| `fondo-performance-tuning` | Performance Tuning |
-| `fondo-cost-tuning` | Cost Tuning |
-| `fondo-reference-architecture` | Reference Architecture |
 
-## Usage
+| # | Skill | What It Does |
+|---|-------|-------------|
+| P13 | `fondo-ci-integration` | Budget alert pipelines, burn rate monitoring |
+| P14 | `fondo-deploy-integration` | Deploy internal finance dashboards |
+| P15 | `fondo-webhooks-events` | Stripe/Gusto/Plaid webhooks for financial event processing |
+| P16 | `fondo-performance-tuning` | Faster month-end close, auto-categorization rules |
+| P17 | `fondo-cost-tuning` | Maximize R&D credits, plan selection, ROI analysis |
+| P18 | `fondo-reference-architecture` | Full startup finance stack architecture |
 
-Skills trigger automatically when you discuss Fondo topics. For example:
+## Key Fondo Concepts
 
-- "Help me set up Fondo" → triggers `fondo-install-auth`
-- "Debug this Fondo error" → triggers `fondo-common-errors`
-- "Deploy my Fondo integration" → triggers `fondo-deploy-integration`
+- **TaxPass**: Bundled bookkeeping + tax filing + R&D credits
+- **R&D Tax Credits**: Up to $500K/year payroll tax offset for qualifying startups
+- **Monthly Close**: Fondo CPA team handles reconciliation, you answer questions
+- **Integrations**: OAuth connections to Gusto, QuickBooks, Plaid, Stripe, Brex
+- **Form 6765**: IRS form for claiming research and development tax credits
 
 ## License
 

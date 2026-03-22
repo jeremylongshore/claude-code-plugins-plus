@@ -1,121 +1,102 @@
 ---
 name: flyio-prod-checklist
 description: |
-  Execute Fly.io production deployment checklist and rollback procedures.
-  Use when deploying Fly.io integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "flyio production", "deploy flyio",
-  "flyio go-live", "flyio launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute Fly.io production deployment checklist with health checks,
+  auto-scaling, monitoring, and rollback procedures.
+  Trigger: "fly.io production", "fly.io go-live", "fly.io prod checklist".
+allowed-tools: Read, Bash(fly:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io Production Checklist
 
-## Overview
-Complete checklist for deploying Fly.io integrations to production.
+## Pre-Deployment
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### Infrastructure
+- [ ] `min_machines_running = 1` (avoid cold starts)
+- [ ] Machines in 2+ regions for redundancy
+- [ ] VM sized appropriately (`fly scale show`)
+- [ ] Volumes backed up (if using persistent storage)
+- [ ] Postgres has standby replica
 
-## Instructions
+### Configuration
+- [ ] All secrets set via `fly secrets` (not `[env]`)
+- [ ] `force_https = true`
+- [ ] Health check configured with appropriate grace period
+- [ ] Custom domain with TLS certificate active
+- [ ] Concurrency limits tuned for your app
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Code Quality
+- [ ] Dockerfile builds successfully locally
+- [ ] App responds on health check endpoint
+- [ ] Graceful shutdown handles SIGTERM
+- [ ] No hardcoded secrets in codebase
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Fly.io error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+## Production fly.toml
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Fly.io connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+```toml
+app = "my-app"
+primary_region = "iad"
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 1
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.flyio.com
+[http_service.concurrency]
+  type = "requests"
+  hard_limit = 250
+  soft_limit = 200
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/flyio-integration app=image:new --record
-kubectl rollout pause deployment/flyio-integration
+[http_service.checks]
+  grace_period = "15s"
+  interval = "10s"
+  timeout = "3s"
+  path = "/health"
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/flyio-integration
-kubectl rollout pause deployment/flyio-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/flyio-integration
-kubectl rollout status deployment/flyio-integration
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 2
+  memory = "1gb"
 ```
 
-## Output
-- Deployed Fly.io integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+## Rollback Procedure
 
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
+```bash
+# List recent releases
+fly releases -a my-app
 
-## Examples
+# Rollback to previous release
+fly deploy --image registry.fly.io/my-app:previous-version
 
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; flyio: any }> {
-  const start = Date.now();
-  try {
-    await flyioClient.ping();
-    return { status: 'healthy', flyio: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', flyio: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
+# Or rollback to specific release
+fly releases rollback 5 -a my-app
 ```
 
-### Immediate Rollback
+## Monitoring
+
 ```bash
-kubectl rollout undo deployment/flyio-integration
-kubectl rollout status deployment/flyio-integration
+# Live logs
+fly logs -a my-app
+
+# Machine metrics
+fly machine status <machine-id> -a my-app
+
+# Platform status
+curl -s https://status.flyio.net/api/v2/status.json | jq '.status.description'
 ```
 
 ## Resources
-- [Fly.io Status](https://status.flyio.com)
-- [Fly.io Support](https://docs.flyio.com/support)
+
+- [Fly.io Production Checklist](https://fly.io/docs/getting-started/essentials/)
+- [Auto Stop/Start](https://fly.io/docs/launch/autostop-autostart/)
 
 ## Next Steps
+
 For version upgrades, see `flyio-upgrade-migration`.

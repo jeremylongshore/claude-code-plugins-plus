@@ -1,126 +1,84 @@
 ---
 name: flyio-ci-integration
 description: |
-  Configure Fly.io CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Fly.io tests into your build process.
-  Trigger with phrases like "flyio CI", "flyio GitHub Actions",
-  "flyio automated tests", "CI flyio".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Configure CI/CD pipelines for Fly.io with GitHub Actions, Docker builds,
+  deploy tokens, and automated deployment workflows.
+  Trigger: "fly.io CI", "fly.io GitHub Actions", "fly deploy CI/CD".
+allowed-tools: Read, Write, Edit, Bash(fly:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Fly.io integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Fly.io test API key
-- npm/pnpm project configured
+Set up CI/CD for Fly.io with GitHub Actions: build Docker images, deploy on push to main, and use deploy tokens for secure automation.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/flyio-integration.yml`:
+### GitHub Actions Workflow
 
 ```yaml
-name: Fly.io Integration Tests
-
+# .github/workflows/fly-deploy.yml
+name: Deploy to Fly.io
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
 
-env:
-  FLYIO_API_KEY: ${{ secrets.FLYIO_API_KEY }}
-
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      FLYIO_API_KEY: ${{ secrets.FLYIO_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
+        with: { node-version: '20' }
+      - run: npm ci && npm test
 
-### Step 2: Configure Secrets
-```bash
-gh secret set FLYIO_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Fly.io Integration', () => {
-  it.skipIf(!process.env.FLYIO_API_KEY)('should connect', async () => {
-    const client = getFly.ioClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
+  deploy-staging:
+    needs: test
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    env:
-      FLYIO_API_KEY: ${{ secrets.FLYIO_API_KEY_PROD }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Fly.io production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: fly deploy -a my-app-staging --config fly.staging.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN_STAGING }}
+
+  deploy-production:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: fly deploy -a my-app
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_DEPLOY_TOKEN }}
+      - run: |
+          fly status -a my-app
+          curl -sf https://my-app.fly.dev/health
 ```
 
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "flyio-integration"
+### Create Deploy Token
+
+```bash
+# Scoped to a single app — use this in CI
+fly tokens create deploy -a my-app
+# Add as GitHub secret: FLY_DEPLOY_TOKEN
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Fly.io CI Guide](https://docs.flyio.com/ci)
+
+- [Fly.io GitHub Actions](https://fly.io/docs/launch/continuous-deployment/github-actions/)
+- [Deploy Tokens](https://fly.io/docs/reference/deploy-tokens/)
 
 ## Next Steps
-For deployment patterns, see `flyio-deploy-integration`.
+
+For deployment strategies, see `flyio-deploy-integration`.

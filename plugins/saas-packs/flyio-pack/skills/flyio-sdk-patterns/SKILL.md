@@ -1,149 +1,130 @@
 ---
 name: flyio-sdk-patterns
 description: |
-  Apply production-ready Fly.io SDK patterns for TypeScript and Python.
-  Use when implementing Fly.io integrations, refactoring SDK usage,
-  or establishing team coding standards for Fly.io.
-  Trigger with phrases like "flyio SDK patterns", "flyio best practices",
-  "flyio code patterns", "idiomatic flyio".
+  Apply production-ready Fly.io Machines API patterns for TypeScript with typed
+  clients, machine lifecycle management, and multi-region orchestration.
+  Trigger: "fly.io Machines API", "fly.io SDK patterns", "fly.io API client".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io SDK Patterns
 
 ## Overview
-Production-ready patterns for Fly.io SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `flyio-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production-ready patterns for the Fly.io Machines REST API at `https://api.machines.dev`. Typed client, machine lifecycle management, wait-for-state patterns, and multi-region orchestration.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Pattern 1: Typed Machines API Client
+
 ```typescript
-// src/flyio/client.ts
-import { Fly.ioClient } from '@flyio/sdk';
+const FLY_API = 'https://api.machines.dev';
 
-let instance: Fly.ioClient | null = null;
+interface FlyMachine {
+  id: string;
+  name: string;
+  state: 'created' | 'starting' | 'started' | 'stopping' | 'stopped' | 'destroying' | 'destroyed';
+  region: string;
+  config: {
+    image: string;
+    guest: { cpu_kind: string; cpus: number; memory_mb: number };
+    services: Array<{ ports: Array<{ port: number; handlers: string[] }>; internal_port: number }>;
+    env: Record<string, string>;
+  };
+}
 
-export function getFly.ioClient(): Fly.ioClient {
-  if (!instance) {
-    instance = new Fly.ioClient({
-      apiKey: process.env.FLYIO_API_KEY!,
-      // Additional options
+class FlyClient {
+  private headers: Record<string, string>;
+
+  constructor(private appName: string, token: string) {
+    this.headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+  }
+
+  async listMachines(): Promise<FlyMachine[]> {
+    const res = await fetch(`${FLY_API}/v1/apps/${this.appName}/machines`, { headers: this.headers });
+    return res.json();
+  }
+
+  async createMachine(config: FlyMachine['config'], region: string): Promise<FlyMachine> {
+    const res = await fetch(`${FLY_API}/v1/apps/${this.appName}/machines`, {
+      method: 'POST', headers: this.headers,
+      body: JSON.stringify({ region, config }),
+    });
+    return res.json();
+  }
+
+  async stopMachine(id: string): Promise<void> {
+    await fetch(`${FLY_API}/v1/apps/${this.appName}/machines/${id}/stop`, {
+      method: 'POST', headers: this.headers,
     });
   }
-  return instance;
-}
-```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { Fly.ioError } from '@flyio/sdk';
-
-async function safeFly.ioCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof Fly.ioError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+  async waitForState(id: string, state: string, timeout = 30): Promise<void> {
+    await fetch(
+      `${FLY_API}/v1/apps/${this.appName}/machines/${id}/wait?state=${state}&timeout=${timeout}`,
+      { headers: this.headers },
+    );
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
+### Pattern 2: Multi-Region Deployment
+
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
+async function deployToRegions(client: FlyClient, regions: string[], config: FlyMachine['config']) {
+  const machines = await Promise.all(
+    regions.map(async region => {
+      const machine = await client.createMachine(config, region);
+      await client.waitForState(machine.id, 'started');
+      console.log(`Machine ${machine.id} started in ${region}`);
+      return machine;
+    })
+  );
+  return machines;
 }
-```
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, Fly.ioClient>();
-
-export function getClientForTenant(tenantId: string): Fly.ioClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new Fly.ioClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from flyio import Fly.ioClient
-
-@asynccontextmanager
-async def get_flyio_client():
-    client = Fly.ioClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const flyioResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+// Deploy to 3 regions
+await deployToRegions(client, ['iad', 'lhr', 'nrt'], {
+  image: 'registry.fly.io/my-app:latest',
+  guest: { cpu_kind: 'shared', cpus: 1, memory_mb: 256 },
+  services: [{ ports: [{ port: 443, handlers: ['tls', 'http'] }], internal_port: 3000 }],
+  env: { NODE_ENV: 'production' },
 });
 ```
 
+### Pattern 3: Blue-Green Deploy via API
+
+```typescript
+async function blueGreenDeploy(client: FlyClient, newImage: string) {
+  const oldMachines = await client.listMachines();
+
+  // Create new machines with updated image
+  const newMachines = await Promise.all(
+    oldMachines.map(m => client.createMachine(
+      { ...m.config, image: newImage },
+      m.region,
+    ))
+  );
+
+  // Wait for all new machines to be healthy
+  await Promise.all(newMachines.map(m => client.waitForState(m.id, 'started')));
+
+  // Stop old machines
+  await Promise.all(oldMachines.map(m => client.stopMachine(m.id)));
+  console.log(`Blue-green: ${newMachines.length} new, ${oldMachines.length} stopped`);
+}
+```
+
 ## Resources
-- [Fly.io SDK Reference](https://docs.flyio.com/sdk)
-- [Fly.io API Types](https://docs.flyio.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Machines API Reference](https://fly.io/docs/machines/api/machines-resource/)
+- [Working with Machines API](https://fly.io/docs/machines/api/working-with-machines-api/)
 
 ## Next Steps
+
 Apply patterns in `flyio-core-workflow-a` for real-world usage.

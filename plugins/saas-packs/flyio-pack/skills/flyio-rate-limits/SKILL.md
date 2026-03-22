@@ -1,151 +1,88 @@
 ---
 name: flyio-rate-limits
 description: |
-  Implement Fly.io rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Fly.io.
-  Trigger with phrases like "flyio rate limit", "flyio throttling",
-  "flyio 429", "flyio retry", "flyio backoff".
+  Handle Fly.io Machines API rate limits with backoff, concurrency control,
+  and request batching for machine management operations.
+  Trigger: "fly.io rate limit", "fly.io 429", "fly.io throttling", "machines API limit".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io Rate Limits
 
 ## Overview
-Handle Fly.io rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Fly.io SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+The Fly.io Machines API has rate limits per organization. Machine create/update/delete operations are more tightly limited than read operations. The API returns 429 with `Retry-After` header when limits are exceeded.
+
+## Key Limits
+
+| Operation | Approximate Limit | Scope |
+|-----------|-------------------|-------|
+| Machine create/delete | ~10/minute | Per org |
+| Machine start/stop | ~30/minute | Per org |
+| List/get machines | ~60/minute | Per org |
+| App operations | ~20/minute | Per org |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Retry with Exponential Backoff
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+async function flyApiWithRetry<T>(
+  fn: () => Promise<Response>,
+  maxRetries = 4
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const res = await fn();
+    if (res.ok) return res.json();
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+    if (res.status === 429) {
+      const retryAfter = parseInt(res.headers.get('Retry-After') || '10');
+      const delay = retryAfter * 1000 + Math.random() * 2000;
+      console.log(`Rate limited. Retry in ${(delay / 1000).toFixed(0)}s`);
       await new Promise(r => setTimeout(r, delay));
+      continue;
     }
+
+    if (res.status >= 500 && attempt < maxRetries) {
+      await new Promise(r => setTimeout(r, Math.pow(2, attempt) * 1000));
+      continue;
+    }
+
+    throw new Error(`Fly API ${res.status}: ${await res.text()}`);
   }
-  throw new Error('Unreachable');
+  throw new Error('Max retries exceeded');
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Batch Machine Operations
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: Fly.ioClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
+// Limit concurrent machine operations
+const flyQueue = new PQueue({ concurrency: 3, interval: 10000, intervalCap: 10 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
+async function batchCreateMachines(configs: Array<{ region: string; config: any }>) {
+  return Promise.all(
+    configs.map(c => flyQueue.add(() =>
+      flyApiWithRetry(() => fetch(`${FLY_API}/v1/apps/${app}/machines`, {
+        method: 'POST', headers,
+        body: JSON.stringify(c),
+      }))
+    ))
+  );
 }
 ```
 
 ## Resources
-- [Fly.io Rate Limits](https://docs.flyio.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Machines API](https://fly.io/docs/machines/api/)
 
 ## Next Steps
-For security configuration, see `flyio-security-basics`.
+
+For security, see `flyio-security-basics`.

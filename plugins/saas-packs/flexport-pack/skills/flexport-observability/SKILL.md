@@ -1,252 +1,136 @@
 ---
 name: flexport-observability
 description: |
-  Set up comprehensive observability for Flexport integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Flexport operations, setting up dashboards,
-  or configuring alerting for Flexport integration health.
-  Trigger with phrases like "flexport monitoring", "flexport metrics",
-  "flexport observability", "monitor flexport", "flexport alerts", "flexport tracing".
-allowed-tools: Read, Write, Edit
+  Set up observability for Flexport logistics integrations with metrics,
+  structured logging, distributed tracing, and alerting dashboards.
+  Trigger: "flexport monitoring", "flexport observability", "flexport metrics", "flexport alerts".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Observability
 
 ## Overview
-Set up comprehensive observability for Flexport integrations.
 
-## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+Full observability stack for Flexport integrations: Prometheus metrics for API health, pino structured logging for debugging, OpenTelemetry tracing for latency analysis, and Grafana dashboards for monitoring.
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `flexport_requests_total` | Counter | Total API requests |
-| `flexport_request_duration_seconds` | Histogram | Request latency |
-| `flexport_errors_total` | Counter | Error count by type |
-| `flexport_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
+### Step 1: Prometheus Metrics
 
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import { Counter, Histogram, Gauge, register } from 'prom-client';
 
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'flexport_requests_total',
+const flexportRequests = new Counter({
+  name: 'flexport_api_requests_total',
   help: 'Total Flexport API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
+  labelNames: ['method', 'endpoint', 'status'],
 });
 
-const requestDuration = new Histogram({
-  name: 'flexport_request_duration_seconds',
-  help: 'Flexport request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
+const flexportLatency = new Histogram({
+  name: 'flexport_api_latency_seconds',
+  help: 'Flexport API response time',
+  labelNames: ['endpoint'],
+  buckets: [0.1, 0.25, 0.5, 1, 2.5, 5, 10],
 });
 
-const errorCounter = new Counter({
-  name: 'flexport_errors_total',
-  help: 'Flexport errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
+const flexportRateLimit = new Gauge({
+  name: 'flexport_rate_limit_remaining',
+  help: 'Remaining API calls in current window',
 });
-```
 
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
+// Instrumented fetch wrapper
+async function instrumentedFlexport(path: string, options: RequestInit = {}) {
+  const endpoint = path.split('?')[0];
+  const timer = flexportLatency.startTimer({ endpoint });
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
+    const res = await fetch(`https://api.flexport.com${path}`, { ...options, headers: { ...headers, ...options.headers } });
+    flexportRequests.inc({ method: options.method || 'GET', endpoint, status: res.status.toString() });
+    const remaining = res.headers.get('X-RateLimit-Remaining');
+    if (remaining) flexportRateLimit.set(parseInt(remaining));
     timer();
+    return res;
+  } catch (err) {
+    flexportRequests.inc({ method: options.method || 'GET', endpoint, status: 'error' });
+    timer();
+    throw err;
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('flexport-client');
-
-async function tracedFlexportCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`flexport.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
+### Step 2: Structured Logging
 
 ```typescript
 import pino from 'pino';
 
 const logger = pino({
-  name: 'flexport',
+  name: 'flexport-integration',
   level: process.env.LOG_LEVEL || 'info',
+  redact: ['headers.Authorization', 'apiKey'],
 });
 
-function logFlexportOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
+// Log every API call with context
+async function loggedFlexport(path: string, options: RequestInit = {}) {
+  const start = Date.now();
+  const res = await instrumentedFlexport(path, options);
   logger.info({
     service: 'flexport',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
+    path,
+    method: options.method || 'GET',
+    status: res.status,
+    latencyMs: Date.now() - start,
+    rateRemaining: res.headers.get('X-RateLimit-Remaining'),
+  }, 'Flexport API call');
+  return res;
 }
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
+### Step 3: Alert Rules
 
 ```yaml
-# flexport_alerts.yaml
+# prometheus-alerts.yml
 groups:
-  - name: flexport_alerts
+  - name: flexport
     rules:
-      - alert: FlexportHighErrorRate
-        expr: |
-          rate(flexport_errors_total[5m]) /
-          rate(flexport_requests_total[5m]) > 0.05
+      - alert: FlexportAPIErrors
+        expr: rate(flexport_api_requests_total{status=~"5.."}[5m]) > 0.1
         for: 5m
-        labels:
-          severity: warning
+        labels: { severity: critical }
         annotations:
-          summary: "Flexport error rate > 5%"
+          summary: "Flexport API error rate elevated"
+
+      - alert: FlexportRateLimitLow
+        expr: flexport_rate_limit_remaining < 10
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Flexport rate limit nearly exhausted"
 
       - alert: FlexportHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(flexport_request_duration_seconds_bucket[5m])
-          ) > 2
+        expr: histogram_quantile(0.99, flexport_api_latency_seconds_bucket) > 5
         for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Flexport P95 latency > 2s"
-
-      - alert: FlexportDown
-        expr: up{job="flexport"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Flexport integration is down"
+        labels: { severity: warning }
 ```
 
-## Dashboard
+### Grafana Dashboard Panels
 
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Flexport Request Rate",
-      "targets": [{
-        "expr": "rate(flexport_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Flexport Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(flexport_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-```
+| Panel | Query | Purpose |
+|-------|-------|---------|
+| Request rate | `rate(flexport_api_requests_total[5m])` | Throughput |
+| Error rate | `rate(flexport_api_requests_total{status=~"4..|5.."}[5m])` | Reliability |
+| p99 latency | `histogram_quantile(0.99, rate(flexport_api_latency_seconds_bucket[5m]))` | Performance |
+| Rate limit headroom | `flexport_rate_limit_remaining` | Quota |
 
 ## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Flexport Observability Guide](https://docs.flexport.com/observability)
+
+- [prom-client](https://github.com/siimon/prom-client)
+- [pino](https://github.com/pinojs/pino)
+- [Flexport Status](https://status.flexport.com)
 
 ## Next Steps
+
 For incident response, see `flexport-incident-runbook`.

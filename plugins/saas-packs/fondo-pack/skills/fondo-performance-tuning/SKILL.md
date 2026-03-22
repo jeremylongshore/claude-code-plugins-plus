@@ -1,216 +1,83 @@
 ---
 name: fondo-performance-tuning
 description: |
-  Optimize Fondo API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Fondo integrations.
-  Trigger with phrases like "fondo performance", "optimize fondo",
-  "fondo latency", "fondo caching", "fondo slow", "fondo batch".
-allowed-tools: Read, Write, Edit
+  Optimize Fondo workflows including faster month-end close, efficient
+  data exports, and streamlined CPA communication.
+  Trigger: "fondo performance", "fondo faster close", "optimize fondo workflow".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Performance Tuning
 
 ## Overview
-Optimize Fondo API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Fondo SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedFondoRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const fondoLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Fondo
-    const results = await fondoClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  fondoLoader.load('id-1'),
-  fondoLoader.load('id-2'),
-  fondoLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new FondoClient({
-  apiKey: process.env.FONDO_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFondoList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFondoList(cursor =>
-  fondoClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFondoCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+Speed up Fondo workflows: faster month-end close (target: 15 days), reduced back-and-forth with CPA team, and efficient data export processing.
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Fondo operations.
+### Faster Month-End Close
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+| Bottleneck | Current | Target | How |
+|------------|---------|--------|-----|
+| Uncategorized transactions | 3-5 days wait | Same day | Set up auto-categorization rules |
+| CPA questions | 2-3 day response | 1 day | Batch-answer in single session |
+| Missing receipts | 5+ days | 0 days | Use Brex/Ramp auto-receipt capture |
+| Bank reconciliation | 2 days | Automated | Ensure Plaid connection is stable |
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+### Auto-Categorization Rules
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+```
+Dashboard > Settings > Categorization Rules
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+Examples:
+  "AWS" → Cloud Infrastructure (R&D)
+  "GitHub" → Software Tools (R&D)
+  "Gusto" → Payroll
+  "WeWork" → Office/Rent
+  "United Airlines" → Travel
+  "Uber Eats" → Meals (50% deductible)
+```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+### Batch CPA Communication
 
-## Examples
+Instead of replying to each question individually:
+1. Set aside 30 minutes weekly (e.g., Monday AM)
+2. Open Dashboard > Messages > Open Items
+3. Answer all outstanding questions in one session
+4. This reduces close time by 3-5 days
 
-### Quick Performance Wrapper
+### Efficient Data Exports
+
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFondoCall(name, () =>
-    cachedFondoRequest(`cache:${name}`, fn)
-  );
+// Cache Fondo exports to avoid repeated downloads
+const CACHE_DIR = '.cache/fondo';
+const CACHE_TTL = 24 * 60 * 60 * 1000;  // 24 hours
+
+async function getCachedExport(reportType: string, dateRange: string) {
+  const cacheKey = `${reportType}-${dateRange}.csv`;
+  const cachePath = `${CACHE_DIR}/${cacheKey}`;
+
+  if (fs.existsSync(cachePath)) {
+    const stat = fs.statSync(cachePath);
+    if (Date.now() - stat.mtimeMs < CACHE_TTL) {
+      return fs.readFileSync(cachePath, 'utf-8');
+    }
+  }
+  // Download fresh from Dashboard > Reports > Export
+  console.log(`Cache miss: download ${reportType} for ${dateRange} from Fondo Dashboard`);
+  return null;
+}
 ```
 
 ## Resources
-- [Fondo Performance Guide](https://docs.fondo.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Fondo Dashboard](https://app.fondo.com)
 
 ## Next Steps
+
 For cost optimization, see `fondo-cost-tuning`.

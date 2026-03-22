@@ -1,201 +1,115 @@
 ---
 name: flyio-webhooks-events
 description: |
-  Implement Fly.io webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Fly.io event notifications securely.
-  Trigger with phrases like "flyio webhook", "flyio events",
-  "flyio webhook signature", "handle flyio events", "flyio notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement Fly.io machine events, health check monitoring, and log-based
+  event processing for deployment automation and alerting.
+  Trigger: "fly.io events", "fly.io machine status", "fly.io health monitoring".
+allowed-tools: Read, Write, Edit, Bash(fly:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
-# Fly.io Webhooks & Events
+# Fly.io Events & Monitoring
 
 ## Overview
-Securely handle Fly.io webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Fly.io webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/flyio',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-flyio-signature'] as string;
-    const timestamp = req.headers['x-flyio-timestamp'] as string;
-
-    if (!verifyFly.ioSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleFly.ioEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyFly.ioSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.FLYIO_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type Fly.ioEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface Fly.ioEvent {
-  id: string;
-  type: Fly.ioEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<Fly.ioEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleFly.ioEvent(event: Fly.ioEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `flyio:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `flyio:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Fly.io CLI to send test events
-flyio webhooks trigger resource.created --url http://localhost:3000/webhooks/flyio
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Fly.io does not have traditional webhooks. Instead, monitor machine state changes via the Machines API, process structured logs via `fly logs`, and use health check endpoints for automated responses.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Fly.io dashboard.
+### Step 1: Poll Machine State Changes
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+// Monitor machine state transitions via Machines API
+async function watchMachines(appName: string, callback: (event: MachineEvent) => void) {
+  const client = new FlyClient(appName, process.env.FLY_API_TOKEN!);
+  const stateCache = new Map<string, string>();
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  setInterval(async () => {
+    const machines = await client.listMachines();
+    for (const m of machines) {
+      const prev = stateCache.get(m.id);
+      if (prev && prev !== m.state) {
+        callback({
+          machineId: m.id,
+          region: m.region,
+          previousState: prev,
+          currentState: m.state,
+          timestamp: new Date(),
+        });
+      }
+      stateCache.set(m.id, m.state);
+    }
+  }, 10_000);  // Check every 10 seconds
+}
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+interface MachineEvent {
+  machineId: string;
+  region: string;
+  previousState: string;
+  currentState: string;
+  timestamp: Date;
+}
+```
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+### Step 2: Health Check Event Handler
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+```typescript
+// Implement health check that reports machine health
+// Fly.io uses this to auto-restart unhealthy machines
 
-## Examples
+import express from 'express';
+const app = express();
 
-### Testing Webhooks Locally
+app.get('/health', async (req, res) => {
+  const checks = {
+    database: await checkPostgres(),
+    redis: await checkRedis(),
+    memory: process.memoryUsage().heapUsed < 500 * 1024 * 1024,  // < 500MB
+  };
+
+  const healthy = Object.values(checks).every(Boolean);
+  res.status(healthy ? 200 : 503).json({
+    status: healthy ? 'healthy' : 'unhealthy',
+    region: process.env.FLY_REGION,
+    machine: process.env.FLY_MACHINE_ID,
+    checks,
+  });
+});
+```
+
+### Step 3: Structured Log Processing
+
 ```bash
-# Use ngrok to expose local server
-ngrok http 3000
+# Stream logs and process with jq
+fly logs -a my-app --json | jq -c 'select(.level == "error")' | while read -r line; do
+  echo "$line" >> errors.jsonl
+  # Send to Slack, PagerDuty, etc.
+done
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/flyio \
+# Search recent logs for specific patterns
+fly logs -a my-app --no-tail | grep -i "error\|crash\|oom"
+```
+
+### Step 4: Deployment Event Notifications
+
+```bash
+# Post-deploy notification in CI
+fly deploy -a my-app && \
+curl -X POST "$SLACK_WEBHOOK_URL" \
   -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  -d "{\"text\": \"Deployed my-app to Fly.io. Status: $(fly status -a my-app --json | jq -r '.Status')\"}"
 ```
 
 ## Resources
-- [Fly.io Webhooks Guide](https://docs.flyio.com/webhooks)
-- [Webhook Security Best Practices](https://docs.flyio.com/webhooks/security)
+
+- [Machines API](https://fly.io/docs/machines/api/machines-resource/)
+- [Health Checks](https://fly.io/docs/reference/configuration/#http_service-checks)
+- [Fly Logs](https://fly.io/docs/flyctl/logs/)
 
 ## Next Steps
+
 For performance optimization, see `flyio-performance-tuning`.

@@ -1,59 +1,27 @@
 ---
 name: guidewire-cost-tuning
 description: |
-  Optimize Guidewire Cloud costs including license management, resource allocation,
-  API usage optimization, and cloud infrastructure right-sizing.
-  Trigger with phrases like "guidewire costs", "reduce spending",
-  "license optimization", "cloud costs", "resource optimization guidewire". Use when working with guidewire cost tuning.
-allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
+  Optimize Guidewire Cloud costs: license management, API usage, compute right-sizing.
+  Trigger: "guidewire cost tuning", "cost-tuning".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, guidewire, cost-optimization]
-
+tags: [saas, insurance, guidewire]
+compatible-with: claude-code
 ---
+
 # Guidewire Cost Tuning
 
 ## Overview
-Optimize Guidewire Cloud Platform costs through license management, API efficiency, resource right-sizing, and operational best practices.
 
-## Prerequisites
-- Access to Guidewire Cloud Console billing
-- Understanding of Guidewire licensing model
-- Access to usage metrics and reports
+Right-size cloud instances via GCC, optimize batch process scheduling (off-peak), reduce API calls with caching, use bulk endpoints instead of individual calls, monitor license utilization. Review GCC billing dashboard monthly.
 
-## Instructions
-
-### Step 1: Cost Components
-Implement cost components.
-### Step 2: Instructions
-// Cost analysis utilities
-### Step 3: Cost Optimization Checklist
-Implement cost optimization checklist.
-
-For detailed implementation code and configurations, load the reference guide:
-`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
-
-## Output
-- Cost Components
-- Instructions
-- Cost Optimization Checklist
-
-## Error Handling
-| Issue | Solution |
-|-------|----------|
-| Configuration error | Check settings |
+For detailed implementation, see: [implementation guide](references/implementation-guide.md)
 
 ## Resources
-- [Guidewire Cloud Pricing](https://www.guidewire.com/pricing/)
-- [Cloud Cost Management](https://docs.guidewire.com/cloud/)
 
-## Next Steps
-For architecture patterns, see `guidewire-reference-architecture`.
-
-## Examples
-
-**Basic usage**: Apply guidewire cost tuning to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize guidewire cost tuning for production environments with multiple constraints and team-specific requirements.
+- [Guidewire Developer Portal](https://developer.guidewire.com/)
+- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
+- [Guidewire Cloud Console](https://gcc.guidewire.com)
+- [Gosu Language Guide](https://gosu-lang.github.io/)

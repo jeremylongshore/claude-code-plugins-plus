@@ -1,121 +1,69 @@
 ---
 name: fondo-prod-checklist
 description: |
-  Execute Fondo production deployment checklist and rollback procedures.
-  Use when deploying Fondo integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "fondo production", "deploy fondo",
-  "fondo go-live", "fondo launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute Fondo production readiness checklist for year-end tax filing,
+  R&D credit claims, and board-ready financial reporting.
+  Trigger: "fondo production", "fondo tax filing ready", "fondo year-end checklist".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Production Checklist
 
-## Overview
-Complete checklist for deploying Fondo integrations to production.
+## Year-End Tax Filing Readiness
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### Integrations
+- [ ] All bank accounts connected and syncing
+- [ ] Payroll provider connected (all W-2 and 1099 data)
+- [ ] Revenue sources connected (Stripe, invoicing)
+- [ ] Expense tools connected (Brex, Ramp, Expensify)
 
-## Instructions
+### Bookkeeping
+- [ ] All 12 months closed and reviewed
+- [ ] No outstanding categorization questions in Dashboard
+- [ ] Intercompany transactions reconciled
+- [ ] Equity events recorded (fundraise, options exercised)
+- [ ] Fixed assets and depreciation logged
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### R&D Tax Credits
+- [ ] R&D employees identified and tagged
+- [ ] Qualifying activities documented
+- [ ] Contractor R&D hours logged
+- [ ] Cloud compute costs allocated to R&D
+- [ ] CPA team interview completed
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Fondo error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Tax Filing
+- [ ] Federal return (Form 1120) preparation started
+- [ ] State returns for registered states identified
+- [ ] Form 6765 (R&D credit) included
+- [ ] Estimated tax payments reviewed
+- [ ] Extension filed if needed (Form 7004 by March 15)
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Fondo connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Board Reporting
+- [ ] Annual P&L finalized
+- [ ] Balance sheet reviewed
+- [ ] Cap table reconciled with equity events
+- [ ] Runway projection updated
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+## Key Deadlines
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.fondo.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/fondo-integration app=image:new --record
-kubectl rollout pause deployment/fondo-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/fondo-integration
-kubectl rollout pause deployment/fondo-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/fondo-integration
-kubectl rollout status deployment/fondo-integration
-```
-
-## Output
-- Deployed Fondo integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; fondo: any }> {
-  const start = Date.now();
-  try {
-    await fondoClient.ping();
-    return { status: 'healthy', fondo: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', fondo: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/fondo-integration
-kubectl rollout status deployment/fondo-integration
-```
+| Deadline | Filing | Notes |
+|----------|--------|-------|
+| Jan 31 | W-2 / 1099 issuance | Via payroll provider |
+| Mar 15 | S-corp / partnership returns (or extension) | Form 7004 for extension |
+| Apr 15 | C-corp return (or extension) | Form 6765 for R&D credit |
+| Sep 15 | Extended S-corp / partnership due | After extension |
+| Oct 15 | Extended C-corp due | After extension |
 
 ## Resources
-- [Fondo Status](https://status.fondo.com)
-- [Fondo Support](https://docs.fondo.com/support)
+
+- [Fondo TaxPass](https://fondo.com/taxpass)
+- [IRS Form 1120](https://www.irs.gov/forms-pubs/about-form-1120)
 
 ## Next Steps
-For version upgrades, see `fondo-upgrade-migration`.
+
+For version updates, see `fondo-upgrade-migration`.

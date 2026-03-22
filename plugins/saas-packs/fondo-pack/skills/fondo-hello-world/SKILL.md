@@ -1,98 +1,93 @@
 ---
 name: fondo-hello-world
 description: |
-  Create a minimal working Fondo example.
-  Use when starting a new Fondo integration, testing your setup,
-  or learning basic Fondo API patterns.
-  Trigger with phrases like "fondo hello world", "fondo example",
-  "fondo quick start", "simple fondo code".
-allowed-tools: Read, Write, Edit
+  Verify Fondo setup by checking financial data sync, reviewing categorized
+  transactions, and confirming R&D tax credit eligibility.
+  Trigger: "fondo first sync", "fondo verify", "fondo hello world", "fondo test".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Hello World
 
 ## Overview
-Minimal working example demonstrating core Fondo functionality.
 
-## Prerequisites
-- Completed `fondo-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+Verify your Fondo setup is working: check that bank transactions are syncing, payroll data is flowing, and your company qualifies for R&D tax credits.
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: Verify Bank Transaction Sync
 
-### Step 2: Import and Initialize Client
-```typescript
-import { FondoClient } from '@fondo/sdk';
+Navigate to Fondo Dashboard > Transactions:
+- Confirm recent bank transactions appear (may take 24-48h for initial sync)
+- Check that Plaid connection shows "Connected" status
+- Verify transaction dates match your bank statement
 
-const client = new FondoClient({
-  apiKey: process.env.FONDO_API_KEY,
-});
+### Step 2: Review Auto-Categorization
+
+Fondo automatically categorizes transactions:
+
+| Category | Examples | Tax Impact |
+|----------|----------|------------|
+| Payroll | Gusto payments, contractor 1099s | Deductible, R&D qualified |
+| Software | AWS, GitHub, Figma | Deductible, R&D qualified |
+| Office | WeWork, office supplies | Deductible |
+| Travel | Flights, hotels, meals | Partially deductible |
+| Revenue | Stripe payouts, customer payments | Taxable income |
+| Transfers | Between own accounts | Not taxable |
+
+Review and correct any miscategorized transactions in Dashboard > Transactions.
+
+### Step 3: Check R&D Tax Credit Eligibility
+
+```
+Fondo Dashboard > Tax Credits > R&D Assessment
+
+Eligible if ALL apply:
+✓ US-based employees (W-2, not just contractors)
+✓ Developing new/improved products, processes, or software
+✓ Technical uncertainty exists in the development
+✓ Systematic experimentation/iteration to resolve uncertainty
+
+Average startup credit: $21,000/year
+Maximum (payroll tax offset): $500,000/year
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 4: Verify Payroll Data
 
-main().catch(console.error);
+```
+Dashboard > Payroll Integration
+  → Confirm employee count matches your payroll provider
+  → Verify salary data for R&D credit calculations
+  → Check contractor payments are categorized separately
 ```
 
-## Output
-- Working code file with Fondo client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Fondo connection is working.
-```
+## Expected Output
+
+After 48 hours of setup:
+- Bank transactions auto-categorized (85%+ accuracy)
+- Payroll data synced monthly
+- R&D eligibility assessment complete
+- Estimated R&D credit amount displayed
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
 
-## Examples
-
-### TypeScript Example
-```typescript
-import { FondoClient } from '@fondo/sdk';
-
-const client = new FondoClient({
-  apiKey: process.env.FONDO_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from fondo import FondoClient
-
-client = FondoClient()
-
-# Your first API call here
-```
+| Issue | Solution |
+|-------|----------|
+| No transactions appearing | Check Plaid connection status, allow 24-48h |
+| Wrong categorization | Manually recategorize, Fondo learns patterns |
+| R&D credit shows $0 | Verify W-2 employees doing qualifying work |
+| Payroll data missing | Re-authorize payroll provider OAuth |
 
 ## Resources
-- [Fondo Getting Started](https://docs.fondo.com/getting-started)
-- [Fondo API Reference](https://docs.fondo.com/api)
-- [Fondo Examples](https://docs.fondo.com/examples)
+
+- [R&D Tax Credit Guide](https://fondo.com/blog/how-to-account-research-and-development-tax-credit-us)
+- [Fondo TaxPass](https://fondo.com/taxpass)
 
 ## Next Steps
-Proceed to `fondo-local-dev-loop` for development workflow setup.
+
+For development workflow details, see `fondo-local-dev-loop`.

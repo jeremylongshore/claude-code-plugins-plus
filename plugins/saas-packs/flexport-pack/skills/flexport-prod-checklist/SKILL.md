@@ -1,121 +1,99 @@
 ---
 name: flexport-prod-checklist
 description: |
-  Execute Flexport production deployment checklist and rollback procedures.
-  Use when deploying Flexport integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "flexport production", "deploy flexport",
-  "flexport go-live", "flexport launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute Flexport production deployment checklist for logistics integrations.
+  Use when deploying shipment tracking, booking automation, or supply chain
+  integrations to production with proper monitoring and rollback.
+  Trigger: "flexport production", "deploy flexport", "flexport go-live checklist".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Production Checklist
 
 ## Overview
-Complete checklist for deploying Flexport integrations to production.
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+Pre-deployment and go-live checklist for Flexport logistics integrations covering API configuration, webhook setup, monitoring, and rollback procedures.
 
-## Instructions
+## Pre-Deployment
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Flexport error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Flexport connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
+### Authentication & Secrets
+- [ ] Production API key stored in secret manager (not env files)
+- [ ] Webhook secret configured and verified
 - [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+- [ ] No keys in git history (`git log -p | grep -i flexport_api`)
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.flexport.com
+### API Integration
+- [ ] All endpoints tested against production API
+- [ ] Pagination implemented for list endpoints (`/shipments`, `/products`)
+- [ ] Rate limit handling with exponential backoff
+- [ ] Retry logic for transient 5xx errors
+- [ ] Idempotency keys on POST/PATCH operations
+- [ ] `Flexport-Version: 2` header on all requests
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/flexport-integration app=image:new --record
-kubectl rollout pause deployment/flexport-integration
+### Webhooks
+- [ ] HTTPS endpoint with valid TLS certificate
+- [ ] `X-Hub-Signature` verification implemented
+- [ ] Webhook endpoint responds within 5 seconds
+- [ ] Dead letter queue for failed webhook processing
+- [ ] Idempotent webhook handlers (replay-safe)
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
+### Data Integrity
+- [ ] HS codes validated against customs requirements
+- [ ] UN/LOCODE port codes verified
+- [ ] Commercial invoice totals cross-checked
+- [ ] Product catalog synced with Flexport Product Library
 
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/flexport-integration
-kubectl rollout pause deployment/flexport-integration
-sleep 300
+## Monitoring & Alerting
 
-# Complete rollout to 100%
-kubectl rollout resume deployment/flexport-integration
-kubectl rollout status deployment/flexport-integration
-```
-
-## Output
-- Deployed Flexport integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
 ```typescript
-async function healthCheck(): Promise<{ status: string; flexport: any }> {
+// Health check endpoint
+app.get('/health', async (req, res) => {
   const start = Date.now();
   try {
-    await flexportClient.ping();
-    return { status: 'healthy', flexport: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', flexport: { connected: false, latencyMs: Date.now() - start } };
+    const r = await fetch('https://api.flexport.com/shipments?per=1', {
+      headers: {
+        'Authorization': `Bearer ${process.env.FLEXPORT_API_KEY}`,
+        'Flexport-Version': '2',
+      },
+    });
+    res.json({
+      status: r.ok ? 'healthy' : 'degraded',
+      flexport: { connected: r.ok, latencyMs: Date.now() - start },
+    });
+  } catch {
+    res.status(503).json({ status: 'unhealthy', flexport: { connected: false } });
   }
-}
+});
 ```
 
-### Immediate Rollback
+### Alert Thresholds
+
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| API error rate | > 5% | > 20% |
+| p99 latency | > 3000ms | > 10000ms |
+| 429 rate limits | > 5/hour | > 20/hour |
+| Webhook failures | > 2/hour | > 10/hour |
+| Auth failures (401/403) | Any | Any |
+
+## Rollback Procedure
+
 ```bash
+# Immediate rollback
 kubectl rollout undo deployment/flexport-integration
-kubectl rollout status deployment/flexport-integration
+# Or for non-k8s: revert to last known good image/version
 ```
 
 ## Resources
+
 - [Flexport Status](https://status.flexport.com)
-- [Flexport Support](https://docs.flexport.com/support)
+- [Flexport API Reference](https://apidocs.flexport.com/)
 
 ## Next Steps
+
 For version upgrades, see `flexport-upgrade-migration`.

@@ -1,126 +1,71 @@
 ---
 name: fondo-ci-integration
 description: |
-  Configure Fondo CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Fondo tests into your build process.
-  Trigger with phrases like "fondo CI", "fondo GitHub Actions",
-  "fondo automated tests", "CI fondo".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Automate financial reporting workflows that complement Fondo with CI/CD
+  pipelines for expense tracking, budget alerts, and financial data validation.
+  Trigger: "fondo CI", "fondo automation", "fondo financial alerts".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Fondo integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Fondo test API key
-- npm/pnpm project configured
+Automate financial workflows alongside Fondo. While Fondo handles bookkeeping, you can build CI pipelines for budget monitoring, expense alerts, and financial data validation using data from shared providers (Stripe, Gusto).
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/fondo-integration.yml`:
+### Budget Alert Pipeline
 
 ```yaml
-name: Fondo Integration Tests
-
+# .github/workflows/finance-alerts.yml
+name: Financial Alerts
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  FONDO_API_KEY: ${{ secrets.FONDO_API_KEY }}
+  schedule:
+    - cron: '0 9 * * MON'  # Weekly Monday 9am
 
 jobs:
-  test:
+  budget-check:
     runs-on: ubuntu-latest
-    env:
-      FONDO_API_KEY: ${{ secrets.FONDO_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: '20' }
       - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+      - run: node scripts/check-burn-rate.js
+        env:
+          STRIPE_API_KEY: ${{ secrets.STRIPE_API_KEY }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
 ```
 
-### Step 2: Configure Secrets
-```bash
-gh secret set FONDO_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
 ```typescript
-describe('Fondo Integration', () => {
-  it.skipIf(!process.env.FONDO_API_KEY)('should connect', async () => {
-    const client = getFondoClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
+// scripts/check-burn-rate.js
+// Pull Stripe revenue + known fixed costs to estimate burn
+const stripe = require('stripe')(process.env.STRIPE_API_KEY);
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+async function checkBurnRate() {
+  const charges = await stripe.charges.list({ created: { gte: monthStart() }, limit: 100 });
+  const revenue = charges.data.reduce((sum, c) => sum + c.amount, 0) / 100;
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
+  const monthlyBurn = 85000;  // Known from Fondo reports
+  const netBurn = monthlyBurn - revenue;
 
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      FONDO_API_KEY: ${{ secrets.FONDO_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Fondo production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "fondo-integration"
+  if (netBurn > 100000) {
+    await sendSlackAlert(`Burn rate alert: Net burn $${netBurn.toLocaleString()}/month`);
+  }
+}
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Fondo CI Guide](https://docs.fondo.com/ci)
+
+- [Stripe API](https://stripe.com/docs/api)
+- [Fondo](https://fondo.com)
 
 ## Next Steps
+
 For deployment patterns, see `fondo-deploy-integration`.

@@ -1,98 +1,114 @@
 ---
 name: glean-hello-world
 description: |
-  Create a minimal working Glean example.
-  Use when starting a new Glean integration, testing your setup,
-  or learning basic Glean API patterns.
-  Trigger with phrases like "glean hello world", "glean example",
-  "glean quick start", "simple glean code".
-allowed-tools: Read, Write, Edit
+  Index documents into Glean and search them back using the Indexing and Client APIs.
+  Use when starting a new Glean custom connector, testing search quality,
+  or learning the index/search pattern.
+  Trigger: "glean hello world", "glean example", "glean index document", "glean search".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Hello World
 
 ## Overview
-Minimal working example demonstrating core Glean functionality.
 
-## Prerequisites
-- Completed `glean-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+Index documents into Glean and search them. Two steps: set up a custom datasource with the Indexing API, then query with the Client API.
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: Set Up Custom Datasource
 
-### Step 2: Import and Initialize Client
 ```typescript
-import { GleanClient } from '@glean/sdk';
+const GLEAN = `https://${process.env.GLEAN_DOMAIN}/api`;
+const idxHeaders = {
+  'Authorization': `Bearer ${process.env.GLEAN_INDEXING_TOKEN}`,
+  'Content-Type': 'application/json',
+};
 
-const client = new GleanClient({
-  apiKey: process.env.GLEAN_API_KEY,
+// Create or configure a custom datasource
+await fetch(`${GLEAN}/index/v1/adddatasource`, {
+  method: 'POST', headers: idxHeaders,
+  body: JSON.stringify({
+    name: 'my_wiki',
+    displayName: 'Internal Wiki',
+    datasourceCategory: 'PUBLISHED_CONTENT',
+    urlRegex: 'https://wiki.company.com/.*',
+    iconUrl: 'https://wiki.company.com/favicon.ico',
+  }),
 });
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 2: Index Documents
 
-main().catch(console.error);
+```typescript
+// Index individual documents
+await fetch(`${GLEAN}/index/v1/indexdocuments`, {
+  method: 'POST', headers: idxHeaders,
+  body: JSON.stringify({
+    datasource: 'my_wiki',
+    documents: [{
+      id: 'doc-001',
+      title: 'Getting Started Guide',
+      url: 'https://wiki.company.com/getting-started',
+      body: { mimeType: 'text/plain', textContent: 'This guide covers onboarding steps...' },
+      author: { email: 'jane@company.com' },
+      updatedAt: new Date().toISOString(),
+      permissions: { allowAnonymousAccess: true },
+    }],
+  }),
+});
+console.log('Document indexed.');
+```
+
+### Step 3: Search
+
+```typescript
+const searchHeaders = {
+  'Authorization': `Bearer ${process.env.GLEAN_CLIENT_TOKEN}`,
+  'X-Glean-Auth-Type': 'BEARER',
+  'Content-Type': 'application/json',
+};
+
+const results = await fetch(`${GLEAN}/client/v1/search`, {
+  method: 'POST', headers: searchHeaders,
+  body: JSON.stringify({
+    query: 'onboarding getting started',
+    pageSize: 10,
+    requestOptions: { datasourceFilter: 'my_wiki' },
+  }),
+}).then(r => r.json());
+
+results.results?.forEach((r: any) => {
+  console.log(`${r.title} (${r.url}) — score: ${r.score}`);
+});
 ```
 
 ## Output
-- Working code file with Glean client initialization
-- Successful API response confirming connection
-- Console output showing:
+
 ```
-Success! Your Glean connection is working.
+Document indexed.
+Getting Started Guide (https://wiki.company.com/getting-started) — score: 0.95
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { GleanClient } from '@glean/sdk';
-
-const client = new GleanClient({
-  apiKey: process.env.GLEAN_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from glean import GleanClient
-
-client = GleanClient()
-
-# Your first API call here
-```
+| `datasource not found` | Datasource not created | Run `adddatasource` first |
+| No search results | Indexing not yet complete | Wait 1-2 minutes for processing |
+| `invalid document` | Missing required fields | Include `id`, `title`, `url` |
 
 ## Resources
-- [Glean Getting Started](https://docs.glean.com/getting-started)
-- [Glean API Reference](https://docs.glean.com/api)
-- [Glean Examples](https://docs.glean.com/examples)
+
+- [Indexing API Overview](https://developers.glean.com/api-info/indexing/getting-started/overview)
+- [Search API](https://developers.glean.com/api/client-api/search/search)
+- [Index Documents](https://developers.glean.com/api/indexing-api/index-documents)
 
 ## Next Steps
+
 Proceed to `glean-local-dev-loop` for development workflow setup.

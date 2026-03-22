@@ -1,142 +1,105 @@
 ---
 name: flyio-security-basics
 description: |
-  Apply Fly.io security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Fly.io security configuration.
-  Trigger with phrases like "flyio security", "flyio secrets",
-  "secure flyio", "flyio API key security".
-allowed-tools: Read, Write, Grep
+  Apply Fly.io security best practices for secrets management, private networking,
+  TLS certificates, and deploy token scoping.
+  Trigger: "fly.io security", "fly secrets", "fly.io TLS", "fly.io private network".
+allowed-tools: Read, Write, Edit, Bash(fly:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io Security Basics
 
 ## Overview
-Security best practices for Fly.io API keys, tokens, and access control.
 
-## Prerequisites
-- Fly.io SDK installed
-- Understanding of environment variables
-- Access to Fly.io dashboard
+Security practices for Fly.io: encrypted secrets management, private networking (6PN), TLS certificate management, deploy token scoping, and WireGuard VPN access.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Secrets Management
+
 ```bash
-# .env (NEVER commit to git)
-FLYIO_API_KEY=sk_live_***
-FLYIO_SECRET=***
+# Set secrets — encrypted at rest, injected as env vars
+fly secrets set API_KEY="sk_live_..." DB_PASSWORD="..." -a my-app
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+# List (values hidden)
+fly secrets list -a my-app
+
+# Unset
+fly secrets unset OLD_API_KEY -a my-app
+
+# Import from .env file
+fly secrets import < .env.production
 ```
 
-### Step 2: Implement Secret Rotation
+**Key rules:**
+- Secrets are encrypted at rest and in transit
+- Available as environment variables inside machines
+- Setting/unsetting triggers a rolling restart
+- Never put secrets in `fly.toml` `[env]` (those are plaintext)
+
+### Step 2: Deploy Token Scoping
+
 ```bash
-# 1. Generate new key in Fly.io dashboard
-# 2. Update environment variable
-export FLYIO_API_KEY="new_key_here"
+# Per-app deploy token (minimal scope for CI/CD)
+fly tokens create deploy -a my-app
+# Use in CI: FLY_API_TOKEN=$DEPLOY_TOKEN fly deploy
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FLYIO_API_KEY}" \
-  https://api.flyio.com/health
+# Org token (broader scope — avoid if possible)
+fly tokens create org
 
-# 4. Revoke old key in dashboard
+# Read-only token (monitoring only)
+fly tokens create readonly -a my-app
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 3: Custom Domain TLS
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+```bash
+# Add custom domain
+fly certs add api.example.com -a my-app
 
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
+# Check certificate status
+fly certs show api.example.com -a my-app
 
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new Fly.ioClient({
-    apiKey: process.env.FLYIO_READ_KEY,
-  }),
-  writer: new Fly.ioClient({
-    apiKey: process.env.FLYIO_WRITE_KEY,
-  }),
-};
+# Fly manages Let's Encrypt certificates automatically
+# Force HTTPS in fly.toml:
 ```
 
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
+```toml
+[http_service]
+  force_https = true
+```
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
+### Step 4: Private Networking
+
+```bash
+# Apps in same org communicate via .internal DNS (encrypted WireGuard mesh)
+# No public internet exposure needed for internal services
+
+# Access internal services from local machine via WireGuard
+fly wireguard create
+# Then connect: my-app.internal:3000
 ```
 
 ### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Fly.io analytics
-  await flyioClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'flyio.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] All sensitive values in `fly secrets`, not `[env]`
+- [ ] Deploy tokens scoped per-app (not org-wide)
+- [ ] `force_https = true` in fly.toml
+- [ ] Internal services use `.internal` DNS, no public ports
+- [ ] WireGuard for secure local access
+- [ ] Secrets rotated on schedule
 
 ## Resources
-- [Fly.io Security Guide](https://docs.flyio.com/security)
-- [Fly.io API Scopes](https://docs.flyio.com/scopes)
+
+- [Fly Secrets](https://fly.io/docs/reference/secrets/)
+- [Private Networking](https://fly.io/docs/networking/private-networking/)
+- [TLS Certificates](https://fly.io/docs/networking/custom-domain/)
 
 ## Next Steps
-For production deployment, see `flyio-prod-checklist`.
+
+For production readiness, see `flyio-prod-checklist`.

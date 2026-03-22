@@ -1,114 +1,76 @@
 ---
 name: fondo-upgrade-migration
 description: |
-  Analyze, plan, and execute Fondo SDK upgrades with breaking change detection.
-  Use when upgrading Fondo SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade fondo", "fondo migration",
-  "fondo breaking changes", "update fondo SDK", "analyze fondo version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Migrate to Fondo from other bookkeeping services, switch between Fondo plans,
+  or transition accountants while maintaining financial continuity.
+  Trigger: "migrate to fondo", "switch to fondo", "fondo migration", "change accountant".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Upgrade & Migration
 
 ## Overview
-Guide for upgrading Fondo SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Fondo SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Migrate to Fondo from DIY bookkeeping, other accounting firms, or platforms like Pilot, Bench, or Kruze. Fondo handles the historical data import.
+
+## Migration Scenarios
+
+| From | Complexity | Timeline |
+|------|-----------|----------|
+| DIY QuickBooks | Low | 1-2 weeks |
+| Another bookkeeping firm | Medium | 2-4 weeks |
+| Pilot / Bench / Kruze | Medium | 2-3 weeks |
+| No prior bookkeeping | High (catch-up) | 4-8 weeks |
+| International entity | High | 4-6 weeks |
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @fondo/sdk
-npm view @fondo/sdk version
+### Step 1: Prepare Migration Data
+
+Gather from your current provider:
+- [ ] QuickBooks Online backup (or GL export as CSV)
+- [ ] Bank statements (last 2 years for R&D credit)
+- [ ] Payroll records (all W-2 and 1099 data)
+- [ ] Prior tax returns (1120, state returns)
+- [ ] R&D credit studies (Form 6765 if previously claimed)
+- [ ] Cap table and equity event history
+
+### Step 2: Onboard with Fondo
+
+1. Sign up at [fondo.com](https://fondo.com) and select plan
+2. Upload historical data via Dashboard > Migration
+3. Connect active integrations (bank, payroll, expense)
+4. Fondo CPA team reviews and reconciles historical data
+5. First month close produces baseline reports
+
+### Step 3: Transition from Previous Accountant
+
+```
+Timeline:
+  Week 1: Sign Fondo engagement letter, connect integrations
+  Week 2: Previous accountant provides data export and handoff notes
+  Week 3: Fondo reviews historical data, catches up any gaps
+  Week 4: First Fondo-managed month close complete
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/fondo/sdk/releases
-```
+### Plan Upgrades
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/fondo-sdk-vX.Y.Z
-npm install @fondo/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@fondo/sdk';
-
-// After (v2.x)
-import { FondoClient } from '@fondo/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new FondoClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @fondo/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Fondo]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Plan | Includes | Best For |
+|------|----------|----------|
+| Bookkeeping | Monthly close, financial statements | Pre-revenue startups |
+| TaxPass | Bookkeeping + tax filing + R&D credits | Most startups |
+| Enterprise | Custom, dedicated CPA team | Series B+ |
 
 ## Resources
-- [Fondo Changelog](https://github.com/fondo/sdk/releases)
-- [Fondo Migration Guide](https://docs.fondo.com/migration)
+
+- [Fondo Pricing](https://fondo.com)
+- [Fondo TaxPass](https://fondo.com/taxpass)
 
 ## Next Steps
-For CI integration during upgrades, see `fondo-ci-integration`.
+
+For CI integration, see `fondo-ci-integration`.

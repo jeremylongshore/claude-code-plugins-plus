@@ -1,240 +1,80 @@
 ---
 name: fondo-reference-architecture
 description: |
-  Implement Fondo reference architecture with best-practice project layout.
-  Use when designing new Fondo integrations, reviewing project structure,
-  or establishing architecture standards for Fondo applications.
-  Trigger with phrases like "fondo architecture", "fondo best practices",
-  "fondo project structure", "how to organize fondo", "fondo layout".
-allowed-tools: Read, Grep
+  Reference architecture for startup financial operations using Fondo as the
+  bookkeeping backbone with complementary tools for banking, payroll, and reporting.
+  Trigger: "fondo architecture", "startup finance stack", "fondo integration architecture".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Fondo integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Fondo SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Reference architecture for a startup's financial operations with Fondo at the center, connecting payroll, banking, payments, and internal reporting.
 
-## Project Structure
+## Architecture
 
 ```
-my-fondo-project/
-├── src/
-│   ├── fondo/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── fondo/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── fondo/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── fondo/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── fondo/
-│   └── integration/
-│       └── fondo/
-├── config/
-│   ├── fondo.development.json
-│   ├── fondo.staging.json
-│   └── fondo.production.json
-└── docs/
-    └── fondo/
-        ├── SETUP.md
-        └── RUNBOOK.md
+┌─────────────────────────────────────────────────────────┐
+│                     Data Sources                         │
+├──────────┬──────────┬──────────┬──────────┬─────────────┤
+│  Mercury │  Gusto   │  Stripe  │  Brex    │  AWS/GCP    │
+│  Banking │  Payroll │  Revenue │  Expense │  Cloud      │
+├──────────┴──────────┴──────────┴──────────┴─────────────┤
+│              Plaid / OAuth Connections                    │
+├─────────────────────────────────────────────────────────┤
+│                                                          │
+│                   FONDO PLATFORM                         │
+│  ┌──────────┐  ┌──────────┐  ┌────────────────┐        │
+│  │ Monthly  │  │ Tax      │  │ R&D Tax Credit │        │
+│  │ Close    │  │ Filing   │  │ Study (6765)   │        │
+│  └──────────┘  └──────────┘  └────────────────┘        │
+│                                                          │
+├─────────────────────────────────────────────────────────┤
+│                     Outputs                              │
+├──────────┬──────────┬──────────┬────────────────────────┤
+│  P&L     │  Balance │  Cash    │  R&D Credit            │
+│  Report  │  Sheet   │  Flow    │  Certificate           │
+├──────────┴──────────┴──────────┴────────────────────────┤
+│              Internal Dashboard (optional)                │
+│  Revenue metrics │ Burn rate │ Runway │ Board deck       │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Layer Architecture
+## Recommended Stack
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Fondo Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
+| Category | Tool | Why |
+|----------|------|-----|
+| Banking | Mercury or SVB | Startup-friendly, API access, Plaid compatible |
+| Payroll | Gusto | Best startup payroll, Fondo integration |
+| Revenue | Stripe | Standard payments, clean webhooks |
+| Expenses | Brex or Ramp | Auto-receipt capture, categorization |
+| Bookkeeping | Fondo | Automated, CPA-managed |
+| Tax Filing | Fondo (TaxPass) | Bundled with bookkeeping |
+| R&D Credits | Fondo | Integrated with bookkeeping data |
+| Cap Table | Carta or Pulley | Equity management |
+| Board Reporting | Fondo exports + internal dashboard | Custom metrics |
 
-## Key Components
+## Data Flow
 
-### Step 1: Client Wrapper
-```typescript
-// src/fondo/client.ts
-export class FondoService {
-  private client: FondoClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: FondoConfig) {
-    this.client = new FondoClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('fondo');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/fondo/errors.ts
-export class FondoServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'FondoServiceError';
-  }
-}
-
-export function wrapFondoError(error: unknown): FondoServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/fondo/health.ts
-export async function checkFondoHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await fondoClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Fondo    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Fondo    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/fondo.ts
-export interface FondoConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadFondoConfig(): FondoConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./fondo.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Fondo operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Fondo connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Fondo types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/fondo/{handlers} src/services/fondo src/api/fondo
-touch src/fondo/{client,config,types,errors}.ts
-touch src/services/fondo/{index,sync,cache}.ts
-```
+1. Transactions flow from banks/cards/payroll into Fondo via Plaid/OAuth
+2. Fondo CPA team categorizes and reconciles monthly
+3. Financial statements generated and delivered to Dashboard
+4. R&D credit study prepared annually from same data
+5. Tax returns filed using reconciled data
 
 ## Resources
-- [Fondo SDK Documentation](https://docs.fondo.com/sdk)
-- [Fondo Best Practices](https://docs.fondo.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `fondo-multi-env-setup`.
+- [Fondo](https://fondo.com)
+- [Mercury](https://mercury.com)
+- [Gusto](https://gusto.com)
+
+## Next Steps
+
+Start with `fondo-install-auth` to set up your Fondo account.

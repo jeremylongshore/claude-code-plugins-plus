@@ -1,240 +1,121 @@
 ---
 name: flyio-reference-architecture
 description: |
-  Implement Fly.io reference architecture with best-practice project layout.
-  Use when designing new Fly.io integrations, reviewing project structure,
-  or establishing architecture standards for Fly.io applications.
-  Trigger with phrases like "flyio architecture", "flyio best practices",
-  "flyio project structure", "how to organize flyio", "flyio layout".
-allowed-tools: Read, Grep
+  Implement Fly.io reference architecture with multi-region apps, Postgres,
+  Redis, background workers, and private networking.
+  Trigger: "fly.io architecture", "fly.io system design", "fly.io multi-region".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Fly.io integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Fly.io SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Production architecture for Fly.io: multi-region web tier, Postgres with read replicas, Redis for caching, background workers, and private networking.
 
-## Project Structure
+## Architecture
 
 ```
-my-flyio-project/
-├── src/
-│   ├── flyio/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── flyio/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── flyio/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── flyio/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── flyio/
-│   └── integration/
-│       └── flyio/
-├── config/
-│   ├── flyio.development.json
-│   ├── flyio.staging.json
-│   └── flyio.production.json
-└── docs/
-    └── flyio/
-        ├── SETUP.md
-        └── RUNBOOK.md
+           ┌─────────── Fly.io Anycast DNS ──────────┐
+           │                                          │
+    ┌──────▼──────┐  ┌──────────────┐  ┌─────────────▼───┐
+    │  Web (iad)  │  │  Web (lhr)   │  │   Web (nrt)     │
+    │  shared-1x  │  │  shared-1x   │  │   shared-1x     │
+    └──────┬──────┘  └──────┬───────┘  └────────┬────────┘
+           │                │                    │
+    ───────┴────────────────┴────────────────────┴─── .internal DNS
+           │                │                    │
+    ┌──────▼──────┐  ┌──────▼───────┐  ┌────────▼────────┐
+    │ Postgres    │  │ Postgres     │  │   Redis          │
+    │ Primary     │  │ Replica      │  │   (upstash.io)   │
+    │ (iad)       │  │ (lhr)        │  │                  │
+    └─────────────┘  └──────────────┘  └──────────────────┘
+           │
+    ┌──────▼──────┐
+    │  Worker     │
+    │  (iad)      │
+    │  shared-1x  │
+    └─────────────┘
 ```
 
-## Layer Architecture
+## Setup Commands
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Fly.io Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/flyio/client.ts
-export class Fly.ioService {
-  private client: Fly.ioClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: Fly.ioConfig) {
-    this.client = new Fly.ioClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('flyio');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/flyio/errors.ts
-export class Fly.ioServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'Fly.ioServiceError';
-  }
-}
-
-export function wrapFly.ioError(error: unknown): Fly.ioServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/flyio/health.ts
-export async function checkFly.ioHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await flyioClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Fly.io    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Fly.io    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/flyio.ts
-export interface Fly.ioConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadFly.ioConfig(): Fly.ioConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./flyio.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Fly.io operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Fly.io connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Fly.io types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
 ```bash
-# Create reference structure
-mkdir -p src/flyio/{handlers} src/services/flyio src/api/flyio
-touch src/flyio/{client,config,types,errors}.ts
-touch src/services/flyio/{index,sync,cache}.ts
+# 1. Web app — multi-region
+fly launch --name my-web --region iad
+fly scale count 1 --region lhr
+fly scale count 1 --region nrt
+
+# 2. Postgres with replica
+fly postgres create --name my-db --region iad
+fly postgres attach my-db -a my-web
+# Add read replica in Europe
+fly machine clone <primary-machine-id> --region lhr -a my-db
+
+# 3. Background worker (same codebase, different process)
+fly launch --name my-worker --region iad --no-deploy
+# fly.toml for worker: no [http_service], use [processes]
+
+# 4. All communicate via .internal DNS
+# my-db.internal:5432 (Postgres)
+# my-web.internal:3000 (internal API)
 ```
+
+## fly.toml Configurations
+
+### Web App
+
+```toml
+app = "my-web"
+primary_region = "iad"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "suspend"
+  min_machines_running = 1
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"
+```
+
+### Background Worker
+
+```toml
+app = "my-worker"
+primary_region = "iad"
+
+[processes]
+  worker = "node dist/worker.js"
+
+# No [http_service] — worker doesn't serve HTTP
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory = "512mb"
+```
+
+## Key Design Decisions
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Web tier | 3 regions | Low latency for global users |
+| Database | Fly Postgres + replica | Read replicas near users |
+| Cache | Upstash Redis (or Fly Redis) | Managed, multi-region |
+| Workers | Separate Fly app | Independent scaling |
+| Networking | 6PN (.internal DNS) | Zero-trust, no public exposure |
+| Storage | Fly Volumes (NVMe) | Fast, region-local |
 
 ## Resources
-- [Fly.io SDK Documentation](https://docs.flyio.com/sdk)
-- [Fly.io Best Practices](https://docs.flyio.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `flyio-multi-env-setup`.
+- [Fly.io Docs](https://fly.io/docs/)
+- [Multi-Region Postgres](https://fly.io/docs/postgres/high-availability-and-global-replication/)
+- [Private Networking](https://fly.io/docs/networking/private-networking/)

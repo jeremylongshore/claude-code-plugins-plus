@@ -1,73 +1,123 @@
 ---
 name: glean-core-workflow-b
 description: |
-  Execute Glean secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "glean secondary workflow",
-  "secondary task with glean".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Execute Glean secondary workflow: bulk document indexing, custom datasource connectors,
+  and content lifecycle management via the Indexing API.
+  Trigger: "glean bulk index", "glean custom connector", "glean datasource", "glean indexing".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
-# Glean Core Workflow B
+# Glean Core Workflow B: Indexing & Connectors
 
 ## Overview
-Secondary workflow for Glean. Complements the primary workflow.
 
-## Prerequisites
-- Completed `glean-install-auth` setup
-- Familiarity with `glean-core-workflow-a`
-- Valid API credentials configured
+Build custom Glean connectors: set up datasources, bulk index documents, manage content lifecycle, and configure permissions.
 
 ## Instructions
 
-### Step 1: Setup
+### Step 1: Create Custom Datasource
+
 ```typescript
-// Step 1 implementation
+await fetch(`${GLEAN}/index/v1/adddatasource`, {
+  method: 'POST', headers: idxHeaders,
+  body: JSON.stringify({
+    name: 'internal_docs',
+    displayName: 'Internal Documentation',
+    datasourceCategory: 'PUBLISHED_CONTENT',
+    urlRegex: 'https://docs.internal.company.com/.*',
+    isOnPrem: false,
+  }),
+});
 ```
 
-### Step 2: Process
+### Step 2: Bulk Index Documents
+
 ```typescript
-// Step 2 implementation
+// Bulk indexing replaces ALL documents in the datasource
+const uploadId = `upload-${Date.now()}`;
+
+// Send documents in batches of 100
+for (let i = 0; i < allDocs.length; i += 100) {
+  const batch = allDocs.slice(i, i + 100);
+  const isFirst = i === 0;
+  const isLast = i + 100 >= allDocs.length;
+
+  await fetch(`${GLEAN}/index/v1/bulkindexdocuments`, {
+    method: 'POST', headers: idxHeaders,
+    body: JSON.stringify({
+      datasource: 'internal_docs',
+      uploadId,
+      isFirstPage: isFirst,
+      isLastPage: isLast,
+      documents: batch.map(doc => ({
+        id: doc.id,
+        title: doc.title,
+        url: doc.url,
+        body: { mimeType: 'text/html', textContent: doc.content },
+        author: { email: doc.authorEmail },
+        updatedAt: doc.updatedAt,
+        permissions: { allowAnonymousAccess: true },
+      })),
+    }),
+  });
+  console.log(`Indexed batch ${i/100 + 1} (${batch.length} docs)`);
+}
 ```
 
-### Step 3: Complete
+### Step 3: Set Document Permissions
+
 ```typescript
-// Step 3 implementation
+// Control who can see documents in search results
+await fetch(`${GLEAN}/index/v1/indexdocuments`, {
+  method: 'POST', headers: idxHeaders,
+  body: JSON.stringify({
+    datasource: 'internal_docs',
+    documents: [{
+      id: 'confidential-001',
+      title: 'Board Meeting Notes',
+      url: 'https://docs.internal.company.com/board/q1-2025',
+      body: { mimeType: 'text/plain', textContent: '...' },
+      permissions: {
+        allowedUsers: [{ email: 'ceo@company.com' }, { email: 'cfo@company.com' }],
+      },
+    }],
+  }),
+});
 ```
 
-## Output
-- Completed Core Workflow B execution
-- Results from Glean API
-- Success confirmation or error details
+### Step 4: Delete Documents
+
+```typescript
+// Remove specific documents from the index
+await fetch(`${GLEAN}/index/v1/deletedocument`, {
+  method: 'POST', headers: idxHeaders,
+  body: JSON.stringify({
+    datasource: 'internal_docs',
+    objectType: 'Document',
+    id: 'doc-to-delete',
+  }),
+});
+```
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
 
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `uploadId already used` | Reusing bulk upload ID | Generate unique uploadId per run |
+| `document too large` | Content exceeds limit | Truncate body to ~100KB |
+| `invalid permissions` | Malformed user/group | Use valid email addresses |
 
 ## Resources
-- [Glean Documentation](https://docs.glean.com)
-- [Glean API Reference](https://docs.glean.com/api)
+
+- [Bulk Indexing](https://developers.glean.com/api-info/indexing/documents/bulk-indexing)
+- [Document Permissions](https://developers.glean.com/api-info/indexing/documents/permissions)
+- [Custom Datasources](https://docs.glean.com/connectors/custom/about)
 
 ## Next Steps
+
 For common errors, see `glean-common-errors`.

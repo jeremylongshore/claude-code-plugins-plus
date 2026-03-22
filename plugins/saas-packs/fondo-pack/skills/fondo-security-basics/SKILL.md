@@ -1,142 +1,72 @@
 ---
 name: fondo-security-basics
 description: |
-  Apply Fondo security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Fondo security configuration.
-  Trigger with phrases like "fondo security", "fondo secrets",
-  "secure fondo", "fondo API key security".
+  Apply security best practices for Fondo including OAuth token management,
+  financial data protection, SOC 2 compliance, and access control.
+  Trigger: "fondo security", "fondo data protection", "fondo SOC 2", "fondo access control".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Security Basics
 
 ## Overview
-Security best practices for Fondo API keys, tokens, and access control.
 
-## Prerequisites
-- Fondo SDK installed
-- Understanding of environment variables
-- Access to Fondo dashboard
+Security practices for Fondo financial data: manage OAuth connections, protect exported financial data, control team access, and maintain compliance.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Manage OAuth Connections
+
+| Integration | Token Lifetime | Refresh |
+|-------------|---------------|---------|
+| Gusto | 90 days | Re-authorize in Dashboard |
+| QuickBooks | 100 days | Auto-refresh if accessed within window |
+| Plaid (banking) | Indefinite | Revoke/re-connect if compromised |
+| Stripe | Indefinite | Revoke in Stripe Dashboard if needed |
+
+### Step 2: Protect Financial Exports
+
 ```bash
-# .env (NEVER commit to git)
-FONDO_API_KEY=sk_live_***
-FONDO_SECRET=***
+# When downloading Fondo exports locally:
+# 1. Never commit to git
+echo "*.csv" >> .gitignore
+echo "exports/" >> .gitignore
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+# 2. Encrypt sensitive exports
+gpg -c --cipher-algo AES256 general-ledger-2025.csv
+
+# 3. Delete after use
+shred -vfz -n 5 general-ledger-2025.csv
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Fondo dashboard
-# 2. Update environment variable
-export FONDO_API_KEY="new_key_here"
+### Step 3: Team Access Control
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FONDO_API_KEY}" \
-  https://api.fondo.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FondoClient({
-    apiKey: process.env.FONDO_READ_KEY,
-  }),
-  writer: new FondoClient({
-    apiKey: process.env.FONDO_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
+| Role | Access | Who |
+|------|--------|-----|
+| Owner | Full access, billing, integrations | CEO/founder |
+| Admin | View/edit financials, answer questions | CFO/finance lead |
+| Viewer | View-only reports | Board members, investors |
+| CPA | Full access (Fondo team) | Your assigned CPA |
 
 ### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Fondo analytics
-  await fondoClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'fondo.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] OAuth connections reviewed quarterly
+- [ ] Financial exports never committed to git
+- [ ] Team roles follow least-privilege principle
+- [ ] Fondo CPA team has NDA on file
+- [ ] Bank connections use Plaid (encrypted, not screen-scraping)
+- [ ] Two-factor authentication enabled on Fondo account
 
 ## Resources
-- [Fondo Security Guide](https://docs.fondo.com/security)
-- [Fondo API Scopes](https://docs.fondo.com/scopes)
+
+- [Fondo Security](https://fondo.com)
+- [Plaid Security](https://plaid.com/safety/)
 
 ## Next Steps
-For production deployment, see `fondo-prod-checklist`.
+
+For production readiness, see `fondo-prod-checklist`.

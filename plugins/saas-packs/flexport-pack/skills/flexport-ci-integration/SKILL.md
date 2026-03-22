@@ -1,126 +1,98 @@
 ---
 name: flexport-ci-integration
 description: |
-  Configure Flexport CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Flexport tests into your build process.
-  Trigger with phrases like "flexport CI", "flexport GitHub Actions",
-  "flexport automated tests", "CI flexport".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
+  Configure CI/CD pipelines for Flexport logistics integrations with GitHub Actions,
+  automated API contract testing, and deployment workflows.
+  Trigger: "flexport CI", "flexport GitHub Actions", "flexport CI/CD pipeline".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Flexport integrations with automated testing.
 
-## Prerequisites
-- GitHub repository with Actions enabled
-- Flexport test API key
-- npm/pnpm project configured
+Set up CI/CD for Flexport integrations: unit tests with mocked responses on every PR, integration tests against sandbox on merge, and API contract validation.
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/flexport-integration.yml`:
+### GitHub Actions Workflow
 
 ```yaml
-name: Flexport Integration Tests
-
+# .github/workflows/flexport-ci.yml
+name: Flexport CI
 on:
+  pull_request:
+    paths: ['src/flexport/**', 'tests/**']
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  FLEXPORT_API_KEY: ${{ secrets.FLEXPORT_API_KEY }}
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
-    env:
-      FLEXPORT_API_KEY: ${{ secrets.FLEXPORT_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: '20' }
       - run: npm ci
-      - run: npm test -- --coverage
+      - run: npm test -- --reporter=verbose
+
+  integration-tests:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
       - run: npm run test:integration
+        env:
+          FLEXPORT_API_KEY: ${{ secrets.FLEXPORT_API_KEY_STAGING }}
+          FLEXPORT_LIVE: '1'
+
+  api-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check API contract
+        run: |
+          curl -sf https://logistics-api.flexport.com/logistics/api/2024-04/documentation/raw \
+            -o openapi-latest.json
+          npx @openapitools/openapi-diff openapi-baseline.json openapi-latest.json \
+            --fail-on-breaking || echo "::warning::API contract changes detected"
 ```
 
-### Step 2: Configure Secrets
-```bash
-gh secret set FLEXPORT_API_KEY --body "sk_test_***"
-```
+### Integration Test Pattern
 
-### Step 3: Add Integration Tests
 ```typescript
-describe('Flexport Integration', () => {
-  it.skipIf(!process.env.FLEXPORT_API_KEY)('should connect', async () => {
-    const client = getFlexportClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
+// tests/integration.test.ts
+const isLive = process.env.FLEXPORT_API_KEY && process.env.FLEXPORT_LIVE;
+
+describe.skipIf(!isLive)('Flexport Live API', () => {
+  const headers = {
+    'Authorization': `Bearer ${process.env.FLEXPORT_API_KEY}`,
+    'Flexport-Version': '2',
+  };
+
+  it('lists shipments successfully', async () => {
+    const res = await fetch('https://api.flexport.com/shipments?per=1', { headers });
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.data).toHaveProperty('total_count');
   });
 });
 ```
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      FLEXPORT_API_KEY: ${{ secrets.FLEXPORT_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Flexport production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "flexport-integration"
-```
-
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Flexport CI Guide](https://docs.flexport.com/ci)
+
+- [Flexport API Reference](https://apidocs.flexport.com/)
+- [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions)
 
 ## Next Steps
-For deployment patterns, see `flexport-deploy-integration`.
+
+For deployment strategies, see `flexport-deploy-integration`.

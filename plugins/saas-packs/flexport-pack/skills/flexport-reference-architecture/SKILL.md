@@ -1,240 +1,104 @@
 ---
 name: flexport-reference-architecture
 description: |
-  Implement Flexport reference architecture with best-practice project layout.
-  Use when designing new Flexport integrations, reviewing project structure,
-  or establishing architecture standards for Flexport applications.
-  Trigger with phrases like "flexport architecture", "flexport best practices",
-  "flexport project structure", "how to organize flexport", "flexport layout".
-allowed-tools: Read, Grep
+  Implement Flexport reference architecture for supply chain integrations
+  with best-practice project layout, service boundaries, and data flow.
+  Trigger: "flexport architecture", "flexport project structure", "flexport system design".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Flexport integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Flexport SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Production reference architecture for Flexport logistics integrations. Three core services: Ingest (webhooks + polling), Core (business logic), and Expose (API + dashboard).
 
-## Project Structure
+## Architecture
 
 ```
-my-flexport-project/
+┌──────────────────────────────────────────────────────┐
+│                    Your Application                   │
+├──────────────┬──────────────────┬─────────────────────┤
+│  Ingest      │  Core            │  Expose             │
+│              │                  │                     │
+│  Webhook     │  Shipment        │  REST API           │
+│  Receiver    │  Service         │  (your clients)     │
+│              │                  │                     │
+│  Scheduled   │  Product         │  Dashboard          │
+│  Sync        │  Service         │  (Next.js/Astro)    │
+│              │                  │                     │
+│  Event       │  Invoice         │  Notifications      │
+│  Queue       │  Service         │  (email/slack)      │
+├──────────────┴──────────────────┴─────────────────────┤
+│  Infrastructure: Cache (Redis) │ DB (Postgres) │ Queue │
+├───────────────────────────────────────────────────────┤
+│  Flexport API v2 (https://api.flexport.com)           │
+└───────────────────────────────────────────────────────┘
+```
+
+## Project Layout
+
+```
+flexport-integration/
 ├── src/
 │   ├── flexport/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
+│   │   ├── client.ts           # Singleton API client
+│   │   ├── types.ts            # Zod schemas for API responses
+│   │   └── webhooks.ts         # Webhook signature + routing
 │   ├── services/
-│   │   └── flexport/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
+│   │   ├── shipment.service.ts # Shipment CRUD + tracking
+│   │   ├── product.service.ts  # Product catalog sync
+│   │   ├── invoice.service.ts  # Commercial + freight invoices
+│   │   └── booking.service.ts  # Booking creation + amendments
+│   ├── jobs/
+│   │   ├── sync-shipments.ts   # Scheduled full sync (hourly)
+│   │   └── cache-warmup.ts     # Pre-populate caches on deploy
 │   ├── api/
-│   │   └── flexport/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── flexport/
-│           └── sync.ts         # Background sync job
+│   │   ├── routes.ts           # Express/Fastify routes
+│   │   └── middleware.ts       # Auth, logging, error handling
+│   └── config/
+│       ├── flexport.ts         # API config per environment
+│       └── cache.ts            # TTL settings per data type
 ├── tests/
-│   ├── unit/
-│   │   └── flexport/
-│   └── integration/
-│       └── flexport/
-├── config/
-│   ├── flexport.development.json
-│   ├── flexport.staging.json
-│   └── flexport.production.json
-└── docs/
-    └── flexport/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── unit/                   # Mocked API tests
+│   └── integration/            # Live API tests (CI only)
+├── .env.example
+└── docker-compose.yml          # Redis + Postgres for local dev
 ```
 
-## Layer Architecture
+## Data Flow
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Flexport Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+Flexport API ──webhook──> Ingest ──queue──> Core ──cache──> Expose
+                                    │                │
+                                    └── DB (Postgres) ┘
 ```
 
-## Key Components
+1. **Ingest**: Webhook receiver validates signatures, enqueues events
+2. **Core**: Services process events, sync with Flexport API, update DB
+3. **Expose**: API/dashboard reads from DB + cache, never directly from Flexport
+4. **Scheduled jobs**: Hourly full sync catches any missed webhooks
 
-### Step 1: Client Wrapper
-```typescript
-// src/flexport/client.ts
-export class FlexportService {
-  private client: FlexportClient;
-  private cache: Cache;
-  private monitor: Monitor;
+## Key Design Decisions
 
-  constructor(config: FlexportConfig) {
-    this.client = new FlexportClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('flexport');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/flexport/errors.ts
-export class FlexportServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'FlexportServiceError';
-  }
-}
-
-export function wrapFlexportError(error: unknown): FlexportServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/flexport/health.ts
-export async function checkFlexportHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await flexportClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Flexport    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Flexport    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/flexport.ts
-export interface FlexportConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadFlexportConfig(): FlexportConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./flexport.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Flexport operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Flexport connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Flexport types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/flexport/{handlers} src/services/flexport src/api/flexport
-touch src/flexport/{client,config,types,errors}.ts
-touch src/services/flexport/{index,sync,cache}.ts
-```
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Database | PostgreSQL | Structured logistics data, JSONB for flexible fields |
+| Cache | Redis with 5min TTL | Shipment data changes infrequently |
+| Queue | BullMQ | Retry, dead letter, rate limiting built in |
+| API client | Custom fetch wrapper | No official SDK, typed with Zod |
+| Webhook processing | Async via queue | Fast 200 response, process later |
 
 ## Resources
-- [Flexport SDK Documentation](https://docs.flexport.com/sdk)
-- [Flexport Best Practices](https://docs.flexport.com/best-practices)
 
-## Flagship Skills
+- [Flexport Developer Portal](https://developers.flexport.com/)
+- [Flexport API Reference](https://apidocs.flexport.com/)
+
+## Next Steps
+
 For multi-environment setup, see `flexport-multi-env-setup`.

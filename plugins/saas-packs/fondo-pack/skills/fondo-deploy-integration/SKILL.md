@@ -1,211 +1,69 @@
 ---
 name: fondo-deploy-integration
 description: |
-  Deploy Fondo integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Fondo-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy fondo", "fondo Vercel",
-  "fondo production deploy", "fondo Cloud Run", "fondo Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy financial dashboards and reporting tools that consume Fondo data
+  to Vercel, Fly.io, or internal infrastructure.
+  Trigger: "fondo dashboard deploy", "fondo financial dashboard", "deploy finance app".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Deploy Integration
 
 ## Overview
-Deploy Fondo-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Fondo API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Deploy internal financial dashboards that display Fondo-managed data. Pull data from shared providers (Stripe for revenue, Gusto for payroll) and Fondo CSV exports to build custom views for your team.
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
-```bash
-# Add Fondo secrets to Vercel
-vercel secrets add fondo_api_key sk_live_***
-vercel secrets add fondo_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "FONDO_API_KEY": "@fondo_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-fondo-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Fondo secrets
-fly secrets set FONDO_API_KEY=sk_live_***
-fly secrets set FONDO_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="fondo-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=FONDO_API_KEY=fondo-api-key:latest
-```
-
-## Environment Configuration Pattern
+### Internal Finance Dashboard (Next.js)
 
 ```typescript
-// config/fondo.ts
-interface FondoConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// app/api/metrics/route.ts — pull from Stripe (same data Fondo uses)
+import Stripe from 'stripe';
+const stripe = new Stripe(process.env.STRIPE_API_KEY!);
 
-export function getFondoConfig(): FondoConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.FONDO_API_KEY!,
-    environment: env as FondoConfig['environment'],
-    webhookSecret: process.env.FONDO_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
 export async function GET() {
-  const fondoStatus = await checkFondoConnection();
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const charges = await stripe.charges.list({
+    created: { gte: Math.floor(monthStart.getTime() / 1000) },
+    limit: 100,
+  });
+
+  const mrr = charges.data
+    .filter(c => c.status === 'succeeded')
+    .reduce((sum, c) => sum + c.amount, 0) / 100;
 
   return Response.json({
-    status: fondoStatus ? 'healthy' : 'degraded',
-    services: {
-      fondo: fondoStatus,
-    },
-    timestamp: new Date().toISOString(),
+    mrr,
+    monthlyBurn: 85000,  // From Fondo reports
+    runway: 1200000 / 85000,  // Cash / burn
+    updatedAt: new Date().toISOString(),
   });
 }
 ```
 
-## Instructions
+### Deploy
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Fondo API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Fondo integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Fondo connectivity.
-
-## Output
-- Application deployed to production
-- Fondo secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add fondo_api_key "$FONDO_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set FONDO_API_KEY="$FONDO_API_KEY"
-    fly deploy
-    ;;
-esac
+# Vercel (recommended for internal dashboards)
+vercel env add STRIPE_API_KEY production
+vercel --prod
+
+# Password-protect with Vercel Authentication or middleware
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Fondo Deploy Guide](https://docs.fondo.com/deploy)
+
+- [Stripe API](https://stripe.com/docs/api)
+- [Vercel Deployment](https://vercel.com/docs)
 
 ## Next Steps
-For webhook handling, see `fondo-webhooks-events`.
+
+For webhook event handling, see `fondo-webhooks-events`.

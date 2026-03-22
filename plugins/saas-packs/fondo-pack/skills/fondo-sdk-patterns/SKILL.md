@@ -1,149 +1,89 @@
 ---
 name: fondo-sdk-patterns
 description: |
-  Apply production-ready Fondo SDK patterns for TypeScript and Python.
-  Use when implementing Fondo integrations, refactoring SDK usage,
-  or establishing team coding standards for Fondo.
-  Trigger with phrases like "fondo SDK patterns", "fondo best practices",
-  "fondo code patterns", "idiomatic fondo".
+  Build internal tools that consume Fondo financial data exports with
+  typed parsers, QuickBooks integration, and financial modeling patterns.
+  Trigger: "fondo data patterns", "fondo integration", "fondo QuickBooks sync".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo SDK Patterns
 
 ## Overview
-Production-ready patterns for Fondo SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `fondo-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Patterns for consuming Fondo financial data in your internal tools. Since Fondo is a managed platform without a public API, integration happens through CSV exports, QuickBooks Online sync, and payroll provider APIs (Gusto, Rippling).
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Pattern 1: Gusto API for Payroll Data
+
 ```typescript
-// src/fondo/client.ts
-import { FondoClient } from '@fondo/sdk';
+// Gusto API — access payroll data that Fondo also ingests
+// https://docs.gusto.com/embedded-payroll/reference
 
-let instance: FondoClient | null = null;
+const GUSTO_BASE = 'https://api.gusto-demo.com';  // or api.gusto.com for production
 
-export function getFondoClient(): FondoClient {
-  if (!instance) {
-    instance = new FondoClient({
-      apiKey: process.env.FONDO_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
+async function getPayrollData(companyId: string, accessToken: string) {
+  const res = await fetch(`${GUSTO_BASE}/v1/companies/${companyId}/payrolls`, {
+    headers: { 'Authorization': `Bearer ${accessToken}` },
+  });
+  const payrolls = await res.json();
+
+  return payrolls.map((p: any) => ({
+    period: `${p.pay_period.start_date} to ${p.pay_period.end_date}`,
+    grossPay: p.totals.gross_pay,
+    taxes: p.totals.employer_taxes,
+    netPay: p.totals.net_pay,
+    employeeCount: p.employee_compensations.length,
+  }));
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { FondoError } from '@fondo/sdk';
+### Pattern 2: QuickBooks Online API for GL Data
 
-async function safeFondoCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof FondoError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
+```typescript
+// QuickBooks Online API — mirrors what Fondo syncs
+// https://developer.intuit.com/app/developer/qbo/docs/api/accounting/all-entities
+
+const QBO_BASE = 'https://quickbooks.api.intuit.com/v3/company';
+
+async function getTrialBalance(realmId: string, accessToken: string) {
+  const res = await fetch(
+    `${QBO_BASE}/${realmId}/reports/TrialBalance?start_date=2025-01-01&end_date=2025-03-31`,
+    { headers: { 'Authorization': `Bearer ${accessToken}`, 'Accept': 'application/json' } },
+  );
+  return res.json();
 }
 ```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
+### Pattern 3: Fondo CSV Export Parser with Zod
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, FondoClient>();
-
-export function getClientForTenant(tenantId: string): FondoClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new FondoClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from fondo import FondoClient
-
-@asynccontextmanager
-async def get_fondo_client():
-    client = FondoClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
 ```typescript
 import { z } from 'zod';
 
-const fondoResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+const FondoTransactionSchema = z.object({
+  date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  description: z.string(),
+  amount: z.number(),
+  category: z.string(),
+  account: z.string(),
+  isRnD: z.boolean(),
 });
+
+type FondoTransaction = z.infer<typeof FondoTransactionSchema>;
 ```
 
 ## Resources
-- [Fondo SDK Reference](https://docs.fondo.com/sdk)
-- [Fondo API Types](https://docs.fondo.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Gusto API](https://docs.gusto.com/)
+- [QuickBooks API](https://developer.intuit.com/)
+- [Fondo](https://fondo.com)
 
 ## Next Steps
-Apply patterns in `fondo-core-workflow-a` for real-world usage.
+
+Apply patterns in `fondo-core-workflow-a` for monthly close workflows.

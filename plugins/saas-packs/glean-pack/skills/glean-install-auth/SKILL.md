@@ -1,92 +1,104 @@
 ---
 name: glean-install-auth
 description: |
-  Install and configure Glean SDK/CLI authentication.
-  Use when setting up a new Glean integration, configuring API keys,
-  or initializing Glean in your project.
-  Trigger with phrases like "install glean", "setup glean",
-  "glean auth", "configure glean API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install and configure Glean API authentication with indexing and client tokens.
+  Use when setting up custom datasource indexing, configuring search API access,
+  or initializing the Glean developer SDK for enterprise search.
+  Trigger: "install glean", "setup glean", "glean auth", "glean API token".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Install & Auth
 
 ## Overview
-Set up Glean SDK/CLI and configure authentication credentials.
+
+Configure Glean API authentication for enterprise search and knowledge management. Glean has two APIs: the **Indexing API** (push content into search) and the **Client API** (search and retrieve). Each uses separate tokens. Base URL: `https://<domain>-be.glean.com/api`.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Glean account with API access
-- API key from Glean dashboard
+
+- Glean enterprise account with admin access
+- API token from Glean Admin > API Tokens
+- Your Glean deployment domain (e.g., `company-be.glean.com`)
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @glean/sdk
+### Step 1: Obtain API Tokens
 
-# Python
-pip install glean
+Navigate to Glean Admin Console > Settings > API:
+
+| Token Type | Purpose | Required Header |
+|------------|---------|----------------|
+| Indexing API token | Push documents into search index | `Authorization: Bearer <token>` |
+| Client API token | Search, chat, user-scoped queries | `Authorization: Bearer <token>` + `X-Glean-Auth-Type: BEARER` |
+
+### Step 2: Configure Environment Variables
+
+```bash
+# .env (NEVER commit)
+GLEAN_DOMAIN=company-be.glean.com
+GLEAN_INDEXING_TOKEN=glean_idx_...
+GLEAN_CLIENT_TOKEN=glean_cli_...
+GLEAN_DATASOURCE=custom_app  # Your custom datasource name
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export GLEAN_API_KEY="your-api-key"
+### Step 3: Install SDK and Verify
 
-# Or create .env file
-echo 'GLEAN_API_KEY=your-api-key' >> .env
+```bash
+npm install @anthropic-ai/glean-indexing-api-client  # Or use fetch directly
 ```
 
-### Step 3: Verify Connection
 ```typescript
-// Test connection code here
-```
+const GLEAN_BASE = `https://${process.env.GLEAN_DOMAIN}/api`;
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+// Verify indexing API access
+async function verifyIndexingAccess() {
+  const res = await fetch(`${GLEAN_BASE}/index/v1/getdatasourceconfig`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.GLEAN_INDEXING_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ datasource: process.env.GLEAN_DATASOURCE }),
+  });
+  const config = await res.json();
+  console.log(`Connected. Datasource: ${config.name}`);
+}
+
+// Verify client API access
+async function verifySearchAccess() {
+  const res = await fetch(`${GLEAN_BASE}/client/v1/search`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.GLEAN_CLIENT_TOKEN}`,
+      'X-Glean-Auth-Type': 'BEARER',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ query: 'test', pageSize: 1 }),
+  });
+  const results = await res.json();
+  console.log(`Search works. Found ${results.results?.length ?? 0} results.`);
+}
+```
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Glean dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.glean.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
 
-## Examples
-
-### TypeScript Setup
-```typescript
-import { GleanClient } from '@glean/sdk';
-
-const client = new GleanClient({
-  apiKey: process.env.GLEAN_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from glean import GleanClient
-
-client = GleanClient(
-    api_key=os.environ.get('GLEAN_API_KEY')
-)
-```
+| Error | Code | Cause | Solution |
+|-------|------|-------|----------|
+| `Unauthorized` | 401 | Invalid token | Regenerate in Admin > API Tokens |
+| `Forbidden` | 403 | Token lacks scope | Use correct token type (indexing vs client) |
+| `Not Found` | 404 | Wrong domain | Verify GLEAN_DOMAIN includes `-be` suffix |
 
 ## Resources
-- [Glean Documentation](https://docs.glean.com)
-- [Glean Dashboard](https://api.glean.com)
-- [Glean Status](https://status.glean.com)
+
+- [Glean Developer Portal](https://developers.glean.com/)
+- [Indexing API Auth](https://developers.glean.com/api-info/indexing/authentication/overview)
+- [Client API Auth](https://developers.glean.com/api-info/client/authentication/overview)
 
 ## Next Steps
-After successful auth, proceed to `glean-hello-world` for your first API call.
+
+After auth, proceed to `glean-hello-world` for your first index and search.

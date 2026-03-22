@@ -1,98 +1,96 @@
 ---
 name: guidewire-core-workflow-b
 description: |
-  Execute Guidewire secondary workflow: Claims processing in ClaimCenter.
-  Use when implementing FNOL, claim investigation, reserves, payments, and settlement.
-  Trigger with phrases like "claimcenter workflow", "create claim", "file fnol",
-  "process claim", "claim settlement", "claim payment".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
+  Execute Guidewire claims workflow in ClaimCenter: FNOL, investigation, reserves, and settlement.
+  Trigger: "claimcenter workflow", "create claim", "FNOL", "claim settlement", "process claim".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, guidewire, workflow]
-
+tags: [saas, insurance, guidewire]
+compatible-with: claude-code
 ---
+
 # Guidewire Core Workflow B: Claims Processing
 
 ## Overview
-Master the complete claims lifecycle in ClaimCenter: First Notice of Loss (FNOL), claim investigation, reserve setting, payments, and settlement. Supports auto, property, and general liability claim types.
 
-## Prerequisites
-- Completed `guidewire-install-auth` and `guidewire-core-workflow-a`
-- Understanding of claims handling processes
-- Valid API credentials with claims admin permissions
+Claims lifecycle in ClaimCenter: First Notice of Loss (FNOL), investigation, reserve setting, payment processing, and settlement.
 
-## Claims Lifecycle States
+## Claims Lifecycle
 
 ```
-FNOL -> Open -> Investigation -> Evaluation -> Negotiation -> Settlement -> Closed
-[Draft] [Open]   [Reserve]      [Exposure]    [Payment]     [Settle]    [Closed]
+FNOL -> Investigation -> Reserve -> Payment -> Settlement -> Close
 ```
 
 ## Instructions
 
-### Step 1: Create FNOL
-1. POST to `/fnol/v1/fnol` with loss date, loss type/cause, description, policy number, loss location, and reporter details
-2. Verify the claim number is returned in the response
+### Step 1: Create Claim (FNOL)
 
-### Step 2: Add Exposures
-1. POST exposures to `/claim/v1/claims/<claimId>/exposures`
-2. Specify exposure type (`VehicleDamage`, `BodilyInjury`, or `PropertyDamage`)
-3. Set loss party (`insured` or `claimant`) and primary coverage
-4. Alternatively, create multiple exposure types on a single claim for complex losses
+```typescript
+const claim = await fetch(`${GW_CC}/claim/v1/claims`, {
+  method: 'POST', headers,
+  body: JSON.stringify({
+    data: { attributes: {
+      lossDate: '2025-03-15T14:30:00Z',
+      lossCause: { code: 'vehcollision' },
+      lossType: { code: 'AUTO' },
+      policyNumber: 'PA-000001',
+      description: 'Rear-end collision at intersection',
+      reporter: {
+        firstName: 'John', lastName: 'Smith',
+        primaryPhone: { phoneNumber: '555-0100' },
+      },
+    }}
+  }),
+}).then(r => r.json());
+console.log(`Claim created: ${claim.data.attributes.claimNumber}`);
+```
 
-### Step 3: Add Incidents
-1. POST vehicle or property incidents with severity, damage description, and details
-2. Link incidents to the corresponding exposures
+### Step 2: Set Reserves
 
-### Step 4: Set Reserves
-1. POST reserves to each exposure specifying reserve line (`indemnity` or `expenses`)
-2. Configure cost type, category, and initial reserve amount
-3. Adjust reserves as the claim investigation progresses
+```typescript
+await fetch(`${GW_CC}/claim/v1/claims/${claimId}/reserves`, {
+  method: 'POST', headers,
+  body: JSON.stringify({
+    data: { attributes: {
+      reserveAmount: { amount: 5000, currency: 'usd' },
+      costType: { code: 'claimcost' },
+      costCategory: { code: 'body' },
+    }}
+  }),
+});
+```
 
-### Step 5: Create Payments
-1. POST payments with payment type (`partial` or `final`)
-2. Specify exposure reference, payee, reserve line, amount, and payment method
-3. Alternatively, use direct deposit instead of check for faster processing
+### Step 3: Create Payment
 
-### Step 6: Close Exposures
-1. POST to each exposure's `/close` endpoint with the closed outcome
-2. Select outcome: `completed`, `denied`, or `duplicate`
-
-### Step 7: Close Claim
-1. Verify all exposures are closed before attempting claim closure
-2. POST to `/claim/v1/claims/<claimId>/close` with the final outcome
-
-For complete TypeScript API calls and Gosu server-side implementations, see [implementation guide](references/implementation-guide.md).
-
-## Output
-- FNOL claim with assigned claim number
-- Exposures linked to applicable coverages
-- Reserves set and tracked on exposures
-- Payments processed to payees
-- Claim closed with documented outcome
+```typescript
+await fetch(`${GW_CC}/claim/v1/claims/${claimId}/payments`, {
+  method: 'POST', headers,
+  body: JSON.stringify({
+    data: { attributes: {
+      paymentType: { code: 'partial' },
+      amount: { amount: 3000, currency: 'usd' },
+      payee: { contact: { id: claimantContactId } },
+    }}
+  }),
+});
+```
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Policy not found | Invalid policy number | Verify policy number and active status |
-| Coverage not applicable | Wrong coverage type | Check policy coverages before adding exposure |
-| Reserve exceeds limit | Over policy limit | Adjust reserve amount to policy limits |
-| Payment validation | Missing required fields | Check payee, amount, and reserve line |
-| Cannot close | Open activities or exposures | Complete all pending items before closure |
+| `Policy not found` | Invalid policy number | Verify policy exists and is in-force |
+| `Reserve exceeds limit` | Authority level exceeded | Escalate to supervisor approval |
+| `Payment validation` | Missing payee info | Add contact details before payment |
 
-## Examples
-
-**Auto collision claim**: File an FNOL for a two-vehicle accident. Create `VehicleDamage` and `BodilyInjury` exposures. Set reserves of $5,000 for vehicle repair and $2,000 for medical expenses. Issue a partial payment to the body shop, then close exposures and the claim after settlement.
-
-**Property damage with subrogation**: File an FNOL for water damage at a commercial property. Create a `PropertyDamage` exposure, set indemnity reserves, process payments to the restoration contractor. Alternatively, pursue subrogation against the responsible party and close the claim with recovered amounts.
+For detailed implementation, see: [implementation guide](references/implementation-guide.md)
 
 ## Resources
-- [ClaimCenter Cloud API](https://docs.guidewire.com/cloud/cc/202503/apiref/)
-- [Claims Workflow Guide](https://docs.guidewire.com/cloud/cc/202503/cloudapica/)
-- [Exposure Types Reference](https://docs.guidewire.com/education/)
+
+- [ClaimCenter Cloud API](https://docs.guidewire.com/cloud/cc/202407/apiref/)
 
 ## Next Steps
-For error handling patterns, see `guidewire-common-errors`.
+
+For common errors, see `guidewire-common-errors`.

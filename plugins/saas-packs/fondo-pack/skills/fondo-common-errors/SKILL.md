@@ -1,113 +1,62 @@
 ---
 name: fondo-common-errors
 description: |
-  Diagnose and fix Fondo common errors and exceptions.
-  Use when encountering Fondo errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "fondo error", "fix fondo",
-  "fondo not working", "debug fondo".
-allowed-tools: Read, Grep, Bash(curl:*)
+  Diagnose and fix common Fondo issues including integration sync failures,
+  categorization errors, and R&D credit qualification problems.
+  Trigger: "fondo error", "fondo sync issue", "fondo not syncing", "fondo problem".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Fondo errors and their solutions.
 
-## Prerequisites
-- Fondo SDK installed
-- API credentials configured
-- Access to error logs
+Quick reference for common Fondo platform issues and their resolutions.
 
-## Instructions
+## Integration Sync Issues
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Bank transactions not appearing | Plaid connection expired | Dashboard > Integrations > Re-connect bank |
+| Gusto data stale | OAuth token expired (90-day limit) | Re-authorize in Integrations |
+| Stripe revenue missing | Webhook not configured | Connect Stripe in Dashboard > Integrations |
+| Duplicate transactions | Multiple connections to same bank | Remove duplicate in Integrations |
+| Payroll amounts wrong | Mid-period payroll change | Notify Fondo CPA via Dashboard > Messages |
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+## Categorization Errors
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+| Error | Fix |
+|-------|-----|
+| Software expense marked as Office | Recategorize in Transactions, Fondo learns |
+| Contractor marked as Vendor | Ensure 1099 classification matches in payroll |
+| Inter-company transfer as Revenue | Mark as Transfer in Transactions |
+| R&D expense not flagged | Tag employee/activity as R&D in Dashboard |
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+## R&D Credit Issues
 
-## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Credit is $0 | No qualifying W-2 employees | Hire W-2 (not 1099) for R&D work |
+| Credit lower than expected | Activities not properly documented | Schedule call with Fondo CPA team |
+| Ineligible (>$5M revenue) | Exceeds startup threshold | Credit still available, just not payroll offset |
+| Missing contractor hours | Time tracking not connected | Upload contractor time logs manually |
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
+## Escalation
 
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $FONDO_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `fondo-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Fondo status
-curl -s https://status.fondo.com
-
-# Verify API connectivity
-curl -I https://api.fondo.com
-
-# Check local configuration
-env | grep FONDO
-```
-
-### Escalation Path
-1. Collect evidence with `fondo-debug-bundle`
-2. Check Fondo status page
-3. Contact support with request ID
+1. Dashboard > Messages > New Message (response within 1 business day)
+2. Schedule call with CPA team via Dashboard > Support
+3. For urgent tax deadlines: email support@fondo.com
 
 ## Resources
-- [Fondo Status Page](https://status.fondo.com)
-- [Fondo Support](https://docs.fondo.com/support)
-- [Fondo Error Codes](https://docs.fondo.com/errors)
+
+- [Fondo Help Center](https://fondo.com/blog)
+- [R&D Credits FAQ](https://fondo.com/blog/fondo-rd-credits-faq)
 
 ## Next Steps
-For comprehensive debugging, see `fondo-debug-bundle`.
+
+For diagnostic data collection, see `fondo-debug-bundle`.

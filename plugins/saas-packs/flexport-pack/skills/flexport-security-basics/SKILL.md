@@ -1,142 +1,116 @@
 ---
 name: flexport-security-basics
 description: |
-  Apply Flexport security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Flexport security configuration.
-  Trigger with phrases like "flexport security", "flexport secrets",
-  "secure flexport", "flexport API key security".
+  Apply Flexport API security best practices including webhook signature verification,
+  API key rotation, and least-privilege access patterns.
+  Trigger: "flexport security", "flexport webhook signature", "secure flexport API key".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Security Basics
 
 ## Overview
-Security best practices for Flexport API keys, tokens, and access control.
 
-## Prerequisites
-- Flexport SDK installed
-- Understanding of environment variables
-- Access to Flexport dashboard
+Security practices for Flexport API integrations: key management, webhook signature validation with `X-Hub-Signature`, and least-privilege access patterns for supply chain data.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-FLEXPORT_API_KEY=sk_live_***
-FLEXPORT_SECRET=***
+### Step 1: Webhook Signature Verification
 
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
+Flexport signs webhook payloads with HMAC-SHA256 using your webhook secret. The signature is in the `X-Hub-Signature` header.
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Flexport dashboard
-# 2. Update environment variable
-export FLEXPORT_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FLEXPORT_API_KEY}" \
-  https://api.flexport.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FlexportClient({
-    apiKey: process.env.FLEXPORT_READ_KEY,
-  }),
-  writer: new FlexportClient({
-    apiKey: process.env.FLEXPORT_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
 ```typescript
 import crypto from 'crypto';
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
+function verifyFlexportWebhook(
+  payload: string | Buffer,
+  signature: string,
+  secret: string
 ): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
+  const expected = 'sha256=' + crypto
+    .createHmac('sha256', secret)
+    .update(payload)
+    .digest('hex');
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expected)
+  );
 }
 
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Flexport analytics
-  await flexportClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'flexport.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
+// Express middleware
+app.post('/webhooks/flexport', express.raw({ type: '*/*' }), (req, res) => {
+  const sig = req.headers['x-hub-signature'] as string;
+  if (!verifyFlexportWebhook(req.body, sig, process.env.FLEXPORT_WEBHOOK_SECRET!)) {
+    return res.status(401).send('Invalid signature');
+  }
+  const event = JSON.parse(req.body.toString());
+  // Process event...
+  res.status(200).send('OK');
 });
 ```
 
+### Step 2: API Key Management
+
+```bash
+# Environment separation (NEVER share keys across environments)
+# .env.development
+FLEXPORT_API_KEY=your_dev_key
+FLEXPORT_WEBHOOK_SECRET=your_dev_webhook_secret
+
+# .env.production
+FLEXPORT_API_KEY=your_prod_key
+FLEXPORT_WEBHOOK_SECRET=your_prod_webhook_secret
+
+# .gitignore — mandatory entries
+.env
+.env.*
+!.env.example
+```
+
+### Step 3: Key Rotation Procedure
+
+```bash
+# 1. Generate new key in Flexport Portal > Settings > Developer
+# 2. Deploy new key to production (dual-key period)
+# 3. Verify new key works
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $NEW_FLEXPORT_API_KEY" \
+  -H "Flexport-Version: 2" \
+  https://api.flexport.com/shipments?per=1
+# 4. Revoke old key in Portal
+# 5. Remove old key from all environments
+```
+
+### Step 4: Least Privilege Access
+
+| Role | API Scope | Use Case |
+|------|-----------|----------|
+| Read-only | `GET /shipments`, `GET /products` | Dashboards, reporting |
+| Booking manager | `POST /bookings`, `PATCH /purchase_orders` | Operations team |
+| Full access | All endpoints | Admin, CI/CD pipelines |
+
+### Security Checklist
+
+- [ ] API keys stored in environment variables or secret manager
+- [ ] `.env` files in `.gitignore`
+- [ ] Webhook signatures verified on every request
+- [ ] Different keys for dev/staging/prod
+- [ ] Key rotation scheduled quarterly
+- [ ] Git history scanned for leaked keys
+- [ ] HTTPS enforced for all API calls
+- [ ] Request/response logging redacts auth headers
+
 ## Resources
-- [Flexport Security Guide](https://docs.flexport.com/security)
-- [Flexport API Scopes](https://docs.flexport.com/scopes)
+
+- [Flexport Webhooks](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
+- [Flexport Developer Portal](https://developers.flexport.com/)
 
 ## Next Steps
+
 For production deployment, see `flexport-prod-checklist`.

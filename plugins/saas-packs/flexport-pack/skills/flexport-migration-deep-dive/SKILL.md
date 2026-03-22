@@ -1,246 +1,158 @@
 ---
 name: flexport-migration-deep-dive
 description: |
-  Execute Flexport major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Flexport, performing major version upgrades,
-  or re-platforming existing integrations to Flexport.
-  Trigger with phrases like "migrate flexport", "flexport migration",
-  "switch to flexport", "flexport replatform", "flexport upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Execute major migration strategies for Flexport including migrating from
+  legacy freight forwarders, ERP system integration, and strangler fig patterns.
+  Trigger: "flexport migration", "migrate to flexport", "flexport ERP integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Flexport, or major version upgrades.
 
-## Prerequisites
-- Current system documentation
-- Flexport SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+Guide for migrating to Flexport from legacy freight forwarders, manual spreadsheet workflows, or other logistics platforms. Uses a strangler fig pattern to gradually move operations to the Flexport API while maintaining existing systems.
 
-## Migration Types
+## Migration Scenarios
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "flexport" > flexport-files.txt
-
-# Count integration points
-wc -l flexport-files.txt
-
-# Identify dependencies
-npm list | grep flexport
-pip freeze | grep flexport
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessFlexportMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Flexport   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Flexport SDK
-npm install @flexport/sdk
-
-# Configure credentials
-cp .env.example .env.flexport
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@flexport/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/flexport.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class FlexportAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const flexportData = this.transform(data);
-    return flexportClient.create(flexportData);
-  }
-
-  private transform(data: CreateInput): FlexportInput {
-    // Map from old format to Flexport format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateFlexportData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await flexportClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const flexportPercentage = getFeatureFlag('flexport_migration_percentage');
-
-  if (Math.random() * 100 < flexportPercentage) {
-    return new FlexportAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app FLEXPORT_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.flexport'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateFlexportMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+| From | To | Complexity | Timeline |
+|------|----|-----------|----------|
+| Spreadsheet/email | Flexport API | Low | 2-4 weeks |
+| Legacy freight forwarder API | Flexport API | Medium | 4-8 weeks |
+| ERP (SAP, Oracle) | ERP + Flexport | High | 8-16 weeks |
+| Multiple forwarders | Flexport consolidated | High | 6-12 weeks |
 
 ## Instructions
 
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
+### Phase 1: Data Migration — Product Catalog
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Flexport integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Flexport
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
 ```typescript
-const status = await validateFlexportMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+// Migrate product catalog from legacy system to Flexport Product Library
+async function migrateProducts(legacyProducts: LegacyProduct[]) {
+  const results = { success: 0, failed: 0, errors: [] as string[] };
+
+  for (const legacy of legacyProducts) {
+    try {
+      await fetch('https://api.flexport.com/products', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: legacy.description,
+          sku: legacy.partNumber,
+          hs_code: legacy.tariffCode,
+          country_of_origin: legacy.originCountry,
+          unit_cost: { amount: legacy.unitCost, currency: legacy.currency },
+          weight: { value: legacy.weightKg, unit: 'kg' },
+        }),
+      });
+      results.success++;
+    } catch (err) {
+      results.failed++;
+      results.errors.push(`${legacy.partNumber}: ${err}`);
+    }
+  }
+
+  console.log(`Products migrated: ${results.success}/${legacyProducts.length}`);
+  return results;
+}
 ```
 
-## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Flexport Migration Guide](https://docs.flexport.com/migration)
+### Phase 2: Strangler Fig — Dual-Write
 
-## Flagship+ Skills
-For advanced troubleshooting, see `flexport-advanced-troubleshooting`.
+```typescript
+// During migration, write to both systems
+class DualWriteShipmentService {
+  constructor(
+    private legacy: LegacyForwarderClient,
+    private flexport: FlexportClient,
+    private featureFlags: FeatureFlags,
+  ) {}
+
+  async createBooking(params: BookingParams) {
+    // Always write to legacy during migration
+    const legacyResult = await this.legacy.createBooking(params);
+
+    // Write to Flexport if enabled for this route
+    if (this.featureFlags.isEnabled('flexport_booking', { route: params.route })) {
+      try {
+        const fpResult = await this.flexport.createBooking(params);
+        // Compare results for validation
+        this.compareResults(legacyResult, fpResult);
+      } catch (err) {
+        // Log but don't fail — legacy is still primary
+        logger.warn({ err, route: params.route }, 'Flexport dual-write failed');
+      }
+    }
+
+    return legacyResult;  // Legacy is source of truth during migration
+  }
+}
+```
+
+### Phase 3: Cutover — Route by Route
+
+```typescript
+// Migrate routes one at a time, validate, then cut over
+const MIGRATION_PHASES = [
+  { routes: ['CNSHA-USLAX'], startDate: '2025-04-01', description: 'Shanghai-LA (highest volume)' },
+  { routes: ['CNSHA-DEHAM', 'CNSHA-NLRTM'], startDate: '2025-05-01', description: 'Asia-Europe' },
+  { routes: ['*'], startDate: '2025-06-01', description: 'All remaining routes' },
+];
+
+// Validate migration readiness per route
+async function validateRoute(route: string): Promise<{
+  productsCovered: boolean;
+  webhooksWorking: boolean;
+  dataParity: boolean;
+}> {
+  // Check all products on this route exist in Flexport
+  const products = await db.products.findMany({ where: { routes: { has: route } } });
+  const fpProducts = await flexport('/products?per=100');
+  const fpSkus = new Set(fpProducts.data.records.map((p: any) => p.sku));
+  const productsCovered = products.every(p => fpSkus.has(p.sku));
+
+  return { productsCovered, webhooksWorking: true, dataParity: true };
+}
+```
+
+### Phase 4: Decommission Legacy
+
+```typescript
+// After all routes migrated and validated
+async function decommissionLegacy() {
+  // Final data sync — export all historical data
+  const allShipments = await legacy.exportAllShipments();
+  await archiveToS3(allShipments, 'legacy-forwarder-archive');
+
+  // Disable legacy API keys
+  // Remove dual-write code paths
+  // Update monitoring to Flexport-only alerts
+  logger.info('Legacy forwarder decommissioned');
+}
+```
+
+## Migration Checklist
+
+- [ ] Product catalog migrated and validated
+- [ ] Purchase order history exported
+- [ ] Webhook endpoints configured and tested
+- [ ] Dual-write enabled for first route
+- [ ] Data parity validated between systems
+- [ ] Stakeholders notified of cutover schedule
+- [ ] Rollback procedure documented and tested
+- [ ] Legacy system archived (not deleted)
+
+## Resources
+
+- [Flexport Developer Portal](https://developers.flexport.com/)
+- [Flexport API Reference](https://apidocs.flexport.com/)
+- [Products API Tutorial](https://developers.flexport.com/tutorials/products-api-tutorial/)
+
+## Next Steps
+
+This completes the Flexport skill pack. Start with `flexport-install-auth` for new integrations.

@@ -1,69 +1,27 @@
 ---
 name: guidewire-upgrade-migration
 description: |
-  Upgrade Guidewire InsuranceSuite versions and migrate between environments.
-  Use when planning version upgrades, handling breaking changes,
-  or migrating from self-managed to Cloud.
-  Trigger with phrases like "guidewire upgrade", "version migration",
-  "insurancesuite update", "cloud migration", "upgrade path".
-allowed-tools: Read, Write, Edit, Bash(gradle:*), Bash(git:*), Grep
+  Upgrade Guidewire InsuranceSuite versions and migrate between Cloud environments.
+  Trigger: "guidewire upgrade migration", "upgrade-migration".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, guidewire, migration]
-
+tags: [saas, insurance, guidewire]
+compatible-with: claude-code
 ---
-# Guidewire Upgrade & Migration
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+# Guidewire Upgrade Migration
 
 ## Overview
-Plan and execute Guidewire InsuranceSuite version upgrades and migrations between self-managed and cloud environments.
 
-## Prerequisites
-- Current version documentation
-- Access to Guidewire Community and documentation
-- Test environment for validation
-- Backup of current system
+Version upgrade: review release notes for breaking changes, run upgrade tool in Studio, merge configuration changes, test all Gosu customizations, validate API compatibility, promote through environments. Use GCC for cloud version management.
 
-## Instructions
-
-### Step 1: Version Upgrade Planning
-Current Version     Target Version      Recommended Path
-### Step 2: Instructions
-echo "=== Guidewire Version Assessment ==="
-### Step 3: Cloud Migration Checklist
-Implement cloud migration checklist.
-### Step 4: Rollback Procedure
-echo "=== Upgrade Rollback ==="
-
-For detailed implementation code and configurations, load the reference guide:
-`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
-
-## Output
-- Version Upgrade Planning
-- Instructions
-- Cloud Migration Checklist
-- Rollback Procedure
-
-## Error Handling
-| Issue | Solution |
-|-------|----------|
-| Configuration error | Check settings |
+For detailed implementation, see: [implementation guide](references/implementation-guide.md)
 
 ## Resources
-- [Guidewire Release Notes](https://docs.guidewire.com/cloud/release-notes/)
-- [Cloud Migration Guide](https://docs.guidewire.com/cloud/migration/)
-- [Upgrade Best Practices](https://docs.guidewire.com/education/)
 
-## Next Steps
-For CI/CD integration, see `guidewire-ci-integration`.
-
-## Examples
-
-**Basic usage**: Apply guidewire upgrade migration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize guidewire upgrade migration for production environments with multiple constraints and team-specific requirements.
+- [Guidewire Developer Portal](https://developer.guidewire.com/)
+- [Cloud API Reference](https://docs.guidewire.com/cloud/pc/202503/apiref/)
+- [Guidewire Cloud Console](https://gcc.guidewire.com)
+- [Gosu Language Guide](https://gosu-lang.github.io/)

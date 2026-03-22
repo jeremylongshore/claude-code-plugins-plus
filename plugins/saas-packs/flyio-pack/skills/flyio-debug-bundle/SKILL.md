@@ -1,113 +1,76 @@
 ---
 name: flyio-debug-bundle
 description: |
-  Collect Fly.io debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Fly.io problems.
-  Trigger with phrases like "flyio debug", "flyio support bundle",
-  "collect flyio logs", "flyio diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect Fly.io debug evidence for support tickets including machine status,
+  logs, health checks, volume state, and networking diagnostics.
+  Trigger: "fly.io debug", "fly.io support", "fly.io diagnostic", "fly doctor".
+allowed-tools: Read, Bash(fly:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flyio]
+tags: [saas, edge-compute, flyio]
 compatible-with: claude-code
 ---
 
 # Fly.io Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Fly.io support tickets.
 
-## Prerequisites
-- Fly.io SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect diagnostic information for Fly.io support tickets. Captures app status, machine state, recent logs, volume health, and network connectivity.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
 ```bash
 #!/bin/bash
-# flyio-debug-bundle.sh
+# fly-debug.sh — Usage: bash fly-debug.sh my-app
+set -euo pipefail
+APP="${1:?Usage: fly-debug.sh <app-name>}"
+BUNDLE="fly-debug-${APP}-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="flyio-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+echo "=== Fly.io Debug Bundle: $APP ===" | tee "$BUNDLE/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE/summary.txt"
+echo "flyctl: $(fly version)" >> "$BUNDLE/summary.txt"
 
-echo "=== Fly.io Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+# App status
+fly status -a "$APP" > "$BUNDLE/status.txt" 2>&1 || true
+
+# Machine details
+fly machine list -a "$APP" --json > "$BUNDLE/machines.json" 2>&1 || true
+
+# Recent logs (last 100 lines)
+fly logs -a "$APP" --no-tail 2>&1 | tail -100 > "$BUNDLE/logs.txt" || true
+
+# Volumes
+fly volumes list -a "$APP" > "$BUNDLE/volumes.txt" 2>&1 || true
+
+# Releases / deploy history
+fly releases -a "$APP" > "$BUNDLE/releases.txt" 2>&1 || true
+
+# fly doctor
+fly doctor > "$BUNDLE/doctor.txt" 2>&1 || true
+
+# Network check
+echo -n "App reachable: " >> "$BUNDLE/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" "https://${APP}.fly.dev/" >> "$BUNDLE/summary.txt" 2>/dev/null
+echo "" >> "$BUNDLE/summary.txt"
+
+# Platform status
+echo -n "Platform: " >> "$BUNDLE/summary.txt"
+curl -s https://status.flyio.net/api/v2/status.json 2>/dev/null | \
+  jq -r '.status.description' >> "$BUNDLE/summary.txt" || echo "unreachable" >> "$BUNDLE/summary.txt"
+
+# Package
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+rm -rf "$BUNDLE"
+echo "Bundle created: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "FLYIO_API_KEY: ${FLYIO_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @flyio/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "flyio" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.flyio.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `flyio-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash flyio-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Fly.io support portal
 
 ## Resources
-- [Fly.io Support](https://docs.flyio.com/support)
-- [Fly.io Status](https://status.flyio.com)
+
+- [Fly.io Status](https://status.flyio.net/)
+- [Fly.io Community](https://community.fly.io/)
 
 ## Next Steps
+
 For rate limit issues, see `flyio-rate-limits`.

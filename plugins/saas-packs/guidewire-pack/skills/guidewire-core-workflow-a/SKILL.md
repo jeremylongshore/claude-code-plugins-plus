@@ -1,99 +1,96 @@
 ---
 name: guidewire-core-workflow-a
 description: |
-  Execute Guidewire primary workflow: Policy lifecycle management in PolicyCenter.
+  Execute Guidewire primary workflow: Policy lifecycle in PolicyCenter.
   Use when implementing quoting, binding, issuing, endorsing, or renewing policies.
-  Trigger with phrases like "policycenter workflow", "create policy",
-  "bind submission", "issue policy", "policy endorsement", "quote insurance".
-allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(npm:*), Grep
+  Trigger: "policycenter workflow", "create policy", "bind submission", "issue policy".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, guidewire, workflow]
-
+tags: [saas, insurance, guidewire]
+compatible-with: claude-code
 ---
+
 # Guidewire Core Workflow A: Policy Lifecycle
 
 ## Overview
 
-Master the complete policy lifecycle in PolicyCenter: submission creation, quoting, binding, issuance, endorsements, and renewals.
-
-## Prerequisites
-
-- Completed `guidewire-install-auth` and `guidewire-sdk-patterns`
-- Understanding of P&C insurance concepts
-- Valid API credentials with policy admin permissions
+The complete policy lifecycle in PolicyCenter: account creation, submission, quoting, binding, issuance, endorsements, and renewals via Cloud API.
 
 ## Policy Lifecycle States
 
 ```
-Submission -> Quote -> Bind -> Issue -> In-Force -> Endorsement/Renewal/Cancellation
-  [Draft]   [Quoted]  [Bound] [Issued]  [Active Policy]
+Account -> Submission -> Quote -> Bind -> Issue -> In-Force
+                                                    |
+                                          Endorse / Renew / Cancel
 ```
 
 ## Instructions
 
 ### Step 1: Create Account
 
-POST to `/account/v1/accounts` with account holder contact details (name, DOB, address) and producer code assignment.
+```typescript
+const account = await fetch(`${GW_PC}/account/v1/accounts`, {
+  method: 'POST', headers,
+  body: JSON.stringify({
+    data: { attributes: {
+      accountHolderContact: {
+        firstName: 'John', lastName: 'Smith',
+        primaryAddress: { addressLine1: '123 Main St', city: 'Atlanta', state: 'GA', postalCode: '30301' },
+        dateOfBirth: '1985-03-15',
+      },
+      producerCodes: [{ id: 'pc:100' }],
+    }}
+  }),
+}).then(r => r.json());
+console.log(`Account: ${account.data.attributes.accountNumber}`);
+```
 
 ### Step 2: Create Submission
 
-POST to `/job/v1/submissions` with account ID, base state, effective date, product code (e.g., `PersonalAuto`), and producer code.
+```typescript
+const submission = await fetch(`${GW_PC}/job/v1/submissions`, {
+  method: 'POST', headers,
+  body: JSON.stringify({
+    data: { attributes: {
+      account: { id: account.data.id },
+      baseState: 'GA', effectiveDate: '2025-04-01',
+      product: { code: 'PersonalAuto' },
+      producerCode: { id: 'pc:100' },
+    }}
+  }),
+}).then(r => r.json());
+```
 
-### Step 3: Add Vehicles and Coverages
+### Step 3: Quote -> Bind -> Issue
 
-POST vehicles to the submission's policy period, then add coverages per vehicle: liability, collision, comprehensive, and medical payments.
+```typescript
+// Quote the submission
+await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/quote`, { method: 'POST', headers });
 
-### Step 4: Add Drivers
+// Bind
+await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/bind`, { method: 'POST', headers });
 
-POST driver details (name, DOB, license) to the policy period.
-
-### Step 5: Quote the Submission
-
-POST to `/job/v1/submissions/<submissionId>/quote` to trigger rating. Retrieve premium breakdown from the policy period.
-
-### Step 6: Bind the Policy
-
-POST to `/job/v1/submissions/<submissionId>/bind`. Verify status is `Bound` and capture the policy number.
-
-### Step 7: Issue the Policy
-
-POST to `/job/v1/submissions/<submissionId>/issue`. The policy is now in-force.
-
-For complete TypeScript API calls and Gosu server-side implementations, load the reference guide:
-`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
-
-## Output
-
-- Created account with account holder details
-- Submission with unique job number
-- Quote with premium breakdown
-- Bound and issued policy with policy number
+// Issue
+await fetch(`${GW_PC}/job/v1/submissions/${submission.data.id}/issue`, { method: 'POST', headers });
+console.log('Policy issued successfully');
+```
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `Validation failed` | Missing required data | Check all required fields |
-| `Cannot quote` | Invalid policy configuration | Review coverages and limits |
-| `Cannot bind` | Outstanding issues | Resolve all validation errors |
-| `UW hold` | Requires underwriting approval | Process UW referrals |
-| `Rating error` | Rating engine failure | Check rate tables and factors |
+| `Cannot quote` | Missing coverages/vehicles | Add required data before quoting |
+| `UW hold` | Underwriting referral | Process UW approval in PolicyCenter |
+| `Rating error` | Rate table issue | Check product configuration |
+
+For detailed Gosu and API examples, see: [implementation guide](references/implementation-guide.md)
 
 ## Resources
 
 - [PolicyCenter Cloud API](https://docs.guidewire.com/cloud/pc/202503/apiref/)
-- [Submission Workflow Guide](https://docs.guidewire.com/cloud/pc/202503/cloudapica/)
-- [Policy Lifecycle Documentation](https://docs.guidewire.com/education/)
 
 ## Next Steps
 
-For claims processing workflow, see `guidewire-core-workflow-b`.
-
-## Examples
-
-**Personal auto policy lifecycle**: Create an account, submit a PersonalAuto policy with two vehicles and one driver, add liability and collision coverages, quote the submission to get premium breakdown, bind and issue the policy. The resulting policy number can be used for endorsements and renewals.
-
-**Commercial property endorsement**: Start with an in-force commercial property policy, create a policy change job to add a new building location, adjust coverages for the added location, re-quote to calculate the premium adjustment, then bind and issue the endorsement.
+For claims processing, see `guidewire-core-workflow-b`.

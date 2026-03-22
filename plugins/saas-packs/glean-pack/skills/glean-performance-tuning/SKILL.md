@@ -1,216 +1,58 @@
 ---
 name: glean-performance-tuning
 description: |
-  Optimize Glean API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Glean integrations.
-  Trigger with phrases like "glean performance", "optimize glean",
-  "glean latency", "glean caching", "glean slow", "glean batch".
+  Optimize Glean search relevance and indexing throughput with batch sizing,
+  datasource configuration, and content quality improvements.
+  Trigger: "glean performance", "glean search quality", "glean indexing speed".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Performance Tuning
 
 ## Overview
-Optimize Glean API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Glean SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize Glean for better search results and faster indexing: tune content quality, batch sizes, and datasource configuration.
 
-## Latency Benchmarks
+## Search Relevance
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+| Factor | Impact | Action |
+|--------|--------|--------|
+| Document titles | High | Use descriptive, unique titles |
+| Body content | High | Include full text, not just metadata |
+| Author info | Medium | Set email for people ranking |
+| Updated date | Medium | Keep timestamps current |
+| URL structure | Low | Use readable, hierarchical URLs |
 
-## Caching Strategy
+## Indexing Throughput
 
-### Response Caching
 ```typescript
-import { LRUCache } from 'lru-cache';
+// Optimal batch configuration
+const BATCH_SIZE = 100;        // Max per API call
+const CONCURRENT_BATCHES = 3;  // Parallel uploads
+const DELAY_BETWEEN_MS = 500;  // Avoid rate limits
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+async function indexWithThroughput(docs: GleanDocument[]) {
+  const batches = chunk(docs, BATCH_SIZE);
+  const queue = new PQueue({ concurrency: CONCURRENT_BATCHES, interval: DELAY_BETWEEN_MS });
 
-async function cachedGleanRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+  await Promise.all(batches.map((batch, i) =>
+    queue.add(() => glean.indexDocuments('my_ds', batch))
+  ));
 }
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
+## Incremental vs Bulk Strategy
 
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const gleanLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Glean
-    const results = await gleanClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  gleanLoader.load('id-1'),
-  gleanLoader.load('id-2'),
-  gleanLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new GleanClient({
-  apiKey: process.env.GLEAN_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedGleanList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedGleanList(cursor =>
-  gleanClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredGleanCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Glean operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredGleanCall(name, () =>
-    cachedGleanRequest(`cache:${name}`, fn)
-  );
-```
+| Strategy | When | API Endpoint |
+|----------|------|-------------|
+| Incremental (`indexdocuments`) | Real-time updates, < 100 docs | `/index/v1/indexdocuments` |
+| Bulk (`bulkindexdocuments`) | Daily full refresh, > 1000 docs | `/index/v1/bulkindexdocuments` |
 
 ## Resources
-- [Glean Performance Guide](https://docs.glean.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
-## Next Steps
-For cost optimization, see `glean-cost-tuning`.
+- [Glean Developer Portal](https://developers.glean.com/)

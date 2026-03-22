@@ -1,205 +1,129 @@
 ---
 name: flexport-incident-runbook
 description: |
-  Execute Flexport incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Flexport-related outages, investigating errors,
-  or running post-incident reviews for Flexport integration failures.
-  Trigger with phrases like "flexport incident", "flexport outage",
-  "flexport down", "flexport on-call", "flexport emergency", "flexport broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Execute Flexport incident response for API outages, webhook failures,
+  and supply chain data sync issues with triage and mitigation steps.
+  Trigger: "flexport incident", "flexport outage", "flexport down", "flexport emergency".
+allowed-tools: Read, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Incident Runbook
 
-## Overview
-Rapid incident response procedures for Flexport-related outages.
+## Triage Decision Tree
 
-## Prerequisites
-- Access to Flexport dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+```
+Is Flexport API responding?
+├── NO → Check status.flexport.com → Flexport outage → Enable circuit breaker
+└── YES
+    ├── Getting 401/403? → Key issue → Check API key, rotate if compromised
+    ├── Getting 429? → Rate limited → Reduce concurrency, honor Retry-After
+    ├── Getting 5xx? → Transient → Enable retry with backoff
+    └── Data stale? → Webhook issue → Check webhook endpoint health
+```
 
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Flexport API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
+## Step 1: Assess Impact
 
 ```bash
-# 1. Check Flexport status
-curl -s https://status.flexport.com | jq
+#!/bin/bash
+echo "=== Flexport Incident Triage ==="
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.flexport'
+# Check API health
+echo -n "API Status: "
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $FLEXPORT_API_KEY" \
+  -H "Flexport-Version: 2" \
+  https://api.flexport.com/shipments?per=1
+echo ""
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(flexport_errors_total[5m])
+# Check status page
+echo -n "Platform: "
+curl -s https://status.flexport.com/api/v2/status.json | jq -r '.status.description'
 
-# 4. Recent error logs
-kubectl logs -l app=flexport-integration --since=5m | grep -i error | tail -20
+# Check error rates from your metrics
+echo -n "Rate Limit Remaining: "
+curl -s -H "Authorization: Bearer $FLEXPORT_API_KEY" \
+  -H "Flexport-Version: 2" \
+  https://api.flexport.com/shipments?per=1 -D - -o /dev/null 2>/dev/null | \
+  grep -i "x-ratelimit-remaining" | awk '{print $2}'
 ```
 
-## Decision Tree
+## Step 2: Mitigate
 
-```
-Flexport API returning errors?
-├─ YES: Is status.flexport.com showing incident?
-│   ├─ YES → Wait for Flexport to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
+### Circuit Breaker (Flexport Down)
 
-## Immediate Actions by Error Type
+```typescript
+class FlexportCircuitBreaker {
+  private failures = 0;
+  private lastFailure = 0;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
 
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret flexport-secrets -o jsonpath='{.data.api-key}' | base64 -d
+  async execute<T>(fn: () => Promise<T>, fallback: () => T): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailure > 60_000) {
+        this.state = 'half-open';  // Try again after 60s
+      } else {
+        return fallback();
+      }
+    }
+    try {
+      const result = await fn();
+      this.failures = 0;
+      this.state = 'closed';
+      return result;
+    } catch {
+      this.failures++;
+      this.lastFailure = Date.now();
+      if (this.failures >= 3) this.state = 'open';
+      return fallback();
+    }
+  }
+}
 
-# Check if key was rotated
-# → Verify in Flexport dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic flexport-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/flexport-integration
-```
-
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.flexport.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/flexport-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Flexport for limit increase
-```
-
-### 500/503 - Flexport Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/flexport-integration FLEXPORT_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Flexport status for resolution
+// Usage: serve cached data when Flexport is down
+const breaker = new FlexportCircuitBreaker();
+const shipments = await breaker.execute(
+  () => flexport('/shipments?per=100'),
+  () => ({ data: { records: cachedShipments } }),  // Stale cache fallback
+);
 ```
 
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Flexport Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Flexport Integration Issue
-
-We're experiencing issues with our Flexport integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/flexport-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=flexport-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=flexport_errors_total&start=2h" > metrics.json
-```
+## Step 3: Post-Incident
 
 ### Postmortem Template
+
 ```markdown
-## Incident: Flexport [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+## Incident: [Title]
+- **Duration**: [start] to [end]
+- **Impact**: [affected shipments/users]
+- **Root cause**: [Flexport outage / key expiry / webhook endpoint down]
+- **Detection**: [alert / user report / monitoring]
+- **Mitigation**: [circuit breaker / cache fallback / key rotation]
+- **Action items**:
+  - [ ] Improve monitoring for [specific metric]
+  - [ ] Add circuit breaker to [specific endpoint]
+  - [ ] Implement webhook replay for missed events
 ```
 
-## Instructions
+## Severity Matrix
 
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Flexport-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.flexport.status' || echo "UNHEALTHY"
-```
+| Scenario | Severity | Response |
+|----------|----------|----------|
+| Full API outage | P1 | Circuit breaker + cached data + notify stakeholders |
+| Webhook delivery failure | P2 | Check endpoint, replay missed events, run sync job |
+| Rate limit exhaustion | P2 | Reduce concurrency, cache more, notify team |
+| Stale shipment data | P3 | Run manual sync job, check webhook health |
+| Key rotation needed | P3 | Generate new key, deploy, revoke old |
 
 ## Resources
-- [Flexport Status Page](https://status.flexport.com)
+
+- [Flexport Status](https://status.flexport.com)
 - [Flexport Support](https://support.flexport.com)
 
 ## Next Steps
-For data handling, see `flexport-data-handling`.
+
+For data handling compliance, see `flexport-data-handling`.

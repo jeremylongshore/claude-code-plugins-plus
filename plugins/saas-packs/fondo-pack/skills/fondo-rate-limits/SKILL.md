@@ -1,151 +1,57 @@
 ---
 name: fondo-rate-limits
 description: |
-  Implement Fondo rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Fondo.
-  Trigger with phrases like "fondo rate limit", "fondo throttling",
-  "fondo 429", "fondo retry", "fondo backoff".
+  Manage rate limits for Fondo-connected services including Gusto API,
+  QuickBooks API, Plaid, and Stripe when building parallel integrations.
+  Trigger: "fondo rate limit", "gusto API limits", "QuickBooks throttling".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Rate Limits
 
 ## Overview
-Handle Fondo rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Fondo SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+Fondo itself has no API rate limits (it's a managed service). But if you build parallel integrations to the same providers Fondo uses (Gusto, QuickBooks, Plaid, Stripe), you share rate limits.
+
+## Provider Rate Limits
+
+| Provider | Rate Limit | Scope |
+|----------|-----------|-------|
+| Gusto API | 50 requests/min | Per access token |
+| QuickBooks Online | 500 requests/min, 10 concurrent | Per realm |
+| Plaid | 100 requests/min | Per client_id |
+| Stripe | 100 reads/sec, 200 writes/sec | Per API key |
+| Mercury API | 50 requests/min | Per API key |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Avoid Conflicting with Fondo Syncs
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+// If you also call Gusto API directly, coordinate with Fondo's sync schedule
+// Fondo typically syncs payroll data daily at midnight UTC
+// Schedule your own Gusto API calls outside this window
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-### Step 3: Add Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: FondoClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
+const gustoQueue = new PQueue({
+  concurrency: 2,
+  interval: 60_000,
+  intervalCap: 40,  // Stay under 50/min to leave room for Fondo
 });
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
 ```
 
 ## Resources
-- [Fondo Rate Limits](https://docs.fondo.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Gusto API Rate Limits](https://docs.gusto.com/)
+- [QuickBooks API Limits](https://developer.intuit.com/)
+- [Stripe Rate Limits](https://stripe.com/docs/rate-limits)
 
 ## Next Steps
-For security configuration, see `fondo-security-basics`.
+
+For security, see `fondo-security-basics`.

@@ -1,201 +1,73 @@
 ---
 name: glean-webhooks-events
 description: |
-  Implement Glean webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Glean event notifications securely.
-  Trigger with phrases like "glean webhook", "glean events",
-  "glean webhook signature", "handle glean events", "glean notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement event-driven Glean indexing triggered by source system webhooks from
+  GitHub, Confluence, Notion, and other content platforms.
+  Trigger: "glean webhooks", "glean event indexing", "incremental glean index".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Webhooks & Events
 
 ## Overview
-Securely handle Glean webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Glean webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/glean',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-glean-signature'] as string;
-    const timestamp = req.headers['x-glean-timestamp'] as string;
-
-    if (!verifyGleanSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleGleanEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyGleanSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.GLEAN_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type GleanEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface GleanEvent {
-  id: string;
-  type: GleanEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<GleanEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleGleanEvent(event: GleanEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `glean:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `glean:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Glean CLI to send test events
-glean webhooks trigger resource.created --url http://localhost:3000/webhooks/glean
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Glean does not send webhooks. Instead, build event-driven connectors that receive webhooks from source systems (GitHub, Confluence, Notion) and push incremental updates to the Glean Indexing API.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Glean dashboard.
+### GitHub Webhook -> Glean Indexing
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+// Receive GitHub wiki/page webhooks, index into Glean
+app.post('/webhooks/github', async (req, res) => {
+  const event = req.body;
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  if (event.action === 'created' || event.action === 'edited') {
+    await glean.indexDocuments('github_wiki', [{
+      id: `wiki-${event.page.sha}`,
+      title: event.page.title,
+      url: event.page.html_url,
+      body: { mimeType: 'text/html', textContent: event.page.body },
+      author: { email: event.sender.email },
+      updatedAt: new Date().toISOString(),
+      permissions: { allowAnonymousAccess: true },
+    }]);
+  }
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  res.sendStatus(200);
+});
+```
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+### Confluence Webhook -> Glean Indexing
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+```typescript
+app.post('/webhooks/confluence', async (req, res) => {
+  const { event, page } = req.body;
 
-## Examples
+  if (event === 'page_updated' || event === 'page_created') {
+    const content = await fetchConfluencePage(page.id);
+    await glean.indexDocuments('confluence_custom', [{
+      id: `conf-${page.id}`,
+      title: content.title,
+      url: `${CONFLUENCE_URL}/wiki/spaces/${content.space.key}/pages/${page.id}`,
+      body: { mimeType: 'text/html', textContent: content.body.storage.value },
+      updatedAt: content.version.when,
+    }]);
+  }
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+  if (event === 'page_removed') {
+    await glean.deleteDocument('confluence_custom', `conf-${page.id}`);
+  }
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/glean \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  res.sendStatus(200);
+});
 ```
 
 ## Resources
-- [Glean Webhooks Guide](https://docs.glean.com/webhooks)
-- [Webhook Security Best Practices](https://docs.glean.com/webhooks/security)
 
-## Next Steps
-For performance optimization, see `glean-performance-tuning`.
+- [Glean Index Documents](https://developers.glean.com/api/indexing-api/index-documents)

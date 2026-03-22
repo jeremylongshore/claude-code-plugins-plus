@@ -1,119 +1,70 @@
 ---
 name: glean-local-dev-loop
 description: |
-  Configure Glean local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Glean.
-  Trigger with phrases like "glean dev setup", "glean local development",
-  "glean dev environment", "develop with glean".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure Glean local development with mock search responses, test datasources, and connector development workflow.
+  Trigger: "glean dev setup", "glean local development", "glean connector development".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Glean.
 
-## Prerequisites
-- Completed `glean-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up local development for Glean custom connectors and search integrations with mock data and test datasources.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Project Structure
+
 ```
-my-glean-project/
+glean-connector/
 ├── src/
-│   ├── glean/
-│   │   ├── client.ts       # Glean client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
+│   ├── glean/client.ts         # Typed Glean API client
+│   ├── connectors/wiki.ts      # Wiki connector logic
 │   └── index.ts
 ├── tests/
-│   └── glean.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── mock-data.ts            # Mock Glean responses
+│   └── connector.test.ts
+├── .env.local
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Mock Glean Responses
 
-# Install dependencies
-npm install
+```typescript
+export const mockSearchResponse = {
+  results: [
+    { title: 'Test Doc', url: 'https://test.com/doc', score: 0.95, datasource: 'test_ds',
+      snippets: [{ snippet: 'This is a <b>test</b> document' }] },
+  ],
+  totalCount: 1,
+};
 
-# Start development server
-npm run dev
+export const mockIndexResponse = { status: 'OK', documentsIndexed: 5 };
 ```
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
+### Test Connector
 
-### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { GleanClient } from '../src/glean/client';
 
-describe('Glean Client', () => {
-  it('should initialize with API key', () => {
-    const client = new GleanClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+describe('Wiki Connector', () => {
+  it('transforms wiki pages to Glean documents', () => {
+    const wikiPage = { id: '1', title: 'Setup', content: 'How to...', author: 'jane@co.com' };
+    const gleanDoc = transformToGleanDoc(wikiPage);
+    expect(gleanDoc).toHaveProperty('id', '1');
+    expect(gleanDoc).toHaveProperty('title', 'Setup');
+    expect(gleanDoc.body.textContent).toBe('How to...');
   });
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Glean development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Glean Responses
-```typescript
-vi.mock('@glean/sdk', () => ({
-  GleanClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=GLEAN=* npm run dev
-```
-
 ## Resources
-- [Glean SDK Reference](https://docs.glean.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
-## Next Steps
-See `glean-sdk-patterns` for production-ready code patterns.
+- [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
+- [Vitest](https://vitest.dev/)

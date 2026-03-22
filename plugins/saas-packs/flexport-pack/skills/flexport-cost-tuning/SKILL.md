@@ -1,203 +1,102 @@
 ---
 name: flexport-cost-tuning
 description: |
-  Optimize Flexport costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Flexport billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "flexport cost", "flexport billing",
-  "reduce flexport costs", "flexport pricing", "flexport expensive", "flexport budget".
-allowed-tools: Read, Grep
+  Optimize Flexport API usage costs through efficient pagination, caching,
+  webhook-driven updates, and monitoring API call volume.
+  Trigger: "flexport costs", "flexport API usage", "reduce flexport calls", "flexport billing".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Cost Tuning
 
 ## Overview
-Optimize Flexport costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Flexport billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateFlexportCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class FlexportUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Flexport budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateFlexportCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await flexportClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => flexportClient.get(id)));
-
-// Use batch endpoint (1 call)
-await flexportClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new FlexportClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Flexport dashboard
-# Or use API if available:
-# Check Flexport documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM flexport_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+Reduce Flexport API costs by minimizing unnecessary calls. Key strategies: use webhooks instead of polling, cache aggressively, maximize page sizes, and batch operations.
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Flexport dashboard for usage patterns and costs.
+### Strategy 1: Webhooks Over Polling
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateFlexportCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
+// BAD: Polling every 5 minutes (288 API calls/day per shipment)
+setInterval(async () => {
+  const shipment = await flexport(`/shipments/${id}`);
+  if (shipment.data.status !== lastStatus) updateDB(shipment);
+}, 5 * 60 * 1000);
+
+// GOOD: Webhook-driven (0 API calls — Flexport pushes updates)
+app.post('/webhooks/flexport', (req, res) => {
+  const event = req.body;
+  if (event.type === 'shipment.milestone') {
+    updateDB(event.data);  // Only processes real changes
+  }
+  res.sendStatus(200);
+});
+// Savings: 100 shipments * 288 calls/day = 28,800 calls/day eliminated
+```
+
+### Strategy 2: Maximize Page Size
+
+```typescript
+// BAD: Default pagination (per=25)
+// 1000 shipments = 40 API calls
+
+// GOOD: Max pagination (per=100)
+// 1000 shipments = 10 API calls (75% reduction)
+const shipments = await flexport('/shipments?per=100&page=1');
+```
+
+### Strategy 3: Cache with Smart TTLs
+
+| Data Type | Change Frequency | Cache TTL | Impact |
+|-----------|-----------------|-----------|--------|
+| Products | Rarely | 1 hour | ~95% fewer calls |
+| Shipment list | Every few hours | 5 minutes | ~90% fewer calls |
+| Shipment detail | On milestones | Until webhook | ~99% fewer calls |
+| Purchase orders | Daily | 15 minutes | ~85% fewer calls |
+| Freight invoices | Monthly | 1 hour | ~95% fewer calls |
+
+### Strategy 4: Monitor API Usage
+
+```typescript
+// Track API call volume per endpoint
+const apiMetrics = new Map<string, { count: number; lastReset: Date }>();
+
+function trackAPICall(endpoint: string) {
+  const key = endpoint.split('?')[0];  // Strip query params
+  const metric = apiMetrics.get(key) || { count: 0, lastReset: new Date() };
+  metric.count++;
+  apiMetrics.set(key, metric);
+}
+
+// Report daily usage
+function reportUsage() {
+  console.log('=== Flexport API Usage ===');
+  for (const [endpoint, { count }] of apiMetrics) {
+    console.log(`  ${endpoint}: ${count} calls`);
+  }
 }
 ```
 
+## Cost Reduction Checklist
+
+- [ ] Replace polling with webhooks for shipment tracking
+- [ ] Use `per=100` on all list endpoints
+- [ ] Cache product catalog (1hr TTL)
+- [ ] Cache shipment data, invalidate on webhooks
+- [ ] Eliminate duplicate calls in page loads
+- [ ] Monitor API call volume weekly
+
 ## Resources
-- [Flexport Pricing](https://flexport.com/pricing)
-- [Flexport Billing Dashboard](https://dashboard.flexport.com/billing)
+
+- [Flexport Webhook Endpoints](https://apidocs.flexport.com/v2/tag/Webhook-Endpoints/)
+- [Flexport API Reference](https://apidocs.flexport.com/)
 
 ## Next Steps
-For architecture patterns, see `flexport-reference-architecture`.
+
+For architecture design, see `flexport-reference-architecture`.

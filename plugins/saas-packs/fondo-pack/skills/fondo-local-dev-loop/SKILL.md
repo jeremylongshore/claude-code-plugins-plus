@@ -1,119 +1,97 @@
 ---
 name: fondo-local-dev-loop
 description: |
-  Configure Fondo local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Fondo.
-  Trigger with phrases like "fondo dev setup", "fondo local development",
-  "fondo dev environment", "develop with fondo".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure local development workflows that integrate with Fondo for
+  financial data, using Fondo exports with QuickBooks or accounting tools.
+  Trigger: "fondo dev setup", "fondo export", "fondo QuickBooks", "fondo local data".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Fondo.
 
-## Prerequisites
-- Completed `fondo-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Work with Fondo financial data locally. Fondo exports data as CSV and generates QuickBooks-compatible reports. Use exports for building internal dashboards, financial modeling, or integrating with your own tools.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Export Financial Data from Fondo
+
 ```
-my-fondo-project/
-├── src/
-│   ├── fondo/
-│   │   ├── client.ts       # Fondo client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── fondo.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+Dashboard > Reports > Export
+  → Select report type: General Ledger, P&L, Balance Sheet
+  → Select date range
+  → Export as CSV or PDF
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Parse Fondo CSV Exports
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { FondoClient } from '../src/fondo/client';
+// src/fondo/parse-transactions.ts
+import { parse } from 'csv-parse/sync';
+import { readFileSync } from 'fs';
 
-describe('Fondo Client', () => {
-  it('should initialize with API key', () => {
-    const client = new FondoClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
+interface FondoTransaction {
+  date: string;
+  description: string;
+  amount: number;
+  category: string;
+  account: string;
+  isRnD: boolean;
+}
+
+function parseFondoExport(csvPath: string): FondoTransaction[] {
+  const content = readFileSync(csvPath, 'utf-8');
+  const records = parse(content, { columns: true, skip_empty_lines: true });
+
+  return records.map((row: any) => ({
+    date: row['Date'],
+    description: row['Description'],
+    amount: parseFloat(row['Amount'].replace(/[,$]/g, '')),
+    category: row['Category'],
+    account: row['Account'],
+    isRnD: row['R&D Qualified'] === 'Yes',
+  }));
+}
+
+// Usage
+const transactions = parseFondoExport('exports/general-ledger-2025-q1.csv');
+const totalRnD = transactions
+  .filter(t => t.isRnD)
+  .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+console.log(`Total R&D spend: $${totalRnD.toLocaleString()}`);
+```
+
+### Step 3: Build Burn Rate Dashboard
+
+```typescript
+// Calculate monthly burn from Fondo data
+function calculateBurnRate(transactions: FondoTransaction[]): Map<string, number> {
+  const monthly = new Map<string, number>();
+  for (const t of transactions) {
+    const month = t.date.substring(0, 7);  // YYYY-MM
+    const current = monthly.get(month) || 0;
+    monthly.set(month, current + t.amount);
+  }
+  return monthly;
+}
+
+const burn = calculateBurnRate(transactions);
+burn.forEach((amount, month) => {
+  console.log(`${month}: $${Math.abs(amount).toLocaleString()}`);
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Fondo development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Fondo Responses
-```typescript
-vi.mock('@fondo/sdk', () => ({
-  FondoClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=FONDO=* npm run dev
-```
-
 ## Resources
-- [Fondo SDK Reference](https://docs.fondo.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Fondo Dashboard](https://app.fondo.com)
+- [csv-parse](https://csv.js.org/parse/)
 
 ## Next Steps
-See `fondo-sdk-patterns` for production-ready code patterns.
+
+See `fondo-sdk-patterns` for data integration patterns.

@@ -1,71 +1,85 @@
 ---
 name: glean-core-workflow-a
 description: |
-  Execute Glean primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "glean main workflow",
-  "primary task with glean".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Execute Glean primary workflow: search, chat, and AI-powered answers across enterprise data.
+  Use when building search integrations, implementing Glean chat, or creating AI assistants.
+  Trigger: "glean search API", "glean chat", "glean AI answers", "enterprise search".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
-# Glean Core Workflow A
+# Glean Core Workflow A: Search & Chat
 
 ## Overview
-Primary money-path workflow for Glean. This is the most common use case.
 
-## Prerequisites
-- Completed `glean-install-auth` setup
-- Understanding of Glean core concepts
-- Valid API credentials configured
+Build search and chat experiences using the Glean Client API. Covers full-text search with filters, AI-powered chat answers, and autocomplete suggestions.
 
 ## Instructions
 
-### Step 1: Initialize
+### Step 1: Search with Filters and Facets
+
 ```typescript
-// Step 1 implementation
+const results = await fetch(`${GLEAN}/client/v1/search`, {
+  method: 'POST', headers: searchHeaders,
+  body: JSON.stringify({
+    query: 'kubernetes deployment best practices',
+    pageSize: 20,
+    requestOptions: {
+      datasourceFilter: 'confluence,github',
+      facetFilters: [{ fieldName: 'author', values: ['engineering-team'] }],
+    },
+  }),
+}).then(r => r.json());
+
+results.results?.forEach((r: any) => {
+  console.log(`[${r.datasource}] ${r.title}`);
+  console.log(`  ${r.snippets?.[0]?.snippet ?? ''}`);
+});
 ```
 
-### Step 2: Execute
+### Step 2: AI Chat (Glean Assistant)
+
 ```typescript
-// Step 2 implementation
+const chatResponse = await fetch(`${GLEAN}/client/v1/chat`, {
+  method: 'POST', headers: searchHeaders,
+  body: JSON.stringify({
+    messages: [{ role: 'USER', content: 'What is our deployment process for production?' }],
+    applicationId: 'my-app',
+  }),
+}).then(r => r.json());
+
+console.log('Answer:', chatResponse.messages?.[0]?.content);
+console.log('Sources:', chatResponse.citations?.map((c: any) => c.title).join(', '));
 ```
 
-### Step 3: Finalize
-```typescript
-// Step 3 implementation
-```
+### Step 3: Autocomplete / Suggestions
 
-## Output
-- Completed Core Workflow A execution
-- Expected results from Glean API
-- Success confirmation or error details
+```typescript
+const suggestions = await fetch(`${GLEAN}/client/v1/autocomplete`, {
+  method: 'POST', headers: searchHeaders,
+  body: JSON.stringify({ query: 'deploy', datasourceFilter: 'confluence' }),
+}).then(r => r.json());
+
+suggestions.results?.forEach((s: any) => console.log(`  ${s.text}`));
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| Empty results | Query too specific or datasource not indexed | Broaden query, check datasource status |
+| Chat returns no citations | Content not indexed for chat | Verify documents have body text |
+| 403 on search | User permissions | Ensure token has search scope |
 
 ## Resources
-- [Glean Documentation](https://docs.glean.com)
-- [Glean API Reference](https://docs.glean.com/api)
+
+- [Search API](https://developers.glean.com/api/client-api/search/search)
+- [Chat API](https://developers.glean.com/api/client-api/search/overview)
 
 ## Next Steps
-For secondary workflow, see `glean-core-workflow-b`.
+
+For bulk indexing workflow, see `glean-core-workflow-b`.

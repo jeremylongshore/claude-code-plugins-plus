@@ -1,92 +1,92 @@
 ---
 name: fondo-install-auth
 description: |
-  Install and configure Fondo SDK/CLI authentication.
-  Use when setting up a new Fondo integration, configuring API keys,
-  or initializing Fondo in your project.
-  Trigger with phrases like "install fondo", "setup fondo",
-  "fondo auth", "configure fondo API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Set up Fondo account and configure integrations with Gusto, QuickBooks,
+  and bank accounts for automated startup bookkeeping and R&D tax credits.
+  Trigger: "setup fondo", "fondo account", "fondo integrations", "connect fondo".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fondo]
+tags: [saas, accounting, fondo]
 compatible-with: claude-code
 ---
 
 # Fondo Install & Auth
 
 ## Overview
-Set up Fondo SDK/CLI and configure authentication credentials.
+
+Set up Fondo for automated startup bookkeeping, tax filing, and R&D tax credits. Fondo is a managed platform (not an API-first service) that integrates with payroll providers, banks, and expense tools. Configuration happens through the Fondo dashboard and OAuth connections.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Fondo account with API access
-- API key from Fondo dashboard
+
+- US-incorporated startup (C-corp or LLC)
+- Fondo account at [fondo.com](https://fondo.com)
+- Active payroll provider (Gusto, Rippling, ADP, etc.)
+- Business bank account
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @fondo/sdk
+### Step 1: Create Fondo Account
 
-# Python
-pip install fondo
+1. Sign up at [fondo.com](https://fondo.com)
+2. Select your plan: **TaxPass** (bookkeeping + taxes + R&D credits)
+3. Complete company profile (EIN, incorporation date, state)
+
+### Step 2: Connect Payroll Provider
+
+| Provider | Connection Type | Data Synced |
+|----------|----------------|-------------|
+| Gusto | OAuth 2.0 | Payroll runs, employee data, tax filings |
+| Rippling | OAuth 2.0 | Payroll, benefits, headcount |
+| ADP | API key | Payroll summaries, tax deposits |
+| Justworks | OAuth 2.0 | PEO payroll, contractor payments |
+| QuickBooks Payroll | OAuth 2.0 | Payroll journal entries |
+| Paychex | Manual upload | Pay stubs, tax forms |
+
+Navigate to Fondo Dashboard > Integrations > Connect Payroll and authorize.
+
+### Step 3: Connect Bank Accounts
+
+```
+Fondo Dashboard > Integrations > Banking
+  → Connect via Plaid (most banks)
+  → Or manual CSV upload for unsupported banks
+  → Mercury, SVB, Brex, Chase all supported via Plaid
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export FONDO_API_KEY="your-api-key"
+### Step 4: Connect Expense Tools
 
-# Or create .env file
-echo 'FONDO_API_KEY=your-api-key' >> .env
-```
+| Tool | What It Provides |
+|------|------------------|
+| Brex | Corporate card transactions |
+| Ramp | Card spend, reimbursements |
+| Expensify | Receipt data, categorized expenses |
+| Bill.com | AP/AR, vendor payments |
+| Stripe | Revenue data, payouts |
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
-```
+### Step 5: Verify Connection
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+After connecting, verify in Dashboard > Integrations:
+- Green check = connected and syncing
+- Yellow warning = needs re-authorization
+- Red X = connection failed, re-connect needed
 
 ## Error Handling
-| Error | Cause | Solution |
+
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Fondo dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.fondo.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { FondoClient } from '@fondo/sdk';
-
-const client = new FondoClient({
-  apiKey: process.env.FONDO_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from fondo import FondoClient
-
-client = FondoClient(
-    api_key=os.environ.get('FONDO_API_KEY')
-)
-```
+| OAuth expired | Token expiry (90 days typical) | Re-authorize in Dashboard > Integrations |
+| Missing transactions | Bank feed lag | Wait 24h or upload CSV manually |
+| Duplicate entries | Multiple connections to same account | Remove duplicate connection |
+| Sync paused | Provider API change | Contact Fondo support |
 
 ## Resources
-- [Fondo Documentation](https://docs.fondo.com)
-- [Fondo Dashboard](https://api.fondo.com)
-- [Fondo Status](https://status.fondo.com)
+
+- [Fondo](https://fondo.com)
+- [Fondo R&D Credits FAQ](https://fondo.com/blog/fondo-rd-credits-faq)
+- [TaxPass Overview](https://fondo.com/taxpass)
 
 ## Next Steps
-After successful auth, proceed to `fondo-hello-world` for your first API call.
+
+After setup, proceed to `fondo-hello-world` to verify your first financial sync.

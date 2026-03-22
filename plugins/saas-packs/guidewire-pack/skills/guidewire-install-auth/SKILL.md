@@ -1,92 +1,102 @@
 ---
 name: guidewire-install-auth
 description: |
-  Install and configure Guidewire InsuranceSuite development environment and Cloud API authentication.
-  Use when setting up a new Guidewire integration, configuring OAuth2 credentials,
-  registering with Guidewire Hub, or initializing Guidewire Studio.
-  Trigger with phrases like "install guidewire", "setup guidewire",
-  "guidewire auth", "configure guidewire API", "guidewire cloud credentials".
-allowed-tools: Read, Write, Edit, Bash(java:*), Bash(gradle:*), Bash(npm:*), Grep
+  Install Guidewire Studio, configure Cloud API OAuth2 authentication,
+  and register applications with Guidewire Hub.
+  Trigger: "install guidewire", "guidewire auth", "guidewire OAuth2", "guidewire Cloud API setup".
+allowed-tools: Read, Write, Edit, Bash(java:*), Bash(gradle:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, guidewire, api, authentication]
-
+tags: [saas, insurance, guidewire]
+compatible-with: claude-code
 ---
+
 # Guidewire Install & Auth
 
 ## Overview
 
-Set up Guidewire InsuranceSuite development environment and configure Cloud API authentication with Guidewire Hub using OAuth2 and JWT tokens.
+Set up Guidewire InsuranceSuite development: install Guidewire Studio (IntelliJ-based), configure Cloud API OAuth2 authentication via Guidewire Hub, and obtain JWT tokens for PolicyCenter, ClaimCenter, and BillingCenter APIs.
 
 ## Prerequisites
 
-- JDK 11 or 17 (Guidewire Cloud 202503+ requires JDK 17)
-- Gradle 7.x or 8.x
-- Guidewire Cloud account with developer access
-- Access to Guidewire Cloud Console (GCC)
-- Guidewire Hub registration for your application
+- JDK 17 (Guidewire Cloud 202503+)
+- Gradle 8.x
+- Guidewire Cloud Console (GCC) access at `https://gcc.guidewire.com`
 
 ## Instructions
 
-### Step 1: Install Development Tools
+### Step 1: Register Application in Guidewire Hub
 
-### Step 2: Configure Guidewire Studio
+```
+GCC > Identity & Access > Applications > Register Application
 
-### Step 3: Register Application with Guidewire Hub
+Service Application (backend): OAuth2 Client Credentials flow
+Browser Application (Jutro): OAuth2 Authorization Code flow
 
-For detailed implementation code and configurations, load the reference guide:
-`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+Record: client_id and client_secret
+```
 
-1. Log into Guidewire Cloud Console (GCC) at `https://gcc.guidewire.com`
-2. Navigate to **Identity & Access > Applications**
-3. Click **Register Application**
-4. Select application type:
-   - **Browser Application** - For Jutro frontends (OAuth2 Authorization Code flow)
-   - **Service Application** - For backend integrations (OAuth2 Client Credentials flow)
-5. Record the `client_id` and `client_secret`
+### Step 2: Configure OAuth2 Environment
 
-### Step 4: Configure OAuth2 Credentials
+```bash
+# .env (NEVER commit)
+GW_AUTH_URL=https://guidewire-hub.guidewire.com/oauth/token
+GW_CLIENT_ID=your_client_id
+GW_CLIENT_SECRET=your_client_secret
+GW_PC_URL=https://your-tenant.guidewire.com/pc/rest
+GW_CC_URL=https://your-tenant.guidewire.com/cc/rest
+GW_BC_URL=https://your-tenant.guidewire.com/bc/rest
+```
 
-### Step 5: Obtain Access Token (Service Application)
+### Step 3: Obtain Access Token
 
-### Step 6: Verify Connection
+```typescript
+async function getGuidewireToken(): Promise<string> {
+  const res = await fetch(process.env.GW_AUTH_URL!, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: process.env.GW_CLIENT_ID!,
+      client_secret: process.env.GW_CLIENT_SECRET!,
+      scope: 'pc.service cc.service bc.service',
+    }),
+  });
+  const { access_token } = await res.json();
+  return access_token;
+}
+```
 
-## Gosu Authentication (Server-Side)
+### Step 4: Verify Connection
 
-## Output
+```bash
+TOKEN=$(curl -s -X POST "$GW_AUTH_URL" \
+  -d "grant_type=client_credentials&client_id=$GW_CLIENT_ID&client_secret=$GW_CLIENT_SECRET" \
+  | jq -r '.access_token')
 
-- Configured Guidewire Studio project
-- OAuth2 credentials in environment variables
-- Verified connection to Cloud API endpoints
-- JWT token acquisition working
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "$GW_PC_URL/account/v1/accounts?pageSize=1" | jq '.count'
+```
 
 ## Error Handling
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `invalid_client` | Wrong client credentials | Verify client_id and secret in GCC |
-| `invalid_scope` | Unauthorized scope requested | Check API role assignments in GCC |
-| `401 Unauthorized` | Expired or invalid token | Refresh token, check clock sync |
-| `403 Forbidden` | Missing API role permissions | Assign appropriate API roles in GCC |
-| `PKIX path building failed` | SSL certificate issue | Import Guidewire CA certificates |
+| `invalid_client` | Wrong credentials | Verify client_id/secret in GCC |
+| `invalid_scope` | Unauthorized scope | Check API role assignments |
+| `401 Unauthorized` | Expired token | Refresh (tokens are short-lived) |
+| `403 Forbidden` | Missing API role | Assign roles in GCC > Identity & Access |
+| `PKIX path building failed` | SSL cert issue | Import Guidewire CA certificates |
 
-## API Roles Configuration
-
-Configure in Guidewire Cloud Console:
-
-## Examples
-
-### Complete TypeScript Client Setup
+For detailed implementation, see: [implementation guide](references/implementation-guide.md)
 
 ## Resources
 
 - [Guidewire Developer Portal](https://developer.guidewire.com/)
-- [Cloud API Authentication](https://docs.guidewire.com/education/cloud-integration-basics/latest/docs/authentication/cloud_api_auth/)
-- [Guidewire Hub Registration](https://docs.guidewire.com/cloud/pc/202503/cloudapica/cloudAPI/topics/702-AuthFlows/)
-- [Guidewire Cloud Console](https://gcc.guidewire.com/)
+- [Cloud API Authentication](https://docs.guidewire.com/education/cloud-integration-basics/latest/docs/integration_cloud_basics/rest_api_client_overview/)
+- [Cloud API Reference - PolicyCenter](https://docs.guidewire.com/cloud/pc/202503/apiref/)
 
 ## Next Steps
 
-After successful auth, proceed to `guidewire-hello-world` for your first API calls.
+After auth, proceed to `guidewire-hello-world` for your first API calls.

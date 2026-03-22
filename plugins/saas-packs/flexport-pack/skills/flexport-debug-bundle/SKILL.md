@@ -1,113 +1,108 @@
 ---
 name: flexport-debug-bundle
 description: |
-  Collect Flexport debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Flexport problems.
-  Trigger with phrases like "flexport debug", "flexport support bundle",
-  "collect flexport logs", "flexport diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect Flexport API debug evidence for support tickets and troubleshooting.
+  Use when encountering persistent API issues, preparing support tickets,
+  or collecting diagnostic information for Flexport logistics problems.
+  Trigger: "flexport debug", "flexport support bundle", "flexport diagnostic".
+allowed-tools: Read, Bash(curl:*), Bash(tar:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Flexport support tickets.
 
-## Prerequisites
-- Flexport SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect all necessary diagnostic information for Flexport support tickets. The bundle captures API connectivity, authentication status, recent shipment data, and error logs while automatically redacting secrets.
 
 ## Instructions
 
 ### Step 1: Create Debug Bundle Script
+
 ```bash
 #!/bin/bash
-# flexport-debug-bundle.sh
+# flexport-debug.sh — run with: bash flexport-debug.sh
+set -euo pipefail
 
-BUNDLE_DIR="flexport-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+BUNDLE="flexport-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-echo "=== Flexport Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+echo "=== Flexport Debug Bundle ===" | tee "$BUNDLE/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE/summary.txt"
+echo "Node: $(node --version 2>/dev/null || echo 'not found')" >> "$BUNDLE/summary.txt"
+echo "API Key set: ${FLEXPORT_API_KEY:+YES}" >> "$BUNDLE/summary.txt"
 ```
 
-### Step 2: Collect Environment Info
+### Step 2: Test API Connectivity
+
 ```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "FLEXPORT_API_KEY: ${FLEXPORT_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+# API health and auth check
+echo -e "\n--- API Connectivity ---" >> "$BUNDLE/summary.txt"
+RESPONSE=$(curl -s -w "\n%{http_code}" \
+  -H "Authorization: Bearer $FLEXPORT_API_KEY" \
+  -H "Flexport-Version: 2" \
+  https://api.flexport.com/shipments?per=1 2>&1)
+
+HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+BODY=$(echo "$RESPONSE" | head -n -1)
+
+echo "HTTP Status: $HTTP_CODE" >> "$BUNDLE/summary.txt"
+echo "$BODY" | jq '{total_count: .data.total_count, has_records: (.data.records | length > 0)}' \
+  >> "$BUNDLE/api-test.json" 2>/dev/null || echo "Parse failed" >> "$BUNDLE/api-test.json"
 ```
 
-### Step 3: Gather SDK and Logs
+### Step 3: Capture Recent Errors
+
 ```bash
-# SDK version
-npm list @flexport/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+# Collect recent error logs (redacted)
+echo -e "\n--- Recent Errors ---" >> "$BUNDLE/summary.txt"
+grep -i "flexport\|FLEXPORT" /var/log/app/*.log 2>/dev/null | \
+  tail -50 | \
+  sed 's/Bearer [^ ]*/Bearer ***REDACTED***/g' \
+  >> "$BUNDLE/errors.txt" 2>/dev/null || echo "No app logs found" >> "$BUNDLE/errors.txt"
 
-# Recent logs (redacted)
-grep -i "flexport" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.flexport.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
+# Capture env config (redacted)
+env | grep -i FLEXPORT | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE/env-redacted.txt"
 ```
 
-### Step 4: Package Bundle
+### Step 4: Check Status Page and Package
+
 ```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# Flexport platform status
+echo -e "\n--- Platform Status ---" >> "$BUNDLE/summary.txt"
+curl -s https://status.flexport.com/api/v2/status.json | \
+  jq '{status: .status.description, updated: .page.updated_at}' \
+  >> "$BUNDLE/status.json" 2>/dev/null || echo "Status page unreachable" >> "$BUNDLE/status.json"
+
+# Package and output
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+rm -rf "$BUNDLE"
+echo "Bundle created: $BUNDLE.tar.gz"
+echo "Review contents before sharing: tar -tzf $BUNDLE.tar.gz"
 ```
 
-## Output
-- `flexport-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+## Checklist Before Submitting
 
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
+| Item | Included | Sensitive? |
+|------|----------|------------|
+| API connectivity test | Yes | No |
+| HTTP status codes | Yes | No |
+| Platform status | Yes | No |
+| Error logs (redacted) | Yes | Redacted |
+| Environment vars | Yes | Redacted |
+| Request IDs | Include from `X-Request-Id` header | No |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash flexport-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Flexport support portal
+**ALWAYS verify:** No API keys, tokens, passwords, or PII in the bundle before submitting.
 
 ## Resources
-- [Flexport Support](https://docs.flexport.com/support)
+
 - [Flexport Status](https://status.flexport.com)
+- [Flexport Support](https://support.flexport.com)
 
 ## Next Steps
+
 For rate limit issues, see `flexport-rate-limits`.

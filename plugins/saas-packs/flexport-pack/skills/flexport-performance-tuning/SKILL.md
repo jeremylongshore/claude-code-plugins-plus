@@ -1,216 +1,113 @@
 ---
 name: flexport-performance-tuning
 description: |
-  Optimize Flexport API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Flexport integrations.
-  Trigger with phrases like "flexport performance", "optimize flexport",
-  "flexport latency", "flexport caching", "flexport slow", "flexport batch".
-allowed-tools: Read, Write, Edit
+  Optimize Flexport API performance with pagination tuning, response caching,
+  parallel requests, and connection pooling for logistics data.
+  Trigger: "flexport performance", "flexport slow API", "flexport caching", "optimize flexport".
+allowed-tools: Read, Write, Edit, Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, flexport]
+tags: [saas, logistics, flexport]
 compatible-with: claude-code
 ---
 
 # Flexport Performance Tuning
 
 ## Overview
-Optimize Flexport API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Flexport SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize Flexport API integration performance. The API is rate-limited and serves logistics data that changes infrequently (shipments update hourly, products rarely). Cache aggressively for reads, batch writes, and use maximum page sizes.
 
-## Latency Benchmarks
+## Instructions
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+### Step 1: Maximize Page Size
 
-## Caching Strategy
+```typescript
+// Default per=25. Use per=100 (max) to reduce API calls by 4x
+async function fetchAllShipments(): Promise<Shipment[]> {
+  const all: Shipment[] = [];
+  let page = 1;
+  while (true) {
+    const res = await flexport(`/shipments?per=100&page=${page}`);
+    all.push(...res.data.records);
+    if (res.data.records.length < 100) break;
+    page++;
+  }
+  return all;
+  // 1000 shipments = 10 API calls instead of 40
+}
+```
 
-### Response Caching
+### Step 2: Cache Responses
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
 const cache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 5 * 60 * 1000,  // 5 min for shipment data
+});
+
+// Products change rarely — cache longer
+const productCache = new LRUCache<string, any>({
   max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
+  ttl: 60 * 60 * 1000,  // 1 hour
 });
 
-async function cachedFlexportRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+async function cachedFlexport(path: string, ttlCache = cache): Promise<any> {
+  const cached = ttlCache.get(path);
+  if (cached) return cached;
+  const data = await flexport(path);
+  ttlCache.set(path, data);
+  return data;
 }
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
+### Step 3: Parallel Requests with Concurrency Control
 
 ```typescript
-import DataLoader from 'dataloader';
+import PQueue from 'p-queue';
 
-const flexportLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Flexport
-    const results = await flexportClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
+const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 10 });
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  flexportLoader.load('id-1'),
-  flexportLoader.load('id-2'),
-  flexportLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new FlexportClient({
-  apiKey: process.env.FLEXPORT_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFlexportList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFlexportList(cursor =>
-  flexportClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFlexportCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Flexport operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFlexportCall(name, () =>
-    cachedFlexportRequest(`cache:${name}`, fn)
+// Fetch details for multiple shipments in parallel
+async function enrichShipments(ids: string[]) {
+  return Promise.all(
+    ids.map(id => queue.add(() => flexport(`/shipments/${id}`)))
   );
+}
 ```
+
+### Step 4: Webhook-Driven Cache Invalidation
+
+```typescript
+// Instead of polling, invalidate cache on webhook events
+async function handleWebhook(event: any) {
+  if (event.type.startsWith('shipment.')) {
+    cache.delete(`/shipments/${event.data.shipment_id}`);
+    cache.delete('/shipments');  // Invalidate list cache
+  }
+  if (event.type.startsWith('product.')) {
+    productCache.delete(`/products/${event.data.product_id}`);
+  }
+}
+```
+
+## Performance Targets
+
+| Metric | Target | Strategy |
+|--------|--------|----------|
+| Shipment list load | < 500ms | Cache with 5min TTL |
+| Product lookup | < 100ms | Cache with 1hr TTL |
+| Bulk shipment fetch | < 3s for 100 | Parallel with p-queue |
+| Dashboard refresh | < 2s | Stale-while-revalidate |
 
 ## Resources
-- [Flexport Performance Guide](https://docs.flexport.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Flexport API Reference](https://apidocs.flexport.com/)
+- [lru-cache](https://github.com/isaacs/node-lru-cache)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `flexport-cost-tuning`.

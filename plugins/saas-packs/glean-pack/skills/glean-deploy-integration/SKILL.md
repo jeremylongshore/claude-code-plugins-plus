@@ -1,211 +1,70 @@
 ---
 name: glean-deploy-integration
 description: |
-  Deploy Glean integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Glean-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy glean", "glean Vercel",
-  "glean production deploy", "glean Cloud Run", "glean Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Glean custom connectors as scheduled jobs on Cloud Run, Lambda, or Fly.io.
+  Trigger: "deploy glean connector", "glean connector hosting", "schedule glean indexing".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(gcloud:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, glean]
+tags: [saas, enterprise-search, glean]
 compatible-with: claude-code
 ---
 
 # Glean Deploy Integration
 
 ## Overview
-Deploy Glean-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Glean API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Glean secrets to Vercel
-vercel secrets add glean_api_key sk_live_***
-vercel secrets add glean_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "GLEAN_API_KEY": "@glean_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-glean-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Glean secrets
-fly secrets set GLEAN_API_KEY=sk_live_***
-fly secrets set GLEAN_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="glean-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=GLEAN_API_KEY=glean-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/glean.ts
-interface GleanConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getGleanConfig(): GleanConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.GLEAN_API_KEY!,
-    environment: env as GleanConfig['environment'],
-    webhookSecret: process.env.GLEAN_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const gleanStatus = await checkGleanConnection();
-
-  return Response.json({
-    status: gleanStatus ? 'healthy' : 'degraded',
-    services: {
-      glean: gleanStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+Deploy Glean custom connectors as scheduled services. Connectors run periodically to sync content from your internal tools into the Glean search index.
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Option A: Cloud Run with Cloud Scheduler
 
-### Step 2: Configure Secrets
-Store Glean API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Glean integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Glean connectivity.
-
-## Output
-- Application deployed to production
-- Glean secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add glean_api_key "$GLEAN_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set GLEAN_API_KEY="$GLEAN_API_KEY"
-    fly deploy
-    ;;
-esac
+# Deploy connector as Cloud Run job
+gcloud run jobs create glean-wiki-sync \
+  --source . \
+  --region us-central1 \
+  --set-secrets "GLEAN_INDEXING_TOKEN=glean-token:latest" \
+  --set-env-vars "GLEAN_DOMAIN=company-be.glean.com,GLEAN_DATASOURCE=wiki"
+
+# Schedule daily at 2 AM
+gcloud scheduler jobs create http glean-wiki-daily \
+  --schedule "0 2 * * *" \
+  --uri "https://us-central1-run.googleapis.com/apis/run.googleapis.com/v1/..." \
+  --http-method POST
+```
+
+### Option B: GitHub Actions Cron
+
+```yaml
+on:
+  schedule:
+    - cron: '0 2 * * *'  # Daily 2 AM UTC
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && node src/connectors/sync-all.js
+        env:
+          GLEAN_DOMAIN: ${{ secrets.GLEAN_DOMAIN }}
+          GLEAN_INDEXING_TOKEN: ${{ secrets.GLEAN_INDEXING_TOKEN }}
+```
+
+### Option C: Lambda (Event-Driven)
+
+```typescript
+// Trigger on source system changes via EventBridge/SNS
+export const handler = async (event: any) => {
+  const glean = new GleanClient(process.env.GLEAN_DOMAIN!, process.env.GLEAN_INDEXING_TOKEN!);
+  // Incremental index — only changed documents
+  await glean.indexDocuments('wiki', transformEvent(event));
+};
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Glean Deploy Guide](https://docs.glean.com/deploy)
 
-## Next Steps
-For webhook handling, see `glean-webhooks-events`.
+- [Glean Indexing API](https://developers.glean.com/api-info/indexing/getting-started/overview)
