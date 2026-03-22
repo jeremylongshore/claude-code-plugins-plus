@@ -113,7 +113,7 @@ def test_task_submission(agent_url: str, token: str, message: str) -> Optional[s
         try:
             error_body = e.read().decode()
             print(f"  Error details: {error_body}")
-        except:
+        except Exception:
             pass
         return None
     except Exception as e:
