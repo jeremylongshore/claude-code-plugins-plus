@@ -1,11 +1,11 @@
 ---
 name: canva-enterprise-rbac
 description: |
-  Configure Canva enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Canva.
-  Trigger with phrases like "canva SSO", "canva RBAC",
-  "canva enterprise", "canva roles", "canva permissions", "canva SAML".
+  Configure Canva Enterprise organization access control and scope management.
+  Use when implementing per-user scope control, managing Canva Enterprise features,
+  or setting up organization-level Canva integration governance.
+  Trigger with phrases like "canva enterprise", "canva RBAC",
+  "canva roles", "canva permissions", "canva organization", "canva team".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,130 +17,84 @@ compatible-with: claude-code
 # Canva Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Canva integrations.
 
-## Prerequisites
-- Canva Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
+Manage access control for Canva Connect API integrations at the organization level. The Canva API uses OAuth scopes (not roles) — your application layer implements RBAC on top of Canva's scope system.
 
-## Role Definitions
+## Canva Enterprise Requirements
 
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
+| Feature | Canva Free/Pro | Canva Enterprise |
+|---------|----------------|------------------|
+| Design Create/Read | Yes | Yes |
+| Export Designs | Yes | Yes |
+| Asset Upload | Yes | Yes |
+| Brand Templates | No | Yes |
+| Autofill API | No | Yes |
+| Folders (advanced) | Limited | Yes |
+| Comments API | Yes | Yes |
 
-## Role Implementation
+**Key:** Autofill and brand template APIs require the user to be a member of a Canva Enterprise organization.
 
-```typescript
-enum CanvaRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface CanvaPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<CanvaRole, CanvaPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: CanvaRole,
-  action: keyof CanvaPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
+## Application-Level RBAC
 
 ```typescript
-// Canva SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://canva.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/canva/callback',
-};
+// Your application controls what each user role can do with Canva
 
-// Map IdP groups to Canva roles
-const groupRoleMapping: Record<string, CanvaRole> = {
-  'Engineering': CanvaRole.Developer,
-  'Platform-Admins': CanvaRole.Admin,
-  'Data-Team': CanvaRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@canva/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.CANVA_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.CANVA_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/canva/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface CanvaOrganization {
-  id: string;
+interface CanvaRole {
   name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: CanvaRole;
+  scopes: string[];          // OAuth scopes to request
+  allowedOperations: string[]; // Application-level operations
 }
 
-async function createOrganization(
-  config: CanvaOrganization
-): Promise<void> {
-  await canvaClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
+const CANVA_ROLES: Record<string, CanvaRole> = {
+  viewer: {
+    name: 'Viewer',
+    scopes: ['design:meta:read'],
+    allowedOperations: ['listDesigns', 'getDesign'],
+  },
+  creator: {
+    name: 'Creator',
+    scopes: ['design:meta:read', 'design:content:write', 'design:content:read', 'asset:write', 'asset:read'],
+    allowedOperations: ['listDesigns', 'getDesign', 'createDesign', 'exportDesign', 'uploadAsset'],
+  },
+  admin: {
+    name: 'Admin',
+    scopes: [
+      'design:meta:read', 'design:content:write', 'design:content:read',
+      'asset:write', 'asset:read',
+      'brandtemplate:meta:read', 'brandtemplate:content:read',
+      'folder:read', 'folder:write',
+      'comment:read', 'comment:write',
+      'collaboration:event',
+    ],
+    allowedOperations: ['*'],
+  },
+};
+
+// Request only the scopes needed for the user's role
+function getScopesForRole(role: string): string[] {
+  return CANVA_ROLES[role]?.scopes || CANVA_ROLES.viewer.scopes;
 }
 ```
 
-## Access Control Middleware
+## Permission Middleware
 
 ```typescript
-function requireCanvaPermission(
-  requiredPermission: keyof CanvaPermissions
-) {
+function requireCanvaOperation(operation: string) {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { canvaRole: CanvaRole };
+    const userRole = req.user?.canvaRole || 'viewer';
+    const role = CANVA_ROLES[userRole];
 
-    if (!checkPermission(user.canvaRole, requiredPermission)) {
+    if (!role) {
+      return res.status(403).json({ error: 'Unknown role' });
+    }
+
+    if (!role.allowedOperations.includes('*') && !role.allowedOperations.includes(operation)) {
       return res.status(403).json({
         error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
+        message: `Role '${userRole}' cannot perform '${operation}'`,
+        requiredRole: Object.entries(CANVA_ROLES)
+          .find(([, r]) => r.allowedOperations.includes(operation) || r.allowedOperations.includes('*'))
+          ?.[0],
       });
     }
 
@@ -149,76 +103,129 @@ function requireCanvaPermission(
 }
 
 // Usage
-app.delete('/canva/resource/:id',
-  requireCanvaPermission('delete'),
-  deleteResourceHandler
+app.post('/api/designs',
+  requireCanvaOperation('createDesign'),
+  async (req, res) => {
+    const result = await req.canva.createDesign(req.body);
+    res.json(result);
+  }
+);
+
+app.post('/api/autofill',
+  requireCanvaOperation('autofillTemplate'),
+  async (req, res) => {
+    // Only admins can autofill — requires Enterprise + admin role
+    const result = await req.canva.createAutofill(req.body);
+    res.json(result);
+  }
 );
 ```
 
-## Audit Trail
+## User Capabilities Check
 
 ```typescript
-interface CanvaAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: CanvaRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
+// GET https://api.canva.com/rest/v1/users/me/capabilities
+// Check what the authenticated user can do
 
-async function logCanvaAccess(entry: CanvaAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
+async function checkUserCapabilities(token: string): Promise<{
+  canAutofill: boolean;
+  isEnterprise: boolean;
+}> {
+  try {
+    const data = await canvaAPI('/users/me/capabilities', token);
+    return {
+      canAutofill: data.capabilities?.includes('autofill') || false,
+      isEnterprise: data.capabilities?.includes('brand_template') || false,
+    };
+  } catch {
+    return { canAutofill: false, isEnterprise: false };
   }
 }
 ```
 
-## Instructions
+## Scope-Based Access Control
 
-### Step 1: Define Roles
-Map organizational roles to Canva permissions.
-
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
-
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
 ```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
+// Track which scopes each user authorized
+interface UserCanvaAuth {
+  userId: string;
+  grantedScopes: string[];   // Scopes the user consented to
+  role: string;              // Application-assigned role
+  connectedAt: Date;
+}
+
+// Check if a specific API call is authorized
+function canPerformAction(
+  userAuth: UserCanvaAuth,
+  requiredScope: string
+): boolean {
+  // 1. Check application role allows the operation
+  const role = CANVA_ROLES[userAuth.role];
+  if (!role) return false;
+
+  // 2. Check the required OAuth scope was granted by the user
+  if (!userAuth.grantedScopes.includes(requiredScope)) {
+    console.warn(`User ${userAuth.userId} missing scope: ${requiredScope}`);
+    return false;
+  }
+
+  return true;
+}
+
+// If user needs additional scopes, redirect to re-authorize
+function buildReAuthUrl(userId: string, additionalScopes: string[]): string {
+  const existingScopes = userAuth.grantedScopes;
+  const allScopes = [...new Set([...existingScopes, ...additionalScopes])];
+
+  return getAuthorizationUrl({
+    clientId: process.env.CANVA_CLIENT_ID!,
+    redirectUri: process.env.CANVA_REDIRECT_URI!,
+    scopes: allScopes,
+    codeChallenge: generatePKCE().challenge,
+    state: `reauth:${userId}`,
+  });
 }
 ```
 
+## Audit Logging
+
+```typescript
+async function auditCanvaAction(entry: {
+  userId: string;
+  role: string;
+  action: string;
+  endpoint: string;
+  success: boolean;
+  designId?: string;
+}): Promise<void> {
+  await db.auditLog.insert({
+    ...entry,
+    service: 'canva-connect-api',
+    timestamp: new Date(),
+  });
+
+  // Alert on permission escalation attempts
+  if (!entry.success && entry.action === 'autofillTemplate') {
+    console.warn(`Permission denied: user ${entry.userId} (role: ${entry.role}) attempted ${entry.action}`);
+  }
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 403 on autofill | Not Enterprise user | Check user capabilities first |
+| Scope not granted | User rejected consent | Show scope explanation, re-auth |
+| Role mismatch | Wrong role assigned | Update user role in your DB |
+| New scope needed | Feature added | Trigger re-authorization flow |
+
 ## Resources
-- [Canva Enterprise Guide](https://docs.canva.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+- [Canva Scopes](https://www.canva.dev/docs/connect/appendix/scopes/)
+- [User Capabilities API](https://www.canva.dev/docs/connect/api-reference/users/get-user-capabilities/)
+- [Canva Enterprise](https://www.canva.com/enterprise/)
 
 ## Next Steps
+
 For major migrations, see `canva-migration-deep-dive`.

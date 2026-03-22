@@ -1,11 +1,11 @@
 ---
 name: canva-security-basics
 description: |
-  Apply Canva security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Canva security configuration.
+  Apply Canva Connect API security best practices for OAuth tokens and access control.
+  Use when securing OAuth credentials, implementing least-privilege scopes,
+  or auditing Canva integration security.
   Trigger with phrases like "canva security", "canva secrets",
-  "secure canva", "canva API key security".
+  "secure canva", "canva token security", "canva OAuth security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,155 @@ compatible-with: claude-code
 # Canva Security Basics
 
 ## Overview
-Security best practices for Canva API keys, tokens, and access control.
 
-## Prerequisites
-- Canva SDK installed
-- Understanding of environment variables
-- Access to Canva dashboard
+Security best practices for Canva Connect API OAuth 2.0 tokens, client credentials, and webhook verification. The Canva API uses OAuth with PKCE — there are no static API keys.
 
-## Instructions
+## Token Security
 
-### Step 1: Configure Environment Variables
+### Never Expose Client Secrets
+
 ```bash
-# .env (NEVER commit to git)
-CANVA_API_KEY=sk_live_***
-CANVA_SECRET=***
+# .env (NEVER commit)
+CANVA_CLIENT_ID=OCAxxxxxxxxxxxxxxxx
+CANVA_CLIENT_SECRET=xxxxxxxxxxxxxxxx
 
-# .gitignore
+# .gitignore — mandatory entries
 .env
 .env.local
 .env.*.local
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Canva dashboard
-# 2. Update environment variable
-export CANVA_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${CANVA_API_KEY}" \
-  https://api.canva.com/health
-
-# 4. Revoke old key in dashboard
+```typescript
+// WRONG — client-side JavaScript can't safely hold secrets
+// Token exchange and refresh MUST happen server-side
+// "Requests that require authenticating with your client ID and
+// client secret can't be made from a web-browser client" — Canva docs
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Token Storage
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new CanvaClient({
-    apiKey: process.env.CANVA_READ_KEY,
-  }),
-  writer: new CanvaClient({
-    apiKey: process.env.CANVA_WRITE_KEY,
-  }),
+// Store tokens encrypted at rest — they grant access to user's Canva account
+interface SecureTokenStore {
+  save(userId: string, tokens: {
+    accessToken: string;   // Valid ~4 hours
+    refreshToken: string;  // Single-use — always save the latest
+    expiresAt: number;
+  }): Promise<void>;
+
+  get(userId: string): Promise<CanvaTokens | null>;
+  delete(userId: string): Promise<void>;
+}
+
+// Production: use your database with encryption
+// Never store tokens in: localStorage, cookies without httpOnly, log files, git
+```
+
+### Token Revocation
+
+```typescript
+// Revoke tokens when user disconnects your integration
+async function revokeCanvaToken(token: string, clientId: string, clientSecret: string) {
+  const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+  await fetch('https://api.canva.com/rest/v1/oauth/revoke', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ token }),
+  });
+}
+```
+
+## Least-Privilege Scopes
+
+```typescript
+// Request ONLY the scopes you need — scopes don't cascade
+// e.g., asset:write does NOT grant asset:read
+
+const SCOPE_PROFILES = {
+  // Read-only integration — view designs and templates
+  readonly: ['design:meta:read', 'brandtemplate:meta:read', 'folder:read'],
+
+  // Content creation — create and export designs
+  creator: ['design:content:write', 'design:content:read', 'design:meta:read', 'asset:write', 'asset:read'],
+
+  // Full collaboration — includes comments and webhooks
+  collaborator: [
+    'design:content:write', 'design:content:read', 'design:meta:read',
+    'asset:write', 'asset:read', 'comment:read', 'comment:write',
+    'collaboration:event',
+  ],
 };
 ```
 
-### Webhook Signature Verification
+## Webhook Signature Verification
+
+Canva signs webhook payloads with JWK. Verify before processing.
+
 ```typescript
-import crypto from 'crypto';
+import { createRemoteJWKSet, jwtVerify } from 'jose';
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
+// Fetch Canva's public keys for webhook verification
+// GET https://api.canva.com/rest/v1/connect/keys
+const JWKS = createRemoteJWKSet(
+  new URL('https://api.canva.com/rest/v1/connect/keys')
+);
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
+async function verifyCanvaWebhook(
+  token: string, // JWT from Canva webhook
+): Promise<{ valid: boolean; payload?: any }> {
+  try {
+    const { payload } = await jwtVerify(token, JWKS, {
+      issuer: 'canva',
+    });
+    return { valid: true, payload };
+  } catch {
+    return { valid: false };
+  }
 }
 
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
+// Express middleware
+app.post('/webhooks/canva', express.text({ type: '*/*' }), async (req, res) => {
+  const result = await verifyCanvaWebhook(req.body);
+  if (!result.valid) return res.status(401).send('Invalid signature');
 
-  // Log to Canva analytics
-  await canvaClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'canva.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
+  await handleWebhookEvent(result.payload);
+  res.status(200).send('OK'); // Must return 200 to acknowledge
 });
 ```
 
+## Security Checklist
+
+- [ ] Client secret stored in environment variables / secret manager
+- [ ] `.env` files in `.gitignore`
+- [ ] Token exchange and refresh happen server-side only
+- [ ] Access tokens encrypted at rest in database
+- [ ] Refresh tokens treated as single-use (always store latest)
+- [ ] Scopes follow least-privilege principle
+- [ ] Webhook signatures verified with JWK
+- [ ] Token revocation implemented for user disconnect
+- [ ] No tokens in log output
+- [ ] HTTPS enforced for all callback URLs
+
+## Error Handling
+
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Token in logs | Log audit | Redact before logging |
+| Excessive scopes | Scope audit | Reduce to minimum needed |
+| Stale refresh token | Auth failures | Re-authorize user |
+| Unsigned webhook | Missing verification | Always verify JWK signature |
+| Client secret in frontend | Code review | Server-side only |
+
 ## Resources
-- [Canva Security Guide](https://docs.canva.com/security)
-- [Canva API Scopes](https://docs.canva.com/scopes)
+
+- [Canva Authentication](https://www.canva.dev/docs/connect/authentication/)
+- [Canva Scopes](https://www.canva.dev/docs/connect/appendix/scopes/)
+- [Webhook Keys API](https://www.canva.dev/docs/connect/api-reference/webhooks/keys/)
 
 ## Next Steps
+
 For production deployment, see `canva-prod-checklist`.

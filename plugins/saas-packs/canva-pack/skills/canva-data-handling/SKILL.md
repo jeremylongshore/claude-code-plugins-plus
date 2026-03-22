@@ -1,9 +1,9 @@
 ---
 name: canva-data-handling
 description: |
-  Implement Canva PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Canva integrations.
+  Implement Canva Connect API data handling, PII protection, and GDPR/CCPA compliance.
+  Use when handling user design data, implementing data retention policies,
+  or ensuring privacy compliance for Canva integrations.
   Trigger with phrases like "canva data", "canva PII",
   "canva GDPR", "canva data retention", "canva privacy", "canva CCPA".
 allowed-tools: Read, Write, Edit
@@ -17,109 +17,136 @@ compatible-with: claude-code
 # Canva Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Canva.
 
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Canva SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+Handle Canva Connect API data responsibly. The API exposes user identifiers, design metadata, design content (via exports), uploaded assets, and comments. Apply proper classification, retention, and privacy controls.
 
-## Data Classification
+## Data Classification — Canva API Responses
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
+| Data Type | Source Endpoint | Sensitivity | Handling |
+|-----------|----------------|-------------|----------|
+| User ID, Team ID | `GET /v1/users/me` | Internal | Don't expose externally |
+| User profile | `GET /v1/users/me/profile` | PII | Encrypt at rest, minimize |
+| Design metadata | `GET /v1/designs` | Business | Standard protection |
+| Design content | Export URLs from `/v1/exports` | Confidential | Time-limited URLs, don't cache |
+| OAuth tokens | `/v1/oauth/token` | Secret | Encrypt, never log |
+| Asset files | `/v1/asset-uploads` | Business | Validate, scan for malware |
+| Comments | `/v1/designs/{id}/comment_threads` | PII | May contain personal data |
+| Webhook payloads | Incoming POST | Mixed | Verify signature first |
 
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
+## Token Protection
 
 ```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+// NEVER log tokens — they grant full access to a user's Canva account
+function redactCanvaData(data: any): any {
+  const sensitiveKeys = [
+    'access_token', 'refresh_token', 'authorization',
+    'client_secret', 'code_verifier',
+  ];
 
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
+  if (typeof data !== 'object' || data === null) return data;
+
+  const redacted = Array.isArray(data) ? [...data] : { ...data };
+  for (const key of Object.keys(redacted)) {
+    if (sensitiveKeys.includes(key.toLowerCase())) {
+      redacted[key] = '[REDACTED]';
+    } else if (typeof redacted[key] === 'object') {
+      redacted[key] = redactCanvaData(redacted[key]);
     }
   }
-
   return redacted;
 }
 
-// Use in logging
-console.log('Canva request:', redactPII(requestData));
+// Safe logging
+console.log('Canva response:', JSON.stringify(redactCanvaData(apiResponse)));
 ```
 
-## Data Retention Policy
+## Temporary URL Handling
 
-### Retention Periods
+Canva API responses include URLs with limited lifetimes. Never cache beyond expiry.
+
+```typescript
+interface CanvaUrlPolicy {
+  type: string;
+  ttl: number;        // milliseconds
+  cacheable: boolean;
+}
+
+const URL_POLICIES: Record<string, CanvaUrlPolicy> = {
+  thumbnail:  { type: 'thumbnail',  ttl: 15 * 60 * 1000,      cacheable: false }, // 15 min
+  edit_url:   { type: 'edit_url',   ttl: 30 * 24 * 60 * 60 * 1000, cacheable: true }, // 30 days
+  view_url:   { type: 'view_url',   ttl: 30 * 24 * 60 * 60 * 1000, cacheable: true }, // 30 days
+  export_url: { type: 'export_url', ttl: 24 * 60 * 60 * 1000, cacheable: false }, // 24 hours
+};
+
+// Track URL expiry
+class CanvaUrlTracker {
+  private urls = new Map<string, { url: string; expiresAt: number }>();
+
+  store(id: string, type: string, url: string): void {
+    const policy = URL_POLICIES[type];
+    this.urls.set(`${id}:${type}`, {
+      url,
+      expiresAt: Date.now() + (policy?.ttl || 0),
+    });
+  }
+
+  get(id: string, type: string): string | null {
+    const entry = this.urls.get(`${id}:${type}`);
+    if (!entry || Date.now() > entry.expiresAt) return null;
+    return entry.url;
+  }
+}
+```
+
+## Data Retention
+
 | Data Type | Retention | Reason |
 |-----------|-----------|--------|
-| API logs | 30 days | Debugging |
+| OAuth tokens | Until user disconnects | Active session |
+| Design metadata (cached) | 5-60 minutes | Performance cache |
+| Export download URLs | Max 24 hours | Canva-enforced expiry |
+| API request logs | 30 days | Debugging |
 | Error logs | 90 days | Root cause analysis |
 | Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
+| Webhook events | 30 days | Processing/replay |
 
 ### Automatic Cleanup
 
 ```typescript
-async function cleanupCanvaData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
+async function cleanupCanvaData(): Promise<void> {
+  const now = Date.now();
 
-  await db.canvaLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
+  // Remove expired export URLs
+  await db.exportUrls.deleteMany({ expiresAt: { $lt: new Date(now) } });
+
+  // Remove old API logs
+  const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+  await db.canvaApiLogs.deleteMany({
+    createdAt: { $lt: thirtyDaysAgo },
+    type: { $nin: ['audit'] },
   });
-}
 
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupCanvaData(30));
+  // Remove tokens for deleted/inactive users
+  await db.canvaTokens.deleteMany({ userId: { $in: await getDeletedUserIds() } });
+}
 ```
 
 ## GDPR/CCPA Compliance
 
-### Data Subject Access Request (DSAR)
+### Data Subject Access Request
 
 ```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const canvaData = await canvaClient.getUserData(userId);
+async function exportCanvaUserData(userId: string): Promise<object> {
+  const tokens = await tokenStore.get(userId);
 
   return {
-    source: 'Canva',
+    source: 'Canva Connect API',
     exportedAt: new Date().toISOString(),
     data: {
-      profile: canvaData.profile,
-      activities: canvaData.activities,
-      // Include all user-related data
+      identity: tokens ? await canvaAPI('/users/me', tokens.accessToken) : null,
+      hasActiveConnection: !!tokens,
+      // Note: Canva stores the user's designs — their data is in Canva's system
+      // Your app only stores: tokens, cached metadata, and integration state
     },
   };
 }
@@ -128,95 +155,44 @@ async function exportUserData(userId: string): Promise<DataExport> {
 ### Right to Deletion
 
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Canva
-  await canvaClient.deleteUser(userId);
+async function deleteCanvaUserData(userId: string): Promise<void> {
+  // 1. Revoke tokens (disconnects from Canva)
+  const tokens = await tokenStore.get(userId);
+  if (tokens) {
+    await revokeCanvaToken(tokens.accessToken, clientId, clientSecret);
+  }
 
-  // 2. Delete local copies
-  await db.canvaUserCache.deleteMany({ userId });
+  // 2. Delete stored tokens
+  await tokenStore.delete(userId);
 
-  // 3. Audit log (required to keep)
+  // 3. Clear cached design metadata
+  await cache.deletePattern(`canva:user:${userId}:*`);
+
+  // 4. Audit log (required — do not delete)
   await auditLog.record({
     action: 'GDPR_DELETION',
     userId,
     service: 'canva',
     timestamp: new Date(),
   });
-
-  return { success: true, deletedAt: new Date() };
 }
 ```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await canvaClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Canva data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Canva response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+| Token in logs | Missing redaction | Wrap all logging with redactCanvaData |
+| Expired URL served | No expiry tracking | Use CanvaUrlTracker |
+| DSAR incomplete | Missing data inventory | Document all Canva data stored |
+| Orphaned tokens | User deleted without cleanup | Run periodic cleanup job |
 
 ## Resources
+
+- [Canva Privacy Policy](https://www.canva.com/policies/privacy-policy/)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Canva Privacy Guide](https://docs.canva.com/privacy)
+- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
 
 ## Next Steps
+
 For enterprise access control, see `canva-enterprise-rbac`.

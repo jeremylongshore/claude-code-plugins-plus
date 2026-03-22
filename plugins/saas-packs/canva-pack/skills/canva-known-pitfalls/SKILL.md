@@ -1,8 +1,8 @@
 ---
 name: canva-known-pitfalls
 description: |
-  Identify and avoid Canva anti-patterns and common integration mistakes.
-  Use when reviewing Canva code for issues, onboarding new developers,
+  Identify and avoid Canva Connect API anti-patterns and common integration mistakes.
+  Use when reviewing Canva code, onboarding developers,
   or auditing existing Canva integrations for best practices violations.
   Trigger with phrases like "canva mistakes", "canva anti-patterns",
   "canva pitfalls", "canva what not to do", "canva code review".
@@ -17,320 +17,209 @@ compatible-with: claude-code
 # Canva Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Canva.
 
-## Prerequisites
-- Access to Canva codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
+Common mistakes when integrating with the Canva Connect API. Each pitfall includes the anti-pattern, why it fails, and the correct approach with real API endpoints.
 
-## Pitfall #1: Synchronous API Calls in Request Path
+## Pitfall #1: Not Handling Token Expiry
 
-### ❌ Anti-Pattern
 ```typescript
-// User waits for Canva API call
-app.post('/checkout', async (req, res) => {
-  const payment = await canvaClient.processPayment(req.body);  // 2-5s latency
-  const notification = await canvaClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
+// WRONG — token expires after ~4 hours, then all calls fail
+const token = await getTokenOnce();
+// ... 5 hours later ...
+await canvaAPI('/designs', token); // 401 Unauthorized
 
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await canvaClient.processPayment(data);
-  await canvaClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await canvaClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => canvaClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new CanvaClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new CanvaClient({
-  apiKey: process.env.CANVA_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await canvaClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await canvaClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await canvaClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-canva-signature'];
-    if (!verifyCanvaSignature(req.body, signature)) {
-      return res.sendStatus(401);
+// RIGHT — auto-refresh before expiry
+class CanvaClient {
+  async request(path: string, init?: RequestInit) {
+    if (Date.now() > this.tokens.expiresAt - 300_000) {
+      await this.refreshToken(); // Refresh 5 min before expiry
     }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
+    // ... make request
   }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await canvaClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await canvaClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof CanvaNotFoundError) {
-    return null;
-  }
-  if (error instanceof CanvaRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
 }
 ```
 
----
+## Pitfall #2: Reusing Refresh Tokens
 
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
 ```typescript
-const client = new CanvaClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.canva.com',  // Can't change for staging
+// WRONG — refresh tokens are single-use in Canva's OAuth
+const tokens = await refreshAccessToken(storedRefreshToken);
+// Later, using the SAME refresh token again:
+const tokens2 = await refreshAccessToken(storedRefreshToken); // FAILS
+
+// RIGHT — always store the new refresh token immediately
+const tokens = await refreshAccessToken(storedRefreshToken);
+await db.saveTokens(userId, {
+  accessToken: tokens.access_token,
+  refreshToken: tokens.refresh_token, // NEW token — store it!
+  expiresAt: Date.now() + tokens.expires_in * 1000,
 });
 ```
 
-### ✅ Better Approach
+## Pitfall #3: Synchronous Export Polling in Request Handler
+
 ```typescript
-const client = new CanvaClient({
-  timeout: parseInt(process.env.CANVA_TIMEOUT || '30000'),
-  baseUrl: process.env.CANVA_BASE_URL || 'https://api.canva.com',
+// WRONG — user waits 5-30 seconds while export completes
+app.post('/api/export', async (req, res) => {
+  const { job } = await canvaAPI('/exports', token, { method: 'POST', body: ... });
+  while (job.status === 'in_progress') { // Blocks entire request
+    await sleep(2000);
+    // ... poll ...
+  }
+  res.json({ urls: job.urls }); // User waited 15+ seconds
+});
+
+// RIGHT — return job ID, poll asynchronously
+app.post('/api/export', async (req, res) => {
+  const { job } = await canvaAPI('/exports', token, { method: 'POST', body: ... });
+  res.json({ jobId: job.id, status: 'processing' }); // 200ms response
+});
+
+app.get('/api/export/:jobId/status', async (req, res) => {
+  const { job } = await canvaAPI(`/exports/${req.params.jobId}`, token);
+  res.json({ status: job.status, urls: job.urls });
 });
 ```
 
----
+## Pitfall #4: Ignoring Rate Limits
 
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
 ```typescript
-// When Canva is down, every request hangs
-for (const user of users) {
-  await canvaClient.sync(user);  // All timeout sequentially
+// WRONG — blast requests, crash on 429
+for (const design of designs) {
+  await canvaAPI(`/exports`, token, { method: 'POST', body: ... }); // 75/5min limit
+}
+
+// RIGHT — queue with rate awareness
+import PQueue from 'p-queue';
+const queue = new PQueue({ concurrency: 1, interval: 4000, intervalCap: 1 });
+
+for (const design of designs) {
+  await queue.add(() =>
+    canvaAPI(`/exports`, token, { method: 'POST', body: ... })
+  );
 }
 ```
 
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
+## Pitfall #5: Caching Temporary URLs
 
-const breaker = new CircuitBreaker(canvaClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
+```typescript
+// WRONG — URLs expire silently
+const design = await canvaAPI(`/designs/${id}`, token);
+cache.set(id, design, { ttl: 86400 }); // Cache for 24 hours
+// But thumbnail URLs expire in 15 minutes!
+
+// RIGHT — cache metadata but refresh URLs
+const design = await canvaAPI(`/designs/${id}`, token);
+cache.set(`design:meta:${id}`, {
+  id: design.design.id,
+  title: design.design.title,
+  pageCount: design.design.page_count,
+  // DON'T cache: thumbnail.url (15 min), edit_url (30 days), view_url (30 days)
+}, { ttl: 300 }); // 5 min cache
+```
+
+## Pitfall #6: Client-Side OAuth
+
+```typescript
+// WRONG — client secret exposed in browser
+// frontend.js
+const tokens = await fetch('https://api.canva.com/rest/v1/oauth/token', {
+  body: new URLSearchParams({
+    client_secret: 'EXPOSED_TO_USERS', // Anyone can see this
+    // ...
+  }),
 });
 
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
+// RIGHT — token exchange MUST happen server-side
+// Canva docs: "Requests that require authenticating with your client ID
+// and client secret can't be made from a web-browser client"
+```
+
+## Pitfall #7: Not Checking Enterprise Requirements
+
+```typescript
+// WRONG — calling autofill without Enterprise, getting 403
+const result = await canvaAPI('/autofills', token, { method: 'POST', body: ... });
+// 403: "User must be a member of a Canva Enterprise organization"
+
+// RIGHT — check capabilities first
+const capabilities = await canvaAPI('/users/me/capabilities', token);
+if (!capabilities.capabilities?.includes('autofill')) {
+  throw new Error('Autofill requires Canva Enterprise subscription');
 }
 ```
 
----
+## Pitfall #8: Not Validating Webhook Signatures
 
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
 ```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
+// WRONG — accepts any POST as a valid webhook
+app.post('/webhooks/canva', (req, res) => {
+  processEvent(req.body); // Attacker can send fake events!
+  res.status(200).send();
+});
+
+// RIGHT — verify JWK signature
+app.post('/webhooks/canva', express.text({ type: '*/*' }), async (req, res) => {
+  const payload = await verifyCanvaWebhook(req.body); // JWK verification
+  if (!payload) return res.status(401).send('Invalid');
+  res.status(200).send('OK'); // Return 200 first
+  processEvent(payload).catch(console.error); // Process async
+});
 ```
 
-### ✅ Better Approach
+## Pitfall #9: Ignoring Blank Design Auto-Delete
+
 ```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
+// WRONG — create designs and expect them to persist
+const { design } = await canvaAPI('/designs', token, {
+  method: 'POST',
+  body: JSON.stringify({ design_type: { type: 'custom', width: 1080, height: 1080 } }),
+});
+// Design auto-deleted after 7 days if user never edits it!
+
+// RIGHT — warn users or track unedited designs
+await notifyUser(`Edit your design before ${sevenDaysFromNow}: ${design.urls.edit_url}`);
 ```
 
----
+## Pitfall #10: Not Handling Export Failures
 
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
 ```typescript
-// Entire feature broken if Canva is down
-const recommendations = await canvaClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
+// WRONG — assumes exports always succeed
+const { job } = await canvaAPI('/exports', token, { method: 'POST', body: ... });
+const urls = (await pollExport(job.id)).urls; // Crashes if failed
 
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await canvaClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('canva', error);
+// RIGHT — handle all export error codes
+const result = await pollExport(job.id);
+if (result.status === 'failed') {
+  switch (result.error?.code) {
+    case 'license_required':
+      throw new Error('Design uses premium elements — user needs Canva Pro');
+    case 'approval_required':
+      throw new Error('Design requires approval before export');
+    case 'internal_failure':
+      // Retry after delay
+      break;
+  }
 }
-return renderPage({ recommendations, degraded: !recommendations });
 ```
 
----
-
-## Instructions
-
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
-
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
-
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
-
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
-
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
-
-## Examples
-
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
-```
-
-## Resources
-- [Canva Security Guide](https://docs.canva.com/security)
-- [Canva Best Practices](https://docs.canva.com/best-practices)
-
-## Quick Reference Card
+## Quick Reference
 
 | Pitfall | Detection | Prevention |
 |---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+| Token expiry | 401 errors after 4h | Auto-refresh before expiry |
+| Reused refresh token | Token exchange fails | Store new token every refresh |
+| Sync export polling | Slow API responses | Return job ID, poll separately |
+| Rate limit ignored | 429 errors | Queue with p-queue |
+| Cached expired URLs | Broken images/links | Don't cache temp URLs |
+| Client-side OAuth | Security audit | Server-side only |
+| Missing Enterprise check | 403 on autofill | Check capabilities first |
+| Unsigned webhooks | Security audit | JWK verification |
+| Blank design deleted | Design disappears | Warn about 7-day window |
+| Export error ignored | Crashes | Handle all error codes |
+
+## Resources
+
+- [Canva Authentication](https://www.canva.dev/docs/connect/authentication/)
+- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- [Canva Scopes](https://www.canva.dev/docs/connect/appendix/scopes/)

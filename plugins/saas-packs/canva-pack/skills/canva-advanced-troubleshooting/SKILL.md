@@ -1,9 +1,9 @@
 ---
 name: canva-advanced-troubleshooting
 description: |
-  Apply Canva advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Canva support escalation.
+  Apply Canva Connect API advanced debugging for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating intermittent failures,
+  or preparing evidence bundles for Canva developer support.
   Trigger with phrases like "canva hard bug", "canva mystery error",
   "canva impossible to debug", "difficult canva issue", "canva deep debug".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
@@ -17,247 +17,272 @@ compatible-with: claude-code
 # Canva Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Canva issues that resist standard troubleshooting.
 
-## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
+Deep debugging for complex Canva Connect API issues — intermittent 5xx errors, stuck export jobs, OAuth token rotation failures, rate limit edge cases, and webhook delivery gaps.
 
-## Evidence Collection Framework
-
-### Comprehensive Debug Bundle
-```bash
-#!/bin/bash
-# advanced-canva-debug.sh
-
-BUNDLE="canva-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=canva-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u canva-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=canva_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=canva_errors_total > "$BUNDLE/metrics/errors.json"
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=canva > "$BUNDLE/traces/jaeger.json"
-
-# 5. Configuration state
-kubectl get cm canva-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret canva-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
+## Systematic Layer Testing
 
 ```typescript
-// Test each layer independently
-async function diagnoseCanvaIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
+interface LayerTest {
+  layer: string;
+  test: () => Promise<{ pass: boolean; details: string; durationMs: number }>;
+}
 
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
+async function diagnoseCanvaIssue(token: string): Promise<void> {
+  const layers: LayerTest[] = [
+    {
+      layer: 'DNS',
+      test: async () => {
+        const start = Date.now();
+        try {
+          const { address } = await import('dns/promises').then(dns => dns.lookup('api.canva.com'));
+          return { pass: true, details: `Resolved to ${address}`, durationMs: Date.now() - start };
+        } catch (e: any) {
+          return { pass: false, details: e.message, durationMs: Date.now() - start };
+        }
+      },
+    },
+    {
+      layer: 'TLS',
+      test: async () => {
+        const start = Date.now();
+        try {
+          const res = await fetch('https://api.canva.com/rest/v1/users/me', {
+            method: 'HEAD',
+            signal: AbortSignal.timeout(5000),
+          });
+          return { pass: true, details: `TLS OK, HTTP ${res.status}`, durationMs: Date.now() - start };
+        } catch (e: any) {
+          return { pass: false, details: e.message, durationMs: Date.now() - start };
+        }
+      },
+    },
+    {
+      layer: 'Auth',
+      test: async () => {
+        const start = Date.now();
+        const res = await fetch('https://api.canva.com/rest/v1/users/me', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        return {
+          pass: res.status === 200,
+          details: `HTTP ${res.status}${res.status === 401 ? ' — token expired' : ''}`,
+          durationMs: Date.now() - start,
+        };
+      },
+    },
+    {
+      layer: 'Scope: design:meta:read',
+      test: async () => {
+        const start = Date.now();
+        const res = await fetch('https://api.canva.com/rest/v1/designs?limit=1', {
+          headers: { 'Authorization': `Bearer ${token}` },
+        });
+        return {
+          pass: res.status === 200,
+          details: res.status === 403 ? 'Scope not granted' : `HTTP ${res.status}`,
+          durationMs: Date.now() - start,
+        };
+      },
+    },
+    {
+      layer: 'Scope: design:content:write',
+      test: async () => {
+        const start = Date.now();
+        const res = await fetch('https://api.canva.com/rest/v1/designs', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ design_type: { type: 'custom', width: 100, height: 100 }, title: 'Diag Test' }),
+        });
+        return {
+          pass: res.status === 200,
+          details: res.status === 403 ? 'Scope not granted' : `HTTP ${res.status}`,
+          durationMs: Date.now() - start,
+        };
+      },
+    },
+  ];
 
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.canva.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.canva.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
+  console.log('=== Canva Connect API Layer Diagnostics ===\n');
+  for (const { layer, test } of layers) {
+    const result = await test();
+    const icon = result.pass ? 'PASS' : 'FAIL';
+    console.log(`[${icon}] ${layer}: ${result.details} (${result.durationMs}ms)`);
+    if (!result.pass) {
+      console.log(`  ^ First failure — layers below may fail due to this.\n`);
+      break;
+    }
+  }
 }
 ```
 
-### Minimal Reproduction
+## Export Job Debugging
 
 ```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new CanvaClient({
-    apiKey: process.env.CANVA_API_KEY!,
+// Debug stuck or failed export jobs
+async function debugExportJob(exportId: string, token: string): Promise<void> {
+  console.log(`\n=== Export Job Debug: ${exportId} ===`);
+
+  const startTime = Date.now();
+  let pollCount = 0;
+
+  while (Date.now() - startTime < 120000) { // 2 min max
+    pollCount++;
+    const res = await fetch(`https://api.canva.com/rest/v1/exports/${exportId}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+
+    const data = await res.json();
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+
+    console.log(`[${elapsed}s] Poll #${pollCount}: status=${data.job.status}`);
+
+    if (data.job.status === 'success') {
+      console.log(`URLs (valid 24h): ${data.job.urls.length} files`);
+      data.job.urls.forEach((url: string, i: number) => console.log(`  ${i + 1}. ${url.substring(0, 80)}...`));
+      return;
+    }
+
+    if (data.job.status === 'failed') {
+      console.error(`FAILED: ${data.job.error?.code} — ${data.job.error?.message}`);
+      console.error('Common causes:');
+      if (data.job.error?.code === 'license_required') {
+        console.error('  -> Design contains premium elements. User needs Canva Pro.');
+      } else if (data.job.error?.code === 'internal_failure') {
+        console.error('  -> Canva server error. Retry after a delay.');
+      }
+      return;
+    }
+
+    await new Promise(r => setTimeout(r, 3000));
+  }
+
+  console.error('Export timed out after 2 minutes. Possible causes:');
+  console.error('  - Very large or complex design');
+  console.error('  - Canva export service under load');
+  console.error('  - Video/animation exports take longer');
+}
+```
+
+## Token Lifecycle Debugging
+
+```typescript
+async function debugTokenLifecycle(
+  clientId: string,
+  clientSecret: string,
+  refreshToken: string
+): Promise<void> {
+  console.log('\n=== Token Lifecycle Debug ===');
+
+  // 1. Try to refresh
+  const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+
+  const res = await fetch('https://api.canva.com/rest/v1/oauth/token', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({
+      grant_type: 'refresh_token',
+      refresh_token: refreshToken,
+    }),
   });
 
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
+  if (res.ok) {
+    const data = await res.json();
+    console.log(`[PASS] Token refresh successful`);
+    console.log(`  Access token length: ${data.access_token.length} chars`);
+    console.log(`  Expires in: ${data.expires_in} seconds (${(data.expires_in / 3600).toFixed(1)} hours)`);
+    console.log(`  New refresh token: ${data.refresh_token ? 'YES (store this!)' : 'NO'}`);
+  } else {
+    const error = await res.json();
+    console.log(`[FAIL] Token refresh failed: ${error.error}`);
+    console.log(`  Description: ${error.error_description}`);
+    console.log('');
+    console.log('Common causes:');
+    console.log('  - Refresh token already used (single-use)');
+    console.log('  - User revoked access to your integration');
+    console.log('  - Client credentials changed');
+    console.log('  - Integration was deleted');
+    console.log('');
+    console.log('Resolution: User must re-authorize via OAuth flow');
   }
 }
 ```
 
-## Timing Analysis
+## Network-Level Debug
 
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
+```bash
+#!/bin/bash
+# Capture low-level Canva API interaction
 
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
+echo "=== Network Debug ==="
 
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
+# DNS resolution time
+echo -n "DNS: "
+dig api.canva.com +short +time=5 | tail -1
 
-## Memory and Resource Analysis
+# TCP + TLS timing
+echo "Connection timing:"
+curl -w "DNS: %{time_namelookup}s\nTCP: %{time_connect}s\nTLS: %{time_appconnect}s\nTotal: %{time_total}s\n" \
+  -o /dev/null -s \
+  -H "Authorization: Bearer $CANVA_ACCESS_TOKEN" \
+  "https://api.canva.com/rest/v1/users/me"
 
-```typescript
-// Detect memory leaks in Canva client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
-      console.warn('Potential memory leak in canva integration');
-    }
-  }
-}, 60000);
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class CanvaConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
+# HTTP/2 multiplexing check
+echo -n "Protocol: "
+curl -sI -H "Authorization: Bearer $CANVA_ACCESS_TOKEN" \
+  "https://api.canva.com/rest/v1/users/me" | grep -i "^http/"
 ```
 
 ## Support Escalation Template
 
 ```markdown
-## Canva Support Escalation
+## Canva Developer Support Request
 
+**Integration ID:** [from Canva dashboard]
 **Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
+**Timestamp:** [ISO 8601 when issue first observed]
 
 ### Issue Summary
-[One paragraph description]
+[1-2 sentence description]
 
 ### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
+1. Call POST /v1/exports with design_id: DAVxxx
+2. Poll GET /v1/exports/{jobId}
+3. Job stays in_progress for > 5 minutes then returns internal_failure
 
 ### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
+- Expected: Export completes within 30s
+- Actual: Fails with internal_failure after 5 minutes
 
-### Evidence Attached
-- [ ] Debug bundle (canva-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
+### Evidence
+- Layer diagnostics output (attached)
+- Export job ID: EXPxxx
+- Response body: { "job": { "status": "failed", "error": { ... } } }
 
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
+### Environment
+- Node.js 20.x
+- Region: us-east-1
+- Traffic: ~50 exports/hour
 ```
-
-## Instructions
-
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
-
-## Examples
-
-### Quick Layer Test
-```bash
-# Test each layer in sequence
-curl -v https://api.canva.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
-```
+| Intermittent 5xx | Canva backend issue | Retry with backoff, file support ticket |
+| Export stuck in_progress | Large design or server load | Increase timeout to 120s |
+| Token refresh fails | Refresh token already used | Store new refresh token every time |
+| Webhook not arriving | URL unreachable from Canva | Check HTTPS, firewall, ngrok |
 
 ## Resources
-- [Canva Support Portal](https://support.canva.com)
-- [Canva Status Page](https://status.canva.com)
+
+- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
+- [Canva Developer Community](https://community.canva.dev/)
 
 ## Next Steps
+
 For load testing, see `canva-load-scale`.

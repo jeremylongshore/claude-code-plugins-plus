@@ -1,11 +1,11 @@
 ---
 name: canva-cost-tuning
 description: |
-  Optimize Canva costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Canva billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "canva cost", "canva billing",
-  "reduce canva costs", "canva pricing", "canva expensive", "canva budget".
+  Optimize Canva Connect API usage costs through efficient API patterns and monitoring.
+  Use when analyzing Canva API usage, reducing unnecessary calls,
+  or implementing usage monitoring and budget tracking.
+  Trigger with phrases like "canva cost", "canva usage",
+  "reduce canva calls", "canva API efficiency", "canva budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +17,138 @@ compatible-with: claude-code
 # Canva Cost Tuning
 
 ## Overview
-Optimize Canva costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Canva billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+Optimize Canva Connect API usage. While the Connect API itself is free to call, rate limits constrain throughput. Canva Enterprise (required for autofill) has per-seat licensing costs. Optimize by reducing unnecessary calls, caching effectively, and batching operations.
 
-## Pricing Tiers
+## Canva Pricing Model
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+| Tier | Cost | Connect API Access | Autofill API | Brand Templates |
+|------|------|-------------------|--------------|-----------------|
+| Canva Free | $0/user | Yes | No | No |
+| Canva Pro | $15/user/mo | Yes | No | No |
+| Canva Teams | $10/user/mo (5+) | Yes | No | Limited |
+| Canva Enterprise | Custom | Yes | Yes | Yes |
 
-## Cost Estimation
+**Key insight:** The REST API is free — costs come from Canva subscriptions. Autofill and brand template APIs require Enterprise.
+
+## API Call Reduction Strategies
+
+### Cache Design Metadata
 
 ```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
+// Design metadata rarely changes — cache aggressively
+// Save: ~100 GET /designs/{id} calls/min per user
+const designMetadata = await cachedCanvaCall(
+  `design:${designId}`,
+  () => canvaAPI(`/designs/${designId}`, token),
+  300 // 5 min TTL
+);
+```
+
+### Avoid Redundant Exports
+
+```typescript
+// Track exported designs to prevent duplicate exports
+class ExportTracker {
+  private exportedDesigns = new Map<string, { urls: string[]; expiresAt: number }>();
+
+  async exportIfNeeded(designId: string, format: object, token: string): Promise<string[]> {
+    const cached = this.exportedDesigns.get(designId);
+    // Export URLs valid for 24 hours — reuse if still valid
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.urls;
+    }
+
+    const { job } = await canvaAPI('/exports', token, {
+      method: 'POST',
+      body: JSON.stringify({ design_id: designId, format }),
+    });
+    const urls = await pollExport(job.id, token);
+
+    this.exportedDesigns.set(designId, {
+      urls,
+      expiresAt: Date.now() + 23 * 60 * 60 * 1000, // 23 hours (1h buffer)
+    });
+
+    return urls;
+  }
 }
+```
 
-function estimateCanvaCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
+### Pagination with Early Exit
 
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
+```typescript
+// Stop listing when you find what you need
+async function findDesignByTitle(title: string, token: string): Promise<any | null> {
+  let continuation: string | undefined;
 
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
+  do {
+    const params = new URLSearchParams({
+      query: title,  // Use server-side search instead of client filtering
+      limit: '25',
+      ...(continuation && { continuation }),
+    });
 
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
+    const data = await canvaAPI(`/designs?${params}`, token);
+    const match = data.items.find((d: any) => d.title === title);
+    if (match) return match; // Early exit — don't fetch remaining pages
+
+    continuation = data.continuation;
+  } while (continuation);
+
+  return null;
 }
 ```
 
 ## Usage Monitoring
 
 ```typescript
-class CanvaUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
+class CanvaUsageTracker {
+  private calls: Map<string, number> = new Map();
 
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  track(endpoint: string): void {
+    const key = `${new Date().toISOString().slice(0, 13)}:${endpoint}`; // Hourly bucket
+    this.calls.set(key, (this.calls.get(key) || 0) + 1);
   }
 
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Canva budget limit');
+  report(): { endpoint: string; callsPerHour: number }[] {
+    const hourly: Record<string, number> = {};
+    for (const [key, count] of this.calls) {
+      const endpoint = key.split(':').slice(1).join(':');
+      hourly[endpoint] = (hourly[endpoint] || 0) + count;
     }
-  }
-
-  estimatedCost(): number {
-    return estimateCanvaCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
+    return Object.entries(hourly)
+      .map(([endpoint, callsPerHour]) => ({ endpoint, callsPerHour }))
+      .sort((a, b) => b.callsPerHour - a.callsPerHour);
   }
 }
 ```
 
-## Cost Reduction Strategies
+## Optimization Checklist
 
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await canvaClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => canvaClient.get(id)));
-
-// Use batch endpoint (1 call)
-await canvaClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new CanvaClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Canva dashboard
-# Or use API if available:
-# Check Canva documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM canva_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Canva dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+- [ ] Design metadata cached (5+ min TTL)
+- [ ] Brand template list cached (1+ hour TTL)
+- [ ] Export URLs reused within 24-hour window
+- [ ] Pagination uses `query` parameter for server-side search
+- [ ] Thumbnail URLs refreshed only when displayed (15-min expiry)
+- [ ] Asset uploads deduplicated (don't re-upload same file)
+- [ ] Autofill results cached by template+data hash
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateCanvaCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Rate limits hit frequently | Too many calls | Add caching layer |
+| Export quota exceeded | Duplicate exports | Track and reuse URLs |
+| Autofill not available | Not Enterprise tier | Upgrade Canva plan |
+| Slow list queries | No search filter | Use `query` parameter |
 
 ## Resources
-- [Canva Pricing](https://canva.com/pricing)
-- [Canva Billing Dashboard](https://dashboard.canva.com/billing)
+
+- [Canva Pricing](https://www.canva.com/pricing/)
+- [Canva Enterprise](https://www.canva.com/enterprise/)
+- [API Rate Limits](https://www.canva.dev/docs/connect/api-requests-responses/)
 
 ## Next Steps
+
 For architecture patterns, see `canva-reference-architecture`.

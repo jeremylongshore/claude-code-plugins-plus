@@ -1,7 +1,7 @@
 ---
 name: canva-deploy-integration
 description: |
-  Deploy Canva integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Deploy Canva Connect API integrations to Vercel, Fly.io, and Cloud Run.
   Use when deploying Canva-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
   Trigger with phrases like "deploy canva", "canva Vercel",
@@ -17,55 +17,82 @@ compatible-with: claude-code
 # Canva Deploy Integration
 
 ## Overview
-Deploy Canva-powered applications to popular platforms with proper secrets management.
+
+Deploy Canva Connect API integrations to popular platforms with secure OAuth credential management. The Canva API requires server-side token exchange — client secrets and refresh tokens must never reach the browser.
 
 ## Prerequisites
-- Canva API keys for production environment
+
+- Canva OAuth credentials (client ID + secret)
 - Platform CLI installed (vercel, fly, or gcloud)
+- HTTPS domain for OAuth redirect URIs
 - Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+## Vercel
 
-### Environment Setup
+### Secrets
+
 ```bash
-# Add Canva secrets to Vercel
-vercel secrets add canva_api_key sk_live_***
-vercel secrets add canva_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Add Canva OAuth credentials
+vercel env add CANVA_CLIENT_ID production
+vercel env add CANVA_CLIENT_SECRET production
+vercel env add CANVA_REDIRECT_URI production  # e.g. https://your-app.vercel.app/auth/canva/callback
 ```
 
-### vercel.json Configuration
+### vercel.json
+
 ```json
 {
-  "env": {
-    "CANVA_API_KEY": "@canva_api_key"
-  },
   "functions": {
     "api/**/*.ts": {
       "maxDuration": 30
     }
-  }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
 }
 ```
 
-## Fly.io Deployment
+### API Route (Next.js / Vercel Functions)
+
+```typescript
+// api/canva/callback.ts — OAuth callback
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+
+  // Exchange code for tokens (server-side only)
+  const tokens = await exchangeCodeForToken({
+    code: code!,
+    codeVerifier: await getVerifierFromSession(state!),
+    clientId: process.env.CANVA_CLIENT_ID!,
+    clientSecret: process.env.CANVA_CLIENT_SECRET!,
+    redirectUri: process.env.CANVA_REDIRECT_URI!,
+  });
+
+  // Store tokens in your database
+  await saveTokens(userId, tokens);
+  return Response.redirect('/dashboard');
+}
+```
+
+## Fly.io
 
 ### fly.toml
+
 ```toml
 app = "my-canva-app"
 primary_region = "iad"
 
 [env]
   NODE_ENV = "production"
+  CANVA_REDIRECT_URI = "https://my-canva-app.fly.dev/auth/canva/callback"
 
 [http_service]
   internal_port = 3000
@@ -75,137 +102,92 @@ primary_region = "iad"
 ```
 
 ### Secrets
-```bash
-# Set Canva secrets
-fly secrets set CANVA_API_KEY=sk_live_***
-fly secrets set CANVA_WEBHOOK_SECRET=whsec_***
 
-# Deploy
+```bash
+fly secrets set CANVA_CLIENT_ID=OCAxxxxxxxxxxxxxxxx
+fly secrets set CANVA_CLIENT_SECRET=xxxxxxxxxxxxxxxx
 fly deploy
 ```
 
 ## Google Cloud Run
 
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
 ### Deploy Script
+
 ```bash
 #!/bin/bash
-# deploy-cloud-run.sh
-
 PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="canva-service"
+SERVICE_NAME="canva-integration"
 REGION="us-central1"
 
-# Build and push image
+# Store secrets in Secret Manager
+echo -n "OCAxxxxxxxxxxxxxxxx" | gcloud secrets create canva-client-id --data-file=-
+echo -n "xxxxxxxxxxxxxxxx" | gcloud secrets create canva-client-secret --data-file=-
+
+# Build and deploy
 gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Deploy to Cloud Run
 gcloud run deploy $SERVICE_NAME \
   --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
   --region $REGION \
   --platform managed \
   --allow-unauthenticated \
-  --set-secrets=CANVA_API_KEY=canva-api-key:latest
+  --set-secrets="CANVA_CLIENT_ID=canva-client-id:latest,CANVA_CLIENT_SECRET=canva-client-secret:latest" \
+  --set-env-vars="CANVA_REDIRECT_URI=https://$SERVICE_NAME-xxxxx.run.app/auth/canva/callback"
 ```
 
-## Environment Configuration Pattern
+## Health Check
 
 ```typescript
-// config/canva.ts
-interface CanvaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getCanvaConfig(): CanvaConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CANVA_API_KEY!,
-    environment: env as CanvaConfig['environment'],
-    webhookSecret: process.env.CANVA_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
+// api/health.ts — confirms Canva API connectivity
 export async function GET() {
-  const canvaStatus = await checkCanvaConnection();
+  const start = Date.now();
+  let canvaStatus: string;
+
+  try {
+    const res = await fetch('https://api.canva.com/rest/v1/users/me', {
+      headers: { 'Authorization': `Bearer ${await getServiceToken()}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    canvaStatus = res.ok ? 'healthy' : `error:${res.status}`;
+  } catch {
+    canvaStatus = 'unreachable';
+  }
 
   return Response.json({
-    status: canvaStatus ? 'healthy' : 'degraded',
-    services: {
-      canva: canvaStatus,
-    },
+    status: canvaStatus === 'healthy' ? 'healthy' : 'degraded',
+    services: { canva: { status: canvaStatus, latencyMs: Date.now() - start } },
     timestamp: new Date().toISOString(),
   });
 }
 ```
 
-## Instructions
+## Redirect URI Configuration
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+After deploying, update your Canva integration settings with the production redirect URI:
 
-### Step 2: Configure Secrets
-Store Canva API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Canva integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Canva connectivity.
-
-## Output
-- Application deployed to production
-- Canva secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+| Platform | Redirect URI Pattern |
+|----------|---------------------|
+| Vercel | `https://your-app.vercel.app/auth/canva/callback` |
+| Fly.io | `https://your-app.fly.dev/auth/canva/callback` |
+| Cloud Run | `https://your-service-xxxxx.run.app/auth/canva/callback` |
+| Custom Domain | `https://app.yourdomain.com/auth/canva/callback` |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add canva_api_key "$CANVA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CANVA_API_KEY="$CANVA_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| OAuth callback fails | Redirect URI mismatch | Update URI in Canva dashboard |
+| Secret not found | Missing env var | Add via platform CLI |
+| Cold start timeout | OAuth exchange slow | Set min instances to 1 |
+| HTTPS required | HTTP redirect URI | All platforms default to HTTPS |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Canva Deploy Guide](https://docs.canva.com/deploy)
+
+- [Canva Creating Integrations](https://www.canva.dev/docs/connect/creating-integrations/)
+- [Vercel Docs](https://vercel.com/docs)
+- [Fly.io Docs](https://fly.io/docs)
+- [Cloud Run Docs](https://cloud.google.com/run/docs)
 
 ## Next Steps
+
 For webhook handling, see `canva-webhooks-events`.

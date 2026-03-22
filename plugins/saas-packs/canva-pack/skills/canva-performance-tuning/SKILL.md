@@ -1,11 +1,11 @@
 ---
 name: canva-performance-tuning
 description: |
-  Optimize Canva API performance with caching, batching, and connection pooling.
+  Optimize Canva Connect API performance with caching, pagination, and connection pooling.
   Use when experiencing slow API responses, implementing caching strategies,
   or optimizing request throughput for Canva integrations.
   Trigger with phrases like "canva performance", "optimize canva",
-  "canva latency", "canva caching", "canva slow", "canva batch".
+  "canva latency", "canva caching", "canva slow", "canva pagination".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,58 +17,48 @@ compatible-with: claude-code
 # Canva Performance Tuning
 
 ## Overview
-Optimize Canva API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Canva SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+Optimize Canva Connect API performance. The REST API at `api.canva.com/rest/v1/*` has per-user rate limits and async operations (exports, uploads, autofills) that require polling.
 
 ## Caching Strategy
 
-### Response Caching
+### Design Metadata Cache
+
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
+// Design metadata changes infrequently — cache aggressively
+const designCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 5 * 60 * 1000,  // 5 minutes
 });
 
-async function cachedCanvaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function getDesignCached(designId: string, token: string) {
+  const cached = designCache.get(designId);
+  if (cached) return cached;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+  const data = await canvaAPI(`/designs/${designId}`, token);
+  designCache.set(designId, data);
+  return data;
 }
+
+// IMPORTANT: Do NOT cache these — they expire quickly:
+// - Thumbnail URLs: expire in 15 minutes
+// - Edit/view URLs: expire in 30 days
+// - Export download URLs: expire in 24 hours
 ```
 
-### Redis Caching (Distributed)
+### Redis Cache for Distributed Systems
+
 ```typescript
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL);
 
-async function cachedWithRedis<T>(
+async function cachedCanvaCall<T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttlSeconds = 60
+  ttlSeconds = 300
 ): Promise<T> {
   const cached = await redis.get(key);
   if (cached) return JSON.parse(cached);
@@ -77,31 +67,97 @@ async function cachedWithRedis<T>(
   await redis.setex(key, ttlSeconds, JSON.stringify(result));
   return result;
 }
+
+// Cache brand template list — rarely changes
+const templates = await cachedCanvaCall(
+  'canva:brand-templates:list',
+  () => canvaAPI('/brand-templates', token),
+  3600 // 1 hour
+);
 ```
 
-## Request Batching
+## Pagination Optimization
 
 ```typescript
-import DataLoader from 'dataloader';
+// Canva uses continuation-based pagination
+async function* paginateDesigns(
+  token: string,
+  opts: { ownership?: string; limit?: number } = {}
+): AsyncGenerator<any> {
+  let continuation: string | undefined;
 
-const canvaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Canva
-    const results = await canvaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+  do {
+    const params = new URLSearchParams({
+      limit: String(opts.limit || 100),  // Max 100 per page
+      ...(opts.ownership && { ownership: opts.ownership }),
+      ...(continuation && { continuation }),
+    });
+
+    const data = await canvaAPI(`/designs?${params}`, token);
+
+    for (const design of data.items) {
+      yield design;
+    }
+
+    continuation = data.continuation; // undefined = last page
+  } while (continuation);
+}
+
+// Usage — processes designs as they arrive
+for await (const design of paginateDesigns(token, { ownership: 'owned' })) {
+  console.log(`${design.title} (${design.id})`);
+}
+```
+
+## Export Polling Optimization
+
+```typescript
+// Smart polling with progressive backoff
+async function pollExport(exportId: string, token: string): Promise<string[]> {
+  const delays = [500, 1000, 2000, 3000, 5000, 5000, 10000]; // Progressive backoff
+  let attempt = 0;
+
+  while (attempt < 20) { // Max ~60s total
+    const { job } = await canvaAPI(`/exports/${exportId}`, token);
+
+    if (job.status === 'success') return job.urls;
+    if (job.status === 'failed') throw new Error(`Export failed: ${job.error?.message}`);
+
+    const delay = delays[Math.min(attempt, delays.length - 1)];
+    await new Promise(r => setTimeout(r, delay));
+    attempt++;
   }
-);
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  canvaLoader.load('id-1'),
-  canvaLoader.load('id-2'),
-  canvaLoader.load('id-3'),
-]);
+  throw new Error('Export polling timeout');
+}
+
+// Batch exports with concurrency control
+import PQueue from 'p-queue';
+
+const exportQueue = new PQueue({ concurrency: 3 });
+
+async function batchExport(
+  designIds: string[],
+  format: object,
+  token: string
+): Promise<Map<string, string[]>> {
+  const results = new Map<string, string[]>();
+
+  await Promise.all(
+    designIds.map(id =>
+      exportQueue.add(async () => {
+        const { job } = await canvaAPI('/exports', token, {
+          method: 'POST',
+          body: JSON.stringify({ design_id: id, format }),
+        });
+        const urls = await pollExport(job.id, token);
+        results.set(id, urls);
+      })
+    )
+  );
+
+  return results;
+}
 ```
 
 ## Connection Optimization
@@ -109,7 +165,7 @@ const [item1, item2, item3] = await Promise.all([
 ```typescript
 import { Agent } from 'https';
 
-// Keep-alive connection pooling
+// Keep-alive for connection reuse
 const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
@@ -117,35 +173,12 @@ const agent = new Agent({
   timeout: 30000,
 });
 
-const client = new CanvaClient({
-  apiKey: process.env.CANVA_API_KEY!,
-  httpAgent: agent,
+// Use with Node.js fetch or undici
+const res = await fetch('https://api.canva.com/rest/v1/designs', {
+  headers: { 'Authorization': `Bearer ${token}` },
+  // @ts-expect-error — Node.js specific
+  agent,
 });
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedCanvaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedCanvaList(cursor =>
-  canvaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
 ```
 
 ## Performance Monitoring
@@ -158,59 +191,44 @@ async function measuredCanvaCall<T>(
   const start = performance.now();
   try {
     const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
+    const ms = (performance.now() - start).toFixed(0);
+    console.log(`[canva] ${operation}: ${ms}ms OK`);
     return result;
   } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
+    const ms = (performance.now() - start).toFixed(0);
+    console.error(`[canva] ${operation}: ${ms}ms FAIL`, error);
     throw error;
   }
 }
 ```
 
-## Instructions
+## Performance Benchmarks
 
-### Step 1: Establish Baseline
-Measure current latency for critical Canva operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+| Operation | Typical Latency | Rate Limit |
+|-----------|----------------|------------|
+| GET /users/me | 50-150ms | 10/min |
+| POST /designs | 200-500ms | 20/min |
+| GET /designs (list) | 100-300ms | 100/min |
+| POST /exports | 100-300ms (job start) | 75/5min |
+| Export completion | 2-15s (depending on size) | N/A |
+| POST /asset-uploads | 300-2000ms | 30/min |
+| POST /autofills | 500-3000ms (job start) | 60/min |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredCanvaCall(name, () =>
-    cachedCanvaRequest(`cache:${name}`, fn)
-  );
-```
+| Stale cache | Long TTL | Reduce TTL or invalidate on write |
+| Export timeout | Large/complex design | Increase poll timeout |
+| Memory pressure | Cache too large | Set LRU max entries |
+| Connection refused | Pool exhausted | Increase maxSockets |
 
 ## Resources
-- [Canva Performance Guide](https://docs.canva.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `canva-cost-tuning`.

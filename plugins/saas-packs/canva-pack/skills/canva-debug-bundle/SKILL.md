@@ -1,9 +1,9 @@
 ---
 name: canva-debug-bundle
 description: |
-  Collect Canva debug evidence for support tickets and troubleshooting.
+  Collect Canva Connect API debug evidence for troubleshooting and support.
   Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Canva problems.
+  or collecting diagnostic information for Canva API problems.
   Trigger with phrases like "canva debug", "canva support bundle",
   "collect canva logs", "canva diagnostic".
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
@@ -17,97 +17,182 @@ compatible-with: claude-code
 # Canva Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Canva support tickets.
 
-## Prerequisites
-- Canva SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect diagnostic information for Canva Connect API issues. Tests connectivity to `api.canva.com/rest/v1/*`, validates OAuth tokens, checks rate limits, and packages evidence for support tickets.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Connectivity & Auth Check Script
+
 ```bash
 #!/bin/bash
-# canva-debug-bundle.sh
+# canva-debug.sh — Run with: bash canva-debug.sh
+set -euo pipefail
 
-BUNDLE_DIR="canva-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+TOKEN="${CANVA_ACCESS_TOKEN:-}"
+BUNDLE="canva-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-echo "=== Canva Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+echo "=== Canva Connect API Debug Bundle ===" | tee "$BUNDLE/summary.txt"
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" | tee -a "$BUNDLE/summary.txt"
+echo "" >> "$BUNDLE/summary.txt"
+
+# 1. Check API reachability
+echo "--- API Connectivity ---" >> "$BUNDLE/summary.txt"
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer ${TOKEN}" \
+  "https://api.canva.com/rest/v1/users/me")
+echo "GET /v1/users/me: HTTP $HTTP_CODE" | tee -a "$BUNDLE/summary.txt"
+
+# 2. Get user identity (if token valid)
+if [ "$HTTP_CODE" = "200" ]; then
+  curl -s -H "Authorization: Bearer $TOKEN" \
+    "https://api.canva.com/rest/v1/users/me" | tee "$BUNDLE/user-identity.json" \
+    | python3 -m json.tool 2>/dev/null || true
+  echo "Token: VALID" >> "$BUNDLE/summary.txt"
+else
+  echo "Token: INVALID or EXPIRED (HTTP $HTTP_CODE)" >> "$BUNDLE/summary.txt"
+fi
+
+# 3. Check response headers for rate limit info
+echo "" >> "$BUNDLE/summary.txt"
+echo "--- Rate Limit Headers ---" >> "$BUNDLE/summary.txt"
+curl -s -D - -o /dev/null -H "Authorization: Bearer $TOKEN" \
+  "https://api.canva.com/rest/v1/designs?limit=1" 2>&1 \
+  | grep -iE "(x-ratelimit|retry-after|content-type|date)" \
+  >> "$BUNDLE/summary.txt" 2>/dev/null || echo "No rate limit headers" >> "$BUNDLE/summary.txt"
+
+# 4. DNS resolution
+echo "" >> "$BUNDLE/summary.txt"
+echo "--- DNS Resolution ---" >> "$BUNDLE/summary.txt"
+nslookup api.canva.com >> "$BUNDLE/summary.txt" 2>&1 || echo "nslookup not available" >> "$BUNDLE/summary.txt"
+
+# 5. TLS check
+echo "" >> "$BUNDLE/summary.txt"
+echo "--- TLS Handshake ---" >> "$BUNDLE/summary.txt"
+curl -sv "https://api.canva.com/rest/v1/users/me" 2>&1 \
+  | grep -E "(SSL|TLS|Connected)" >> "$BUNDLE/summary.txt" 2>/dev/null || true
+
+# 6. Environment info
+echo "" >> "$BUNDLE/summary.txt"
+echo "--- Environment ---" >> "$BUNDLE/summary.txt"
+echo "Node: $(node --version 2>/dev/null || echo 'not found')" >> "$BUNDLE/summary.txt"
+echo "OS: $(uname -s -r)" >> "$BUNDLE/summary.txt"
+echo "CANVA_CLIENT_ID: ${CANVA_CLIENT_ID:+[SET]}" >> "$BUNDLE/summary.txt"
+echo "CANVA_ACCESS_TOKEN: ${CANVA_ACCESS_TOKEN:+[SET]}" >> "$BUNDLE/summary.txt"
+
+# 7. Package bundle
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo ""
+echo "Bundle created: $BUNDLE.tar.gz"
 ```
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "CANVA_API_KEY: ${CANVA_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+### Step 2: Programmatic Diagnostic
+
+```typescript
+// src/canva/diagnostics.ts
+interface DiagnosticResult {
+  check: string;
+  status: 'pass' | 'fail' | 'warn';
+  details: string;
+  durationMs: number;
+}
+
+async function runCanvaDiagnostics(token: string): Promise<DiagnosticResult[]> {
+  const results: DiagnosticResult[] = [];
+
+  // Check 1: API reachability
+  const start1 = Date.now();
+  try {
+    const res = await fetch('https://api.canva.com/rest/v1/users/me', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    results.push({
+      check: 'API Reachability',
+      status: res.ok ? 'pass' : res.status === 401 ? 'fail' : 'warn',
+      details: `HTTP ${res.status}`,
+      durationMs: Date.now() - start1,
+    });
+  } catch (e: any) {
+    results.push({ check: 'API Reachability', status: 'fail', details: e.message, durationMs: Date.now() - start1 });
+  }
+
+  // Check 2: Token validity
+  const start2 = Date.now();
+  try {
+    const res = await fetch('https://api.canva.com/rest/v1/users/me', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (res.ok) {
+      const data = await res.json();
+      results.push({
+        check: 'Token Validity',
+        status: 'pass',
+        details: `user_id: ${data.team_user.user_id}`,
+        durationMs: Date.now() - start2,
+      });
+    } else {
+      results.push({ check: 'Token Validity', status: 'fail', details: `HTTP ${res.status}`, durationMs: Date.now() - start2 });
+    }
+  } catch (e: any) {
+    results.push({ check: 'Token Validity', status: 'fail', details: e.message, durationMs: Date.now() - start2 });
+  }
+
+  // Check 3: Design list (tests design:meta:read scope)
+  const start3 = Date.now();
+  try {
+    const res = await fetch('https://api.canva.com/rest/v1/designs?limit=1', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    results.push({
+      check: 'Scope: design:meta:read',
+      status: res.ok ? 'pass' : res.status === 403 ? 'warn' : 'fail',
+      details: res.ok ? 'Scope active' : `HTTP ${res.status} — scope may not be enabled`,
+      durationMs: Date.now() - start3,
+    });
+  } catch (e: any) {
+    results.push({ check: 'Scope: design:meta:read', status: 'fail', details: e.message, durationMs: Date.now() - start3 });
+  }
+
+  return results;
+}
+
+// Print report
+const results = await runCanvaDiagnostics(process.env.CANVA_ACCESS_TOKEN!);
+for (const r of results) {
+  const icon = r.status === 'pass' ? 'OK' : r.status === 'warn' ? 'WARN' : 'FAIL';
+  console.log(`[${icon}] ${r.check}: ${r.details} (${r.durationMs}ms)`);
+}
 ```
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @canva/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+## Sensitive Data Handling
 
-# Recent logs (redacted)
-grep -i "canva" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+**ALWAYS REDACT before sharing:**
+- Access tokens and refresh tokens
+- Client secrets
+- User IDs (if privacy-sensitive)
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.canva.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `canva-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
+**Safe to include:**
+- HTTP status codes and error messages
+- Response headers (rate limit info)
+- Latency measurements
 - SDK/runtime versions
 
-### Submit to Support
-1. Create bundle: `bash canva-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Canva support portal
+## Error Handling
+
+| Item | Purpose | Included |
+|------|---------|----------|
+| HTTP status from `/v1/users/me` | Auth validation | Yes |
+| Rate limit headers | Throttling diagnosis | Yes |
+| DNS resolution | Network path | Yes |
+| TLS handshake | Certificate issues | Yes |
+| Environment versions | Compatibility | Yes |
 
 ## Resources
-- [Canva Support](https://docs.canva.com/support)
-- [Canva Status](https://status.canva.com)
+
+- [Canva API Requests & Responses](https://www.canva.dev/docs/connect/api-requests-responses/)
+- [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
 
 ## Next Steps
+
 For rate limit issues, see `canva-rate-limits`.

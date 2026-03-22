@@ -1,11 +1,11 @@
 ---
 name: canva-upgrade-migration
 description: |
-  Analyze, plan, and execute Canva SDK upgrades with breaking change detection.
-  Use when upgrading Canva SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade canva", "canva migration",
-  "canva breaking changes", "update canva SDK", "analyze canva version".
+  Plan and execute Canva Connect API version upgrades and breaking change detection.
+  Use when Canva releases API changes, migrating brand template IDs,
+  or adapting to endpoint deprecations.
+  Trigger with phrases like "upgrade canva", "canva API changes",
+  "canva breaking changes", "canva deprecation", "canva changelog".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
@@ -17,98 +17,155 @@ compatible-with: claude-code
 # Canva Upgrade & Migration
 
 ## Overview
-Guide for upgrading Canva SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Canva SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Guide for handling Canva Connect API changes. Canva uses a single REST API version (`/rest/v1/`) but evolves endpoints over time. Monitor the [changelog](https://www.canva.dev/docs/connect/changelog/) for breaking changes.
 
-## Instructions
+## Known Migrations
 
-### Step 1: Check Current Version
-```bash
-npm list @canva/sdk
-npm view @canva/sdk version
-```
+### Brand Template ID Migration (September 2025)
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/canva/sdk/releases
-```
+Canva migrated brand templates to a new ID format. Old IDs accepted for 6 months.
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/canva-sdk-vX.Y.Z
-npm install @canva/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
 ```typescript
-// Before (v1.x)
-import { Client } from '@canva/sdk';
+// Check if your stored template IDs need updating
+async function migrateBrandTemplateIds(
+  db: Database, token: string
+): Promise<{ migrated: number; failed: string[] }> {
+  const stored = await db.getBrandTemplateIds();
+  let migrated = 0;
+  const failed: string[] = [];
 
-// After (v2.x)
-import { CanvaClient } from '@canva/sdk';
-```
+  // Fetch current templates from Canva
+  const { items } = await canvaAPI('/brand-templates', token);
+  const currentIds = new Set(items.map((t: any) => t.id));
 
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new CanvaClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @canva/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Canva]', warning.message);
-      // Log to tracking system for proactive updates
+  for (const oldId of stored) {
+    if (!currentIds.has(oldId)) {
+      // Old ID — try to find matching template by title
+      const match = items.find((t: any) => t.title === await db.getTemplateName(oldId));
+      if (match) {
+        await db.updateTemplateId(oldId, match.id);
+        migrated++;
+      } else {
+        failed.push(oldId);
+      }
     }
+  }
+
+  return { migrated, failed };
+}
+```
+
+### Comment API Migration
+
+The Comment API endpoints were refactored — `Create Comment` and `Create Reply` are deprecated in favor of `Create Thread` and `Create Reply (v2)`.
+
+```typescript
+// OLD (deprecated)
+// POST /v1/designs/{id}/comments — deprecated
+
+// NEW
+// POST /v1/designs/{id}/comment_threads — Create Thread
+// POST /v1/designs/{id}/comment_threads/{threadId}/replies — Create Reply
+```
+
+## Pre-Upgrade Assessment
+
+```typescript
+async function assessCanvaIntegration(token: string): Promise<void> {
+  const checks = [
+    { name: 'Users API', path: '/users/me' },
+    { name: 'Designs List', path: '/designs?limit=1' },
+    { name: 'Brand Templates', path: '/brand-templates?limit=1' },
+    { name: 'Exports', path: '/exports' },  // Will 405 (POST only) but confirms route exists
+  ];
+
+  for (const check of checks) {
+    try {
+      const res = await fetch(`https://api.canva.com/rest/v1${check.path}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      console.log(`[${res.ok || res.status === 405 ? 'OK' : 'WARN'}] ${check.name}: HTTP ${res.status}`);
+    } catch (e: any) {
+      console.log(`[FAIL] ${check.name}: ${e.message}`);
+    }
+  }
+}
+```
+
+## Breaking Change Detection
+
+```typescript
+// Monitor API responses for deprecation signals
+function checkForDeprecationWarnings(response: Response, endpoint: string): void {
+  const deprecation = response.headers.get('Deprecation');
+  const sunset = response.headers.get('Sunset');
+  const link = response.headers.get('Link');
+
+  if (deprecation) {
+    console.warn(`[DEPRECATION] ${endpoint}: deprecated=${deprecation}, sunset=${sunset}`);
+    console.warn(`  Migration guide: ${link}`);
+    // Alert ops team
+  }
+}
+```
+
+## Upgrade Branch Workflow
+
+```bash
+# 1. Create upgrade branch
+git checkout -b upgrade/canva-api-changes
+
+# 2. Check Canva changelog for breaking changes
+# https://www.canva.dev/docs/connect/changelog/
+
+# 3. Download latest OpenAPI spec for diff
+curl -o openapi-new.yml https://www.canva.dev/sources/connect/api/latest/api.yml
+diff openapi-old.yml openapi-new.yml | head -100
+
+# 4. Run integration tests against staging
+CANVA_ACCESS_TOKEN=$STAGING_TOKEN npm test
+
+# 5. Deploy to staging first
+# 6. Monitor for 24 hours before production
+```
+
+## Rollback Procedure
+
+```typescript
+// Feature-flag controlled rollback
+const USE_NEW_COMMENT_API = process.env.CANVA_NEW_COMMENT_API === 'true';
+
+async function createComment(designId: string, message: string, token: string) {
+  if (USE_NEW_COMMENT_API) {
+    return canvaAPI(`/designs/${designId}/comment_threads`, token, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+  }
+  // Fallback to deprecated endpoint during transition
+  return canvaAPI(`/designs/${designId}/comments`, token, {
+    method: 'POST',
+    body: JSON.stringify({ message }),
   });
 }
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
 ```
 
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 404 on endpoint | Endpoint removed or renamed | Check changelog for replacement |
+| Old template IDs fail | ID format migration | Re-fetch template list |
+| Deprecated header | Endpoint sunsetting | Migrate to replacement |
+| Response schema changed | New/removed fields | Update Zod schemas, add optional chaining |
+
 ## Resources
-- [Canva Changelog](https://github.com/canva/sdk/releases)
-- [Canva Migration Guide](https://docs.canva.com/migration)
+
+- [Canva Changelog](https://www.canva.dev/docs/connect/changelog/)
+- [OpenAPI Spec](https://www.canva.dev/sources/connect/api/latest/api.yml)
+- [Canva API Reference](https://www.canva.dev/docs/connect/api-reference/)
 
 ## Next Steps
+
 For CI integration during upgrades, see `canva-ci-integration`.

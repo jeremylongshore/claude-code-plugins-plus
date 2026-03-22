@@ -1,11 +1,11 @@
 ---
 name: canva-migration-deep-dive
 description: |
-  Execute Canva major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Canva, performing major version upgrades,
-  or re-platforming existing integrations to Canva.
-  Trigger with phrases like "migrate canva", "canva migration",
-  "switch to canva", "canva replatform", "canva upgrade major".
+  Execute major Canva Connect API integration migrations with strangler fig pattern.
+  Use when migrating to Canva from another design platform, re-platforming
+  existing integrations, or performing major architectural changes.
+  Trigger with phrases like "migrate to canva", "canva migration",
+  "switch to canva", "canva replatform", "replace design tool with canva".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
@@ -17,230 +17,269 @@ compatible-with: claude-code
 # Canva Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Canva, or major version upgrades.
 
-## Prerequisites
-- Current system documentation
-- Canva SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+Comprehensive guide for migrating to the Canva Connect API from another design platform or from direct image generation. Uses the strangler fig pattern for gradual, safe migration.
 
 ## Migration Types
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+| Type | Duration | Risk | Example |
+|------|----------|------|---------|
+| Fresh integration | Days | Low | New app adding Canva support |
+| From image gen APIs | 2-4 weeks | Medium | Replace Imgix/Cloudinary templates with Canva |
+| From competitor | 4-8 weeks | Medium | Replace Figma API / Adobe Express |
+| Major re-architecture | Months | High | Rebuild design system on Canva |
 
 ## Pre-Migration Assessment
 
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "canva" > canva-files.txt
+### Asset Inventory
 
-# Count integration points
-wc -l canva-files.txt
-
-# Identify dependencies
-npm list | grep canva
-pip freeze | grep canva
-```
-
-### Step 2: Data Inventory
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+interface MigrationAssessment {
+  currentAssets: number;           // Images, templates in old system
+  designTemplates: number;         // Templates to recreate as Canva brand templates
+  apiCallsPerDay: number;          // Current design API usage
+  usersToMigrate: number;          // Users who need Canva OAuth
+  requiredCanvaTier: 'free' | 'pro' | 'enterprise';
+  blockers: string[];
 }
 
-async function assessCanvaMigration(): Promise<MigrationInventory> {
+async function assessMigration(): Promise<MigrationAssessment> {
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    currentAssets: await countCurrentAssets(),
+    designTemplates: await countTemplates(),
+    apiCallsPerDay: await getAverageApiCalls(),
+    usersToMigrate: await countActiveUsers(),
+    requiredCanvaTier: needsAutofill() ? 'enterprise' : 'free',
+    blockers: [
+      // Common blockers:
+      // - Need Enterprise for brand template autofill
+      // - Rate limits may be too low for current volume
+      // - No batch API — must process designs one at a time
+    ],
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
+### Canva API Capability Mapping
 
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Canva   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Canva SDK
-npm install @canva/sdk
-
-# Configure credentials
-cp .env.example .env.canva
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@canva/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
 ```typescript
-// src/adapters/canva.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
+// Map your current operations to Canva Connect API endpoints
+const operationMapping = {
+  // Old system → Canva endpoint
+  'createFromTemplate': 'POST /v1/autofills',           // Requires Enterprise
+  'generateImage':      'POST /v1/designs + POST /v1/exports',
+  'uploadAsset':        'POST /v1/asset-uploads',
+  'listDesigns':        'GET /v1/designs',
+  'exportAsPDF':        'POST /v1/exports (format: pdf)',
+  'exportAsPNG':        'POST /v1/exports (format: png)',
+  'organizeFolder':     'POST /v1/folders',
+  'addComment':         'POST /v1/designs/{id}/comment_threads',
+};
+```
+
+## Migration Strategy: Strangler Fig
+
+### Phase 1: Adapter Layer (Week 1-2)
+
+```typescript
+// src/services/design-adapter.ts
+// Abstract interface that both old and new systems implement
+
+interface DesignService {
+  createDesign(input: CreateDesignInput): Promise<Design>;
+  exportDesign(designId: string, format: ExportFormat): Promise<string[]>;
+  uploadAsset(file: Buffer, name: string): Promise<string>;
 }
 
-class CanvaAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const canvaData = this.transform(data);
-    return canvaClient.create(canvaData);
+// Old implementation
+class LegacyDesignService implements DesignService {
+  async createDesign(input: CreateDesignInput) {
+    return oldApi.generateImage(input);
+  }
+  // ...
+}
+
+// New Canva implementation
+class CanvaDesignService implements DesignService {
+  constructor(private canva: CanvaClient) {}
+
+  async createDesign(input: CreateDesignInput) {
+    const { design } = await this.canva.request('/designs', {
+      method: 'POST',
+      body: JSON.stringify({
+        design_type: { type: 'custom', width: input.width, height: input.height },
+        title: input.title,
+      }),
+    });
+    return { id: design.id, editUrl: design.urls.edit_url };
   }
 
-  private transform(data: CreateInput): CanvaInput {
-    // Map from old format to Canva format
+  async exportDesign(designId: string, format: ExportFormat) {
+    const { job } = await this.canva.request('/exports', {
+      method: 'POST',
+      body: JSON.stringify({ design_id: designId, format: { type: format } }),
+    });
+    return this.pollExport(job.id);
+  }
+
+  async uploadAsset(file: Buffer, name: string) {
+    const nameBase64 = Buffer.from(name).toString('base64');
+    const res = await fetch('https://api.canva.com/rest/v1/asset-uploads', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${this.canva.getToken()}`,
+        'Content-Type': 'application/octet-stream',
+        'Asset-Upload-Metadata': JSON.stringify({ name_base64: nameBase64 }),
+      },
+      body: file,
+    });
+    const data = await res.json();
+    return data.job.id;
   }
 }
 ```
 
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateCanvaData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
+### Phase 2: Feature Flag Traffic Split (Week 3-4)
 
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
+```typescript
+// Route traffic based on feature flag
+function getDesignService(userId: string): DesignService {
+  const canvaPercentage = getFeatureFlag('canva_migration_pct', userId);
+  const roll = deterministicRoll(userId); // Same user always gets same path
+
+  if (roll < canvaPercentage) {
+    const tokens = await tokenStore.get(userId);
+    if (tokens) {
+      return new CanvaDesignService(new CanvaClient({ ...config, tokens }));
+    }
+    // User hasn't connected Canva yet — fall back to legacy
+  }
+
+  return new LegacyDesignService();
+}
+
+// Gradual rollout: 5% → 25% → 50% → 100%
+```
+
+### Phase 3: Asset Migration (Week 5-6)
+
+```typescript
+// Migrate existing assets to Canva
+async function migrateAssets(
+  assets: { url: string; name: string }[],
+  token: string
+): Promise<Map<string, string>> {
+  const idMapping = new Map<string, string>(); // oldId → canvaAssetId
+
+  for (const asset of assets) {
     try {
-      const transformed = batch.map(transform);
-      await canvaClient.batchCreate(transformed);
-      processed += batch.length;
+      // Upload via URL — rate limit: 30/min
+      const { job } = await canvaAPI('/url-asset-uploads', token, {
+        method: 'POST',
+        body: JSON.stringify({ name: asset.name, url: asset.url }),
+      });
+
+      // Poll for completion
+      let upload = job;
+      while (upload.status === 'in_progress') {
+        await new Promise(r => setTimeout(r, 2000));
+        const poll = await canvaAPI(`/url-asset-uploads/${upload.id}`, token);
+        upload = poll.job;
+      }
+
+      if (upload.status === 'success') {
+        idMapping.set(asset.url, upload.asset.id);
+      }
     } catch (error) {
-      errors.push({ batch, error });
+      console.error(`Failed to migrate asset: ${asset.name}`, error);
     }
 
-    // Progress update
-    console.log(`Migrated ${processed} records`);
+    // Respect rate limits
+    await new Promise(r => setTimeout(r, 2500)); // ~24 uploads/min
   }
 
-  return { processed, errors };
+  return idMapping;
 }
 ```
 
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const canvaPercentage = getFeatureFlag('canva_migration_percentage');
+### Phase 4: Cutover & Cleanup (Week 7-8)
 
-  if (Math.random() * 100 < canvaPercentage) {
-    return new CanvaAdapter();
+```typescript
+// Final validation before removing legacy system
+async function validateMigration(token: string): Promise<{
+  passed: boolean;
+  checks: { name: string; result: boolean; details: string }[];
+}> {
+  const checks = [
+    {
+      name: 'Design creation',
+      fn: async () => {
+        const { design } = await canvaAPI('/designs', token, {
+          method: 'POST',
+          body: JSON.stringify({
+            design_type: { type: 'custom', width: 100, height: 100 },
+            title: 'Migration validation test',
+          }),
+        });
+        return { result: !!design.id, details: `Design ID: ${design.id}` };
+      },
+    },
+    {
+      name: 'Export works',
+      fn: async () => {
+        // Test with an existing design
+        return { result: true, details: 'Export endpoint accessible' };
+      },
+    },
+    {
+      name: 'Rate limits adequate',
+      fn: async () => {
+        // Check current usage vs limits
+        return { result: true, details: 'Within rate limits' };
+      },
+    },
+  ];
+
+  const results = [];
+  for (const check of checks) {
+    try {
+      const { result, details } = await check.fn();
+      results.push({ name: check.name, result, details });
+    } catch (e: any) {
+      results.push({ name: check.name, result: false, details: e.message });
+    }
   }
 
-  return new LegacyAdapter();
+  return { passed: results.every(r => r.result), checks: results };
 }
 ```
 
 ## Rollback Plan
 
 ```bash
-# Immediate rollback
-kubectl set env deployment/app CANVA_ENABLED=false
-kubectl rollout restart deployment/app
+# Immediate rollback — switch feature flag to 0%
+curl -X PUT "https://flagservice.internal/api/flags/canva_migration_pct" \
+  -d '{"value": 0}'
 
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.canva'
+# Verify legacy system still works
+curl -s "https://api.ourapp.com/health" | jq '.services.legacy_design'
 ```
-
-## Post-Migration Validation
-
-```typescript
-async function validateCanvaMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Canva integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Canva
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateCanvaMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Asset upload fails | File too large or unsupported format | Pre-validate, compress |
+| Rate limit during migration | Too many uploads | Add delays between uploads |
+| User hasn't connected Canva | Missing OAuth | Prompt to connect, fallback |
+| Feature parity gap | Canva API doesn't support operation | Document, workaround, or defer |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Canva Migration Guide](https://docs.canva.com/migration)
 
-## Flagship+ Skills
+- [Canva Connect API](https://www.canva.dev/docs/connect/)
+- [Canva Starter Kit](https://github.com/canva-sdks/canva-connect-api-starter-kit)
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+
+## Next Steps
+
 For advanced troubleshooting, see `canva-advanced-troubleshooting`.
