@@ -492,11 +492,9 @@ export class SearchService {
 ```
 
 ## Resources
-- [Obsidian Plugin API Reference](https://docs.obsidian.md/Reference/TypeScript+API)
-- [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
-- [Clean Architecture (Robert C. Martin)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Obsidian Plugin API](https://docs.obsidian.md/Reference/TypeScript+API)
+- [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Obsidian Sample Plugin](https://github.com/obsidianmd/obsidian-sample-plugin)
 
 ## Next Steps
-For SDK patterns and API usage, see `obsidian-sdk-patterns`.
-For production readiness, see `obsidian-prod-checklist`.
+SDK patterns: `obsidian-sdk-patterns`. Production readiness: `obsidian-prod-checklist`.

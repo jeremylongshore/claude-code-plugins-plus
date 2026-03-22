@@ -490,13 +490,12 @@ echo "Unique tags: $(grep -roh '#[a-zA-Z][a-zA-Z0-9/_-]*' "$VAULT"/*.md 2>/dev/n
 
 **Evernote (2000 notes)**: Export one notebook at a time as ENEX to avoid XML parsing issues. Tags map directly to Obsidian frontmatter tags. Embedded images are extracted as attachments.
 
-**Roam Research**: Wikilinks are already compatible. Main work is converting block references `(())` and `{{TODO}}`/`{{DONE}}` syntax to Obsidian checkboxes.
+**Roam Research**: Wikilinks already compatible. Main work is converting `(())` block refs and `{{TODO}}`/`{{DONE}}` syntax.
 
 ## Resources
-- [Obsidian Importer Plugin](https://help.obsidian.md/import) -- official import tool
+- [Obsidian Importer Plugin](https://help.obsidian.md/import) — official import tool
 - [Notion Export](https://www.notion.so/help/export-your-content)
 - [Evernote ENEX Format](https://evernote.com/blog/how-evernotes-xml-export-format-works)
-- [Roam Export Guide](https://roamresearch.com/#/app/help/page/export)
 
 ## Next Steps
-Fix broken links from the validation report. For ongoing sync, see `obsidian-data-handling`.
+Fix broken links from validation. For ongoing sync, see `obsidian-data-handling`.

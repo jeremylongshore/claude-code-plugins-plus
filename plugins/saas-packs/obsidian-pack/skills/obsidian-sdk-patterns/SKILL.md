@@ -490,15 +490,10 @@ export default class MyPlugin extends Plugin {
 ```
 
 ## Resources
-
 - [Obsidian Plugin API](https://docs.obsidian.md/Reference/TypeScript+API)
-- [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 - [Vault API](https://docs.obsidian.md/Reference/TypeScript+API/Vault)
 - [MetadataCache API](https://docs.obsidian.md/Reference/TypeScript+API/MetadataCache)
-- [Plugin Lifecycle](https://docs.obsidian.md/Plugins/Getting+started/Development+workflow)
+- [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
 
 ## Next Steps
-
-- Debug and test: see `obsidian-local-dev-loop`
-- Handle common errors: see `obsidian-common-errors`
-- Prepare for community release: see `obsidian-prod-checklist`
+Debug and test: `obsidian-local-dev-loop`. Common errors: `obsidian-common-errors`. Release: `obsidian-prod-checklist`.
