@@ -1,211 +1,265 @@
 ---
 name: elevenlabs-deploy-integration
 description: |
-  Deploy ElevenLabs integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying ElevenLabs-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy elevenlabs", "elevenlabs Vercel",
-  "elevenlabs production deploy", "elevenlabs Cloud Run", "elevenlabs Fly.io".
+  Deploy ElevenLabs TTS applications to Vercel, Fly.io, and Cloud Run.
+  Use when deploying ElevenLabs-powered apps to production,
+  configuring platform-specific secrets, or setting up serverless TTS.
+  Trigger: "deploy elevenlabs", "elevenlabs Vercel", "elevenlabs Cloud Run",
+  "elevenlabs Fly.io", "elevenlabs serverless", "host TTS API".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, voice, ai, elevenlabs]
+tags: [saas, voice, ai, elevenlabs, deployment, serverless]
 compatible-with: claude-code
 ---
 
 # ElevenLabs Deploy Integration
 
 ## Overview
-Deploy ElevenLabs-powered applications to popular platforms with proper secrets management.
+
+Deploy ElevenLabs TTS/voice applications to cloud platforms. Covers Vercel (serverless), Fly.io (containers), and Google Cloud Run with proper secrets management, timeout configuration, and streaming support.
 
 ## Prerequisites
-- ElevenLabs API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+- ElevenLabs API key for production
+- Platform CLI installed (`vercel`, `fly`, or `gcloud`)
+- Application code tested locally
 
-### Environment Setup
+## Instructions
+
+### Vercel Deployment (Serverless)
+
+**Key constraint:** Vercel functions have a 10-second timeout on Hobby (30s on Pro). Use Flash model for speed.
+
 ```bash
-# Add ElevenLabs secrets to Vercel
-vercel secrets add elevenlabs_api_key sk_live_***
-vercel secrets add elevenlabs_webhook_secret whsec_***
+# Set secrets
+vercel env add ELEVENLABS_API_KEY production
+vercel env add ELEVENLABS_API_KEY preview
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
+**API Route (Next.js / Vercel):**
+```typescript
+// app/api/tts/route.ts
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+import { NextResponse } from "next/server";
+
+export const runtime = "nodejs";
+export const maxDuration = 30; // Vercel Pro max
+
+const client = new ElevenLabsClient();
+
+export async function POST(req: Request) {
+  const { text, voiceId = "21m00Tcm4TlvDq8ikWAM" } = await req.json();
+
+  if (!text || text.length > 5000) {
+    return NextResponse.json(
+      { error: "Text required, max 5000 characters" },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const audio = await client.textToSpeech.convert(voiceId, {
+      text,
+      model_id: "eleven_flash_v2_5",  // Fast for serverless
+      output_format: "mp3_22050_32",
+      voice_settings: {
+        stability: 0.5,
+        similarity_boost: 0.75,
+      },
+    });
+
+    return new Response(audio as any, {
+      headers: {
+        "Content-Type": "audio/mpeg",
+        "Cache-Control": "public, max-age=3600",
+      },
+    });
+  } catch (error: any) {
+    const status = error.statusCode || 500;
+    return NextResponse.json(
+      { error: error.message || "TTS generation failed" },
+      { status }
+    );
+  }
+}
+```
+
+**vercel.json:**
 ```json
 {
   "env": {
     "ELEVENLABS_API_KEY": "@elevenlabs_api_key"
   },
   "functions": {
-    "api/**/*.ts": {
+    "app/api/tts/route.ts": {
       "maxDuration": 30
     }
   }
 }
 ```
 
-## Fly.io Deployment
+### Fly.io Deployment (Container)
 
-### fly.toml
+Better for long-running TTS, WebSocket streaming, and high concurrency.
+
+**fly.toml:**
 ```toml
-app = "my-elevenlabs-app"
+app = "my-tts-service"
 primary_region = "iad"
 
 [env]
   NODE_ENV = "production"
+  # Use the closest region to ElevenLabs servers (US East)
+  ELEVENLABS_MODEL = "eleven_multilingual_v2"
 
 [http_service]
   internal_port = 3000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
 ```
 
-### Secrets
 ```bash
-# Set ElevenLabs secrets
-fly secrets set ELEVENLABS_API_KEY=sk_live_***
-fly secrets set ELEVENLABS_WEBHOOK_SECRET=whsec_***
+# Set secrets
+fly secrets set ELEVENLABS_API_KEY=sk_your_prod_key
+fly secrets set ELEVENLABS_WEBHOOK_SECRET=whsec_your_secret
 
 # Deploy
 fly deploy
+
+# Check logs
+fly logs
 ```
 
-## Google Cloud Run
+**Express server with streaming:**
+```typescript
+// server.ts
+import express from "express";
+import { ElevenLabsClient } from "@elevenlabs/elevenlabs-js";
+import { Readable } from "stream";
 
-### Dockerfile
+const app = express();
+app.use(express.json());
+
+const client = new ElevenLabsClient();
+
+// Streaming TTS endpoint
+app.post("/api/tts/stream", async (req, res) => {
+  const { text, voiceId = "21m00Tcm4TlvDq8ikWAM", modelId } = req.body;
+
+  res.setHeader("Content-Type", "audio/mpeg");
+  res.setHeader("Transfer-Encoding", "chunked");
+
+  try {
+    const stream = await client.textToSpeech.stream(voiceId, {
+      text,
+      model_id: modelId || "eleven_flash_v2_5",
+      output_format: "mp3_22050_32",
+    });
+
+    // Pipe streaming audio directly to response
+    const readable = Readable.fromWeb(stream as any);
+    readable.pipe(res);
+  } catch (error: any) {
+    if (!res.headersSent) {
+      res.status(error.statusCode || 500).json({ error: error.message });
+    }
+  }
+});
+
+// Health check
+app.get("/health", async (_req, res) => {
+  try {
+    const user = await client.user.get();
+    res.json({
+      status: "healthy",
+      quota: {
+        used: user.subscription.character_count,
+        limit: user.subscription.character_limit,
+      },
+    });
+  } catch {
+    res.status(503).json({ status: "unhealthy" });
+  }
+});
+
+app.listen(3000, () => console.log("TTS service running on :3000"));
+```
+
+### Google Cloud Run
+
+```bash
+# Build and deploy
+gcloud run deploy tts-service \
+  --source . \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets=ELEVENLABS_API_KEY=elevenlabs-api-key:latest \
+  --timeout=60 \
+  --concurrency=10 \
+  --min-instances=0 \
+  --max-instances=5
+
+# Store secret in Secret Manager first
+echo -n "sk_your_prod_key" | gcloud secrets create elevenlabs-api-key --data-file=-
+```
+
+**Dockerfile:**
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+EXPOSE 3000
+CMD ["node", "dist/server.js"]
 ```
 
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+## Platform Comparison for ElevenLabs
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="elevenlabs-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ELEVENLABS_API_KEY=elevenlabs-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/elevenlabs.ts
-interface ElevenLabsConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getElevenLabsConfig(): ElevenLabsConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ELEVENLABS_API_KEY!,
-    environment: env as ElevenLabsConfig['environment'],
-    webhookSecret: process.env.ELEVENLABS_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const elevenlabsStatus = await checkElevenLabsConnection();
-
-  return Response.json({
-    status: elevenlabsStatus ? 'healthy' : 'degraded',
-    services: {
-      elevenlabs: elevenlabsStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store ElevenLabs API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with ElevenLabs integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm ElevenLabs connectivity.
-
-## Output
-- Application deployed to production
-- ElevenLabs secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+| Feature | Vercel | Fly.io | Cloud Run |
+|---------|--------|--------|-----------|
+| Max timeout | 30s (Pro) | No limit | 60min |
+| WebSocket streaming | Limited | Full support | Full support |
+| Cold start | ~1-3s | ~0.5-2s | ~1-5s |
+| Concurrency | Per-function | Per-VM | Per-instance |
+| Best for | Simple TTS API | Streaming/WebSocket | Variable load |
+| Min cost | Free tier | ~$2/mo | Free tier |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add elevenlabs_api_key "$ELEVENLABS_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ELEVENLABS_API_KEY="$ELEVENLABS_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Vercel timeout | TTS > 10s on Hobby | Upgrade to Pro (30s) or use Flash model |
+| Cold start slow | Container initialization | Set `min_instances=1` (Cloud Run) or `min_machines=1` (Fly) |
+| Secret not found | Missing platform config | Add via platform CLI |
+| Streaming broken | Proxy buffering | Disable response buffering in nginx/CDN |
+| CORS errors | Missing headers | Add `Access-Control-Allow-Origin` to TTS endpoint |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [ElevenLabs Deploy Guide](https://docs.elevenlabs.com/deploy)
+
+- [Vercel Functions](https://vercel.com/docs/functions)
+- [Fly.io Node.js](https://fly.io/docs/languages-and-frameworks/node/)
+- [Cloud Run Docs](https://cloud.google.com/run/docs)
+- [ElevenLabs API Quickstart](https://elevenlabs.io/docs/eleven-api/quickstart)
 
 ## Next Steps
+
 For webhook handling, see `elevenlabs-webhooks-events`.
