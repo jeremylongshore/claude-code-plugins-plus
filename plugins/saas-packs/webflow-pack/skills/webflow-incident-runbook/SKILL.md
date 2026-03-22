@@ -1,12 +1,12 @@
 ---
 name: webflow-incident-runbook
 description: |
-  Execute Webflow incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Webflow-related outages, investigating errors,
-  or running post-incident reviews for Webflow integration failures.
+  Execute Webflow incident response — triage by HTTP status (401/403/429/500),
+  circuit breaker activation, cached fallback, Webflow status page checks,
+  communication templates, and postmortem process.
   Trigger with phrases like "webflow incident", "webflow outage",
   "webflow down", "webflow on-call", "webflow emergency", "webflow broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+allowed-tools: Read, Grep, Bash(curl:*), Bash(npm:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,189 +17,273 @@ compatible-with: claude-code
 # Webflow Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Webflow-related outages.
+
+Rapid incident response procedures for Webflow Data API v2 integration failures.
+Covers triage, immediate remediation by error type, graceful degradation,
+stakeholder communication, and postmortem.
 
 ## Prerequisites
+
 - Access to Webflow dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
+- Application logs and metrics access
 - Communication channels (Slack, PagerDuty)
+- Cached fallback data available
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Webflow API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response Time | Example |
+|-------|------------|---------------|---------|
+| P1 | Integration fully down | < 15 min | All API calls returning 401/500 |
+| P2 | Degraded service | < 1 hour | High 429 rate, elevated latency |
+| P3 | Minor impact | < 4 hours | Webhook delays, form sync lag |
+| P4 | No user impact | Next business day | Monitoring gap, stale cache |
 
-## Quick Triage
+## Quick Triage (Run First)
 
 ```bash
-# 1. Check Webflow status
-curl -s https://status.webflow.com | jq
+#!/bin/bash
+echo "=== Webflow Incident Triage ==="
+echo "Time: $(date -u)"
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.webflow'
+# 1. Webflow platform status
+echo ""
+echo "--- Platform Status ---"
+curl -s https://status.webflow.com/api/v2/status.json 2>/dev/null | \
+  python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print(f'Status: {d[\"status\"][\"description\"]}')
+for c in d.get('components',[]):
+  if c['status'] != 'operational':
+    print(f'  DEGRADED: {c[\"name\"]} ({c[\"status\"]})')
+" 2>/dev/null || echo "Cannot reach status page"
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(webflow_errors_total[5m])
+# 2. API connectivity
+echo ""
+echo "--- API Connectivity ---"
+HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  https://api.webflow.com/v2/sites 2>/dev/null)
+echo "Sites endpoint: HTTP $HTTP"
 
-# 4. Recent error logs
-kubectl logs -l app=webflow-integration --since=5m | grep -i error | tail -20
+# 3. Rate limit status
+echo ""
+echo "--- Rate Limits ---"
+curl -sI -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  https://api.webflow.com/v2/sites 2>/dev/null | \
+  grep -i "x-ratelimit\|retry-after" || echo "No rate limit headers"
+
+# 4. Our health endpoint
+echo ""
+echo "--- App Health ---"
+HEALTH=$(curl -s https://your-app.com/api/health 2>/dev/null)
+echo "$HEALTH" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print(f'Status: {d[\"status\"]}')
+for k,v in d.get('services',{}).items():
+  print(f'  {k}: {v.get(\"status\",\"unknown\")} ({v.get(\"latencyMs\",\"?\")}ms)')
+" 2>/dev/null || echo "Health endpoint unreachable"
 ```
 
 ## Decision Tree
 
 ```
-Webflow API returning errors?
-├─ YES: Is status.webflow.com showing incident?
-│   ├─ YES → Wait for Webflow to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Is Webflow API returning errors?
+├── YES
+│   ├── status.webflow.com shows incident?
+│   │   ├── YES → Activate fallback. Wait for Webflow resolution.
+│   │   └── NO → Our issue. Check token, config, network.
+│   ├── HTTP 401/403?
+│   │   └── Token issue. See "Auth Failure" below.
+│   ├── HTTP 429?
+│   │   └── Rate limited. See "Rate Limit" below.
+│   └── HTTP 500/502/503?
+│       └── Webflow server issue. Activate circuit breaker.
+└── NO
+    ├── Our service healthy?
+    │   ├── YES → Likely resolved or intermittent. Monitor closely.
+    │   └── NO → Our infrastructure issue (pods, memory, network).
+    └── Webhooks not firing?
+        └── Check webhook registrations and endpoint accessibility.
 ```
 
 ## Immediate Actions by Error Type
 
-### 401/403 - Authentication
+### 401/403 — Authentication Failure (P1)
+
 ```bash
-# Verify API key is set
-kubectl get secret webflow-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Verify token is set
+echo "Token present: ${WEBFLOW_API_TOKEN:+YES}${WEBFLOW_API_TOKEN:-NO}"
 
-# Check if key was rotated
-# → Verify in Webflow dashboard
+# Test token
+curl -s -o /dev/null -w "HTTP %{http_code}" \
+  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  https://api.webflow.com/v2/sites
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic webflow-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/webflow-integration
+# If 401: Token was revoked or expired
+# Action: Generate new token at developers.webflow.com
+# Then update in deployment platform:
+# vercel env rm WEBFLOW_API_TOKEN production && vercel env add WEBFLOW_API_TOKEN production
+# fly secrets set WEBFLOW_API_TOKEN=new-token
+# kubectl create secret generic webflow-secrets --from-literal=api-token=NEW_TOKEN --dry-run=client -o yaml | kubectl apply -f -
+
+# Restart application to pick up new token
 ```
 
-### 429 - Rate Limited
+### 429 — Rate Limited (P2)
+
 ```bash
-# Check rate limit headers
-curl -v https://api.webflow.com 2>&1 | grep -i rate
+# Check Retry-After header
+curl -sI -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  https://api.webflow.com/v2/sites 2>&1 | grep -i "retry-after"
 
-# Enable request queuing
-kubectl set env deployment/webflow-integration RATE_LIMIT_MODE=queue
+# Immediate: Enable request queuing
+# If feature flag available:
+# curl -X POST https://your-app.com/admin/feature-flags \
+#   -d '{"webflow_queue_mode": true}'
 
-# Long-term: Contact Webflow for limit increase
+# Long-term fixes:
+# 1. Switch reads to CDN-cached live endpoints (no rate limit)
+# 2. Use bulk endpoints (100 items = 1 API call)
+# 3. Reduce polling frequency
+# 4. Contact Webflow for limit increase (enterprise)
 ```
 
-### 500/503 - Webflow Errors
+### 500/502/503 — Webflow Server Error (P2)
+
 ```bash
-# Enable graceful degradation
-kubectl set env deployment/webflow-integration WEBFLOW_FALLBACK=true
+# Confirm Webflow is the source
+curl -s https://status.webflow.com/api/v2/status.json | jq '.status.description'
 
-# Notify users of degraded service
-# Update status page
+# Activate cached fallback
+# Your circuit breaker should handle this automatically.
+# If not, manually enable:
+# curl -X POST https://your-app.com/admin/feature-flags \
+#   -d '{"webflow_fallback_mode": true}'
 
-# Monitor Webflow status for resolution
+# Monitor for recovery
+watch -n 30 'curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  https://api.webflow.com/v2/sites'
+```
+
+### Webhook Delivery Failure (P3)
+
+```bash
+# Check webhook registrations
+curl -s "https://api.webflow.com/v2/sites/$WEBFLOW_SITE_ID/webhooks" \
+  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" | \
+  jq '.webhooks[] | {id, triggerType, url, createdOn}'
+
+# Verify endpoint is accessible
+curl -s -o /dev/null -w "%{http_code}" https://your-app.com/webhooks/webflow
+
+# Re-register if webhook was deleted
+curl -X POST "https://api.webflow.com/v2/sites/$WEBFLOW_SITE_ID/webhooks" \
+  -H "Authorization: Bearer $WEBFLOW_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"triggerType": "form_submission", "url": "https://your-app.com/webhooks/webflow"}'
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
-🔴 P1 INCIDENT: Webflow Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
+P[1-4] INCIDENT: Webflow Integration
+Status: INVESTIGATING | IDENTIFIED | MONITORING | RESOLVED
+Impact: [What users experience]
+Root cause: [Webflow outage / Token expired / Rate limited / Our bug]
+Current action: [What we're doing]
+Next update in: [15 min / 1 hour]
 Incident commander: @[name]
 ```
 
 ### External (Status Page)
+
 ```
-Webflow Integration Issue
+Webflow Integration — Degraded Performance
 
-We're experiencing issues with our Webflow integration.
-Some users may experience [specific impact].
+We're experiencing issues with content updates powered by our Webflow integration.
+[Specific impact: delayed content / forms not processing / orders not syncing].
 
-We're actively investigating and will provide updates.
+Our team is actively working on resolution. Existing content remains accessible.
 
-Last updated: [timestamp]
+Last updated: [timestamp UTC]
 ```
 
 ## Post-Incident
 
 ### Evidence Collection
+
 ```bash
+# Export recent logs
+grep -i "webflow\|429\|401\|500" /var/log/app/*.log | tail -200 > incident-logs.txt
+
+# Export metrics snapshot
+curl "http://prometheus:9090/api/v1/query_range?\
+query=rate(webflow_api_errors_total[5m])&\
+start=$(date -d '2 hours ago' +%s)&\
+end=$(date +%s)&step=60" > incident-metrics.json
+
 # Generate debug bundle
-./scripts/webflow-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=webflow-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=webflow_errors_total&start=2h" > metrics.json
+./webflow-debug-bundle.sh
 ```
 
 ### Postmortem Template
+
 ```markdown
-## Incident: Webflow [Error Type]
-**Date:** YYYY-MM-DD
+## Incident: Webflow [Error Description]
+**Date:** YYYY-MM-DD HH:MM — HH:MM UTC
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
+**Impact:** [Users affected, revenue impact]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM — Alert fired: [description]
+- HH:MM — Triage started
+- HH:MM — Root cause identified: [cause]
+- HH:MM — Mitigation applied: [action]
+- HH:MM — Service restored
 
 ### Root Cause
 [Technical explanation]
 
-### Impact
-- Users affected: N
-- Revenue impact: $X
+### What Went Well
+- [What worked]
+
+### What Went Wrong
+- [What failed]
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Preventive measure] — Owner — Due date
+- [ ] [Monitoring improvement] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Webflow-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
 
 ## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
+
+- Triage script identifying the error source
+- Decision tree for rapid root cause identification
+- Remediation steps for every HTTP error type
+- Communication templates for internal and external stakeholders
+- Evidence collection for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.webflow.status' || echo "UNHEALTHY"
-```
+| Status page unreachable | Network issue or DNS | Use mobile data or VPN |
+| Can't rotate token | Lost dashboard access | Contact Webflow support |
+| Circuit breaker stuck open | Reset time too long | Manually reset or adjust threshold |
+| Stale cache served | Fallback active too long | Set TTL on cached content |
 
 ## Resources
+
 - [Webflow Status Page](https://status.webflow.com)
 - [Webflow Support](https://support.webflow.com)
+- [API Reference](https://developers.webflow.com/data/reference/rest-introduction)
 
 ## Next Steps
-For data handling, see `webflow-data-handling`.
+
+For data handling and compliance, see `webflow-data-handling`.

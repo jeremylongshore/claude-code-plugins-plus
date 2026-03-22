@@ -1,9 +1,9 @@
 ---
 name: webflow-observability
 description: |
-  Set up comprehensive observability for Webflow integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Webflow operations, setting up dashboards,
-  or configuring alerting for Webflow integration health.
+  Set up observability for Webflow integrations — Prometheus metrics for API calls,
+  OpenTelemetry tracing, structured logging with pino, Grafana dashboards,
+  and alerting for rate limits, errors, and latency.
   Trigger with phrases like "webflow monitoring", "webflow metrics",
   "webflow observability", "monitor webflow", "webflow alerts", "webflow tracing".
 allowed-tools: Read, Write, Edit
@@ -17,236 +17,353 @@ compatible-with: claude-code
 # Webflow Observability
 
 ## Overview
-Set up comprehensive observability for Webflow integrations.
+
+Full observability stack for Webflow Data API v2 integrations: Prometheus metrics
+for API call counting and latency, OpenTelemetry distributed tracing, structured
+JSON logging, and alerting rules for error rate and rate limit exhaustion.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
 
-## Metrics Collection
+- `prom-client` for Prometheus metrics
+- `@opentelemetry/api` for tracing (optional)
+- `pino` for structured logging
+- Prometheus + Grafana (or compatible backend)
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `webflow_requests_total` | Counter | Total API requests |
-| `webflow_request_duration_seconds` | Histogram | Request latency |
-| `webflow_errors_total` | Counter | Error count by type |
-| `webflow_rate_limit_remaining` | Gauge | Rate limit headroom |
+## Instructions
 
-### Prometheus Metrics
+### Step 1: Prometheus Metrics
 
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+// src/observability/metrics.ts
+import { Registry, Counter, Histogram, Gauge } from "prom-client";
 
-const registry = new Registry();
+export const registry = new Registry();
 
-const requestCounter = new Counter({
-  name: 'webflow_requests_total',
-  help: 'Total Webflow API requests',
-  labelNames: ['method', 'status'],
+// API request counter (by operation and status)
+export const apiRequests = new Counter({
+  name: "webflow_api_requests_total",
+  help: "Total Webflow API requests",
+  labelNames: ["operation", "status_code", "method"] as const,
   registers: [registry],
 });
 
-const requestDuration = new Histogram({
-  name: 'webflow_request_duration_seconds',
-  help: 'Webflow request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+// Request duration histogram
+export const apiDuration = new Histogram({
+  name: "webflow_api_request_duration_seconds",
+  help: "Webflow API request duration in seconds",
+  labelNames: ["operation"] as const,
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2, 5, 10],
   registers: [registry],
 });
 
-const errorCounter = new Counter({
-  name: 'webflow_errors_total',
-  help: 'Webflow errors by type',
-  labelNames: ['error_type'],
+// Error counter by type
+export const apiErrors = new Counter({
+  name: "webflow_api_errors_total",
+  help: "Webflow API errors by status code",
+  labelNames: ["operation", "status_code", "error_type"] as const,
+  registers: [registry],
+});
+
+// Rate limit remaining gauge
+export const rateLimitRemaining = new Gauge({
+  name: "webflow_rate_limit_remaining",
+  help: "Remaining API calls before rate limit",
+  registers: [registry],
+});
+
+// CMS items gauge (track total items across collections)
+export const cmsItemCount = new Gauge({
+  name: "webflow_cms_items_total",
+  help: "Total CMS items by collection",
+  labelNames: ["collection", "site"] as const,
+  registers: [registry],
+});
+
+// Webhook event counter
+export const webhookEvents = new Counter({
+  name: "webflow_webhook_events_total",
+  help: "Received webhook events by trigger type",
+  labelNames: ["trigger_type", "status"] as const,
   registers: [registry],
 });
 ```
 
-### Instrumented Client
+### Step 2: Instrumented Client Wrapper
 
 ```typescript
-async function instrumentedRequest<T>(
+// src/observability/instrumented-client.ts
+import { WebflowClient } from "webflow-api";
+import { apiRequests, apiDuration, apiErrors, rateLimitRemaining } from "./metrics.js";
+
+export async function instrumentedCall<T>(
+  operation: string,
   method: string,
-  operation: () => Promise<T>
+  fn: () => Promise<T>
 ): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+  const timer = apiDuration.startTimer({ operation });
 
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
+    const result = await fn();
+
+    apiRequests.inc({ operation, status_code: "200", method });
+    timer();
     return result;
   } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
+    const statusCode = String(error.statusCode || error.status || "unknown");
+
+    apiRequests.inc({ operation, status_code: statusCode, method });
+    apiErrors.inc({
+      operation,
+      status_code: statusCode,
+      error_type: statusCode === "429" ? "rate_limit" : statusCode >= "500" ? "server" : "client",
+    });
+
     timer();
+    throw error;
   }
 }
+
+// Usage
+const { sites } = await instrumentedCall("sites.list", "GET", () =>
+  webflow.sites.list()
+);
+
+const { items } = await instrumentedCall("items.listLive", "GET", () =>
+  webflow.collections.items.listItemsLive(collectionId)
+);
+
+const item = await instrumentedCall("items.create", "POST", () =>
+  webflow.collections.items.createItem(collectionId, {
+    fieldData: { name: "Test", slug: "test" },
+  })
+);
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
+### Step 3: Metrics Endpoint
 
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
+// api/metrics.ts
+import express from "express";
+import { registry } from "../observability/metrics.js";
 
-const tracer = trace.getTracer('webflow-client');
+const app = express();
 
-async function tracedWebflowCall<T>(
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", registry.contentType);
+  res.send(await registry.metrics());
+});
+```
+
+### Step 4: OpenTelemetry Distributed Tracing
+
+```typescript
+// src/observability/tracing.ts
+import { trace, SpanStatusCode, context } from "@opentelemetry/api";
+
+const tracer = trace.getTracer("webflow-integration", "1.0.0");
+
+export async function tracedCall<T>(
   operationName: string,
-  operation: () => Promise<T>
+  attributes: Record<string, string>,
+  fn: () => Promise<T>
 ): Promise<T> {
   return tracer.startActiveSpan(`webflow.${operationName}`, async (span) => {
+    span.setAttributes({
+      "webflow.operation": operationName,
+      ...attributes,
+    });
+
     try {
-      const result = await operation();
+      const result = await fn();
       span.setStatus({ code: SpanStatusCode.OK });
       return result;
     } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error.message,
+      });
       span.recordException(error);
+      span.setAttributes({
+        "webflow.error.status_code": String(error.statusCode || "unknown"),
+      });
       throw error;
     } finally {
       span.end();
     }
   });
 }
+
+// Usage
+const { collections } = await tracedCall(
+  "collections.list",
+  { "webflow.site_id": siteId },
+  () => webflow.collections.list(siteId)
+);
 ```
 
-## Logging Strategy
-
-### Structured Logging
+### Step 5: Structured Logging
 
 ```typescript
-import pino from 'pino';
+// src/observability/logger.ts
+import pino from "pino";
 
-const logger = pino({
-  name: 'webflow',
-  level: process.env.LOG_LEVEL || 'info',
+export const logger = pino({
+  name: "webflow-integration",
+  level: process.env.LOG_LEVEL || "info",
+  serializers: {
+    err: pino.stdSerializers.err,
+  },
+  // Redact sensitive fields
+  redact: {
+    paths: ["accessToken", "apiToken", "*.authorization", "req.headers.authorization"],
+    censor: "[REDACTED]",
+  },
 });
 
-function logWebflowOperation(
+// Log API calls with consistent structure
+export function logApiCall(
   operation: string,
-  data: Record<string, any>,
-  duration: number
+  durationMs: number,
+  status: "success" | "error",
+  metadata?: Record<string, any>
 ) {
-  logger.info({
-    service: 'webflow',
+  const logFn = status === "error" ? logger.error.bind(logger) : logger.info.bind(logger);
+
+  logFn({
+    service: "webflow",
     operation,
-    duration_ms: duration,
-    ...data,
-  });
+    durationMs,
+    status,
+    ...metadata,
+  }, `webflow.${operation} ${status} (${durationMs}ms)`);
+}
+
+// Log webhook events
+export function logWebhook(triggerType: string, status: "processed" | "failed" | "skipped") {
+  logger.info({
+    service: "webflow",
+    event: "webhook",
+    triggerType,
+    status,
+  }, `webhook.${triggerType} ${status}`);
 }
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
+### Step 6: AlertManager Rules
 
 ```yaml
-# webflow_alerts.yaml
+# prometheus/webflow-alerts.yml
 groups:
-  - name: webflow_alerts
+  - name: webflow
     rules:
       - alert: WebflowHighErrorRate
         expr: |
-          rate(webflow_errors_total[5m]) /
-          rate(webflow_requests_total[5m]) > 0.05
+          (
+            rate(webflow_api_errors_total[5m]) /
+            rate(webflow_api_requests_total[5m])
+          ) > 0.05
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Webflow error rate > 5%"
+          summary: "Webflow API error rate > 5%"
+          description: "{{ $value | humanizePercentage }} errors in last 5m"
+
+      - alert: WebflowRateLimited
+        expr: |
+          rate(webflow_api_errors_total{status_code="429"}[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Webflow API rate limited"
 
       - alert: WebflowHighLatency
         expr: |
           histogram_quantile(0.95,
-            rate(webflow_request_duration_seconds_bucket[5m])
-          ) > 2
+            rate(webflow_api_request_duration_seconds_bucket[5m])
+          ) > 3
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Webflow P95 latency > 2s"
+          summary: "Webflow P95 latency > 3s"
 
       - alert: WebflowDown
-        expr: up{job="webflow"} == 0
-        for: 1m
+        expr: |
+          sum(rate(webflow_api_requests_total{status_code=~"5.."}[5m])) /
+          sum(rate(webflow_api_requests_total[5m])) > 0.5
+        for: 2m
         labels:
           severity: critical
         annotations:
-          summary: "Webflow integration is down"
+          summary: "Webflow API > 50% server errors"
+
+      - alert: WebflowRateLimitLow
+        expr: webflow_rate_limit_remaining < 10
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Webflow rate limit nearly exhausted"
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
+### Step 7: Grafana Dashboard Queries
 
 ```json
 {
   "panels": [
     {
-      "title": "Webflow Request Rate",
-      "targets": [{
-        "expr": "rate(webflow_requests_total[5m])"
-      }]
+      "title": "Request Rate by Operation",
+      "targets": [{ "expr": "sum by (operation) (rate(webflow_api_requests_total[5m]))" }]
     },
     {
-      "title": "Webflow Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(webflow_request_duration_seconds_bucket[5m]))"
-      }]
+      "title": "Error Rate",
+      "targets": [{ "expr": "sum(rate(webflow_api_errors_total[5m])) / sum(rate(webflow_api_requests_total[5m]))" }]
+    },
+    {
+      "title": "Latency P50 / P95 / P99",
+      "targets": [
+        { "expr": "histogram_quantile(0.5, rate(webflow_api_request_duration_seconds_bucket[5m]))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, rate(webflow_api_request_duration_seconds_bucket[5m]))", "legendFormat": "p95" },
+        { "expr": "histogram_quantile(0.99, rate(webflow_api_request_duration_seconds_bucket[5m]))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "title": "Rate Limit Remaining",
+      "targets": [{ "expr": "webflow_rate_limit_remaining" }]
+    },
+    {
+      "title": "Webhook Events by Type",
+      "targets": [{ "expr": "sum by (trigger_type) (rate(webflow_webhook_events_total[5m]))" }]
     }
   ]
 }
 ```
 
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
 ## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+
+- Prometheus metrics: request count, latency histogram, error rate, rate limit gauge
+- OpenTelemetry tracing for end-to-end request visibility
+- Structured JSON logging with PII redaction
+- AlertManager rules for error rate, latency, and rate limits
+- Grafana dashboard panels
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-```
+| Missing metrics | Calls not instrumented | Wrap with `instrumentedCall()` |
+| High cardinality | Too many label values | Limit `operation` to known set |
+| Trace gaps | Missing context propagation | Pass OTel context in async calls |
+| Alert storms | Thresholds too sensitive | Increase `for` duration |
 
 ## Resources
+
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Webflow Observability Guide](https://docs.webflow.com/observability)
+- [OpenTelemetry JS](https://opentelemetry.io/docs/languages/js/)
+- [pino Documentation](https://github.com/pinojs/pino)
 
 ## Next Steps
+
 For incident response, see `webflow-incident-runbook`.

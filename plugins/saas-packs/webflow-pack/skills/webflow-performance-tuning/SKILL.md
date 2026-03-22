@@ -1,9 +1,9 @@
 ---
 name: webflow-performance-tuning
 description: |
-  Optimize Webflow API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Webflow integrations.
+  Optimize Webflow API performance with response caching, bulk endpoint batching,
+  CDN-cached live item reads, pagination optimization, and connection pooling.
+  Use when experiencing slow API responses or optimizing request throughput.
   Trigger with phrases like "webflow performance", "optimize webflow",
   "webflow latency", "webflow caching", "webflow slow", "webflow batch".
 allowed-tools: Read, Write, Edit
@@ -17,200 +17,271 @@ compatible-with: claude-code
 # Webflow Performance Tuning
 
 ## Overview
-Optimize Webflow API performance with caching, batching, and connection pooling.
+
+Optimize Webflow Data API v2 performance. Key insight: **CDN-cached requests
+to live items have no rate limits** — use the Content Delivery API for read-heavy
+workloads and reserve write API calls for mutations.
 
 ## Prerequisites
-- Webflow SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
 
-## Latency Benchmarks
+- `webflow-api` SDK installed
+- Understanding of your read/write ratio
+- Redis or in-memory cache (optional)
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+## Webflow Performance Characteristics
 
-## Caching Strategy
+| Operation | Typical Latency | Rate Limited | Cacheable |
+|-----------|----------------|--------------|-----------|
+| Live items (CDN) | 5-50ms | No | Yes (CDN) |
+| Staged items | 50-200ms | Yes | Application cache |
+| Create/update item | 100-300ms | Yes | No |
+| Bulk create (100) | 200-500ms | Yes (1 count) | No |
+| Site publish | 500-2000ms | 1/min | No |
+| List collections | 50-150ms | Yes | Application cache |
 
-### Response Caching
+**Key optimization: CDN-cached live item reads do not count against rate limits.**
+
+## Instructions
+
+### Strategy 1: Use Content Delivery API for Reads
+
 ```typescript
-import { LRUCache } from 'lru-cache';
+// For published content that visitors see, use live item endpoints.
+// These are served by Webflow's CDN and have no rate limits.
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+async function getPublishedContent(collectionId: string) {
+  // CDN-cached — fast, no rate limit
+  const { items } = await webflow.collections.items.listItemsLive(collectionId, {
+    limit: 100,
+  });
+  return items;
+}
 
-async function cachedWebflowRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+// Single live item — also CDN-cached
+async function getPublishedItem(collectionId: string, itemId: string) {
+  return webflow.collections.items.getItemLive(collectionId, itemId);
 }
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
+### Strategy 2: Application-Level Response Caching
 
-const redis = new Redis(process.env.REDIS_URL);
+```typescript
+import { LRUCache } from "lru-cache";
+
+const cache = new LRUCache<string, any>({
+  max: 500,              // Max entries
+  ttl: 5 * 60 * 1000,   // 5-minute TTL
+  updateAgeOnGet: true,  // Reset TTL on access
+});
+
+async function cachedFetch<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlMs?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached !== undefined) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl: ttlMs });
+  return result;
+}
+
+// Usage — cache collection schema (changes rarely)
+const collections = await cachedFetch(
+  `collections:${siteId}`,
+  () => webflow.collections.list(siteId).then(r => r.collections),
+  30 * 60 * 1000 // 30-minute cache for schemas
+);
+
+// Cache live items (shorter TTL for dynamic content)
+const items = await cachedFetch(
+  `items:live:${collectionId}`,
+  () => webflow.collections.items.listItemsLive(collectionId).then(r => r.items),
+  60 * 1000 // 1-minute cache
+);
+```
+
+### Strategy 3: Redis Distributed Cache
+
+```typescript
+import Redis from "ioredis";
+
+const redis = new Redis(process.env.REDIS_URL!);
 
 async function cachedWithRedis<T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttlSeconds = 60
+  ttlSeconds = 300
 ): Promise<T> {
   const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
+  if (cached) return JSON.parse(cached) as T;
 
   const result = await fetcher();
   await redis.setex(key, ttlSeconds, JSON.stringify(result));
   return result;
 }
-```
 
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const webflowLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Webflow
-    const results = await webflowClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+// Invalidate cache on webhook events
+async function invalidateOnWebhook(triggerType: string, payload: any) {
+  if (triggerType === "collection_item_changed" || triggerType === "collection_item_created") {
+    const collectionId = payload.collectionId;
+    await redis.del(`items:live:${collectionId}`);
+    await redis.del(`items:staged:${collectionId}`);
+    console.log(`Cache invalidated for collection ${collectionId}`);
   }
-);
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  webflowLoader.load('id-1'),
-  webflowLoader.load('id-2'),
-  webflowLoader.load('id-3'),
-]);
+  if (triggerType === "site_publish") {
+    // Flush all item caches on publish
+    const keys = await redis.keys("items:*");
+    if (keys.length > 0) await redis.del(...keys);
+    console.log(`Flushed ${keys.length} cache entries on site publish`);
+  }
+}
 ```
 
-## Connection Optimization
+### Strategy 4: Bulk Endpoints for Writes
+
+One bulk request = 1 rate limit count for up to 100 items:
 
 ```typescript
-import { Agent } from 'https';
+// BAD: 100 API calls for 100 items
+for (const item of items) {
+  await webflow.collections.items.createItem(collectionId, {
+    fieldData: item,
+  });
+}
+// Rate limit cost: 100
 
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
+// GOOD: 1 API call for 100 items
+await webflow.collections.items.createItemsBulk(collectionId, {
+  items: items.slice(0, 100).map(item => ({ fieldData: item })),
 });
+// Rate limit cost: 1
 
-const client = new WebflowClient({
-  apiKey: process.env.WEBFLOW_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedWebflowList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
+// For >100 items, batch with delay:
+async function batchCreate(
+  collectionId: string,
+  allItems: Array<Record<string, any>>
+) {
+  for (let i = 0; i < allItems.length; i += 100) {
+    const batch = allItems.slice(i, i + 100);
+    await webflow.collections.items.createItemsBulk(collectionId, {
+      items: batch.map(item => ({ fieldData: item, isDraft: false })),
+    });
+    if (i + 100 < allItems.length) {
+      await new Promise(r => setTimeout(r, 500)); // Breathing room
     }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedWebflowList(cursor =>
-  webflowClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
+  }
 }
 ```
 
-## Performance Monitoring
+### Strategy 5: Parallel Requests with Concurrency Control
 
 ```typescript
-async function measuredWebflowCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
+import PQueue from "p-queue";
+
+const queue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 10,
+});
+
+// Fetch items from multiple collections in parallel
+async function fetchFromMultipleCollections(collectionIds: string[]) {
+  const results = await Promise.all(
+    collectionIds.map(id =>
+      queue.add(() =>
+        webflow.collections.items.listItemsLive(id, { limit: 100 })
+      )
+    )
+  );
+  return results;
+}
+```
+
+### Strategy 6: Efficient Pagination
+
+```typescript
+// Fetch all items with optimal page size
+async function fetchAll(collectionId: string) {
+  const allItems = [];
+  let offset = 0;
+  const limit = 100; // Maximum allowed
+
+  while (true) {
+    const { items, pagination } = await webflow.collections.items.listItems(
+      collectionId,
+      { offset, limit }
+    );
+
+    allItems.push(...(items || []));
+
+    if (allItems.length >= (pagination?.total || 0)) break;
+    offset += limit;
+  }
+
+  return allItems;
+}
+```
+
+### Strategy 7: Performance Monitoring
+
+```typescript
+async function timedCall<T>(label: string, fn: () => Promise<T>): Promise<T> {
   const start = performance.now();
   try {
     const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
+    const ms = (performance.now() - start).toFixed(1);
+    console.log(`[perf] ${label}: ${ms}ms`);
     return result;
   } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
+    const ms = (performance.now() - start).toFixed(1);
+    console.error(`[perf] ${label}: FAILED after ${ms}ms`);
     throw error;
   }
 }
+
+// Usage
+const items = await timedCall("listItemsLive", () =>
+  webflow.collections.items.listItemsLive(collectionId)
+);
 ```
 
-## Instructions
+## Performance Optimization Summary
 
-### Step 1: Establish Baseline
-Measure current latency for critical Webflow operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+| Strategy | Impact | Effort |
+|----------|--------|--------|
+| Live item API (CDN) | 10x faster reads, no rate limits | Low |
+| Bulk endpoints | 100x fewer API calls | Low |
+| LRU cache | Eliminates repeat reads | Medium |
+| Redis distributed cache | Multi-instance caching | Medium |
+| Webhook cache invalidation | Fresh data without polling | Medium |
+| Concurrency control | Max throughput without 429s | Low |
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+
+- CDN-cached reads for published content
+- Application-level caching with TTL
+- Bulk writes reducing API call count 100x
+- Webhook-triggered cache invalidation
+- Performance monitoring for all API calls
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredWebflowCall(name, () =>
-    cachedWebflowRequest(`cache:${name}`, fn)
-  );
-```
+| Stale cache | TTL too long | Reduce TTL or use webhook invalidation |
+| Cache miss storm | All entries expire simultaneously | Add jitter to TTL |
+| Bulk request 400 | >100 items | Cap batches at 100 |
+| Memory pressure | LRU cache too large | Set `max` limit on cache |
 
 ## Resources
-- [Webflow Performance Guide](https://docs.webflow.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Content Delivery API](https://developers.webflow.com/data/docs/working-with-the-cms/content-delivery)
+- [Rate Limits](https://developers.webflow.com/data/reference/rate-limits)
+- [Bulk CMS Endpoints](https://developers.webflow.com/data/changelog/10232024)
 
 ## Next Steps
+
 For cost optimization, see `webflow-cost-tuning`.

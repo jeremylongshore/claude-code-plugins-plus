@@ -1,12 +1,11 @@
 ---
 name: webflow-reference-architecture
 description: |
-  Implement Webflow reference architecture with best-practice project layout.
-  Use when designing new Webflow integrations, reviewing project structure,
-  or establishing architecture standards for Webflow applications.
-  Trigger with phrases like "webflow architecture", "webflow best practices",
-  "webflow project structure", "how to organize webflow", "webflow layout".
-allowed-tools: Read, Grep
+  Implement Webflow reference architecture — layered project structure, client wrapper,
+  CMS sync service, webhook handlers, and caching layer for production integrations.
+  Trigger with phrases like "webflow architecture", "webflow project structure",
+  "how to organize webflow", "webflow integration design", "webflow best practices".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,224 +16,383 @@ compatible-with: claude-code
 # Webflow Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Webflow integrations.
+
+Production-ready architecture for Webflow Data API v2 integrations. Layered design
+separating API access, business logic, caching, and webhook handling.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Webflow SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+
+- TypeScript 5+ project
+- `webflow-api` SDK (v3.x)
+- Understanding of service-oriented architecture
+- Redis (optional, for distributed caching)
 
 ## Project Structure
 
 ```
 my-webflow-project/
 ├── src/
-│   ├── webflow/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── webflow/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── webflow/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── webflow/
-│           └── sync.ts         # Background sync job
+│   ├── webflow/                     # Webflow API layer
+│   │   ├── client.ts                # WebflowClient singleton
+│   │   ├── types.ts                 # TypeScript types for Webflow resources
+│   │   ├── errors.ts                # Custom error classes
+│   │   └── cache.ts                 # Response caching (LRU/Redis)
+│   ├── services/                    # Business logic layer
+│   │   ├── cms.service.ts           # CMS content management
+│   │   ├── ecommerce.service.ts     # Products, orders, inventory
+│   │   ├── forms.service.ts         # Form submission processing
+│   │   └── sync.service.ts          # External data sync
+│   ├── webhooks/                    # Event handling layer
+│   │   ├── router.ts                # Event type routing
+│   │   ├── handlers/
+│   │   │   ├── form-submission.ts
+│   │   │   ├── cms-item-changed.ts
+│   │   │   └── ecomm-new-order.ts
+│   │   └── middleware.ts            # Signature verification
+│   ├── api/                         # HTTP endpoints
+│   │   ├── health.ts
+│   │   ├── webhooks.ts
+│   │   └── content.ts
+│   └── config/
+│       └── webflow.ts               # Environment-aware config
 ├── tests/
 │   ├── unit/
-│   │   └── webflow/
+│   │   ├── services/
+│   │   └── webhooks/
 │   └── integration/
-│       └── webflow/
-├── config/
-│   ├── webflow.development.json
-│   ├── webflow.staging.json
-│   └── webflow.production.json
-└── docs/
-    └── webflow/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│       └── webflow.integration.test.ts
+├── .env.example
+├── tsconfig.json
+└── package.json
 ```
 
 ## Layer Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Webflow Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────┐
+│                  API Layer                        │
+│   Express routes, webhook endpoints, health      │
+├──────────────────────────────────────────────────┤
+│               Service Layer                       │
+│   CMS sync, ecommerce, form processing           │
+│   (Business logic, orchestration)                 │
+├──────────────────────────────────────────────────┤
+│             Webflow Client Layer                  │
+│   WebflowClient wrapper, error handling, types    │
+├──────────────────────────────────────────────────┤
+│           Infrastructure Layer                    │
+│   Cache (LRU/Redis), queue (p-queue), monitoring  │
+└──────────────────────────────────────────────────┘
 ```
 
-## Key Components
+## Instructions
 
-### Step 1: Client Wrapper
+### Layer 1: Webflow Client
+
 ```typescript
 // src/webflow/client.ts
-export class WebflowService {
-  private client: WebflowClient;
-  private cache: Cache;
-  private monitor: Monitor;
+import { WebflowClient } from "webflow-api";
+import { getConfig } from "../config/webflow.js";
 
-  constructor(config: WebflowConfig) {
-    this.client = new WebflowClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('webflow');
-  }
+let client: WebflowClient | null = null;
 
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
+export function getClient(): WebflowClient {
+  if (!client) {
+    const config = getConfig();
+    client = new WebflowClient({
+      accessToken: config.accessToken,
+      maxRetries: config.maxRetries,
+    });
   }
+  return client;
+}
+
+export function resetClient(): void {
+  client = null;
 }
 ```
 
-### Step 2: Error Boundary
 ```typescript
 // src/webflow/errors.ts
 export class WebflowServiceError extends Error {
   constructor(
     message: string,
-    public readonly code: string,
+    public readonly statusCode: number,
     public readonly retryable: boolean,
-    public readonly originalError?: Error
+    public readonly originalError?: unknown
   ) {
     super(message);
-    this.name = 'WebflowServiceError';
+    this.name = "WebflowServiceError";
   }
-}
 
-export function wrapWebflowError(error: unknown): WebflowServiceError {
-  // Transform SDK errors to application errors
-}
-```
+  static fromApiError(error: any): WebflowServiceError {
+    const status = error.statusCode || error.status || 500;
+    const retryable = status === 429 || status >= 500;
 
-### Step 3: Health Check
-```typescript
-// src/webflow/health.ts
-export async function checkWebflowHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await webflowClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
+    return new WebflowServiceError(
+      error.message || "Unknown Webflow error",
+      status,
+      retryable,
+      error
+    );
   }
 }
 ```
 
-## Data Flow Diagram
+```typescript
+// src/webflow/types.ts
+export interface WebflowSite {
+  id: string;
+  displayName: string;
+  shortName: string;
+  lastPublished: string | null;
+  customDomains?: Array<{ url: string }>;
+}
 
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Webflow    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Webflow    │
-│   API       │
-└─────────────┘
+export interface WebflowCollection {
+  id: string;
+  displayName: string;
+  slug: string;
+  itemCount: number;
+  fields: WebflowField[];
+}
+
+export interface WebflowField {
+  slug: string;
+  displayName: string;
+  type: string;
+  isRequired: boolean;
+}
+
+export interface WebflowItem {
+  id: string;
+  isDraft: boolean;
+  isArchived: boolean;
+  createdOn: string;
+  lastUpdated: string;
+  fieldData: Record<string, any>;
+}
 ```
 
-## Configuration Management
+### Layer 2: Service Layer
 
 ```typescript
-// config/webflow.ts
-export interface WebflowConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
+// src/services/cms.service.ts
+import { getClient } from "../webflow/client.js";
+import { WebflowServiceError } from "../webflow/errors.js";
+import { cachedFetch, invalidateCache } from "../webflow/cache.js";
+import type { WebflowItem } from "../webflow/types.js";
+
+export class CmsService {
+  private webflow = getClient();
+
+  async getCollections(siteId: string) {
+    return cachedFetch(
+      `collections:${siteId}`,
+      () => this.webflow.collections.list(siteId).then(r => r.collections!),
+      30 * 60 * 1000 // 30 min — schemas change rarely
+    );
+  }
+
+  async getPublishedItems(collectionId: string): Promise<WebflowItem[]> {
+    // CDN-cached — no rate limit
+    return cachedFetch(
+      `items:live:${collectionId}`,
+      () => this.webflow.collections.items.listItemsLive(collectionId, { limit: 100 })
+        .then(r => r.items as WebflowItem[]),
+      60 * 1000 // 1 min
+    );
+  }
+
+  async createItems(
+    collectionId: string,
+    items: Array<{ fieldData: Record<string, any> }>
+  ): Promise<string[]> {
+    try {
+      const result = await this.webflow.collections.items.createItemsBulk(
+        collectionId,
+        { items: items.map(i => ({ ...i, isDraft: false })) }
+      );
+      // Invalidate cache after write
+      invalidateCache(`items:live:${collectionId}`);
+      return result.items!.map(i => i.id!);
+    } catch (error) {
+      throw WebflowServiceError.fromApiError(error);
+    }
+  }
+
+  async publishItems(collectionId: string, itemIds: string[]): Promise<void> {
+    await this.webflow.collections.items.publishItem(collectionId, { itemIds });
+    invalidateCache(`items:live:${collectionId}`);
+  }
+}
+```
+
+```typescript
+// src/services/sync.service.ts
+import { CmsService } from "./cms.service.js";
+
+export class SyncService {
+  constructor(private cms: CmsService) {}
+
+  async syncFromExternal(
+    collectionId: string,
+    externalData: Array<{ title: string; body: string; slug: string }>
+  ) {
+    // Get existing items to avoid duplicates
+    const existing = await this.cms.getPublishedItems(collectionId);
+    const existingSlugs = new Set(existing.map(i => i.fieldData?.slug));
+
+    // Filter new items
+    const newItems = externalData
+      .filter(d => !existingSlugs.has(d.slug))
+      .map(d => ({
+        fieldData: {
+          name: d.title,
+          slug: d.slug,
+          "post-body": d.body,
+        },
+      }));
+
+    if (newItems.length === 0) return { synced: 0 };
+
+    // Bulk create (100 at a time)
+    const createdIds = await this.cms.createItems(collectionId, newItems.slice(0, 100));
+
+    // Publish new items
+    await this.cms.publishItems(collectionId, createdIds);
+
+    return { synced: createdIds.length };
+  }
+}
+```
+
+### Layer 3: Webhook Handling
+
+```typescript
+// src/webhooks/router.ts
+import { handleFormSubmission } from "./handlers/form-submission.js";
+import { handleCmsItemChanged } from "./handlers/cms-item-changed.js";
+import { handleNewOrder } from "./handlers/ecomm-new-order.js";
+
+type Handler = (payload: any) => Promise<void>;
+
+const handlers: Record<string, Handler> = {
+  form_submission: handleFormSubmission,
+  collection_item_created: handleCmsItemChanged,
+  collection_item_changed: handleCmsItemChanged,
+  ecomm_new_order: handleNewOrder,
+};
+
+export async function routeWebhookEvent(
+  triggerType: string,
+  payload: any
+): Promise<void> {
+  const handler = handlers[triggerType];
+  if (!handler) {
+    console.log(`No handler for: ${triggerType}`);
+    return;
+  }
+  await handler(payload);
+}
+```
+
+```typescript
+// src/webhooks/handlers/cms-item-changed.ts
+import { invalidateCache } from "../../webflow/cache.js";
+
+export async function handleCmsItemChanged(payload: any): Promise<void> {
+  const { collectionId, itemId } = payload;
+
+  // Invalidate cache for this collection
+  invalidateCache(`items:live:${collectionId}`);
+  invalidateCache(`items:staged:${collectionId}`);
+
+  // Trigger downstream updates (search index, external DB, etc.)
+  console.log(`CMS item changed: ${itemId} in collection ${collectionId}`);
+}
+```
+
+### Layer 4: Configuration
+
+```typescript
+// src/config/webflow.ts
+interface WebflowConfig {
+  accessToken: string;
+  siteId: string;
+  maxRetries: number;
+  environment: "development" | "staging" | "production";
+  webhookSecret: string;
+}
+
+export function getConfig(): WebflowConfig {
+  const env = (process.env.NODE_ENV || "development") as WebflowConfig["environment"];
+
+  return {
+    accessToken: requireEnv("WEBFLOW_API_TOKEN"),
+    siteId: requireEnv("WEBFLOW_SITE_ID"),
+    maxRetries: env === "production" ? 3 : 1,
+    environment: env,
+    webhookSecret: process.env.WEBFLOW_WEBHOOK_SECRET || "",
   };
 }
 
-export function loadWebflowConfig(): WebflowConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./webflow.${env}.json`);
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) throw new Error(`${name} environment variable required`);
+  return value;
 }
 ```
 
-## Instructions
+## Data Flow
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Webflow operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Webflow connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Webflow types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/webflow/{handlers} src/services/webflow src/api/webflow
-touch src/webflow/{client,config,types,errors}.ts
-touch src/services/webflow/{index,sync,cache}.ts
+```
+External Data Source
+       │
+       ▼
+┌─────────────────┐     ┌─────────────┐
+│  Sync Service   │────▶│  CMS Service │
+│  (orchestration)│     │  (CRUD ops)  │
+└─────────────────┘     └──────┬───────┘
+                               │
+                    ┌──────────┴──────────┐
+                    ▼                     ▼
+            ┌──────────────┐    ┌────────────────┐
+            │ Cache (LRU)  │    │ Webflow Client │
+            │ or Redis     │    │ (webflow-api)  │
+            └──────────────┘    └───────┬────────┘
+                                        │
+                                        ▼
+                               ┌────────────────┐
+                               │ Webflow API v2 │
+                               │ api.webflow.com│
+                               └────────────────┘
 ```
 
-## Resources
-- [Webflow SDK Documentation](https://docs.webflow.com/sdk)
-- [Webflow Best Practices](https://docs.webflow.com/best-practices)
+## Output
 
-## Flagship Skills
+- Layered project structure with clear boundaries
+- WebflowClient wrapper with singleton and error handling
+- CMS service with caching and bulk operations
+- Webhook event router with typed handlers
+- Environment-aware configuration
+- Sync service for external data integration
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular imports | Wrong layer dependencies | Services depend on client, not reverse |
+| Cache inconsistency | Missing invalidation | Invalidate on writes and webhook events |
+| Config missing | Environment not set | `requireEnv()` fails fast with clear message |
+| Type mismatches | API shape changes | Update `types.ts` from collection schema |
+
+## Resources
+
+- [Webflow API Reference](https://developers.webflow.com/data/reference/rest-introduction)
+- [CMS API](https://developers.webflow.com/data/reference/cms)
+- [SDK GitHub](https://github.com/webflow/js-webflow-api)
+
+## Next Steps
+
 For multi-environment setup, see `webflow-multi-env-setup`.
