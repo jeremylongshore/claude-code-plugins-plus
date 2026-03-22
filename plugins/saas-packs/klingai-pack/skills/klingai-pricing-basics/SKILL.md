@@ -1,56 +1,131 @@
 ---
 name: klingai-pricing-basics
 description: |
-  Manage understand Kling AI pricing, credits, and cost optimization. Use when budgeting or optimizing
-  costs for video generation. Trigger with phrases like 'kling ai pricing', 'klingai credits',
+  Understand Kling AI pricing, credits, and cost optimization strategies. Use when budgeting
+  or estimating costs. Trigger with phrases like 'kling ai pricing', 'klingai credits',
   'kling ai cost', 'klingai budget'.
-allowed-tools: Read, Write, Edit, Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, cost-optimization]
+tags: [saas, kling-ai, pricing, cost-optimization]
 
 ---
-# Klingai Pricing Basics
+# Kling AI Pricing Basics
 
 ## Overview
 
-This skill explains the Kling AI pricing model, credit system, cost estimation techniques, and strategies for optimizing your video generation costs.
+Kling AI uses a credit-based pricing system. Credits are consumed per video/image generation based on duration, mode, and model. API pricing uses resource packs billed separately from subscription plans.
 
-## Prerequisites
+## Subscription Plans (Web UI)
 
-- Kling AI account
-- Understanding of your video generation needs
-- Budget parameters defined
+| Plan | Monthly | Credits/Month | Key Features |
+|------|---------|---------------|-------------|
+| Free | $0 | 66/day (no rollover) | Basic access, watermarked |
+| Standard | $6.99 | 660 | No watermark, standard models |
+| Pro | $25.99 | 3,000 | Priority queue, all models |
+| Premier | $64.99 | 8,000 | Professional mode, priority |
+| Ultra | $180 | 26,000 | Max priority, all features |
 
-## Instructions
+**Warning:** Paid credits expire at end of billing period. Unused credits do not roll over.
 
-Follow these steps to understand and optimize costs:
+## Video Generation Costs
 
-1. **Understand Credit System**: Learn how credits work
-2. **Calculate Costs**: Estimate costs for your projects
-3. **Select Optimal Model**: Choose cost-effective models
-4. **Monitor Usage**: Track spending in real-time
-5. **Optimize Workflow**: Reduce costs without sacrificing quality
+| Duration | Standard Mode | Professional Mode |
+|----------|--------------|-------------------|
+| 5 seconds | 10 credits | 35 credits |
+| 10 seconds | 20 credits | 70 credits |
 
-## Output
+### With Native Audio (v2.6)
 
-Successful execution produces:
-- Cost estimates for video generation
-- Budget tracking and reporting
-- Optimization recommendations
+| Duration | Standard + Audio | Professional + Audio |
+|----------|-----------------|---------------------|
+| 5 seconds | 50 credits | 100 credits |
+| 10 seconds | 100 credits | 200 credits |
 
-## Error Handling
+## Image Generation Costs (Kolors)
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Feature | Credits |
+|---------|---------|
+| Text-to-image | 1 credit/image |
+| Image restyle | 2 credits/image |
+| Virtual try-on | 5 credits/image |
 
-## Examples
+## API Resource Packs
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+API access is billed separately from subscriptions via prepaid packs:
+
+| Pack | Units | Price | Validity |
+|------|-------|-------|----------|
+| Starter | 1,000 | ~$140 | 90 days |
+| Growth | 10,000 | ~$1,400 | 90 days |
+| Enterprise | 30,000 | ~$4,200 | 90 days |
+
+**1 unit = 1 credit equivalent.** API pricing works out to ~$0.07-0.14 per second of generated video.
+
+## Cost Estimation
+
+```python
+def estimate_cost(videos: int, duration: int = 5, mode: str = "standard",
+                  audio: bool = False) -> dict:
+    """Estimate credits needed for a batch of videos."""
+    base_credits = {
+        (5, "standard"): 10,
+        (5, "professional"): 35,
+        (10, "standard"): 20,
+        (10, "professional"): 70,
+    }
+    per_video = base_credits.get((duration, mode), 10)
+    if audio:
+        per_video *= 5  # audio multiplier
+
+    total = videos * per_video
+    return {
+        "videos": videos,
+        "credits_per_video": per_video,
+        "total_credits": total,
+        "estimated_cost_usd": total * 0.14,  # high estimate
+    }
+
+# Example: 100 five-second standard videos
+print(estimate_cost(100, duration=5, mode="standard"))
+# → {'videos': 100, 'credits_per_video': 10, 'total_credits': 1000, 'estimated_cost_usd': 140.0}
+```
+
+## Cost Optimization Strategies
+
+| Strategy | Savings | Trade-off |
+|----------|---------|-----------|
+| Use `standard` mode for drafts | 3.5x cheaper | Slightly lower quality |
+| Use 5s duration, extend if needed | 2x cheaper per clip | Requires extension step |
+| Use `kling-v2-5-turbo` | 40% faster (less queue time) | Marginally lower quality than v2.6 |
+| Batch during off-peak hours | Faster processing | Schedule dependency |
+| Skip audio, add in post | 5x cheaper | Extra post-production step |
+| Use callbacks instead of polling | No cost savings, but fewer API calls | Requires webhook endpoint |
+
+## Budget Guard
+
+```python
+class BudgetGuard:
+    """Prevent overspending by tracking credit usage."""
+
+    def __init__(self, daily_limit: int = 500):
+        self.daily_limit = daily_limit
+        self._used_today = 0
+
+    def check(self, credits_needed: int) -> bool:
+        if self._used_today + credits_needed > self.daily_limit:
+            raise RuntimeError(
+                f"Budget exceeded: {self._used_today + credits_needed} > {self.daily_limit}"
+            )
+        return True
+
+    def record(self, credits_used: int):
+        self._used_today += credits_used
+```
 
 ## Resources
 
-- [Kling AI Pricing](https://klingai.com/pricing)
-- [Credit Packages](https://klingai.com/credits)
-- [Usage Dashboard](https://klingai.com/dashboard/usage)
+- [Pricing Page](https://app.klingai.com/global/dev/document-api/productBilling/prePaidResourcePackage)
+- [API Resource Packs](https://app.klingai.com/global/dev)

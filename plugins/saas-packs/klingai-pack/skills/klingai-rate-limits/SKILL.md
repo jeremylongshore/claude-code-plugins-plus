@@ -1,57 +1,166 @@
 ---
 name: klingai-rate-limits
 description: |
-  Handle Kling AI rate limits with proper backoff strategies. Use when experiencing 429 errors
-  or building high-throughput systems. Trigger with phrases like 'klingai rate limit',
-  'kling ai 429', 'klingai throttle', 'klingai backoff'.
-allowed-tools: Read, Write, Edit, Grep
+  Handle Kling AI API rate limits with backoff and queuing strategies. Use when hitting 429 errors
+  or planning high-volume workflows. Trigger with phrases like 'klingai rate limit', 'kling ai 429',
+  'klingai throttle', 'kling api limits'.
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, kling-ai, klingai-rate]
+tags: [saas, kling-ai, rate-limits, reliability]
 
 ---
-# Klingai Rate Limits
+# Kling AI Rate Limits
 
 ## Overview
 
-This skill teaches rate limit handling patterns including exponential backoff, token bucket algorithms, request queuing, and concurrent job management for reliable Kling AI integrations.
+Kling AI enforces rate limits per API key. When exceeded, the API returns `429 Too Many Requests`. This skill covers detection, backoff strategies, request queuing, and concurrent job management.
 
-## Prerequisites
+## Rate Limit Tiers
 
-- Kling AI integration
-- Understanding of HTTP status codes
-- Python 3.8+ or Node.js 18+
+| Tier | Concurrent Tasks | Requests/Min | Notes |
+|------|------------------|-------------|-------|
+| Free | 1 | 10 | 66 daily credits cap |
+| Standard | 3 | 30 | Per API key |
+| Pro | 5 | 60 | Per API key |
+| Enterprise | 10+ | Custom | Contact sales |
 
-## Instructions
+## Exponential Backoff with Jitter
 
-Follow these steps to handle rate limits:
+```python
+import time, random, requests
 
-1. **Understand Limits**: Know the rate limit structure
-2. **Implement Detection**: Detect rate limit responses
-3. **Add Backoff**: Implement exponential backoff
-4. **Queue Requests**: Add request queuing
-5. **Monitor Usage**: Track rate limit consumption
+def exponential_backoff(attempt: int, base: float = 1.0, max_wait: float = 60.0) -> float:
+    """Calculate wait time with jitter to avoid thundering herd."""
+    wait = min(base * (2 ** attempt), max_wait)
+    jitter = random.uniform(0, wait * 0.5)
+    return wait + jitter
 
-## Output
+def request_with_retry(method, url, headers, json=None, max_retries=5):
+    for attempt in range(max_retries + 1):
+        response = method(url, headers=headers, json=json, timeout=30)
 
-Successful execution produces:
-- Rate limit handling without errors
-- Smooth request throughput
-- Proper backoff behavior
-- Concurrent job management
+        if response.status_code == 429:
+            if attempt == max_retries:
+                raise RuntimeError("Rate limit: max retries exceeded")
+            wait = exponential_backoff(attempt)
+            print(f"429 rate limited. Waiting {wait:.1f}s (attempt {attempt + 1})")
+            time.sleep(wait)
+            continue
 
-## Error Handling
+        if response.status_code >= 500:
+            if attempt == max_retries:
+                response.raise_for_status()
+            time.sleep(exponential_backoff(attempt, base=2.0))
+            continue
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+        response.raise_for_status()
+        return response
 
-## Examples
+    raise RuntimeError("Unreachable")
+```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+## Concurrent Task Limiter (asyncio)
+
+```python
+import asyncio
+
+class TaskLimiter:
+    """Limit concurrent Kling AI tasks to stay within API tier."""
+
+    def __init__(self, max_concurrent: int = 3):
+        self._semaphore = asyncio.Semaphore(max_concurrent)
+        self._active = 0
+
+    async def submit(self, coro):
+        async with self._semaphore:
+            self._active += 1
+            try:
+                return await coro
+            finally:
+                self._active -= 1
+
+    @property
+    def active_count(self) -> int:
+        return self._active
+
+# Usage
+limiter = TaskLimiter(max_concurrent=3)
+tasks = [limiter.submit(generate_video(p)) for p in prompts]
+results = await asyncio.gather(*tasks, return_exceptions=True)
+```
+
+## Rate Limit Monitor
+
+```python
+class RateLimitMonitor:
+    """Track API call frequency and warn before hitting limits."""
+
+    def __init__(self, max_per_minute: int = 30):
+        self.max_per_minute = max_per_minute
+        self._calls = []
+
+    def record_call(self):
+        now = time.time()
+        self._calls = [t for t in self._calls if now - t < 60]
+        self._calls.append(now)
+
+    @property
+    def usage_pct(self) -> float:
+        now = time.time()
+        recent = sum(1 for t in self._calls if now - t < 60)
+        return (recent / self.max_per_minute) * 100
+
+    def wait_if_needed(self):
+        if self.usage_pct > 80 and self._calls:
+            wait = 60 - (time.time() - self._calls[0])
+            if wait > 0:
+                print(f"Throttling: waiting {wait:.1f}s ({self.usage_pct:.0f}% of limit)")
+                time.sleep(wait)
+```
+
+## Request Queue Pattern
+
+```python
+from collections import deque
+import threading
+
+class RequestQueue:
+    """FIFO queue with rate-limit-aware dispatch."""
+
+    def __init__(self, client, max_per_minute: int = 30):
+        self.client = client
+        self.interval = 60.0 / max_per_minute
+        self._queue = deque()
+
+    def enqueue(self, endpoint: str, body: dict, callback=None):
+        self._queue.append((endpoint, body, callback))
+
+    def process_all(self):
+        while self._queue:
+            endpoint, body, callback = self._queue.popleft()
+            try:
+                result = self.client._post(endpoint, body)
+                if callback:
+                    callback(result, error=None)
+            except Exception as e:
+                if callback:
+                    callback(None, error=e)
+            time.sleep(self.interval)
+```
+
+## Error Reference
+
+| Scenario | HTTP Code | Action |
+|----------|-----------|--------|
+| Soft rate limit | `429` + `Retry-After` | Wait specified seconds |
+| Hard rate limit | `429` no header | Backoff from 1s, double each attempt |
+| Concurrent limit hit | `429` or task rejection | Wait for active tasks to complete |
+| Burst detection | Multiple `429`s | Aggressive backoff (30-60s) |
 
 ## Resources
 
-- [Kling AI Rate Limits](https://docs.klingai.com/rate-limits)
-- [Exponential Backoff](https://cloud.google.com/iot/docs/how-tos/exponential-backoff)
-- [Token Bucket Algorithm](https://en.wikipedia.org/wiki/Token_bucket)
+- [API Reference](https://app.klingai.com/global/dev/document-api/apiReference/model/textToVideo)
+- [Developer Portal](https://app.klingai.com/global/dev)
