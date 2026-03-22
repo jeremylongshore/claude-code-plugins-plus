@@ -1,57 +1,181 @@
 ---
 name: openrouter-caching-strategy
 description: |
-  Implement response caching to reduce costs and latency. Use when dealing with repeated queries or high-volume scenarios. Trigger with phrases like 'openrouter cache', 'cache responses', 'openrouter caching', 'reduce api calls'.
-allowed-tools: Read, Write, Edit, Grep
-version: 1.0.0
+  Implement caching for OpenRouter API responses to reduce cost and latency. Use when optimizing repeat queries, building RAG systems, or reducing API spend. Triggers: 'openrouter cache', 'cache llm responses', 'openrouter caching', 'reduce openrouter cost'.
+allowed-tools: Read, Write, Edit, Bash, Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, openrouter, api, cost-optimization]
+tags: [saas, openrouter, caching, cost-optimization]
 
 ---
-# Openrouter Caching Strategy
+# OpenRouter Caching Strategy
 
 ## Overview
 
-This skill shows how to implement caching layers for OpenRouter responses to reduce costs, lower latency, and handle repeated queries efficiently.
+OpenRouter charges per token, so caching identical or similar requests can dramatically cut costs. Deterministic requests (`temperature=0`) with the same model and messages produce identical outputs -- these are safe to cache. This skill covers in-memory caching, persistent caching with TTL, and Anthropic prompt caching via OpenRouter.
 
-## Prerequisites
+## In-Memory Cache
 
-- OpenRouter integration
-- Cache storage (in-memory, Redis, or filesystem)
+```python
+import os, hashlib, json, time
+from typing import Optional
+from openai import OpenAI
 
-## Instructions
+client = OpenAI(
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.environ["OPENROUTER_API_KEY"],
+    default_headers={"HTTP-Referer": "https://my-app.com", "X-Title": "my-app"},
+)
 
-1. **Generate cache keys**: Hash the model ID, messages array, and key parameters (temperature, max_tokens) into a deterministic cache key
-2. **Implement exact-match caching**: Store responses keyed by the hash; return cached responses for identical requests (works best with `temperature: 0`)
-3. **Add TTL-based expiration**: Set cache entries to expire after a configurable period (e.g., 1 hour for factual queries, 5 minutes for dynamic content)
-4. **Consider semantic caching**: For fuzzy matching, use embedding similarity to find cached responses for semantically similar (but not identical) prompts
-5. **Track cache hit rates**: Log cache hits vs misses to measure cost savings and tune your caching strategy
+class LLMCache:
+    def __init__(self, ttl_seconds: int = 3600):
+        self._cache: dict[str, tuple[dict, float]] = {}
+        self._ttl = ttl_seconds
+        self.hits = 0
+        self.misses = 0
 
-## Output
+    def _key(self, model: str, messages: list, **kwargs) -> str:
+        blob = json.dumps({"model": model, "messages": messages, **kwargs}, sort_keys=True)
+        return hashlib.sha256(blob.encode()).hexdigest()
 
-- Cache hit rate metrics showing percentage of requests served from cache
-- Cost savings report comparing cached vs uncached request costs
-- Latency improvement measurements (cached responses return in <5ms vs 500ms+ for API calls)
+    def get(self, model: str, messages: list, **kwargs) -> Optional[dict]:
+        k = self._key(model, messages, **kwargs)
+        if k in self._cache:
+            data, ts = self._cache[k]
+            if time.time() - ts < self._ttl:
+                self.hits += 1
+                return data
+            del self._cache[k]
+        self.misses += 1
+        return None
+
+    def set(self, model: str, messages: list, response: dict, **kwargs):
+        k = self._key(model, messages, **kwargs)
+        self._cache[k] = (response, time.time())
+
+cache = LLMCache(ttl_seconds=1800)
+
+def cached_completion(messages, model="anthropic/claude-3.5-sonnet", **kwargs):
+    """Only cache deterministic requests (temperature=0)."""
+    kwargs.setdefault("temperature", 0)
+    kwargs.setdefault("max_tokens", 1024)
+
+    cached = cache.get(model, messages, **kwargs)
+    if cached:
+        return cached
+
+    response = client.chat.completions.create(model=model, messages=messages, **kwargs)
+    result = {
+        "content": response.choices[0].message.content,
+        "model": response.model,
+        "usage": {"prompt": response.usage.prompt_tokens, "completion": response.usage.completion_tokens},
+    }
+    cache.set(model, messages, result, **kwargs)
+    return result
+```
+
+## Persistent Cache with Redis
+
+```python
+import redis, json, hashlib
+
+r = redis.Redis(host="localhost", port=6379, db=0)
+
+def redis_cached_completion(messages, model="openai/gpt-4o-mini", ttl=3600, **kwargs):
+    """Cache in Redis with automatic TTL expiry."""
+    kwargs["temperature"] = 0  # Must be deterministic
+    key = f"or:{hashlib.sha256(json.dumps({'m': model, 'msgs': messages, **kwargs}, sort_keys=True).encode()).hexdigest()}"
+
+    cached = r.get(key)
+    if cached:
+        return json.loads(cached)
+
+    response = client.chat.completions.create(model=model, messages=messages, **kwargs)
+    result = {
+        "content": response.choices[0].message.content,
+        "model": response.model,
+        "tokens": response.usage.prompt_tokens + response.usage.completion_tokens,
+    }
+    r.setex(key, ttl, json.dumps(result))
+    return result
+```
+
+## Anthropic Prompt Caching via OpenRouter
+
+Anthropic models on OpenRouter support prompt caching -- large system prompts are cached server-side, reducing input cost by 90% on cache hits.
+
+```python
+# Mark large static content blocks with cache_control
+response = client.chat.completions.create(
+    model="anthropic/claude-3.5-sonnet",
+    messages=[
+        {
+            "role": "system",
+            "content": [
+                {
+                    "type": "text",
+                    "text": "You are an expert. Here is the full source:\n" + large_context,
+                    "cache_control": {"type": "ephemeral"},  # Cache this block
+                }
+            ],
+        },
+        {"role": "user", "content": "What does the main() function do?"},
+    ],
+    max_tokens=1024,
+)
+# First call: cache_creation_input_tokens charged at 1.25x
+# Subsequent: cache_read_input_tokens charged at 0.1x (90% savings)
+```
+
+## Cache Key Design
+
+```python
+def cache_key(model: str, messages: list, **params) -> str:
+    """Deterministic cache key. Include everything that affects output.
+
+    Include: model ID (with variant like :floor), messages, temperature,
+    max_tokens, top_p, transforms, provider routing.
+    Exclude: stream (doesn't affect content), HTTP-Referer, X-Title.
+    """
+    canonical = json.dumps({
+        "model": model, "messages": messages,
+        "temperature": params.get("temperature", 0),
+        "max_tokens": params.get("max_tokens"),
+        "top_p": params.get("top_p"),
+    }, sort_keys=True)
+    return hashlib.sha256(canonical.encode()).hexdigest()
+```
+
+## Cache Invalidation
+
+| Trigger | Action | Why |
+|---------|--------|-----|
+| Model version update | Flush keys for that model | New version may give different outputs |
+| System prompt change | Flush all keys | Output semantics changed |
+| TTL expiry | Automatic eviction | Prevents stale data |
+| Manual purge | `r.delete(key)` or clear by prefix | Debugging or policy change |
 
 ## Error Handling
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| Stale cached responses | TTL too long for dynamic content | Reduce TTL or add cache invalidation triggers |
-| Cache key collisions | Hash function not including all relevant parameters | Include model, messages, temperature, max_tokens, and tools in the key |
-| Memory pressure | In-memory cache growing unbounded | Set max cache size with LRU eviction; use Redis for large caches |
+| Stale cache response | TTL too long | Reduce TTL or version cache keys |
+| Cache miss storm | Cold start or invalidation | Warm cache with common queries at deploy |
+| Redis connection error | Redis down | Fall through to direct API call |
+| Non-deterministic cache | `temperature > 0` cached | Only cache when `temperature=0` |
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
+## Enterprise Considerations
 
-## Examples
+- Only cache deterministic requests (`temperature=0`) -- non-zero temperatures produce different outputs each time
+- Use Anthropic prompt caching for large system prompts (RAG context) -- 90% cost reduction on cache hits
+- Set TTL based on content freshness needs (30 min for dynamic, 24h for reference data)
+- Track cache hit rate to justify caching infrastructure cost
+- Use Redis or Memcached for multi-instance deployments; in-memory only works for single-process
+- Version cache keys when updating system prompts or switching model versions
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
+## References
 
-## Resources
-
-- [OpenRouter Documentation](https://openrouter.ai/docs)
-- [OpenRouter Models](https://openrouter.ai/models)
-- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
-- [OpenRouter Status](https://status.openrouter.ai)
+- [Examples](${CLAUDE_SKILL_DIR}/references/examples.md) | [Errors](${CLAUDE_SKILL_DIR}/references/errors.md)
+- [Prompt Caching](https://openrouter.ai/docs/features/prompt-caching) | [Models API](https://openrouter.ai/docs/api/api-reference/models/get-models)
