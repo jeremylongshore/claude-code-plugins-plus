@@ -100,61 +100,57 @@ export default defineConfig({
 ### Step 4: Test Setup with Mocking
 ```typescript
 // tests/gamma/setup.ts
-import { beforeAll, afterAll } from 'vitest';
-import { GammaClient } from '@gamma/sdk';
+import { beforeAll } from 'vitest';
+import { createGammaClient, type GammaClient } from '../../src/client';
 
 const useMock = process.env.GAMMA_MOCK === 'true';
 
-export let gamma: GammaClient;
+export let gamma: ReturnType<typeof createGammaClient>;
 
 beforeAll(() => {
   if (useMock) {
     gamma = createMockGammaClient();
   } else {
-    gamma = new GammaClient({
-      apiKey: process.env.GAMMA_API_KEY,
+    gamma = createGammaClient({
+      apiKey: process.env.GAMMA_API_KEY!,
     });
   }
 });
 
 function createMockGammaClient() {
   return {
-    presentations: {
-      create: vi.fn().mockResolvedValue({
-        id: 'mock-id',
-        url: 'https://gamma.app/mock/test',
-        title: 'Mock Presentation',
-      }),
-      list: vi.fn().mockResolvedValue([]),
-      get: vi.fn().mockResolvedValue({ id: 'mock-id' }),
-    },
-    ping: vi.fn().mockResolvedValue({ ok: true }),
-  } as unknown as GammaClient;
+    generate: vi.fn().mockResolvedValue({ generationId: 'mock-gen-id' }),
+    poll: vi.fn().mockResolvedValue({
+      status: 'completed',
+      gammaUrl: 'https://gamma.app/docs/mock-test',
+      exportUrl: 'https://export.gamma.app/mock.pdf',
+      creditsUsed: 10,
+    }),
+    listThemes: vi.fn().mockResolvedValue([{ id: 'theme_1', name: 'Default' }]),
+    listFolders: vi.fn().mockResolvedValue([]),
+  };
 }
 ```
 
 ### Step 5: Integration Test Example
 ```typescript
-// tests/gamma/presentation.test.ts
+// tests/gamma/generation.test.ts
 import { describe, it, expect } from 'vitest';
 import { gamma } from './setup';
 
-describe('Gamma Presentations', () => {
-  it('should create a presentation', async () => {
-    const result = await gamma.presentations.create({
-      title: 'CI Test Presentation',
-      prompt: 'Test slide for CI',
-      slideCount: 1,
+describe('Gamma Generation', () => {
+  it('should start a generation', async () => {
+    const result = await gamma.generate({
+      content: 'CI Test: 1-card overview of testing',
+      outputFormat: 'presentation',
     });
 
-    expect(result.id).toBeDefined();
-    expect(result.url).toContain('gamma.app');
+    expect(result.generationId).toBeDefined();
   });
 
-  it('should list presentations', async () => {
-    const presentations = await gamma.presentations.list({ limit: 5 });
-
-    expect(Array.isArray(presentations)).toBe(true);
+  it('should list workspace themes', async () => {
+    const themes = await gamma.listThemes();
+    expect(Array.isArray(themes)).toBe(true);
   });
 });
 ```
@@ -188,10 +184,5 @@ gh secret list
 - [Gamma Testing Guide](https://gamma.app/docs/testing)
 
 ## Next Steps
+
 Proceed to `gamma-deploy-integration` for deployment workflows.
-
-## Examples
-
-**Basic usage**: Apply gamma ci integration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma ci integration for production environments with multiple constraints and team-specific requirements.

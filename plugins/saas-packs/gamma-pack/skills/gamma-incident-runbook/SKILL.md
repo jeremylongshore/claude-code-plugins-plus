@@ -234,32 +234,5 @@ ETA: [If known]
 - [On-Call Schedule]()
 
 ## Next Steps
+
 Proceed to `gamma-data-handling` for data management.
-
-## Instructions
-
-1. Assess the current state of the Gamma configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Gamma |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply gamma incident runbook to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma incident runbook for production environments with multiple constraints and team-specific requirements.

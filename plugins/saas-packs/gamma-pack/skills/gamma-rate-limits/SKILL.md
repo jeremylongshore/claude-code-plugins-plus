@@ -166,10 +166,5 @@ console.log(`Resets in ${status.resetIn} seconds`);
 - [Rate Limit Best Practices](https://gamma.app/docs/best-practices)
 
 ## Next Steps
+
 Proceed to `gamma-security-basics` for security best practices.
-
-## Examples
-
-**Basic usage**: Apply gamma rate limits to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize gamma rate limits for production environments with multiple constraints and team-specific requirements.
