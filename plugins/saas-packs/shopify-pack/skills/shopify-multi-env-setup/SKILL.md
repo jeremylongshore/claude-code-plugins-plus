@@ -1,12 +1,11 @@
 ---
 name: shopify-multi-env-setup
 description: |
-  Configure Shopify across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Shopify configurations.
+  Configure Shopify apps across development, staging, and production environments
+  with separate stores, API credentials, and app instances.
   Trigger with phrases like "shopify environments", "shopify staging",
-  "shopify dev prod", "shopify environment setup", "shopify config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  "shopify dev vs prod", "shopify multi-store", "shopify environment setup".
+allowed-tools: Read, Write, Edit, Bash(shopify:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,208 +16,198 @@ compatible-with: claude-code
 # Shopify Multi-Environment Setup
 
 ## Overview
-Configure Shopify across development, staging, and production environments.
+
+Configure Shopify apps with isolated development, staging, and production environments. Each environment uses a separate Shopify app instance, development store, and credentials.
 
 ## Prerequisites
-- Separate Shopify accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
 
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── shopify/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${SHOPIFY_API_KEY}",
-  "baseUrl": "https://api-sandbox.shopify.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${SHOPIFY_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.shopify.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${SHOPIFY_API_KEY_PROD}",
-  "baseUrl": "https://api.shopify.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/shopify/config.ts
-import baseConfig from '../../config/shopify/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getShopifyConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/shopify/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-SHOPIFY_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  SHOPIFY_API_KEY: ${{ secrets.SHOPIFY_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id shopify/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=shopify-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/shopify/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getShopifyConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[shopify] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+- Shopify Partner account
+- Multiple development stores (free to create in Partner Dashboard)
+- Secret management solution for production (Vault, AWS Secrets Manager, etc.)
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Step 1: Create Separate App Instances
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+Create one app per environment in your Partner Dashboard:
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
+| Environment | App Name | Store | Purpose |
+|-------------|----------|-------|---------|
+| Development | My App (Dev) | dev-store.myshopify.com | Local development |
+| Staging | My App (Staging) | staging-store.myshopify.com | Pre-prod testing |
+| Production | My App | live-store.myshopify.com | Live traffic |
 
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
+Each app gets its own `API_KEY`, `API_SECRET`, and `ACCESS_TOKEN`.
+
+### Step 2: Environment Configuration Files
+
+```bash
+# .env.development (git-ignored)
+SHOPIFY_API_KEY=dev_api_key
+SHOPIFY_API_SECRET=dev_api_secret
+SHOPIFY_STORE=dev-store.myshopify.com
+SHOPIFY_ACCESS_TOKEN=shpat_dev_token
+SHOPIFY_APP_URL=https://localhost:3000
+SHOPIFY_API_VERSION=2024-10
+NODE_ENV=development
+
+# .env.staging (git-ignored)
+SHOPIFY_API_KEY=staging_api_key
+SHOPIFY_API_SECRET=staging_api_secret
+SHOPIFY_STORE=staging-store.myshopify.com
+SHOPIFY_ACCESS_TOKEN=shpat_staging_token
+SHOPIFY_APP_URL=https://staging.your-app.com
+SHOPIFY_API_VERSION=2024-10
+NODE_ENV=staging
+
+# .env.production (never on disk — use secret manager)
+# All values stored in Vault / AWS Secrets Manager / GCP Secret Manager
+```
+
+### Step 3: Shopify CLI Configuration Per Environment
+
+```toml
+# shopify.app.dev.toml — development config
+name = "My App (Dev)"
+client_id = "dev_api_key"
+
+[access_scopes]
+scopes = "read_products,write_products,read_orders,write_orders"
+
+[auth]
+redirect_urls = ["https://localhost/auth/callback"]
+
+[webhooks]
+api_version = "2024-10"
+```
+
+```bash
+# Switch between app configs
+shopify app config use shopify.app.dev.toml
+shopify app dev
+
+shopify app config use shopify.app.toml  # production
+shopify app deploy
+```
+
+### Step 4: Environment-Aware Configuration
+
+```typescript
+// src/config.ts
+interface ShopifyEnvConfig {
+  apiKey: string;
+  apiSecret: string;
+  appUrl: string;
+  apiVersion: string;
+  scopes: string[];
+  environment: "development" | "staging" | "production";
+  debug: boolean;
+  sessionStorageType: "memory" | "sqlite" | "postgresql";
+}
+
+function getConfig(): ShopifyEnvConfig {
+  const env = (process.env.NODE_ENV || "development") as ShopifyEnvConfig["environment"];
+
+  const base = {
+    apiKey: process.env.SHOPIFY_API_KEY!,
+    apiSecret: process.env.SHOPIFY_API_SECRET!,
+    appUrl: process.env.SHOPIFY_APP_URL!,
+    apiVersion: process.env.SHOPIFY_API_VERSION || "2024-10",
+    scopes: (process.env.SHOPIFY_SCOPES || "read_products").split(","),
+    environment: env,
+  };
+
+  const envOverrides: Record<string, Partial<ShopifyEnvConfig>> = {
+    development: {
+      debug: true,
+      sessionStorageType: "sqlite",
+    },
+    staging: {
+      debug: false,
+      sessionStorageType: "postgresql",
+    },
+    production: {
+      debug: false,
+      sessionStorageType: "postgresql",
+    },
+  };
+
+  return { ...base, ...envOverrides[env] } as ShopifyEnvConfig;
+}
+```
+
+### Step 5: Environment Guards
+
+```typescript
+// Prevent dangerous operations outside production
+function requireProduction(operation: string): void {
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`[DEV] ${operation} — would execute in production`);
+    return;
+  }
+}
+
+function blockInProduction(operation: string): void {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      `Operation "${operation}" is blocked in production. ` +
+      `Use staging or development environment.`
+    );
+  }
+}
+
+// Example: prevent test data seeding in production
+async function seedTestProducts() {
+  blockInProduction("seedTestProducts");
+  // ... seeding logic
+}
+
+// Example: ensure billing only runs in production
+async function activateBilling(session: Session) {
+  requireProduction("activateBilling");
+  // ... billing logic
+}
+```
 
 ## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+
+- Isolated environments with separate app instances
+- Environment-specific configuration loading
+- Shopify CLI configured for multi-env workflow
+- Safety guards preventing cross-environment mistakes
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
+| Wrong store in dev | Using prod .env | Verify `SHOPIFY_STORE` in your .env file |
+| OAuth fails on staging | Wrong redirect URL | Update redirect_urls in staging app config |
+| Webhooks not received | URL mismatch | Each environment needs its own webhook URLs |
+| Production guard triggered | Wrong NODE_ENV | Set NODE_ENV correctly in deployment platform |
 
 ## Examples
 
-### Quick Environment Check
-```typescript
-const env = getShopifyConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+### Development Store Quick Setup
+
+```bash
+# Create a development store from Partner Dashboard
+# Partners > Stores > Add store > Development store
+
+# Install your dev app on the dev store
+shopify app dev --store=dev-store.myshopify.com
+
+# Populate test data
+shopify populate products --count=25
+shopify populate orders --count=10
+shopify populate customers --count=20
 ```
 
 ## Resources
-- [Shopify Environments Guide](https://docs.shopify.com/environments)
+
+- [Shopify Development Stores](https://shopify.dev/docs/apps/tools/development-stores)
+- [Shopify CLI Config](https://shopify.dev/docs/apps/build/cli-for-apps/app-configuration)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
+
 For observability setup, see `shopify-observability`.

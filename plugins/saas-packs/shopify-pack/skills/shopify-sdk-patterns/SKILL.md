@@ -1,11 +1,12 @@
 ---
 name: shopify-sdk-patterns
 description: |
-  Apply production-ready Shopify SDK patterns for TypeScript and Python.
+  Apply production-ready patterns for @shopify/shopify-api including typed GraphQL clients,
+  session management, and retry logic.
   Use when implementing Shopify integrations, refactoring SDK usage,
   or establishing team coding standards for Shopify.
   Trigger with phrases like "shopify SDK patterns", "shopify best practices",
-  "shopify code patterns", "idiomatic shopify".
+  "shopify code patterns", "idiomatic shopify", "shopify client wrapper".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,133 +18,313 @@ compatible-with: claude-code
 # Shopify SDK Patterns
 
 ## Overview
-Production-ready patterns for Shopify SDK usage in TypeScript and Python.
+
+Production-ready patterns for the `@shopify/shopify-api` library: singleton clients, typed GraphQL operations, session management, cursor-based pagination, and error handling wrappers.
 
 ## Prerequisites
-- Completed `shopify-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+
+- `@shopify/shopify-api` v9+ installed
+- Familiarity with Shopify's GraphQL Admin API
+- Understanding of async/await and TypeScript generics
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed GraphQL Client Wrapper
+
 ```typescript
 // src/shopify/client.ts
-import { ShopifyClient } from '@shopify/sdk';
+import "@shopify/shopify-api/adapters/node";
+import { shopifyApi, Session, GraphqlClient } from "@shopify/shopify-api";
 
-let instance: ShopifyClient | null = null;
+const shopify = shopifyApi({
+  apiKey: process.env.SHOPIFY_API_KEY!,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
+  hostName: process.env.SHOPIFY_HOST_NAME!,
+  apiVersion: "2024-10",
+  isCustomStoreApp: !!process.env.SHOPIFY_ACCESS_TOKEN,
+  adminApiAccessToken: process.env.SHOPIFY_ACCESS_TOKEN,
+});
 
-export function getShopifyClient(): ShopifyClient {
-  if (!instance) {
-    instance = new ShopifyClient({
-      apiKey: process.env.SHOPIFY_API_KEY!,
-      // Additional options
-    });
+// Singleton session cache per shop
+const sessionCache = new Map<string, Session>();
+
+export function getSession(shop: string): Session {
+  if (!sessionCache.has(shop)) {
+    const session = shopify.session.customAppSession(shop);
+    sessionCache.set(shop, session);
   }
-  return instance;
+  return sessionCache.get(shop)!;
+}
+
+export function getGraphqlClient(shop: string): GraphqlClient {
+  return new shopify.clients.Graphql({
+    session: getSession(shop),
+  });
+}
+
+// Typed query helper
+export async function shopifyQuery<T = any>(
+  shop: string,
+  query: string,
+  variables?: Record<string, unknown>
+): Promise<T> {
+  const client = getGraphqlClient(shop);
+  const response = await client.request(query, { variables });
+  return response.data as T;
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { ShopifyError } from '@shopify/sdk';
+### Step 2: Error Handling with Shopify Error Types
 
-async function safeShopifyCall<T>(
+```typescript
+// src/shopify/errors.ts
+import { HttpResponseError, GraphqlQueryError } from "@shopify/shopify-api";
+
+export class ShopifyServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly statusCode: number,
+    public readonly retryable: boolean,
+    public readonly shopifyRequestId?: string,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = "ShopifyServiceError";
+  }
+}
+
+export function handleShopifyError(error: unknown): never {
+  if (error instanceof HttpResponseError) {
+    const retryable = [429, 500, 502, 503, 504].includes(error.response.code);
+    throw new ShopifyServiceError(
+      `Shopify API ${error.response.code}: ${error.message}`,
+      error.response.code,
+      retryable,
+      error.response.headers?.["x-request-id"] as string,
+      error
+    );
+  }
+
+  if (error instanceof GraphqlQueryError) {
+    // GraphQL errors in the response body
+    const msg = error.body?.errors
+      ?.map((e: any) => e.message)
+      .join("; ") || error.message;
+    throw new ShopifyServiceError(msg, 200, false, undefined, error);
+  }
+
+  throw error;
+}
+
+// Safe wrapper
+export async function safeShopifyCall<T>(
   operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
+): Promise<{ data: T | null; error: ShopifyServiceError | null }> {
   try {
     const data = await operation();
     return { data, error: null };
   } catch (err) {
-    if (err instanceof ShopifyError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+    try {
+      handleShopifyError(err);
+    } catch (shopifyErr) {
+      return { data: null, error: shopifyErr as ShopifyServiceError };
     }
-    return { data: null, error: err as Error };
+    return { data: null, error: err as ShopifyServiceError };
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
+### Step 3: Cursor-Based Pagination
+
 ```typescript
-async function withRetry<T>(
+// src/shopify/pagination.ts
+// Shopify uses Relay-style cursor pagination for all list queries
+
+interface PageInfo {
+  hasNextPage: boolean;
+  endCursor: string | null;
+}
+
+interface PaginatedResult<T> {
+  edges: Array<{ node: T; cursor: string }>;
+  pageInfo: PageInfo;
+}
+
+export async function* paginateShopify<T>(
+  shop: string,
+  query: string,
+  connectionPath: string, // e.g. "products" or "orders"
+  variables: Record<string, unknown> = {},
+  pageSize: number = 50
+): AsyncGenerator<T[], void, undefined> {
+  let cursor: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const response = await shopifyQuery(shop, query, {
+      ...variables,
+      first: pageSize,
+      after: cursor,
+    });
+
+    // Navigate to the connection in the response
+    const connection = connectionPath
+      .split(".")
+      .reduce((obj: any, key) => obj[key], response) as PaginatedResult<T>;
+
+    yield connection.edges.map((e) => e.node);
+
+    hasNextPage = connection.pageInfo.hasNextPage;
+    cursor = connection.pageInfo.endCursor;
+  }
+}
+
+// Usage example:
+// for await (const batch of paginateShopify<Product>(
+//   "store.myshopify.com",
+//   PRODUCTS_QUERY,
+//   "products",
+//   { query: "status:active" }
+// )) {
+//   await processProducts(batch);
+// }
+```
+
+### Step 4: Multi-Tenant Client Factory
+
+```typescript
+// src/shopify/factory.ts
+// For apps installed on multiple stores
+
+import { Session, GraphqlClient } from "@shopify/shopify-api";
+
+interface TenantConfig {
+  shop: string;
+  accessToken: string;
+}
+
+class ShopifyClientFactory {
+  private clients = new Map<string, GraphqlClient>();
+
+  getClient(config: TenantConfig): GraphqlClient {
+    if (!this.clients.has(config.shop)) {
+      const session = new Session({
+        id: config.shop,
+        shop: config.shop,
+        state: "",
+        isOnline: false,
+        accessToken: config.accessToken,
+      });
+
+      this.clients.set(
+        config.shop,
+        new shopify.clients.Graphql({ session })
+      );
+    }
+    return this.clients.get(config.shop)!;
+  }
+
+  // Evict when merchant uninstalls
+  removeClient(shop: string): void {
+    this.clients.delete(shop);
+  }
+}
+
+export const clientFactory = new ShopifyClientFactory();
+```
+
+### Step 5: Response Validation with Zod
+
+```typescript
+// src/shopify/validators.ts
+import { z } from "zod";
+
+// Validate Shopify product response shape
+const ShopifyMoneySchema = z.object({
+  amount: z.string(),
+  currencyCode: z.string(),
+});
+
+const ShopifyProductSchema = z.object({
+  id: z.string().startsWith("gid://shopify/Product/"),
+  title: z.string(),
+  handle: z.string(),
+  status: z.enum(["ACTIVE", "ARCHIVED", "DRAFT"]),
+  totalInventory: z.number(),
+  variants: z.object({
+    edges: z.array(z.object({
+      node: z.object({
+        id: z.string(),
+        title: z.string(),
+        price: z.string(),
+        sku: z.string().nullable(),
+      }),
+    })),
+  }),
+});
+
+export type ShopifyProduct = z.infer<typeof ShopifyProductSchema>;
+
+// Validated fetch
+export async function fetchProducts(shop: string): Promise<ShopifyProduct[]> {
+  const data = await shopifyQuery(shop, PRODUCTS_QUERY);
+  return data.products.edges.map(
+    (e: any) => ShopifyProductSchema.parse(e.node)
+  );
+}
+```
+
+## Output
+
+- Type-safe GraphQL client with singleton session management
+- Structured error handling that distinguishes retryable from permanent errors
+- Cursor-based pagination generator for large datasets
+- Multi-tenant client factory for apps serving multiple stores
+- Zod validation for API response shape verification
+
+## Error Handling
+
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| `safeShopifyCall` | All API calls | Returns `{data, error}` instead of throwing |
+| `handleShopifyError` | Error translation | Maps HTTP/GraphQL errors to typed errors |
+| Cursor pagination | Large datasets | Memory-efficient streaming with backpressure |
+| Zod validation | Response parsing | Catches breaking API changes immediately |
+| Client factory | Multi-tenant apps | Isolated sessions per merchant |
+
+## Examples
+
+### Retry with Exponential Backoff
+
+```typescript
+export async function withRetry<T>(
   operation: () => Promise<T>,
   maxRetries = 3,
-  backoffMs = 1000
+  baseDelayMs = 1000
 ): Promise<T> {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await operation();
     } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
+      if (err instanceof ShopifyServiceError && err.retryable && attempt < maxRetries) {
+        const delay = baseDelayMs * Math.pow(2, attempt - 1) + Math.random() * 500;
+        console.warn(`Shopify retry ${attempt}/${maxRetries} in ${delay.toFixed(0)}ms`);
+        await new Promise((r) => setTimeout(r, delay));
+        continue;
+      }
+      throw err;
     }
   }
-  throw new Error('Unreachable');
+  throw new Error("Unreachable");
 }
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, ShopifyClient>();
-
-export function getClientForTenant(tenantId: string): ShopifyClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new ShopifyClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from shopify import ShopifyClient
-
-@asynccontextmanager
-async def get_shopify_client():
-    client = ShopifyClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const shopifyResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
 ```
 
 ## Resources
-- [Shopify SDK Reference](https://docs.shopify.com/sdk)
-- [Shopify API Types](https://docs.shopify.com/types)
+
+- [@shopify/shopify-api Reference](https://github.com/Shopify/shopify-api-js)
+- [GraphQL Pagination (Relay Spec)](https://shopify.dev/docs/api/usage/pagination-graphql)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-Apply patterns in `shopify-core-workflow-a` for real-world usage.
+
+Apply patterns in `shopify-core-workflow-a` for real-world product management.

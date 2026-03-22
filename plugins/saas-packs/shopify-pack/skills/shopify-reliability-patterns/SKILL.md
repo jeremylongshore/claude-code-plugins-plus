@@ -1,11 +1,10 @@
 ---
 name: shopify-reliability-patterns
 description: |
-  Implement Shopify reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Shopify integrations, implementing retry strategies,
-  or adding resilience to production Shopify services.
+  Implement reliability patterns for Shopify apps including circuit breakers
+  for API outages, webhook retry handling, and graceful degradation.
   Trigger with phrases like "shopify reliability", "shopify circuit breaker",
-  "shopify idempotent", "shopify resilience", "shopify fallback", "shopify bulkhead".
+  "shopify resilience", "shopify fallback", "shopify retry webhook".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,276 +16,301 @@ compatible-with: claude-code
 # Shopify Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Shopify integrations.
+
+Build fault-tolerant Shopify integrations that handle API outages, webhook retry storms, and rate limit exhaustion gracefully.
 
 ## Prerequisites
+
 - Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const shopifyBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-shopifyBreaker.on('open', () => {
-  console.warn('Shopify circuit OPEN - requests failing fast');
-  alertOps('Shopify circuit breaker opened');
-});
-
-shopifyBreaker.on('halfOpen', () => {
-  console.info('Shopify circuit HALF-OPEN - testing recovery');
-});
-
-shopifyBreaker.on('close', () => {
-  console.info('Shopify circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeShopifyCall<T>(fn: () => Promise<T>): Promise<T> {
-  return shopifyBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const shopifyQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedShopifyCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return shopifyQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedShopifyCall('critical', () =>
-  shopifyClient.processPayment(order)
-);
-
-await prioritizedShopifyCall('bulk', () =>
-  shopifyClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutShopifyCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Shopify ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface ShopifyFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withShopifyFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Shopify failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class ShopifyDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await shopifyClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function shopifyHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: shopifyBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Queue infrastructure (BullMQ, SQS, etc.) for async processing
+- Cache layer for fallback data
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap Shopify calls with circuit breaker.
+### Step 1: Circuit Breaker for Shopify API
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+```typescript
+import CircuitBreaker from "opossum";
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+// Create circuit breaker wrapping Shopify API calls
+const shopifyCircuit = new CircuitBreaker(
+  async (fn: () => Promise<any>) => fn(),
+  {
+    timeout: 10000,                 // 10s timeout per request
+    errorThresholdPercentage: 50,   // Open at 50% error rate
+    resetTimeout: 30000,            // Try half-open after 30s
+    volumeThreshold: 5,             // Need 5 requests before tripping
+    errorFilter: (error: any) => {
+      // Don't count 422 validation errors as circuit failures
+      // Only count 5xx and timeout errors
+      const code = error.response?.code || error.statusCode;
+      return code >= 500 || error.code === "ECONNRESET" || error.code === "ETIMEDOUT";
+    },
+  }
+);
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+shopifyCircuit.on("open", () => {
+  console.error("[CIRCUIT OPEN] Shopify API failing — serving cached data");
+});
+shopifyCircuit.on("halfOpen", () => {
+  console.info("[CIRCUIT HALF-OPEN] Testing Shopify recovery...");
+});
+shopifyCircuit.on("close", () => {
+  console.info("[CIRCUIT CLOSED] Shopify API recovered");
+});
+
+// Usage
+async function resilientShopifyQuery<T>(
+  shop: string,
+  query: string,
+  variables?: Record<string, unknown>
+): Promise<T> {
+  return shopifyCircuit.fire(async () => {
+    const client = getGraphqlClient(shop);
+    const response = await client.request(query, { variables });
+
+    // Check for THROTTLED in GraphQL response
+    if (response.errors?.some((e: any) => e.extensions?.code === "THROTTLED")) {
+      throw new Error("THROTTLED"); // Triggers circuit breaker
+    }
+
+    return response.data as T;
+  });
+}
+```
+
+### Step 2: Webhook Idempotency
+
+Shopify retries webhooks up to 19 times over 48 hours if your endpoint doesn't return 200. Your handler **must** be idempotent.
+
+```typescript
+import { Redis } from "ioredis";
+const redis = new Redis(process.env.REDIS_URL!);
+
+async function processWebhookIdempotently(
+  webhookId: string, // X-Shopify-Webhook-Id header
+  topic: string,
+  handler: () => Promise<void>
+): Promise<{ processed: boolean; duplicate: boolean }> {
+  const key = `shopify:webhook:${webhookId}`;
+
+  // Check if already processed
+  const exists = await redis.exists(key);
+  if (exists) {
+    console.log(`Duplicate webhook ${webhookId} for ${topic} — skipping`);
+    return { processed: false, duplicate: true };
+  }
+
+  // Mark as processing (with TTL to auto-expire)
+  await redis.set(key, "processing", "EX", 7 * 86400, "NX"); // 7 day TTL
+
+  try {
+    await handler();
+    await redis.set(key, "completed", "EX", 7 * 86400);
+    return { processed: true, duplicate: false };
+  } catch (error) {
+    // Remove the key so Shopify's retry can re-process
+    await redis.del(key);
+    throw error;
+  }
+}
+
+// Usage in webhook handler
+app.post("/webhooks", rawBodyParser, async (req, res) => {
+  const webhookId = req.headers["x-shopify-webhook-id"] as string;
+  const topic = req.headers["x-shopify-topic"] as string;
+
+  // ALWAYS respond 200 within 5 seconds
+  res.status(200).send("OK");
+
+  // Process asynchronously with idempotency
+  await processWebhookIdempotently(webhookId, topic, async () => {
+    const payload = JSON.parse(req.body.toString());
+    await handleWebhookEvent(topic, payload);
+  });
+});
+```
+
+### Step 3: Graceful Degradation with Cached Fallback
+
+```typescript
+async function withFallback<T>(
+  primary: () => Promise<T>,
+  fallback: () => Promise<T>,
+  cacheKey?: string
+): Promise<{ data: T; source: "live" | "cached" | "fallback" }> {
+  try {
+    const data = await primary();
+    // Update cache for future fallback
+    if (cacheKey) {
+      await redis.set(`fallback:${cacheKey}`, JSON.stringify(data), "EX", 3600);
+    }
+    return { data, source: "live" };
+  } catch (error) {
+    console.warn("Shopify API failed, trying cached data:", (error as Error).message);
+
+    // Try cached data first
+    if (cacheKey) {
+      const cached = await redis.get(`fallback:${cacheKey}`);
+      if (cached) {
+        return { data: JSON.parse(cached), source: "cached" };
+      }
+    }
+
+    // Fall back to alternative data source
+    try {
+      const data = await fallback();
+      return { data, source: "fallback" };
+    } catch {
+      throw error; // Re-throw original error if all fallbacks fail
+    }
+  }
+}
+
+// Usage
+const { data: products, source } = await withFallback(
+  () => shopifyQuery(shop, PRODUCTS_QUERY),
+  () => db.cachedProducts.findMany({ where: { shop } }),
+  `products:${shop}`
+);
+
+if (source !== "live") {
+  console.warn(`Serving ${source} product data for ${shop}`);
+}
+```
+
+### Step 4: Webhook Processing Queue
+
+Don't process webhooks inline — queue them for resilience:
+
+```typescript
+import { Queue, Worker } from "bullmq";
+
+const webhookQueue = new Queue("shopify-webhooks", {
+  connection: { host: "localhost", port: 6379 },
+  defaultJobOptions: {
+    attempts: 5,
+    backoff: { type: "exponential", delay: 5000 },
+    removeOnComplete: 1000,
+    removeOnFail: 5000,
+  },
+});
+
+// Enqueue webhook for processing
+app.post("/webhooks", rawBodyParser, (req, res) => {
+  // Verify HMAC first
+  if (!verifyHmac(req.body, req.headers["x-shopify-hmac-sha256"]!)) {
+    return res.status(401).send();
+  }
+
+  // Respond immediately
+  res.status(200).send("OK");
+
+  // Queue for async processing
+  webhookQueue.add(req.headers["x-shopify-topic"] as string, {
+    topic: req.headers["x-shopify-topic"],
+    shop: req.headers["x-shopify-shop-domain"],
+    webhookId: req.headers["x-shopify-webhook-id"],
+    payload: req.body.toString(),
+  });
+});
+
+// Worker processes queued webhooks
+const worker = new Worker("shopify-webhooks", async (job) => {
+  const { topic, shop, webhookId, payload } = job.data;
+
+  await processWebhookIdempotently(webhookId, topic, async () => {
+    await handleWebhookEvent(topic, JSON.parse(payload));
+  });
+}, {
+  connection: { host: "localhost", port: 6379 },
+  concurrency: 10,
+});
+```
+
+### Step 5: Rate Limit-Aware Retry
+
+```typescript
+async function shopifyRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 5
+): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      const isRetryable =
+        error.response?.code === 429 ||
+        error.response?.code >= 500 ||
+        error.body?.errors?.[0]?.extensions?.code === "THROTTLED";
+
+      if (!isRetryable || attempt === maxRetries) throw error;
+
+      // For REST 429: use Retry-After header
+      const retryAfter = error.response?.headers?.["retry-after"];
+      // For GraphQL THROTTLED: calculate from available points
+      const throttle = error.body?.extensions?.cost?.throttleStatus;
+      const waitForPoints = throttle
+        ? ((100 - throttle.currentlyAvailable) / throttle.restoreRate) * 1000
+        : 0;
+
+      const delay = retryAfter
+        ? parseFloat(retryAfter) * 1000
+        : Math.max(waitForPoints, 1000 * Math.pow(2, attempt));
+
+      console.warn(`Retry ${attempt + 1}/${maxRetries} in ${(delay / 1000).toFixed(1)}s`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+  throw new Error("Unreachable");
+}
+```
 
 ## Output
-- Circuit breaker protecting Shopify calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+
+- Circuit breaker preventing cascade failures during Shopify outages
+- Idempotent webhook processing preventing duplicate operations
+- Graceful degradation with cached fallback data
+- Queue-based webhook processing for resilience
+- Rate limit-aware retry logic
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Circuit stays open | Shopify extended outage | Serve cached data, monitor status page |
+| Duplicate orders processed | Missing idempotency | Use `X-Shopify-Webhook-Id` for dedup |
+| Queue growing unbounded | Worker down | Monitor queue depth, alert on backlog |
+| Stale cache served for hours | Circuit never recovers | Set max cache staleness, force refresh |
 
 ## Examples
 
-### Quick Circuit Check
+### Health Check with Circuit State
+
 ```typescript
-const state = shopifyBreaker.stats().state;
-console.log('Shopify circuit:', state);
+app.get("/health", async (req, res) => {
+  res.json({
+    status: shopifyCircuit.opened ? "degraded" : "healthy",
+    shopify: {
+      circuit: shopifyCircuit.opened ? "open" : "closed",
+      stats: shopifyCircuit.stats,
+    },
+    webhookQueue: {
+      waiting: await webhookQueue.getWaitingCount(),
+      active: await webhookQueue.getActiveCount(),
+      failed: await webhookQueue.getFailedCount(),
+    },
+  });
+});
 ```
 
 ## Resources
+
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Shopify Reliability Guide](https://docs.shopify.com/reliability)
+- [Opossum Circuit Breaker](https://nodeshift.dev/opossum/)
+- [BullMQ Documentation](https://docs.bullmq.io/)
+- [Shopify Webhook Retry Policy](https://shopify.dev/docs/apps/build/webhooks)
 
 ## Next Steps
+
 For policy enforcement, see `shopify-policy-guardrails`.

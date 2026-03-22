@@ -1,11 +1,10 @@
 ---
 name: shopify-policy-guardrails
 description: |
-  Implement Shopify lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Shopify integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Shopify best practices.
+  Implement Shopify app policy enforcement with ESLint rules for API key detection,
+  query cost budgets, and App Store compliance checks.
   Trigger with phrases like "shopify policy", "shopify lint",
-  "shopify guardrails", "shopify best practices check", "shopify eslint".
+  "shopify guardrails", "shopify compliance", "shopify eslint", "shopify app review".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,36 +16,55 @@ compatible-with: claude-code
 # Shopify Policy & Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Shopify integrations.
+
+Automated policy enforcement for Shopify apps: secret detection, query cost budgets, App Store compliance checks, and CI policy validation.
 
 ## Prerequisites
+
 - ESLint configured in project
 - Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
+- CI/CD pipeline with GitHub Actions
+- Shopify app with `shopify.app.toml`
 
-## ESLint Rules
+## Instructions
 
-### Custom Shopify Plugin
+### Step 1: Secret Detection Rules
+
 ```javascript
-// eslint-plugin-shopify/rules/no-hardcoded-keys.js
+// eslint-rules/no-shopify-secrets.js
 module.exports = {
   meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Shopify API keys',
+    type: "problem",
+    docs: { description: "Detect hardcoded Shopify tokens and secrets" },
+    messages: {
+      adminToken: "Hardcoded Shopify Admin API token detected (shpat_*)",
+      apiSecret: "Potential Shopify API secret detected",
+      storefrontToken: "Hardcoded Storefront API token detected",
     },
-    fixable: 'code',
   },
   create(context) {
     return {
       Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Shopify API key detected',
-            });
+        if (typeof node.value !== "string") return;
+        const v = node.value;
+
+        // Admin API access token: shpat_ + 32 hex chars
+        if (/^shpat_[a-f0-9]{32}$/i.test(v)) {
+          context.report({ node, messageId: "adminToken" });
+        }
+        // Storefront token: shpss_ pattern
+        if (/^shpss_[a-f0-9]{32}$/i.test(v)) {
+          context.report({ node, messageId: "storefrontToken" });
+        }
+        // Generic secret pattern (32+ hex that's clearly a token)
+        if (/^[a-f0-9]{32,}$/i.test(v) && v.length === 32) {
+          context.report({ node, messageId: "apiSecret" });
+        }
+      },
+      TemplateLiteral(node) {
+        for (const quasi of node.quasis) {
+          if (/shpat_[a-f0-9]/i.test(quasi.value.raw)) {
+            context.report({ node, messageId: "adminToken" });
           }
         }
       },
@@ -55,114 +73,178 @@ module.exports = {
 };
 ```
 
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['shopify'],
-  rules: {
-    'shopify/no-hardcoded-keys': 'error',
-    'shopify/require-error-handling': 'warn',
-    'shopify/use-typed-client': 'warn',
-  },
+### Step 2: Query Cost Budget Enforcement
+
+```typescript
+// Enforce query cost budgets at build/test time
+interface QueryCostBudget {
+  maxFirstParam: number;        // Max items per page
+  maxNestedDepth: number;       // Max nested connection depth
+  maxEstimatedCost: number;     // Max estimated query cost
+}
+
+const BUDGET: QueryCostBudget = {
+  maxFirstParam: 100,           // Never request more than 100 items
+  maxNestedDepth: 3,            // No more than 3 levels of edges/node
+  maxEstimatedCost: 500,        // Stay well under 1,000 point limit
 };
+
+function validateQueryCost(query: string): string[] {
+  const violations: string[] = [];
+
+  // Check `first:` parameter values
+  const firstParams = query.matchAll(/first:\s*(\d+)/g);
+  for (const match of firstParams) {
+    if (parseInt(match[1]) > BUDGET.maxFirstParam) {
+      violations.push(
+        `first: ${match[1]} exceeds budget of ${BUDGET.maxFirstParam}`
+      );
+    }
+  }
+
+  // Check nesting depth (count "edges { node {" patterns)
+  const depth = (query.match(/edges\s*\{/g) || []).length;
+  if (depth > BUDGET.maxNestedDepth) {
+    violations.push(
+      `Nesting depth ${depth} exceeds budget of ${BUDGET.maxNestedDepth}`
+    );
+  }
+
+  // Estimate cost: multiply all `first` values along nested path
+  const firstValues = [...query.matchAll(/first:\s*(\d+)/g)].map((m) =>
+    parseInt(m[1])
+  );
+  const estimatedCost = firstValues.reduce((a, b) => a * b, 1);
+  if (estimatedCost > BUDGET.maxEstimatedCost) {
+    violations.push(
+      `Estimated cost ${estimatedCost} exceeds budget of ${BUDGET.maxEstimatedCost}`
+    );
+  }
+
+  return violations;
+}
 ```
 
-## Pre-Commit Hooks
+### Step 3: Pre-Commit Hooks
 
 ```yaml
 # .pre-commit-config.yaml
 repos:
   - repo: local
     hooks:
-      - id: shopify-secrets-check
-        name: Check for Shopify secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+      - id: shopify-token-scan
+        name: Scan for Shopify tokens
         language: system
+        entry: bash -c '
+          if git diff --cached --diff-filter=d | grep -E "shpat_[a-f0-9]{32}|shpss_[a-f0-9]{32}" ; then
+            echo "ERROR: Shopify access token detected in staged changes"
+            exit 1
+          fi'
         pass_filenames: false
 
-      - id: shopify-config-validate
-        name: Validate Shopify configuration
-        entry: node scripts/validate-shopify-config.js
-        language: node
-        files: '\.shopify\.json$'
+      - id: shopify-env-check
+        name: Check .env not staged
+        language: system
+        entry: bash -c '
+          if git diff --cached --name-only | grep -E "^\.env$|^\.env\.local$|^\.env\.production$" ; then
+            echo "ERROR: .env file staged for commit"
+            exit 1
+          fi'
+        pass_filenames: false
 ```
 
-## TypeScript Strict Patterns
+### Step 4: App Store Compliance Checker
 
 ```typescript
-// Enforce typed configuration
-interface ShopifyStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
+// scripts/check-app-compliance.ts
+// Run before submitting to Shopify App Store
+
+interface ComplianceCheck {
+  name: string;
+  required: boolean;
+  check: () => Promise<boolean>;
 }
 
-// Disallow any in Shopify code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
+const checks: ComplianceCheck[] = [
+  {
+    name: "GDPR webhook: customers/data_request",
+    required: true,
+    check: async () => {
+      const toml = await readFile("shopify.app.toml", "utf-8");
+      return toml.includes("customers/data_request");
+    },
+  },
+  {
+    name: "GDPR webhook: customers/redact",
+    required: true,
+    check: async () => {
+      const toml = await readFile("shopify.app.toml", "utf-8");
+      return toml.includes("customers/redact");
+    },
+  },
+  {
+    name: "GDPR webhook: shop/redact",
+    required: true,
+    check: async () => {
+      const toml = await readFile("shopify.app.toml", "utf-8");
+      return toml.includes("shop/redact");
+    },
+  },
+  {
+    name: "No hardcoded tokens in source",
+    required: true,
+    check: async () => {
+      const { execSync } = require("child_process");
+      const result = execSync(
+        'grep -rE "shpat_[a-f0-9]{32}" app/ --include="*.ts" --include="*.tsx" || true'
+      ).toString();
+      return result.trim() === "";
+    },
+  },
+  {
+    name: "CSP frame-ancestors header set",
+    required: true,
+    check: async () => {
+      const files = await glob("app/**/*.ts");
+      const hasCSP = files.some((f) => {
+        const content = readFileSync(f, "utf-8");
+        return content.includes("frame-ancestors");
+      });
+      return hasCSP;
+    },
+  },
+  {
+    name: "API version is not unstable",
+    required: true,
+    check: async () => {
+      const toml = await readFile("shopify.app.toml", "utf-8");
+      return !toml.includes('api_version = "unstable"');
+    },
+  },
+];
 
-// Prefer this
-const client = new ShopifyClient(config satisfies ShopifyStrictConfig);
+async function runComplianceChecks(): Promise<void> {
+  console.log("=== Shopify App Store Compliance Check ===\n");
+  let passed = 0;
+  let failed = 0;
+
+  for (const check of checks) {
+    const result = await check.check();
+    const status = result ? "PASS" : check.required ? "FAIL" : "WARN";
+    console.log(`${status}: ${check.name}`);
+    result ? passed++ : failed++;
+  }
+
+  console.log(`\n${passed} passed, ${failed} failed`);
+  if (failed > 0) process.exit(1);
+}
 ```
 
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Shopify Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Shopify client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: shopify/use-singleton-client
-- CI check: grep for "new ShopifyClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# shopify-policy.rego
-package shopify
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
+### Step 5: CI Policy Pipeline
 
 ```yaml
 # .github/workflows/shopify-policy.yml
-name: Shopify Policy Check
+name: Shopify Policy
 
 on: [push, pull_request]
 
@@ -172,88 +254,71 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check for hardcoded secrets
+      - name: Scan for hardcoded Shopify tokens
         run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Shopify keys found"
+          if grep -rE "shpat_[a-f0-9]{32}|shpss_[a-f0-9]{32}" \
+            --include="*.ts" --include="*.tsx" --include="*.js" \
+            app/ src/ ; then
+            echo "::error::Hardcoded Shopify tokens found!"
             exit 1
           fi
 
-      - name: Validate configuration schema
+      - name: Check GDPR webhooks configured
         run: |
-          npx ajv validate -s shopify-config.schema.json -d config/shopify/*.json
+          for topic in "customers/data_request" "customers/redact" "shop/redact"; do
+            if ! grep -q "$topic" shopify.app.toml; then
+              echo "::error::Missing mandatory GDPR webhook: $topic"
+              exit 1
+            fi
+          done
+          echo "All GDPR webhooks configured"
 
-      - name: Run ESLint Shopify rules
-        run: npx eslint --plugin shopify --rule 'shopify/no-hardcoded-keys: error' src/
+      - name: Validate API version
+        run: |
+          VERSION=$(grep 'api_version' shopify.app.toml | head -1 | grep -oP '\d{4}-\d{2}')
+          if [ "$VERSION" = "unstable" ]; then
+            echo "::error::Cannot use unstable API version"
+            exit 1
+          fi
+          echo "API version: $VERSION"
 ```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardShopifyOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.SHOPIFY_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Shopify rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Shopify rate limit exceeded - request blocked');
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Shopify patterns.
-
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
-
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
-
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
 
 ## Output
-- ESLint plugin with Shopify rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+
+- ESLint rules catching hardcoded tokens
+- Query cost budgets enforced
+- Pre-commit hooks blocking secret leaks
+- App Store compliance checker
+- CI policy pipeline preventing violations
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| False positive on token | Base64 string matched | Narrow regex pattern |
+| Query cost estimate wrong | Complex variable nesting | Use actual debug header in tests |
+| Pre-commit bypassed | `--no-verify` flag | Enforce in CI as backup |
+| App Store rejection | Missing GDPR webhook | Run compliance checker before submit |
 
 ## Examples
 
-### Quick ESLint Check
+### Quick Policy Scan
+
 ```bash
-npx eslint --plugin shopify --rule 'shopify/no-hardcoded-keys: error' src/
+# One-liner: check for token leaks in staged changes
+git diff --cached | grep -E "shpat_|shpss_" && echo "TOKEN LEAK!" || echo "Clean"
+
+# Check GDPR compliance
+grep -c "customers/data_request\|customers/redact\|shop/redact" shopify.app.toml
+# Should output: 3
 ```
 
 ## Resources
+
+- [Shopify App Store Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
+- [git-secrets](https://github.com/awslabs/git-secrets)
 
 ## Next Steps
+
 For architecture blueprints, see `shopify-architecture-variants`.

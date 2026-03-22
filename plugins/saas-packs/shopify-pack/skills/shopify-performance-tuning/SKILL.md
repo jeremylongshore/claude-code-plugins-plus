@@ -1,11 +1,10 @@
 ---
 name: shopify-performance-tuning
 description: |
-  Optimize Shopify API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Shopify integrations.
+  Optimize Shopify API performance with GraphQL query cost reduction, bulk operations,
+  caching strategies, and Storefront API for high-traffic storefronts.
   Trigger with phrases like "shopify performance", "optimize shopify",
-  "shopify latency", "shopify caching", "shopify slow", "shopify batch".
+  "shopify slow", "shopify caching", "shopify bulk operation", "shopify query cost".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,200 +16,261 @@ compatible-with: claude-code
 # Shopify Performance Tuning
 
 ## Overview
-Optimize Shopify API performance with caching, batching, and connection pooling.
+
+Optimize Shopify API performance through GraphQL query cost reduction, bulk operations for large data exports, response caching, and Storefront API for high-traffic public-facing queries.
 
 ## Prerequisites
-- Shopify SDK installed
-- Understanding of async patterns
+
+- Understanding of Shopify's calculated query cost system
+- Access to the `Shopify-GraphQL-Cost-Debug: 1` header for cost analysis
 - Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedShopifyRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const shopifyLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Shopify
-    const results = await shopifyClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  shopifyLoader.load('id-1'),
-  shopifyLoader.load('id-2'),
-  shopifyLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new ShopifyClient({
-  apiKey: process.env.SHOPIFY_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedShopifyList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedShopifyList(cursor =>
-  shopifyClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredShopifyCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Shopify operations.
+### Step 1: Analyze Query Cost
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+```bash
+# Debug query cost with special header
+curl -X POST "https://$STORE/admin/api/2024-10/graphql.json" \
+  -H "X-Shopify-Access-Token: $TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Shopify-GraphQL-Cost-Debug: 1" \
+  -d '{"query": "{ products(first: 50) { edges { node { id title variants(first: 20) { edges { node { id price } } } } } } }"}' \
+  | jq '.extensions.cost'
+```
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+Response shows cost breakdown:
+```json
+{
+  "requestedQueryCost": 152,
+  "actualQueryCost": 42,
+  "throttleStatus": {
+    "maximumAvailable": 1000.0,
+    "currentlyAvailable": 958.0,
+    "restoreRate": 50.0
+  }
+}
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+**Key rule:** `requestedQueryCost` is calculated as `first * nested_fields`. Reducing `first:` from 250 to 50 can cut cost by 5x.
+
+### Step 2: Reduce Query Cost
+
+```typescript
+// BEFORE: High cost — requests too many fields and items
+// requestedQueryCost: ~5,502
+const EXPENSIVE_QUERY = `{
+  products(first: 250) {
+    edges {
+      node {
+        id title description descriptionHtml vendor productType tags
+        variants(first: 100) {
+          edges {
+            node {
+              id title price compareAtPrice sku barcode
+              inventoryQuantity weight weightUnit
+              selectedOptions { name value }
+              metafields(first: 10) {
+                edges { node { namespace key value type } }
+              }
+            }
+          }
+        }
+        images(first: 20) {
+          edges { node { url altText width height } }
+        }
+        metafields(first: 10) {
+          edges { node { namespace key value type } }
+        }
+      }
+    }
+  }
+}`;
+
+// AFTER: Optimized — only needed fields, smaller page sizes
+// requestedQueryCost: ~112
+const OPTIMIZED_QUERY = `{
+  products(first: 50) {
+    edges {
+      node {
+        id
+        title
+        status
+        variants(first: 5) {
+          edges {
+            node { id price sku inventoryQuantity }
+          }
+        }
+      }
+    }
+    pageInfo { hasNextPage endCursor }
+  }
+}`;
+```
+
+### Step 3: Use Bulk Operations for Large Exports
+
+Bulk operations bypass rate limits and are designed for exporting large datasets:
+
+```typescript
+// Step 1: Start bulk operation
+const START_BULK = `
+  mutation {
+    bulkOperationRunQuery(query: """
+      {
+        products {
+          edges {
+            node {
+              id
+              title
+              handle
+              variants {
+                edges {
+                  node {
+                    id
+                    sku
+                    price
+                    inventoryQuantity
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    """) {
+      bulkOperation {
+        id
+        status
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
+// Step 2: Poll for completion
+const CHECK_BULK = `{
+  currentBulkOperation {
+    id
+    status       # CREATED, RUNNING, COMPLETED, FAILED
+    errorCode
+    objectCount
+    fileSize
+    url          # JSONL download URL when COMPLETED
+    createdAt
+  }
+}`;
+
+// Step 3: Download results (JSONL format — one JSON object per line)
+// const response = await fetch(bulkOperation.url);
+// Each line: {"id":"gid://shopify/Product/123","title":"Widget",...}
+```
+
+### Step 4: Cache Frequently Accessed Data
+
+```typescript
+import { LRUCache } from "lru-cache";
+
+const shopifyCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 5 * 60 * 1000, // 5 minutes
+  updateAgeOnGet: true,
+});
+
+async function cachedQuery<T>(
+  cacheKey: string,
+  queryFn: () => Promise<T>,
+  ttlMs?: number
+): Promise<T> {
+  const cached = shopifyCache.get(cacheKey);
+  if (cached !== undefined) return cached as T;
+
+  const result = await queryFn();
+  shopifyCache.set(cacheKey, result, { ttl: ttlMs });
+  return result;
+}
+
+// Usage — cache product data for 5 minutes
+const product = await cachedQuery(
+  `product:${productId}`,
+  () => shopifyQuery(shop, PRODUCT_QUERY, { id: productId })
+);
+
+// Invalidate on webhook
+app.post("/webhooks", (req, res) => {
+  const topic = req.headers["x-shopify-topic"];
+  if (topic === "products/update") {
+    const payload = JSON.parse(req.body);
+    shopifyCache.delete(`product:gid://shopify/Product/${payload.id}`);
+  }
+});
+```
+
+### Step 5: Use Storefront API for Public Queries
+
+The Storefront API has separate rate limits and is designed for high-traffic public storefronts:
+
+```typescript
+// Storefront API — safe for client-side, higher rate limits
+const storefrontClient = new shopify.clients.Storefront({
+  session,
+  apiVersion: "2024-10",
+});
+
+// Storefront API query — no admin credentials exposed
+const products = await storefrontClient.request(`{
+  products(first: 12, sortKey: BEST_SELLING) {
+    edges {
+      node {
+        id
+        title
+        handle
+        priceRange {
+          minVariantPrice { amount currencyCode }
+        }
+        featuredImage {
+          url(transform: { maxWidth: 400 })
+          altText
+        }
+      }
+    }
+  }
+}`);
+```
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+
+- Query costs reduced through field selection and page size optimization
+- Bulk operations configured for large data exports
+- Response caching with webhook-driven invalidation
+- Storefront API used for public-facing high-traffic queries
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| `THROTTLED` on every query | `requestedQueryCost` too high | Reduce `first:` and remove unused fields |
+| Bulk operation FAILED | Query syntax error | Test query in GraphiQL first |
+| Stale cache data | Cache not invalidated | Add webhook handlers to clear cache |
+| Storefront API 403 | Wrong token type | Use Storefront API access token, not Admin |
 
 ## Examples
 
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredShopifyCall(name, () =>
-    cachedShopifyRequest(`cache:${name}`, fn)
-  );
-```
+### Performance Comparison
+
+| Approach | 10K Products Export | Rate Limit Impact |
+|----------|-------------------|-------------------|
+| Paginated (first: 250) | 40 queries, ~60s | Uses ~6,000 points |
+| Paginated (first: 50) | 200 queries, ~300s | Uses ~22,000 points |
+| Bulk Operation | 1 query + poll, ~30s | Minimal impact |
 
 ## Resources
-- [Shopify Performance Guide](https://docs.shopify.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [GraphQL Rate Limits](https://shopify.dev/docs/api/usage/rate-limits#graphql-admin-api-rate-limits)
+- [Bulk Operations](https://shopify.dev/docs/api/usage/bulk-operations/queries)
+- [Storefront API](https://shopify.dev/docs/api/storefront)
+- [Query Cost Debug Header](https://shopify.dev/docs/api/usage/rate-limits#query-cost)
 
 ## Next Steps
+
 For cost optimization, see `shopify-cost-tuning`.

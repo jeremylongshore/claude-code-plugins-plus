@@ -1,12 +1,11 @@
 ---
 name: shopify-migration-deep-dive
 description: |
-  Execute Shopify major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Shopify, performing major version upgrades,
-  or re-platforming existing integrations to Shopify.
-  Trigger with phrases like "migrate shopify", "shopify migration",
-  "switch to shopify", "shopify replatform", "shopify upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate e-commerce data to Shopify using bulk operations, product imports,
+  and the strangler fig pattern for gradual platform migration.
+  Trigger with phrases like "migrate to shopify", "shopify data migration",
+  "import products shopify", "shopify replatform", "move to shopify".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,230 +16,285 @@ compatible-with: claude-code
 # Shopify Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Shopify, or major version upgrades.
+
+Migrate product catalogs, customers, and orders to Shopify using the GraphQL Admin API bulk mutations, CSV imports, and incremental migration patterns.
 
 ## Prerequisites
-- Current system documentation
-- Shopify SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
 
-## Migration Types
-
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "shopify" > shopify-files.txt
-
-# Count integration points
-wc -l shopify-files.txt
-
-# Identify dependencies
-npm list | grep shopify
-pip freeze | grep shopify
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessShopifyMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Shopify   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Shopify SDK
-npm install @shopify/sdk
-
-# Configure credentials
-cp .env.example .env.shopify
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@shopify/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/shopify.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class ShopifyAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const shopifyData = this.transform(data);
-    return shopifyClient.create(shopifyData);
-  }
-
-  private transform(data: CreateInput): ShopifyInput {
-    // Map from old format to Shopify format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateShopifyData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await shopifyClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const shopifyPercentage = getFeatureFlag('shopify_migration_percentage');
-
-  if (Math.random() * 100 < shopifyPercentage) {
-    return new ShopifyAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app SHOPIFY_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.shopify'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateShopifyMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
+- Source platform data exported (CSV, JSON, or API access)
+- Shopify store with appropriate access scopes
+- Scopes needed: `write_products`, `write_customers`, `write_orders`, `write_inventory`
 
 ## Instructions
 
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
+### Step 1: Assess Migration Scope
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+| Data Type | Shopify Import Method | Complexity |
+|-----------|----------------------|------------|
+| Products + variants | `productSet` mutation (upsert) | Low |
+| Product images | `productCreateMedia` mutation | Low |
+| Customers | Customer CSV import or `customerCreate` | Medium |
+| Historical orders | `draftOrderCreate` + `draftOrderComplete` | High |
+| Inventory levels | `inventorySetQuantities` mutation | Medium |
+| Collections | `collectionCreate` mutation | Low |
+| Redirects (URLs) | `urlRedirectCreate` mutation | Low |
+| Metafields | Included in product/customer mutations | Medium |
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+### Step 2: Bulk Product Import with productSet
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Shopify integration.
+`productSet` is idempotent — it creates or updates based on `handle`. Perfect for migrations.
+
+```typescript
+const PRODUCT_SET = `
+  mutation productSet($input: ProductSetInput!) {
+    productSet(input: $input) {
+      product {
+        id
+        title
+        handle
+        variants(first: 50) {
+          edges {
+            node { id sku price inventoryQuantity }
+          }
+        }
+      }
+      userErrors { field message code }
+    }
+  }
+`;
+
+// Migrate products in batches
+async function migrateProducts(sourceProducts: SourceProduct[]): Promise<MigrationResult> {
+  const results: MigrationResult = { success: 0, errors: [] };
+
+  for (const product of sourceProducts) {
+    try {
+      const response = await client.request(PRODUCT_SET, {
+        variables: {
+          input: {
+            title: product.name,
+            handle: product.slug, // unique identifier for upsert
+            descriptionHtml: product.description,
+            vendor: product.brand,
+            productType: product.category,
+            tags: product.tags,
+            status: "DRAFT", // Keep as draft until verified
+            variants: product.variants.map((v) => ({
+              price: String(v.price),
+              sku: v.sku,
+              barcode: v.barcode,
+              optionValues: v.options.map((opt) => ({
+                optionName: opt.name,
+                name: opt.value,
+              })),
+            })),
+            metafields: product.metadata?.map((m) => ({
+              namespace: "migration",
+              key: m.key,
+              value: m.value,
+              type: "single_line_text_field",
+            })),
+          },
+        },
+      });
+
+      if (response.data.productSet.userErrors.length > 0) {
+        results.errors.push({
+          product: product.name,
+          errors: response.data.productSet.userErrors,
+        });
+      } else {
+        results.success++;
+      }
+    } catch (error) {
+      results.errors.push({ product: product.name, errors: [{ message: (error as Error).message }] });
+    }
+
+    // Respect rate limits — pause between batches
+    await new Promise((r) => setTimeout(r, 200));
+  }
+
+  return results;
+}
+```
+
+### Step 3: Bulk Operations for Large Imports
+
+For importing thousands of products, use Shopify's staged uploads + bulk mutation:
+
+```typescript
+// Step 1: Create a staged upload target
+const STAGED_UPLOAD = `
+  mutation stagedUploadsCreate($input: [StagedUploadInput!]!) {
+    stagedUploadsCreate(input: $input) {
+      stagedTargets {
+        url
+        resourceUrl
+        parameters { name value }
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
+const uploadTarget = await client.request(STAGED_UPLOAD, {
+  variables: {
+    input: [{
+      resource: "BULK_MUTATION_VARIABLES",
+      filename: "products.jsonl",
+      mimeType: "text/jsonl",
+      httpMethod: "POST",
+    }],
+  },
+});
+
+// Step 2: Upload JSONL file to the staged target
+// Each line is the variables for one mutation call
+const jsonlContent = products.map((p) =>
+  JSON.stringify({ input: { title: p.name, handle: p.slug } })
+).join("\n");
+
+// Upload to the staged target URL...
+
+// Step 3: Run bulk mutation
+const BULK_MUTATION = `
+  mutation bulkOperationRunMutation($mutation: String!, $stagedUploadPath: String!) {
+    bulkOperationRunMutation(mutation: $mutation, stagedUploadPath: $stagedUploadPath) {
+      bulkOperation { id status }
+      userErrors { field message }
+    }
+  }
+`;
+```
+
+### Step 4: Set Inventory Levels
+
+```typescript
+// After products are created, set inventory quantities
+const SET_INVENTORY = `
+  mutation inventorySetQuantities($input: InventorySetQuantitiesInput!) {
+    inventorySetQuantities(input: $input) {
+      inventoryAdjustmentGroup {
+        reason
+        changes {
+          name
+          delta
+          quantityAfterChange
+        }
+      }
+      userErrors { field message }
+    }
+  }
+`;
+
+await client.request(SET_INVENTORY, {
+  variables: {
+    input: {
+      reason: "correction",
+      name: "available",
+      quantities: [
+        {
+          inventoryItemId: "gid://shopify/InventoryItem/12345",
+          locationId: "gid://shopify/Location/67890",
+          quantity: 100,
+        },
+      ],
+    },
+  },
+});
+```
+
+### Step 5: URL Redirects (SEO Preservation)
+
+```typescript
+// Preserve old URLs by creating redirects
+const CREATE_REDIRECT = `
+  mutation urlRedirectCreate($urlRedirect: UrlRedirectInput!) {
+    urlRedirectCreate(urlRedirect: $urlRedirect) {
+      urlRedirect { id path target }
+      userErrors { field message }
+    }
+  }
+`;
+
+// Map old URLs to new Shopify URLs
+for (const redirect of urlMappings) {
+  await client.request(CREATE_REDIRECT, {
+    variables: {
+      urlRedirect: {
+        path: redirect.oldPath,     // "/old-product-page"
+        target: redirect.newPath,   // "/products/new-handle"
+      },
+    },
+  });
+}
+```
+
+### Step 6: Post-Migration Validation
+
+```typescript
+async function validateMigration(expectedCounts: Record<string, number>): Promise<void> {
+  const checks = [
+    {
+      name: "Products",
+      query: "{ productsCount { count } }",
+      path: "productsCount.count",
+      expected: expectedCounts.products,
+    },
+    {
+      name: "Customers",
+      query: "{ customersCount { count } }",
+      path: "customersCount.count",
+      expected: expectedCounts.customers,
+    },
+  ];
+
+  for (const check of checks) {
+    const response = await client.request(check.query);
+    const actual = check.path.split(".").reduce((obj: any, k) => obj[k], response.data);
+    const status = actual >= check.expected ? "PASS" : "FAIL";
+    console.log(`${status}: ${check.name} — expected ${check.expected}, got ${actual}`);
+  }
+}
+```
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Shopify
+
+- Products migrated with variants, images, and metafields
+- Inventory levels set at correct locations
+- URL redirects preserving SEO
+- Migration validated against source counts
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
+| `TAKEN` on product handle | Duplicate handle | Append suffix or use `productSet` for upsert |
+| Rate limited during import | Too many sequential calls | Use bulk operations or add delays |
+| Image upload fails | URL not publicly accessible | Use staged uploads for private images |
+| Inventory not updating | Wrong `inventoryItemId` | Query variant's `inventoryItem.id` first |
 
 ## Examples
 
 ### Quick Migration Status
-```typescript
-const status = await validateShopifyMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+
+```bash
+# Count products in source vs Shopify
+echo "Shopify product count:"
+curl -sf -H "X-Shopify-Access-Token: $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ productsCount { count } }"}' \
+  "https://$STORE/admin/api/2024-10/graphql.json" \
+  | jq '.data.productsCount.count'
 ```
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Shopify Migration Guide](https://docs.shopify.com/migration)
 
-## Flagship+ Skills
+- [productSet Mutation (Upsert)](https://shopify.dev/docs/api/admin-graphql/latest/mutations/productSet)
+- [Bulk Operations Mutations](https://shopify.dev/docs/api/usage/bulk-operations/imports)
+- [Inventory Management](https://shopify.dev/docs/apps/build/orders-fulfillment/inventory-management-apps)
+- [URL Redirects](https://shopify.dev/docs/api/admin-graphql/latest/mutations/urlRedirectCreate)
+
+## Next Steps
+
 For advanced troubleshooting, see `shopify-advanced-troubleshooting`.

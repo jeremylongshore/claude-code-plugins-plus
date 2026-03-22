@@ -1,9 +1,8 @@
 ---
 name: shopify-known-pitfalls
 description: |
-  Identify and avoid Shopify anti-patterns and common integration mistakes.
-  Use when reviewing Shopify code for issues, onboarding new developers,
-  or auditing existing Shopify integrations for best practices violations.
+  Identify and avoid Shopify API anti-patterns: ignoring userErrors, wrong API version,
+  REST instead of GraphQL, missing GDPR webhooks, and webhook timeout issues.
   Trigger with phrases like "shopify mistakes", "shopify anti-patterns",
   "shopify pitfalls", "shopify what not to do", "shopify code review".
 allowed-tools: Read, Grep
@@ -17,320 +16,312 @@ compatible-with: claude-code
 # Shopify Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Shopify.
+
+The 10 most common mistakes when building Shopify apps, with real API examples showing the wrong way and the right way.
 
 ## Prerequisites
-- Access to Shopify codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
 
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Shopify API call
-app.post('/checkout', async (req, res) => {
-  const payment = await shopifyClient.processPayment(req.body);  // 2-5s latency
-  const notification = await shopifyClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await shopifyClient.processPayment(data);
-  await shopifyClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await shopifyClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => shopifyClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new ShopifyClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new ShopifyClient({
-  apiKey: process.env.SHOPIFY_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await shopifyClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await shopifyClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await shopifyClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-shopify-signature'];
-    if (!verifyShopifySignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await shopifyClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await shopifyClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof ShopifyNotFoundError) {
-    return null;
-  }
-  if (error instanceof ShopifyRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new ShopifyClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.shopify.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new ShopifyClient({
-  timeout: parseInt(process.env.SHOPIFY_TIMEOUT || '30000'),
-  baseUrl: process.env.SHOPIFY_BASE_URL || 'https://api.shopify.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Shopify is down, every request hangs
-for (const user of users) {
-  await shopifyClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(shopifyClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Shopify is down
-const recommendations = await shopifyClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await shopifyClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('shopify', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Shopify app codebase to review
+- Understanding of GraphQL Admin API patterns
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Pitfall #1: Not Checking userErrors (The #1 Mistake)
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Shopify GraphQL mutations return HTTP 200 even when they fail. The errors are in `userErrors`.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```typescript
+// WRONG — assumes 200 means success
+const response = await client.request(PRODUCT_CREATE, { variables });
+const product = response.data.productCreate.product; // null!
+console.log(product.title); // TypeError: Cannot read property 'title' of null
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+// RIGHT — always check userErrors
+const response = await client.request(PRODUCT_CREATE, { variables });
+const { product, userErrors } = response.data.productCreate;
+if (userErrors.length > 0) {
+  console.error("Shopify validation failed:", userErrors);
+  // [{ field: ["title"], message: "Title can't be blank", code: "BLANK" }]
+  throw new ShopifyValidationError(userErrors);
+}
+console.log(product.title); // Safe
+```
+
+---
+
+### Pitfall #2: Using REST When GraphQL Is Required
+
+REST Admin API is legacy as of October 2024. New public apps after April 2025 **must** use GraphQL.
+
+```typescript
+// WRONG — REST API (legacy, higher bandwidth, returns all fields)
+const { body } = await restClient.get({ path: "products", query: { limit: 250 } });
+// Returns EVERYTHING: body_html, template_suffix, published_scope...
+
+// RIGHT — GraphQL (get only what you need)
+const response = await graphqlClient.request(`{
+  products(first: 50) {
+    edges { node { id title status } }
+    pageInfo { hasNextPage endCursor }
+  }
+}`);
+```
+
+---
+
+### Pitfall #3: Ignoring API Version Deprecation
+
+Shopify deprecates API versions ~12 months after release. Your app will break silently when your version is removed.
+
+```typescript
+// WRONG — hardcoded old version, no monitoring
+const shopify = shopifyApi({ apiVersion: "2023-04" }); // DEAD version
+
+// RIGHT — use recent stable version, monitor deprecation
+const shopify = shopifyApi({ apiVersion: "2024-10" });
+
+// Monitor for deprecation warnings in responses
+function checkDeprecation(headers: Headers): void {
+  const warning = headers.get("x-shopify-api-deprecated-reason");
+  if (warning) {
+    console.warn(`[DEPRECATION] ${warning}`);
+    // Alert team to upgrade
+  }
+}
+```
+
+---
+
+### Pitfall #4: Missing Mandatory GDPR Webhooks
+
+Your app **will be rejected** from the App Store without these three webhooks.
+
+```typescript
+// WRONG — no GDPR handlers
+// shopify.app.toml has no webhook subscriptions
+// App Store review: REJECTED
+
+// RIGHT — all three mandatory webhooks
+// shopify.app.toml:
+// [[webhooks.subscriptions]]
+// topics = ["customers/data_request"]
+// uri = "/webhooks/gdpr/data-request"
+//
+// [[webhooks.subscriptions]]
+// topics = ["customers/redact"]
+// uri = "/webhooks/gdpr/customers-redact"
+//
+// [[webhooks.subscriptions]]
+// topics = ["shop/redact"]
+// uri = "/webhooks/gdpr/shop-redact"
+```
+
+---
+
+### Pitfall #5: Webhook Handler Takes Too Long
+
+Shopify expects a 200 response within 5 seconds. If your handler does API calls inline, it will time out and Shopify will retry — causing duplicates.
+
+```typescript
+// WRONG — processing inline, takes 10+ seconds
+app.post("/webhooks", rawBodyParser, async (req, res) => {
+  const order = JSON.parse(req.body);
+  await syncToERP(order);           // 3 seconds
+  await updateInventory(order);      // 2 seconds
+  await sendNotification(order);     // 2 seconds
+  res.status(200).send("OK");       // 7+ seconds — Shopify considers this failed!
+});
+
+// RIGHT — respond immediately, process async
+app.post("/webhooks", rawBodyParser, async (req, res) => {
+  res.status(200).send("OK"); // Respond within milliseconds
+
+  // Process asynchronously
+  const order = JSON.parse(req.body);
+  await queue.add("process-order", order);
+});
+```
+
+---
+
+### Pitfall #6: Using ProductInput on API 2024-10+
+
+The `ProductInput` type was split into `ProductCreateInput` and `ProductUpdateInput` in 2024-10.
+
+```typescript
+// WRONG — old ProductInput type (breaks on 2024-10+)
+mutation($input: ProductInput!) {  // ERROR: ProductInput is not defined
+  productCreate(input: $input) { ... }
+}
+
+// RIGHT — separate types for create and update
+mutation($input: ProductCreateInput!) {
+  productCreate(product: $input) { ... }  // Note: "product:" not "input:"
+}
+
+mutation($input: ProductUpdateInput!) {
+  productUpdate(product: $input) { ... }
+}
+```
+
+---
+
+### Pitfall #7: Not Using Cursor Pagination
+
+Shopify uses Relay-style cursor pagination, not page numbers.
+
+```typescript
+// WRONG — trying page numbers (doesn't work in GraphQL)
+const page1 = await query("products(first: 50, page: 1)"); // ERROR
+const page2 = await query("products(first: 50, page: 2)"); // ERROR
+
+// RIGHT — cursor-based pagination
+let cursor = null;
+let hasMore = true;
+while (hasMore) {
+  const response = await client.request(`{
+    products(first: 50, after: ${cursor ? `"${cursor}"` : "null"}) {
+      edges { node { id title } cursor }
+      pageInfo { hasNextPage endCursor }
+    }
+  }`);
+  // Process products...
+  cursor = response.data.products.pageInfo.endCursor;
+  hasMore = response.data.products.pageInfo.hasNextPage;
+}
+```
+
+---
+
+### Pitfall #8: Requesting 250 Items Per Page
+
+`first: 250` with nested connections creates enormous query costs that THROTTLE immediately.
+
+```typescript
+// WRONG — cost explosion
+// products(first: 250) × variants(first: 100) = 25,000 point cost
+const response = await client.request(`{
+  products(first: 250) {
+    edges { node {
+      variants(first: 100) { edges { node { id price } } }
+    }}
+  }
+}`);
+// Result: THROTTLED immediately
+
+// RIGHT — reasonable page sizes
+const response = await client.request(`{
+  products(first: 50) {
+    edges { node {
+      variants(first: 10) { edges { node { id price } } }
+    }}
+    pageInfo { hasNextPage endCursor }
+  }
+}`);
+```
+
+---
+
+### Pitfall #9: Exposing Admin Token in Client-Side Code
+
+Admin API tokens have full access. Never send them to the browser.
+
+```typescript
+// WRONG — admin token in React component
+const response = await fetch(`https://store.myshopify.com/admin/api/2024-10/graphql.json`, {
+  headers: { "X-Shopify-Access-Token": "shpat_xxx" }, // Visible in browser devtools!
+});
+
+// RIGHT — proxy through your server
+// Client calls your API, your server calls Shopify
+const response = await fetch("/api/shopify/products"); // Your server
+
+// Server-side only
+app.get("/api/shopify/products", async (req, res) => {
+  const { admin } = await authenticate.admin(req);
+  const data = await admin.graphql(PRODUCTS_QUERY);
+  res.json(data);
+});
+```
+
+---
+
+### Pitfall #10: Not Handling APP_UNINSTALLED Webhook
+
+When a merchant uninstalls your app, you need to clean up sessions. Otherwise, stale sessions cause auth loops.
+
+```typescript
+// WRONG — no cleanup on uninstall
+// Result: when merchant reinstalls, old stale session is found,
+// API calls fail with 401, auth redirect loop
+
+// RIGHT — clean up on uninstall
+async function handleAppUninstalled(shop: string): Promise<void> {
+  // Delete session from database
+  await prisma.session.deleteMany({ where: { shop } });
+  // Disable features for this shop
+  await prisma.appSettings.update({
+    where: { shop },
+    data: { active: false },
+  });
+  console.log(`Cleaned up data for uninstalled shop: ${shop}`);
+  // shop/redact webhook will fire 48 hours later for full data deletion
+}
+```
 
 ## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+
+- Anti-patterns identified in codebase
+- Fixes prioritized (security first, then correctness)
+- Prevention measures in place (linting, CI checks)
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+
+| Pitfall | How to Detect | Prevention |
+|---------|--------------|------------|
+| Missing userErrors check | Null pointer crashes | ESLint rule or wrapper function |
+| REST usage | `grep -r "clients.Rest" src/` | Migration guide + lint rule |
+| Old API version | `grep -r "apiVersion" src/` | CI check against supported versions |
+| Missing GDPR webhooks | App Store rejection | Pre-submit compliance checker |
+| Webhook timeout | Shopify retry storms | Queue-based processing |
+| ProductInput on 2024-10 | GraphQL type error | Update mutations |
+| Page-based pagination | Query errors | Use cursor pagination pattern |
+| `first: 250` | THROTTLED responses | Query cost budgets |
+| Admin token in client | Security audit | Server-side proxy |
+| No APP_UNINSTALLED | Auth loops on reinstall | Webhook handler + session cleanup |
 
 ## Examples
 
 ### Quick Pitfall Scan
+
 ```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+# Run these against your Shopify codebase
+echo "=== Shopify Pitfall Scan ==="
+echo -n "REST API usage: "; grep -rc "clients.Rest\|admin-rest" app/ src/ 2>/dev/null | grep -v ":0" | wc -l
+echo -n "Missing userErrors check: "; grep -rn "mutation\|Mutation" app/ src/ --include="*.ts" | wc -l
+echo -n "Old API versions: "; grep -rn "2023-\|2022-" app/ src/ --include="*.ts" 2>/dev/null | wc -l
+echo -n "Hardcoded tokens: "; grep -rc "shpat_" app/ src/ 2>/dev/null | grep -v ":0" | wc -l
+echo -n "first: 250: "; grep -rn "first: 250\|first:250" app/ src/ --include="*.ts" 2>/dev/null | wc -l
 ```
 
 ## Resources
-- [Shopify Security Guide](https://docs.shopify.com/security)
-- [Shopify Best Practices](https://docs.shopify.com/best-practices)
+
+- [Shopify App Requirements](https://shopify.dev/docs/apps/launch/app-requirements)
+- [GraphQL Migration Guide](https://shopify.dev/docs/apps/build/graphql/migrate/learn-how)
+- [2024-10 Breaking Changes](https://shopify.dev/docs/api/release-notes/2024-10)
+- [Webhook Best Practices](https://shopify.dev/docs/apps/build/webhooks)
 
 ## Quick Reference Card
 
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+| Pitfall | Detection | Fix |
+|---------|-----------|-----|
+| No userErrors check | Null crashes on mutations | Always check `userErrors.length > 0` |
+| REST instead of GraphQL | `grep "clients.Rest"` | Migrate to `clients.Graphql` |
+| Old API version | `grep "2023-"` | Update to `2024-10` |
+| Missing GDPR webhooks | App Store rejection | Add 3 mandatory webhook handlers |
+| Webhook timeout | Retry storms, duplicates | Respond 200 immediately, queue processing |
+| ProductInput on 2024-10 | Type error | Use `ProductCreateInput` / `ProductUpdateInput` |
+| Page-number pagination | Query errors | Use cursor-based with `pageInfo` |
+| `first: 250` with nesting | THROTTLED | Use `first: 50` or smaller |
+| Admin token in browser | Security scan | Server-side proxy only |
+| No APP_UNINSTALLED | Auth loop on reinstall | Clean up sessions on uninstall |

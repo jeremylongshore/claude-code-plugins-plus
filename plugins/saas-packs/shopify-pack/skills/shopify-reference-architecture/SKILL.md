@@ -1,11 +1,10 @@
 ---
 name: shopify-reference-architecture
 description: |
-  Implement Shopify reference architecture with best-practice project layout.
-  Use when designing new Shopify integrations, reviewing project structure,
-  or establishing architecture standards for Shopify applications.
-  Trigger with phrases like "shopify architecture", "shopify best practices",
-  "shopify project structure", "how to organize shopify", "shopify layout".
+  Implement Shopify app reference architecture with Remix, Prisma session storage,
+  and the official app template patterns.
+  Trigger with phrases like "shopify architecture", "shopify app structure",
+  "shopify project layout", "shopify Remix template", "shopify app design".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +16,275 @@ compatible-with: claude-code
 # Shopify Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Shopify integrations.
+
+Production-ready architecture based on Shopify's official Remix app template. Covers project structure, session storage with Prisma, extension architecture, and the recommended app patterns.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Shopify SDK knowledge
-- TypeScript project setup
-- Testing framework configured
 
-## Project Structure
-
-```
-my-shopify-project/
-├── src/
-│   ├── shopify/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── shopify/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── shopify/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── shopify/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── shopify/
-│   └── integration/
-│       └── shopify/
-├── config/
-│   ├── shopify.development.json
-│   ├── shopify.staging.json
-│   └── shopify.production.json
-└── docs/
-    └── shopify/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
-
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Shopify Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/shopify/client.ts
-export class ShopifyService {
-  private client: ShopifyClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: ShopifyConfig) {
-    this.client = new ShopifyClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('shopify');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/shopify/errors.ts
-export class ShopifyServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'ShopifyServiceError';
-  }
-}
-
-export function wrapShopifyError(error: unknown): ShopifyServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/shopify/health.ts
-export async function checkShopifyHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await shopifyClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Shopify    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Shopify    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/shopify.ts
-export interface ShopifyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadShopifyConfig(): ShopifyConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./shopify.${env}.json`);
-}
-```
+- Understanding of Remix framework basics
+- Shopify CLI 3.x installed
+- Familiarity with Prisma ORM
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Official Project Structure (Remix Template)
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+```
+my-shopify-app/
+├── app/
+│   ├── routes/
+│   │   ├── app._index.tsx          # Main app dashboard
+│   │   ├── app.products.tsx        # Product management page
+│   │   ├── app.settings.tsx        # App settings
+│   │   ├── auth.$.tsx              # OAuth catch-all route
+│   │   ├── auth.login/
+│   │   │   └── route.tsx           # Login page
+│   │   └── webhooks.tsx            # Webhook handler
+│   ├── shopify.server.ts           # Shopify API config (singleton)
+│   ├── db.server.ts                # Database connection
+│   └── root.tsx
+├── extensions/
+│   ├── theme-app-extension/        # Theme blocks for Online Store
+│   │   ├── blocks/
+│   │   │   └── product-rating.liquid
+│   │   └── locales/
+│   ├── checkout-ui/                # Checkout UI extension
+│   └── product-discount/           # Shopify Function
+├── prisma/
+│   ├── schema.prisma               # Database schema
+│   └── migrations/
+├── shopify.app.toml                # App configuration
+├── shopify.web.toml                # Web process config
+├── remix.config.js
+└── package.json
+```
 
-### Step 3: Add Error Handling
-Implement custom error classes for Shopify operations.
+### Step 2: Core App Configuration
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Shopify connectivity.
+```typescript
+// app/shopify.server.ts — the heart of the app
+import "@shopify/shopify-app-remix/adapters/node";
+import { AppDistribution, shopifyApp } from "@shopify/shopify-app-remix/server";
+import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
+import prisma from "./db.server";
+
+const shopify = shopifyApp({
+  apiKey: process.env.SHOPIFY_API_KEY!,
+  apiSecretKey: process.env.SHOPIFY_API_SECRET!,
+  appUrl: process.env.SHOPIFY_APP_URL!,
+  scopes: process.env.SHOPIFY_SCOPES?.split(","),
+  apiVersion: "2024-10",
+  distribution: AppDistribution.AppStore, // or SingleMerchant
+  sessionStorage: new PrismaSessionStorage(prisma),
+  webhooks: {
+    APP_UNINSTALLED: {
+      deliveryMethod: "http",
+      callbackUrl: "/webhooks",
+    },
+    PRODUCTS_UPDATE: {
+      deliveryMethod: "http",
+      callbackUrl: "/webhooks",
+    },
+  },
+  hooks: {
+    afterAuth: async ({ session }) => {
+      // Register webhooks after successful auth
+      shopify.registerWebhooks({ session });
+    },
+  },
+  future: {
+    unstable_newEmbeddedAuthStrategy: true,
+  },
+});
+
+export default shopify;
+export const apiVersion = "2024-10";
+export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
+export const authenticate = shopify.authenticate;
+export const unauthenticated = shopify.unauthenticated;
+export const login = shopify.login;
+export const registerWebhooks = shopify.registerWebhooks;
+export const sessionStorage = shopify.sessionStorage;
+```
+
+### Step 3: Session Storage with Prisma
+
+```prisma
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"  // or "postgresql" for production
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+}
+
+// Your app's custom models
+model ProductSync {
+  id          String   @id @default(cuid())
+  shop        String
+  productId   String
+  lastSynced  DateTime @default(now())
+  status      String   @default("pending")
+  @@unique([shop, productId])
+}
+```
+
+### Step 4: Route Pattern — Authenticated Admin Page
+
+```typescript
+// app/routes/app.products.tsx
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { authenticate } from "../shopify.server";
+import { Page, Layout, Card, DataTable } from "@shopify/polaris";
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const { admin } = await authenticate.admin(request);
+
+  // admin.graphql is a pre-authenticated GraphQL client
+  const response = await admin.graphql(`{
+    products(first: 25, sortKey: UPDATED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          title
+          status
+          totalInventory
+          priceRangeV2 {
+            minVariantPrice { amount currencyCode }
+          }
+        }
+      }
+    }
+  }`);
+
+  const data = await response.json();
+  return json({ products: data.data.products.edges.map((e: any) => e.node) });
+}
+
+export default function Products() {
+  const { products } = useLoaderData<typeof loader>();
+
+  return (
+    <Page title="Products">
+      <Layout>
+        <Layout.Section>
+          <Card>
+            <DataTable
+              columnContentTypes={["text", "text", "numeric", "text"]}
+              headings={["Title", "Status", "Inventory", "Price"]}
+              rows={products.map((p: any) => [
+                p.title,
+                p.status,
+                p.totalInventory,
+                `$${p.priceRangeV2.minVariantPrice.amount}`,
+              ])}
+            />
+          </Card>
+        </Layout.Section>
+      </Layout>
+    </Page>
+  );
+}
+```
+
+### Step 5: Theme App Extension
+
+```liquid
+{% comment %} extensions/theme-app-extension/blocks/product-rating.liquid {% endcomment %}
+
+{% schema %}
+{
+  "name": "Product Rating",
+  "target": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "max_stars",
+      "label": "Maximum Stars",
+      "min": 1,
+      "max": 5,
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star Color",
+      "default": "#FFD700"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="product-rating" style="--star-color: {{ block.settings.star_color }}">
+  {% assign rating = product.metafields.custom.rating.value | default: 0 %}
+  {% for i in (1..block.settings.max_stars) %}
+    <span class="star {% if i <= rating %}filled{% endif %}">&#9733;</span>
+  {% endfor %}
+  <span class="rating-text">{{ rating }}/{{ block.settings.max_stars }}</span>
+</div>
+
+<style>
+  .product-rating .star { color: #ccc; font-size: 1.2em; }
+  .product-rating .star.filled { color: var(--star-color); }
+</style>
+```
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+
+- Remix app with Shopify authentication
+- Prisma session storage (production-ready)
+- Authenticated admin routes with GraphQL data loading
+- Theme app extension for Online Store customization
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Shopify types |
-| Test isolation | Shared state | Use dependency injection |
+| Session not found | DB not migrated | Run `npx prisma migrate dev` |
+| Auth redirect loop | Missing `APP_UNINSTALLED` handler | Implement webhook to clean sessions |
+| Extension not showing | Not deployed | Run `shopify app deploy` |
+| Polaris styles missing | Missing provider | Wrap app in `<AppProvider>` |
 
 ## Examples
 
-### Quick Setup Script
+### Quick Scaffold
+
 ```bash
-# Create reference structure
-mkdir -p src/shopify/{handlers} src/services/shopify src/api/shopify
-touch src/shopify/{client,config,types,errors}.ts
-touch src/services/shopify/{index,sync,cache}.ts
+# Fastest way to start — uses official template
+shopify app init --template remix
+
+# Or clone directly
+npx degit Shopify/shopify-app-template-remix my-shopify-app
+cd my-shopify-app
+npm install
+shopify app dev
 ```
 
 ## Resources
-- [Shopify SDK Documentation](https://docs.shopify.com/sdk)
-- [Shopify Best Practices](https://docs.shopify.com/best-practices)
 
-## Flagship Skills
+- [Shopify Remix App Template](https://github.com/Shopify/shopify-app-template-remix)
+- [@shopify/shopify-app-remix](https://www.npmjs.com/package/@shopify/shopify-app-remix)
+- [Prisma Session Storage](https://www.npmjs.com/package/@shopify/shopify-app-session-storage-prisma)
+- [Polaris Components](https://polaris.shopify.com/components)
+- [Theme App Extensions](https://shopify.dev/docs/apps/build/online-store/theme-app-extensions)
+
+## Next Steps
+
 For multi-environment setup, see `shopify-multi-env-setup`.
