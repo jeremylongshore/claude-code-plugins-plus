@@ -1,12 +1,11 @@
 ---
 name: attio-security-basics
 description: |
-  Apply Attio security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Attio security configuration.
-  Trigger with phrases like "attio security", "attio secrets",
-  "secure attio", "attio API key security".
-allowed-tools: Read, Write, Grep
+  Secure Attio API integrations -- token scoping, secret management,
+  scope auditing, webhook signature verification, and rotation procedures.
+  Trigger: "attio security", "attio secrets", "secure attio",
+  "attio API key security", "attio scopes", "attio token rotation".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,126 +16,209 @@ compatible-with: claude-code
 # Attio Security Basics
 
 ## Overview
-Security best practices for Attio API keys, tokens, and access control.
 
-## Prerequisites
-- Attio SDK installed
-- Understanding of environment variables
-- Access to Attio dashboard
+Attio access tokens never expire and have no scopes by default. This makes scoping, rotation, and secret management critical. This skill covers practical security controls for Attio REST API integrations.
+
+## Token Properties
+
+| Property | Value |
+|----------|-------|
+| Format | `sk_...` prefix |
+| Expiration | Never (must be manually revoked) |
+| Default scopes | None (you must explicitly add scopes) |
+| Scope granularity | Per-resource read vs read-write |
+| Auth method | `Authorization: Bearer <token>` header |
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-ATTIO_API_KEY=sk_live_***
-ATTIO_SECRET=***
+### Step 1: Apply Least-Privilege Scopes
 
-# .gitignore
+Tokens should have only the scopes needed for their use case:
+
+```
+# Read-only analytics integration
+object_configuration:read
+record_permission:read
+
+# CRM sync (needs write)
+object_configuration:read
+record_permission:read-write
+list_entry:read-write
+
+# Webhook receiver (just needs to verify, no API calls)
+# No scopes needed -- webhook signature uses a separate secret
+
+# Full admin (avoid in production)
+object_configuration:read
+record_permission:read-write
+list_entry:read-write
+note:read-write
+task:read-write
+user_management:read
+webhook:read-write
+```
+
+### Step 2: Environment Variable Management
+
+```bash
+# .env.local (development -- git-ignored)
+ATTIO_API_KEY=sk_dev_abc123
+
+# .env.example (committed -- template for team)
+ATTIO_API_KEY=sk_your_token_here
+# ATTIO_WEBHOOK_SECRET=whsec_your_secret_here
+
+# .gitignore (mandatory)
 .env
 .env.local
 .env.*.local
 ```
 
-### Step 2: Implement Secret Rotation
+**Platform-specific secrets management:**
+
 ```bash
-# 1. Generate new key in Attio dashboard
-# 2. Update environment variable
-export ATTIO_API_KEY="new_key_here"
+# Vercel
+vercel env add ATTIO_API_KEY production
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${ATTIO_API_KEY}" \
-  https://api.attio.com/health
+# Fly.io
+fly secrets set ATTIO_API_KEY=sk_prod_xyz
 
-# 4. Revoke old key in dashboard
+# Google Cloud (Secret Manager)
+echo -n "sk_prod_xyz" | gcloud secrets create attio-api-key --data-file=-
+
+# GitHub Actions
+gh secret set ATTIO_API_KEY --body "sk_prod_xyz"
+
+# AWS Systems Manager
+aws ssm put-parameter --name /app/attio-api-key \
+  --value "sk_prod_xyz" --type SecureString
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 3: Token Rotation Procedure
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+Attio tokens cannot be rotated in-place. You must create a new token and delete the old one.
+
+```bash
+# 1. Generate new token in Settings > Developers > Access tokens
+#    Match the scopes of the old token exactly
+
+# 2. Update the secret in your deployment platform
+vercel env rm ATTIO_API_KEY production
+vercel env add ATTIO_API_KEY production
+# Enter new token value
+
+# 3. Deploy with new token
+vercel --prod
+
+# 4. Verify the new token works
+curl -s -o /dev/null -w "%{http_code}" \
+  https://api.attio.com/v2/objects \
+  -H "Authorization: Bearer ${NEW_TOKEN}"
+# Should return 200
+
+# 5. Delete old token in Attio dashboard
+# Settings > Developers > Access tokens > Delete
+```
+
+### Step 4: Separate Tokens Per Environment
+
+```typescript
+// config/attio.ts
+function getAttioToken(): string {
+  const env = process.env.NODE_ENV || "development";
+  const keyMap: Record<string, string> = {
+    development: "ATTIO_API_KEY_DEV",
+    staging: "ATTIO_API_KEY_STAGING",
+    production: "ATTIO_API_KEY_PROD",
+  };
+  const key = process.env[keyMap[env] || "ATTIO_API_KEY"];
+  if (!key) throw new Error(`Missing Attio token for ${env}`);
+  return key;
+}
+```
+
+### Step 5: Webhook Signature Verification
+
+Attio webhooks include headers for signature verification:
+
+```typescript
+import crypto from "crypto";
+
+function verifyAttioWebhook(
+  rawBody: Buffer,
+  signature: string,
+  timestamp: string,
+  secret: string
+): boolean {
+  // 1. Reject old timestamps (prevent replay attacks)
+  const age = Date.now() - parseInt(timestamp) * 1000;
+  if (age > 300_000) { // 5 minutes
+    console.error("Webhook timestamp too old:", age, "ms");
+    return false;
+  }
+
+  // 2. Compute expected signature
+  const payload = `${timestamp}.${rawBody.toString()}`;
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
+
+  // 3. Timing-safe comparison (prevents timing attacks)
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(signature),
+      Buffer.from(expected)
+    );
+  } catch {
+    return false; // Different lengths
+  }
+}
+```
+
+### Step 6: Git Secret Scanning
+
+```bash
+# Pre-commit hook to catch Attio keys
+# .git/hooks/pre-commit or via husky
+#!/bin/bash
+if git diff --cached --diff-filter=ACMR | grep -qE 'sk_[a-zA-Z0-9_]{20,}'; then
+  echo "ERROR: Attio API key detected in staged changes"
+  echo "Remove the key and use environment variables instead"
+  exit 1
+fi
+```
+
+### Step 7: Security Audit Checklist
+
+```
+[ ] API keys stored in environment variables, not code
+[ ] .env files listed in .gitignore
+[ ] Separate tokens per environment (dev/staging/prod)
+[ ] Minimal scopes per token (least privilege)
+[ ] Webhook signatures validated with timing-safe comparison
+[ ] Replay attack protection (timestamp check) on webhooks
+[ ] Pre-commit hook for secret scanning
+[ ] Token rotation documented and scheduled
+[ ] No tokens in logs, error messages, or client-side code
+[ ] Audit trail: who has which tokens, when created
+```
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
 
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new AttioClient({
-    apiKey: process.env.ATTIO_READ_KEY,
-  }),
-  writer: new AttioClient({
-    apiKey: process.env.ATTIO_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Attio analytics
-  await attioClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'attio.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Security issue | Detection | Mitigation |
+|---------------|-----------|------------|
+| Token in git history | `git log -p --all -S 'sk_'` | Rotate immediately, use `git filter-repo` |
+| Over-scoped token | Compare scopes to actual usage | Create new token with minimal scopes |
+| Token shared across envs | Audit env configs | Create separate dev/staging/prod tokens |
+| No webhook verification | Review webhook handler code | Implement signature check above |
 
 ## Resources
-- [Attio Security Guide](https://docs.attio.com/security)
-- [Attio API Scopes](https://docs.attio.com/scopes)
+
+- [Attio Authentication Guide](https://docs.attio.com/rest-api/guides/authentication)
+- [Attio Access Token Setup](https://attio.com/help/apps/other-apps/generating-an-api-key)
+- [Attio Webhook Security](https://docs.attio.com/rest-api/guides/webhooks)
 
 ## Next Steps
+
 For production deployment, see `attio-prod-checklist`.

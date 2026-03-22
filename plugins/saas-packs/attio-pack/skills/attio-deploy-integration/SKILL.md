@@ -1,12 +1,11 @@
 ---
 name: attio-deploy-integration
 description: |
-  Deploy Attio integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Attio-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy attio", "attio Vercel",
-  "attio production deploy", "attio Cloud Run", "attio Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Attio integrations to Vercel, Fly.io, Railway, and Cloud Run
+  with proper secrets, health checks, and webhook endpoint configuration.
+  Trigger: "deploy attio", "attio Vercel", "attio production deploy",
+  "attio Cloud Run", "attio Fly.io", "attio Railway".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*), Bash(railway:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,50 +16,78 @@ compatible-with: claude-code
 # Attio Deploy Integration
 
 ## Overview
-Deploy Attio-powered applications to popular platforms with proper secrets management.
+
+Deploy Attio-powered applications to production platforms. Covers secrets injection, health check endpoints, webhook URL configuration, and platform-specific configurations for the Attio REST API (`https://api.attio.com/v2`).
 
 ## Prerequisites
-- Attio API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+- Application code tested locally and in CI
+- Production Attio token with minimal scopes
+- Platform CLI installed
 
-### Environment Setup
+## Instructions
+
+### Step 1: Vercel Deployment
+
 ```bash
-# Add Attio secrets to Vercel
-vercel secrets add attio_api_key sk_live_***
-vercel secrets add attio_webhook_secret whsec_***
+# Add secrets
+vercel env add ATTIO_API_KEY production
+vercel env add ATTIO_WEBHOOK_SECRET production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
 ```json
+// vercel.json
 {
   "env": {
-    "ATTIO_API_KEY": "@attio_api_key"
+    "ATTIO_API_KEY": "@attio_api_key",
+    "ATTIO_WEBHOOK_SECRET": "@attio_webhook_secret"
   },
   "functions": {
-    "api/**/*.ts": {
+    "api/webhooks/attio.ts": {
       "maxDuration": 30
     }
   }
 }
 ```
 
-## Fly.io Deployment
+**Vercel webhook endpoint:**
+```typescript
+// api/webhooks/attio.ts (Vercel serverless function)
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import crypto from "crypto";
 
-### fly.toml
+export const config = { api: { bodyParser: false } };
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== "POST") return res.status(405).end();
+
+  const chunks: Buffer[] = [];
+  for await (const chunk of req) chunks.push(chunk as Buffer);
+  const rawBody = Buffer.concat(chunks);
+
+  // Verify webhook signature before processing
+  const signature = req.headers["x-attio-signature"] as string;
+  const timestamp = req.headers["x-attio-timestamp"] as string;
+  if (!verifySignature(rawBody, signature, timestamp)) {
+    return res.status(401).json({ error: "Invalid signature" });
+  }
+
+  const event = JSON.parse(rawBody.toString());
+  // Process async -- return 200 immediately
+  res.status(200).json({ received: true });
+
+  // Handle event in background
+  await processAttioEvent(event);
+}
+```
+
+### Step 2: Fly.io Deployment
+
 ```toml
+# fly.toml
 app = "my-attio-app"
 primary_region = "iad"
 
@@ -70,142 +97,163 @@ primary_region = "iad"
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = "suspend"
   auto_start_machines = true
+
+[[http_service.checks]]
+  interval = "30s"
+  timeout = "5s"
+  grace_period = "10s"
+  method = "GET"
+  path = "/api/health"
 ```
 
-### Secrets
 ```bash
-# Set Attio secrets
-fly secrets set ATTIO_API_KEY=sk_live_***
-fly secrets set ATTIO_WEBHOOK_SECRET=whsec_***
+# Set secrets
+fly secrets set ATTIO_API_KEY=sk_prod_xyz
+fly secrets set ATTIO_WEBHOOK_SECRET=whsec_prod_abc
 
 # Deploy
 fly deploy
+
+# Verify
+fly status
+curl -s https://my-attio-app.fly.dev/api/health | jq .
 ```
 
-## Google Cloud Run
+### Step 3: Google Cloud Run
 
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+# Store secret in Secret Manager
+echo -n "sk_prod_xyz" | gcloud secrets create attio-api-key --data-file=-
+echo -n "whsec_prod_abc" | gcloud secrets create attio-webhook-secret --data-file=-
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="attio-service"
-REGION="us-central1"
+# Build and deploy
+gcloud builds submit --tag gcr.io/$PROJECT_ID/attio-service
 
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
+gcloud run deploy attio-service \
+  --image gcr.io/$PROJECT_ID/attio-service \
+  --region us-central1 \
   --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ATTIO_API_KEY=attio-api-key:latest
+  --set-secrets="ATTIO_API_KEY=attio-api-key:latest,ATTIO_WEBHOOK_SECRET=attio-webhook-secret:latest" \
+  --min-instances=1 \
+  --max-instances=10 \
+  --allow-unauthenticated
 ```
 
-## Environment Configuration Pattern
+### Step 4: Health Check Endpoint
 
-```typescript
-// config/attio.ts
-interface AttioConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getAttioConfig(): AttioConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ATTIO_API_KEY!,
-    environment: env as AttioConfig['environment'],
-    webhookSecret: process.env.ATTIO_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
+Every deployment should include an Attio health check:
 
 ```typescript
 // api/health.ts
-export async function GET() {
-  const attioStatus = await checkAttioConnection();
+export async function GET(): Promise<Response> {
+  const checks: Record<string, { status: string; latencyMs?: number }> = {};
 
-  return Response.json({
-    status: attioStatus ? 'healthy' : 'degraded',
-    services: {
-      attio: attioStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+  // Attio connectivity
+  const start = Date.now();
+  try {
+    const res = await fetch("https://api.attio.com/v2/objects", {
+      headers: { Authorization: `Bearer ${process.env.ATTIO_API_KEY}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    checks.attio = {
+      status: res.ok ? "healthy" : `error_${res.status}`,
+      latencyMs: Date.now() - start,
+    };
+  } catch {
+    checks.attio = { status: "unreachable", latencyMs: Date.now() - start };
+  }
+
+  const overall = Object.values(checks).every((c) => c.status === "healthy")
+    ? "healthy"
+    : "degraded";
+
+  return Response.json({ status: overall, checks, timestamp: new Date().toISOString() });
 }
 ```
 
-## Instructions
+### Step 5: Register Webhook URL in Attio
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+After deploying, register your webhook endpoint via the API:
 
-### Step 2: Configure Secrets
-Store Attio API keys securely using the platform's secrets management.
+```typescript
+// scripts/register-webhook.ts
+const webhook = await fetch("https://api.attio.com/v2/webhooks", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.ATTIO_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    target_url: "https://my-attio-app.fly.dev/api/webhooks/attio",
+    subscriptions: [
+      { event_type: "record.created" },
+      { event_type: "record.updated" },
+      { event_type: "record.deleted" },
+      {
+        event_type: "list-entry.created",
+        filter: { list: { $eq: "sales_pipeline" } },
+      },
+    ],
+  }),
+});
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Attio integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Attio connectivity.
-
-## Output
-- Application deployed to production
-- Attio secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add attio_api_key "$ATTIO_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ATTIO_API_KEY="$ATTIO_API_KEY"
-    fly deploy
-    ;;
-esac
+const result = await webhook.json();
+console.log("Webhook registered:", result.data?.id?.webhook_id);
 ```
 
+### Step 6: Environment Configuration Pattern
+
+```typescript
+// src/config.ts
+interface AppConfig {
+  attio: {
+    apiKey: string;
+    webhookSecret: string;
+    baseUrl: string;
+  };
+  port: number;
+  environment: string;
+}
+
+export function loadConfig(): AppConfig {
+  const env = process.env.NODE_ENV || "development";
+  return {
+    attio: {
+      apiKey: requireEnv("ATTIO_API_KEY"),
+      webhookSecret: requireEnv("ATTIO_WEBHOOK_SECRET"),
+      baseUrl: "https://api.attio.com/v2",
+    },
+    port: parseInt(process.env.PORT || "3000", 10),
+    environment: env,
+  };
+}
+
+function requireEnv(key: string): string {
+  const val = process.env[key];
+  if (!val) throw new Error(`Missing required env: ${key}`);
+  return val;
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Webhook never fires | Wrong URL or not registered | Verify with `GET /v2/webhooks` |
+| 401 on health check | Token not injected | Check platform secrets config |
+| Cold start timeout | Attio API slow on first call | Set `min-instances=1` |
+| Webhook signature fails | Secret mismatch | Verify secret matches dashboard value |
+| Deploy succeeds, API fails | Wrong env variable name | Check exact key name in platform UI |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Attio Deploy Guide](https://docs.attio.com/deploy)
+
+- [Attio Webhooks Guide](https://docs.attio.com/rest-api/guides/webhooks)
+- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
+- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/secrets)
 
 ## Next Steps
-For webhook handling, see `attio-webhooks-events`.
+
+For webhook event handling, see `attio-webhooks-events`.
