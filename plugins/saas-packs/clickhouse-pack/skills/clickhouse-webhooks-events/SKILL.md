@@ -1,201 +1,239 @@
 ---
 name: clickhouse-webhooks-events
 description: |
-  Implement ClickHouse webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling ClickHouse event notifications securely.
-  Trigger with phrases like "clickhouse webhook", "clickhouse events",
-  "clickhouse webhook signature", "handle clickhouse events", "clickhouse notifications".
+  Ingest data into ClickHouse from webhooks, Kafka, and streaming sources
+  with batching, dedup, and exactly-once patterns.
+  Use when building data ingestion pipelines, consuming webhook payloads,
+  or integrating Kafka topics into ClickHouse.
+  Trigger: "clickhouse ingestion", "clickhouse webhook", "clickhouse Kafka",
+  "stream data to clickhouse", "clickhouse data pipeline".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse]
+tags: [saas, database, analytics, clickhouse, olap]
 compatible-with: claude-code
 ---
 
-# ClickHouse Webhooks & Events
+# ClickHouse Data Ingestion
 
 ## Overview
-Securely handle ClickHouse webhooks with signature validation and replay protection.
+
+Build data ingestion pipelines into ClickHouse from HTTP webhooks, Kafka,
+and streaming sources with proper batching, deduplication, and error handling.
 
 ## Prerequisites
-- ClickHouse webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
 
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/clickhouse',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-clickhouse-signature'] as string;
-    const timestamp = req.headers['x-clickhouse-timestamp'] as string;
-
-    if (!verifyClickHouseSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleClickHouseEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyClickHouseSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.CLICKHOUSE_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ClickHouseEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ClickHouseEvent {
-  id: string;
-  type: ClickHouseEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<ClickHouseEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleClickHouseEvent(event: ClickHouseEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `clickhouse:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `clickhouse:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use ClickHouse CLI to send test events
-clickhouse webhooks trigger resource.created --url http://localhost:3000/webhooks/clickhouse
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- ClickHouse table with appropriate engine (see `clickhouse-core-workflow-a`)
+- `@clickhouse/client` connected
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the ClickHouse dashboard.
+### Step 1: Webhook Receiver with Batched Inserts
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+import express from 'express';
+import { createClient } from '@clickhouse/client';
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+const client = createClient({ url: process.env.CLICKHOUSE_HOST! });
+const app = express();
+app.use(express.json());
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+// Buffer for batching — ClickHouse hates one-row-at-a-time inserts
+const buffer: Record<string, unknown>[] = [];
+const BATCH_SIZE = 5_000;
+const FLUSH_INTERVAL_MS = 5_000;
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+async function flushBuffer() {
+  if (buffer.length === 0) return;
+  const batch = buffer.splice(0, buffer.length);
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+  try {
+    await client.insert({
+      table: 'analytics.events',
+      values: batch,
+      format: 'JSONEachRow',
+    });
+    console.log(`Flushed ${batch.length} events to ClickHouse`);
+  } catch (err) {
+    console.error('Insert failed, re-queuing:', (err as Error).message);
+    buffer.unshift(...batch);  // Put back at front for retry
+  }
+}
 
-## Examples
+// Flush periodically
+setInterval(flushBuffer, FLUSH_INTERVAL_MS);
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+// Webhook endpoint
+app.post('/ingest', async (req, res) => {
+  const events = Array.isArray(req.body) ? req.body : [req.body];
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/clickhouse \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  for (const event of events) {
+    buffer.push({
+      event_type: event.type ?? 'unknown',
+      user_id: event.userId ?? 0,
+      properties: JSON.stringify(event.properties ?? {}),
+      created_at: new Date().toISOString().replace('T', ' ').slice(0, 19),
+    });
+  }
+
+  if (buffer.length >= BATCH_SIZE) {
+    await flushBuffer();
+  }
+
+  res.status(202).json({ queued: events.length, buffer_size: buffer.length });
+});
 ```
 
+### Step 2: Kafka Table Engine (Server-Side Ingestion)
+
+```sql
+-- Create a Kafka engine table (consumes messages automatically)
+CREATE TABLE analytics.events_kafka (
+    event_type  String,
+    user_id     UInt64,
+    properties  String,
+    timestamp   DateTime
+)
+ENGINE = Kafka()
+SETTINGS
+    kafka_broker_list = 'kafka:9092',
+    kafka_topic_list = 'events',
+    kafka_group_name = 'clickhouse_consumer',
+    kafka_format = 'JSONEachRow',
+    kafka_num_consumers = 2,
+    kafka_max_block_size = 65536;
+
+-- Materialized view pipes Kafka → MergeTree automatically
+CREATE MATERIALIZED VIEW analytics.events_kafka_mv
+TO analytics.events
+AS SELECT
+    event_type,
+    user_id,
+    properties,
+    timestamp AS created_at
+FROM analytics.events_kafka;
+
+-- ClickHouse now consumes from Kafka continuously!
+-- Check lag:
+SELECT * FROM system.kafka_consumers;
+```
+
+### Step 3: ClickPipes (ClickHouse Cloud Managed Ingestion)
+
+ClickHouse Cloud offers **ClickPipes** — a managed ingestion service that
+connects to Kafka, Confluent, Amazon MSK, S3, and GCS without code.
+
+```
+ClickPipes Configuration (Cloud Console):
+1. Source: Amazon MSK / Confluent Cloud / Apache Kafka
+2. Topic: events
+3. Format: JSONEachRow
+4. Target: analytics.events
+5. Scaling: 2 consumers (auto-scales)
+```
+
+### Step 4: HTTP Interface Bulk Insert
+
+```bash
+# Insert from CSV file via HTTP (no client needed)
+curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+CSVWithNames' \
+  --data-binary @events.csv
+
+# Insert from NDJSON file
+curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+JSONEachRow' \
+  --data-binary @events.ndjson
+
+# Insert from Parquet file
+curl 'http://localhost:8123/?query=INSERT+INTO+analytics.events+FORMAT+Parquet' \
+  --data-binary @events.parquet
+
+# Insert from remote URL (ClickHouse fetches it)
+INSERT INTO analytics.events
+SELECT * FROM url('https://data.example.com/events.csv', CSVWithNames);
+
+# Insert from S3
+INSERT INTO analytics.events
+SELECT * FROM s3(
+    'https://my-bucket.s3.amazonaws.com/events/*.parquet',
+    'ACCESS_KEY', 'SECRET_KEY',
+    'Parquet'
+);
+```
+
+### Step 5: Deduplication with ReplacingMergeTree
+
+```sql
+-- For idempotent ingestion (webhook retries, Kafka reprocessing)
+CREATE TABLE analytics.events_dedup (
+    event_id    String,           -- Unique event identifier
+    event_type  LowCardinality(String),
+    user_id     UInt64,
+    properties  String,
+    created_at  DateTime,
+    _version    UInt64 DEFAULT toUnixTimestamp(now())
+)
+ENGINE = ReplacingMergeTree(_version)
+ORDER BY event_id;               -- Dedup key
+
+-- Insert duplicate-safe: same event_id keeps latest _version
+-- Query with FINAL for deduplicated results
+SELECT * FROM analytics.events_dedup FINAL
+WHERE created_at >= today() - 7;
+```
+
+### Step 6: Insert Monitoring
+
+```sql
+-- Track insert throughput
+SELECT
+    toStartOfMinute(event_time) AS minute,
+    count() AS inserts,
+    sum(written_rows) AS rows_inserted,
+    formatReadableSize(sum(written_bytes)) AS bytes_inserted
+FROM system.query_log
+WHERE type = 'QueryFinish'
+  AND query_kind = 'Insert'
+  AND event_time >= now() - INTERVAL 1 HOUR
+GROUP BY minute
+ORDER BY minute;
+
+-- Check for insert errors
+SELECT event_time, exception, substring(query, 1, 200)
+FROM system.query_log
+WHERE type = 'ExceptionWhileProcessing'
+  AND query_kind = 'Insert'
+  AND event_time >= now() - INTERVAL 1 HOUR
+ORDER BY event_time DESC;
+```
+
+## Insert Best Practices
+
+| Practice | Why |
+|----------|-----|
+| Batch 10K-100K rows per INSERT | Fewer parts, faster merges |
+| Buffer 1-5 seconds for real-time | Balances latency vs throughput |
+| Use `JSONEachRow` format | Client handles serialization |
+| Compress with `ZSTD` on wire | Reduces network transfer |
+| Use `ReplacingMergeTree` for retries | Handles duplicate delivery |
+| Use `async_insert=1` for small batches | Server-side batching |
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `Too many parts` | Single-row inserts | Batch inserts (10K+ rows) |
+| `Cannot parse input` | Wrong format | Match format to data structure |
+| `TIMEOUT` on large insert | Slow network | Enable compression, split batch |
+| Duplicate events | Webhook retries | Use ReplacingMergeTree + event_id |
+
 ## Resources
-- [ClickHouse Webhooks Guide](https://docs.clickhouse.com/webhooks)
-- [Webhook Security Best Practices](https://docs.clickhouse.com/webhooks/security)
+
+- [Kafka Integration](https://clickhouse.com/docs/integrations/kafka)
+- [ClickPipes](https://clickhouse.com/cloud/clickpipes)
+- [HTTP Interface](https://clickhouse.com/docs/interfaces/http)
+- [S3 Table Function](https://clickhouse.com/docs/sql-reference/table-functions/s3)
 
 ## Next Steps
-For performance optimization, see `clickhouse-performance-tuning`.
+
+For query and server performance, see `clickhouse-performance-tuning`.

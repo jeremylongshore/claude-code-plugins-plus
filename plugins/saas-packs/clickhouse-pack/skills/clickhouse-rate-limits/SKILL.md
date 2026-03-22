@@ -1,151 +1,207 @@
 ---
 name: clickhouse-rate-limits
 description: |
-  Implement ClickHouse rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for ClickHouse.
-  Trigger with phrases like "clickhouse rate limit", "clickhouse throttling",
-  "clickhouse 429", "clickhouse retry", "clickhouse backoff".
+  Configure ClickHouse query concurrency, memory quotas, and connection limits.
+  Use when hitting "too many simultaneous queries", managing concurrent users,
+  or tuning server-side resource limits.
+  Trigger: "clickhouse rate limit", "clickhouse concurrency", "clickhouse quota",
+  "too many simultaneous queries", "clickhouse connection limit".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse]
+tags: [saas, database, analytics, clickhouse, olap]
 compatible-with: claude-code
 ---
 
-# ClickHouse Rate Limits
+# ClickHouse Rate Limits & Concurrency
 
 ## Overview
-Handle ClickHouse rate limits gracefully with exponential backoff and idempotency.
+
+ClickHouse does not have REST API rate limits like a SaaS product. Instead, it has
+server-side concurrency limits, memory quotas, and per-user settings that control
+resource usage. This skill covers how to configure and work within those limits.
 
 ## Prerequisites
-- ClickHouse SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+
+- ClickHouse admin access (or Cloud console)
+- Understanding of your concurrency requirements
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Understand Server-Side Limits
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `max_concurrent_queries` | 100 | Max queries running simultaneously |
+| `max_connections` | 4096 | Max TCP/HTTP connections |
+| `max_memory_usage` | ~10GB | Per-query memory limit |
+| `max_execution_time` | 0 (unlimited) | Per-query timeout in seconds |
+| `max_threads` | CPU cores | Threads per query |
 
-### Step 2: Implement Exponential Backoff with Jitter
+**ClickHouse Cloud API limit:** The Cloud management API (not the query interface)
+is limited to 10 requests per 10 seconds.
+
+### Step 2: Configure Per-User Quotas
+
+```sql
+-- Create a quota that limits query resources per user
+CREATE QUOTA IF NOT EXISTS app_quota
+    FOR INTERVAL 1 HOUR MAX
+        queries = 10000,
+        result_rows = 100000000,
+        read_rows = 1000000000,
+        execution_time = 3600
+    TO app_user;
+
+-- Create a profile with resource limits
+CREATE SETTINGS PROFILE IF NOT EXISTS app_profile
+    SETTINGS
+        max_memory_usage = 5000000000,      -- 5GB per query
+        max_execution_time = 30,             -- 30s timeout
+        max_threads = 4,                     -- 4 threads per query
+        max_concurrent_queries_for_user = 10 -- 10 parallel queries
+    TO app_user;
+```
+
+### Step 3: Client-Side Connection Pooling
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+import { createClient } from '@clickhouse/client';
+
+// The @clickhouse/client manages HTTP keep-alive connections internally
+const client = createClient({
+  url: process.env.CLICKHOUSE_HOST!,
+  username: process.env.CLICKHOUSE_USER!,
+  password: process.env.CLICKHOUSE_PASSWORD!,
+  max_open_connections: 10,   // Connection pool size
+  request_timeout: 30_000,    // 30s per request
+  compression: {
+    request: true,            // Compress request bodies (saves bandwidth)
+    response: true,           // Decompress responses
+  },
+});
+```
+
+### Step 4: Application-Level Concurrency Control
+
+```typescript
+import PQueue from 'p-queue';
+
+// Limit concurrent ClickHouse queries from your app
+const queryQueue = new PQueue({
+  concurrency: 5,          // Max 5 concurrent queries
+  timeout: 30_000,         // 30s timeout per query
+  throwOnTimeout: true,
+});
+
+async function rateLimitedQuery<T>(sql: string): Promise<T[]> {
+  return queryQueue.add(async () => {
+    const rs = await client.query({ query: sql, format: 'JSONEachRow' });
+    return rs.json<T>();
+  });
+}
+```
+
+### Step 5: Retry on Concurrency Errors
+
+```typescript
+async function queryWithRetry<T>(
+  sql: string,
+  maxRetries = 3,
+): Promise<T[]> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      const rs = await client.query({ query: sql, format: 'JSONEachRow' });
+      return await rs.json<T>();
+    } catch (err: any) {
+      const msg = err.message ?? '';
+      const isRetryable =
+        msg.includes('TOO_MANY_SIMULTANEOUS_QUERIES') ||
+        msg.includes('TIMEOUT_EXCEEDED') ||
+        msg.includes('NETWORK_ERROR');
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      if (!isRetryable || attempt === maxRetries) throw err;
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+      const delay = 1000 * Math.pow(2, attempt) + Math.random() * 500;
+      await new Promise((r) => setTimeout(r, delay));
     }
   }
   throw new Error('Unreachable');
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 6: Monitor Concurrency
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+```sql
+-- Currently running queries
+SELECT user, count() AS running_queries, sum(memory_usage) AS total_memory
+FROM system.processes
+GROUP BY user;
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+-- Query queue depth (if queries are waiting)
+SELECT metric, value FROM system.metrics
+WHERE metric IN ('Query', 'MaxConcurrentQueries', 'TCPConnection', 'HTTPConnection');
 
-async function idempotentRequest<T>(
-  client: ClickHouseClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
+-- Historical peak concurrency
+SELECT
+    toStartOfMinute(event_time) AS minute,
+    max(ProfileEvents['ConcurrentQuery']) AS peak_concurrent
+FROM system.query_log
+WHERE event_time >= now() - INTERVAL 1 HOUR
+GROUP BY minute
+ORDER BY minute;
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 7: Insert Throttling
 
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
-import PQueue from 'p-queue';
+// Buffer inserts to avoid "too many parts"
+class InsertBuffer<T extends Record<string, unknown>> {
+  private buffer: T[] = [];
+  private timer: NodeJS.Timeout | null = null;
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
+  constructor(
+    private client: ReturnType<typeof import('@clickhouse/client').createClient>,
+    private table: string,
+    private batchSize = 10_000,
+    private flushIntervalMs = 5_000,
+  ) {}
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+  async add(row: T) {
+    this.buffer.push(row);
+    if (this.buffer.length >= this.batchSize) {
+      await this.flush();
+    } else if (!this.timer) {
+      this.timer = setTimeout(() => this.flush(), this.flushIntervalMs);
     }
   }
 
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
+  async flush() {
+    if (this.timer) { clearTimeout(this.timer); this.timer = null; }
+    if (this.buffer.length === 0) return;
 
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
+    const batch = this.buffer.splice(0);
+    await this.client.insert({ table: this.table, values: batch, format: 'JSONEachRow' });
   }
 }
 ```
 
+## Error Handling
+
+| Error | Code | Solution |
+|-------|------|----------|
+| `TOO_MANY_SIMULTANEOUS_QUERIES` | 202 | Reduce concurrency or increase `max_concurrent_queries` |
+| `MEMORY_LIMIT_EXCEEDED` | 241 | Lower `max_threads`, add query filters |
+| `TIMEOUT_EXCEEDED` | 159 | Increase `max_execution_time` or optimize query |
+| `TOO_MANY_PARTS` | 252 | Batch inserts, wait for merges |
+
 ## Resources
-- [ClickHouse Rate Limits](https://docs.clickhouse.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Server Settings](https://clickhouse.com/docs/operations/server-configuration-parameters/settings)
+- [Query Complexity Limits](https://clickhouse.com/docs/operations/settings/query-complexity)
+- [Quotas](https://clickhouse.com/docs/operations/quotas)
 
 ## Next Steps
-For security configuration, see `clickhouse-security-basics`.
+
+For security hardening, see `clickhouse-security-basics`.

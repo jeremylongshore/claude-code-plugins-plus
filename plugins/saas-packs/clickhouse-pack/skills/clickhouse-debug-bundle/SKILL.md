@@ -1,113 +1,262 @@
 ---
 name: clickhouse-debug-bundle
 description: |
-  Collect ClickHouse debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for ClickHouse problems.
-  Trigger with phrases like "clickhouse debug", "clickhouse support bundle",
-  "collect clickhouse logs", "clickhouse diagnostic".
+  Collect ClickHouse diagnostic data — system tables, query logs, merge status,
+  and server metrics for support tickets and troubleshooting.
+  Use when investigating persistent issues, preparing debug artifacts,
+  or collecting evidence for ClickHouse support.
+  Trigger: "clickhouse debug", "clickhouse diagnostics", "clickhouse support bundle",
+  "collect clickhouse logs", "clickhouse system tables".
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, database, analytics, clickhouse]
+tags: [saas, database, analytics, clickhouse, olap]
 compatible-with: claude-code
 ---
 
 # ClickHouse Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for ClickHouse support tickets.
+
+Collect comprehensive diagnostic data from ClickHouse system tables for
+troubleshooting performance issues, merge problems, or support escalation.
 
 ## Prerequisites
-- ClickHouse SDK installed
-- Access to application logs
-- Permission to collect environment info
+
+- Access to ClickHouse with `system.*` table read permissions
+- `curl` or `clickhouse-client` available
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Server Health Overview
+
+```sql
+-- Server version and uptime
+SELECT
+    version()                       AS version,
+    uptime()                        AS uptime_seconds,
+    formatReadableTimeDelta(uptime()) AS uptime_human,
+    currentDatabase()               AS current_db;
+
+-- Global metrics snapshot
+SELECT metric, value, description
+FROM system.metrics
+WHERE metric IN (
+    'Query', 'Merge', 'PartMutation', 'ReplicatedFetch',
+    'TCPConnection', 'HTTPConnection', 'MemoryTracking',
+    'BackgroundMergesAndMutationsPoolTask'
+);
+```
+
+### Step 2: Disk and Table Health
+
+```sql
+-- Disk usage by table (top 20)
+SELECT
+    database,
+    table,
+    formatReadableSize(sum(bytes_on_disk))  AS disk_size,
+    sum(rows)                               AS total_rows,
+    count()                                 AS active_parts,
+    max(modification_time)                  AS last_modified
+FROM system.parts
+WHERE active
+GROUP BY database, table
+ORDER BY sum(bytes_on_disk) DESC
+LIMIT 20;
+
+-- Tables with too many parts (merge pressure)
+SELECT database, table, count() AS parts
+FROM system.parts WHERE active
+GROUP BY database, table
+HAVING parts > 100
+ORDER BY parts DESC;
+
+-- Disk space per disk
+SELECT
+    name,
+    path,
+    formatReadableSize(total_space)     AS total,
+    formatReadableSize(free_space)      AS free,
+    round(free_space / total_space * 100, 1) AS free_pct
+FROM system.disks;
+```
+
+### Step 3: Query Performance Analysis
+
+```sql
+-- Slowest queries in the last 24 hours
+SELECT
+    event_time,
+    query_duration_ms,
+    read_rows,
+    read_bytes,
+    result_rows,
+    memory_usage,
+    substring(query, 1, 200) AS query_preview
+FROM system.query_log
+WHERE type = 'QueryFinish'
+  AND event_time >= now() - INTERVAL 24 HOUR
+ORDER BY query_duration_ms DESC
+LIMIT 20;
+
+-- Failed queries (last 24h)
+SELECT
+    event_time,
+    exception_code,
+    exception,
+    substring(query, 1, 200) AS query_preview
+FROM system.query_log
+WHERE type = 'ExceptionWhileProcessing'
+  AND event_time >= now() - INTERVAL 24 HOUR
+ORDER BY event_time DESC
+LIMIT 20;
+
+-- Query patterns (group by normalized query)
+SELECT
+    normalized_query_hash,
+    count()                          AS executions,
+    avg(query_duration_ms)           AS avg_ms,
+    max(query_duration_ms)           AS max_ms,
+    sum(read_rows)                   AS total_rows_read,
+    formatReadableSize(sum(read_bytes)) AS total_read,
+    any(substring(query, 1, 150))    AS sample_query
+FROM system.query_log
+WHERE type = 'QueryFinish'
+  AND event_time >= now() - INTERVAL 24 HOUR
+GROUP BY normalized_query_hash
+ORDER BY sum(query_duration_ms) DESC
+LIMIT 20;
+```
+
+### Step 4: Merge and Mutation Status
+
+```sql
+-- Active merges
+SELECT
+    database, table, elapsed, progress,
+    num_parts, result_part_name,
+    formatReadableSize(total_size_bytes_compressed) AS size
+FROM system.merges;
+
+-- Pending mutations
+SELECT database, table, mutation_id, command, create_time, is_done
+FROM system.mutations
+WHERE NOT is_done
+ORDER BY create_time DESC;
+
+-- Replication health (if using ReplicatedMergeTree)
+SELECT
+    database, table,
+    is_leader, total_replicas, active_replicas,
+    queue_size, inserts_in_queue, merges_in_queue
+FROM system.replicas
+WHERE active_replicas < total_replicas OR queue_size > 0;
+```
+
+### Step 5: Automated Debug Script
+
 ```bash
 #!/bin/bash
 # clickhouse-debug-bundle.sh
+set -euo pipefail
 
-BUNDLE_DIR="clickhouse-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+CH_HOST="${CLICKHOUSE_HOST:-http://localhost:8123}"
+CH_USER="${CLICKHOUSE_USER:-default}"
+CH_PASS="${CLICKHOUSE_PASSWORD:-}"
+BUNDLE="ch-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-echo "=== ClickHouse Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+ch_query() {
+  curl -sS "${CH_HOST}" \
+    --user "${CH_USER}:${CH_PASS}" \
+    --data-binary "$1" 2>&1
+}
+
+echo "Collecting ClickHouse diagnostics..."
+
+ch_query "SELECT version(), uptime(), currentDatabase()" > "$BUNDLE/version.txt"
+ch_query "SELECT * FROM system.metrics FORMAT TabSeparatedWithNames" > "$BUNDLE/metrics.tsv"
+ch_query "SELECT * FROM system.events FORMAT TabSeparatedWithNames" > "$BUNDLE/events.tsv"
+ch_query "SELECT database, table, count() AS parts, sum(rows) AS rows, \
+  formatReadableSize(sum(bytes_on_disk)) AS size FROM system.parts \
+  WHERE active GROUP BY database, table ORDER BY sum(bytes_on_disk) DESC \
+  FORMAT TabSeparatedWithNames" > "$BUNDLE/tables.tsv"
+ch_query "SELECT * FROM system.merges FORMAT TabSeparatedWithNames" > "$BUNDLE/merges.tsv"
+ch_query "SELECT * FROM system.query_log WHERE type IN ('ExceptionWhileProcessing') \
+  AND event_time >= now() - INTERVAL 1 HOUR ORDER BY event_time DESC LIMIT 50 \
+  FORMAT TabSeparatedWithNames" > "$BUNDLE/errors.tsv"
+ch_query "SELECT * FROM system.replicas FORMAT TabSeparatedWithNames" > "$BUNDLE/replicas.tsv" 2>/dev/null || true
+
+tar -czf "${BUNDLE}.tar.gz" "$BUNDLE"
+rm -rf "$BUNDLE"
+echo "Bundle created: ${BUNDLE}.tar.gz"
 ```
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "CLICKHOUSE_API_KEY: ${CLICKHOUSE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+### Step 6: Node.js Debug Collector
+
+```typescript
+import { createClient } from '@clickhouse/client';
+
+async function collectDebugBundle(client: ReturnType<typeof createClient>) {
+  const queries = {
+    version: 'SELECT version() AS ver, uptime() AS up',
+    tables: `SELECT database, table, count() AS parts, sum(rows) AS rows
+             FROM system.parts WHERE active GROUP BY database, table
+             ORDER BY sum(bytes_on_disk) DESC LIMIT 20`,
+    slow: `SELECT query_duration_ms, substring(query,1,200) AS q
+           FROM system.query_log WHERE type='QueryFinish'
+           AND event_time >= now() - INTERVAL 1 HOUR
+           ORDER BY query_duration_ms DESC LIMIT 10`,
+    errors: `SELECT exception_code, exception, substring(query,1,200) AS q
+             FROM system.query_log WHERE type='ExceptionWhileProcessing'
+             AND event_time >= now() - INTERVAL 1 HOUR LIMIT 10`,
+    merges: 'SELECT * FROM system.merges',
+  };
+
+  const bundle: Record<string, unknown> = {};
+  for (const [key, sql] of Object.entries(queries)) {
+    try {
+      const rs = await client.query({ query: sql, format: 'JSONEachRow' });
+      bundle[key] = await rs.json();
+    } catch (e) {
+      bundle[key] = { error: (e as Error).message };
+    }
+  }
+
+  return bundle;
+}
 ```
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @clickhouse/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+## Key System Tables
 
-# Recent logs (redacted)
-grep -i "clickhouse" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.clickhouse.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `clickhouse-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+| Table | Purpose |
+|-------|---------|
+| `system.parts` | Data parts per table (size, rows, merge status) |
+| `system.query_log` | Query history with timing and errors |
+| `system.metrics` | Real-time server metrics (gauges) |
+| `system.events` | Cumulative server counters |
+| `system.merges` | Currently running merges |
+| `system.mutations` | ALTER TABLE mutations (UPDATE/DELETE) |
+| `system.replicas` | Replication status per table |
+| `system.processes` | Currently executing queries |
+| `system.disks` | Disk space and health |
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash clickhouse-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to ClickHouse support portal
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `system.query_log` empty | Logging disabled | Set `log_queries = 1` |
+| Permission denied on system tables | Restricted user | Grant `SELECT ON system.*` |
+| Bundle too large | Too much history | Narrow time window |
 
 ## Resources
-- [ClickHouse Support](https://docs.clickhouse.com/support)
-- [ClickHouse Status](https://status.clickhouse.com)
+
+- [System Tables Reference](https://clickhouse.com/docs/operations/system-tables)
+- [Query Log](https://clickhouse.com/docs/operations/system-tables/query_log)
+- [Server Metrics](https://clickhouse.com/docs/operations/system-tables/metrics)
 
 ## Next Steps
-For rate limit issues, see `clickhouse-rate-limits`.
+
+For connection and concurrency issues, see `clickhouse-rate-limits`.
