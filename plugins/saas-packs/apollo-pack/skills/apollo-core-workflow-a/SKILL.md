@@ -17,39 +17,43 @@ tags: [saas, apollo, workflow]
 # Apollo Core Workflow A: Lead Search & Enrichment
 
 ## Overview
-Implement the primary Apollo.io workflow for searching leads and enriching contact/company data via the REST API (`https://api.apollo.io/v1`). This is the core use case for B2B sales intelligence — find decision-makers at target companies and enrich their profiles.
+Build the core Apollo.io prospecting pipeline: search for people and organizations, then enrich the best leads. Key distinction — **search is free** (no credits), **enrichment costs credits**. This skill uses the correct endpoints and `x-api-key` header authentication.
 
 ## Prerequisites
 - Completed `apollo-install-auth` setup
-- Valid Apollo API credentials with search permissions
+- Valid Apollo API key with search + enrichment permissions
 - Understanding of your Ideal Customer Profile (ICP)
 
 ## Instructions
 
-### Step 1: Search for People by Company Domain
+### Step 1: Search for People (Free — No Credits)
+The People API Search endpoint (`POST /mixed_people/api_search`) searches Apollo's 275M+ database. It does **not** return emails or phone numbers — use enrichment for that.
+
 ```typescript
 // src/workflows/lead-search.ts
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: 'https://api.apollo.io/v1',
-  headers: { 'Content-Type': 'application/json' },
-  params: { api_key: process.env.APOLLO_API_KEY },
+  baseURL: 'https://api.apollo.io/api/v1',
+  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
 });
 
 interface PersonSearchParams {
   domains: string[];
   titles?: string[];
-  seniorityLevels?: string[];
+  seniorities?: string[];    // "c_suite", "vp", "director", "manager", "senior"
+  locations?: string[];       // "United States", "San Francisco, California"
   page?: number;
   perPage?: number;
 }
 
-async function searchPeople(params: PersonSearchParams) {
-  const { data } = await client.post('/people/search', {
-    q_organization_domains: params.domains,
+export async function searchPeople(params: PersonSearchParams) {
+  const { data } = await client.post('/mixed_people/api_search', {
+    q_organization_domains_list: params.domains,
     person_titles: params.titles,
-    person_seniorities: params.seniorityLevels,  // "vp", "director", "c_suite"
+    person_seniorities: params.seniorities,
+    person_locations: params.locations,
+    include_similar_titles: true,
     page: params.page ?? 1,
     per_page: params.perPage ?? 25,
   });
@@ -57,29 +61,30 @@ async function searchPeople(params: PersonSearchParams) {
   return {
     people: data.people,
     total: data.pagination.total_entries,
+    totalPages: data.pagination.total_pages,
     page: data.pagination.page,
   };
 }
 ```
 
-### Step 2: Search for Organizations
+### Step 2: Search for Organizations (Free)
 ```typescript
 // src/workflows/org-search.ts
 interface OrgSearchParams {
-  keywords?: string[];
-  locations?: string[];       // e.g., ["United States"]
-  employeeRange?: [number, number];  // e.g., [50, 500]
+  keywords?: string;
+  locations?: string[];
+  employeeRanges?: string[];  // ["1,10", "11,50", "51,200", "201,500"]
   industries?: string[];
+  revenueRanges?: string[];   // ["0,1000000", "1000000,10000000"]
 }
 
-async function searchOrganizations(params: OrgSearchParams) {
-  const { data } = await client.post('/organizations/search', {
-    q_keywords: params.keywords?.join(' '),
+export async function searchOrganizations(params: OrgSearchParams) {
+  const { data } = await client.post('/mixed_companies/search', {
+    q_organization_keyword_tags: params.keywords ? [params.keywords] : undefined,
     organization_locations: params.locations,
-    organization_num_employees_ranges: params.employeeRange
-      ? [`${params.employeeRange[0]},${params.employeeRange[1]}`]
-      : undefined,
+    organization_num_employees_ranges: params.employeeRanges,
     organization_industry_tag_ids: params.industries,
+    organization_revenue_ranges: params.revenueRanges,
     page: 1,
     per_page: 25,
   });
@@ -91,14 +96,16 @@ async function searchOrganizations(params: OrgSearchParams) {
     industry: org.industry,
     employees: org.estimated_num_employees,
     revenue: org.annual_revenue_printed,
+    city: org.city,
+    state: org.state,
   }));
 }
 ```
 
-### Step 3: Enrich a Person by Email or LinkedIn
+### Step 3: Enrich a Single Person (1 Credit)
 ```typescript
 // src/workflows/enrich.ts
-async function enrichPerson(params: {
+export async function enrichPerson(params: {
   email?: string;
   linkedinUrl?: string;
   firstName?: string;
@@ -111,99 +118,111 @@ async function enrichPerson(params: {
     first_name: params.firstName,
     last_name: params.lastName,
     organization_domain: params.domain,
+    reveal_personal_emails: false,
+    reveal_phone_number: true,
   });
 
   if (!data.person) return null;
+  const p = data.person;
 
   return {
-    id: data.person.id,
-    name: data.person.name,
-    title: data.person.title,
-    email: data.person.email,
-    phone: data.person.phone_numbers?.[0]?.sanitized_number,
-    company: data.person.organization?.name,
-    linkedinUrl: data.person.linkedin_url,
-    city: data.person.city,
-    state: data.person.state,
+    id: p.id,
+    name: p.name,
+    title: p.title,
+    email: p.email,
+    phone: p.phone_numbers?.[0]?.sanitized_number,
+    company: p.organization?.name,
+    companyDomain: p.organization?.primary_domain,
+    linkedinUrl: p.linkedin_url,
+    seniority: p.seniority,
+    city: p.city,
+    state: p.state,
   };
 }
 ```
 
-### Step 4: Enrich an Organization by Domain
+### Step 4: Bulk Enrich People (Up to 10 per Call)
 ```typescript
-async function enrichOrganization(domain: string) {
-  const { data } = await client.get('/organizations/enrich', {
-    params: { domain },
+export async function bulkEnrichPeople(details: Array<{
+  email?: string;
+  linkedin_url?: string;
+  first_name?: string;
+  last_name?: string;
+  organization_domain?: string;
+}>) {
+  const { data } = await client.post('/people/bulk_match', {
+    details,
+    reveal_personal_emails: false,
+    reveal_phone_number: false,
   });
 
-  if (!data.organization) return null;
-
-  return {
-    id: data.organization.id,
-    name: data.organization.name,
-    industry: data.organization.industry,
-    employees: data.organization.estimated_num_employees,
-    revenue: data.organization.annual_revenue_printed,
-    techStack: data.organization.current_technologies?.map((t: any) => t.name),
-    headquarters: `${data.organization.city}, ${data.organization.state}`,
-    description: data.organization.short_description,
-  };
+  return (data.matches ?? []).map((match: any) => ({
+    id: match.id,
+    name: match.name,
+    email: match.email,
+    title: match.title,
+    company: match.organization?.name,
+  }));
 }
 ```
 
 ### Step 5: Build a Combined Lead Pipeline
 ```typescript
-async function buildLeadPipeline(targetDomains: string[]) {
+export async function buildLeadPipeline(targetDomains: string[]) {
   const leads: any[] = [];
 
   for (const domain of targetDomains) {
-    // Enrich the company
-    const org = await enrichOrganization(domain);
-    if (!org) continue;
-
-    // Find decision-makers
+    // Step A: Search for decision-makers (free)
     const { people } = await searchPeople({
       domains: [domain],
-      seniorityLevels: ['vp', 'director', 'c_suite'],
+      seniorities: ['vp', 'director', 'c_suite'],
     });
 
-    for (const person of people) {
-      leads.push({
-        ...person,
-        company: org,
-        score: scoreLead(person, org),
-      });
+    // Step B: Score leads before enriching (save credits)
+    const worthEnriching = people.filter((p: any) => scoreLead(p) >= 50);
+
+    // Step C: Bulk enrich top leads (costs credits)
+    if (worthEnriching.length > 0) {
+      const enriched = await bulkEnrichPeople(
+        worthEnriching.map((p: any) => ({
+          first_name: p.first_name,
+          last_name: p.last_name,
+          organization_domain: domain,
+        })),
+      );
+      leads.push(...enriched);
     }
   }
 
-  return leads.sort((a, b) => b.score - a.score);
+  return leads.sort((a, b) => scoreLead(b) - scoreLead(a));
 }
 
-function scoreLead(person: any, org: any): number {
+function scoreLead(person: any): number {
   let score = 0;
   if (person.email) score += 30;
   if (person.phone_numbers?.length) score += 20;
-  if (['c_suite', 'vp'].includes(person.seniority)) score += 25;
-  if (org.employees >= 50 && org.employees <= 1000) score += 15;
+  if (['c_suite', 'vp', 'founder', 'owner'].includes(person.seniority)) score += 30;
+  else if (['director'].includes(person.seniority)) score += 20;
   if (person.linkedin_url) score += 10;
+  if (person.city) score += 10;
   return score;
 }
 ```
 
 ## Output
-- Paginated people search results with filtering by title and seniority
-- Organization search with firmographic filters (size, industry, location)
-- Person enrichment returning email, phone, title, and company
-- Organization enrichment returning tech stack, revenue, and headcount
-- Combined lead pipeline with scoring and ranking
+- People search via `POST /mixed_people/api_search` (free, no credits)
+- Organization search via `POST /mixed_companies/search` (free)
+- Single person enrichment via `POST /people/match` (1 credit)
+- Bulk enrichment via `POST /people/bulk_match` (up to 10 per call)
+- Lead scoring to minimize credit spend before enriching
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Empty results | Too narrow criteria | Broaden seniority levels or remove title filter |
-| Missing emails | Contact not in Apollo database | Try enrichment via LinkedIn URL instead |
-| 429 Rate Limited | Too many enrichment calls | Batch requests with delays between calls |
-| Invalid domain | Domain does not resolve | Validate domains before searching |
+| Empty `people` array | Too narrow criteria | Broaden seniority levels, add `include_similar_titles: true` |
+| `null` from enrichment | Person not in Apollo database | Try enriching via LinkedIn URL instead of name+domain |
+| 429 Rate Limited | Too many requests/minute | Batch requests with 500ms delays between calls |
+| 403 Forbidden | Standard key used for enrichment | Upgrade to master API key in Apollo dashboard |
 
 ## Examples
 
@@ -211,25 +230,27 @@ function scoreLead(person: any, org: any): number {
 ```typescript
 // Find Series B SaaS companies with 50-500 employees
 const companies = await searchOrganizations({
-  keywords: ['SaaS', 'B2B'],
-  employeeRange: [50, 500],
+  keywords: 'SaaS',
+  employeeRanges: ['51,200', '201,500'],
   locations: ['United States'],
 });
 
 // Find VPs of Sales at those companies
 for (const company of companies.slice(0, 10)) {
-  const { people } = await searchPeople({
+  const { people, total } = await searchPeople({
     domains: [company.domain],
     titles: ['VP Sales', 'Head of Sales', 'VP Revenue'],
   });
-  console.log(`${company.name}: ${people.length} contacts found`);
+  console.log(`${company.name} (${company.domain}): ${total} contacts`);
 }
 ```
 
 ## Resources
-- [Apollo People Search API](https://apolloio.github.io/apollo-api-docs/#search-for-people)
-- [Apollo Organization Enrichment](https://apolloio.github.io/apollo-api-docs/#enrich-organization)
-- [Apollo Person Match/Enrichment](https://apolloio.github.io/apollo-api-docs/#people-enrichment)
+- [People API Search](https://docs.apollo.io/reference/people-api-search)
+- [Organization Search](https://docs.apollo.io/reference/organization-search)
+- [People Enrichment](https://docs.apollo.io/reference/people-enrichment)
+- [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
+- [Find People Using Filters](https://docs.apollo.io/docs/find-people-using-filters)
 
 ## Next Steps
 Proceed to `apollo-core-workflow-b` for email sequences and outreach.

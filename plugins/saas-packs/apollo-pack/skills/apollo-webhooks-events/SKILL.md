@@ -1,9 +1,9 @@
 ---
 name: apollo-webhooks-events
 description: |
-  Implement Apollo.io webhook handling.
-  Use when receiving Apollo webhooks, processing event notifications,
-  or building event-driven integrations.
+  Implement Apollo.io webhook and event-driven integrations.
+  Use when receiving Apollo notifications, syncing data on changes,
+  or building event-driven pipelines from Apollo activity.
   Trigger with phrases like "apollo webhooks", "apollo events",
   "apollo notifications", "apollo webhook handler", "apollo triggers".
 allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(curl:*)
@@ -17,219 +17,223 @@ tags: [saas, apollo, webhooks]
 # Apollo Webhooks & Events
 
 ## Overview
-Implement webhook handlers for Apollo.io to receive real-time notifications about contact updates, sequence events, and engagement activities. Apollo fires webhooks for events like `contact.created`, `contact.updated`, `sequence.replied`, and `sequence.bounced`.
+Build event-driven integrations with Apollo.io. Apollo does not have a native webhook system like Stripe — instead, you build real-time sync by **polling** the API for changes or using **third-party webhook platforms** (Zapier, Pipedream, Make) that trigger on Apollo events. This skill covers both approaches plus the Contact Stages and Tasks APIs for workflow automation.
 
 ## Prerequisites
-- Valid Apollo.io API credentials
-- Node.js 18+ with Express or Fastify
-- Publicly reachable endpoint (use ngrok for local dev)
-- Completed `apollo-install-auth` setup
+- Apollo account with master API key
+- Node.js 18+ with Express
+- For polling: a scheduler (cron, Cloud Scheduler, BullMQ)
+- For webhook platforms: Zapier/Pipedream/Make account
 
 ## Instructions
 
-### Step 1: Define Event Types
+### Step 1: Poll for Contact Changes
+Since Apollo lacks native webhooks, poll the Contacts Search API for recently updated records.
+
 ```typescript
-// src/webhooks/types.ts
-export type ApolloEventType =
-  | 'contact.created'
-  | 'contact.updated'
-  | 'contact.deleted'
-  | 'sequence.replied'
-  | 'sequence.bounced'
-  | 'sequence.opened'
-  | 'sequence.clicked'
-  | 'sequence.unsubscribed'
-  | 'account.updated';
+// src/sync/contact-poller.ts
+import axios from 'axios';
 
-export interface ApolloWebhookPayload {
-  event: ApolloEventType;
-  data: Record<string, any>;
-  timestamp: string;
-  webhook_id: string;
-}
-```
-
-### Step 2: Create the Webhook Endpoint
-```typescript
-// src/webhooks/server.ts
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-app.use(express.json({ limit: '1mb' }));
-
-const WEBHOOK_SECRET = process.env.APOLLO_WEBHOOK_SECRET!;
-
-function verifySignature(payload: string, signature: string): boolean {
-  const expected = crypto
-    .createHmac('sha256', WEBHOOK_SECRET)
-    .update(payload)
-    .digest('hex');
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected),
-  );
-}
-
-app.post('/webhooks/apollo', (req, res) => {
-  const signature = req.headers['x-apollo-signature'] as string;
-  const rawBody = JSON.stringify(req.body);
-
-  if (signature && !verifySignature(rawBody, signature)) {
-    console.error('Invalid webhook signature');
-    return res.status(401).json({ error: 'Invalid signature' });
-  }
-
-  // Acknowledge immediately, process async
-  res.status(200).json({ received: true });
-
-  processWebhook(req.body).catch((err) =>
-    console.error('Webhook processing failed:', err),
-  );
+const client = axios.create({
+  baseURL: 'https://api.apollo.io/api/v1',
+  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
 });
 
-app.listen(3000, () => console.log('Webhook server on port 3000'));
-```
+interface SyncState {
+  lastSyncAt: string;  // ISO timestamp
+}
 
-### Step 3: Implement Event Handlers
-```typescript
-// src/webhooks/handlers.ts
-import { ApolloWebhookPayload, ApolloEventType } from './types';
+export async function pollContactChanges(state: SyncState) {
+  const { data } = await client.post('/contacts/search', {
+    sort_by_field: 'contact_updated_at',
+    sort_ascending: false,
+    per_page: 100,
+  });
 
-type EventHandler = (data: Record<string, any>) => Promise<void>;
+  const lastSync = new Date(state.lastSyncAt);
+  const newChanges = data.contacts.filter(
+    (c: any) => new Date(c.updated_at) > lastSync,
+  );
 
-const handlers: Record<ApolloEventType, EventHandler> = {
-  'contact.created': async (data) => {
-    console.log(`New contact: ${data.first_name} ${data.last_name} (${data.email})`);
-    // Sync to your CRM or database
-    await syncContactToDatabase(data);
-  },
-
-  'contact.updated': async (data) => {
-    console.log(`Contact updated: ${data.id}`);
-    await updateContactInDatabase(data);
-  },
-
-  'contact.deleted': async (data) => {
-    console.log(`Contact deleted: ${data.id}`);
-    await markContactDeleted(data.id);
-  },
-
-  'sequence.replied': async (data) => {
-    console.log(`Reply from ${data.contact_email} on sequence ${data.sequence_id}`);
-    // Notify sales rep, pause sequence for this contact
-    await notifySalesRep(data);
-  },
-
-  'sequence.bounced': async (data) => {
-    console.warn(`Bounce: ${data.contact_email} — ${data.bounce_type}`);
-    await handleBounce(data);
-  },
-
-  'sequence.opened': async (data) => {
-    await trackEngagement('open', data);
-  },
-
-  'sequence.clicked': async (data) => {
-    await trackEngagement('click', data);
-  },
-
-  'sequence.unsubscribed': async (data) => {
-    await handleUnsubscribe(data);
-  },
-
-  'account.updated': async (data) => {
-    await syncAccountData(data);
-  },
-};
-
-export async function processWebhook(payload: ApolloWebhookPayload) {
-  const handler = handlers[payload.event];
-  if (!handler) {
-    console.warn(`Unhandled event type: ${payload.event}`);
-    return;
+  if (newChanges.length > 0) {
+    console.log(`Found ${newChanges.length} contact changes since ${state.lastSyncAt}`);
+    for (const contact of newChanges) {
+      await handleContactChange(contact);
+    }
+    state.lastSyncAt = new Date().toISOString();
   }
-  await handler(payload.data);
+
+  return newChanges;
+}
+
+async function handleContactChange(contact: any) {
+  console.log(`Contact updated: ${contact.name} (${contact.email}) — stage: ${contact.contact_stage_id}`);
+  // Sync to your CRM, database, or notification system
 }
 ```
 
-### Step 4: Add Idempotency Protection
+### Step 2: Track Contact Stage Changes
+Apollo has a Contact Stages system. Use the List Contact Stages endpoint to get stage IDs, then filter contacts by stage.
+
 ```typescript
-// src/webhooks/idempotency.ts
-const processedEvents = new Map<string, number>();  // webhook_id -> timestamp
-const TTL_MS = 24 * 60 * 60 * 1000;  // 24 hours
-
-export function isDuplicate(webhookId: string): boolean {
-  // Clean expired entries
-  const now = Date.now();
-  for (const [id, ts] of processedEvents) {
-    if (now - ts > TTL_MS) processedEvents.delete(id);
-  }
-
-  if (processedEvents.has(webhookId)) return true;
-  processedEvents.set(webhookId, now);
-  return false;
+// src/sync/stage-tracker.ts
+export async function getContactStages() {
+  const { data } = await client.get('/contact_stages');
+  return data.contact_stages.map((s: any) => ({
+    id: s.id,
+    name: s.name,
+    order: s.display_order,
+  }));
 }
 
-// Use in the endpoint:
-// if (isDuplicate(req.body.webhook_id)) {
-//   return res.status(200).json({ received: true, duplicate: true });
-// }
+// Find contacts that moved to a specific stage
+export async function getContactsByStage(stageId: string) {
+  const { data } = await client.post('/contacts/search', {
+    contact_stage_ids: [stageId],
+    sort_by_field: 'contact_updated_at',
+    sort_ascending: false,
+    per_page: 50,
+  });
+  return data.contacts;
+}
+
+// Update a contact's stage
+export async function updateContactStage(contactId: string, stageId: string) {
+  await client.put(`/contacts/${contactId}`, {
+    contact_stage_id: stageId,
+  });
+}
 ```
 
-### Step 5: Register the Webhook in Apollo
-```bash
-# Register your endpoint via Apollo API
-curl -X POST https://api.apollo.io/v1/webhooks \
-  -H "Content-Type: application/json" \
-  -d '{
-    "api_key": "'$APOLLO_API_KEY'",
-    "url": "https://your-domain.com/webhooks/apollo",
-    "events": ["contact.created", "contact.updated", "sequence.replied", "sequence.bounced"],
-    "active": true
-  }'
+### Step 3: Monitor Sequence Engagement
+Poll sequence data for replies, bounces, and engagement events.
+
+```typescript
+// src/sync/sequence-monitor.ts
+export async function checkSequenceEngagement(sequenceId: string) {
+  const { data } = await client.post('/emailer_campaigns/search', {
+    ids: [sequenceId],
+    per_page: 1,
+  });
+
+  const seq = data.emailer_campaigns?.[0];
+  if (!seq) return null;
+
+  return {
+    name: seq.name,
+    active: seq.active,
+    metrics: {
+      scheduled: seq.unique_scheduled ?? 0,
+      delivered: seq.unique_delivered ?? 0,
+      opened: seq.unique_opened ?? 0,
+      replied: seq.unique_replied ?? 0,
+      bounced: seq.unique_bounced ?? 0,
+      unsubscribed: seq.unique_unsubscribed ?? 0,
+    },
+    rates: {
+      openRate: pct(seq.unique_opened, seq.unique_delivered),
+      replyRate: pct(seq.unique_replied, seq.unique_delivered),
+      bounceRate: pct(seq.unique_bounced, seq.unique_scheduled),
+    },
+  };
+}
+
+function pct(num?: number, denom?: number): string {
+  if (!denom) return '0%';
+  return `${(((num ?? 0) / denom) * 100).toFixed(1)}%`;
+}
+```
+
+### Step 4: Create Tasks for Follow-Up Actions
+Use Apollo's Tasks API to create actionable follow-ups triggered by your polling logic.
+
+```typescript
+// src/sync/task-creator.ts
+export async function createFollowUpTask(params: {
+  contactId: string;
+  type: 'call' | 'action_item' | 'email';
+  dueDate: string;
+  note: string;
+  assigneeId?: string;
+}) {
+  const { data } = await client.post('/tasks', {
+    contact_id: params.contactId,
+    type: params.type,
+    due_date: params.dueDate,
+    note: params.note,
+    user_id: params.assigneeId,  // Apollo user ID to assign to
+    priority: 'high',
+    status: 'open',
+  });
+
+  return { taskId: data.task.id, type: data.task.type, dueDate: data.task.due_date };
+}
+
+// Example: auto-create call task when a sequence reply is detected
+async function onSequenceReply(contactId: string, sequenceName: string) {
+  await createFollowUpTask({
+    contactId,
+    type: 'call',
+    dueDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    note: `Reply detected on sequence "${sequenceName}". Follow up immediately.`,
+  });
+}
+```
+
+### Step 5: Set Up a Cron-Based Sync Service
+```typescript
+// src/sync/scheduler.ts
+import cron from 'node-cron';
+import { pollContactChanges } from './contact-poller';
+import { checkSequenceEngagement } from './sequence-monitor';
+
+const syncState = { lastSyncAt: new Date(Date.now() - 60 * 60 * 1000).toISOString() };
+
+// Poll every 5 minutes for contact changes
+cron.schedule('*/5 * * * *', async () => {
+  try {
+    const changes = await pollContactChanges(syncState);
+    console.log(`Sync complete: ${changes.length} changes`);
+  } catch (err) {
+    console.error('Contact sync failed:', err);
+  }
+});
+
+// Check sequence engagement every 15 minutes
+cron.schedule('*/15 * * * *', async () => {
+  const activeSequenceIds = ['seq-1', 'seq-2'];  // from your config
+  for (const id of activeSequenceIds) {
+    const stats = await checkSequenceEngagement(id);
+    if (stats && parseInt(stats.rates.replyRate) > 10) {
+      console.log(`High reply rate on "${stats.name}": ${stats.rates.replyRate}`);
+    }
+  }
+});
+
+console.log('Apollo sync scheduler started');
 ```
 
 ## Output
-- Express webhook endpoint with HMAC signature verification
-- Event type definitions and typed handler registry
-- Idempotency layer preventing duplicate processing
-- Handlers for all Apollo event types (contact, sequence, account)
-- Webhook registration via Apollo API
+- Contact change poller with timestamp-based incremental sync
+- Contact stage tracking and updates via the Stages API
+- Sequence engagement monitoring with reply/bounce/open rates
+- Task creation API for automated follow-ups
+- Cron-based scheduler for periodic sync
 
 ## Error Handling
 | Issue | Resolution |
 |-------|------------|
-| Invalid signature | Verify `APOLLO_WEBHOOK_SECRET` matches Apollo config |
-| Unknown event type | Log and return 200 (do not reject) |
-| Processing failure | Return 200 immediately, process async, retry failed jobs |
-| Duplicate events | Check `webhook_id` with idempotency map before processing |
-
-## Examples
-
-### Local Development with ngrok
-```bash
-# Start your webhook server
-node dist/webhooks/server.js &
-
-# Expose locally via ngrok
-ngrok http 3000
-
-# Register the ngrok URL as your webhook endpoint
-curl -X POST https://api.apollo.io/v1/webhooks \
-  -H "Content-Type: application/json" \
-  -d '{
-    "api_key": "'$APOLLO_API_KEY'",
-    "url": "https://abc123.ngrok.io/webhooks/apollo",
-    "events": ["contact.created", "sequence.replied"],
-    "active": true
-  }'
-```
+| Missed changes between polls | Reduce poll interval or use `sort_by_field: contact_updated_at` |
+| Rate limited during polling | Add backoff, reduce `per_page`, increase poll interval |
+| Duplicate task creation | Track processed contact IDs in a Set or database |
+| Third-party webhook delays | Zapier/Pipedream polling intervals vary (1-15 min on free tiers) |
 
 ## Resources
-- [Apollo Webhooks Documentation](https://apolloio.github.io/apollo-api-docs/#webhooks)
-- [Webhook Security Best Practices](https://hookdeck.com/webhooks/guides/webhook-security-best-practices)
-- [ngrok for Local Development](https://ngrok.com/docs)
+- [List Contact Stages](https://docs.apollo.io/reference/list-contact-stages)
+- [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
+- [Create a Task](https://docs.apollo.io/reference/create-task)
+- [Search for Sequences](https://docs.apollo.io/reference/search-for-sequences)
+- [Apollo + Zapier Integration](https://zapier.com/apps/apollo/integrations)
 
 ## Next Steps
 Proceed to `apollo-performance-tuning` for optimization.

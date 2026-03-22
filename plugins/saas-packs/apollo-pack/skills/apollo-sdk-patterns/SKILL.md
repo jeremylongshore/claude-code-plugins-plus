@@ -17,35 +17,32 @@ tags: [saas, apollo, api]
 # Apollo SDK Patterns
 
 ## Overview
-Production-ready patterns for Apollo.io API integration with type safety, error handling, and retry logic. Apollo has no official SDK — these patterns wrap the REST API (`https://api.apollo.io/v1`) with robust TypeScript abstractions.
+Production-ready patterns for Apollo.io API integration. Apollo has no official SDK — these patterns wrap the REST API (`https://api.apollo.io/api/v1/`) with type safety, retry logic, pagination, and bulk operations. All requests use the `x-api-key` header.
 
 ## Prerequisites
 - Completed `apollo-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of TypeScript generics
+- TypeScript 5+ with strict mode
 
 ## Instructions
 
-### Step 1: Create a Type-Safe Client Singleton
+### Step 1: Type-Safe Client with Zod Validation
 ```typescript
 // src/apollo/client.ts
-import axios, { AxiosInstance, AxiosError } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { z } from 'zod';
 
-const ApolloConfigSchema = z.object({
-  apiKey: z.string().min(1),
-  baseURL: z.string().url().default('https://api.apollo.io/v1'),
+const ConfigSchema = z.object({
+  apiKey: z.string().min(10, 'API key too short'),
+  baseURL: z.string().url().default('https://api.apollo.io/api/v1'),
   timeout: z.number().default(30_000),
 });
 
-type ApolloConfig = z.infer<typeof ApolloConfigSchema>;
-
 let instance: AxiosInstance | null = null;
 
-export function getApolloClient(config?: Partial<ApolloConfig>): AxiosInstance {
+export function getApolloClient(config?: Partial<z.input<typeof ConfigSchema>>): AxiosInstance {
   if (instance) return instance;
 
-  const parsed = ApolloConfigSchema.parse({
+  const parsed = ConfigSchema.parse({
     apiKey: config?.apiKey ?? process.env.APOLLO_API_KEY,
     ...config,
   });
@@ -53,53 +50,70 @@ export function getApolloClient(config?: Partial<ApolloConfig>): AxiosInstance {
   instance = axios.create({
     baseURL: parsed.baseURL,
     timeout: parsed.timeout,
-    headers: { 'Content-Type': 'application/json' },
-    params: { api_key: parsed.apiKey },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': parsed.apiKey,
+    },
   });
 
   return instance;
 }
+
+// Reset for testing
+export function resetClient() { instance = null; }
 ```
 
-### Step 2: Add Custom Error Classes
+### Step 2: Custom Error Classes
 ```typescript
 // src/apollo/errors.ts
+import { AxiosError } from 'axios';
+
 export class ApolloApiError extends Error {
   constructor(
     message: string,
     public statusCode: number,
     public endpoint: string,
     public retryable: boolean,
+    public requestId?: string,
   ) {
     super(message);
     this.name = 'ApolloApiError';
   }
 
-  static fromAxiosError(err: AxiosError, endpoint: string): ApolloApiError {
+  static fromAxios(err: AxiosError): ApolloApiError {
     const status = err.response?.status ?? 0;
-    const retryable = [429, 500, 502, 503].includes(status);
-    const msg = (err.response?.data as any)?.message ?? err.message;
-    return new ApolloApiError(msg, status, endpoint, retryable);
+    const body = err.response?.data as any;
+    return new ApolloApiError(
+      body?.message ?? err.message,
+      status,
+      err.config?.url ?? 'unknown',
+      [429, 500, 502, 503, 504].includes(status),
+      err.response?.headers?.['x-request-id'],
+    );
+  }
+}
+
+export class ApolloRateLimitError extends ApolloApiError {
+  constructor(
+    public retryAfterMs: number,
+    endpoint: string,
+  ) {
+    super(`Rate limited on ${endpoint}`, 429, endpoint, true);
+    this.name = 'ApolloRateLimitError';
   }
 }
 ```
 
-### Step 3: Implement Retry with Exponential Backoff
+### Step 3: Retry with Exponential Backoff
 ```typescript
 // src/apollo/retry.ts
 import { ApolloApiError } from './errors';
 
-interface RetryOptions {
-  maxRetries?: number;   // default: 3
-  baseDelay?: number;    // default: 1000ms
-  maxDelay?: number;     // default: 30000ms
-}
-
 export async function withRetry<T>(
   fn: () => Promise<T>,
-  opts: RetryOptions = {},
+  opts: { maxRetries?: number; baseMs?: number; maxMs?: number } = {},
 ): Promise<T> {
-  const { maxRetries = 3, baseDelay = 1000, maxDelay = 30_000 } = opts;
+  const { maxRetries = 3, baseMs = 1000, maxMs = 30_000 } = opts;
 
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
@@ -109,7 +123,7 @@ export async function withRetry<T>(
       if (!isRetryable || attempt === maxRetries) throw err;
 
       const jitter = Math.random() * 500;
-      const delay = Math.min(baseDelay * 2 ** attempt + jitter, maxDelay);
+      const delay = Math.min(baseMs * 2 ** attempt + jitter, maxMs);
       await new Promise((r) => setTimeout(r, delay));
     }
   }
@@ -117,91 +131,87 @@ export async function withRetry<T>(
 }
 ```
 
-### Step 4: Build an Async Pagination Iterator
+### Step 4: Async Pagination Iterator
+Apollo endpoints return `pagination.total_entries` and accept `page`/`per_page`. The People Search API limits to 500 pages (50,000 records).
+
 ```typescript
 // src/apollo/paginator.ts
 import { getApolloClient } from './client';
 import { withRetry } from './retry';
-
-interface PaginatedResponse<T> {
-  items: T[];
-  pagination: { page: number; per_page: number; total_entries: number };
-}
 
 export async function* paginate<T>(
   endpoint: string,
   body: Record<string, unknown>,
   itemKey: string = 'people',
   perPage: number = 100,
+  maxPages: number = 500,
 ): AsyncGenerator<T[], void, undefined> {
   const client = getApolloClient();
   let page = 1;
-  let total = Infinity;
+  let totalPages = Infinity;
 
-  while ((page - 1) * perPage < total) {
+  while (page <= Math.min(totalPages, maxPages)) {
     const { data } = await withRetry(() =>
       client.post(endpoint, { ...body, page, per_page: perPage }),
     );
 
     const items: T[] = data[itemKey] ?? [];
-    total = data.pagination?.total_entries ?? items.length;
+    totalPages = data.pagination?.total_pages ?? 1;
+    if (items.length === 0) break;
+
     yield items;
     page++;
   }
 }
 
 // Usage:
-// for await (const batch of paginate<Person>('/people/search', { q_organization_domains: ['stripe.com'] })) {
+// for await (const batch of paginate('/mixed_people/api_search', {
+//   q_organization_domains_list: ['stripe.com'],
+// })) {
 //   await processBatch(batch);
 // }
 ```
 
-### Step 5: Add Request Batching for Bulk Operations
+### Step 5: Bulk Enrichment with Rate Awareness
+Apollo's Bulk People Enrichment endpoint handles up to 10 records per call.
+
 ```typescript
-// src/apollo/batcher.ts
+// src/apollo/bulk-enrich.ts
 import { getApolloClient } from './client';
 import { withRetry } from './retry';
 
-interface BatchOptions {
-  batchSize?: number;       // default: 10
-  concurrency?: number;     // default: 2
-  delayBetweenMs?: number;  // default: 200
+interface EnrichmentDetail {
+  email?: string;
+  linkedin_url?: string;
+  first_name?: string;
+  last_name?: string;
+  organization_domain?: string;
 }
 
-export async function batchEnrich<T>(
-  items: string[],
-  endpoint: string,
-  paramKey: string,
-  opts: BatchOptions = {},
-): Promise<T[]> {
-  const { batchSize = 10, concurrency = 2, delayBetweenMs = 200 } = opts;
+export async function bulkEnrichPeople(
+  details: EnrichmentDetail[],
+  opts: { revealPersonalEmails?: boolean; revealPhoneNumber?: boolean } = {},
+): Promise<any[]> {
   const client = getApolloClient();
-  const results: T[] = [];
+  const results: any[] = [];
 
-  for (let i = 0; i < items.length; i += batchSize * concurrency) {
-    const chunk = items.slice(i, i + batchSize * concurrency);
-    const batches: Promise<T[]>[] = [];
+  // Apollo bulk endpoint accepts max 10 at a time
+  for (let i = 0; i < details.length; i += 10) {
+    const batch = details.slice(i, i + 10);
 
-    for (let j = 0; j < chunk.length; j += batchSize) {
-      const batch = chunk.slice(j, j + batchSize);
-      batches.push(
-        withRetry(async () => {
-          const promises = batch.map((item) =>
-            client.post(endpoint, { [paramKey]: item }),
-          );
-          const responses = await Promise.allSettled(promises);
-          return responses
-            .filter((r) => r.status === 'fulfilled')
-            .map((r) => (r as PromiseFulfilledResult<any>).value.data);
-        }),
-      );
-    }
+    const { data } = await withRetry(() =>
+      client.post('/people/bulk_match', {
+        details: batch,
+        reveal_personal_emails: opts.revealPersonalEmails ?? false,
+        reveal_phone_number: opts.revealPhoneNumber ?? false,
+      }),
+    );
 
-    const batchResults = await Promise.all(batches);
-    results.push(...batchResults.flat());
+    results.push(...(data.matches ?? []));
 
-    if (i + batchSize * concurrency < items.length) {
-      await new Promise((r) => setTimeout(r, delayBetweenMs));
+    // Brief pause between batches to respect rate limits
+    if (i + 10 < details.length) {
+      await new Promise((r) => setTimeout(r, 500));
     }
   }
 
@@ -210,59 +220,52 @@ export async function batchEnrich<T>(
 ```
 
 ## Output
-- `src/apollo/client.ts` — Type-safe singleton client with Zod config validation
-- `src/apollo/errors.ts` — Custom `ApolloApiError` class with retryable flag
-- `src/apollo/retry.ts` — Exponential backoff with jitter helper
-- `src/apollo/paginator.ts` — Async generator for paginated endpoints
-- `src/apollo/batcher.ts` — Concurrent batch processor for bulk enrichment
+- `src/apollo/client.ts` — Zod-validated singleton with `x-api-key` header
+- `src/apollo/errors.ts` — `ApolloApiError` + `ApolloRateLimitError` with retryable flag
+- `src/apollo/retry.ts` — Exponential backoff with jitter
+- `src/apollo/paginator.ts` — Async generator for paginated endpoints (500-page limit)
+- `src/apollo/bulk-enrich.ts` — Batch enrichment via `/people/bulk_match` (10 per call)
 
 ## Error Handling
 | Pattern | When to Use |
 |---------|-------------|
-| Singleton | Always — ensures single client instance |
-| Retry | Network errors, 429/500 responses |
-| Pagination | Large result sets (>100 records) |
-| Batching | Multiple enrichment calls |
-| Custom Errors | Distinguish error types in catch blocks |
+| Singleton client | Always — one client instance per process |
+| Retry | 429 rate limits, 5xx server errors |
+| Pagination | Search results > 100 records |
+| Bulk enrichment | Multiple contacts need email/phone data |
+| Custom errors | Typed catch blocks distinguishing auth vs rate limit vs server |
 
 ## Examples
 
-### Combine All Patterns
+### Full Pipeline: Search, Paginate, Enrich
 ```typescript
-import { getApolloClient } from './apollo/client';
 import { paginate } from './apollo/paginator';
-import { batchEnrich } from './apollo/batcher';
+import { bulkEnrichPeople } from './apollo/bulk-enrich';
 
-async function enrichLeadPipeline(domain: string) {
-  // 1. Paginate through all contacts at target company
+async function enrichLeadsAtCompany(domain: string) {
   const allPeople: any[] = [];
-  for await (const batch of paginate('/people/search', {
-    q_organization_domains: [domain],
-    person_titles: ['VP', 'Director', 'Head'],
+  for await (const batch of paginate('/mixed_people/api_search', {
+    q_organization_domains_list: [domain],
+    person_seniorities: ['vp', 'director', 'c_suite'],
   })) {
     allPeople.push(...batch);
   }
   console.log(`Found ${allPeople.length} decision-makers at ${domain}`);
 
-  // 2. Batch-enrich emails for contacts missing them
-  const needsEmail = allPeople
-    .filter((p) => !p.email)
-    .map((p) => p.id);
+  // Bulk enrich only those without email
+  const toEnrich = allPeople
+    .filter((p) => !p.email && p.linkedin_url)
+    .map((p) => ({ linkedin_url: p.linkedin_url }));
 
-  const enriched = await batchEnrich(
-    needsEmail,
-    '/people/match',
-    'id',
-    { batchSize: 5, concurrency: 2, delayBetweenMs: 500 },
-  );
-  console.log(`Enriched ${enriched.length} contacts with email data`);
+  const enriched = await bulkEnrichPeople(toEnrich);
+  console.log(`Enriched ${enriched.length} contacts`);
 }
 ```
 
 ## Resources
-- [Apollo API Documentation](https://apolloio.github.io/apollo-api-docs/)
+- [Apollo API Overview](https://docs.apollo.io/docs/api-overview)
+- [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
 - [Zod Schema Validation](https://zod.dev/)
-- [Axios Interceptors](https://axios-http.com/docs/interceptors)
 
 ## Next Steps
 Proceed to `apollo-core-workflow-a` for lead search implementation.

@@ -17,254 +17,238 @@ tags: [saas, apollo, compliance]
 # Apollo Data Handling
 
 ## Overview
-Data management, compliance, and governance practices for Apollo.io contact data. Covers GDPR subject access/erasure requests, data retention policies, secure export, field-level encryption, and audit logging for the Apollo REST API.
+Data management, compliance, and governance for Apollo.io contact data. Apollo's database contains 275M+ contacts with PII (emails, phones, LinkedIn profiles). This covers GDPR subject access/erasure, data retention, field-level encryption, and audit logging — using the real Apollo Contacts API endpoints.
 
 ## Prerequisites
-- Valid Apollo.io API credentials
-- Node.js 18+ or Python 3.10+
-- Completed `apollo-install-auth` setup
+- Apollo master API key (contacts/delete requires master key)
+- Node.js 18+
 
 ## Instructions
 
-### Step 1: Implement GDPR Subject Access Request
+### Step 1: GDPR Subject Access Request (SAR)
+Find all data Apollo has on a person and export it.
+
 ```typescript
 // src/data/gdpr.ts
 import axios from 'axios';
 
 const client = axios.create({
-  baseURL: 'https://api.apollo.io/v1',
-  params: { api_key: process.env.APOLLO_API_KEY },
-  headers: { 'Content-Type': 'application/json' },
+  baseURL: 'https://api.apollo.io/api/v1',
+  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
 });
 
 interface SubjectAccessReport {
   email: string;
   dataFound: boolean;
-  person?: Record<string, any>;
-  sequences?: string[];
+  crmContact?: Record<string, any>;
+  apolloDatabaseMatch?: Record<string, any>;
+  activeSequences: string[];
   exportedAt: string;
 }
 
-async function handleSubjectAccessRequest(email: string): Promise<SubjectAccessReport> {
-  // Search for the person in Apollo
-  const { data } = await client.post('/people/search', {
+export async function handleSAR(email: string): Promise<SubjectAccessReport> {
+  const report: SubjectAccessReport = {
+    email, dataFound: false, activeSequences: [],
+    exportedAt: new Date().toISOString(),
+  };
+
+  // 1. Search your CRM contacts (contacts you've saved)
+  const { data: crmData } = await client.post('/contacts/search', {
     q_keywords: email,
     per_page: 1,
   });
 
-  const person = data.people?.[0];
-  if (!person) {
-    return { email, dataFound: false, exportedAt: new Date().toISOString() };
+  if (crmData.contacts?.length > 0) {
+    const c = crmData.contacts[0];
+    report.dataFound = true;
+    report.crmContact = {
+      id: c.id, name: c.name, email: c.email, title: c.title,
+      phone: c.phone_numbers, organization: c.organization_name,
+      city: c.city, state: c.state, country: c.country,
+      createdAt: c.created_at, updatedAt: c.updated_at,
+      contactStage: c.contact_stage_id,
+      labels: c.label_ids,
+    };
+    report.activeSequences = c.emailer_campaign_ids ?? [];
   }
 
-  // Collect all data associated with this contact
-  return {
-    email,
-    dataFound: true,
-    person: {
-      name: person.name,
-      title: person.title,
-      email: person.email,
-      phone: person.phone_numbers,
-      organization: person.organization?.name,
-      city: person.city,
-      state: person.state,
-      country: person.country,
-    },
-    sequences: person.emailer_campaign_ids ?? [],
-    exportedAt: new Date().toISOString(),
-  };
+  // 2. Check Apollo's database (enrichment data)
+  try {
+    const { data: enrichData } = await client.post('/people/match', { email });
+    if (enrichData.person) {
+      report.dataFound = true;
+      report.apolloDatabaseMatch = {
+        name: enrichData.person.name,
+        title: enrichData.person.title,
+        seniority: enrichData.person.seniority,
+        city: enrichData.person.city,
+        linkedinUrl: enrichData.person.linkedin_url,
+        organization: enrichData.person.organization?.name,
+      };
+    }
+  } catch { /* person not found in Apollo DB */ }
+
+  return report;
 }
 ```
 
-### Step 2: Implement Data Erasure (Right to be Forgotten)
+### Step 2: Right to Erasure (Delete)
 ```typescript
-async function handleErasureRequest(email: string): Promise<{
-  email: string;
-  erased: boolean;
-  contactId?: string;
-  sequencesRemoved: number;
+export async function handleErasure(email: string): Promise<{
+  email: string; erased: boolean; sequencesRemoved: number;
 }> {
-  // Find the contact
-  const { data: searchData } = await client.post('/people/search', {
-    q_keywords: email,
-    per_page: 1,
+  // 1. Find the CRM contact
+  const { data } = await client.post('/contacts/search', {
+    q_keywords: email, per_page: 1,
   });
 
-  const person = searchData.people?.[0];
-  if (!person) {
-    return { email, erased: false, sequencesRemoved: 0 };
-  }
+  const contact = data.contacts?.[0];
+  if (!contact) return { email, erased: false, sequencesRemoved: 0 };
 
-  // Remove from all sequences first
+  // 2. Remove from all sequences first
   let sequencesRemoved = 0;
-  for (const seqId of person.emailer_campaign_ids ?? []) {
+  for (const seqId of contact.emailer_campaign_ids ?? []) {
     try {
-      await client.post('/emailer_campaigns/remove_contact_ids', {
+      await client.post('/emailer_campaigns/remove_or_stop_contact_ids', {
         emailer_campaign_id: seqId,
-        contact_ids: [person.id],
+        contact_ids: [contact.id],
       });
       sequencesRemoved++;
-    } catch (err) {
-      console.warn(`Failed to remove from sequence ${seqId}:`, err);
+    } catch (err: any) {
+      console.warn(`Failed to remove from sequence ${seqId}:`, err.message);
     }
   }
 
-  // Delete the contact
-  await client.delete(`/contacts/${person.id}`);
+  // 3. Delete the contact from your CRM (requires master key)
+  await client.delete(`/contacts/${contact.id}`);
 
-  return {
-    email,
-    erased: true,
-    contactId: person.id,
-    sequencesRemoved,
-  };
+  return { email, erased: true, sequencesRemoved };
 }
 ```
 
-### Step 3: Implement Data Retention Policy
+### Step 3: Data Retention Policy
 ```typescript
 // src/data/retention.ts
 interface RetentionPolicy {
-  maxAgeDays: number;          // delete contacts older than this
-  inactiveThresholdDays: number;  // contacts with no activity
-  excludeTags: string[];       // never auto-delete these
+  maxAgeDays: number;
+  inactiveThresholdDays: number;
+  protectedLabels: string[];  // label IDs to never auto-delete
 }
 
-async function enforceRetention(policy: RetentionPolicy) {
-  const cutoffDate = new Date();
-  cutoffDate.setDate(cutoffDate.getDate() - policy.maxAgeDays);
+export async function enforceRetention(policy: RetentionPolicy) {
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - policy.maxAgeDays);
 
-  const { data } = await client.post('/people/search', {
-    contact_created_at_before: cutoffDate.toISOString(),
+  // Search for old contacts
+  const { data } = await client.post('/contacts/search', {
+    sort_by_field: 'contact_created_at',
+    sort_ascending: true,
     per_page: 100,
   });
 
-  const candidates = data.people.filter((p: any) => {
-    const tags = p.labels ?? [];
-    return !policy.excludeTags.some((t) => tags.includes(t));
+  const candidates = data.contacts.filter((c: any) => {
+    if (new Date(c.created_at) > cutoff) return false;
+    // Skip contacts with protected labels
+    const labels = c.label_ids ?? [];
+    return !policy.protectedLabels.some((l) => labels.includes(l));
   });
 
-  console.log(`Found ${candidates.length} contacts past retention (${policy.maxAgeDays} days)`);
+  console.log(`Found ${candidates.length} contacts past ${policy.maxAgeDays}-day retention`);
 
+  let deleted = 0;
   for (const contact of candidates) {
-    await client.delete(`/contacts/${contact.id}`);
-    console.log(`Deleted: ${contact.name} (created ${contact.created_at})`);
+    try {
+      await client.delete(`/contacts/${contact.id}`);
+      deleted++;
+    } catch (err: any) {
+      console.error(`Failed to delete ${contact.name}: ${err.message}`);
+    }
   }
 
-  return { deleted: candidates.length, evaluated: data.people.length };
+  return { evaluated: data.contacts.length, deleted };
 }
 ```
 
-### Step 4: Encrypt Sensitive Fields Before Storage
+### Step 4: Field-Level Encryption for Local Storage
 ```typescript
 // src/data/encryption.ts
 import crypto from 'crypto';
 
-const ENCRYPTION_KEY = process.env.APOLLO_ENCRYPTION_KEY!;  // 32-byte hex key
-const ALGORITHM = 'aes-256-gcm';
+const KEY = Buffer.from(process.env.APOLLO_ENCRYPTION_KEY!, 'hex');  // 32 bytes
+const ALGO = 'aes-256-gcm';
 
-export function encryptField(plaintext: string): string {
+export function encrypt(plaintext: string): string {
   const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(ALGORITHM, Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
-  let encrypted = cipher.update(plaintext, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  const tag = cipher.getAuthTag().toString('hex');
-  return `${iv.toString('hex')}:${tag}:${encrypted}`;
+  const cipher = crypto.createCipheriv(ALGO, KEY, iv);
+  let enc = cipher.update(plaintext, 'utf8', 'hex');
+  enc += cipher.final('hex');
+  return `${iv.toString('hex')}:${cipher.getAuthTag().toString('hex')}:${enc}`;
 }
 
-export function decryptField(ciphertext: string): string {
-  const [ivHex, tagHex, encrypted] = ciphertext.split(':');
-  const decipher = crypto.createDecipheriv(
-    ALGORITHM,
-    Buffer.from(ENCRYPTION_KEY, 'hex'),
-    Buffer.from(ivHex, 'hex'),
-  );
+export function decrypt(ciphertext: string): string {
+  const [ivHex, tagHex, enc] = ciphertext.split(':');
+  const decipher = crypto.createDecipheriv(ALGO, KEY, Buffer.from(ivHex, 'hex'));
   decipher.setAuthTag(Buffer.from(tagHex, 'hex'));
-  let decrypted = decipher.update(encrypted, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
+  let dec = decipher.update(enc, 'hex', 'utf8');
+  dec += decipher.final('utf8');
+  return dec;
 }
 
-// Encrypt PII fields before storing Apollo data locally
-function encryptContactPII(contact: any) {
+// Encrypt PII before storing Apollo data locally
+export function encryptContactPII(contact: any) {
   return {
     ...contact,
-    email: contact.email ? encryptField(contact.email) : null,
-    phone: contact.phone ? encryptField(contact.phone) : null,
-    name: contact.name,  // non-PII, keep readable for search
+    email: contact.email ? encrypt(contact.email) : null,
+    phone: contact.phone ? encrypt(contact.phone) : null,
+    linkedin_url: contact.linkedin_url ? encrypt(contact.linkedin_url) : null,
+    name: contact.name,  // keep searchable
   };
 }
 ```
 
-### Step 5: Implement Audit Logging
+### Step 5: Audit Logging
 ```typescript
 // src/data/audit-log.ts
 interface AuditEntry {
   timestamp: string;
-  action: 'search' | 'enrich' | 'export' | 'delete' | 'access_request' | 'erasure';
+  action: 'search' | 'enrich' | 'export' | 'delete' | 'sar' | 'erasure';
   userId: string;
   contactId?: string;
   email?: string;
-  details: string;
+  detail: string;
 }
 
-const auditLog: AuditEntry[] = [];
-
-export function logAuditEvent(entry: Omit<AuditEntry, 'timestamp'>) {
-  const fullEntry: AuditEntry = {
-    ...entry,
-    timestamp: new Date().toISOString(),
-  };
-  auditLog.push(fullEntry);
-
-  // In production, write to persistent store (database, cloud logging)
-  console.log(`[AUDIT] ${fullEntry.action} by ${fullEntry.userId}: ${fullEntry.details}`);
+export function logAudit(entry: Omit<AuditEntry, 'timestamp'>) {
+  const full: AuditEntry = { ...entry, timestamp: new Date().toISOString() };
+  // In production: write to database or cloud logging
+  console.log(`[AUDIT] ${full.action} by ${full.userId}: ${full.detail}`);
 }
 
 // Usage:
-// logAuditEvent({
-//   action: 'erasure',
-//   userId: 'admin@company.com',
-//   email: 'subject@example.com',
-//   details: 'GDPR erasure request processed, contact deleted from Apollo',
-// });
+// logAudit({ action: 'erasure', userId: 'privacy@co.com', email: 'user@ex.com',
+//   detail: 'GDPR erasure: contact deleted, removed from 2 sequences' });
 ```
 
 ## Output
-- GDPR Subject Access Request handler returning all stored data for an email
-- Data erasure handler removing contacts from sequences then deleting
-- Retention policy enforcer with age-based cleanup and tag exclusions
-- AES-256-GCM field-level encryption for PII stored locally
+- GDPR Subject Access Request handler searching CRM contacts + Apollo database
+- Right to Erasure handler: remove from sequences then delete contact
+- Retention policy enforcer with age-based cleanup and label protection
+- AES-256-GCM field-level encryption for locally stored PII
 - Audit log capturing every data operation with user attribution
 
 ## Error Handling
 | Issue | Resolution |
 |-------|------------|
-| Export too large | Paginate results, stream to file instead of memory |
-| Encryption key lost | Use a key management service (GCP KMS, AWS KMS) with key versioning |
-| Audit log gaps | Write audit entries to a durable queue before processing |
-| Consent conflicts | Use the latest consent timestamp as the authoritative record |
-
-## Examples
-
-### Run a GDPR Compliance Check
-```typescript
-// Process a subject access request and log it
-const report = await handleSubjectAccessRequest('user@example.com');
-logAuditEvent({
-  action: 'access_request',
-  userId: 'privacy-officer@company.com',
-  email: 'user@example.com',
-  details: `SAR completed. Data found: ${report.dataFound}`,
-});
-console.log(JSON.stringify(report, null, 2));
-```
+| 403 on delete | Contact deletion requires master API key |
+| Contact in active sequence | Remove from sequence before deleting |
+| Encryption key lost | Use a KMS (GCP KMS, AWS KMS) with key versioning |
+| Audit log gaps | Write to durable store before processing, not after |
 
 ## Resources
-- [GDPR Official Text](https://gdpr.eu/)
-- [CCPA Requirements](https://oag.ca.gov/privacy/ccpa)
+- [Search for Contacts](https://docs.apollo.io/reference/search-for-contacts)
+- [Update Contact Status in Sequence](https://docs.apollo.io/reference/update-contact-status-sequence)
 - [Apollo Privacy Policy](https://www.apollo.io/privacy-policy)
+- [GDPR Official Text](https://gdpr.eu/)
 
 ## Next Steps
 Proceed to `apollo-enterprise-rbac` for access control.

@@ -17,57 +17,55 @@ tags: [saas, apollo, api, performance]
 # Apollo Performance Tuning
 
 ## Overview
-Optimize Apollo.io API performance through response caching, connection pooling, request field selection, parallel fetching, and bulk operation strategies for the REST API (`https://api.apollo.io/v1`).
+Optimize Apollo.io API performance through response caching, connection pooling, bulk operations, parallel fetching, and result slimming. Key insight: **search is free but slow (~500ms), enrichment costs credits** — cache aggressively and batch enrichment calls.
 
 ## Prerequisites
-- Valid Apollo.io API credentials
-- Node.js 18+ or Python 3.10+
-- Completed `apollo-install-auth` setup
+- Valid Apollo API key
+- Node.js 18+
 
 ## Instructions
 
-### Step 1: Enable Connection Pooling
+### Step 1: Connection Pooling
+Reuse TCP connections to avoid TLS handshake overhead on every request.
+
 ```typescript
 // src/apollo/optimized-client.ts
 import axios from 'axios';
-import http from 'http';
 import https from 'https';
 
-// Reuse TCP connections instead of opening a new one per request
-const httpAgent = new http.Agent({ keepAlive: true, maxSockets: 10 });
-const httpsAgent = new https.Agent({ keepAlive: true, maxSockets: 10 });
+const httpsAgent = new https.Agent({
+  keepAlive: true,
+  maxSockets: 10,
+  maxFreeSockets: 5,
+  timeout: 30_000,
+});
 
 export const optimizedClient = axios.create({
-  baseURL: 'https://api.apollo.io/v1',
-  headers: { 'Content-Type': 'application/json' },
-  params: { api_key: process.env.APOLLO_API_KEY },
-  httpAgent,
+  baseURL: 'https://api.apollo.io/api/v1',
+  headers: { 'Content-Type': 'application/json', 'x-api-key': process.env.APOLLO_API_KEY! },
   httpsAgent,
   timeout: 15_000,
 });
 ```
 
-### Step 2: Add LRU Cache with TTL
+### Step 2: Response Caching with Per-Endpoint TTLs
 ```typescript
 // src/apollo/cache.ts
 import { LRUCache } from 'lru-cache';
 
-interface CacheEntry<T> {
-  data: T;
-  cachedAt: number;
-}
-
-// Different TTLs per endpoint type
+// Different TTLs based on data volatility
 const CACHE_TTLS: Record<string, number> = {
-  '/organizations/enrich': 24 * 60 * 60 * 1000,  // 24h — company data changes rarely
-  '/people/match': 4 * 60 * 60 * 1000,            // 4h — contact data changes occasionally
-  '/people/search': 15 * 60 * 1000,                // 15min — search results are dynamic
+  '/organizations/enrich': 24 * 60 * 60 * 1000,    // 24h — company data rarely changes
+  '/people/match': 4 * 60 * 60 * 1000,              // 4h — contact data changes occasionally
+  '/mixed_people/api_search': 15 * 60 * 1000,       // 15min — search results are dynamic
+  '/mixed_companies/search': 30 * 60 * 1000,         // 30min — company search
+  '/contact_stages': 60 * 60 * 1000,                 // 1h — stages rarely change
 };
 
-const cache = new LRUCache<string, CacheEntry<any>>({
+const cache = new LRUCache<string, { data: any; at: number }>({
   max: 5000,
-  maxSize: 50 * 1024 * 1024,  // 50MB max
-  sizeCalculation: (value) => JSON.stringify(value).length,
+  maxSize: 50 * 1024 * 1024,
+  sizeCalculation: (v) => JSON.stringify(v).length,
 });
 
 function cacheKey(endpoint: string, params: any): string {
@@ -81,107 +79,130 @@ export async function cachedRequest<T>(
 ): Promise<T> {
   const key = cacheKey(endpoint, params);
   const ttl = CACHE_TTLS[endpoint] ?? 15 * 60 * 1000;
-
   const cached = cache.get(key);
-  if (cached && Date.now() - cached.cachedAt < ttl) {
-    return cached.data;
-  }
+
+  if (cached && Date.now() - cached.at < ttl) return cached.data;
 
   const data = await requestFn();
-  cache.set(key, { data, cachedAt: Date.now() });
+  cache.set(key, { data, at: Date.now() });
   return data;
 }
 
 export function getCacheStats() {
-  return {
-    size: cache.size,
-    calculatedSize: cache.calculatedSize,
-    hitRate: `Inspect cache.get calls for hit/miss ratio`,
-  };
+  return { entries: cache.size, sizeBytes: cache.calculatedSize };
 }
 ```
 
-### Step 3: Implement Parallel Fetching with Concurrency Control
+### Step 3: Use Bulk Endpoints Over Single Calls
+Apollo's bulk enrichment endpoint handles 10 records per call vs 1. Massive performance gain.
+
 ```typescript
-// src/apollo/parallel.ts
+// src/apollo/bulk-ops.ts
+import { optimizedClient } from './optimized-client';
 import PQueue from 'p-queue';
 
-const queue = new PQueue({ concurrency: 5 });
+const queue = new PQueue({ concurrency: 3, intervalCap: 2, interval: 1000 });
 
-export async function parallelEnrich(
+// Enrich 100 people: 100 individual calls = 100 requests @ 500ms = 50s
+// Batch of 10: 10 bulk calls @ 600ms = 6s (8x faster, same credits)
+export async function batchEnrich(
+  details: Array<{ email?: string; linkedin_url?: string; first_name?: string; last_name?: string; organization_domain?: string }>,
+): Promise<any[]> {
+  const results: any[] = [];
+
+  for (let i = 0; i < details.length; i += 10) {
+    const batch = details.slice(i, i + 10);
+    const result = await queue.add(async () => {
+      const { data } = await optimizedClient.post('/people/bulk_match', {
+        details: batch,
+        reveal_personal_emails: false,
+        reveal_phone_number: false,
+      });
+      return data.matches ?? [];
+    });
+    results.push(...(result ?? []));
+  }
+
+  return results;
+}
+```
+
+### Step 4: Parallel Search with Concurrency Control
+```typescript
+export async function parallelSearch(
   domains: string[],
-): Promise<Map<string, any>> {
-  const results = new Map<string, any>();
+  concurrency: number = 5,
+): Promise<Map<string, any[]>> {
+  const searchQueue = new PQueue({ concurrency });
+  const results = new Map<string, any[]>();
 
-  await queue.addAll(
+  await searchQueue.addAll(
     domains.map((domain) => async () => {
       const data = await cachedRequest(
-        '/organizations/enrich',
-        () => optimizedClient.get('/organizations/enrich', { params: { domain } }).then((r) => r.data),
+        '/mixed_people/api_search',
+        () => optimizedClient.post('/mixed_people/api_search', {
+          q_organization_domains_list: [domain],
+          person_seniorities: ['vp', 'director', 'c_suite'],
+          per_page: 25,
+        }).then((r) => r.data),
         { domain },
       );
-      results.set(domain, data.organization);
+      results.set(domain, data.people ?? []);
     }),
   );
 
   return results;
 }
-
-// Enrich 100 domains at 5 concurrent, with caching
-// const orgs = await parallelEnrich(domainList);
 ```
 
-### Step 4: Minimize Response Payload
-```typescript
-// Apollo API does not support field selection directly,
-// so minimize payload on the client side by extracting only needed fields.
+### Step 5: Slim Response Payloads
+Apollo returns large person objects (~2KB each). Extract only needed fields to reduce memory.
 
+```typescript
 interface SlimPerson {
   id: string;
   name: string;
   title: string;
-  email: string;
+  email?: string;
   company: string;
+  seniority: string;
 }
 
-function slimPersonResult(raw: any): SlimPerson {
+function slimPerson(raw: any): SlimPerson {
   return {
     id: raw.id,
     name: raw.name,
     title: raw.title,
     email: raw.email,
     company: raw.organization?.name ?? '',
+    seniority: raw.seniority ?? '',
   };
 }
 
-async function searchSlim(domain: string): Promise<SlimPerson[]> {
-  const { data } = await optimizedClient.post('/people/search', {
-    q_organization_domains: [domain],
-    per_page: 100,
-  });
-  return data.people.map(slimPersonResult);
-}
+// Use immediately after API call to free memory
+const { data } = await optimizedClient.post('/mixed_people/api_search', { ... });
+const slim = data.people.map(slimPerson);  // ~200 bytes each instead of ~2KB
 ```
 
-### Step 5: Benchmark and Monitor Performance
+### Step 6: Benchmark Your Endpoints
 ```typescript
-// src/scripts/benchmark.ts
 async function benchmark() {
   const endpoints = [
-    { name: 'People Search', fn: () => optimizedClient.post('/people/search', { q_organization_domains: ['apollo.io'], per_page: 1 }) },
-    { name: 'Org Enrich', fn: () => optimizedClient.get('/organizations/enrich', { params: { domain: 'apollo.io' } }) },
-    { name: 'People Match', fn: () => optimizedClient.post('/people/match', { email: 'test@apollo.io' }) },
+    { name: 'People Search', fn: () => optimizedClient.post('/mixed_people/api_search',
+        { q_organization_domains_list: ['apollo.io'], per_page: 1 }) },
+    { name: 'Org Enrich', fn: () => optimizedClient.get('/organizations/enrich',
+        { params: { domain: 'apollo.io' } }) },
+    { name: 'Auth Health', fn: () => optimizedClient.get('/auth/health') },
   ];
 
   for (const ep of endpoints) {
     const times: number[] = [];
     for (let i = 0; i < 5; i++) {
       const start = Date.now();
-      try { await ep.fn(); } catch { /* ignore errors for benchmarking */ }
+      try { await ep.fn(); } catch {}
       times.push(Date.now() - start);
     }
-
-    const avg = Math.round(times.reduce((a, b) => a + b, 0) / times.length);
+    const avg = Math.round(times.reduce((a, b) => a + b) / times.length);
     const p95 = times.sort((a, b) => a - b)[Math.floor(times.length * 0.95)];
     console.log(`${ep.name}: avg=${avg}ms, p95=${p95}ms`);
   }
@@ -190,37 +211,25 @@ async function benchmark() {
 
 ## Output
 - Connection pooling with `keepAlive` and configurable `maxSockets`
-- LRU cache with per-endpoint TTLs (24h for orgs, 4h for contacts, 15m for search)
-- Parallel enrichment queue with `p-queue` concurrency control
-- Response payload slimming functions for memory efficiency
-- Benchmarking script measuring avg and p95 latency per endpoint
+- LRU cache with per-endpoint TTLs (24h org, 4h contact, 15m search)
+- Bulk enrichment via `/people/bulk_match` (10x fewer requests)
+- Parallel search with `p-queue` concurrency control
+- Response slimming reducing memory from ~2KB to ~200B per person
+- Benchmarking script measuring avg and p95 latency
 
 ## Error Handling
 | Issue | Resolution |
 |-------|------------|
-| High latency | Enable connection pooling, check DNS resolution time |
-| Cache misses | Increase TTL for stable data, check cache key generation |
-| Rate limits | Reduce p-queue concurrency, add `intervalCap` |
-| Memory issues | Lower LRU cache `max` and `maxSize`, stream large results |
-
-## Examples
-
-### Before/After Comparison
-```typescript
-// Without optimization: sequential, no caching
-// 100 org enrichments = 100 requests * ~500ms = 50 seconds
-
-// With optimization: parallel (5x), cached (24h TTL)
-// 100 org enrichments = 20 batches * ~500ms = 10 seconds (first run)
-// Subsequent runs: cache hits = ~1ms each
-const results = await parallelEnrich(hundredDomains);
-console.log(`Enriched ${results.size} orgs with caching`);
-```
+| High latency | Enable connection pooling, check for stale cache |
+| Cache misses | Increase TTL for stable data (org enrichment) |
+| Rate limits with parallelism | Reduce p-queue concurrency |
+| Memory growth | Lower LRU max entries, slim response payloads |
 
 ## Resources
-- [Node.js HTTP Agent (Connection Pooling)](https://nodejs.org/api/http.html#class-httpagent)
+- [Bulk People Enrichment](https://docs.apollo.io/reference/bulk-people-enrichment)
+- [Node.js HTTPS Agent](https://nodejs.org/api/https.html#class-httpsagent)
 - [LRU Cache](https://github.com/isaacs/node-lru-cache)
-- [p-queue Concurrency Control](https://github.com/sindresorhus/p-queue)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 Proceed to `apollo-cost-tuning` for cost optimization.

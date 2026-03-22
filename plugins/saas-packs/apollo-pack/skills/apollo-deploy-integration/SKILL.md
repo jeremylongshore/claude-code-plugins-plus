@@ -17,73 +17,49 @@ tags: [saas, apollo, deployment]
 # Apollo Deploy Integration
 
 ## Overview
-Deploy Apollo.io integrations to production with platform-specific configurations for Vercel, GCP Cloud Run, AWS Lambda, and Kubernetes. Includes health check endpoints, pre-deployment validation, and rollback procedures.
+Deploy Apollo.io integrations to production with configurations for Vercel, GCP Cloud Run, and Kubernetes. All configurations use `x-api-key` header auth, health check endpoints verifying Apollo connectivity, and secret management best practices.
 
 ## Prerequisites
-- Valid Apollo.io API credentials
-- Node.js 18+ or Python 3.10+
-- Completed `apollo-install-auth` setup
-- Target platform CLI installed (vercel, gcloud, aws, or kubectl)
+- Valid Apollo master API key
+- Node.js 18+
+- Target platform CLI installed (vercel, gcloud, or kubectl)
 
 ## Instructions
 
-### Step 1: Create a Health Check Endpoint
+### Step 1: Health Check Endpoint
+Every deployment needs a health endpoint that verifies Apollo API connectivity.
+
 ```typescript
 // src/health.ts
 import axios from 'axios';
-import express from 'express';
+import { Router } from 'express';
 
-const app = express();
+export const healthRouter = Router();
 
-app.get('/health', async (req, res) => {
-  const checks: Record<string, string> = {};
+healthRouter.get('/health', async (req, res) => {
+  const checks: Record<string, string> = {
+    apiKey: process.env.APOLLO_API_KEY ? 'set' : 'MISSING',
+    nodeEnv: process.env.NODE_ENV ?? 'not set',
+  };
 
-  // Check Apollo API connectivity
   try {
     const start = Date.now();
-    await axios.post(
-      'https://api.apollo.io/v1/people/search',
-      { q_organization_domains: ['apollo.io'], per_page: 1 },
-      { params: { api_key: process.env.APOLLO_API_KEY }, timeout: 5000 },
-    );
-    checks.apollo = `ok (${Date.now() - start}ms)`;
+    const resp = await axios.get('https://api.apollo.io/api/v1/auth/health', {
+      headers: { 'x-api-key': process.env.APOLLO_API_KEY! },
+      timeout: 5000,
+    });
+    checks.apollo = resp.data.is_logged_in ? `ok (${Date.now() - start}ms)` : 'invalid key';
   } catch (err: any) {
     checks.apollo = `error: ${err.response?.status ?? err.message}`;
   }
-
-  // Check env vars
-  checks.apiKey = process.env.APOLLO_API_KEY ? 'set' : 'MISSING';
-  checks.nodeEnv = process.env.NODE_ENV ?? 'not set';
 
   const healthy = checks.apollo.startsWith('ok') && checks.apiKey === 'set';
   res.status(healthy ? 200 : 503).json({ status: healthy ? 'healthy' : 'unhealthy', checks });
 });
 ```
 
-### Step 2: Deploy to Vercel
-```json
-{
-  "name": "apollo-integration",
-  "builds": [{ "src": "src/index.ts", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "src/index.ts" }],
-  "env": {
-    "APOLLO_API_KEY": "@apollo-api-key",
-    "NODE_ENV": "production"
-  }
-}
-```
-
-```bash
-# Store the secret in Vercel
-vercel secrets add apollo-api-key "$APOLLO_API_KEY"
-
-# Deploy
-vercel --prod
-```
-
-### Step 3: Deploy to GCP Cloud Run
+### Step 2: Deploy to GCP Cloud Run
 ```dockerfile
-# Dockerfile
 FROM node:20-slim AS build
 WORKDIR /app
 COPY package*.json ./
@@ -101,15 +77,32 @@ CMD ["node", "dist/index.js"]
 ```
 
 ```bash
-# Deploy to Cloud Run with secrets from Secret Manager
+# Store API key in GCP Secret Manager
+echo -n "$APOLLO_API_KEY" | gcloud secrets create apollo-api-key --data-file=-
+
+# Deploy with secret injection
 gcloud run deploy apollo-integration \
   --source . \
   --region us-central1 \
   --set-secrets "APOLLO_API_KEY=apollo-api-key:latest" \
   --set-env-vars "NODE_ENV=production" \
-  --min-instances 1 \
-  --max-instances 10 \
+  --min-instances 1 --max-instances 10 \
   --port 8080
+```
+
+### Step 3: Deploy to Vercel
+```json
+{
+  "name": "apollo-integration",
+  "builds": [{ "src": "src/index.ts", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "src/index.ts" }],
+  "env": { "APOLLO_API_KEY": "@apollo-api-key", "NODE_ENV": "production" }
+}
+```
+
+```bash
+vercel secrets add apollo-api-key "$APOLLO_API_KEY"
+vercel --prod
 ```
 
 ### Step 4: Deploy to Kubernetes
@@ -122,132 +115,90 @@ metadata:
 spec:
   replicas: 2
   selector:
-    matchLabels:
-      app: apollo-integration
+    matchLabels: { app: apollo-integration }
   template:
     metadata:
-      labels:
-        app: apollo-integration
+      labels: { app: apollo-integration }
     spec:
       containers:
-        - name: apollo-integration
+        - name: apollo
           image: gcr.io/my-project/apollo-integration:latest
-          ports:
-            - containerPort: 8080
+          ports: [{ containerPort: 8080 }]
           envFrom:
-            - secretRef:
-                name: apollo-credentials
+            - secretRef: { name: apollo-credentials }
+          env:
+            - { name: NODE_ENV, value: "production" }
           livenessProbe:
-            httpGet:
-              path: /health
-              port: 8080
+            httpGet: { path: /health, port: 8080 }
             initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
-            httpGet:
-              path: /health
-              port: 8080
+            httpGet: { path: /health, port: 8080 }
             initialDelaySeconds: 5
             periodSeconds: 10
           resources:
-            requests:
-              memory: "128Mi"
-              cpu: "100m"
-            limits:
-              memory: "256Mi"
-              cpu: "500m"
+            requests: { memory: "128Mi", cpu: "100m" }
+            limits: { memory: "256Mi", cpu: "500m" }
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: apollo-credentials
+type: Opaque
+stringData:
+  APOLLO_API_KEY: "your-master-key-here"
 ```
 
-### Step 5: Pre-Deployment Validation Script
+### Step 5: Pre-Deploy Validation
 ```typescript
 // src/scripts/pre-deploy.ts
 async function preDeployCheck() {
-  const checks: { name: string; pass: boolean; detail: string }[] = [];
+  const checks: Array<{ name: string; pass: boolean }> = [];
 
-  // 1. API key is set
-  checks.push({
-    name: 'API key configured',
-    pass: !!process.env.APOLLO_API_KEY,
-    detail: process.env.APOLLO_API_KEY ? 'Set' : 'MISSING',
-  });
+  // API key set
+  checks.push({ name: 'APOLLO_API_KEY set', pass: !!process.env.APOLLO_API_KEY });
 
-  // 2. API is reachable
+  // Auth works
   try {
-    await axios.post(
-      'https://api.apollo.io/v1/people/search',
-      { per_page: 1 },
-      { params: { api_key: process.env.APOLLO_API_KEY }, timeout: 10_000 },
-    );
-    checks.push({ name: 'Apollo API reachable', pass: true, detail: 'OK' });
-  } catch (err: any) {
-    checks.push({ name: 'Apollo API reachable', pass: false, detail: err.message });
-  }
+    const resp = await axios.get('https://api.apollo.io/api/v1/auth/health', {
+      headers: { 'x-api-key': process.env.APOLLO_API_KEY! },
+    });
+    checks.push({ name: 'Apollo auth valid', pass: resp.data.is_logged_in });
+  } catch { checks.push({ name: 'Apollo auth valid', pass: false }); }
 
-  // 3. Build succeeds
+  // Build succeeds
   try {
     const { execSync } = await import('child_process');
     execSync('npm run build', { stdio: 'pipe' });
-    checks.push({ name: 'Build succeeds', pass: true, detail: 'OK' });
-  } catch {
-    checks.push({ name: 'Build succeeds', pass: false, detail: 'Build failed' });
-  }
+    checks.push({ name: 'Build succeeds', pass: true });
+  } catch { checks.push({ name: 'Build succeeds', pass: false }); }
 
-  // 4. Tests pass
-  try {
-    const { execSync } = await import('child_process');
-    execSync('npm test', { stdio: 'pipe' });
-    checks.push({ name: 'Tests pass', pass: true, detail: 'OK' });
-  } catch {
-    checks.push({ name: 'Tests pass', pass: false, detail: 'Tests failed' });
-  }
-
-  // Report
   const allPass = checks.every((c) => c.pass);
-  for (const check of checks) {
-    console.log(`${check.pass ? 'PASS' : 'FAIL'} ${check.name}: ${check.detail}`);
-  }
-  console.log(`\nDeploy ${allPass ? 'READY' : 'BLOCKED'}`);
+  checks.forEach((c) => console.log(`${c.pass ? 'PASS' : 'FAIL'} ${c.name}`));
+  console.log(`\nDeploy: ${allPass ? 'READY' : 'BLOCKED'}`);
   process.exit(allPass ? 0 : 1);
 }
-
 preDeployCheck();
 ```
 
 ## Output
-- Health check endpoint reporting Apollo API connectivity and config status
-- Vercel deployment config with encrypted secret reference
-- GCP Cloud Run deploy command with Secret Manager integration
-- Kubernetes deployment manifest with liveness/readiness probes
-- Pre-deployment validation script (API key, connectivity, build, tests)
+- Express health check endpoint verifying Apollo connectivity
+- GCP Cloud Run deployment with Secret Manager integration
+- Vercel deployment with encrypted secrets
+- Kubernetes manifests with liveness/readiness probes
+- Pre-deploy validation script
 
 ## Error Handling
 | Issue | Resolution |
 |-------|------------|
-| Secret not found | Verify secret name matches platform config (Vercel/GCP/K8s) |
-| Health check fails | Check Apollo API key and network egress rules |
-| Deployment timeout | Increase timeout, check container startup logs |
-| Rollback needed | `vercel rollback`, `gcloud run deploy --revision`, or `kubectl rollout undo` |
-
-## Examples
-
-### Blue-Green Deployment with Kubernetes
-```bash
-# Deploy new version as "green"
-kubectl apply -f k8s/deployment-green.yaml
-
-# Verify health
-kubectl exec deploy/apollo-integration-green -- curl -s localhost:8080/health
-
-# Switch traffic
-kubectl patch service apollo-integration -p '{"spec":{"selector":{"version":"green"}}}'
-
-# If issues, rollback
-kubectl patch service apollo-integration -p '{"spec":{"selector":{"version":"blue"}}}'
-```
+| Health check 503 | Check APOLLO_API_KEY secret is mounted correctly |
+| Container crash loop | Review startup logs, verify secret names match |
+| Rollback needed | `gcloud run deploy --revision`, `vercel rollback`, or `kubectl rollout undo` |
+| Secret rotation | Update secret, redeploy — health check confirms new key works |
 
 ## Resources
+- [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
 - [Vercel Environment Variables](https://vercel.com/docs/concepts/projects/environment-variables)
-- [Google Cloud Secret Manager](https://cloud.google.com/secret-manager/docs)
 - [Kubernetes Probes](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)
 
 ## Next Steps
