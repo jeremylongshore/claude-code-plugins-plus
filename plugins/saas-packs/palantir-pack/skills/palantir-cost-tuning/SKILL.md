@@ -1,203 +1,124 @@
 ---
 name: palantir-cost-tuning
 description: |
-  Optimize Palantir costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Palantir billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "palantir cost", "palantir billing",
-  "reduce palantir costs", "palantir pricing", "palantir expensive", "palantir budget".
+  Optimize Palantir Foundry costs through compute tuning, incremental builds, and usage monitoring.
+  Use when analyzing Foundry compute costs, reducing API usage,
+  or implementing cost monitoring for Foundry workloads.
+  Trigger with phrases like "palantir cost", "foundry billing",
+  "reduce foundry costs", "foundry pricing", "foundry expensive".
 allowed-tools: Read, Grep
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, cost, optimization]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Cost Tuning
 
 ## Overview
-Optimize Palantir costs through smart tier selection, sampling, and usage monitoring.
+Optimize Foundry compute and API costs through incremental transforms, right-sized Spark profiles, efficient pagination, and usage monitoring.
 
 ## Prerequisites
-- Access to Palantir billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimatePalantirCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class PalantirUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Palantir budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimatePalantirCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await palantirClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => palantirClient.get(id)));
-
-// Use batch endpoint (1 call)
-await palantirClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new PalantirClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Palantir dashboard
-# Or use API if available:
-# Check Palantir documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM palantir_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Active Foundry enrollment with build history
+- Access to Foundry resource usage metrics
+- Understanding of transform build patterns
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Palantir dashboard for usage patterns and costs.
+### Step 1: Cost Drivers in Foundry
+| Cost Category | Driver | Optimization |
+|---------------|--------|-------------|
+| Compute | Full rebuilds of large transforms | Use `@incremental()` |
+| Compute | Oversized Spark profiles | Right-size `@configure` profiles |
+| Storage | Redundant dataset snapshots | Configure retention policies |
+| API | High-frequency polling | Use webhooks instead |
+| API | Small page sizes | Use max page_size (500) |
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Convert Full Rebuilds to Incremental
+```python
+from transforms.api import transform_df, Input, Output, incremental
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+# BEFORE: Full rebuild every run (expensive for large datasets)
+@transform_df(Output("/out"), data=Input("/in"))
+def expensive(data):
+    return data.filter(data.status == "active")
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimatePalantirCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+# AFTER: Only processes new/changed rows
+@incremental()
+@transform_df(Output("/out"), data=Input("/in"))
+def cheap(data):
+    return data.filter(data.status == "active")
 ```
 
+### Step 3: Right-Size Spark Profiles
+```python
+from transforms.api import configure
+
+# DON'T: Default profile for everything
+# DO: Match profile to actual data size
+
+# Small data (< 1GB) — use lightweight transforms (no Spark)
+from transforms.api import transform_polars
+@transform_polars(Output("/out"), data=Input("/small_table"))
+def small_job(data):
+    return data.filter(data["status"] == "active")
+
+# Medium data (1-50GB) — default profile is fine
+@transform_df(Output("/out"), data=Input("/medium_table"))
+def medium_job(data):
+    return data.select("id", "name")
+
+# Large data (50GB+) — explicit large profile
+@configure(profile=["DRIVER_MEMORY_LARGE"])
+@transform_df(Output("/out"), data=Input("/big_table"))
+def large_job(data):
+    return data.groupBy("region").count()
+```
+
+### Step 4: Replace Polling with Webhooks
+```python
+# EXPENSIVE: Polling every 30 seconds
+import time
+while True:
+    result = client.ontologies.OntologyObject.list(
+        ontology="co", object_type="Order", page_size=100,
+    )
+    process_new_orders(result.data)
+    time.sleep(30)  # 2,880 API calls/day!
+
+# CHEAP: Webhook-driven (0 polling API calls)
+# Register webhook for ontology.object.created events
+# See palantir-webhooks-events skill
+```
+
+### Step 5: Monitor Usage
+```python
+def log_api_usage(response):
+    """Log rate limit headers to track usage patterns."""
+    remaining = response.headers.get("X-RateLimit-Remaining", "?")
+    limit = response.headers.get("X-RateLimit-Limit", "?")
+    print(f"API usage: {remaining}/{limit} remaining")
+```
+
+## Output
+- Incremental transforms reducing rebuild compute by 90%+
+- Right-sized Spark profiles matching actual data volumes
+- Webhook-driven architecture eliminating polling costs
+- Usage monitoring for ongoing optimization
+
+## Error Handling
+| Optimization | Risk | Mitigation |
+|-------------|------|------------|
+| Incremental | Missed data on schema change | Schedule periodic full rebuild |
+| Polars (no Spark) | Data too large for memory | Fall back to Spark for > 1GB |
+| Aggressive caching | Stale data | Set TTL matching business requirements |
+| Webhook-only | Missed events | Periodic reconciliation job |
+
 ## Resources
-- [Palantir Pricing](https://palantir.com/pricing)
-- [Palantir Billing Dashboard](https://dashboard.palantir.com/billing)
+- [Incremental Transforms](https://www.palantir.com/docs/foundry/transforms-python/transforms-pipelines)
+- [Transform Polars](https://www.palantir.com/docs/foundry/transforms-python/lightweight-api-evolution)
+- [@configure Profiles](https://www.palantir.com/docs/foundry/api-reference/transforms-python-library/api-configure)
 
 ## Next Steps
-For architecture patterns, see `palantir-reference-architecture`.
+For reference architecture, see `palantir-reference-architecture`.

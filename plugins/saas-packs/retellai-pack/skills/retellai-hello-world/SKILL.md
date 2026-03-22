@@ -1,97 +1,105 @@
 ---
 name: retellai-hello-world
 description: |
-  Create a minimal working Retell AI example.
-  Use when starting a new Retell AI integration, testing your setup,
-  or learning basic Retell AI API patterns.
-  Trigger with phrases like "retellai hello world", "retellai example",
-  "retellai quick start", "simple retellai code".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Retell AI hello world — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell hello world", "retellai-hello-world", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
+
 # Retell AI Hello World
 
 ## Overview
-Minimal working example demonstrating core Retell AI functionality. Covers client initialization with API key authentication, a first API call pattern, and error handling setup for both TypeScript and Python.
+Create your first Retell AI voice agent and make a test phone call.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Completed `retellai-install-auth`
+- A phone number registered in Retell AI Dashboard (or use web call for testing)
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
+### Step 1: Create an LLM Configuration
 ```typescript
-import { RetellAIClient } from '@retellai/sdk';
+import Retell from 'retell-sdk';
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
 
-const client = new RetellAIClient({
-  apiKey: process.env.RETELLAI_API_KEY,
+// Create LLM configuration (what the agent says)
+const llm = await retell.llm.create({
+  model: 'gpt-4o',
+  general_prompt: `You are a friendly receptionist for Acme Corp.
+    - Greet callers warmly
+    - Ask how you can help
+    - Take messages if needed
+    - Be concise and professional`,
 });
+console.log(`LLM created: ${llm.llm_id}`);
 ```
 
-### Step 3: Make Your First API Call
+### Step 2: Create a Voice Agent
 ```typescript
-async function main() {
-  // Your first API call here
-}
+const agent = await retell.agent.create({
+  response_engine: {
+    type: 'retell-llm',
+    llm_id: llm.llm_id,
+  },
+  voice_id: '11labs-Adrian',  // Choose from available voices
+  agent_name: 'Acme Receptionist',
+});
+console.log(`Agent created: ${agent.agent_id}`);
+```
 
-main().catch(console.error);
+### Step 3: Make a Test Phone Call
+```typescript
+// Outbound call (requires a registered phone number)
+const call = await retell.call.createPhoneCall({
+  from_number: '+14155551234',  // Your Retell number
+  to_number: '+14155555678',    // Destination
+  override_agent_id: agent.agent_id,
+});
+console.log(`Call initiated: ${call.call_id}`);
+```
+
+### Step 4: Or Test with Web Call
+```typescript
+// Web call (no phone number needed — great for testing)
+const webCall = await retell.call.createWebCall({
+  agent_id: agent.agent_id,
+});
+console.log(`Web call URL: ${webCall.call_id}`);
+// Use retell-client-js-sdk to connect from browser
+```
+
+### Step 5: Check Call Status
+```typescript
+const callDetail = await retell.call.retrieve(call.call_id);
+console.log(`Status: ${callDetail.call_status}`);
+console.log(`Duration: ${callDetail.end_timestamp - callDetail.start_timestamp}ms`);
+if (callDetail.transcript) {
+  console.log(`Transcript: ${callDetail.transcript}`);
+}
 ```
 
 ## Output
-- Working code file with Retell AI client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Retell AI connection is working.
-```
+- LLM configuration with custom prompt
+- Voice agent with selected voice
+- Test call initiated (phone or web)
+- Call status and transcript retrieved
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { RetellAIClient } from '@retellai/sdk';
-
-const client = new RetellAIClient({
-  apiKey: process.env.RETELLAI_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from retellai import RetellAIClient
-
-client = RetellAIClient()
-
-# Your first API call here
-```
+| `422 Invalid voice_id` | Unknown voice | List available voices in Dashboard |
+| `400 No phone number` | Number not registered | Register number in Dashboard first |
+| Call not connecting | Destination unreachable | Try web call for testing |
 
 ## Resources
-- [Retell AI Getting Started](https://docs.retellai.com/getting-started)
-- [Retell AI API Reference](https://docs.retellai.com/api)
-- [Retell AI Examples](https://docs.retellai.com/examples)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)
 
 ## Next Steps
-Proceed to `retellai-local-dev-loop` for development workflow setup.
+Configure agent behavior: `retellai-core-workflow-a`

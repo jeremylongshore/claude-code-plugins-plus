@@ -1,113 +1,82 @@
 ---
 name: persona-common-errors
 description: |
-  Diagnose and fix Persona common errors and exceptions.
-  Use when encountering Persona errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "persona error", "fix persona",
-  "persona not working", "debug persona".
+  Fix top Persona API errors: 401, 422, webhook signature failures, inquiry state issues.
+  Use when working with Persona identity verification.
+  Trigger with phrases like "persona common-errors", "persona common-errors".
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona]
-compatible-with: claude-code
+tags: [saas, persona, identity, kyc, verification]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Persona Common Errors
+# persona common errors | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Quick reference for the top 10 most common Persona errors and their solutions.
+401 invalid key, 422 invalid template, webhook HMAC mismatch, inquiry already completed, rate limit 429.
 
 ## Prerequisites
-- Persona SDK installed
-- API credentials configured
-- Access to error logs
+- Completed `persona-install-auth` setup
+- Valid Persona API key (sandbox or production)
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Error 1: 401 Unauthorized
+```
+{"errors":[{"status":"401","title":"Not Authorized"}]}
+```
+**Fix:** Verify API key starts with `persona_sandbox_` or `persona_production_`. Check `Authorization: Bearer <key>` header format.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### Error 2: 422 Invalid Inquiry Template
+```
+{"errors":[{"status":"422","title":"Invalid inquiry-template-id"}]}
+```
+**Fix:** Verify template ID format is `itmpl_*`. Templates are environment-specific (sandbox templates only work with sandbox keys).
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Error 3: Webhook Signature Mismatch
+```
+HMAC verification failed — expected abc123, got def456
+```
+**Fix:** Ensure you're using the raw request body (not parsed JSON) for HMAC computation. Use `express.raw()` middleware.
+
+### Error 4: 429 Rate Limited
+```
+{"errors":[{"status":"429","title":"Rate limit exceeded"}]}
+```
+**Fix:** Implement exponential backoff. Check `Retry-After` header. See `persona-rate-limits`.
+
+### Error 5: Inquiry Already Completed
+```
+{"errors":[{"status":"409","title":"Inquiry is already in a terminal state"}]}
+```
+**Fix:** Check inquiry status before attempting operations. Use the resume endpoint only for `created` or `pending` inquiries.
+
+### Error 6: 404 Inquiry Not Found
+```
+{"errors":[{"status":"404","title":"Not Found"}]}
+```
+**Fix:** Verify inquiry ID format is `inq_*`. Sandbox inquiries are not accessible with production keys.
 
 ## Output
-- Identified error cause
-- Applied fix
+- Error identified from API response
+- Targeted fix applied
 - Verified resolution
 
 ## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $PERSONA_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `persona-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Persona status
-curl -s https://status.persona.com
-
-# Verify API connectivity
-curl -I https://api.persona.com
-
-# Check local configuration
-env | grep PERSONA
-```
-
-### Escalation Path
-1. Collect evidence with `persona-debug-bundle`
-2. Check Persona status page
-3. Contact support with request ID
+| HTTP Code | Meaning | Retryable |
+|-----------|---------|-----------|
+| 400 | Bad request | No |
+| 401 | Invalid API key | No — fix key |
+| 404 | Resource not found | No |
+| 409 | Conflict (terminal state) | No |
+| 422 | Validation error | No — fix request |
+| 429 | Rate limited | Yes |
+| 500+ | Server error | Yes |
 
 ## Resources
-- [Persona Status Page](https://status.persona.com)
-- [Persona Support](https://docs.persona.com/support)
-- [Persona Error Codes](https://docs.persona.com/errors)
+- [Persona API Reference](https://docs.withpersona.com/reference/introduction)
 
 ## Next Steps
-For comprehensive debugging, see `persona-debug-bundle`.
+For debugging, see `persona-debug-bundle`.

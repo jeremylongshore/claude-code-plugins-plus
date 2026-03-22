@@ -1,126 +1,56 @@
 ---
 name: procore-ci-integration
 description: |
-  Configure Procore CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Procore tests into your build process.
-  Trigger with phrases like "procore CI", "procore GitHub Actions",
-  "procore automated tests", "CI procore".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+  Procore ci integration — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore ci integration", "procore-ci-integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Procore CI Integration
+# Procore Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Procore integrations with automated testing.
+Implementation patterns for Procore ci integration using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Procore test API key
-- npm/pnpm project configured
+- Completed `procore-install-auth` setup
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/procore-integration.yml`:
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-```yaml
-name: Procore Integration Tests
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  PROCORE_API_KEY: ${{ secrets.PROCORE_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      PROCORE_API_KEY: ${{ secrets.PROCORE_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set PROCORE_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Procore Integration', () => {
-  it.skipIf(!process.env.PROCORE_API_KEY)('should connect', async () => {
-    const client = getProcoreClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- Procore API integration for ci integration
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      PROCORE_API_KEY: ${{ secrets.PROCORE_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Procore production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "procore-integration"
-```
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Procore CI Guide](https://docs.procore.com/ci)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-For deployment patterns, see `procore-deploy-integration`.
+See related Procore skills for more workflows.

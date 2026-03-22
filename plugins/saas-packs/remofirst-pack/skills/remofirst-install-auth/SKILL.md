@@ -1,92 +1,90 @@
 ---
 name: remofirst-install-auth
 description: |
-  Install and configure RemoFirst SDK/CLI authentication.
-  Use when setting up a new RemoFirst integration, configuring API keys,
-  or initializing RemoFirst in your project.
-  Trigger with phrases like "install remofirst", "setup remofirst",
-  "remofirst auth", "configure remofirst API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+  RemoFirst install auth — global HR, EOR, and payroll platform integration.
+  Use when working with RemoFirst for global employment, payroll, or compliance.
+  Trigger with phrases like "remofirst install auth", "remofirst-install-auth", "global HR API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, remote-work, remofirst]
-compatible-with: claude-code
+tags: [saas, remofirst, hr, eor, payroll, global-employment]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# RemoFirst Install & Auth
+# RemoFirst Install Auth
 
 ## Overview
-Set up RemoFirst SDK/CLI and configure authentication credentials.
+Set up RemoFirst API authentication for global HR and payroll integration. RemoFirst provides API access for enterprise customers.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- RemoFirst account with API access
-- API key from RemoFirst dashboard
+- RemoFirst enterprise account
+- API credentials from RemoFirst support team
+- Node.js 18+ or Python 3.9+
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @remofirst/sdk
-
-# Python
-pip install remofirst
+### Step 1: Get API Credentials
+```text
+1. Contact RemoFirst support for API access
+2. Receive API key and base URL
+3. Note: Sandbox environment available for testing
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Configure Environment
 ```bash
-# Set environment variable
-export REMOFIRST_API_KEY="your-api-key"
-
-# Or create .env file
-echo 'REMOFIRST_API_KEY=your-api-key' >> .env
+# .env
+REMOFIRST_API_KEY=your_api_key
+REMOFIRST_BASE_URL=https://api.remofirst.com/v1
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Initialize Client
+```python
+import os, requests
+
+class RemoFirstClient:
+    def __init__(self):
+        self.base_url = os.environ["REMOFIRST_BASE_URL"]
+        self.headers = {
+            "Authorization": f"Bearer {os.environ['REMOFIRST_API_KEY']}",
+            "Content-Type": "application/json",
+        }
+
+    def get(self, path, params=None):
+        resp = requests.get(f"{self.base_url}{path}", headers=self.headers, params=params)
+        resp.raise_for_status()
+        return resp.json()
+
+    def post(self, path, data):
+        resp = requests.post(f"{self.base_url}{path}", headers=self.headers, json=data)
+        resp.raise_for_status()
+        return resp.json()
+
+client = RemoFirstClient()
+```
+
+### Step 4: Verify Connection
+```python
+company = client.get("/company")
+print(f"Connected! Company: {company['name']}")
+print(f"Countries: {len(company.get('active_countries', []))}")
 ```
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+- API credentials configured
+- Client initialized with authentication
+- Connection verified
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in RemoFirst dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.remofirst.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { RemoFirstClient } from '@remofirst/sdk';
-
-const client = new RemoFirstClient({
-  apiKey: process.env.REMOFIRST_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from remofirst import RemoFirstClient
-
-client = RemoFirstClient(
-    api_key=os.environ.get('REMOFIRST_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid API key | Contact RemoFirst support |
+| `403 Forbidden` | API access not enabled | Request API access from account manager |
+| Connection refused | Wrong base URL | Verify URL with RemoFirst |
 
 ## Resources
-- [RemoFirst Documentation](https://docs.remofirst.com)
-- [RemoFirst Dashboard](https://api.remofirst.com)
-- [RemoFirst Status](https://status.remofirst.com)
+- [RemoFirst](https://www.remofirst.com)
+- [Global HR Solutions](https://www.remofirst.com/solutions/human-resources)
 
 ## Next Steps
-After successful auth, proceed to `remofirst-hello-world` for your first API call.
+First API call: `remofirst-hello-world`

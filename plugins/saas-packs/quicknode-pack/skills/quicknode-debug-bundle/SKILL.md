@@ -1,113 +1,48 @@
 ---
 name: quicknode-debug-bundle
 description: |
-  Collect QuickNode debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for QuickNode problems.
-  Trigger with phrases like "quicknode debug", "quicknode support bundle",
-  "collect quicknode logs", "quicknode diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+  QuickNode debug bundle — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode debug bundle", "quicknode-debug-bundle", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for QuickNode support tickets.
+Implementation patterns for QuickNode debug bundle using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
-- QuickNode SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Completed `quicknode-install-auth` setup
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# quicknode-debug-bundle.sh
-
-BUNDLE_DIR="quicknode-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== QuickNode Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "QUICKNODE_API_KEY: ${QUICKNODE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @quicknode/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "quicknode" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.quicknode.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+### Step 1: Connect to QuickNode
+```typescript
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
 
 ## Output
-- `quicknode-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- QuickNode integration for debug bundle
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash quicknode-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to QuickNode support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
 
 ## Resources
-- [QuickNode Support](https://docs.quicknode.com/support)
-- [QuickNode Status](https://status.quicknode.com)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-For rate limit issues, see `quicknode-rate-limits`.
+See related QuickNode skills for more workflows.

@@ -1,211 +1,129 @@
 ---
 name: palantir-deploy-integration
 description: |
-  Deploy Palantir integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Palantir-powered applications to production,
+  Deploy Palantir Foundry integrations to cloud platforms with secrets management.
+  Use when deploying Foundry-powered applications to production,
   configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy palantir", "palantir Vercel",
-  "palantir production deploy", "palantir Cloud Run", "palantir Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.0.0
+  Trigger with phrases like "deploy palantir", "foundry deploy",
+  "palantir production deploy", "foundry Cloud Run".
+allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(docker:*)
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, deployment, cloud]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Deploy Integration
 
 ## Overview
-Deploy Palantir-powered applications to popular platforms with proper secrets management.
+Deploy Foundry-integrated applications to cloud platforms (GCP Cloud Run, AWS Lambda, Docker) with proper secrets management and health checks.
 
 ## Prerequisites
-- Palantir API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Palantir secrets to Vercel
-vercel secrets add palantir_api_key sk_live_***
-vercel secrets add palantir_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "PALANTIR_API_KEY": "@palantir_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-palantir-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Palantir secrets
-fly secrets set PALANTIR_API_KEY=sk_live_***
-fly secrets set PALANTIR_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="palantir-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=PALANTIR_API_KEY=palantir-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/palantir.ts
-interface PalantirConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getPalantirConfig(): PalantirConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.PALANTIR_API_KEY!,
-    environment: env as PalantirConfig['environment'],
-    webhookSecret: process.env.PALANTIR_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const palantirStatus = await checkPalantirConnection();
-
-  return Response.json({
-    status: palantirStatus ? 'healthy' : 'degraded',
-    services: {
-      palantir: palantirStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- Passing CI tests: `palantir-ci-integration`
+- Production OAuth2 credentials from Developer Console
+- Cloud platform CLI configured (gcloud, aws, etc.)
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Palantir API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Palantir integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Palantir connectivity.
-
-## Output
-- Application deployed to production
-- Palantir secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add palantir_api_key "$PALANTIR_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set PALANTIR_API_KEY="$PALANTIR_API_KEY"
-    fly deploy
-    ;;
-esac
+### Step 1: Dockerfile
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src/ ./src/
+EXPOSE 8080
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8080"]
 ```
 
+### Step 2: Deploy to Google Cloud Run
+```bash
+set -euo pipefail
+PROJECT_ID=$(gcloud config get-value project)
+SERVICE_NAME="foundry-integration"
+REGION="us-central1"
+
+# Build and push container
+gcloud builds submit --tag "gcr.io/$PROJECT_ID/$SERVICE_NAME"
+
+# Deploy with secrets from Secret Manager
+gcloud run deploy "$SERVICE_NAME" \
+  --image "gcr.io/$PROJECT_ID/$SERVICE_NAME" \
+  --region "$REGION" \
+  --set-secrets "FOUNDRY_HOSTNAME=foundry-hostname:latest" \
+  --set-secrets "FOUNDRY_CLIENT_ID=foundry-client-id:latest" \
+  --set-secrets "FOUNDRY_CLIENT_SECRET=foundry-client-secret:latest" \
+  --min-instances 1 \
+  --max-instances 10 \
+  --timeout 60 \
+  --allow-unauthenticated
+```
+
+### Step 3: Health Check Endpoint
+```python
+# src/main.py
+from fastapi import FastAPI
+import foundry, os
+
+app = FastAPI()
+
+@app.get("/health")
+async def health():
+    try:
+        client = get_foundry_client()
+        list(client.ontologies.Ontology.list())
+        return {"status": "healthy", "foundry": "connected"}
+    except Exception as e:
+        return {"status": "degraded", "foundry": str(e)}, 503
+```
+
+### Step 4: Environment-Specific Configuration
+```python
+# src/config.py
+import os
+from dataclasses import dataclass
+
+@dataclass
+class FoundryConfig:
+    hostname: str
+    client_id: str
+    client_secret: str
+    scopes: list[str]
+
+    @classmethod
+    def from_env(cls) -> "FoundryConfig":
+        env = os.environ.get("ENVIRONMENT", "development")
+        scopes_map = {
+            "development": ["api:read-data"],
+            "staging": ["api:read-data", "api:write-data"],
+            "production": ["api:read-data", "api:write-data", "api:ontology-read"],
+        }
+        return cls(
+            hostname=os.environ["FOUNDRY_HOSTNAME"],
+            client_id=os.environ["FOUNDRY_CLIENT_ID"],
+            client_secret=os.environ["FOUNDRY_CLIENT_SECRET"],
+            scopes=scopes_map.get(env, ["api:read-data"]),
+        )
+```
+
+## Output
+- Containerized Foundry integration deployed to cloud platform
+- Secrets injected via cloud secrets manager
+- Health check endpoint verifying Foundry connectivity
+- Environment-specific scope configuration
+
+## Error Handling
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Container fails to start | Missing env vars | Verify all secrets are mounted |
+| Health check fails | Foundry unreachable | Check VPC/firewall rules |
+| Cold start timeout | SDK initialization slow | Set min-instances to 1 |
+| Secret rotation breaks app | Old secret revoked | Deploy new secret before revoking old |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
 - [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Palantir Deploy Guide](https://docs.palantir.com/deploy)
+- [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
 
 ## Next Steps
-For webhook handling, see `palantir-webhooks-events`.
+For observability setup, see `palantir-observability`.

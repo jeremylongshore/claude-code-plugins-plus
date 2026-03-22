@@ -1,142 +1,48 @@
 ---
 name: quicknode-security-basics
 description: |
-  Apply QuickNode security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing QuickNode security configuration.
-  Trigger with phrases like "quicknode security", "quicknode secrets",
-  "secure quicknode", "quicknode API key security".
-allowed-tools: Read, Write, Grep
-version: 1.0.0
+  QuickNode security basics — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode security basics", "quicknode-security-basics", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode Security Basics
 
 ## Overview
-Security best practices for QuickNode API keys, tokens, and access control.
+Implementation patterns for QuickNode security basics using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
-- QuickNode SDK installed
-- Understanding of environment variables
-- Access to QuickNode dashboard
+- Completed `quicknode-install-auth` setup
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-QUICKNODE_API_KEY=sk_live_***
-QUICKNODE_SECRET=***
-
-# .gitignore
-.env
-.env.local
-.env.*.local
+### Step 1: Connect to QuickNode
+```typescript
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in QuickNode dashboard
-# 2. Update environment variable
-export QUICKNODE_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${QUICKNODE_API_KEY}" \
-  https://api.quicknode.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
 
 ## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- QuickNode integration for security basics
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new QuickNodeClient({
-    apiKey: process.env.QUICKNODE_READ_KEY,
-  }),
-  writer: new QuickNodeClient({
-    apiKey: process.env.QUICKNODE_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to QuickNode analytics
-  await quicknodeClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'quicknode.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
 
 ## Resources
-- [QuickNode Security Guide](https://docs.quicknode.com/security)
-- [QuickNode API Scopes](https://docs.quicknode.com/scopes)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-For production deployment, see `quicknode-prod-checklist`.
+See related QuickNode skills for more workflows.

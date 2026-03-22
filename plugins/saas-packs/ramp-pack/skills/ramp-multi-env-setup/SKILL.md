@@ -1,224 +1,57 @@
 ---
 name: ramp-multi-env-setup
 description: |
-  Configure Ramp across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Ramp configurations.
-  Trigger with phrases like "ramp environments", "ramp staging",
-  "ramp dev prod", "ramp environment setup", "ramp config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.0.0
+  Ramp multi env setup — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp multi env setup", "ramp-multi-env-setup", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Ramp Multi-Environment Setup
+# Ramp Multi Env Setup
 
 ## Overview
-Configure Ramp across development, staging, and production environments.
+Implementation patterns for Ramp multi env setup using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Separate Ramp accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
-
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── ramp/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${RAMP_API_KEY}",
-  "baseUrl": "https://api-sandbox.ramp.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${RAMP_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.ramp.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${RAMP_API_KEY_PROD}",
-  "baseUrl": "https://api.ramp.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/ramp/config.ts
-import baseConfig from '../../config/ramp/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getRampConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/ramp/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-RAMP_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  RAMP_API_KEY: ${{ secrets.RAMP_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id ramp/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=ramp-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/ramp/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getRampConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[ramp] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getRampConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
+## Output
+- Ramp API integration for multi env setup
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
+
 ## Resources
-- [Ramp Environments Guide](https://docs.ramp.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For observability setup, see `ramp-observability`.
+See related Ramp skills for more workflows.

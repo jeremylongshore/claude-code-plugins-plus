@@ -1,203 +1,48 @@
 ---
 name: quicknode-cost-tuning
 description: |
-  Optimize QuickNode costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing QuickNode billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "quicknode cost", "quicknode billing",
-  "reduce quicknode costs", "quicknode pricing", "quicknode expensive", "quicknode budget".
-allowed-tools: Read, Grep
-version: 1.0.0
+  QuickNode cost tuning — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode cost tuning", "quicknode-cost-tuning", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode Cost Tuning
 
 ## Overview
-Optimize QuickNode costs through smart tier selection, sampling, and usage monitoring.
+Implementation patterns for QuickNode cost tuning using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
-- Access to QuickNode billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateQuickNodeCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class QuickNodeUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching QuickNode budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateQuickNodeCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await quicknodeClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => quicknodeClient.get(id)));
-
-// Use batch endpoint (1 call)
-await quicknodeClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new QuickNodeClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in QuickNode dashboard
-# Or use API if available:
-# Check QuickNode documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM quicknode_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Completed `quicknode-install-auth` setup
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review QuickNode dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
+### Step 1: Connect to QuickNode
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateQuickNodeCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
 
+## Output
+- QuickNode integration for cost tuning
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
+
 ## Resources
-- [QuickNode Pricing](https://quicknode.com/pricing)
-- [QuickNode Billing Dashboard](https://dashboard.quicknode.com/billing)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-For architecture patterns, see `quicknode-reference-architecture`.
+See related QuickNode skills for more workflows.

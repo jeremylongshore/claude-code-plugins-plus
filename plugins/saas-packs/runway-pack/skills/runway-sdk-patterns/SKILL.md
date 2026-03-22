@@ -1,149 +1,56 @@
 ---
 name: runway-sdk-patterns
 description: |
-  Apply production-ready Runway SDK patterns for TypeScript and Python.
-  Use when implementing Runway integrations, refactoring SDK usage,
-  or establishing team coding standards for Runway.
-  Trigger with phrases like "runway SDK patterns", "runway best practices",
-  "runway code patterns", "idiomatic runway".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Runway sdk patterns — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway sdk patterns", "runway-sdk-patterns", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Runway SDK Patterns
+# Runway Sdk Patterns
 
 ## Overview
-Production-ready patterns for Runway SDK usage in TypeScript and Python.
+Implementation patterns for Runway sdk patterns — AI video generation platform.
 
 ## Prerequisites
 - Completed `runway-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/runway/client.ts
-import { RunwayClient } from '@runway/sdk';
+### Step 1: SDK Pattern
+```python
+from runwayml import RunwayML
 
-let instance: RunwayClient | null = null;
+client = RunwayML()
 
-export function getRunwayClient(): RunwayClient {
-  if (!instance) {
-    instance = new RunwayClient({
-      apiKey: process.env.RUNWAY_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
-```
-
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { RunwayError } from '@runway/sdk';
-
-async function safeRunwayCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof RunwayError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_text='A serene lake at dawn, mist rising, birds flying',
+    duration=5,
+)
+result = task.wait_for_task_output()
+if result.status == 'SUCCEEDED':
+    print(f"Video: {result.output[0]}")
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+- Runway integration for sdk patterns
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, RunwayClient>();
-
-export function getClientForTenant(tenantId: string): RunwayClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new RunwayClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from runway import RunwayClient
-
-@asynccontextmanager
-async def get_runway_client():
-    client = RunwayClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const runwayResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
+| 402 Insufficient credits | No credits | Add credits at dev.runwayml.com |
+| Task FAILED | Content policy | Adjust prompt |
 
 ## Resources
-- [Runway SDK Reference](https://docs.runway.com/sdk)
-- [Runway API Types](https://docs.runway.com/types)
-- [Zod Documentation](https://zod.dev/)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
-Apply patterns in `runway-core-workflow-a` for real-world usage.
+See related Runway skills for more workflows.

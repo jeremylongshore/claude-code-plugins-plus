@@ -1,114 +1,56 @@
 ---
 name: runway-upgrade-migration
 description: |
-  Analyze, plan, and execute Runway SDK upgrades with breaking change detection.
-  Use when upgrading Runway SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade runway", "runway migration",
-  "runway breaking changes", "update runway SDK", "analyze runway version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  Runway upgrade migration — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway upgrade migration", "runway-upgrade-migration", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Runway Upgrade & Migration
+# Runway Upgrade Migration
 
 ## Overview
-Guide for upgrading Runway SDK versions and handling breaking changes.
+Implementation patterns for Runway upgrade migration — AI video generation platform.
 
 ## Prerequisites
-- Current Runway SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `runway-install-auth` setup
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @runway/sdk
-npm view @runway/sdk version
-```
+### Step 1: SDK Pattern
+```python
+from runwayml import RunwayML
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/runway/sdk/releases
-```
+client = RunwayML()
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/runway-sdk-vX.Y.Z
-npm install @runway/sdk@latest
-npm test
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_text='A serene lake at dawn, mist rising, birds flying',
+    duration=5,
+)
+result = task.wait_for_task_output()
+if result.status == 'SUCCEEDED':
+    print(f"Video: {result.output[0]}")
 ```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- Runway integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@runway/sdk';
-
-// After (v2.x)
-import { RunwayClient } from '@runway/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new RunwayClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @runway/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Runway]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
+| 402 Insufficient credits | No credits | Add credits at dev.runwayml.com |
+| Task FAILED | Content policy | Adjust prompt |
 
 ## Resources
-- [Runway Changelog](https://github.com/runway/sdk/releases)
-- [Runway Migration Guide](https://docs.runway.com/migration)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
-For CI integration during upgrades, see `runway-ci-integration`.
+See related Runway skills for more workflows.

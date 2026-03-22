@@ -1,92 +1,80 @@
 ---
 name: runway-install-auth
 description: |
-  Install and configure Runway SDK/CLI authentication.
-  Use when setting up a new Runway integration, configuring API keys,
-  or initializing Runway in your project.
-  Trigger with phrases like "install runway", "setup runway",
-  "runway auth", "configure runway API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+  Runway install auth — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway install auth", "runway-install-auth", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Runway Install & Auth
+# Runway Install Auth
 
 ## Overview
-Set up Runway SDK/CLI and configure authentication credentials.
+Install the Runway ML SDK and configure API key authentication for AI video generation.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Runway account with API access
-- API key from Runway dashboard
+- Runway account at runwayml.com
+- API key from the Runway Developer Portal (dev.runwayml.com)
+- Python 3.9+ or Node.js 18+
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-# Node.js
-npm install @runway/sdk
-
+set -euo pipefail
 # Python
-pip install runway
+pip install runwayml
+
+# Node.js
+npm install @runwayml/sdk
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Configure Environment
 ```bash
-# Set environment variable
-export RUNWAY_API_KEY="your-api-key"
-
-# Or create .env file
-echo 'RUNWAY_API_KEY=your-api-key' >> .env
+# .env
+RUNWAYML_API_SECRET=key_xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-### Step 3: Verify Connection
+### Step 3: Verify Connection (Python)
+```python
+from runwayml import RunwayML
+
+client = RunwayML()  # Reads RUNWAYML_API_SECRET from env
+
+# The client is ready — no explicit auth call needed
+# SDK auto-authenticates on first API call
+print("RunwayML client initialized")
+```
+
+### Step 4: Verify Connection (Node.js)
 ```typescript
-// Test connection code here
+import RunwayML from '@runwayml/sdk';
+
+const runway = new RunwayML();  // Reads RUNWAYML_API_SECRET from env
+console.log('RunwayML client initialized');
 ```
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+- `runwayml` SDK installed
+- API key configured via environment variable
+- Client ready for video generation
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Runway dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.runway.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { RunwayClient } from '@runway/sdk';
-
-const client = new RunwayClient({
-  apiKey: process.env.RUNWAY_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from runway import RunwayClient
-
-client = RunwayClient(
-    api_key=os.environ.get('RUNWAY_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid API key | Verify key at dev.runwayml.com |
+| `ModuleNotFoundError` | SDK not installed | `pip install runwayml` |
+| `RUNWAYML_API_SECRET not set` | Missing env var | Set in .env or export |
 
 ## Resources
-- [Runway Documentation](https://docs.runway.com)
-- [Runway Dashboard](https://api.runway.com)
-- [Runway Status](https://status.runway.com)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
+- [API Getting Started](https://docs.dev.runwayml.com/guides/using-the-api/)
 
 ## Next Steps
-After successful auth, proceed to `runway-hello-world` for your first API call.
+Generate your first video: `runway-hello-world`

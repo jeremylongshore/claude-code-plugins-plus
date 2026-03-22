@@ -1,211 +1,57 @@
 ---
 name: ramp-deploy-integration
 description: |
-  Deploy Ramp integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Ramp-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy ramp", "ramp Vercel",
-  "ramp production deploy", "ramp Cloud Run", "ramp Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.0.0
+  Ramp deploy integration — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp deploy integration", "ramp-deploy-integration", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Ramp Deploy Integration
 
 ## Overview
-Deploy Ramp-powered applications to popular platforms with proper secrets management.
+Implementation patterns for Ramp deploy integration using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Ramp API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Ramp secrets to Vercel
-vercel secrets add ramp_api_key sk_live_***
-vercel secrets add ramp_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "RAMP_API_KEY": "@ramp_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-ramp-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Ramp secrets
-fly secrets set RAMP_API_KEY=sk_live_***
-fly secrets set RAMP_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="ramp-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=RAMP_API_KEY=ramp-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/ramp.ts
-interface RampConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getRampConfig(): RampConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.RAMP_API_KEY!,
-    environment: env as RampConfig['environment'],
-    webhookSecret: process.env.RAMP_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const rampStatus = await checkRampConnection();
-
-  return Response.json({
-    status: rampStatus ? 'healthy' : 'degraded',
-    services: {
-      ramp: rampStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Configure Secrets
-Store Ramp API keys securely using the platform's secrets management.
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Ramp integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Ramp connectivity.
-
-## Output
-- Application deployed to production
-- Ramp secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add ramp_api_key "$RAMP_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set RAMP_API_KEY="$RAMP_API_KEY"
-    fly deploy
-    ;;
-esac
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
+## Output
+- Ramp API integration for deploy integration
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Ramp Deploy Guide](https://docs.ramp.com/deploy)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For webhook handling, see `ramp-webhooks-events`.
+See related Ramp skills for more workflows.

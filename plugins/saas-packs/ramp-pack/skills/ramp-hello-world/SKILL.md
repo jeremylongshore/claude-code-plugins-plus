@@ -1,98 +1,67 @@
 ---
 name: ramp-hello-world
 description: |
-  Create a minimal working Ramp example.
-  Use when starting a new Ramp integration, testing your setup,
-  or learning basic Ramp API patterns.
-  Trigger with phrases like "ramp hello world", "ramp example",
-  "ramp quick start", "simple ramp code".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Ramp hello world — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp hello world", "ramp-hello-world", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Ramp Hello World
 
 ## Overview
-Minimal working example demonstrating core Ramp functionality.
+List cards, get transactions, and check user details using the Ramp API.
 
 ## Prerequisites
-- Completed `ramp-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Completed `ramp-install-auth` with valid access token
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
-```typescript
-import { RampClient } from '@ramp/sdk';
-
-const client = new RampClient({
-  apiKey: process.env.RAMP_API_KEY,
-});
+### Step 1: List Virtual Cards
+```python
+resp = requests.get(f"{BASE}/cards", headers=headers, params={"page_size": 10})
+for card in resp.json()["data"]:
+    print(f"Card: {card['display_name']} — Limit: ${card['spending_restrictions']['amount']/100:.2f}")
+    print(f"  Status: {card['state']}, Last4: {card['last_four']}")
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 2: Get Recent Transactions
+```python
+resp = requests.get(f"{BASE}/transactions", headers=headers, params={
+    "start_date": "2026-01-01",
+    "page_size": 10,
+})
+for tx in resp.json()["data"]:
+    print(f"${tx['amount']/100:.2f} at {tx['merchant_name']} — {tx['sk_category_name']}")
+```
 
-main().catch(console.error);
+### Step 3: List Users
+```python
+resp = requests.get(f"{BASE}/users", headers=headers, params={"page_size": 10})
+for user in resp.json()["data"]:
+    print(f"  {user['first_name']} {user['last_name']} — {user['role']}")
 ```
 
 ## Output
-- Working code file with Ramp client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Ramp connection is working.
-```
+- Cards listed with limits and status
+- Recent transactions with merchant details
+- Users with role information
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { RampClient } from '@ramp/sdk';
-
-const client = new RampClient({
-  apiKey: process.env.RAMP_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from ramp import RampClient
-
-client = RampClient()
-
-# Your first API call here
-```
+| Empty results | No data in sandbox | Create test cards first |
+| `403 Forbidden` | Insufficient permissions | Check API app permissions |
+| `400 Bad date format` | Wrong date format | Use ISO 8601: YYYY-MM-DD |
 
 ## Resources
-- [Ramp Getting Started](https://docs.ramp.com/getting-started)
-- [Ramp API Reference](https://docs.ramp.com/api)
-- [Ramp Examples](https://docs.ramp.com/examples)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Cards and Funds](https://docs.ramp.com/developer-api/v1/cards-and-funds)
 
 ## Next Steps
-Proceed to `ramp-local-dev-loop` for development workflow setup.
+Issue virtual cards: `ramp-core-workflow-a`

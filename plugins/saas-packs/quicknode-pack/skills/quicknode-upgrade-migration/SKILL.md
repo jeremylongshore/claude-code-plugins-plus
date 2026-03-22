@@ -1,114 +1,48 @@
 ---
 name: quicknode-upgrade-migration
 description: |
-  Analyze, plan, and execute QuickNode SDK upgrades with breaking change detection.
-  Use when upgrading QuickNode SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade quicknode", "quicknode migration",
-  "quicknode breaking changes", "update quicknode SDK", "analyze quicknode version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  QuickNode upgrade migration — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode upgrade migration", "quicknode-upgrade-migration", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# QuickNode Upgrade & Migration
+# QuickNode Upgrade Migration
 
 ## Overview
-Guide for upgrading QuickNode SDK versions and handling breaking changes.
+Implementation patterns for QuickNode upgrade migration using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
-- Current QuickNode SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `quicknode-install-auth` setup
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @quicknode/sdk
-npm view @quicknode/sdk version
+### Step 1: Connect to QuickNode
+```typescript
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
-
-### Step 2: Review Changelog
-```bash
-open https://github.com/quicknode/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/quicknode-sdk-vX.Y.Z
-npm install @quicknode/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- QuickNode integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@quicknode/sdk';
-
-// After (v2.x)
-import { QuickNodeClient } from '@quicknode/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new QuickNodeClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @quicknode/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[QuickNode]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
 
 ## Resources
-- [QuickNode Changelog](https://github.com/quicknode/sdk/releases)
-- [QuickNode Migration Guide](https://docs.quicknode.com/migration)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-For CI integration during upgrades, see `quicknode-ci-integration`.
+See related QuickNode skills for more workflows.

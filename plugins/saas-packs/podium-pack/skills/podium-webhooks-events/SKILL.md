@@ -1,201 +1,93 @@
 ---
 name: podium-webhooks-events
 description: |
-  Implement Podium webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Podium event notifications securely.
-  Trigger with phrases like "podium webhook", "podium events",
-  "podium webhook signature", "handle podium events", "podium notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+  Podium webhooks events — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium webhooks events", "podium-webhooks-events".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Podium Webhooks & Events
+# Podium Webhooks Events
 
 ## Overview
-Securely handle Podium webhooks with signature validation and replay protection.
+Handle Podium webhook events for messages, reviews, and payments with event routing and idempotent processing.
 
 ## Prerequisites
-- Podium webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/podium',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-podium-signature'] as string;
-    const timestamp = req.headers['x-podium-timestamp'] as string;
-
-    if (!verifyPodiumSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handlePodiumEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyPodiumSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.PODIUM_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type PodiumEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface PodiumEvent {
-  id: string;
-  type: PodiumEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<PodiumEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handlePodiumEvent(event: PodiumEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `podium:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `podium:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Podium CLI to send test events
-podium webhooks trigger resource.created --url http://localhost:3000/webhooks/podium
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- Podium OAuth tokens configured
+- HTTPS webhook endpoint
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Podium dashboard.
+### Step 1: Webhook Event Types
+| Event | Description |
+|-------|-------------|
+| `message.received` | Inbound customer message |
+| `message.sent` | Outbound message delivered |
+| `message.failed` | Message delivery failed |
+| `review.created` | New review posted |
+| `payment.completed` | Invoice payment received |
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+### Step 2: Event Handler
+```typescript
+import express from 'express';
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+const app = express();
+app.post('/webhooks/podium', express.json(), async (req, res) => {
+  const { type, data } = req.body;
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  const handlers: Record<string, (data: any) => Promise<void>> = {
+    'message.received': async (d) => {
+      console.log(`Message from ${d.attributes['contact-phone']}: ${d.attributes.body}`);
+    },
+    'message.sent': async (d) => {
+      console.log(`Message delivered: ${d.id}`);
+    },
+    'review.created': async (d) => {
+      console.log(`New review: ${d.attributes.rating}/5`);
+    },
+    'payment.completed': async (d) => {
+      console.log(`Payment received: $${d.attributes.amount / 100}`);
+    },
+  };
+
+  const handler = handlers[type];
+  if (handler) await handler(data);
+  res.status(200).json({ received: true });
+});
+```
+
+### Step 3: Register Webhook
+```typescript
+await podium.post('/webhooks', {
+  data: {
+    attributes: {
+      url: 'https://your-app.com/webhooks/podium',
+      events: ['message.received', 'message.sent', 'review.created', 'payment.completed'],
+    },
+  },
+});
+```
 
 ## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+- Webhook endpoint handling all Podium event types
+- Event routing to specific handlers
+- Message, review, and payment events processed
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/podium \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| No events received | Wrong URL | Verify HTTPS URL in webhook config |
+| Duplicate events | Retry delivery | Implement idempotency with event IDs |
+| Handler timeout | Slow processing | Offload to background queue |
 
 ## Resources
-- [Podium Webhooks Guide](https://docs.podium.com/webhooks)
-- [Webhook Security Best Practices](https://docs.podium.com/webhooks/security)
+- [Podium Webhooks](https://docs.podium.com/docs/webhooks)
+- [Webhook Object](https://docs.podium.com/reference/the-webhook-object)
 
 ## Next Steps
-For performance optimization, see `podium-performance-tuning`.
+For error diagnosis, see `podium-common-errors`.

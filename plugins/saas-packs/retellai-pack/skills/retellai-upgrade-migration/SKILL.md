@@ -1,61 +1,49 @@
 ---
 name: retellai-upgrade-migration
 description: |
-  Analyze, plan, and execute Retell AI SDK upgrades with breaking change detection.
-  Use when upgrading Retell AI SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade retellai", "retellai migration",
-  "retellai breaking changes", "update retellai SDK", "analyze retellai version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  Retell AI upgrade migration — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell upgrade migration", "retellai-upgrade-migration", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
-# Retell AI Upgrade & Migration
 
-## Current State
-!`npm list 2>/dev/null | head -20`
-!`pip freeze 2>/dev/null | head -20`
+# Retell AI Upgrade Migration
 
 ## Overview
-Guide for upgrading Retell AI SDK versions and handling breaking changes safely. Covers version checking, changelog review, upgrade branch creation, breaking change remediation (import paths, configuration objects, method signatures), deprecation monitoring in development mode, and rollback procedures with pinned versions.
+Implementation patterns for Retell AI upgrade migration — voice agent and telephony platform.
 
 ## Prerequisites
-- Current Retell AI SDK installed
-- Git for version control
-- Test suite available
-- Staging environment for validation
+- Completed `retellai-install-auth` setup
 
 ## Instructions
 
-1. **Check the current version** with `npm list @retellai/sdk` and compare against the latest release with `npm view @retellai/sdk version`.
-2. **Review the changelog** for breaking changes between the current and target versions. Pay attention to renamed imports, changed configuration objects, and removed features.
-3. **Create an upgrade branch** with `git checkout -b upgrade/retellai-sdk-vX.Y.Z`, install the new version, and run the test suite to identify failures.
-4. **Fix breaking changes** following the patterns in [upgrade guide](references/upgrade-guide.md): import path changes (v1 `Client` -> v2 `RetellAIClient`), configuration object changes (`key` -> `apiKey`), and method signature updates.
-5. **Add deprecation monitoring** in development mode to catch warnings about soon-to-be-removed features proactively. See [upgrade guide](references/upgrade-guide.md) for the monitoring code.
+### Step 1: SDK Pattern
+```typescript
+import Retell from 'retell-sdk';
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+
+const agents = await retell.agent.list();
+console.log(`Agents: ${agents.length}`);
+```
 
 ## Output
-- Updated SDK version installed and tested
-- Breaking changes identified and fixed
-- Test suite passing on the upgrade branch
-- Rollback procedure documented with pinned version
+- Retell AI integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-For import changes, configuration changes, rollback procedure, and deprecation monitoring, see [upgrade guide](references/upgrade-guide.md).
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 400 Bad Request | Invalid parameters | Check API documentation |
 
 ## Resources
-- [Retell AI Changelog](https://github.com/retellai/sdk/releases)
-- [Retell AI Migration Guide](https://docs.retellai.com/migration)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
-For CI integration during upgrades, see `retellai-ci-integration`. For production deployment after successful upgrade, see `retellai-prod-checklist`.
+See related Retell AI skills for more workflows.

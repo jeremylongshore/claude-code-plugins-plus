@@ -1,98 +1,74 @@
 ---
 name: podium-hello-world
 description: |
-  Create a minimal working Podium example.
-  Use when starting a new Podium integration, testing your setup,
-  or learning basic Podium API patterns.
-  Trigger with phrases like "podium hello world", "podium example",
-  "podium quick start", "simple podium code".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Podium hello world — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium hello world", "podium-hello-world".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Hello World
 
 ## Overview
-Minimal working example demonstrating core Podium functionality.
+Send your first Podium message, list contacts, and check location details using the Podium REST API.
 
 ## Prerequisites
-- Completed `podium-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Completed `podium-install-auth` setup with valid access token
+- A Podium location ID
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
+### Step 1: List Locations
 ```typescript
-import { PodiumClient } from '@podium/sdk';
-
-const client = new PodiumClient({
-  apiKey: process.env.PODIUM_API_KEY,
-});
+const { data } = await podium.get('/locations');
+for (const loc of data.data) {
+  console.log(`Location: ${loc.attributes.name} (ID: ${loc.id})`);
+}
 ```
 
-### Step 3: Make Your First API Call
+### Step 2: List Contacts
 ```typescript
-async function main() {
-  // Your first API call here
+const locationId = 'loc_xxxxx';
+const { data } = await podium.get(`/locations/${locationId}/contacts`);
+for (const contact of data.data) {
+  console.log(`  ${contact.attributes.name} — ${contact.attributes.phone}`);
 }
+```
 
-main().catch(console.error);
+### Step 3: Send a Message
+```typescript
+// Messages are sent via the Podium platform to the customer's phone
+const { data } = await podium.post(`/locations/${locationId}/messages`, {
+  data: {
+    attributes: {
+      body: 'Hello from our integration! How can we help?',
+      'contact-phone': '+15551234567',
+    },
+  },
+});
+console.log(`Message sent: ${data.data.id}`);
 ```
 
 ## Output
-- Working code file with Podium client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Podium connection is working.
-```
+- Listed locations with IDs
+- Retrieved contacts for a location
+- Sent a test message via Podium
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { PodiumClient } from '@podium/sdk';
-
-const client = new PodiumClient({
-  apiKey: process.env.PODIUM_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from podium import PodiumClient
-
-client = PodiumClient()
-
-# Your first API call here
-```
+| `404 Location not found` | Wrong location ID | List locations first to get valid IDs |
+| `422 Invalid phone` | Bad phone format | Use E.164 format: +15551234567 |
+| `403 Forbidden` | Missing scope | Add `messages.write` scope to OAuth app |
 
 ## Resources
-- [Podium Getting Started](https://docs.podium.com/getting-started)
-- [Podium API Reference](https://docs.podium.com/api)
-- [Podium Examples](https://docs.podium.com/examples)
+- [Podium API Reference](https://docs.podium.com/reference)
+- [Sync Messages](https://docs.podium.com/docs/sync-messages-from-podium-conversations)
 
 ## Next Steps
-Proceed to `podium-local-dev-loop` for development workflow setup.
+Build messaging workflow: `podium-core-workflow-a`

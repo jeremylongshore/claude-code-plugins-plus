@@ -1,201 +1,133 @@
 ---
 name: persona-webhooks-events
 description: |
-  Implement Persona webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Persona event notifications securely.
-  Trigger with phrases like "persona webhook", "persona events",
-  "persona webhook signature", "handle persona events", "persona notifications".
+  Handle Persona webhook events for inquiry and verification status changes.
+  Use when working with Persona identity verification.
+  Trigger with phrases like "persona webhooks-events", "persona webhooks-events".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona]
-compatible-with: claude-code
+tags: [saas, persona, identity, kyc, verification]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Persona Webhooks & Events
+# persona webhooks events | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Securely handle Persona webhooks with signature validation and replay protection.
+HMAC signature verification, inquiry.completed/approved/declined events, idempotent processing.
 
 ## Prerequisites
-- Persona webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Completed `persona-install-auth` setup
+- Valid Persona API key (sandbox or production)
 
-## Webhook Endpoint Setup
+## Instructions
 
-### Express.js
+### Step 1: Configure Webhook in Dashboard
+```text
+1. Dashboard > Settings > Webhooks > Add Webhook
+2. URL: https://your-app.com/webhooks/persona
+3. Events: inquiry.completed, inquiry.approved, inquiry.declined,
+           verification.passed, verification.failed
+4. Copy the webhook secret for signature verification
+```
+
+### Step 2: Webhook Endpoint with HMAC Verification
 ```typescript
 import express from 'express';
 import crypto from 'crypto';
 
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
 app.post('/webhooks/persona',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
-    const signature = req.headers['x-persona-signature'] as string;
-    const timestamp = req.headers['x-persona-timestamp'] as string;
+    const signature = req.headers['persona-signature'] as string;
+    const secret = process.env.PERSONA_WEBHOOK_SECRET!;
 
-    if (!verifyPersonaSignature(req.body, signature, timestamp)) {
+    // Verify HMAC-SHA256 signature
+    const expectedSig = crypto
+      .createHmac('sha256', secret)
+      .update(req.body)
+      .digest('hex');
+
+    if (!crypto.timingSafeEqual(Buffer.from(signature || ''), Buffer.from(expectedSig))) {
       return res.status(401).json({ error: 'Invalid signature' });
     }
 
     const event = JSON.parse(req.body.toString());
     await handlePersonaEvent(event);
-
     res.status(200).json({ received: true });
   }
 );
 ```
 
-## Signature Verification
-
+### Step 3: Event Handlers
 ```typescript
-function verifyPersonaSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.PERSONA_WEBHOOK_SECRET!;
+async function handlePersonaEvent(event: any) {
+  const { type, data } = event;
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
+  switch (type) {
+    case 'inquiry.completed':
+      const inquiryId = data.attributes.payload.data.id;
+      const referenceId = data.attributes.payload.data.attributes['reference-id'];
+      console.log(`Inquiry completed: ${inquiryId} for user ${referenceId}`);
+      // Update user KYC status in your database
+      await updateUserKycStatus(referenceId, 'completed');
+      break;
+
+    case 'inquiry.approved':
+      await updateUserKycStatus(data.attributes.payload.data.attributes['reference-id'], 'approved');
+      break;
+
+    case 'inquiry.declined':
+      await updateUserKycStatus(data.attributes.payload.data.attributes['reference-id'], 'declined');
+      break;
+
+    case 'verification.passed':
+      console.log(`Verification passed: ${data.attributes.payload.data.id}`);
+      break;
+
+    case 'verification.failed':
+      console.log(`Verification failed: ${data.attributes.payload.data.id}`);
+      break;
+
+    default:
+      console.log(`Unhandled event: ${type}`);
   }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
 }
 ```
 
-## Event Handler Pattern
-
+### Step 4: Idempotent Processing
 ```typescript
-type PersonaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+const processedEvents = new Set<string>();
 
-interface PersonaEvent {
-  id: string;
-  type: PersonaEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<PersonaEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handlePersonaEvent(event: PersonaEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
+async function idempotentHandle(event: any) {
+  const eventId = event.data.id;
+  if (processedEvents.has(eventId)) {
+    console.log(`Skipping duplicate: ${eventId}`);
     return;
   }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
+  await handlePersonaEvent(event);
+  processedEvents.add(eventId);
 }
 ```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `persona:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `persona:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Persona CLI to send test events
-persona webhooks trigger resource.created --url http://localhost:3000/webhooks/persona
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Persona dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
 
 ## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+- Webhook endpoint with HMAC signature verification
+- Event handlers for inquiry and verification lifecycle
+- Idempotent processing preventing duplicates
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/persona \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Invalid signature | Wrong webhook secret | Re-copy secret from Dashboard |
+| Missing events | Events not selected | Check webhook configuration |
+| Duplicate processing | Retry delivery | Use event ID deduplication |
 
 ## Resources
-- [Persona Webhooks Guide](https://docs.persona.com/webhooks)
-- [Webhook Security Best Practices](https://docs.persona.com/webhooks/security)
+- [Webhooks Quickstart](https://docs.withpersona.com/quickstart-webhooks)
+- [Create a Webhook](https://docs.withpersona.com/api-reference/webhooks/create-a-webhook)
 
 ## Next Steps
-For performance optimization, see `persona-performance-tuning`.
+For common errors, see `persona-common-errors`.

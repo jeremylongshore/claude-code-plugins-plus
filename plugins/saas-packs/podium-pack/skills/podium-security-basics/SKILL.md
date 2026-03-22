@@ -1,142 +1,56 @@
 ---
 name: podium-security-basics
 description: |
-  Apply Podium security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Podium security configuration.
-  Trigger with phrases like "podium security", "podium secrets",
-  "secure podium", "podium API key security".
-allowed-tools: Read, Write, Grep
-version: 1.0.0
+  Podium security basics — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium security basics", "podium-security-basics".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Security Basics
 
 ## Overview
-Security best practices for Podium API keys, tokens, and access control.
+Implementation patterns for Podium security basics using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Podium SDK installed
-- Understanding of environment variables
-- Access to Podium dashboard
+- Completed `podium-install-auth` setup
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-PODIUM_API_KEY=sk_live_***
-PODIUM_SECRET=***
+### Step 1: API Call Pattern
+```typescript
+import axios from 'axios';
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
+});
+
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
 ```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Podium dashboard
-# 2. Update environment variable
-export PODIUM_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${PODIUM_API_KEY}" \
-  https://api.podium.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
 
 ## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- Podium API integration for security basics
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new PodiumClient({
-    apiKey: process.env.PODIUM_READ_KEY,
-  }),
-  writer: new PodiumClient({
-    apiKey: process.env.PODIUM_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Podium analytics
-  await podiumClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'podium.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [Podium Security Guide](https://docs.podium.com/security)
-- [Podium API Scopes](https://docs.podium.com/scopes)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-For production deployment, see `podium-prod-checklist`.
+See related Podium skills for more workflows.

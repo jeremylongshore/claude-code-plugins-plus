@@ -1,216 +1,57 @@
 ---
 name: ramp-performance-tuning
 description: |
-  Optimize Ramp API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Ramp integrations.
-  Trigger with phrases like "ramp performance", "optimize ramp",
-  "ramp latency", "ramp caching", "ramp slow", "ramp batch".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Ramp performance tuning — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp performance tuning", "ramp-performance-tuning", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Ramp Performance Tuning
 
 ## Overview
-Optimize Ramp API performance with caching, batching, and connection pooling.
+Implementation patterns for Ramp performance tuning using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Ramp SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedRampRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const rampLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Ramp
-    const results = await rampClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  rampLoader.load('id-1'),
-  rampLoader.load('id-2'),
-  rampLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new RampClient({
-  apiKey: process.env.RAMP_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedRampList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedRampList(cursor =>
-  rampClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredRampCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Ramp operations.
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredRampCall(name, () =>
-    cachedRampRequest(`cache:${name}`, fn)
-  );
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
+## Output
+- Ramp API integration for performance tuning
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
+
 ## Resources
-- [Ramp Performance Guide](https://docs.ramp.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For cost optimization, see `ramp-cost-tuning`.
+See related Ramp skills for more workflows.

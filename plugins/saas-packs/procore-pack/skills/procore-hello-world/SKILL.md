@@ -1,98 +1,81 @@
 ---
 name: procore-hello-world
 description: |
-  Create a minimal working Procore example.
-  Use when starting a new Procore integration, testing your setup,
-  or learning basic Procore API patterns.
-  Trigger with phrases like "procore hello world", "procore example",
-  "procore quick start", "simple procore code".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Procore hello world — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore hello world", "procore-hello-world".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Procore Hello World
 
 ## Overview
-Minimal working example demonstrating core Procore functionality.
+List companies and projects, then create your first RFI using the Procore REST API.
 
 ## Prerequisites
-- Completed `procore-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- Completed `procore-install-auth` with valid access token
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
-```typescript
-import { ProcoreClient } from '@procore/sdk';
-
-const client = new ProcoreClient({
-  apiKey: process.env.PROCORE_API_KEY,
-});
+### Step 1: List Projects
+```python
+company_id = 12345  # From install-auth step
+projects = requests.get(
+    f"https://api.procore.com/rest/v1.0/projects?company_id={company_id}",
+    headers=headers,
+)
+for p in projects.json():
+    print(f"Project: {p['name']} (ID: {p['id']})")
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 2: Create an RFI
+```python
+project_id = 67890
+rfi = requests.post(
+    f"https://api.procore.com/rest/v1.0/projects/{project_id}/rfis",
+    headers={**headers, "Content-Type": "application/json"},
+    json={
+        "rfi": {
+            "subject": "Structural beam specification clarification",
+            "question_body": "Please confirm the steel grade for beams on Level 3.",
+            "assignee_id": 11111,  # User ID of the person to respond
+        }
+    },
+)
+rfi.raise_for_status()
+print(f"RFI created: #{rfi.json()['number']} — {rfi.json()['subject']}")
+```
 
-main().catch(console.error);
+### Step 3: List Submittals
+```python
+submittals = requests.get(
+    f"https://api.procore.com/rest/v1.0/projects/{project_id}/submittals",
+    headers=headers,
+)
+for s in submittals.json():
+    print(f"Submittal #{s['number']}: {s['title']} — Status: {s['status']['name']}")
 ```
 
 ## Output
-- Working code file with Procore client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Procore connection is working.
-```
+- Listed companies and projects
+- Created an RFI with subject and assignee
+- Listed submittals with status
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { ProcoreClient } from '@procore/sdk';
-
-const client = new ProcoreClient({
-  apiKey: process.env.PROCORE_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from procore import ProcoreClient
-
-client = ProcoreClient()
-
-# Your first API call here
-```
+| `404 Project not found` | Wrong project_id | List projects first |
+| `422 Missing subject` | Required field | Include subject in RFI |
+| `403 Forbidden` | No project access | Check user permissions |
 
 ## Resources
-- [Procore Getting Started](https://docs.procore.com/getting-started)
-- [Procore API Reference](https://docs.procore.com/api)
-- [Procore Examples](https://docs.procore.com/examples)
+- [Procore REST API](https://developers.procore.com/reference/rest)
+- [RFIs API](https://developers.procore.com/reference/rest/rfis)
 
 ## Next Steps
-Proceed to `procore-local-dev-loop` for development workflow setup.
+Full RFI workflow: `procore-core-workflow-a`

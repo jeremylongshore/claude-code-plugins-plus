@@ -1,126 +1,57 @@
 ---
 name: ramp-ci-integration
 description: |
-  Configure Ramp CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Ramp tests into your build process.
-  Trigger with phrases like "ramp CI", "ramp GitHub Actions",
-  "ramp automated tests", "CI ramp".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+  Ramp ci integration — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp ci integration", "ramp-ci-integration", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Ramp CI Integration
+# Ramp Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Ramp integrations with automated testing.
+Implementation patterns for Ramp ci integration using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Ramp test API key
-- npm/pnpm project configured
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/ramp-integration.yml`:
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-```yaml
-name: Ramp Integration Tests
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      RAMP_API_KEY: ${{ secrets.RAMP_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set RAMP_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Ramp Integration', () => {
-  it.skipIf(!process.env.RAMP_API_KEY)('should connect', async () => {
-    const client = getRampClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- Ramp API integration for ci integration
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      RAMP_API_KEY: ${{ secrets.RAMP_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Ramp production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "ramp-integration"
-```
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Ramp CI Guide](https://docs.ramp.com/ci)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For deployment patterns, see `ramp-deploy-integration`.
+See related Ramp skills for more workflows.

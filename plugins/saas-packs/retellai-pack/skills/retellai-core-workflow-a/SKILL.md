@@ -1,77 +1,95 @@
 ---
 name: retellai-core-workflow-a
 description: |
-  Execute Retell AI primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "retellai main workflow",
-  "primary task with retellai".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  Retell AI core workflow a — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell core workflow a", "retellai-core-workflow-a", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
+
 # Retell AI Core Workflow A
 
 ## Overview
-Primary money-path workflow for Retell AI. This is the most common use case. Retell AI is a platform for building conversational voice agents powered by large language models. It handles the telephony integration, real-time speech-to-text, LLM orchestration, and text-to-speech pipeline so that you can focus on defining the agent's conversation logic. It is commonly used for automated customer service calls, appointment booking, outbound sales dialing, and interactive voice response systems.
+Build and configure voice agents with custom prompts, function calling, and call flow logic.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
-- Understanding of Retell AI core concepts
-- Valid API credentials configured
+- Completed `retellai-hello-world`
 
 ## Instructions
 
-### Step 1: Initialize
-Authenticate with the Retell AI API and verify that your agent is configured with the correct LLM model, voice profile, and conversation script. Confirm that your phone number is registered and associated with the agent. Review the agent's interrupt sensitivity and response latency settings to ensure they produce a natural conversation pace for your target use case.
-
+### Step 1: Agent with Function Calling
 ```typescript
-// Step 1 implementation
+const llm = await retell.llm.create({
+  model: 'gpt-4o',
+  general_prompt: `You are a booking assistant for Dr. Smith's office.
+    - Help callers book, reschedule, or cancel appointments
+    - Collect: name, phone, preferred date/time
+    - Confirm all details before booking`,
+  functions: [
+    {
+      name: 'book_appointment',
+      description: 'Book a new appointment',
+      parameters: {
+        type: 'object',
+        properties: {
+          patient_name: { type: 'string' },
+          phone: { type: 'string' },
+          date: { type: 'string', description: 'YYYY-MM-DD format' },
+          time: { type: 'string', description: 'HH:MM format' },
+        },
+        required: ['patient_name', 'phone', 'date', 'time'],
+      },
+      url: 'https://your-api.com/appointments',
+      speak_during_execution: true,
+      speak_after_execution: true,
+    },
+  ],
+});
 ```
 
-### Step 2: Execute
-Initiate a call using the Retell AI API by providing the target phone number and any dynamic variables that should be injected into the conversation script for this specific call (e.g., the customer's name or appointment time). Monitor the call status and transcription stream in real time. Review the call recording and transcript after the call completes to assess conversation quality and identify script improvements.
-
+### Step 2: Configure Voice and Behavior
 ```typescript
-// Step 2 implementation
+const agent = await retell.agent.create({
+  response_engine: { type: 'retell-llm', llm_id: llm.llm_id },
+  voice_id: '11labs-Rachel',
+  agent_name: 'Dr. Smith Booking Agent',
+  language: 'en-US',
+  opt_out_sensitive_data_storage: false,
+  end_call_after_silence_ms: 10000,  // End call after 10s silence
+  max_call_duration_ms: 300000,       // 5-minute max
+  enable_backchannel: true,           // "mhm", "yeah" responses
+  boosted_keywords: ['appointment', 'schedule', 'Dr. Smith'],
+});
 ```
 
-### Step 3: Finalize
-Extract the call outcome and any data collected during the conversation from the Retell AI call record. Update your CRM or scheduling system with the result. For high-volume outbound campaigns, aggregate call outcomes across the batch to measure connection rate, completion rate, and goal achievement rate.
-
+### Step 3: Update Agent Configuration
 ```typescript
-// Step 3 implementation
+await retell.agent.update(agent.agent_id, {
+  voice_id: '11labs-Dorothy',  // Change voice
+  end_call_after_silence_ms: 15000,
+});
 ```
 
 ## Output
-- Completed Core Workflow A execution
-- Voice call completed with full transcript and recording available
-- Call outcome and collected data exported for downstream use
-- Success confirmation or error details if the call could not be connected
+- Agent with custom LLM prompt and function calling
+- Voice and behavior configuration
+- Real-time function execution during calls
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| Function not triggering | Prompt doesn't guide to function | Include function use in prompt |
+| Voice quality issues | Wrong voice selection | Test different voices |
+| Call ending too early | Short silence timeout | Increase `end_call_after_silence_ms` |
 
 ## Resources
 - [Retell AI Documentation](https://docs.retellai.com)
-- [Retell AI API Reference](https://docs.retellai.com/api)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
-For secondary workflow, see `retellai-core-workflow-b`.
+Phone call management: `retellai-core-workflow-b`

@@ -1,73 +1,99 @@
 ---
 name: runway-core-workflow-b
 description: |
-  Execute Runway secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "runway secondary workflow",
-  "secondary task with runway".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  Runway core workflow b — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway core workflow b", "runway-core-workflow-b", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Runway Core Workflow B
 
 ## Overview
-Secondary workflow for Runway. Complements the primary workflow.
+Image-to-video and video-to-video generation: animate still images and transform existing videos.
 
 ## Prerequisites
-- Completed `runway-install-auth` setup
-- Familiarity with `runway-core-workflow-a`
-- Valid API credentials configured
+- Completed `runway-core-workflow-a`
 
 ## Instructions
 
-### Step 1: Setup
-```typescript
-// Step 1 implementation
+### Step 1: Image-to-Video
+```python
+from runwayml import RunwayML
+client = RunwayML()
+
+# Animate a still image
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_image='https://your-cdn.com/landscape.jpg',  # URL to source image
+    prompt_text='Camera slowly pans right revealing mountains, gentle wind in trees',
+    duration=5,
+)
+result = task.wait_for_task_output()
+print(f"Animated video: {result.output[0]}")
 ```
 
-### Step 2: Process
-```typescript
-// Step 2 implementation
+### Step 2: Image-to-Video with Data URI
+```python
+import base64
+
+# Load local image as data URI
+with open('photo.jpg', 'rb') as f:
+    image_data = base64.b64encode(f.read()).decode()
+    data_uri = f"data:image/jpeg;base64,{image_data}"
+
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_image=data_uri,
+    prompt_text='Subtle motion, gentle camera push in, atmospheric lighting',
+    duration=5,
+)
 ```
 
-### Step 3: Complete
-```typescript
-// Step 3 implementation
+### Step 3: Video-to-Video (Style Transfer)
+```python
+# Transform an existing video with a new style
+task = client.video_to_video.create(
+    model='gen3a_turbo',
+    prompt_video='https://your-cdn.com/input-video.mp4',
+    prompt_text='Transform to watercolor painting style, soft colors, artistic brushstrokes',
+)
+result = task.wait_for_task_output()
+print(f"Styled video: {result.output[0]}")
+```
+
+### Step 4: Image Specifications
+```text
+Supported formats: JPEG, PNG, WebP
+Supported resolutions:
+  - Gen-3 Alpha Turbo: 1280x768 or 768x1280
+  - Input images are automatically resized
+Max file size: 16MB (URL), varies for data URI
 ```
 
 ## Output
-- Completed Core Workflow B execution
-- Results from Runway API
-- Success confirmation or error details
+- Still images animated with motion prompts
+- Local images encoded as data URIs
+- Videos restyled with text prompts
+- Proper image format handling
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `400 Invalid image` | Unsupported format | Use JPEG, PNG, or WebP |
+| `413 Image too large` | File exceeds limit | Resize to under 16MB |
+| Poor animation quality | Prompt doesn't describe motion | Add camera/motion keywords |
+| Style transfer too subtle | Weak prompt | Be more specific about target style |
 
 ## Resources
-- [Runway Documentation](https://docs.runway.com)
-- [Runway API Reference](https://docs.runway.com/api)
+- [Runway API Reference](https://docs.dev.runwayml.com/api/)
+- [Input Parameters](https://docs.dev.runwayml.com/assets/inputs/)
+- [SDKs](https://docs.dev.runwayml.com/api-details/sdks/)
 
 ## Next Steps
-For common errors, see `runway-common-errors`.
+Error handling: `runway-common-errors`

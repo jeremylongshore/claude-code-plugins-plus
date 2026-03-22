@@ -1,126 +1,143 @@
 ---
 name: palantir-ci-integration
 description: |
-  Configure Palantir CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Palantir tests into your build process.
-  Trigger with phrases like "palantir CI", "palantir GitHub Actions",
-  "palantir automated tests", "CI palantir".
+  Configure CI/CD pipelines for Palantir Foundry integrations with GitHub Actions.
+  Use when setting up automated testing, running transforms validation,
+  or integrating Foundry SDK tests into your build process.
+  Trigger with phrases like "palantir CI", "foundry GitHub Actions",
+  "palantir automated tests", "CI foundry".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, ci-cd, github-actions]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Palantir integrations with automated testing.
+Set up GitHub Actions CI pipelines for Foundry integrations. Covers running transform unit tests with PySpark, SDK integration tests with mocked APIs, and linting Foundry-specific patterns.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Palantir test API key
-- npm/pnpm project configured
+- GitHub repository with Foundry integration code
+- `foundry-platform-sdk` in requirements
+- pytest test suite
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/palantir-integration.yml`:
-
+### Step 1: GitHub Actions Workflow
 ```yaml
-name: Palantir Integration Tests
-
+# .github/workflows/foundry-ci.yml
+name: Foundry CI
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
-
-env:
-  PALANTIR_API_KEY: ${{ secrets.PALANTIR_API_KEY }}
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      PALANTIR_API_KEY: ${{ secrets.PALANTIR_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+          python-version: "3.11"
+          cache: pip
+
+      - name: Set up Java (for PySpark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run unit tests
+        run: pytest tests/ -v --tb=short --junitxml=test-results.xml
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install ruff
+      - run: ruff check src/ tests/
+
+  integration:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [test, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run integration smoke test
+        env:
+          FOUNDRY_HOSTNAME: ${{ secrets.FOUNDRY_HOSTNAME }}
+          FOUNDRY_CLIENT_ID: ${{ secrets.FOUNDRY_CLIENT_ID }}
+          FOUNDRY_CLIENT_SECRET: ${{ secrets.FOUNDRY_CLIENT_SECRET }}
+        run: python scripts/smoke_test.py
 ```
 
-### Step 2: Configure Secrets
+### Step 2: Secret Configuration
 ```bash
-gh secret set PALANTIR_API_KEY --body "sk_test_***"
+# Add secrets to GitHub repository
+gh secret set FOUNDRY_HOSTNAME --body "mycompany.palantirfoundry.com"
+gh secret set FOUNDRY_CLIENT_ID --body "your-client-id"
+gh secret set FOUNDRY_CLIENT_SECRET --body "your-client-secret"
 ```
 
-### Step 3: Add Integration Tests
-```typescript
-describe('Palantir Integration', () => {
-  it.skipIf(!process.env.PALANTIR_API_KEY)('should connect', async () => {
-    const client = getPalantirClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
+### Step 3: Custom Linting Rules for Foundry
+```python
+# scripts/lint_foundry.py — catch common Foundry mistakes
+import ast, sys
+
+class FoundryLinter(ast.NodeVisitor):
+    def visit_Str(self, node):
+        # Flag hardcoded Foundry hostnames
+        if "palantirfoundry.com" in node.s:
+            print(f"  Line {node.lineno}: Hardcoded Foundry hostname — use env var")
+        # Flag hardcoded RIDs
+        if node.s.startswith("ri.foundry.main"):
+            print(f"  Line {node.lineno}: Hardcoded RID — use config/env var")
+
+for path in sys.argv[1:]:
+    tree = ast.parse(open(path).read())
+    FoundryLinter().visit(tree)
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- GitHub Actions workflow with unit tests, linting, and integration tests
+- PySpark tests running in CI with JDK setup
+- Secrets configured securely in GitHub
+- Custom linting for Foundry-specific patterns
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      PALANTIR_API_KEY: ${{ secrets.PALANTIR_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Palantir production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "palantir-integration"
-```
+| CI Issue | Cause | Fix |
+|----------|-------|-----|
+| PySpark tests fail | No JDK | Add `setup-java` step |
+| Integration test 401 | Bad secrets | Re-set `gh secret set` |
+| Slow tests | Full Spark startup | Use `local[1]` master |
+| Import errors | Missing deps | Pin all deps in requirements.txt |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Palantir CI Guide](https://docs.palantir.com/ci)
+- [GitHub Actions](https://docs.github.com/en/actions)
+- [PySpark Testing](https://spark.apache.org/docs/latest/api/python/getting_started/testing_pyspark.html)
 
 ## Next Steps
-For deployment patterns, see `palantir-deploy-integration`.
+For deployment pipelines, see `palantir-deploy-integration`.

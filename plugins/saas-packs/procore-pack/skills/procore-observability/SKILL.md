@@ -1,252 +1,56 @@
 ---
 name: procore-observability
 description: |
-  Set up comprehensive observability for Procore integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Procore operations, setting up dashboards,
-  or configuring alerting for Procore integration health.
-  Trigger with phrases like "procore monitoring", "procore metrics",
-  "procore observability", "monitor procore", "procore alerts", "procore tracing".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  Procore observability — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore observability", "procore-observability".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Procore Observability
 
 ## Overview
-Set up comprehensive observability for Procore integrations.
+Implementation patterns for Procore observability using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Metrics Collection
-
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `procore_requests_total` | Counter | Total API requests |
-| `procore_request_duration_seconds` | Histogram | Request latency |
-| `procore_errors_total` | Counter | Error count by type |
-| `procore_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'procore_requests_total',
-  help: 'Total Procore API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'procore_request_duration_seconds',
-  help: 'Procore request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'procore_errors_total',
-  help: 'Procore errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
-  }
-}
-```
-
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('procore-client');
-
-async function tracedProcoreCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`procore.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'procore',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logProcoreOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'procore',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
-```yaml
-# procore_alerts.yaml
-groups:
-  - name: procore_alerts
-    rules:
-      - alert: ProcoreHighErrorRate
-        expr: |
-          rate(procore_errors_total[5m]) /
-          rate(procore_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Procore error rate > 5%"
-
-      - alert: ProcoreHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(procore_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Procore P95 latency > 2s"
-
-      - alert: ProcoreDown
-        expr: up{job="procore"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Procore integration is down"
-```
-
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Procore Request Rate",
-      "targets": [{
-        "expr": "rate(procore_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Procore Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(procore_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
+- Completed `procore-install-auth` setup
 
 ## Instructions
 
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
 ```
 
+## Output
+- Procore API integration for observability
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
+
 ## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Procore Observability Guide](https://docs.procore.com/observability)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-For incident response, see `procore-incident-runbook`.
+See related Procore skills for more workflows.

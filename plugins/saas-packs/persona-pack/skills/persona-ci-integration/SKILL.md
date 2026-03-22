@@ -1,126 +1,59 @@
 ---
 name: persona-ci-integration
 description: |
-  Configure Persona CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Persona tests into your build process.
-  Trigger with phrases like "persona CI", "persona GitHub Actions",
-  "persona automated tests", "CI persona".
+  CI/CD pipeline for Persona integrations with sandbox API testing.
+  Use when working with Persona identity verification.
+  Trigger with phrases like "persona ci-integration", "persona ci-integration".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona]
-compatible-with: claude-code
+tags: [saas, persona, identity, kyc, verification]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Persona CI Integration
+# persona ci integration | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Set up CI/CD pipelines for Persona integrations with automated testing.
+GitHub Actions with sandbox credentials, webhook simulation, integration tests.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Persona test API key
-- npm/pnpm project configured
+- Completed `persona-install-auth` setup
+- Valid Persona API key (sandbox or production)
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/persona-integration.yml`:
+### Step 1: Implementation
+```python
+import os, requests
 
-```yaml
-name: Persona Integration Tests
+HEADERS = {
+    "Authorization": f"Bearer {os.environ['PERSONA_API_KEY']}",
+    "Persona-Version": "2023-01-05",
+}
+BASE = "https://withpersona.com/api/v1"
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  PERSONA_API_KEY: ${{ secrets.PERSONA_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      PERSONA_API_KEY: ${{ secrets.PERSONA_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set PERSONA_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Persona Integration', () => {
-  it.skipIf(!process.env.PERSONA_API_KEY)('should connect', async () => {
-    const client = getPersonaClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
+# CI/CD pipeline for Persona integrations with sandbox API testing
+resp = requests.get(f"{BASE}/inquiries?page[size]=10", headers=HEADERS)
+resp.raise_for_status()
+inquiries = resp.json()["data"]
+for inq in inquiries:
+    print(f"  {inq['id']}: {inq['attributes']['status']}")
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- GitHub Actions with sandbox credentials, webhook simulation, integration tests.
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      PERSONA_API_KEY: ${{ secrets.PERSONA_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Persona production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "persona-integration"
-```
+| 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 404 Not Found | Wrong resource ID | Verify ID format |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Persona CI Guide](https://docs.persona.com/ci)
+- [Persona API Reference](https://docs.withpersona.com/reference/introduction)
+- [Persona Documentation](https://docs.withpersona.com)
 
 ## Next Steps
-For deployment patterns, see `persona-deploy-integration`.
+See related Persona skills for more workflows.

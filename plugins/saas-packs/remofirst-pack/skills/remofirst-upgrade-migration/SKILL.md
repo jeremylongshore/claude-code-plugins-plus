@@ -1,114 +1,46 @@
 ---
 name: remofirst-upgrade-migration
 description: |
-  Analyze, plan, and execute RemoFirst SDK upgrades with breaking change detection.
-  Use when upgrading RemoFirst SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade remofirst", "remofirst migration",
-  "remofirst breaking changes", "update remofirst SDK", "analyze remofirst version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  RemoFirst upgrade migration — global HR, EOR, and payroll platform integration.
+  Use when working with RemoFirst for global employment, payroll, or compliance.
+  Trigger with phrases like "remofirst upgrade migration", "remofirst-upgrade-migration", "global HR API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, remote-work, remofirst]
-compatible-with: claude-code
+tags: [saas, remofirst, hr, eor, payroll, global-employment]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# RemoFirst Upgrade & Migration
+# RemoFirst Upgrade Migration
 
 ## Overview
-Guide for upgrading RemoFirst SDK versions and handling breaking changes.
+Implementation patterns for RemoFirst upgrade migration — global HR and EOR platform integration.
 
 ## Prerequisites
-- Current RemoFirst SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `remofirst-install-auth` setup
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @remofirst/sdk
-npm view @remofirst/sdk version
+### Step 1: API Pattern
+```python
+client = RemoFirstClient()
+employees = client.get("/employees", params={"page_size": 10})
+print(f"Employees: {len(employees['data'])}")
 ```
-
-### Step 2: Review Changelog
-```bash
-open https://github.com/remofirst/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/remofirst-sdk-vX.Y.Z
-npm install @remofirst/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- RemoFirst integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@remofirst/sdk';
-
-// After (v2.x)
-import { RemoFirstClient } from '@remofirst/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new RemoFirstClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @remofirst/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[RemoFirst]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Contact RemoFirst support |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 422 Validation Error | Missing required field | Check API documentation |
 
 ## Resources
-- [RemoFirst Changelog](https://github.com/remofirst/sdk/releases)
-- [RemoFirst Migration Guide](https://docs.remofirst.com/migration)
+- [RemoFirst](https://www.remofirst.com)
 
 ## Next Steps
-For CI integration during upgrades, see `remofirst-ci-integration`.
+See related RemoFirst skills for more workflows.

@@ -1,119 +1,56 @@
 ---
 name: procore-local-dev-loop
 description: |
-  Configure Procore local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Procore.
-  Trigger with phrases like "procore dev setup", "procore local development",
-  "procore dev environment", "develop with procore".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.0.0
+  Procore local dev loop — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore local dev loop", "procore-local-dev-loop".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Procore Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Procore.
+Implementation patterns for Procore local dev loop using the REST API with OAuth2 authentication.
 
 ## Prerequisites
 - Completed `procore-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-procore-project/
-├── src/
-│   ├── procore/
-│   │   ├── client.ts       # Procore client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── procore.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { ProcoreClient } from '../src/procore/client';
-
-describe('Procore Client', () => {
-  it('should initialize with API key', () => {
-    const client = new ProcoreClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Procore development
+- Procore API integration for local dev loop
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Procore Responses
-```typescript
-vi.mock('@procore/sdk', () => ({
-  ProcoreClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=PROCORE=* npm run dev
-```
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
-- [Procore SDK Reference](https://docs.procore.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-See `procore-sdk-patterns` for production-ready code patterns.
+See related Procore skills for more workflows.

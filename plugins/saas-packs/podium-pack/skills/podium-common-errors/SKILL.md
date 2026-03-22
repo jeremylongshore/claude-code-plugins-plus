@@ -1,113 +1,56 @@
 ---
 name: podium-common-errors
 description: |
-  Diagnose and fix Podium common errors and exceptions.
-  Use when encountering Podium errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "podium error", "fix podium",
-  "podium not working", "debug podium".
-allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+  Podium common errors — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium common errors", "podium-common-errors".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Podium errors and their solutions.
+Implementation patterns for Podium common errors using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Podium SDK installed
-- API credentials configured
-- Access to error logs
+- Completed `podium-install-auth` setup
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Step 1: API Call Pattern
+```typescript
+import axios from 'axios';
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
+});
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
+```
 
 ## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+- Podium API integration for common errors
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $PODIUM_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `podium-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Podium status
-curl -s https://status.podium.com
-
-# Verify API connectivity
-curl -I https://api.podium.com
-
-# Check local configuration
-env | grep PODIUM
-```
-
-### Escalation Path
-1. Collect evidence with `podium-debug-bundle`
-2. Check Podium status page
-3. Contact support with request ID
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [Podium Status Page](https://status.podium.com)
-- [Podium Support](https://docs.podium.com/support)
-- [Podium Error Codes](https://docs.podium.com/errors)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-For comprehensive debugging, see `podium-debug-bundle`.
+See related Podium skills for more workflows.

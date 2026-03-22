@@ -1,92 +1,79 @@
 ---
 name: procore-install-auth
 description: |
-  Install and configure Procore SDK/CLI authentication.
-  Use when setting up a new Procore integration, configuring API keys,
-  or initializing Procore in your project.
-  Trigger with phrases like "install procore", "setup procore",
-  "procore auth", "configure procore API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
-version: 1.0.0
+  Procore install auth — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore install auth", "procore-install-auth".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Procore Install & Auth
+# Procore Install Auth
 
 ## Overview
-Set up Procore SDK/CLI and configure authentication credentials.
+Set up Procore API authentication using OAuth2 client credentials flow. Procore uses OAuth2 with separate endpoints for production and sandbox.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Procore account with API access
-- API key from Procore dashboard
+- Procore Developer account at developers.procore.com
+- App credentials (client_id, client_secret)
+- A Procore company to authorize against
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @procore/sdk
-
-# Python
-pip install procore
+### Step 1: Register Application
+```text
+1. Go to developers.procore.com > My Apps > Create App
+2. Set redirect URI: http://localhost:3000/callback
+3. Copy client_id and client_secret
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Configure Environment
 ```bash
-# Set environment variable
-export PROCORE_API_KEY="your-api-key"
-
-# Or create .env file
-echo 'PROCORE_API_KEY=your-api-key' >> .env
+# .env
+PROCORE_CLIENT_ID=your_client_id
+PROCORE_CLIENT_SECRET=your_client_secret
+PROCORE_BASE_URL=https://api.procore.com
+# For sandbox: https://sandbox.procore.com
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Client Credentials Flow
+```python
+import os, requests
+
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+token_resp.raise_for_status()
+access_token = token_resp.json()["access_token"]
+
+# Verify — list companies
+headers = {"Authorization": f"Bearer {access_token}"}
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+companies.raise_for_status()
+for co in companies.json():
+    print(f"Company: {co['name']} (ID: {co['id']})")
 ```
 
 ## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+- OAuth2 tokens obtained via client credentials
+- API connectivity verified with company listing
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Procore dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.procore.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { ProcoreClient } from '@procore/sdk';
-
-const client = new ProcoreClient({
-  apiKey: process.env.PROCORE_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from procore import ProcoreClient
-
-client = ProcoreClient(
-    api_key=os.environ.get('PROCORE_API_KEY')
-)
-```
+| `invalid_client` | Wrong credentials | Verify in developer portal |
+| `401 Unauthorized` | Expired token | Re-authenticate |
+| Sandbox vs production | Wrong base URL | Use login-sandbox-monthly.procore.com for sandbox |
 
 ## Resources
-- [Procore Documentation](https://docs.procore.com)
-- [Procore Dashboard](https://api.procore.com)
-- [Procore Status](https://status.procore.com)
+- [Procore OAuth Endpoints](https://developers.procore.com/documentation/oauth-endpoints)
+- [Client Credentials](https://developers.procore.com/documentation/oauth-client-credentials)
 
 ## Next Steps
-After successful auth, proceed to `procore-hello-world` for your first API call.
+First API call: `procore-hello-world`

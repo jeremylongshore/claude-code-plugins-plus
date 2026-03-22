@@ -1,113 +1,100 @@
 ---
 name: retellai-common-errors
 description: |
-  Diagnose and fix Retell AI common errors and exceptions.
-  Use when encountering Retell AI errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "retellai error", "fix retellai",
-  "retellai not working", "debug retellai".
+  Diagnose and fix Retell AI voice agent errors: call failures, webhook issues, voice quality.
+  Use when encountering Retell AI errors, debugging call issues, or troubleshooting agents.
+  Trigger with phrases like "retell error", "call failed", "voice agent not working", "retell debug".
 allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, debugging]
+compatible-with: claude-code, codex, openclaw
 ---
+
 # Retell AI Common Errors
 
 ## Overview
-Quick reference for the most common Retell AI errors and their solutions. Covers authentication failures, rate limit responses, network timeouts, and provides diagnostic commands for rapid triage.
+Quick reference for the top Retell AI errors and their solutions.
 
 ## Prerequisites
-- Retell AI SDK installed
-- API credentials configured
-- Access to error logs
+- `retell-sdk` installed
+- API key configured
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Error 1: 401 Unauthorized
+```
+RetellError: 401 — Invalid API key
+```
+**Fix:** Verify API key in Retell Dashboard. Ensure `RETELL_API_KEY` starts with `key_`.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### Error 2: Call Fails Immediately
+```
+RetellError: 400 — Invalid phone number format
+```
+**Fix:** Use E.164 format: `+14155551234`. Both `from_number` and `to_number` must be valid.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Error 3: Agent Not Responding
+```
+Call connected but agent says nothing
+```
+**Fix:** Check LLM configuration:
+```typescript
+const llm = await retell.llm.retrieve(agent.response_engine.llm_id);
+console.log(`Model: ${llm.model}`);
+console.log(`Prompt length: ${llm.general_prompt.length} chars`);
+// Ensure general_prompt is not empty and gives clear instructions
+```
+
+### Error 4: Function Call Timeout
+```
+Function call to https://your-api.com/endpoint timed out
+```
+**Fix:** Your function endpoint must respond within 5 seconds. Offload heavy work:
+```typescript
+app.post('/functions/lookup', async (req, res) => {
+  // Respond immediately with acknowledgment
+  const result = await quickLookup(req.body.args);
+  res.json({ result: `Found: ${result.name}` });
+  // Do NOT run async work before responding
+});
+```
+
+### Error 5: Webhook Not Receiving Events
+```
+No webhook events received after call
+```
+**Fix:** Set `webhook_url` on the agent, not just in Dashboard settings:
+```typescript
+await retell.agent.update(agentId, {
+  webhook_url: 'https://your-app.com/webhooks/retell',
+});
+```
+
+### Error 6: Voice Quality Issues
+```
+Agent voice sounds robotic/choppy
+```
+**Fix:** Check network latency to Retell servers. Use a voice optimized for your use case. Try different voice IDs.
 
 ## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+- Error identified and root cause found
+- Fix applied and verified
+- Call successfully completed
 
 ## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $RETELLAI_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `retellai-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });  # 60000: 1 minute in ms
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-set -euo pipefail
-# Check Retell AI status
-curl -s https://status.retellai.com
-
-# Verify API connectivity
-curl -I https://api.retellai.com
-
-# Check local configuration
-env | grep RETELLAI
-```
-
-### Escalation Path
-1. Collect evidence with `retellai-debug-bundle`
-2. Check Retell AI status page
-3. Contact support with request ID
+| HTTP Code | Meaning | Retryable |
+|-----------|---------|-----------|
+| 400 | Bad request | No — fix params |
+| 401 | Invalid API key | No — fix key |
+| 404 | Agent/call not found | No — fix ID |
+| 429 | Rate limited | Yes — backoff |
+| 500+ | Server error | Yes — retry |
 
 ## Resources
-- [Retell AI Status Page](https://status.retellai.com)
-- [Retell AI Support](https://docs.retellai.com/support)
-- [Retell AI Error Codes](https://docs.retellai.com/errors)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
-For comprehensive debugging with evidence collection, see `retellai-debug-bundle`. For advanced troubleshooting when standard fixes fail, see `retellai-advanced-troubleshooting`.
+For debugging, see `retellai-debug-bundle`.

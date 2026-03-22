@@ -1,224 +1,153 @@
 ---
 name: palantir-multi-env-setup
 description: |
-  Configure Palantir across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Palantir configurations.
-  Trigger with phrases like "palantir environments", "palantir staging",
-  "palantir dev prod", "palantir environment setup", "palantir config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
-version: 1.0.0
+  Configure Palantir Foundry across development, staging, and production environments.
+  Use when setting up multi-environment Foundry deployments, managing per-environment
+  credentials, or implementing environment-specific configurations.
+  Trigger with phrases like "palantir environments", "foundry staging",
+  "foundry dev prod", "palantir environment setup".
+allowed-tools: Read, Write, Edit, Bash(gcloud:*)
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, environments, configuration]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Multi-Environment Setup
 
 ## Overview
-Configure Palantir across development, staging, and production environments.
+Configure Foundry integrations across dev/staging/prod environments with separate credentials, enrollment hostnames, and scope policies per environment.
 
 ## Prerequisites
-- Separate Palantir accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
-
-## Environment Strategy
-
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── palantir/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${PALANTIR_API_KEY}",
-  "baseUrl": "https://api-sandbox.palantir.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${PALANTIR_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.palantir.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${PALANTIR_API_KEY_PROD}",
-  "baseUrl": "https://api.palantir.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/palantir/config.ts
-import baseConfig from '../../config/palantir/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getPalantirConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/palantir/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-PALANTIR_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  PALANTIR_API_KEY: ${{ secrets.PALANTIR_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id palantir/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=palantir-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/palantir/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getPalantirConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[palantir] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+- Foundry enrollments for each environment (or separate projects within one enrollment)
+- Secrets manager (AWS SM, GCP SM, or Vault)
+- Familiarity with `palantir-security-basics`
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Step 1: Environment Configuration
+```python
+# src/config.py
+import os
+from dataclasses import dataclass
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+@dataclass
+class FoundryEnvConfig:
+    hostname: str
+    client_id: str
+    client_secret: str
+    scopes: list[str]
+    ontology: str
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
+ENVIRONMENTS = {
+    "development": FoundryEnvConfig(
+        hostname=os.environ.get("DEV_FOUNDRY_HOSTNAME", "dev.palantirfoundry.com"),
+        client_id=os.environ.get("DEV_FOUNDRY_CLIENT_ID", ""),
+        client_secret=os.environ.get("DEV_FOUNDRY_CLIENT_SECRET", ""),
+        scopes=["api:read-data"],  # Read-only in dev
+        ontology="dev-ontology",
+    ),
+    "staging": FoundryEnvConfig(
+        hostname=os.environ.get("STG_FOUNDRY_HOSTNAME", "staging.palantirfoundry.com"),
+        client_id=os.environ.get("STG_FOUNDRY_CLIENT_ID", ""),
+        client_secret=os.environ.get("STG_FOUNDRY_CLIENT_SECRET", ""),
+        scopes=["api:read-data", "api:write-data"],
+        ontology="staging-ontology",
+    ),
+    "production": FoundryEnvConfig(
+        hostname=os.environ.get("PROD_FOUNDRY_HOSTNAME", "prod.palantirfoundry.com"),
+        client_id=os.environ.get("PROD_FOUNDRY_CLIENT_ID", ""),
+        client_secret=os.environ.get("PROD_FOUNDRY_CLIENT_SECRET", ""),
+        scopes=["api:read-data", "api:write-data", "api:ontology-read"],
+        ontology="production-ontology",
+    ),
+}
 
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getPalantirConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+def get_config() -> FoundryEnvConfig:
+    env = os.environ.get("ENVIRONMENT", "development")
+    return ENVIRONMENTS[env]
 ```
 
+### Step 2: Environment-Aware Client Factory
+```python
+import foundry
+
+def create_client(config: FoundryEnvConfig) -> foundry.FoundryClient:
+    auth = foundry.ConfidentialClientAuth(
+        client_id=config.client_id,
+        client_secret=config.client_secret,
+        hostname=config.hostname,
+        scopes=config.scopes,
+    )
+    auth.sign_in_as_service_user()
+    return foundry.FoundryClient(auth=auth, hostname=config.hostname)
+
+# Usage
+config = get_config()
+client = create_client(config)
+```
+
+### Step 3: Environment Variables per Platform
+```bash
+# Docker Compose
+# docker-compose.yml
+services:
+  app:
+    environment:
+      - ENVIRONMENT=staging
+      - STG_FOUNDRY_HOSTNAME=staging.palantirfoundry.com
+      - STG_FOUNDRY_CLIENT_ID=${STG_CLIENT_ID}
+      - STG_FOUNDRY_CLIENT_SECRET=${STG_CLIENT_SECRET}
+
+# Kubernetes
+kubectl create secret generic foundry-creds \
+  --from-literal=hostname=prod.palantirfoundry.com \
+  --from-literal=client-id=xxx \
+  --from-literal=client-secret=yyy
+
+# Cloud Run
+gcloud run deploy my-app \
+  --set-env-vars ENVIRONMENT=production \
+  --set-secrets "PROD_FOUNDRY_CLIENT_SECRET=foundry-secret:latest"
+```
+
+### Step 4: Environment Validation
+```python
+def validate_environment():
+    """Verify current environment configuration is valid."""
+    config = get_config()
+    env = os.environ.get("ENVIRONMENT", "development")
+
+    assert config.hostname, f"Missing hostname for {env}"
+    assert config.client_id, f"Missing client_id for {env}"
+    assert config.client_secret, f"Missing client_secret for {env}"
+
+    # Verify connectivity
+    client = create_client(config)
+    ontologies = list(client.ontologies.Ontology.list())
+    print(f"Environment {env}: connected to {config.hostname}")
+    print(f"  Accessible ontologies: {[o.api_name for o in ontologies]}")
+    return True
+```
+
+## Output
+- Per-environment configuration with separate hostnames and credentials
+- Environment-aware client factory
+- Platform-specific deployment configuration
+- Validation script for environment verification
+
+## Error Handling
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Wrong environment data | Misconfigured `ENVIRONMENT` var | Verify env var matches expected |
+| Cross-env credentials | Shared secrets | Ensure each env has unique credentials |
+| Dev writing to prod | Wrong hostname | Enforce read-only scopes in dev |
+| Missing secrets | Not deployed | Run validation script before deploying |
+
 ## Resources
-- [Palantir Environments Guide](https://docs.palantir.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+- [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
+- [Developer Console](https://www.palantir.com/docs/foundry/ontology-sdk/create-a-new-osdk)
 
 ## Next Steps
-For observability setup, see `palantir-observability`.
+For deep migration strategies, see `palantir-migration-deep-dive`.

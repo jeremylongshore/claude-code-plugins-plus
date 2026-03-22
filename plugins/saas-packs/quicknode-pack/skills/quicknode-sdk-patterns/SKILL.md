@@ -1,149 +1,136 @@
 ---
 name: quicknode-sdk-patterns
 description: |
-  Apply production-ready QuickNode SDK patterns for TypeScript and Python.
-  Use when implementing QuickNode integrations, refactoring SDK usage,
-  or establishing team coding standards for QuickNode.
-  Trigger with phrases like "quicknode SDK patterns", "quicknode best practices",
-  "quicknode code patterns", "idiomatic quicknode".
+  Production-ready QuickNode SDK and ethers.js patterns for blockchain applications.
+  Use when building production dApps, implementing retry logic, or establishing patterns.
+  Trigger with phrases like "quicknode patterns", "ethers best practices", "web3 patterns".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, patterns]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode SDK Patterns
 
 ## Overview
-Production-ready patterns for QuickNode SDK usage in TypeScript and Python.
+Production-ready patterns for blockchain development with QuickNode: provider singletons, retry logic, batch RPC calls, and multi-chain support.
 
 ## Prerequisites
-- Completed `quicknode-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Completed `quicknode-install-auth`
+- ethers.js or @quicknode/sdk installed
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Provider Singleton
 ```typescript
-// src/quicknode/client.ts
-import { QuickNodeClient } from '@quicknode/sdk';
+import { ethers } from 'ethers';
 
-let instance: QuickNodeClient | null = null;
+let _provider: ethers.JsonRpcProvider | null = null;
 
-export function getQuickNodeClient(): QuickNodeClient {
-  if (!instance) {
-    instance = new QuickNodeClient({
-      apiKey: process.env.QUICKNODE_API_KEY!,
-      // Additional options
+export function getProvider(): ethers.JsonRpcProvider {
+  if (!_provider) {
+    _provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT, undefined, {
+      staticNetwork: true,  // Skip chainId lookup on every call
+      batchMaxCount: 10,    // Enable batch RPC
     });
   }
-  return instance;
+  return _provider;
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
+### Step 2: Retry Wrapper with Backoff
 ```typescript
-import { QuickNodeError } from '@quicknode/sdk';
-
-async function safeQuickNodeCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof QuickNodeError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
+      return await fn();
+    } catch (err: any) {
+      const isRetryable = err.code === 'SERVER_ERROR' || err.code === 'TIMEOUT' || err.status === 429;
+      if (!isRetryable || attempt === maxRetries) throw err;
+      const delay = Math.min(1000 * Math.pow(2, attempt), 10000);
       await new Promise(r => setTimeout(r, delay));
     }
   }
   throw new Error('Unreachable');
 }
+
+// Usage
+const balance = await withRetry(() => getProvider().getBalance(address));
+```
+
+### Step 3: Multi-Chain Client Factory
+```typescript
+const ENDPOINTS: Record<string, string> = {
+  ethereum: process.env.QUICKNODE_ETH_ENDPOINT!,
+  polygon: process.env.QUICKNODE_POLYGON_ENDPOINT!,
+  arbitrum: process.env.QUICKNODE_ARB_ENDPOINT!,
+};
+
+const providers = new Map<string, ethers.JsonRpcProvider>();
+
+export function getChainProvider(chain: string): ethers.JsonRpcProvider {
+  if (!providers.has(chain)) {
+    const url = ENDPOINTS[chain];
+    if (!url) throw new Error(`No endpoint for chain: ${chain}`);
+    providers.set(chain, new ethers.JsonRpcProvider(url, undefined, { staticNetwork: true }));
+  }
+  return providers.get(chain)!;
+}
+```
+
+### Step 4: Batch RPC Calls
+```typescript
+async function batchGetBalances(addresses: string[]): Promise<Map<string, bigint>> {
+  const provider = getProvider();
+  const results = new Map<string, bigint>();
+
+  // ethers.js batches these automatically when batchMaxCount > 1
+  const promises = addresses.map(async (addr) => {
+    const balance = await provider.getBalance(addr);
+    results.set(addr, balance);
+  });
+
+  await Promise.all(promises);
+  return results;
+}
+```
+
+### Step 5: Contract Wrapper with Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const contractCache = new LRUCache<string, any>({ max: 100, ttl: 60000 });
+
+async function cachedContractCall(contract: ethers.Contract, method: string, ...args: any[]) {
+  const key = `${contract.target}:${method}:${JSON.stringify(args)}`;
+  const cached = contractCache.get(key);
+  if (cached) return cached;
+
+  const result = await contract[method](...args);
+  contractCache.set(key, result);
+  return result;
+}
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+- Thread-safe provider singleton with batch support
+- Retry logic for transient RPC failures
+- Multi-chain client factory
+- Cached contract calls reducing RPC usage
 
 ## Error Handling
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, QuickNodeClient>();
-
-export function getClientForTenant(tenantId: string): QuickNodeClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new QuickNodeClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from quicknode import QuickNodeClient
-
-@asynccontextmanager
-async def get_quicknode_client():
-    client = QuickNodeClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const quicknodeResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Singleton | All RPC calls | One connection, reused |
+| Retry wrapper | Transient failures | Automatic recovery |
+| Multi-chain factory | Cross-chain dApps | Clean chain switching |
+| Contract cache | Repeated reads | Fewer RPC calls |
 
 ## Resources
-- [QuickNode SDK Reference](https://docs.quicknode.com/sdk)
-- [QuickNode API Types](https://docs.quicknode.com/types)
-- [Zod Documentation](https://zod.dev/)
+- [QuickNode SDK](https://www.quicknode.com/docs/quicknode-sdk/getting-started)
+- [ethers.js Documentation](https://docs.ethers.org/)
 
 ## Next Steps
-Apply patterns in `quicknode-core-workflow-a` for real-world usage.
+Build transaction workflows: `quicknode-core-workflow-a`

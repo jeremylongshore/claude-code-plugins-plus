@@ -1,114 +1,57 @@
 ---
 name: ramp-upgrade-migration
 description: |
-  Analyze, plan, and execute Ramp SDK upgrades with breaking change detection.
-  Use when upgrading Ramp SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade ramp", "ramp migration",
-  "ramp breaking changes", "update ramp SDK", "analyze ramp version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  Ramp upgrade migration — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp upgrade migration", "ramp-upgrade-migration", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Ramp Upgrade & Migration
+# Ramp Upgrade Migration
 
 ## Overview
-Guide for upgrading Ramp SDK versions and handling breaking changes.
+Implementation patterns for Ramp upgrade migration using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Current Ramp SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @ramp/sdk
-npm view @ramp/sdk version
-```
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/ramp/sdk/releases
-```
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/ramp-sdk-vX.Y.Z
-npm install @ramp/sdk@latest
-npm test
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- Ramp API integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@ramp/sdk';
-
-// After (v2.x)
-import { RampClient } from '@ramp/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new RampClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @ramp/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Ramp]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
-- [Ramp Changelog](https://github.com/ramp/sdk/releases)
-- [Ramp Migration Guide](https://docs.ramp.com/migration)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For CI integration during upgrades, see `ramp-ci-integration`.
+See related Ramp skills for more workflows.

@@ -1,252 +1,164 @@
 ---
 name: palantir-observability
 description: |
-  Set up comprehensive observability for Palantir integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Palantir operations, setting up dashboards,
-  or configuring alerting for Palantir integration health.
-  Trigger with phrases like "palantir monitoring", "palantir metrics",
-  "palantir observability", "monitor palantir", "palantir alerts", "palantir tracing".
+  Set up observability for Palantir Foundry integrations with metrics, logging, and alerts.
+  Use when implementing monitoring for Foundry API calls, setting up dashboards,
+  or configuring alerting for Foundry integration health.
+  Trigger with phrases like "palantir monitoring", "foundry metrics",
+  "palantir observability", "monitor foundry", "foundry alerts".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, observability, monitoring]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Observability
 
 ## Overview
-Set up comprehensive observability for Palantir integrations.
+Set up comprehensive observability for Foundry integrations: structured logging with request IDs, Prometheus metrics for API latency/errors, health check endpoints, and alert rules.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Metrics Collection
-
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `palantir_requests_total` | Counter | Total API requests |
-| `palantir_request_duration_seconds` | Histogram | Request latency |
-| `palantir_errors_total` | Counter | Error count by type |
-| `palantir_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'palantir_requests_total',
-  help: 'Total Palantir API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'palantir_request_duration_seconds',
-  help: 'Palantir request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'palantir_errors_total',
-  help: 'Palantir errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
-  }
-}
-```
-
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('palantir-client');
-
-async function tracedPalantirCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`palantir.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'palantir',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logPalantirOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'palantir',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
-```yaml
-# palantir_alerts.yaml
-groups:
-  - name: palantir_alerts
-    rules:
-      - alert: PalantirHighErrorRate
-        expr: |
-          rate(palantir_errors_total[5m]) /
-          rate(palantir_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Palantir error rate > 5%"
-
-      - alert: PalantirHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(palantir_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Palantir P95 latency > 2s"
-
-      - alert: PalantirDown
-        expr: up{job="palantir"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Palantir integration is down"
-```
-
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Palantir Request Rate",
-      "targets": [{
-        "expr": "rate(palantir_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Palantir Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(palantir_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
+- Working Foundry integration
+- Prometheus + Grafana (or equivalent monitoring stack)
+- Familiarity with `palantir-prod-checklist`
 
 ## Instructions
 
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
+### Step 1: Structured Logging
+```python
+import logging, json, time, uuid
 
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
+class FoundryLogger:
+    def __init__(self):
+        self.logger = logging.getLogger("foundry")
+        handler = logging.StreamHandler()
+        handler.setFormatter(logging.Formatter("%(message)s"))
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
 
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+    def log_api_call(self, method: str, endpoint: str, status: int, duration_ms: float):
+        self.logger.info(json.dumps({
+            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "request_id": str(uuid.uuid4())[:8],
+            "service": "foundry",
+            "method": method,
+            "endpoint": endpoint,
+            "status": status,
+            "duration_ms": round(duration_ms, 2),
+            "level": "error" if status >= 400 else "info",
+        }))
 ```
 
+### Step 2: Prometheus Metrics
+```python
+from prometheus_client import Counter, Histogram, Gauge
+
+foundry_requests = Counter(
+    "foundry_api_requests_total",
+    "Total Foundry API requests",
+    ["method", "endpoint", "status"],
+)
+foundry_latency = Histogram(
+    "foundry_api_latency_seconds",
+    "Foundry API request latency",
+    ["endpoint"],
+    buckets=[0.1, 0.25, 0.5, 1.0, 2.5, 5.0, 10.0],
+)
+foundry_health = Gauge(
+    "foundry_api_healthy",
+    "1 if Foundry API is reachable, 0 otherwise",
+)
+
+def instrumented_call(client, method, *args, **kwargs):
+    endpoint = method.__qualname__
+    start = time.monotonic()
+    try:
+        result = method(*args, **kwargs)
+        status = 200
+        return result
+    except foundry.ApiError as e:
+        status = e.status_code
+        raise
+    finally:
+        duration = time.monotonic() - start
+        foundry_requests.labels(method="API", endpoint=endpoint, status=str(status)).inc()
+        foundry_latency.labels(endpoint=endpoint).observe(duration)
+```
+
+### Step 3: Health Check with Metrics
+```python
+import time
+
+async def foundry_health_check():
+    start = time.monotonic()
+    try:
+        list(client.ontologies.Ontology.list())
+        latency = (time.monotonic() - start) * 1000
+        foundry_health.set(1)
+        return {"status": "healthy", "latency_ms": round(latency, 1)}
+    except Exception as e:
+        foundry_health.set(0)
+        return {"status": "unhealthy", "error": str(e)}
+```
+
+### Step 4: Alert Rules (Prometheus)
+```yaml
+groups:
+  - name: foundry
+    rules:
+      - alert: FoundryAPIDown
+        expr: foundry_api_healthy == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Foundry API unreachable for 2+ minutes"
+
+      - alert: FoundryHighErrorRate
+        expr: rate(foundry_api_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+
+      - alert: FoundryHighLatency
+        expr: histogram_quantile(0.99, foundry_api_latency_seconds_bucket) > 10
+        for: 10m
+        labels:
+          severity: warning
+```
+
+### Step 5: Dashboard Queries (Grafana)
+```
+# Request rate by status
+rate(foundry_api_requests_total[5m])
+
+# P99 latency
+histogram_quantile(0.99, rate(foundry_api_latency_seconds_bucket[5m]))
+
+# Error ratio
+sum(rate(foundry_api_requests_total{status=~"[45].."}[5m]))
+/ sum(rate(foundry_api_requests_total[5m]))
+```
+
+## Output
+- Structured JSON logging with request IDs
+- Prometheus metrics for requests, latency, and health
+- Alert rules for API downtime, error rate, and latency
+- Grafana dashboard queries
+
+## Error Handling
+| Alert | Threshold | Action |
+|-------|-----------|--------|
+| API Down | Health check fails 2min | Page on-call, check `palantir-incident-runbook` |
+| High Error Rate | 5xx > 5% for 5min | Check Foundry status, review logs |
+| High Latency | p99 > 10s for 10min | Review query complexity, check Foundry load |
+| Rate Limited | 429 count spike | Tune rate limiter settings |
+
 ## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Palantir Observability Guide](https://docs.palantir.com/observability)
+- [Prometheus Python Client](https://github.com/prometheus/client_python)
+- [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
-For incident response, see `palantir-incident-runbook`.
+For multi-environment setup, see `palantir-multi-env-setup`.

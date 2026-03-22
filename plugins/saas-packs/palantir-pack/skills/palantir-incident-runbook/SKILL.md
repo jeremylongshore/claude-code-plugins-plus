@@ -1,205 +1,151 @@
 ---
 name: palantir-incident-runbook
 description: |
-  Execute Palantir incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Palantir-related outages, investigating errors,
-  or running post-incident reviews for Palantir integration failures.
-  Trigger with phrases like "palantir incident", "palantir outage",
-  "palantir down", "palantir on-call", "palantir emergency", "palantir broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
-version: 1.0.0
+  Execute Palantir Foundry incident response with triage, mitigation, and postmortem.
+  Use when responding to Foundry-related outages, API failures,
+  or build pipeline incidents.
+  Trigger with phrases like "palantir incident", "foundry outage",
+  "palantir down", "foundry emergency", "palantir broken".
+allowed-tools: Read, Grep, Bash(curl:*)
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, incident, runbook]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Palantir-related outages.
+Rapid incident response for Foundry-related outages: API failures, transform build failures, authentication issues, and data pipeline stalls.
 
 ## Prerequisites
-- Access to Palantir dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Palantir API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
-
-```bash
-# 1. Check Palantir status
-curl -s https://status.palantir.com | jq
-
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.palantir'
-
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(palantir_errors_total[5m])
-
-# 4. Recent error logs
-kubectl logs -l app=palantir-integration --since=5m | grep -i error | tail -20
-```
-
-## Decision Tree
-
-```
-Palantir API returning errors?
-├─ YES: Is status.palantir.com showing incident?
-│   ├─ YES → Wait for Palantir to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
-
-## Immediate Actions by Error Type
-
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret palantir-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Palantir dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic palantir-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/palantir-integration
-```
-
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.palantir.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/palantir-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Palantir for limit increase
-```
-
-### 500/503 - Palantir Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/palantir-integration PALANTIR_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Palantir status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Palantir Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Palantir Integration Issue
-
-We're experiencing issues with our Palantir integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/palantir-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=palantir-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=palantir_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
-```markdown
-## Incident: Palantir [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
+- Access to application logs and Foundry build history
+- Foundry service user credentials for health checks
+- On-call escalation path defined
 
 ## Instructions
 
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Palantir-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
+### Step 1: Triage (First 5 Minutes)
 ```bash
-curl -sf https://api.yourapp.com/health | jq '.services.palantir.status' || echo "UNHEALTHY"
+set -euo pipefail
+echo "=== Foundry Incident Triage ==="
+echo "Time: $(date -u)"
+
+# 1. Check if Foundry itself is down
+curl -s -o /dev/null -w "Foundry API: HTTP %{http_code}\n" \
+  -H "Authorization: Bearer $FOUNDRY_TOKEN" \
+  "https://$FOUNDRY_HOSTNAME/api/v2/ontologies" || echo "FOUNDRY UNREACHABLE"
+
+# 2. Check our app health
+curl -s http://localhost:8080/health | python -m json.tool
+
+# 3. Check recent error logs
+grep -c "ApiError\|status_code.*[45][0-9][0-9]" /var/log/app/app.log | tail -1
 ```
 
+### Step 2: Classify Severity
+| Severity | Criteria | Response Time |
+|----------|----------|---------------|
+| P1 Critical | Foundry API completely unreachable, all operations failing | Immediate |
+| P2 High | Intermittent 429/5xx errors, degraded performance | 15 minutes |
+| P3 Medium | Single transform failing, non-critical pipeline stalled | 1 hour |
+| P4 Low | Deprecation warnings, performance degradation | Next business day |
+
+### Step 3: Common Incident Playbooks
+
+**Playbook A: Authentication Failure (401/403)**
+```bash
+# 1. Verify token is set
+echo "Token set: ${FOUNDRY_TOKEN:+yes}"
+echo "Token length: ${#FOUNDRY_TOKEN}"
+
+# 2. Test with a fresh token
+python -c "
+import os, foundry
+client = foundry.FoundryClient(
+    auth=foundry.UserTokenAuth(
+        hostname=os.environ['FOUNDRY_HOSTNAME'],
+        token=os.environ['FOUNDRY_TOKEN'],
+    ),
+    hostname=os.environ['FOUNDRY_HOSTNAME'],
+)
+print('Auth OK:', list(client.ontologies.Ontology.list())[0].api_name)
+"
+# 3. If still failing: regenerate credentials in Developer Console
+```
+
+**Playbook B: Rate Limiting (429)**
+```bash
+# 1. Check rate limit headers from last response
+# 2. Enable request throttling
+# 3. Review batch operations for unnecessary API calls
+# See palantir-rate-limits for detailed implementation
+```
+
+**Playbook C: Transform Build Failure**
+```text
+1. Open Foundry > Pipeline Builder > failed build
+2. Check the "Errors" tab for stack trace
+3. Common causes:
+   - OutOfMemoryError → add @configure(profile=["DRIVER_MEMORY_LARGE"])
+   - AnalysisException → column name mismatch (case-sensitive)
+   - Input dataset empty → check upstream pipeline
+4. Fix code, commit, trigger rebuild
+```
+
+### Step 4: Escalation
+```text
+Level 1: On-call engineer (your team)
+  → Check logs, verify credentials, restart service
+
+Level 2: Platform team
+  → Foundry enrollment issues, networking, VPN
+
+Level 3: Palantir support
+  → Create ticket with debug bundle (palantir-debug-bundle)
+  → Include: error codes, timestamps, request IDs
+```
+
+### Step 5: Postmortem Template
+```markdown
+## Incident: [Title]
+**Duration:** [start] to [end] ([X] minutes)
+**Severity:** P[1-4]
+**Impact:** [What was affected]
+
+### Timeline
+- HH:MM — Alert fired
+- HH:MM — Investigation started
+- HH:MM — Root cause identified
+- HH:MM — Fix deployed
+- HH:MM — Verified resolution
+
+### Root Cause
+[Description]
+
+### Action Items
+- [ ] [Preventive measure 1]
+- [ ] [Preventive measure 2]
+```
+
+## Output
+- Incident triaged and classified within 5 minutes
+- Appropriate playbook executed
+- Escalation if needed with debug bundle
+- Postmortem documented with action items
+
+## Error Handling
+| Incident Type | First Action | Escalation Trigger |
+|---------------|-------------|-------------------|
+| API unreachable | Check Foundry status | If Foundry is up but we cannot connect |
+| Auth failure | Test with fresh token | If new token also fails |
+| Rate limiting | Enable throttling | If throttling does not resolve |
+| Build failure | Check error logs | If error is infrastructure-related |
+
 ## Resources
-- [Palantir Status Page](https://status.palantir.com)
-- [Palantir Support](https://support.palantir.com)
+- [Foundry Documentation](https://www.palantir.com/docs/foundry)
+- [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
 
 ## Next Steps
-For data handling, see `palantir-data-handling`.
+For proactive monitoring, see `palantir-observability`.

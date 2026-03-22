@@ -1,6 +1,12 @@
 # RemoFirst Skill Pack
 
-> Claude Code skill pack for RemoFirst integration (12 skills)
+> Claude Code skill pack for RemoFirst — global HR, Employer of Record (EOR), payroll, and compliance management (12 skills)
+
+## What This Covers
+
+RemoFirst is a global Employer of Record (EOR) platform for hiring and paying employees in 185+ countries. This pack covers integration patterns for global HR workflows, employee onboarding, payroll processing, compliance management, and benefits administration.
+
+**Key APIs:** Employee Management, Payroll, Onboarding, Compliance, Benefits, Invoicing. RemoFirst provides API access for enterprise customers — contact their team for API credentials.
 
 ## Installation
 
@@ -13,26 +19,24 @@
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `remofirst-install-auth` | Install Auth |
-| `remofirst-hello-world` | Hello World |
-| `remofirst-local-dev-loop` | Local Dev Loop |
-| `remofirst-sdk-patterns` | Sdk Patterns |
-| `remofirst-core-workflow-a` | Core Workflow A |
-| `remofirst-core-workflow-b` | Core Workflow B |
-| `remofirst-common-errors` | Common Errors |
-| `remofirst-debug-bundle` | Debug Bundle |
-| `remofirst-rate-limits` | Rate Limits |
-| `remofirst-security-basics` | Security Basics |
-| `remofirst-prod-checklist` | Prod Checklist |
-| `remofirst-upgrade-migration` | Upgrade Migration |
+| `remofirst-install-auth` | API authentication setup and credential configuration |
+| `remofirst-hello-world` | First API call: list employees, check company details |
+| `remofirst-local-dev-loop` | Local development with mock HR data |
+| `remofirst-sdk-patterns` | API client wrapper, error handling, pagination |
+| `remofirst-core-workflow-a` | Employee onboarding: create, documents, compliance |
+| `remofirst-core-workflow-b` | Payroll workflow: run payroll, manage benefits, invoicing |
+| `remofirst-common-errors` | Fix API errors, onboarding failures, payroll issues |
+| `remofirst-debug-bundle` | Collect diagnostic info for support tickets |
+| `remofirst-rate-limits` | Handle API rate limits |
+| `remofirst-security-basics` | Credential management, PII handling for HR data |
+| `remofirst-prod-checklist` | Production deployment for HR integrations |
+| `remofirst-upgrade-migration` | API version upgrades |
 
-## Usage
+## Key Documentation
 
-Skills trigger automatically when you discuss RemoFirst topics. For example:
-
-- "Help me set up RemoFirst" → triggers `remofirst-install-auth`
-- "Debug this RemoFirst error" → triggers `remofirst-common-errors`
-- "Deploy my RemoFirst integration" → triggers `remofirst-deploy-integration`
+- [RemoFirst](https://www.remofirst.com)
+- [RemoFirst HR Solutions](https://www.remofirst.com/solutions/human-resources)
+- [Global Payroll](https://www.remofirst.com/solutions/finance)
 
 ## License
 

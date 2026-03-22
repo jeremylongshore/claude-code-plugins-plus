@@ -1,222 +1,137 @@
 ---
 name: palantir-data-handling
 description: |
-  Implement Palantir PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Palantir integrations.
-  Trigger with phrases like "palantir data", "palantir PII",
-  "palantir GDPR", "palantir data retention", "palantir privacy", "palantir CCPA".
+  Implement Palantir Foundry data handling with PII protection, markings, and GDPR compliance.
+  Use when handling sensitive data in Foundry, implementing data classifications,
+  or ensuring compliance with privacy regulations.
+  Trigger with phrases like "palantir data", "foundry PII",
+  "palantir GDPR", "foundry data protection", "palantir markings".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, data, privacy, compliance]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Palantir.
+Handle sensitive data in Foundry using markings (data classifications), column-level security, PII redaction in transforms, and GDPR/CCPA deletion workflows.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Palantir SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Palantir request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupPalantirData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.palantirLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupPalantirData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const palantirData = await palantirClient.getUserData(userId);
-
-  return {
-    source: 'Palantir',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: palantirData.profile,
-      activities: palantirData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Palantir
-  await palantirClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.palantirUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'palantir',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await palantirClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Foundry enrollment with Markings enabled
+- Understanding of your organization's data classification policy
+- Familiarity with transforms (`palantir-core-workflow-a`)
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Palantir data by sensitivity level.
+### Step 1: Data Classification with Markings
+Foundry Markings control who can access data at the dataset, column, or row level.
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+| Marking | Access | Use Case |
+|---------|--------|----------|
+| `PUBLIC` | All users | Aggregated reports, reference data |
+| `INTERNAL` | Employees only | Business metrics, operational data |
+| `CONFIDENTIAL` | Specific groups | Customer PII, financial data |
+| `RESTRICTED` | Named individuals | Compensation, legal, M&A |
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+### Step 2: PII Redaction in Transforms
+```python
+from transforms.api import transform_df, Input, Output
+from pyspark.sql import functions as F
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+@transform_df(
+    Output("/Company/datasets/customers_safe"),
+    customers=Input("/Company/datasets/raw_customers"),
+)
+def redact_pii(customers):
+    """Create an analytics-safe view with PII removed."""
+    return (
+        customers
+        .withColumn("email", F.sha2(F.col("email"), 256))           # Hash email
+        .withColumn("phone", F.lit("***-***-****"))                   # Mask phone
+        .withColumn("ssn", F.lit(None).cast("string"))                # Remove SSN
+        .withColumn("name", F.concat(
+            F.substring("first_name", 1, 1), F.lit("***")            # First initial only
+        ))
+        .drop("first_name", "last_name", "address", "date_of_birth")
+    )
+```
+
+### Step 3: GDPR Right to Erasure
+```python
+def delete_user_data(client, user_id: str):
+    """GDPR Article 17: delete all data for a specific user."""
+    datasets_with_pii = [
+        "/Company/datasets/raw_customers",
+        "/Company/datasets/raw_orders",
+        "/Company/datasets/customer_communications",
+    ]
+    for dataset_path in datasets_with_pii:
+        # Trigger a transform that filters out the user
+        client.ontologies.Action.apply(
+            ontology="my-company",
+            action_type="gdprDeleteUser",
+            parameters={"userId": user_id, "datasetPath": dataset_path},
+        )
+    # Log the deletion for compliance
+    client.ontologies.Action.apply(
+        ontology="my-company",
+        action_type="logDeletionRequest",
+        parameters={
+            "userId": user_id,
+            "requestedAt": datetime.utcnow().isoformat(),
+            "status": "completed",
+        },
+    )
+```
+
+### Step 4: Column-Level Security in Ontology
+```python
+# Define object type with restricted properties
+# In Ontology Manager:
+# - fullName: marking = CONFIDENTIAL
+# - email: marking = CONFIDENTIAL  
+# - department: marking = INTERNAL
+# - employeeId: marking = INTERNAL
+
+# Users without CONFIDENTIAL marking see:
+# employeeId, department (but NOT fullName, email)
+```
+
+### Step 5: Data Retention Policy
+```python
+@transform_df(
+    Output("/Company/datasets/events_retained"),
+    events=Input("/Company/datasets/raw_events"),
+)
+def apply_retention(events):
+    """Keep only last 2 years of data per retention policy."""
+    from pyspark.sql import functions as F
+    from datetime import datetime, timedelta
+
+    cutoff = (datetime.utcnow() - timedelta(days=730)).strftime("%Y-%m-%d")
+    return events.filter(F.col("event_date") >= cutoff)
+```
 
 ## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+- PII-redacted datasets safe for analytics
+- GDPR deletion workflow with audit trail
+- Column-level security via Foundry Markings
+- Automated data retention enforcement
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Palantir response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+| Compliance Risk | Detection | Mitigation |
+|----------------|-----------|------------|
+| PII in analytics dataset | Column scan | Apply redaction transform |
+| Stale data beyond retention | Date filter | Schedule retention transforms |
+| Missing deletion audit | Log review | Always log GDPR actions |
+| Over-permissive markings | Access audit | Review marking assignments quarterly |
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Palantir Privacy Guide](https://docs.palantir.com/privacy)
+- [Foundry Markings](https://www.palantir.com/docs/foundry)
+- [Transforms Guide](https://www.palantir.com/docs/foundry/transforms-python/transforms)
 
 ## Next Steps
-For enterprise access control, see `palantir-enterprise-rbac`.
+For access control, see `palantir-enterprise-rbac`.

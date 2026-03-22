@@ -1,201 +1,158 @@
 ---
 name: palantir-webhooks-events
 description: |
-  Implement Palantir webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Palantir event notifications securely.
-  Trigger with phrases like "palantir webhook", "palantir events",
-  "palantir webhook signature", "handle palantir events", "palantir notifications".
+  Implement Palantir Foundry webhook handling for Ontology change events.
+  Use when reacting to Ontology object changes, dataset updates,
+  or build completion events from Foundry.
+  Trigger with phrases like "palantir webhook", "foundry events",
+  "palantir notifications", "ontology change events".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, webhooks, events]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Webhooks & Events
 
 ## Overview
-Securely handle Palantir webhooks with signature validation and replay protection.
+Handle Foundry webhook events for Ontology changes, dataset updates, and build completions. Covers webhook registration via the Foundry API, signature verification, event routing, and idempotent processing.
 
 ## Prerequisites
-- Palantir webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/palantir',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-palantir-signature'] as string;
-    const timestamp = req.headers['x-palantir-timestamp'] as string;
-
-    if (!verifyPalantirSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handlePalantirEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyPalantirSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.PALANTIR_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type PalantirEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface PalantirEvent {
-  id: string;
-  type: PalantirEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<PalantirEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handlePalantirEvent(event: PalantirEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `palantir:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `palantir:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Palantir CLI to send test events
-palantir webhooks trigger resource.created --url http://localhost:3000/webhooks/palantir
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- Foundry enrollment with webhook support enabled
+- HTTPS endpoint accessible from Foundry's network
+- `foundry-platform-sdk` installed
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Palantir dashboard.
+### Step 1: Register a Webhook via API
+```python
+import os, foundry
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+client = foundry.FoundryClient(
+    auth=foundry.ConfidentialClientAuth(
+        client_id=os.environ["FOUNDRY_CLIENT_ID"],
+        client_secret=os.environ["FOUNDRY_CLIENT_SECRET"],
+        hostname=os.environ["FOUNDRY_HOSTNAME"],
+        scopes=["api:read-data", "api:write-data"],
+    ),
+    hostname=os.environ["FOUNDRY_HOSTNAME"],
+)
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+# Register webhook for object change events
+webhook = client.webhooks.Webhook.create(
+    url="https://myapp.example.com/webhooks/foundry",
+    event_types=["ontology.object.created", "ontology.object.updated"],
+    secret="whsec_your_webhook_secret_here",
+)
+print(f"Webhook registered: {webhook.rid}")
+```
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+### Step 2: Webhook Endpoint with Signature Verification
+```python
+from flask import Flask, request, jsonify
+import hmac, hashlib
+
+app = Flask(__name__)
+
+@app.post("/webhooks/foundry")
+def handle_foundry_webhook():
+    # Verify signature
+    signature = request.headers.get("X-Foundry-Signature", "")
+    timestamp = request.headers.get("X-Foundry-Timestamp", "")
+    secret = os.environ["FOUNDRY_WEBHOOK_SECRET"]
+
+    signed_payload = f"{timestamp}.{request.get_data(as_text=True)}"
+    expected = hmac.new(
+        secret.encode(), signed_payload.encode(), hashlib.sha256
+    ).hexdigest()
+
+    if not hmac.compare_digest(signature, expected):
+        return jsonify({"error": "Invalid signature"}), 401
+
+    # Replay protection — reject timestamps older than 5 minutes
+    import time
+    if abs(time.time() - int(timestamp)) > 300:
+        return jsonify({"error": "Timestamp too old"}), 401
+
+    event = request.get_json()
+    handle_event(event)
+    return jsonify({"received": True}), 200
+```
+
+### Step 3: Event Router
+```python
+def handle_event(event: dict):
+    event_type = event.get("type", "")
+    handlers = {
+        "ontology.object.created": on_object_created,
+        "ontology.object.updated": on_object_updated,
+        "ontology.object.deleted": on_object_deleted,
+        "dataset.updated": on_dataset_updated,
+        "build.completed": on_build_completed,
+    }
+    handler = handlers.get(event_type)
+    if handler:
+        handler(event["data"])
+    else:
+        print(f"Unhandled event type: {event_type}")
+
+def on_object_created(data: dict):
+    obj_type = data["objectType"]
+    primary_key = data["primaryKey"]
+    print(f"Object created: {obj_type}/{primary_key}")
+    # Sync to external system, trigger workflow, etc.
+
+def on_object_updated(data: dict):
+    obj_type = data["objectType"]
+    changes = data.get("changedProperties", {})
+    print(f"Object updated: {obj_type} — changed: {list(changes.keys())}")
+
+def on_object_deleted(data: dict):
+    print(f"Object deleted: {data['objectType']}/{data['primaryKey']}")
+
+def on_dataset_updated(data: dict):
+    print(f"Dataset updated: {data['datasetRid']} branch={data['branch']}")
+
+def on_build_completed(data: dict):
+    status = data["buildStatus"]
+    print(f"Build {data['buildRid']}: {status}")
+```
+
+### Step 4: Idempotent Processing
+```python
+import redis
+
+r = redis.Redis.from_url(os.environ.get("REDIS_URL", "redis://localhost:6379"))
+
+def idempotent_handle(event: dict):
+    event_id = event["id"]
+    key = f"foundry:event:{event_id}"
+    if r.exists(key):
+        print(f"Skipping duplicate event: {event_id}")
+        return
+    handle_event(event)
+    r.setex(key, 86400 * 7, "processed")  # 7-day TTL
+```
 
 ## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+- Webhook registered with Foundry for Ontology/dataset events
+- Signature verification with replay protection
+- Event router dispatching to typed handlers
+- Idempotent processing preventing duplicate handling
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/palantir \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Invalid signature | Wrong webhook secret | Verify secret matches registration |
+| Timestamp rejected | Server clock drift | Sync NTP; widen tolerance |
+| Duplicate events | Network retry | Use event ID deduplication |
+| Handler timeout | Slow processing | Offload to background queue |
 
 ## Resources
-- [Palantir Webhooks Guide](https://docs.palantir.com/webhooks)
-- [Webhook Security Best Practices](https://docs.palantir.com/webhooks/security)
+- [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
+- [Foundry Documentation](https://www.palantir.com/docs/foundry)
 
 ## Next Steps
 For performance optimization, see `palantir-performance-tuning`.

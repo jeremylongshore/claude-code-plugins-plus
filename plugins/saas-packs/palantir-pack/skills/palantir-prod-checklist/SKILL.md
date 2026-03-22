@@ -1,121 +1,113 @@
 ---
 name: palantir-prod-checklist
 description: |
-  Execute Palantir production deployment checklist and rollback procedures.
-  Use when deploying Palantir integrations to production, preparing for launch,
+  Execute Palantir Foundry production deployment checklist and rollback procedures.
+  Use when deploying Foundry integrations to production, preparing for launch,
   or implementing go-live procedures.
-  Trigger with phrases like "palantir production", "deploy palantir",
-  "palantir go-live", "palantir launch checklist".
+  Trigger with phrases like "palantir production", "deploy foundry",
+  "palantir go-live", "foundry launch checklist".
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, production, deployment]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Production Checklist
 
 ## Overview
-Complete checklist for deploying Palantir integrations to production.
+Complete go-live checklist for deploying Foundry-integrated applications to production. Covers credential management, health checks, monitoring, and rollback procedures.
 
 ## Prerequisites
 - Staging environment tested and verified
-- Production API keys available
+- Production OAuth2 credentials from Developer Console
 - Deployment pipeline configured
-- Monitoring and alerting ready
+- Monitoring infrastructure ready
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Pre-Deployment: Credentials & Config
+- [ ] OAuth2 client credentials in secrets manager (not personal tokens)
+- [ ] Scopes are minimal: only what the app actually needs
+- [ ] `FOUNDRY_HOSTNAME` points to production enrollment
+- [ ] Separate credentials from staging (not shared)
+- [ ] Credential rotation schedule documented (90-day max)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Palantir error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Code Quality
+- [ ] All tests passing including Foundry integration tests
+- [ ] No hardcoded hostnames, tokens, or RIDs
+- [ ] Error handling covers all Foundry `ApiError` status codes
+- [ ] Rate limiting with exponential backoff implemented
+- [ ] Logging uses structured format (JSON) with request IDs
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Palantir connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Infrastructure
+- [ ] Health check endpoint verifies Foundry connectivity
+```python
+@app.get("/health")
+async def health():
+    try:
+        client.ontologies.Ontology.list()
+        return {"status": "healthy", "foundry": "connected"}
+    except foundry.ApiError as e:
+        return {"status": "degraded", "foundry": f"error_{e.status_code}"}
+```
+- [ ] Circuit breaker pattern for Foundry API calls
+- [ ] Graceful degradation when Foundry is unreachable
+- [ ] Timeout configuration: 30s for reads, 60s for writes
+- [ ] Connection pooling configured
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
+### Monitoring & Alerting
+- [ ] Metrics: request count, latency p50/p99, error rate by status code
+- [ ] Alert: 5xx error rate > 5% for 5 minutes → P1
+- [ ] Alert: p99 latency > 10s for 10 minutes → P2
+- [ ] Alert: 429 rate > 10/min → P2 (tune rate limiter)
+- [ ] Alert: 401/403 errors → P1 (credential issue)
+- [ ] Dashboard with Foundry API health summary
+
+### Documentation
+- [ ] Incident runbook: `palantir-incident-runbook`
+- [ ] Credential rotation procedure documented
+- [ ] Rollback procedure documented and tested
 - [ ] On-call escalation path defined
+- [ ] Foundry support contact info available
 
-### Step 5: Deploy with Gradual Rollout
+### Deploy
 ```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.palantir.com
+set -euo pipefail
+# Pre-flight
+curl -sf "https://$FOUNDRY_HOSTNAME/api/v2/ontologies" \
+  -H "Authorization: Bearer $FOUNDRY_TOKEN" > /dev/null \
+  && echo "Foundry API reachable" || echo "BLOCKED: Foundry unreachable"
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/palantir-integration app=image:new --record
-kubectl rollout pause deployment/palantir-integration
+# Deploy with canary
+kubectl set image deployment/my-app app=myimage:v2.0.0 --record
+kubectl rollout status deployment/my-app --timeout=300s
+```
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/palantir-integration
-kubectl rollout pause deployment/palantir-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/palantir-integration
-kubectl rollout status deployment/palantir-integration
+### Rollback
+```bash
+kubectl rollout undo deployment/my-app
+kubectl rollout status deployment/my-app
 ```
 
 ## Output
-- Deployed Palantir integration
+- Production deployment with verified Foundry connectivity
 - Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Monitoring and alerting active
+- Rollback procedure tested
 
 ## Error Handling
 | Alert | Condition | Severity |
 |-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; palantir: any }> {
-  const start = Date.now();
-  try {
-    await palantirClient.ping();
-    return { status: 'healthy', palantir: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', palantir: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/palantir-integration
-kubectl rollout status deployment/palantir-integration
-```
+| Foundry Unreachable | Health check fails 3x | P1 |
+| Auth Failure | Any 401/403 | P1 |
+| Rate Limited | 429 > 10/min | P2 |
+| High Latency | p99 > 10s | P2 |
 
 ## Resources
-- [Palantir Status](https://status.palantir.com)
-- [Palantir Support](https://docs.palantir.com/support)
+- [Foundry API Reference](https://www.palantir.com/docs/foundry/api/general/overview/introduction)
+- [Foundry Documentation](https://www.palantir.com/docs/foundry)
 
 ## Next Steps
 For version upgrades, see `palantir-upgrade-migration`.

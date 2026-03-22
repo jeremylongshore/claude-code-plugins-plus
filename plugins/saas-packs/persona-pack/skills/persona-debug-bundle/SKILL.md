@@ -1,113 +1,59 @@
 ---
 name: persona-debug-bundle
 description: |
-  Collect Persona debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Persona problems.
-  Trigger with phrases like "persona debug", "persona support bundle",
-  "collect persona logs", "persona diagnostic".
+  Collect Persona diagnostic info: inquiry IDs, API responses, webhook logs.
+  Use when working with Persona identity verification.
+  Trigger with phrases like "persona debug-bundle", "persona debug-bundle".
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona]
-compatible-with: claude-code
+tags: [saas, persona, identity, kyc, verification]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Persona Debug Bundle
+# persona debug bundle | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Collect all necessary diagnostic information for Persona support tickets.
+Gather inquiry state, verification results, webhook delivery logs, API connectivity test.
 
 ## Prerequisites
-- Persona SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Completed `persona-install-auth` setup
+- Valid Persona API key (sandbox or production)
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# persona-debug-bundle.sh
+### Step 1: Implementation
+```python
+import os, requests
 
-BUNDLE_DIR="persona-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+HEADERS = {
+    "Authorization": f"Bearer {os.environ['PERSONA_API_KEY']}",
+    "Persona-Version": "2023-01-05",
+}
+BASE = "https://withpersona.com/api/v1"
 
-echo "=== Persona Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "PERSONA_API_KEY: ${PERSONA_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @persona/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "persona" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.persona.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# Collect Persona diagnostic info: inquiry IDs, API responses, webhook logs
+resp = requests.get(f"{BASE}/inquiries?page[size]=10", headers=HEADERS)
+resp.raise_for_status()
+inquiries = resp.json()["data"]
+for inq in inquiries:
+    print(f"  {inq['id']}: {inq['attributes']['status']}")
 ```
 
 ## Output
-- `persona-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- Gather inquiry state, verification results, webhook delivery logs, API connectivity test.
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash persona-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Persona support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check PERSONA_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 404 Not Found | Wrong resource ID | Verify ID format |
 
 ## Resources
-- [Persona Support](https://docs.persona.com/support)
-- [Persona Status](https://status.persona.com)
+- [Persona API Reference](https://docs.withpersona.com/reference/introduction)
+- [Persona Documentation](https://docs.withpersona.com)
 
 ## Next Steps
-For rate limit issues, see `persona-rate-limits`.
+See related Persona skills for more workflows.

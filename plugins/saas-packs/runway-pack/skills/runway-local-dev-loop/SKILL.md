@@ -1,119 +1,56 @@
 ---
 name: runway-local-dev-loop
 description: |
-  Configure Runway local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Runway.
-  Trigger with phrases like "runway dev setup", "runway local development",
-  "runway dev environment", "develop with runway".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.0.0
+  Runway local dev loop — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway local dev loop", "runway-local-dev-loop", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Runway Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Runway.
+Implementation patterns for Runway local dev loop — AI video generation platform.
 
 ## Prerequisites
 - Completed `runway-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-runway-project/
-├── src/
-│   ├── runway/
-│   │   ├── client.ts       # Runway client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── runway.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: SDK Pattern
+```python
+from runwayml import RunwayML
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+client = RunwayML()
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { RunwayClient } from '../src/runway/client';
-
-describe('Runway Client', () => {
-  it('should initialize with API key', () => {
-    const client = new RunwayClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_text='A serene lake at dawn, mist rising, birds flying',
+    duration=5,
+)
+result = task.wait_for_task_output()
+if result.status == 'SUCCEEDED':
+    print(f"Video: {result.output[0]}")
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Runway development
+- Runway integration for local dev loop
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Runway Responses
-```typescript
-vi.mock('@runway/sdk', () => ({
-  RunwayClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=RUNWAY=* npm run dev
-```
+| 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
+| 402 Insufficient credits | No credits | Add credits at dev.runwayml.com |
+| Task FAILED | Content policy | Adjust prompt |
 
 ## Resources
-- [Runway SDK Reference](https://docs.runway.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
-See `runway-sdk-patterns` for production-ready code patterns.
+See related Runway skills for more workflows.

@@ -1,66 +1,49 @@
 ---
 name: retellai-prod-checklist
 description: |
-  Execute Retell AI production deployment checklist and rollback procedures.
-  Use when deploying Retell AI integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "retellai production", "deploy retellai",
-  "retellai go-live", "retellai launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+  Retell AI prod checklist — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell prod checklist", "retellai-prod-checklist", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
-# Retell AI Production Checklist
+
+# Retell AI Prod Checklist
 
 ## Overview
-Complete checklist for deploying Retell AI integrations to production with gradual rollout and rollback procedures. Covers pre-deployment configuration verification, code quality gates, infrastructure readiness, documentation requirements, and a phased rollout strategy (canary 10% -> 50% -> 100%) with monitoring at each stage.
+Implementation patterns for Retell AI prod checklist — voice agent and telephony platform.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Completed `retellai-install-auth` setup
 
 ## Instructions
 
-1. **Verify pre-deployment configuration**: Production API keys in secure vault, environment variables set, API key scopes minimized (least privilege), webhook endpoints configured with HTTPS, webhook secrets stored securely.
-2. **Run code quality checks**: All tests passing (`npm test`), no hardcoded credentials, error handling covers all Retell AI error types, rate limiting/backoff implemented, logging is production-appropriate.
-3. **Confirm infrastructure setup**: Health check endpoint includes Retell AI connectivity, monitoring/alerting configured, circuit breaker pattern implemented, graceful degradation configured for Retell AI outages.
-4. **Complete documentation**: Incident runbook created, key rotation procedure documented, rollback procedure documented, on-call escalation path defined.
-5. **Execute gradual rollout** starting with canary (10%), monitoring for 10 minutes, then 50%, then 100%. See [deployment steps](references/deployment-steps.md) for kubectl commands and health check implementation.
+### Step 1: SDK Pattern
+```typescript
+import Retell from 'retell-sdk';
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
 
-## Alerting Thresholds
-
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Output
-- Deployed Retell AI integration with verified health checks
-- Monitoring active with alerting thresholds configured
-- Rollback procedure tested and documented
-- Gradual rollout completed at 100%
-
-## Error Handling
-For rollback procedure, health check implementation, and gradual rollout commands, see [deployment steps](references/deployment-steps.md).
-
-## Examples
-
-### Quick Health Verification
-```bash
-set -euo pipefail
-curl -sf https://api.yourapp.com/health | jq '.services.retellai'
+const agents = await retell.agent.list();
+console.log(`Agents: ${agents.length}`);
 ```
 
+## Output
+- Retell AI integration for prod checklist
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 400 Bad Request | Invalid parameters | Check API documentation |
+
 ## Resources
-- [Retell AI Status](https://status.retellai.com)
-- [Retell AI Support](https://docs.retellai.com/support)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
-For version upgrades after production deployment, see `retellai-upgrade-migration`. For monitoring setup, see `retellai-observability`.
+See related Retell AI skills for more workflows.

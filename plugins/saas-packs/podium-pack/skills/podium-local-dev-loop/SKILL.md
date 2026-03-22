@@ -1,119 +1,56 @@
 ---
 name: podium-local-dev-loop
 description: |
-  Configure Podium local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Podium.
-  Trigger with phrases like "podium dev setup", "podium local development",
-  "podium dev environment", "develop with podium".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.0.0
+  Podium local dev loop — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium local dev loop", "podium-local-dev-loop".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Podium.
+Implementation patterns for Podium local dev loop using the REST API with OAuth2 authentication.
 
 ## Prerequisites
 - Completed `podium-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-podium-project/
-├── src/
-│   ├── podium/
-│   │   ├── client.ts       # Podium client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── podium.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
+### Step 1: API Call Pattern
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { PodiumClient } from '../src/podium/client';
+import axios from 'axios';
 
-describe('Podium Client', () => {
-  it('should initialize with API key', () => {
-    const client = new PodiumClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
 });
+
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Podium development
+- Podium API integration for local dev loop
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Podium Responses
-```typescript
-vi.mock('@podium/sdk', () => ({
-  PodiumClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=PODIUM=* npm run dev
-```
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [Podium SDK Reference](https://docs.podium.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-See `podium-sdk-patterns` for production-ready code patterns.
+See related Podium skills for more workflows.

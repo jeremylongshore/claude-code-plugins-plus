@@ -1,142 +1,57 @@
 ---
 name: ramp-security-basics
 description: |
-  Apply Ramp security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Ramp security configuration.
-  Trigger with phrases like "ramp security", "ramp secrets",
-  "secure ramp", "ramp API key security".
-allowed-tools: Read, Write, Grep
-version: 1.0.0
+  Ramp security basics — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp security basics", "ramp-security-basics", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Ramp Security Basics
 
 ## Overview
-Security best practices for Ramp API keys, tokens, and access control.
+Implementation patterns for Ramp security basics using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Ramp SDK installed
-- Understanding of environment variables
-- Access to Ramp dashboard
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-RAMP_API_KEY=sk_live_***
-RAMP_SECRET=***
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
+
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Ramp dashboard
-# 2. Update environment variable
-export RAMP_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${RAMP_API_KEY}" \
-  https://api.ramp.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
 
 ## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- Ramp API integration for security basics
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new RampClient({
-    apiKey: process.env.RAMP_READ_KEY,
-  }),
-  writer: new RampClient({
-    apiKey: process.env.RAMP_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Ramp analytics
-  await rampClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'ramp.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
-- [Ramp Security Guide](https://docs.ramp.com/security)
-- [Ramp API Scopes](https://docs.ramp.com/scopes)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For production deployment, see `ramp-prod-checklist`.
+See related Ramp skills for more workflows.

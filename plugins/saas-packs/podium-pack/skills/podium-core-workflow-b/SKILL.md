@@ -1,73 +1,79 @@
 ---
 name: podium-core-workflow-b
 description: |
-  Execute Podium secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "podium secondary workflow",
-  "secondary task with podium".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  Podium core workflow b — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium core workflow b", "podium-core-workflow-b".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Core Workflow B
 
 ## Overview
-Secondary workflow for Podium. Complements the primary workflow.
+Manage reviews and payments with Podium: request reviews from customers, track review status, and create payment invoices.
 
 ## Prerequisites
-- Completed `podium-install-auth` setup
-- Familiarity with `podium-core-workflow-a`
-- Valid API credentials configured
+- Completed `podium-core-workflow-a` (messaging)
+- Reviews and Payments features enabled in Podium account
 
 ## Instructions
 
-### Step 1: Setup
+### Step 1: Request a Review
 ```typescript
-// Step 1 implementation
+// Send a review request to a customer
+const { data } = await podium.post(`/locations/${locationId}/review-invitations`, {
+  data: {
+    attributes: {
+      'contact-phone': '+15551234567',
+      'customer-name': 'Jane Doe',
+    },
+  },
+});
+console.log(`Review invitation sent: ${data.data.id}`);
 ```
 
-### Step 2: Process
+### Step 2: List Reviews
 ```typescript
-// Step 2 implementation
+const { data } = await podium.get(`/locations/${locationId}/reviews`);
+for (const review of data.data) {
+  console.log(`  ${review.attributes.rating}/5 — ${review.attributes.body}`);
+}
 ```
 
-### Step 3: Complete
+### Step 3: Create a Payment Invoice
 ```typescript
-// Step 3 implementation
+const { data } = await podium.post(`/locations/${locationId}/invoices`, {
+  data: {
+    attributes: {
+      'contact-phone': '+15551234567',
+      amount: 5000,  // $50.00 in cents
+      description: 'Service invoice #1234',
+    },
+  },
+});
+console.log(`Invoice created: ${data.data.id}, amount: $${data.data.attributes.amount / 100}`);
 ```
 
 ## Output
-- Completed Core Workflow B execution
-- Results from Podium API
-- Success confirmation or error details
+- Review invitations sent to customers
+- Review listing with ratings and content
+- Payment invoices created and tracked
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `422 Invalid amount` | Amount not in cents | Convert dollars to cents (multiply by 100) |
+| `403 Payments not enabled` | Feature not active | Enable Payments in Podium account |
+| Review invitation failed | Customer opted out | Check contact preferences |
 
 ## Resources
-- [Podium Documentation](https://docs.podium.com)
-- [Podium API Reference](https://docs.podium.com/api)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Reference](https://docs.podium.com/reference)
 
 ## Next Steps
-For common errors, see `podium-common-errors`.
+Handle webhook events: `podium-webhooks-events`

@@ -1,126 +1,56 @@
 ---
 name: podium-ci-integration
 description: |
-  Configure Podium CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Podium tests into your build process.
-  Trigger with phrases like "podium CI", "podium GitHub Actions",
-  "podium automated tests", "CI podium".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+  Podium ci integration — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium ci integration", "podium-ci-integration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Podium CI Integration
+# Podium Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Podium integrations with automated testing.
+Implementation patterns for Podium ci integration using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Podium test API key
-- npm/pnpm project configured
+- Completed `podium-install-auth` setup
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/podium-integration.yml`:
-
-```yaml
-name: Podium Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  PODIUM_API_KEY: ${{ secrets.PODIUM_API_KEY }}
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      PODIUM_API_KEY: ${{ secrets.PODIUM_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
-```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set PODIUM_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
+### Step 1: API Call Pattern
 ```typescript
-describe('Podium Integration', () => {
-  it.skipIf(!process.env.PODIUM_API_KEY)('should connect', async () => {
-    const client = getPodiumClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
+import axios from 'axios';
+
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
 });
+
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
 ```
 
 ## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
+- Podium API integration for ci integration
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      PODIUM_API_KEY: ${{ secrets.PODIUM_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Podium production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "podium-integration"
-```
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Podium CI Guide](https://docs.podium.com/ci)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-For deployment patterns, see `podium-deploy-integration`.
+See related Podium skills for more workflows.

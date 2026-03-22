@@ -1,121 +1,57 @@
 ---
 name: ramp-prod-checklist
 description: |
-  Execute Ramp production deployment checklist and rollback procedures.
-  Use when deploying Ramp integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "ramp production", "deploy ramp",
-  "ramp go-live", "ramp launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+  Ramp prod checklist — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp prod checklist", "ramp-prod-checklist", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Ramp Production Checklist
+# Ramp Prod Checklist
 
 ## Overview
-Complete checklist for deploying Ramp integrations to production.
+Implementation patterns for Ramp prod checklist using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Completed `ramp-install-auth` setup
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Ramp error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Ramp connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.ramp.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/ramp-integration app=image:new --record
-kubectl rollout pause deployment/ramp-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/ramp-integration
-kubectl rollout pause deployment/ramp-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/ramp-integration
-kubectl rollout status deployment/ramp-integration
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
 ## Output
-- Deployed Ramp integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Ramp API integration for prod checklist
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; ramp: any }> {
-  const start = Date.now();
-  try {
-    await rampClient.ping();
-    return { status: 'healthy', ramp: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', ramp: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/ramp-integration
-kubectl rollout status deployment/ramp-integration
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
-- [Ramp Status](https://status.ramp.com)
-- [Ramp Support](https://docs.ramp.com/support)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-For version upgrades, see `ramp-upgrade-migration`.
+See related Ramp skills for more workflows.

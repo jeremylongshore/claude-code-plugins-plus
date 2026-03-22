@@ -1,6 +1,12 @@
 # Podium Skill Pack
 
-> Claude Code skill pack for Podium integration (18 skills)
+> Claude Code skill pack for Podium — business messaging, reviews management, payments, and webchat API integration (18 skills)
+
+## What This Covers
+
+Podium is a business communication platform for messaging, reviews, and payments. This pack covers the **Podium REST API** with OAuth2 authentication, messaging webhooks, review management, payment invoicing, and contact management.
+
+**Key APIs:** Messages (webhook-driven), Contacts, Reviews, Payments/Invoices, Locations, Webhooks. Auth via OAuth2 (client_id + client_secret + authorization code).
 
 ## Installation
 
@@ -13,36 +19,41 @@
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `podium-install-auth` | Install Auth |
-| `podium-hello-world` | Hello World |
-| `podium-local-dev-loop` | Local Dev Loop |
-| `podium-sdk-patterns` | Sdk Patterns |
-| `podium-core-workflow-a` | Core Workflow A |
-| `podium-core-workflow-b` | Core Workflow B |
-| `podium-common-errors` | Common Errors |
-| `podium-debug-bundle` | Debug Bundle |
-| `podium-rate-limits` | Rate Limits |
-| `podium-security-basics` | Security Basics |
-| `podium-prod-checklist` | Prod Checklist |
-| `podium-upgrade-migration` | Upgrade Migration |
+| `podium-install-auth` | OAuth2 setup with client_id/secret, authorization code flow |
+| `podium-hello-world` | Send first message, list contacts, check location |
+| `podium-local-dev-loop` | Sandbox testing, ngrok for webhooks, mock message events |
+| `podium-sdk-patterns` | API client wrapper, OAuth token refresh, error handling |
+| `podium-core-workflow-a` | Messaging workflow: send/receive messages via webhooks |
+| `podium-core-workflow-b` | Reviews and payments: request reviews, create invoices |
+| `podium-common-errors` | Fix OAuth errors, webhook failures, message delivery issues |
+| `podium-debug-bundle` | Collect API logs, webhook events, OAuth token state |
+| `podium-rate-limits` | Handle API rate limits with backoff |
+| `podium-security-basics` | OAuth credential management, webhook verification |
+| `podium-prod-checklist` | Production deployment: HTTPS webhooks, monitoring, scopes |
+| `podium-upgrade-migration` | API version changes and OAuth scope updates |
 
 ### Pro Skills (P13-P18)
 | Skill | Description |
 |-------|-------------|
-| `podium-ci-integration` | Ci Integration |
-| `podium-deploy-integration` | Deploy Integration |
-| `podium-webhooks-events` | Webhooks Events |
-| `podium-performance-tuning` | Performance Tuning |
-| `podium-cost-tuning` | Cost Tuning |
-| `podium-reference-architecture` | Reference Architecture |
+| `podium-ci-integration` | CI pipeline with mocked Podium API tests |
+| `podium-deploy-integration` | Deploy messaging service with secrets management |
+| `podium-webhooks-events` | Handle message.sent, message.received, review.created events |
+| `podium-performance-tuning` | Batch message operations, webhook processing optimization |
+| `podium-cost-tuning` | Optimize API usage and message volume |
+| `podium-reference-architecture` | Messaging service architecture with Podium integration |
 
 ## Usage
 
-Skills trigger automatically when you discuss Podium topics. For example:
+- "Set up Podium API" -- triggers `podium-install-auth`
+- "Send a Podium message" -- triggers `podium-core-workflow-a`
+- "Handle Podium webhook" -- triggers `podium-webhooks-events`
 
-- "Help me set up Podium" → triggers `podium-install-auth`
-- "Debug this Podium error" → triggers `podium-common-errors`
-- "Deploy my Podium integration" → triggers `podium-deploy-integration`
+## Key Documentation
+
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Getting Started](https://docs.podium.com/docs/getting-started)
+- [OAuth2 Guide](https://docs.podium.com/docs/oauth)
+- [Webhooks](https://docs.podium.com/docs/webhooks)
 
 ## License
 

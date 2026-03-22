@@ -1,119 +1,57 @@
 ---
 name: ramp-local-dev-loop
 description: |
-  Configure Ramp local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Ramp.
-  Trigger with phrases like "ramp dev setup", "ramp local development",
-  "ramp dev environment", "develop with ramp".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.0.0
+  Ramp local dev loop — corporate card and expense management API integration.
+  Use when working with Ramp for card management, expenses, or accounting sync.
+  Trigger with phrases like "ramp local dev loop", "ramp-local-dev-loop", "corporate card API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finance, fintech, ramp]
-compatible-with: claude-code
+tags: [saas, ramp, fintech, expenses, corporate-cards]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Ramp Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Ramp.
+Implementation patterns for Ramp local dev loop using the Developer API with OAuth2 authentication.
 
 ## Prerequisites
 - Completed `ramp-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-ramp-project/
-├── src/
-│   ├── ramp/
-│   │   ├── client.ts       # Ramp client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── ramp.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+# Obtain token
+token_resp = requests.post(f"{os.environ['RAMP_BASE_URL'].replace('/v1','')}/v1/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["RAMP_CLIENT_ID"],
+    "client_secret": os.environ["RAMP_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { RampClient } from '../src/ramp/client';
-
-describe('Ramp Client', () => {
-  it('should initialize with API key', () => {
-    const client = new RampClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+cards = requests.get(f"{os.environ['RAMP_BASE_URL']}/cards", headers=headers)
+print(f"Cards: {len(cards.json()['data'])}")
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Ramp development
+- Ramp API integration for local dev loop
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Ramp Responses
-```typescript
-vi.mock('@ramp/sdk', () => ({
-  RampClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=RAMP=* npm run dev
-```
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check API app permissions |
 
 ## Resources
-- [Ramp SDK Reference](https://docs.ramp.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Ramp API Documentation](https://docs.ramp.com/)
+- [Authorization](https://docs.ramp.com/developer-api/v1/authorization)
 
 ## Next Steps
-See `ramp-sdk-patterns` for production-ready code patterns.
+See related Ramp skills for more workflows.

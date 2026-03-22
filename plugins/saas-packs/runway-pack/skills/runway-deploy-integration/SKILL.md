@@ -1,211 +1,56 @@
 ---
 name: runway-deploy-integration
 description: |
-  Deploy Runway integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Runway-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy runway", "runway Vercel",
-  "runway production deploy", "runway Cloud Run", "runway Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
-version: 1.0.0
+  Runway deploy integration — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway deploy integration", "runway-deploy-integration", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Runway Deploy Integration
 
 ## Overview
-Deploy Runway-powered applications to popular platforms with proper secrets management.
+Implementation patterns for Runway deploy integration — AI video generation platform.
 
 ## Prerequisites
-- Runway API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Runway secrets to Vercel
-vercel secrets add runway_api_key sk_live_***
-vercel secrets add runway_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "RUNWAY_API_KEY": "@runway_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-runway-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Runway secrets
-fly secrets set RUNWAY_API_KEY=sk_live_***
-fly secrets set RUNWAY_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="runway-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=RUNWAY_API_KEY=runway-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/runway.ts
-interface RunwayConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getRunwayConfig(): RunwayConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.RUNWAY_API_KEY!,
-    environment: env as RunwayConfig['environment'],
-    webhookSecret: process.env.RUNWAY_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const runwayStatus = await checkRunwayConnection();
-
-  return Response.json({
-    status: runwayStatus ? 'healthy' : 'degraded',
-    services: {
-      runway: runwayStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- Completed `runway-install-auth` setup
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Step 1: SDK Pattern
+```python
+from runwayml import RunwayML
 
-### Step 2: Configure Secrets
-Store Runway API keys securely using the platform's secrets management.
+client = RunwayML()
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Runway integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Runway connectivity.
-
-## Output
-- Application deployed to production
-- Runway secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add runway_api_key "$RUNWAY_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set RUNWAY_API_KEY="$RUNWAY_API_KEY"
-    fly deploy
-    ;;
-esac
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_text='A serene lake at dawn, mist rising, birds flying',
+    duration=5,
+)
+result = task.wait_for_task_output()
+if result.status == 'SUCCEEDED':
+    print(f"Video: {result.output[0]}")
 ```
 
+## Output
+- Runway integration for deploy integration
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
+| 402 Insufficient credits | No credits | Add credits at dev.runwayml.com |
+| Task FAILED | Content policy | Adjust prompt |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Runway Deploy Guide](https://docs.runway.com/deploy)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
-For webhook handling, see `runway-webhooks-events`.
+See related Runway skills for more workflows.

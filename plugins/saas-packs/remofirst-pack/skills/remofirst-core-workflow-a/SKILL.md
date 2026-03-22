@@ -1,71 +1,89 @@
 ---
 name: remofirst-core-workflow-a
 description: |
-  Execute RemoFirst primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "remofirst main workflow",
-  "primary task with remofirst".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  RemoFirst core workflow a — global HR, EOR, and payroll platform integration.
+  Use when working with RemoFirst for global employment, payroll, or compliance.
+  Trigger with phrases like "remofirst core workflow a", "remofirst-core-workflow-a", "global HR API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, remote-work, remofirst]
-compatible-with: claude-code
+tags: [saas, remofirst, hr, eor, payroll, global-employment]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # RemoFirst Core Workflow A
 
 ## Overview
-Primary money-path workflow for RemoFirst. This is the most common use case.
+Employee onboarding workflow: create employee records, manage documents, handle country-specific compliance requirements.
 
 ## Prerequisites
-- Completed `remofirst-install-auth` setup
-- Understanding of RemoFirst core concepts
-- Valid API credentials configured
+- Completed `remofirst-install-auth`
 
 ## Instructions
 
-### Step 1: Initialize
-```typescript
-// Step 1 implementation
+### Step 1: Create Employee Record
+```python
+employee = client.post("/employees", {
+    "first_name": "Alice",
+    "last_name": "Johnson",
+    "email": "alice@company.com",
+    "country_code": "GB",  # United Kingdom
+    "job_title": "Senior Engineer",
+    "start_date": "2026-05-01",
+    "salary": {
+        "amount": 85000,
+        "currency": "GBP",
+        "frequency": "annual",
+    },
+    "employment_type": "full_time",
+})
+print(f"Employee created: {employee['id']}")
 ```
 
-### Step 2: Execute
-```typescript
-// Step 2 implementation
+### Step 2: Check Country Requirements
+```python
+# Get country-specific onboarding requirements
+requirements = client.get(f"/countries/GB/requirements")
+for req in requirements["documents"]:
+    print(f"  Required: {req['name']} — {req['description']}")
+    # Examples: Passport, National Insurance Number, Bank Details, P45
 ```
 
-### Step 3: Finalize
-```typescript
-// Step 3 implementation
+### Step 3: Submit Onboarding Documents
+```python
+# Upload required documents
+client.post(f"/employees/{employee['id']}/documents", {
+    "document_type": "passport",
+    "file_url": "https://secure-storage.com/passport.pdf",
+    "expiry_date": "2030-12-31",
+})
+```
+
+### Step 4: Track Onboarding Status
+```python
+status = client.get(f"/employees/{employee['id']}/onboarding")
+print(f"Onboarding status: {status['status']}")  # pending, in_progress, completed
+for step in status["steps"]:
+    print(f"  {step['name']}: {step['status']}")
 ```
 
 ## Output
-- Completed Core Workflow A execution
-- Expected results from RemoFirst API
-- Success confirmation or error details
+- Employee record created with salary and country
+- Country-specific requirements checked
+- Documents uploaded for compliance
+- Onboarding progress tracked
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| `422 Invalid country` | Unsupported country code | Check supported countries list |
+| `422 Missing required field` | Country-specific field missing | Check country requirements first |
+| Onboarding stuck | Missing documents | Upload all required documents |
 
 ## Resources
-- [RemoFirst Documentation](https://docs.remofirst.com)
-- [RemoFirst API Reference](https://docs.remofirst.com/api)
+- [RemoFirst](https://www.remofirst.com)
+- [Global Employment](https://www.remofirst.com/solutions/human-resources)
 
 ## Next Steps
-For secondary workflow, see `remofirst-core-workflow-b`.
+Payroll workflow: `remofirst-core-workflow-b`

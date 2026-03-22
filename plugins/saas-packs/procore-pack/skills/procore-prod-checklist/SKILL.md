@@ -1,121 +1,56 @@
 ---
 name: procore-prod-checklist
 description: |
-  Execute Procore production deployment checklist and rollback procedures.
-  Use when deploying Procore integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "procore production", "deploy procore",
-  "procore go-live", "procore launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+  Procore prod checklist — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore prod checklist", "procore-prod-checklist".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Procore Production Checklist
+# Procore Prod Checklist
 
 ## Overview
-Complete checklist for deploying Procore integrations to production.
+Implementation patterns for Procore prod checklist using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Completed `procore-install-auth` setup
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Procore error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Procore connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.procore.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/procore-integration app=image:new --record
-kubectl rollout pause deployment/procore-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/procore-integration
-kubectl rollout pause deployment/procore-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/procore-integration
-kubectl rollout status deployment/procore-integration
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
 ```
 
 ## Output
-- Deployed Procore integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Procore API integration for prod checklist
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; procore: any }> {
-  const start = Date.now();
-  try {
-    await procoreClient.ping();
-    return { status: 'healthy', procore: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', procore: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/procore-integration
-kubectl rollout status deployment/procore-integration
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
-- [Procore Status](https://status.procore.com)
-- [Procore Support](https://docs.procore.com/support)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-For version upgrades, see `procore-upgrade-migration`.
+See related Procore skills for more workflows.

@@ -1,216 +1,48 @@
 ---
 name: quicknode-performance-tuning
 description: |
-  Optimize QuickNode API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for QuickNode integrations.
-  Trigger with phrases like "quicknode performance", "optimize quicknode",
-  "quicknode latency", "quicknode caching", "quicknode slow", "quicknode batch".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  QuickNode performance tuning — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode performance tuning", "quicknode-performance-tuning", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode Performance Tuning
 
 ## Overview
-Optimize QuickNode API performance with caching, batching, and connection pooling.
+Implementation patterns for QuickNode performance tuning using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
-- QuickNode SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedQuickNodeRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const quicknodeLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from QuickNode
-    const results = await quicknodeClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  quicknodeLoader.load('id-1'),
-  quicknodeLoader.load('id-2'),
-  quicknodeLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new QuickNodeClient({
-  apiKey: process.env.QUICKNODE_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedQuickNodeList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedQuickNodeList(cursor =>
-  quicknodeClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredQuickNodeCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Completed `quicknode-install-auth` setup
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical QuickNode operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
+### Step 1: Connect to QuickNode
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredQuickNodeCall(name, () =>
-    cachedQuickNodeRequest(`cache:${name}`, fn)
-  );
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
 
+## Output
+- QuickNode integration for performance tuning
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
+
 ## Resources
-- [QuickNode Performance Guide](https://docs.quicknode.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-For cost optimization, see `quicknode-cost-tuning`.
+See related QuickNode skills for more workflows.

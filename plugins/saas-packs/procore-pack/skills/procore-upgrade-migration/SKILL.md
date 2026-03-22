@@ -1,114 +1,56 @@
 ---
 name: procore-upgrade-migration
 description: |
-  Analyze, plan, and execute Procore SDK upgrades with breaking change detection.
-  Use when upgrading Procore SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade procore", "procore migration",
-  "procore breaking changes", "update procore SDK", "analyze procore version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  Procore upgrade migration — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore upgrade migration", "procore-upgrade-migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Procore Upgrade & Migration
+# Procore Upgrade Migration
 
 ## Overview
-Guide for upgrading Procore SDK versions and handling breaking changes.
+Implementation patterns for Procore upgrade migration using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Current Procore SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `procore-install-auth` setup
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @procore/sdk
-npm view @procore/sdk version
-```
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/procore/sdk/releases
-```
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/procore-sdk-vX.Y.Z
-npm install @procore/sdk@latest
-npm test
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
 ```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- Procore API integration for upgrade migration
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@procore/sdk';
-
-// After (v2.x)
-import { ProcoreClient } from '@procore/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new ProcoreClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @procore/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Procore]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
-- [Procore Changelog](https://github.com/procore/sdk/releases)
-- [Procore Migration Guide](https://docs.procore.com/migration)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-For CI integration during upgrades, see `procore-ci-integration`.
+See related Procore skills for more workflows.

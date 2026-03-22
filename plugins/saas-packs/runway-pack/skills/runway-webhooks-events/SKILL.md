@@ -1,201 +1,56 @@
 ---
 name: runway-webhooks-events
 description: |
-  Implement Runway webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Runway event notifications securely.
-  Trigger with phrases like "runway webhook", "runway events",
-  "runway webhook signature", "handle runway events", "runway notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
-version: 1.0.0
+  Runway webhooks events — AI video generation and creative AI platform.
+  Use when working with Runway for video generation, image editing, or creative AI.
+  Trigger with phrases like "runway webhooks events", "runway-webhooks-events", "AI video generation".
+allowed-tools: Read, Write, Edit, Bash(pip:*), Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, ai, video, runway]
-compatible-with: claude-code
+tags: [saas, runway, ai, video-generation, creative]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Runway Webhooks & Events
+# Runway Webhooks Events
 
 ## Overview
-Securely handle Runway webhooks with signature validation and replay protection.
+Implementation patterns for Runway webhooks events — AI video generation platform.
 
 ## Prerequisites
-- Runway webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/runway',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-runway-signature'] as string;
-    const timestamp = req.headers['x-runway-timestamp'] as string;
-
-    if (!verifyRunwaySignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleRunwayEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyRunwaySignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.RUNWAY_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type RunwayEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface RunwayEvent {
-  id: string;
-  type: RunwayEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<RunwayEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleRunwayEvent(event: RunwayEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `runway:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `runway:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Runway CLI to send test events
-runway webhooks trigger resource.created --url http://localhost:3000/webhooks/runway
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- Completed `runway-install-auth` setup
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Runway dashboard.
+### Step 1: SDK Pattern
+```python
+from runwayml import RunwayML
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+client = RunwayML()
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/runway \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+task = client.image_to_video.create(
+    model='gen3a_turbo',
+    prompt_text='A serene lake at dawn, mist rising, birds flying',
+    duration=5,
+)
+result = task.wait_for_task_output()
+if result.status == 'SUCCEEDED':
+    print(f"Video: {result.output[0]}")
 ```
 
+## Output
+- Runway integration for webhooks events
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Check RUNWAYML_API_SECRET |
+| 402 Insufficient credits | No credits | Add credits at dev.runwayml.com |
+| Task FAILED | Content policy | Adjust prompt |
+
 ## Resources
-- [Runway Webhooks Guide](https://docs.runway.com/webhooks)
-- [Webhook Security Best Practices](https://docs.runway.com/webhooks/security)
+- [Runway API Documentation](https://docs.dev.runwayml.com/)
+- [Python SDK](https://github.com/runwayml/sdk-python)
 
 ## Next Steps
-For performance optimization, see `runway-performance-tuning`.
+See related Runway skills for more workflows.

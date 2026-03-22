@@ -1,79 +1,85 @@
 ---
 name: retellai-core-workflow-b
 description: |
-  Execute Retell AI secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "retellai secondary workflow",
-  "secondary task with retellai".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  Retell AI core workflow b — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell core workflow b", "retellai-core-workflow-b", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
+
 # Retell AI Core Workflow B
 
 ## Overview
-Secondary workflow for Retell AI. Complements the call execution workflow by focusing on agent optimization, batch call management, and analytics. Use this skill when you need to refine a voice agent's script based on call transcript analysis, run A/B tests between two conversation flows, manage a large batch of outbound calls with scheduling and concurrency controls, or generate performance reports across a campaign.
+Manage phone calls: outbound campaigns, call transfers, recordings, and concurrent call handling.
 
 ## Prerequisites
-- Completed `retellai-install-auth` setup
-- Familiarity with `retellai-core-workflow-a`
-- Valid API credentials configured
+- Completed `retellai-core-workflow-a`
 
 ## Instructions
 
-### Step 1: Setup
-Define the optimization or batch management task. For script refinement, collect a representative sample of call transcripts and identify the moments where conversations deviated from the intended flow or where the agent's responses were inaccurate. For batch calling, prepare the list of target contacts with any dynamic variables needed per call and configure the concurrency limit and scheduling window.
-
+### Step 1: Outbound Call Campaign
 ```typescript
-// Step 1 implementation
+const phoneNumbers = ['+14155551001', '+14155551002', '+14155551003'];
+
+for (const number of phoneNumbers) {
+  try {
+    const call = await retell.call.createPhoneCall({
+      from_number: process.env.RETELL_PHONE_NUMBER!,
+      to_number: number,
+      override_agent_id: agentId,
+      metadata: { campaign: 'appointment-reminder', date: '2026-04-01' },
+    });
+    console.log(`Called ${number}: ${call.call_id}`);
+  } catch (err) {
+    console.error(`Failed to call ${number}: ${err.message}`);
+  }
+  // Rate limit: space calls apart
+  await new Promise(r => setTimeout(r, 2000));
+}
 ```
 
-### Step 2: Process
-Apply the changes: update the agent script or LLM prompt with the identified improvements and test against a small subset of calls before rolling out broadly. For batch execution, submit the call batch via the Retell AI API and monitor the real-time progress dashboard for connection failures, dropped calls, or unusually short conversations that may indicate issues. Adjust concurrency if call quality metrics degrade under high load.
-
+### Step 2: List and Filter Calls
 ```typescript
-// Step 2 implementation
+const calls = await retell.call.list({
+  sort_order: 'descending',
+  limit: 20,
+});
+for (const call of calls) {
+  console.log(`${call.call_id}: ${call.call_status} — ${call.end_timestamp - call.start_timestamp}ms`);
+}
 ```
 
-### Step 3: Complete
-After the batch or optimization cycle completes, generate a performance report summarizing call outcomes, conversation completion rates, and goal conversion metrics. Compare the improved script's performance against the previous baseline to quantify the impact of the changes. Archive the transcripts and recordings for compliance and share the performance summary with stakeholders.
-
+### Step 3: Get Call Recording and Transcript
 ```typescript
-// Step 3 implementation
+const callDetail = await retell.call.retrieve(callId);
+if (callDetail.recording_url) {
+  console.log(`Recording: ${callDetail.recording_url}`);
+}
+if (callDetail.transcript) {
+  console.log(`Transcript:\n${callDetail.transcript}`);
+}
 ```
 
 ## Output
-- Completed Core Workflow B execution
-- Optimized agent script with validated improvements
-- Batch call campaign report with outcome metrics
-- Success confirmation or error details
+- Outbound call campaign with rate limiting
+- Call listing with status and duration
+- Recordings and transcripts retrieved
 
 ## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Call fails immediately | Bad phone number format | Use E.164 format |
+| No recording | Recording not enabled | Enable in agent settings |
+| Concurrent limit | Too many active calls | Upgrade plan or queue calls |
 
 ## Resources
+- [Create Phone Call](https://docs.retellai.com/api-references/create-phone-call)
 - [Retell AI Documentation](https://docs.retellai.com)
-- [Retell AI API Reference](https://docs.retellai.com/api)
 
 ## Next Steps
-For common errors, see `retellai-common-errors`.
+Handle call events: `retellai-webhooks-events`

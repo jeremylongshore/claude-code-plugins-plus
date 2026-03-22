@@ -1,149 +1,119 @@
 ---
 name: persona-sdk-patterns
 description: |
-  Apply production-ready Persona SDK patterns for TypeScript and Python.
-  Use when implementing Persona integrations, refactoring SDK usage,
-  or establishing team coding standards for Persona.
-  Trigger with phrases like "persona SDK patterns", "persona best practices",
-  "persona code patterns", "idiomatic persona".
+  Production Persona API client wrapper with retry, pagination, typed responses.
+  Use when working with Persona identity verification.
+  Trigger with phrases like "persona sdk-patterns", "persona sdk-patterns".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, persona]
-compatible-with: claude-code
+tags: [saas, persona, identity, kyc, verification]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Persona SDK Patterns
+# persona sdk patterns | sed 's/\b\(.\)/\u\1/g'
 
 ## Overview
-Production-ready patterns for Persona SDK usage in TypeScript and Python.
+Singleton API client, typed verification results, pagination through inquiries, error classification.
 
 ## Prerequisites
 - Completed `persona-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Valid Persona API key (sandbox or production)
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed API Client Wrapper
 ```typescript
-// src/persona/client.ts
-import { PersonaClient } from '@persona/sdk';
+import axios, { AxiosInstance, AxiosError } from 'axios';
 
-let instance: PersonaClient | null = null;
+interface PersonaConfig {
+  apiKey: string;
+  version?: string;
+  baseURL?: string;
+}
 
-export function getPersonaClient(): PersonaClient {
-  if (!instance) {
-    instance = new PersonaClient({
-      apiKey: process.env.PERSONA_API_KEY!,
-      // Additional options
+class PersonaClient {
+  private http: AxiosInstance;
+
+  constructor(config: PersonaConfig) {
+    this.http = axios.create({
+      baseURL: config.baseURL || 'https://withpersona.com/api/v1',
+      headers: {
+        'Authorization': `Bearer ${config.apiKey}`,
+        'Persona-Version': config.version || '2023-01-05',
+        'Content-Type': 'application/json',
+      },
     });
   }
-  return instance;
+
+  async createInquiry(templateId: string, referenceId: string, fields?: Record<string, any>) {
+    const { data } = await this.http.post('/inquiries', {
+      data: { attributes: { 'inquiry-template-id': templateId, 'reference-id': referenceId, fields } },
+    });
+    return data.data;
+  }
+
+  async getInquiry(inquiryId: string) {
+    const { data } = await this.http.get(`/inquiries/${inquiryId}`);
+    return data.data;
+  }
+
+  async listInquiries(params: { referenceId?: string; status?: string; pageSize?: number } = {}) {
+    const { data } = await this.http.get('/inquiries', {
+      params: {
+        'filter[reference-id]': params.referenceId,
+        'filter[status]': params.status,
+        'page[size]': params.pageSize || 25,
+      },
+    });
+    return data.data;
+  }
+
+  async getVerification(verificationId: string) {
+    const { data } = await this.http.get(`/verifications/${verificationId}`);
+    return data.data;
+  }
+}
+
+// Singleton
+let _client: PersonaClient | null = null;
+export function getPersonaClient(): PersonaClient {
+  if (!_client) {
+    _client = new PersonaClient({ apiKey: process.env.PERSONA_API_KEY! });
+  }
+  return _client;
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
+### Step 2: Error Classification
 ```typescript
-import { PersonaError } from '@persona/sdk';
-
-async function safePersonaCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof PersonaError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
+function classifyPersonaError(error: AxiosError): { retryable: boolean; message: string } {
+  const status = error.response?.status;
+  if (status === 429) return { retryable: true, message: 'Rate limited' };
+  if (status && status >= 500) return { retryable: true, message: 'Server error' };
+  if (status === 401) return { retryable: false, message: 'Invalid API key' };
+  if (status === 422) return { retryable: false, message: 'Invalid request' };
+  return { retryable: false, message: error.message };
 }
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+- Typed Persona API client with inquiry and verification methods
+- Singleton pattern for reuse
+- Error classification for retry decisions
+- Paginated inquiry listing
 
 ## Error Handling
 | Pattern | Use Case | Benefit |
 |---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, PersonaClient>();
-
-export function getClientForTenant(tenantId: string): PersonaClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new PersonaClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from persona import PersonaClient
-
-@asynccontextmanager
-async def get_persona_client():
-    client = PersonaClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const personaResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Singleton | All API calls | One client, consistent headers |
+| Error classifier | Retry decisions | Only retry 429/5xx |
+| Typed responses | Data access | Autocomplete, type safety |
 
 ## Resources
-- [Persona SDK Reference](https://docs.persona.com/sdk)
-- [Persona API Types](https://docs.persona.com/types)
-- [Zod Documentation](https://zod.dev/)
+- [Persona API Reference](https://docs.withpersona.com/reference/introduction)
+- [API Introduction](https://docs.withpersona.com/api-introduction)
 
 ## Next Steps
-Apply patterns in `persona-core-workflow-a` for real-world usage.
+Apply in `persona-core-workflow-a` for real KYC flows.

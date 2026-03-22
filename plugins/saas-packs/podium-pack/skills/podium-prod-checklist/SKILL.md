@@ -1,121 +1,56 @@
 ---
 name: podium-prod-checklist
 description: |
-  Execute Podium production deployment checklist and rollback procedures.
-  Use when deploying Podium integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "podium production", "deploy podium",
-  "podium go-live", "podium launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
-version: 1.0.0
+  Podium prod checklist — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium prod checklist", "podium-prod-checklist".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Podium Production Checklist
+# Podium Prod Checklist
 
 ## Overview
-Complete checklist for deploying Podium integrations to production.
+Implementation patterns for Podium prod checklist using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Completed `podium-install-auth` setup
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Step 1: API Call Pattern
+```typescript
+import axios from 'axios';
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Podium error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
+});
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Podium connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.podium.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/podium-integration app=image:new --record
-kubectl rollout pause deployment/podium-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/podium-integration
-kubectl rollout pause deployment/podium-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/podium-integration
-kubectl rollout status deployment/podium-integration
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
 ```
 
 ## Output
-- Deployed Podium integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+- Podium API integration for prod checklist
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; podium: any }> {
-  const start = Date.now();
-  try {
-    await podiumClient.ping();
-    return { status: 'healthy', podium: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', podium: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/podium-integration
-kubectl rollout status deployment/podium-integration
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [Podium Status](https://status.podium.com)
-- [Podium Support](https://docs.podium.com/support)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-For version upgrades, see `podium-upgrade-migration`.
+See related Podium skills for more workflows.

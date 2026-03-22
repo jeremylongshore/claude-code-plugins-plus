@@ -1,113 +1,46 @@
 ---
 name: remofirst-debug-bundle
 description: |
-  Collect RemoFirst debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for RemoFirst problems.
-  Trigger with phrases like "remofirst debug", "remofirst support bundle",
-  "collect remofirst logs", "remofirst diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
-version: 1.0.0
+  RemoFirst debug bundle — global HR, EOR, and payroll platform integration.
+  Use when working with RemoFirst for global employment, payroll, or compliance.
+  Trigger with phrases like "remofirst debug bundle", "remofirst-debug-bundle", "global HR API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, remote-work, remofirst]
-compatible-with: claude-code
+tags: [saas, remofirst, hr, eor, payroll, global-employment]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # RemoFirst Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for RemoFirst support tickets.
+Implementation patterns for RemoFirst debug bundle — global HR and EOR platform integration.
 
 ## Prerequisites
-- RemoFirst SDK installed
-- Access to application logs
-- Permission to collect environment info
+- Completed `remofirst-install-auth` setup
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
-```bash
-#!/bin/bash
-# remofirst-debug-bundle.sh
-
-BUNDLE_DIR="remofirst-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== RemoFirst Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "REMOFIRST_API_KEY: ${REMOFIRST_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @remofirst/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "remofirst" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.remofirst.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+### Step 1: API Pattern
+```python
+client = RemoFirstClient()
+employees = client.get("/employees", params={"page_size": 10})
+print(f"Employees: {len(employees['data'])}")
 ```
 
 ## Output
-- `remofirst-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- RemoFirst integration for debug bundle
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash remofirst-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to RemoFirst support portal
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Invalid API key | Contact RemoFirst support |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 422 Validation Error | Missing required field | Check API documentation |
 
 ## Resources
-- [RemoFirst Support](https://docs.remofirst.com/support)
-- [RemoFirst Status](https://status.remofirst.com)
+- [RemoFirst](https://www.remofirst.com)
 
 ## Next Steps
-For rate limit issues, see `remofirst-rate-limits`.
+See related RemoFirst skills for more workflows.

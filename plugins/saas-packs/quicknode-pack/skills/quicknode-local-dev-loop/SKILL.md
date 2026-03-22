@@ -1,119 +1,48 @@
 ---
 name: quicknode-local-dev-loop
 description: |
-  Configure QuickNode local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with QuickNode.
-  Trigger with phrases like "quicknode dev setup", "quicknode local development",
-  "quicknode dev environment", "develop with quicknode".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
-version: 1.0.0
+  QuickNode local dev loop — blockchain RPC and Web3 infrastructure integration.
+  Use when working with QuickNode for blockchain development.
+  Trigger with phrases like "quicknode local dev loop", "quicknode-local-dev-loop", "blockchain RPC".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, blockchain, web3, quicknode]
-compatible-with: claude-code
+tags: [saas, quicknode, blockchain, web3, rpc, ethereum]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # QuickNode Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for QuickNode.
+Implementation patterns for QuickNode local dev loop using blockchain RPC endpoints and the QuickNode SDK.
 
 ## Prerequisites
 - Completed `quicknode-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-quicknode-project/
-├── src/
-│   ├── quicknode/
-│   │   ├── client.ts       # QuickNode client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── quicknode.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
-
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
+### Step 1: Connect to QuickNode
 ```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { QuickNodeClient } from '../src/quicknode/client';
-
-describe('QuickNode Client', () => {
-  it('should initialize with API key', () => {
-    const client = new QuickNodeClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+import { ethers } from 'ethers';
+const provider = new ethers.JsonRpcProvider(process.env.QUICKNODE_ENDPOINT);
+const block = await provider.getBlockNumber();
+console.log(`Connected at block ${block}`);
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for QuickNode development
+- QuickNode integration for local dev loop
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock QuickNode Responses
-```typescript
-vi.mock('@quicknode/sdk', () => ({
-  QuickNodeClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=QUICKNODE=* npm run dev
-```
+| 401 Unauthorized | Invalid endpoint token | Verify URL from Dashboard |
+| Rate limited | Too many requests | Implement backoff or upgrade plan |
+| Method not found | Add-on required | Enable in QuickNode Dashboard |
 
 ## Resources
-- [QuickNode SDK Reference](https://docs.quicknode.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [QuickNode Docs](https://www.quicknode.com/docs/welcome)
+- [Ethereum API](https://www.quicknode.com/docs/ethereum)
 
 ## Next Steps
-See `quicknode-sdk-patterns` for production-ready code patterns.
+See related QuickNode skills for more workflows.

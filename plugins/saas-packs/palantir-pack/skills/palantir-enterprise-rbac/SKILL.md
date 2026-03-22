@@ -1,224 +1,114 @@
 ---
 name: palantir-enterprise-rbac
 description: |
-  Configure Palantir enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Palantir.
-  Trigger with phrases like "palantir SSO", "palantir RBAC",
-  "palantir enterprise", "palantir roles", "palantir permissions", "palantir SAML".
+  Configure Palantir Foundry enterprise access control with project roles, markings, and service users.
+  Use when implementing role-based access, configuring project permissions,
+  or setting up service user accounts for Foundry integrations.
+  Trigger with phrases like "palantir RBAC", "foundry roles",
+  "palantir permissions", "foundry access control", "foundry service user".
 allowed-tools: Read, Write, Edit
-version: 1.0.0
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, palantir]
-compatible-with: claude-code
+tags: [saas, palantir, foundry, rbac, enterprise, security]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Palantir Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Palantir integrations.
+Configure enterprise-grade access control in Foundry: project roles (Viewer/Editor/Owner), organization-level groups, service user accounts for integrations, and marking-based data classification.
 
 ## Prerequisites
-- Palantir Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum PalantirRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface PalantirPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<PalantirRole, PalantirPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: PalantirRole,
-  action: keyof PalantirPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Palantir SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://palantir.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/palantir/callback',
-};
-
-// Map IdP groups to Palantir roles
-const groupRoleMapping: Record<string, PalantirRole> = {
-  'Engineering': PalantirRole.Developer,
-  'Platform-Admins': PalantirRole.Admin,
-  'Data-Team': PalantirRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@palantir/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.PALANTIR_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.PALANTIR_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/palantir/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface PalantirOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: PalantirRole;
-}
-
-async function createOrganization(
-  config: PalantirOrganization
-): Promise<void> {
-  await palantirClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requirePalantirPermission(
-  requiredPermission: keyof PalantirPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { palantirRole: PalantirRole };
-
-    if (!checkPermission(user.palantirRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/palantir/resource/:id',
-  requirePalantirPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface PalantirAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: PalantirRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logPalantirAccess(entry: PalantirAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Foundry enrollment with admin access
+- Understanding of Foundry project structure
+- Familiarity with `palantir-security-basics`
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Palantir permissions.
+### Step 1: Project Role Hierarchy
+| Role | Permissions | Use Case |
+|------|------------|----------|
+| Viewer | Read datasets, view Ontology objects | Analysts, stakeholders |
+| Editor | Read/write datasets, run builds | Data engineers, developers |
+| Owner | Full control, manage members, configure | Project leads, admins |
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+### Step 2: Create Service Users for Integrations
+```text
+Developer Console > Applications > New Application:
+1. Name: "order-sync-service" (descriptive of function)
+2. Type: Server application (client credentials flow)
+3. Scopes: api:read-data, api:ontology-read (minimum needed)
+4. Project access: Add as Editor on specific projects only
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+Result: client_id + client_secret (store in secrets manager)
 ```
 
+### Step 3: Scope Matrix by Application
+```python
+# Define per-application scopes
+APP_SCOPES = {
+    "dashboard-reader": ["api:read-data", "api:ontology-read"],
+    "data-sync-service": ["api:read-data", "api:write-data"],
+    "admin-tool": ["api:read-data", "api:write-data", "api:ontology-read", "api:ontology-write"],
+}
+
+def create_client_for_app(app_name: str) -> foundry.FoundryClient:
+    scopes = APP_SCOPES[app_name]
+    auth = foundry.ConfidentialClientAuth(
+        client_id=os.environ[f"{app_name.upper().replace('-','_')}_CLIENT_ID"],
+        client_secret=os.environ[f"{app_name.upper().replace('-','_')}_CLIENT_SECRET"],
+        hostname=os.environ["FOUNDRY_HOSTNAME"],
+        scopes=scopes,
+    )
+    auth.sign_in_as_service_user()
+    return foundry.FoundryClient(auth=auth, hostname=os.environ["FOUNDRY_HOSTNAME"])
+```
+
+### Step 4: Group-Based Access Control
+```text
+Organization Groups (manage in Foundry Admin):
+├── data-engineering        → Editor on pipeline projects
+├── data-science            → Viewer on pipeline, Editor on ML projects
+├── business-analysts       → Viewer on analytics projects
+├── external-partners       → Viewer on shared datasets only
+└── platform-admins         → Owner on all projects
+
+Principle: Users inherit access from groups.
+Never assign project roles to individual users.
+```
+
+### Step 5: Audit Access Patterns
+```python
+def audit_service_user_access(client):
+    """Check what the current service user can actually access."""
+    accessible = {"ontologies": [], "datasets": []}
+    try:
+        for ont in client.ontologies.Ontology.list():
+            accessible["ontologies"].append(ont.api_name)
+    except foundry.ApiError:
+        pass
+    print(f"Accessible ontologies: {accessible['ontologies']}")
+    return accessible
+```
+
+## Output
+- Project roles assigned via groups (not individual users)
+- Service users with minimum viable scopes per application
+- Marking-based data classification enforced
+- Access audit capability
+
+## Error Handling
+| Access Issue | Symptom | Fix |
+|-------------|---------|-----|
+| 403 on dataset read | Not a project member | Add user/group as Viewer |
+| 403 on Ontology | Missing scope | Add `api:ontology-read` to app |
+| Cannot see marked columns | Missing marking access | Grant marking to group |
+| Service user sees everything | Over-scoped | Reduce to minimum scopes |
+
 ## Resources
-- [Palantir Enterprise Guide](https://docs.palantir.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+- [Foundry Authentication](https://www.palantir.com/docs/foundry/api/general/overview/authentication)
+- [Developer Console](https://www.palantir.com/docs/foundry/ontology-sdk/create-a-new-osdk)
 
 ## Next Steps
-For major migrations, see `palantir-migration-deep-dive`.
+For incident response, see `palantir-incident-runbook`.

@@ -1,98 +1,46 @@
 ---
 name: remofirst-hello-world
 description: |
-  Create a minimal working RemoFirst example.
-  Use when starting a new RemoFirst integration, testing your setup,
-  or learning basic RemoFirst API patterns.
-  Trigger with phrases like "remofirst hello world", "remofirst example",
-  "remofirst quick start", "simple remofirst code".
-allowed-tools: Read, Write, Edit
-version: 1.0.0
+  RemoFirst hello world — global HR, EOR, and payroll platform integration.
+  Use when working with RemoFirst for global employment, payroll, or compliance.
+  Trigger with phrases like "remofirst hello world", "remofirst-hello-world", "global HR API".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hr, remote-work, remofirst]
-compatible-with: claude-code
+tags: [saas, remofirst, hr, eor, payroll, global-employment]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # RemoFirst Hello World
 
 ## Overview
-Minimal working example demonstrating core RemoFirst functionality.
+Implementation patterns for RemoFirst hello world — global HR and EOR platform integration.
 
 ## Prerequisites
 - Completed `remofirst-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
-```typescript
-import { RemoFirstClient } from '@remofirst/sdk';
-
-const client = new RemoFirstClient({
-  apiKey: process.env.REMOFIRST_API_KEY,
-});
-```
-
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
+### Step 1: API Pattern
+```python
+client = RemoFirstClient()
+employees = client.get("/employees", params={"page_size": 10})
+print(f"Employees: {len(employees['data'])}")
 ```
 
 ## Output
-- Working code file with RemoFirst client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your RemoFirst connection is working.
-```
+- RemoFirst integration for hello world
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { RemoFirstClient } from '@remofirst/sdk';
-
-const client = new RemoFirstClient({
-  apiKey: process.env.REMOFIRST_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from remofirst import RemoFirstClient
-
-client = RemoFirstClient()
-
-# Your first API call here
-```
+| 401 Unauthorized | Invalid API key | Contact RemoFirst support |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 422 Validation Error | Missing required field | Check API documentation |
 
 ## Resources
-- [RemoFirst Getting Started](https://docs.remofirst.com/getting-started)
-- [RemoFirst API Reference](https://docs.remofirst.com/api)
-- [RemoFirst Examples](https://docs.remofirst.com/examples)
+- [RemoFirst](https://www.remofirst.com)
 
 ## Next Steps
-Proceed to `remofirst-local-dev-loop` for development workflow setup.
+See related RemoFirst skills for more workflows.

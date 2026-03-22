@@ -1,114 +1,56 @@
 ---
 name: podium-upgrade-migration
 description: |
-  Analyze, plan, and execute Podium SDK upgrades with breaking change detection.
-  Use when upgrading Podium SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade podium", "podium migration",
-  "podium breaking changes", "update podium SDK", "analyze podium version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
-version: 1.0.0
+  Podium upgrade migration — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium upgrade migration", "podium-upgrade-migration".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
-# Podium Upgrade & Migration
+# Podium Upgrade Migration
 
 ## Overview
-Guide for upgrading Podium SDK versions and handling breaking changes.
+Implementation patterns for Podium upgrade migration using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Current Podium SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+- Completed `podium-install-auth` setup
+- Valid OAuth2 access token
 
 ## Instructions
 
-### Step 1: Check Current Version
-```bash
-npm list @podium/sdk
-npm view @podium/sdk version
-```
+### Step 1: API Call Pattern
+```typescript
+import axios from 'axios';
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/podium/sdk/releases
-```
+const podium = axios.create({
+  baseURL: 'https://api.podium.com/v4',
+  headers: { 'Authorization': `Bearer ${process.env.PODIUM_ACCESS_TOKEN}` },
+});
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/podium-sdk-vX.Y.Z
-npm install @podium/sdk@latest
-npm test
+const { data } = await podium.get('/locations');
+console.log(`Locations: ${data.data.length}`);
 ```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
 
 ## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+- Podium API integration for upgrade migration
+- OAuth2 authenticated requests
+- Error handling and retry logic
 
 ## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@podium/sdk';
-
-// After (v2.x)
-import { PodiumClient } from '@podium/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new PodiumClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @podium/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Podium]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Refresh OAuth token |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Missing scope | Update OAuth app scopes |
 
 ## Resources
-- [Podium Changelog](https://github.com/podium/sdk/releases)
-- [Podium Migration Guide](https://docs.podium.com/migration)
+- [Podium Developer Portal](https://developer.podium.com/)
+- [Podium API Docs](https://docs.podium.com)
 
 ## Next Steps
-For CI integration during upgrades, see `podium-ci-integration`.
+See related Podium skills for more workflows.

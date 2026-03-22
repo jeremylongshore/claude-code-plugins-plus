@@ -1,56 +1,49 @@
 ---
 name: retellai-ci-integration
 description: |
-  Configure Retell AI CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Retell AI tests into your build process.
-  Trigger with phrases like "retellai CI", "retellai GitHub Actions",
-  "retellai automated tests", "CI retellai".
-allowed-tools: Read, Write, Edit, Bash(gh:*)
-version: 1.0.0
+  Retell AI ci integration — AI voice agent and phone call automation.
+  Use when working with Retell AI for voice agents, phone calls, or telephony.
+  Trigger with phrases like "retell ci integration", "retellai-ci-integration", "voice agent".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code
-tags: [retellai, voice-ai, saas]
+tags: [saas, retellai, voice, telephony, ai-agents]
+compatible-with: claude-code, codex, openclaw
 ---
-# Retell AI CI Integration
+
+# Retell AI Ci Integration
 
 ## Overview
-Set up CI/CD pipelines for Retell AI integrations with automated testing, coverage reporting, and release workflows. Covers GitHub Actions configuration for PR and push triggers, secret management for test API keys, conditional integration tests that skip when credentials are unavailable, and branch protection rules requiring Retell AI tests to pass.
+Implementation patterns for Retell AI ci integration — voice agent and telephony platform.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Retell AI test API key
-- npm/pnpm project configured
+- Completed `retellai-install-auth` setup
 
 ## Instructions
 
-1. **Create a GitHub Actions workflow** that runs on push to main and pull requests. Configure Node.js 20, npm caching, unit tests with coverage, and integration tests. See [CI configs](references/ci-configs.md) for the complete YAML.
-2. **Configure secrets** using `gh secret set RETELLAI_API_KEY` to store the test API key securely. Use separate secrets for staging and production environments.
-3. **Add integration tests** that conditionally skip when `RETELLAI_API_KEY` is not set. This allows contributors without API keys to run unit tests while CI runs the full suite.
-4. **Set up branch protection** requiring the `test` and `retellai-integration` status checks to pass before merging.
-5. **Configure a release workflow** triggered by version tags (`v*`) that runs integration tests against production before publishing.
+### Step 1: SDK Pattern
+```typescript
+import Retell from 'retell-sdk';
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
+
+const agents = await retell.agent.list();
+console.log(`Agents: ${agents.length}`);
+```
 
 ## Output
-- Automated test pipeline running on every PR
-- PR checks configured with branch protection
-- Coverage reports uploaded for review
-- Release workflow validating production readiness
+- Retell AI integration for ci integration
 
 ## Error Handling
-| Issue | Cause | Solution |
+| Error | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues or slow API | Increase timeout or add mock fallback |
-| Auth failures in CI | Invalid or expired key | Rotate secret value in repository settings |
-
-## Examples
-
-For GitHub Actions workflows, integration test patterns, release workflow, and branch protection config, see [CI configs](references/ci-configs.md).
+| 401 Unauthorized | Invalid API key | Check RETELL_API_KEY |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 400 Bad Request | Invalid parameters | Check API documentation |
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Retell AI CI Guide](https://docs.retellai.com/ci)
+- [Retell AI Documentation](https://docs.retellai.com)
+- [retell-sdk npm](https://www.npmjs.com/package/retell-sdk)
 
 ## Next Steps
-For deployment patterns after CI passes, see `retellai-deploy-integration`. For production readiness verification, see `retellai-prod-checklist`.
+See related Retell AI skills for more workflows.

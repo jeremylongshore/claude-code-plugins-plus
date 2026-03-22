@@ -1,113 +1,56 @@
 ---
 name: procore-common-errors
 description: |
-  Diagnose and fix Procore common errors and exceptions.
-  Use when encountering Procore errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "procore error", "fix procore",
-  "procore not working", "debug procore".
-allowed-tools: Read, Grep, Bash(curl:*)
-version: 1.0.0
+  Procore common errors — construction management platform integration.
+  Use when working with Procore API for project management, RFIs, or submittals.
+  Trigger with phrases like "procore common errors", "procore-common-errors".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, procore]
-compatible-with: claude-code
+tags: [saas, procore, construction, project-management]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Procore Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Procore errors and their solutions.
+Implementation patterns for Procore common errors using the REST API with OAuth2 authentication.
 
 ## Prerequisites
-- Procore SDK installed
-- API credentials configured
-- Access to error logs
+- Completed `procore-install-auth` setup
 
 ## Instructions
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### Step 1: API Call Pattern
+```python
+import os, requests
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+token_resp = requests.post("https://login.procore.com/oauth/token", data={
+    "grant_type": "client_credentials",
+    "client_id": os.environ["PROCORE_CLIENT_ID"],
+    "client_secret": os.environ["PROCORE_CLIENT_SECRET"],
+})
+access_token = token_resp.json()["access_token"]
+headers = {"Authorization": f"Bearer {access_token}"}
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+companies = requests.get("https://api.procore.com/rest/v1.0/companies", headers=headers)
+print(f"Companies: {len(companies.json())}")
+```
 
 ## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+- Procore API integration for common errors
 
 ## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
-```bash
-# Verify API key is set
-echo $PROCORE_API_KEY
-```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `procore-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Procore status
-curl -s https://status.procore.com
-
-# Verify API connectivity
-curl -I https://api.procore.com
-
-# Check local configuration
-env | grep PROCORE
-```
-
-### Escalation Path
-1. Collect evidence with `procore-debug-bundle`
-2. Check Procore status page
-3. Contact support with request ID
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Unauthorized | Expired token | Re-authenticate |
+| 429 Rate Limited | Too many requests | Implement backoff |
+| 403 Forbidden | Insufficient permissions | Check project role |
 
 ## Resources
-- [Procore Status Page](https://status.procore.com)
-- [Procore Support](https://docs.procore.com/support)
-- [Procore Error Codes](https://docs.procore.com/errors)
+- [Procore Developers](https://developers.procore.com/)
+- [REST API Reference](https://developers.procore.com/reference/rest)
 
 ## Next Steps
-For comprehensive debugging, see `procore-debug-bundle`.
+See related Procore skills for more workflows.

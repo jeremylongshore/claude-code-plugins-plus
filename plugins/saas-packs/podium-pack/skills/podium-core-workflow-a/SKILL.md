@@ -1,71 +1,84 @@
 ---
 name: podium-core-workflow-a
 description: |
-  Execute Podium primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "podium main workflow",
-  "primary task with podium".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
-version: 1.0.0
+  Podium core workflow a — business messaging and communication platform integration.
+  Use when working with Podium API for messaging, reviews, or payments.
+  Trigger with phrases like "podium core workflow a", "podium-core-workflow-a".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
+version: 2.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, podium]
-compatible-with: claude-code
+tags: [saas, podium, messaging, reviews, payments]
+compatible-with: claude-code, codex, openclaw
 ---
 
 # Podium Core Workflow A
 
 ## Overview
-Primary money-path workflow for Podium. This is the most common use case.
+Build a complete messaging workflow with Podium: send messages, receive inbound messages via webhooks, and manage conversation threads.
 
 ## Prerequisites
-- Completed `podium-install-auth` setup
-- Understanding of Podium core concepts
-- Valid API credentials configured
+- Completed `podium-install-auth` with OAuth tokens
+- Webhook endpoint accessible via HTTPS
 
 ## Instructions
 
-### Step 1: Initialize
+### Step 1: Set Up Webhook for Inbound Messages
 ```typescript
-// Step 1 implementation
+import express from 'express';
+const app = express();
+
+app.post('/webhooks/podium', express.json(), async (req, res) => {
+  const event = req.body;
+  if (event.type === 'message.received') {
+    const msg = event.data;
+    console.log(`From: ${msg.attributes['contact-phone']}`);
+    console.log(`Body: ${msg.attributes.body}`);
+    // Auto-reply or route to agent
+    await sendReply(msg.attributes['location-uid'], msg.attributes['contact-phone'], 'Thanks for reaching out!');
+  }
+  res.status(200).json({ received: true });
+});
 ```
 
-### Step 2: Execute
+### Step 2: Register Webhook with Podium
 ```typescript
-// Step 2 implementation
+const { data } = await podium.post('/webhooks', {
+  data: {
+    attributes: {
+      url: 'https://your-app.com/webhooks/podium',
+      events: ['message.received', 'message.sent', 'message.failed'],
+    },
+  },
+});
+console.log(`Webhook registered: ${data.data.id}`);
 ```
 
-### Step 3: Finalize
+### Step 3: Send Reply Messages
 ```typescript
-// Step 3 implementation
+async function sendReply(locationId: string, phone: string, body: string) {
+  const { data } = await podium.post(`/locations/${locationId}/messages`, {
+    data: { attributes: { body, 'contact-phone': phone } },
+  });
+  return data.data.id;
+}
 ```
 
 ## Output
-- Completed Core Workflow A execution
-- Expected results from Podium API
-- Success confirmation or error details
+- Webhook receiving inbound messages
+- Auto-reply capability
+- Two-way messaging via Podium
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
+| Webhook not firing | URL not HTTPS | Use HTTPS endpoint |
+| Message failed | Invalid phone | Verify E.164 format |
+| No events received | Wrong event types | Check webhook configuration |
 
 ## Resources
-- [Podium Documentation](https://docs.podium.com)
-- [Podium API Reference](https://docs.podium.com/api)
+- [Sync Messages](https://docs.podium.com/docs/sync-messages-from-podium-conversations)
+- [Webhooks Guide](https://docs.podium.com/docs/webhooks)
 
 ## Next Steps
-For secondary workflow, see `podium-core-workflow-b`.
+Reviews and payments: `podium-core-workflow-b`
