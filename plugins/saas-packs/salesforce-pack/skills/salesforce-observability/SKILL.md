@@ -1,11 +1,11 @@
 ---
 name: salesforce-observability
 description: |
-  Set up comprehensive observability for Salesforce integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for Salesforce operations, setting up dashboards,
+  Set up observability for Salesforce integrations with API limit monitoring, error tracking, and alerting.
+  Use when implementing monitoring for Salesforce operations, tracking API consumption,
   or configuring alerting for Salesforce integration health.
   Trigger with phrases like "salesforce monitoring", "salesforce metrics",
-  "salesforce observability", "monitor salesforce", "salesforce alerts", "salesforce tracing".
+  "salesforce observability", "monitor salesforce", "salesforce alerts", "salesforce API usage dashboard".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,141 +17,190 @@ compatible-with: claude-code
 # Salesforce Observability
 
 ## Overview
-Set up comprehensive observability for Salesforce integrations.
+Instrument Salesforce integrations with API limit monitoring, SOQL performance tracking, error classification, and alerting. Uses Salesforce's built-in Limits API and EventLogFile for deep visibility.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- jsforce connection configured
+- Prometheus or compatible metrics backend (optional)
+- Grafana or similar dashboarding tool (optional)
+- Salesforce Enterprise+ for EventLogFile access
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `salesforce_requests_total` | Counter | Total API requests |
-| `salesforce_request_duration_seconds` | Histogram | Request latency |
-| `salesforce_errors_total` | Counter | Error count by type |
-| `salesforce_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
+### Step 1: API Limit Monitoring (Core Metric)
 
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import { getConnection } from './salesforce/connection';
+import { Registry, Gauge, Counter, Histogram } from 'prom-client';
 
 const registry = new Registry();
 
-const requestCounter = new Counter({
-  name: 'salesforce_requests_total',
-  help: 'Total Salesforce API requests',
-  labelNames: ['method', 'status'],
+// The single most important Salesforce metric
+const apiLimitGauge = new Gauge({
+  name: 'salesforce_api_limit_remaining',
+  help: 'Remaining daily API calls',
   registers: [registry],
 });
 
-const requestDuration = new Histogram({
-  name: 'salesforce_request_duration_seconds',
-  help: 'Salesforce request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+const apiLimitMaxGauge = new Gauge({
+  name: 'salesforce_api_limit_max',
+  help: 'Maximum daily API calls',
   registers: [registry],
 });
 
-const errorCounter = new Counter({
-  name: 'salesforce_errors_total',
-  help: 'Salesforce errors by type',
-  labelNames: ['error_type'],
+const apiUsagePercent = new Gauge({
+  name: 'salesforce_api_usage_percent',
+  help: 'Percentage of daily API calls used',
   registers: [registry],
 });
+
+// Poll limits every 5 minutes (each poll = 1 API call)
+setInterval(async () => {
+  try {
+    const conn = await getConnection();
+    const limits = await conn.request('/services/data/v59.0/limits/');
+
+    apiLimitGauge.set(limits.DailyApiRequests.Remaining);
+    apiLimitMaxGauge.set(limits.DailyApiRequests.Max);
+
+    const used = limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining;
+    apiUsagePercent.set((used / limits.DailyApiRequests.Max) * 100);
+  } catch (error) {
+    console.error('Failed to poll SF limits:', error);
+  }
+}, 5 * 60 * 1000);
 ```
 
-### Instrumented Client
+### Step 2: Request Instrumentation
 
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
+const sfRequestDuration = new Histogram({
+  name: 'salesforce_request_duration_seconds',
+  help: 'Salesforce API request duration',
+  labelNames: ['operation', 'sobject'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
+  registers: [registry],
+});
+
+const sfRequestCounter = new Counter({
+  name: 'salesforce_requests_total',
+  help: 'Total Salesforce API requests',
+  labelNames: ['operation', 'sobject', 'status'],
+  registers: [registry],
+});
+
+const sfErrorCounter = new Counter({
+  name: 'salesforce_errors_total',
+  help: 'Salesforce errors by error code',
+  labelNames: ['error_code', 'sobject'],
+  registers: [registry],
+});
+
+// Instrumented wrapper for all SF operations
+async function instrumentedSfCall<T>(
+  operation: string,
+  sobject: string,
+  fn: () => Promise<T>
 ): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+  const timer = sfRequestDuration.startTimer({ operation, sobject });
 
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
+    const result = await fn();
+    sfRequestCounter.inc({ operation, sobject, status: 'success' });
     return result;
   } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
+    const errorCode = error.errorCode || 'UNKNOWN';
+    sfRequestCounter.inc({ operation, sobject, status: 'error' });
+    sfErrorCounter.inc({ error_code: errorCode, sobject });
     throw error;
   } finally {
     timer();
   }
 }
+
+// Usage
+const accounts = await instrumentedSfCall('query', 'Account', () =>
+  conn.query('SELECT Id, Name FROM Account LIMIT 10')
+);
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
+### Step 3: Salesforce-Native Monitoring (EventLogFile)
 
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
+// EventLogFile provides detailed API usage data (Enterprise+ only)
+// Available event types: API, Login, Logout, URI, BulkApi, etc.
 
-const tracer = trace.getTracer('salesforce-client');
+async function getApiUsageEvents(days: number = 1) {
+  const conn = await getConnection();
 
-async function tracedSalesforceCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`salesforce.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+  const events = await conn.query(`
+    SELECT Id, EventType, LogDate, LogFileLength
+    FROM EventLogFile
+    WHERE EventType IN ('API', 'RestApi', 'BulkApi')
+      AND LogDate >= LAST_N_DAYS:${days}
+    ORDER BY LogDate DESC
+  `);
+
+  for (const event of events.records) {
+    // Download and parse the CSV log file
+    const logContent = await conn.request(
+      `/services/data/v59.0/sobjects/EventLogFile/${event.Id}/LogFile`
+    );
+    // Parse CSV to extract: USER_ID, URI, METHOD, STATUS_CODE, RUN_TIME, CPU_TIME
+    console.log(`${event.EventType} on ${event.LogDate}: ${event.LogFileLength} bytes`);
+  }
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
+### Step 4: Structured Logging
 
 ```typescript
 import pino from 'pino';
 
-const logger = pino({
-  name: 'salesforce',
-  level: process.env.LOG_LEVEL || 'info',
-});
+const logger = pino({ name: 'salesforce-integration' });
 
-function logSalesforceOperation(
+function logSfOperation(
   operation: string,
-  data: Record<string, any>,
-  duration: number
+  sobject: string,
+  details: Record<string, any>,
+  durationMs: number
 ) {
   logger.info({
     service: 'salesforce',
     operation,
-    duration_ms: duration,
-    ...data,
+    sobject,
+    durationMs,
+    ...details,
+    // Parse Sforce-Limit-Info header from response
+    // Format: "api-usage=135/150000"
   });
 }
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
+### Step 5: Alert Rules
 
 ```yaml
-# salesforce_alerts.yaml
+# prometheus-alerts.yaml
 groups:
   - name: salesforce_alerts
     rules:
+      - alert: SalesforceApiLimitCritical
+        expr: salesforce_api_usage_percent > 90
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Salesforce API usage above 90% ({{ $value }}%)"
+          description: "API calls will be blocked at 100%. Reduce usage or contact Salesforce for limit increase."
+
+      - alert: SalesforceApiLimitWarning
+        expr: salesforce_api_usage_percent > 75
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Salesforce API usage above 75%"
+
       - alert: SalesforceHighErrorRate
         expr: |
           rate(salesforce_errors_total[5m]) /
@@ -166,87 +215,45 @@ groups:
         expr: |
           histogram_quantile(0.95,
             rate(salesforce_request_duration_seconds_bucket[5m])
-          ) > 2
+          ) > 5
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Salesforce P95 latency > 2s"
+          summary: "Salesforce P95 latency > 5s"
 
-      - alert: SalesforceDown
-        expr: up{job="salesforce"} == 0
-        for: 1m
+      - alert: SalesforceAuthFailure
+        expr: increase(salesforce_errors_total{error_code="INVALID_SESSION_ID"}[5m]) > 0
         labels:
           severity: critical
         annotations:
-          summary: "Salesforce integration is down"
+          summary: "Salesforce authentication failures detected"
 ```
 
-## Dashboard
+## Key Salesforce Metrics to Monitor
 
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Salesforce Request Rate",
-      "targets": [{
-        "expr": "rate(salesforce_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Salesforce Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(salesforce_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+| Metric | Source | Alert Threshold |
+|--------|--------|----------------|
+| Daily API remaining | `/services/data/v59.0/limits/` | < 10% remaining |
+| Request latency P95 | Instrumented client | > 5 seconds |
+| Error rate by code | Instrumented client | > 5% |
+| Bulk API job failures | Bulk job results | Any failures |
+| Session/token expiry | Auth error count | Any INVALID_SESSION_ID |
+| Data storage used | Limits API | > 90% capacity |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
-```
+| Limits poll failing | Token expired | Auto-refresh connection |
+| High cardinality | Too many label values | Use error_code, not error message |
+| Missing EventLogFile | Not Enterprise+ | Use instrumented client instead |
+| Alert storms | Threshold too low | Tune thresholds with historical data |
 
 ## Resources
+- [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
+- [EventLogFile](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_eventlogfile.htm)
+- [Salesforce Status API](https://api.status.salesforce.com/)
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Salesforce Observability Guide](https://docs.salesforce.com/observability)
 
 ## Next Steps
 For incident response, see `salesforce-incident-runbook`.

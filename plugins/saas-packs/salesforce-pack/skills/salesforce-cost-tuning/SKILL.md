@@ -1,11 +1,11 @@
 ---
 name: salesforce-cost-tuning
 description: |
-  Optimize Salesforce costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Salesforce billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "salesforce cost", "salesforce billing",
-  "reduce salesforce costs", "salesforce pricing", "salesforce expensive", "salesforce budget".
+  Optimize Salesforce costs through API call reduction, edition selection, and license management.
+  Use when analyzing Salesforce costs, reducing API consumption,
+  or choosing the right Salesforce edition for your integration needs.
+  Trigger with phrases like "salesforce cost", "salesforce pricing",
+  "reduce salesforce costs", "salesforce license", "salesforce API usage", "salesforce budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +17,157 @@ compatible-with: claude-code
 # Salesforce Cost Tuning
 
 ## Overview
-Optimize Salesforce costs through smart tier selection, sampling, and usage monitoring.
+Optimize Salesforce costs by reducing API call consumption, choosing the right edition, and monitoring API usage budgets. Salesforce charges per-user licenses (not per-API-call), but API limits are tied to edition + license count.
 
 ## Prerequisites
-- Access to Salesforce billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateSalesforceCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class SalesforceUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Salesforce budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateSalesforceCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await salesforceClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => salesforceClient.get(id)));
-
-// Use batch endpoint (1 call)
-await salesforceClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new SalesforceClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Salesforce dashboard
-# Or use API if available:
-# Check Salesforce documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM salesforce_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Access to Salesforce Setup > Company Information
+- Understanding of current API usage patterns
+- Access to contract/license details
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Salesforce dashboard for usage patterns and costs.
+### Step 1: Understand Salesforce Pricing Model
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+| Edition | Per-User/Month | API Calls/Day (Base) | Per-User API Calls |
+|---------|---------------|---------------------|-------------------|
+| Developer | Free | 15,000 | N/A (1 user) |
+| Essentials | ~$25 | 15,000 | +1,000/user |
+| Professional | ~$80 | 15,000 | +1,000/user |
+| Enterprise | ~$165 | 100,000 | +1,000/user |
+| Unlimited | ~$330 | 100,000 | +5,000/user |
+| API Add-on Pack | Varies | +200K-10M/day | Per org |
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+**Key insight:** API calls are per-org, not per-user. A 50-user Enterprise org gets 100,000 + (50 * 1,000) = 150,000 daily API calls. All integrations share this pool.
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 2: Monitor Current Usage
+
+```typescript
+const conn = await getConnection();
+const limits = await conn.request('/services/data/v59.0/limits/');
+
+const apiUsage = {
+  daily: {
+    used: limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining,
+    remaining: limits.DailyApiRequests.Remaining,
+    max: limits.DailyApiRequests.Max,
+    percentUsed: ((limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining) / limits.DailyApiRequests.Max * 100).toFixed(1),
+  },
+  bulk: {
+    ingestJobs: limits.DailyBulkV2QueryJobs,
+    queryJobs: limits.DailyBulkV2QueryJobs,
+  },
+  storage: {
+    dataMB: `${limits.DataStorageMB.Max - limits.DataStorageMB.Remaining}/${limits.DataStorageMB.Max} MB`,
+    fileMB: `${limits.FileStorageMB.Max - limits.FileStorageMB.Remaining}/${limits.FileStorageMB.Max} MB`,
+  },
+};
+
+console.log('API Usage:', JSON.stringify(apiUsage, null, 2));
+```
+
+### Step 3: Reduce API Call Count (Biggest Cost Lever)
+
+```typescript
+// BEFORE: 1 API call per record = expensive
+for (const contact of contacts) {
+  await conn.sobject('Contact').create(contact); // 1000 calls for 1000 records
+}
+
+// AFTER: Batch with sObject Collections = 5 calls for 1000 records
+for (let i = 0; i < contacts.length; i += 200) {
+  const batch = contacts.slice(i, i + 200);
+  await conn.sobject('Contact').create(batch); // Max 200 per call
+}
+
+// AFTER: Use Bulk API for 10K+ records = 1 job regardless of count
+await conn.bulk2.loadAndWaitForResults({
+  object: 'Contact',
+  operation: 'insert',
+  input: csvData, // Can be millions of rows
+});
+// Bulk API has its own separate daily limit (15,000 jobs)
+
+// Cache describe calls — saves 50+ calls/day if you describe objects frequently
+const describeCache = new Map();
+async function cachedDescribe(objectName: string) {
+  if (!describeCache.has(objectName)) {
+    describeCache.set(objectName, await conn.sobject(objectName).describe());
+  }
+  return describeCache.get(objectName);
+}
+```
+
+### Step 4: API Call Budget Tracking
+
+```typescript
+class ApiCallBudget {
+  private dailyBudget: number;
+  private callsToday = 0;
+
+  constructor(dailyBudget: number) {
+    this.dailyBudget = dailyBudget;
+  }
+
+  async refreshFromOrg(conn: jsforce.Connection): Promise<void> {
+    const limits = await conn.request('/services/data/v59.0/limits/');
+    this.callsToday = limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining;
+    // Note: this call itself costs 1 API call — don't check too frequently
+  }
+
+  canSpend(estimatedCalls: number): { allowed: boolean; reason?: string } {
+    const projected = this.callsToday + estimatedCalls;
+
+    if (projected > this.dailyBudget * 0.95) {
+      return { allowed: false, reason: `Would exceed 95% of ${this.dailyBudget} daily budget` };
+    }
+
+    if (projected > this.dailyBudget * 0.80) {
+      console.warn(`API budget warning: ${this.callsToday}/${this.dailyBudget} used`);
+    }
+
+    return { allowed: true };
+  }
+}
+```
+
+### Step 5: Edition Right-Sizing
+
+```
+Decision tree for Salesforce edition:
+
+If API calls/day < 15,000:
+  → Developer Edition (free) or Professional ($80/user/month)
+
+If API calls/day 15,000-150,000:
+  → Enterprise Edition ($165/user/month)
+
+If API calls/day > 150,000:
+  → Unlimited ($330/user/month) or API Add-on Pack
+  → OR reduce calls with batching/caching (usually cheaper)
+
+If you need just data sync:
+  → Consider Heroku Connect ($$$) for automatic bi-directional sync
+  → Eliminates most API calls — data syncs via Change Data Capture
+```
 
 ## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+- Current API usage analyzed
+- Cost reduction strategies applied (batching, caching, Bulk API)
+- API call budget tracking implemented
+- Edition recommendation based on usage
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateSalesforceCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Unexpected API call spike | Unoptimized loop/query | Use Collections or Bulk API |
+| Budget exceeded | Missing monitoring | Add budget tracking class |
+| Storage limit | Too many records/files | Archive old data, delete test data |
+| License overspend | Unused integration licenses | Audit active users quarterly |
 
 ## Resources
-- [Salesforce Pricing](https://salesforce.com/pricing)
-- [Salesforce Billing Dashboard](https://dashboard.salesforce.com/billing)
+- [Salesforce Editions & Pricing](https://www.salesforce.com/editions-pricing/overview/)
+- [API Request Limits by Edition](https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_platform_api.htm)
+- [Limits REST Resource](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/resources_limits.htm)
 
 ## Next Steps
 For architecture patterns, see `salesforce-reference-architecture`.

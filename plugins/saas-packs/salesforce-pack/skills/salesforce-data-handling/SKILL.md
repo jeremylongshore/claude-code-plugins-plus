@@ -1,11 +1,11 @@
 ---
 name: salesforce-data-handling
 description: |
-  Implement Salesforce PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Salesforce integrations.
-  Trigger with phrases like "salesforce data", "salesforce PII",
-  "salesforce GDPR", "salesforce data retention", "salesforce privacy", "salesforce CCPA".
+  Implement Salesforce data privacy, GDPR/CCPA compliance, and field-level encryption patterns.
+  Use when handling PII in Salesforce records, implementing data subject access requests,
+  or configuring Salesforce Shield encryption.
+  Trigger with phrases like "salesforce data privacy", "salesforce PII",
+  "salesforce GDPR", "salesforce data retention", "salesforce encryption", "salesforce CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,55 +17,152 @@ compatible-with: claude-code
 # Salesforce Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Salesforce.
+Handle sensitive data correctly when integrating with Salesforce: PII classification, GDPR/CCPA compliance with Salesforce's Individual object, data retention, and field-level encryption.
 
 ## Prerequisites
 - Understanding of GDPR/CCPA requirements
-- Salesforce SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+- Salesforce org with data classification enabled (Setup > Data Classification)
+- For encryption: Salesforce Shield license (Platform Encryption)
 
-## Data Classification
+## Instructions
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
+### Step 1: Salesforce Data Classification
 
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
+// Salesforce has built-in data classification on fields
+// Setup > Object Manager > [Object] > Fields > [Field] > Edit > Data Sensitivity Level
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+// Query field classification metadata
+const conn = await getConnection();
+const contactMeta = await conn.sobject('Contact').describe();
 
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
+const sensitiveFields = contactMeta.fields
+  .filter((f: any) => f.compoundFieldName === null) // Skip compound fields
+  .map((f: any) => ({
+    name: f.name,
+    label: f.label,
+    type: f.type,
+    encrypted: f.encrypted || false,
+    // Check custom data sensitivity via field metadata
+  }));
 
-  return findings;
+// PII fields in standard Salesforce objects
+const PII_FIELDS: Record<string, string[]> = {
+  Contact: ['FirstName', 'LastName', 'Email', 'Phone', 'MailingAddress', 'Birthdate'],
+  Lead: ['FirstName', 'LastName', 'Email', 'Phone', 'Company'],
+  Account: ['Phone', 'Website'], // Less PII, but may contain it
+  User: ['Email', 'Phone', 'Username'],
+  Case: ['SuppliedEmail', 'SuppliedName', 'SuppliedPhone'],
+};
+```
+
+### Step 2: GDPR — Individual Object & Consent
+
+```typescript
+// Salesforce has a built-in "Individual" object for GDPR consent tracking
+// Setup > Data Protection and Privacy > Enable Individual object
+
+// Link Contact to Individual for consent tracking
+await conn.sobject('Individual').create({
+  FirstName: 'Jane',
+  LastName: 'Smith',
+  HasOptedOutTracking: false,
+  HasOptedOutProcessing: false,
+  HasOptedOutSolicit: true,
+});
+
+// Check consent before processing
+const contact = await conn.query(`
+  SELECT Id, FirstName, LastName, Email,
+    Individual.HasOptedOutTracking,
+    Individual.HasOptedOutProcessing
+  FROM Contact
+  WHERE Id = '003xxxxxxxxxxxx'
+`);
+
+const individual = contact.records[0]?.Individual;
+if (individual?.HasOptedOutProcessing) {
+  console.log('Contact has opted out of data processing — skip');
 }
 ```
 
-## Data Redaction
+### Step 3: Data Subject Access Request (DSAR)
 
 ```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+// GDPR Article 15: Right of Access
+async function exportContactData(contactId: string): Promise<object> {
+  const conn = await getConnection();
 
-  for (const field of sensitiveFields) {
+  // Gather all data related to this contact
+  const [contact, cases, activities, opportunities] = await Promise.all([
+    conn.query(`
+      SELECT FIELDS(ALL) FROM Contact WHERE Id = '${contactId}' LIMIT 1
+    `),
+    conn.query(`
+      SELECT Id, Subject, Description, CreatedDate, Status
+      FROM Case WHERE ContactId = '${contactId}'
+    `),
+    conn.query(`
+      SELECT Id, Subject, ActivityDate, Description
+      FROM Task WHERE WhoId = '${contactId}'
+    `),
+    conn.query(`
+      SELECT Id, Name, StageName, Amount
+      FROM Opportunity WHERE Id IN (
+        SELECT OpportunityId FROM OpportunityContactRole WHERE ContactId = '${contactId}'
+      )
+    `),
+  ]);
+
+  return {
+    exportDate: new Date().toISOString(),
+    subject: 'Data Subject Access Request',
+    contact: contact.records[0],
+    cases: cases.records,
+    activities: activities.records,
+    opportunities: opportunities.records,
+  };
+}
+```
+
+### Step 4: Right to Deletion (Right to be Forgotten)
+
+```typescript
+// GDPR Article 17: Right to Erasure
+async function deleteContactData(contactId: string): Promise<void> {
+  const conn = await getConnection();
+
+  // 1. Delete related records first (due to lookup relationships)
+  const tasks = await conn.query(`SELECT Id FROM Task WHERE WhoId = '${contactId}'`);
+  if (tasks.records.length > 0) {
+    await conn.sobject('Task').destroy(tasks.records.map((t: any) => t.Id));
+  }
+
+  // 2. Delete the contact
+  await conn.sobject('Contact').destroy(contactId);
+
+  // 3. Audit log (required — don't delete this)
+  await conn.sobject('Integration_Log__c').create({
+    Action__c: 'GDPR_DELETION',
+    Record_Id__c: contactId,
+    Object_Type__c: 'Contact',
+    Timestamp__c: new Date().toISOString(),
+  });
+
+  // 4. Delete from local caches/databases too
+  console.log(`Contact ${contactId} deleted from Salesforce (GDPR erasure)`);
+}
+```
+
+### Step 5: Data Redaction in Logs
+
+```typescript
+// NEVER log raw Salesforce records containing PII
+function redactSfRecord(record: Record<string, any>, objectType: string): Record<string, any> {
+  const piiFields = PII_FIELDS[objectType] || [];
+  const redacted = { ...record };
+
+  for (const field of piiFields) {
     if (redacted[field]) {
       redacted[field] = '[REDACTED]';
     }
@@ -74,149 +171,50 @@ function redactPII(data: Record<string, any>): Record<string, any> {
   return redacted;
 }
 
-// Use in logging
-console.log('Salesforce request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupSalesforceData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.salesforceLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupSalesforceData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const salesforceData = await salesforceClient.getUserData(userId);
-
-  return {
-    source: 'Salesforce',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: salesforceData.profile,
-      activities: salesforceData.activities,
-      // Include all user-related data
-    },
-  };
+// Usage in logging
+const contacts = await conn.query('SELECT Id, FirstName, LastName, Email FROM Contact LIMIT 5');
+for (const contact of contacts.records) {
+  console.log('Processing:', redactSfRecord(contact, 'Contact'));
+  // Logs: { Id: '003xx', FirstName: '[REDACTED]', LastName: '[REDACTED]', Email: '[REDACTED]' }
 }
 ```
 
-### Right to Deletion
+### Step 6: Salesforce Shield Platform Encryption
 
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Salesforce
-  await salesforceClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.salesforceUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'salesforce',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
 ```
+For field-level encryption at rest (Salesforce Shield license required):
 
-## Data Minimization
+Setup > Platform Encryption > Encryption Policy:
+- Encrypt: Contact.Email, Contact.Phone, Lead.Email
+- Key Management: Salesforce-managed or customer-managed (BYOK)
 
-```typescript
-// Only request needed fields
-const user = await salesforceClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
+Limitations of encrypted fields:
+- Cannot use in WHERE clause (use deterministic encryption for filters)
+- Cannot use in ORDER BY
+- Cannot use in aggregate functions
+- SOQL LIKE operator not supported on encrypted fields
 ```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Salesforce data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
 
 ## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+- Data classification for PII fields documented
+- GDPR consent tracking via Individual object
+- DSAR export function for data subject access
+- Right to deletion with audit trail
+- Log redaction preventing PII exposure
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Salesforce response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+| `FIELD_NOT_FOUND: Individual` | Individual object not enabled | Setup > Data Protection > Enable Individual |
+| Can't delete Contact | Related records exist | Delete related Tasks/Events first |
+| Encrypted field in WHERE | Shield encryption limitation | Use deterministic encryption or query differently |
+| PII in logs | Missing redaction | Wrap all SF logging with redactSfRecord |
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Salesforce Privacy Guide](https://docs.salesforce.com/privacy)
+- [Salesforce Data Protection & Privacy](https://help.salesforce.com/s/articleView?id=sf.data_protection_and_privacy.htm)
+- [Individual Object](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_individual.htm)
+- [Shield Platform Encryption](https://help.salesforce.com/s/articleView?id=sf.security_pe_overview.htm)
+- [GDPR Compliance in Salesforce](https://www.salesforce.com/company/privacy/)
 
 ## Next Steps
 For enterprise access control, see `salesforce-enterprise-rbac`.

@@ -1,12 +1,12 @@
 ---
 name: salesforce-advanced-troubleshooting
 description: |
-  Apply Salesforce advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Salesforce support escalation.
-  Trigger with phrases like "salesforce hard bug", "salesforce mystery error",
-  "salesforce impossible to debug", "difficult salesforce issue", "salesforce deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  Apply Salesforce advanced debugging with debug logs, SOQL query plans, and EventLogFile analysis.
+  Use when standard troubleshooting fails, investigating SOQL performance issues,
+  or analyzing Apex governor limit violations.
+  Trigger with phrases like "salesforce hard bug", "salesforce debug log",
+  "salesforce governor limit", "salesforce query plan", "salesforce deep debug", "SOQL slow".
+allowed-tools: Read, Grep, Bash(sf:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,247 +17,227 @@ compatible-with: claude-code
 # Salesforce Advanced Troubleshooting
 
 ## Overview
-Deep debugging techniques for complex Salesforce issues that resist standard troubleshooting.
+Deep debugging techniques for complex Salesforce issues: Apex debug log analysis, SOQL query plan optimization, governor limit diagnosis, and EventLogFile forensics.
 
 ## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
+- Salesforce CLI authenticated
+- Access to Setup > Debug Logs
+- Understanding of Apex governor limits
+- Enterprise+ for EventLogFile access
 
-## Evidence Collection Framework
+## Instructions
 
-### Comprehensive Debug Bundle
+### Step 1: Enable Debug Logging
+
 ```bash
-#!/bin/bash
-# advanced-salesforce-debug.sh
+# Set up debug logging for a specific user
+sf apex log list --target-org my-org
 
-BUNDLE="salesforce-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
+# Create a trace flag for detailed logging
+# Setup > Debug Logs > New Trace Flag
+# - Traced Entity: your integration user
+# - Debug Level: SFDC_DevConsole (or create custom)
+# - Start: now, Expiration: +2 hours
 
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=salesforce-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u salesforce-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=salesforce_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=salesforce_errors_total > "$BUNDLE/metrics/errors.json"
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=salesforce > "$BUNDLE/traces/jaeger.json"
-
-# 5. Configuration state
-kubectl get cm salesforce-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret salesforce-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
+# Tail logs in real-time
+sf apex log tail --target-org my-org --debug-level SFDC_DevConsole
 ```
 
-## Systematic Isolation
-
-### Layer-by-Layer Testing
+### Step 2: Analyze Debug Log for Governor Limits
 
 ```typescript
-// Test each layer independently
-async function diagnoseSalesforceIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
+// Key governor limits to watch in debug logs:
+const GOVERNOR_LIMITS = {
+  'Number of SOQL queries':          { limit: 100, trigger: 'per transaction' },
+  'Number of query rows':            { limit: 50000, trigger: 'per transaction' },
+  'Number of DML statements':        { limit: 150, trigger: 'per transaction' },
+  'Number of DML rows':              { limit: 10000, trigger: 'per transaction' },
+  'Maximum CPU time':                { limit: 10000, trigger: 'ms per transaction' },
+  'Maximum heap size':               { limit: 6000000, trigger: 'bytes (sync), 12MB (async)' },
+  'Number of callouts':              { limit: 100, trigger: 'per transaction' },
+  'Number of future calls':          { limit: 50, trigger: 'per transaction' },
+};
 
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
+// Parse debug log for limit consumption
+// Look for lines like:
+// Number of SOQL queries: 45 out of 100
+// Number of query rows: 23456 out of 50000
+// Maximum CPU time on the Salesforce servers: 8500 out of 10000
+```
 
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.salesforce.com'));
+```bash
+# Download and analyze debug log
+sf apex log get --number 1 --target-org my-org > debug.log
 
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.salesforce.com'));
+# Search for limit warnings
+grep -n "LIMIT_USAGE_FOR_NS" debug.log
+grep -n "out of" debug.log | tail -20
 
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
+# Search for slow SOQL
+grep -n "SOQL_EXECUTE_BEGIN" debug.log
+grep -n "SOQL_EXECUTE_END" debug.log
+# Compare timestamps — queries > 1000ms need optimization
+```
 
-  // Layer 5: API response
-  results.push(await testAPIResponse());
+### Step 3: SOQL Query Plan Analysis
 
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
+```typescript
+// Use the Query Plan tool in Developer Console:
+// Developer Console > Query Editor > Query Plan button
 
-  return { results, firstFailure: results.find(r => !r.success) };
+// Or via REST API (Tooling API)
+const conn = await getConnection();
+
+const queryPlan = await conn.request({
+  method: 'GET',
+  url: `/services/data/v59.0/query/?explain=SELECT Id, Name FROM Account WHERE Industry = 'Technology'`,
+});
+
+// Analyze the plan
+for (const plan of queryPlan.plans) {
+  console.log({
+    cardinality: plan.cardinality,         // Estimated result rows
+    fields: plan.fields,                    // Fields used in filter
+    leadingOperationType: plan.leadingOperationType, // Index | TableScan
+    relativeCost: plan.relativeCost,        // Lower is better (0-1)
+    spikeError: plan.spikeError,            // True if selective threshold exceeded
+  });
 }
+
+// GOOD: leadingOperationType = "Index" and relativeCost < 0.3
+// BAD: leadingOperationType = "TableScan" — needs index or different filter
+
+// Selective filters (use indexed fields):
+// - Id, Name, OwnerId (always indexed)
+// - CreatedDate, LastModifiedDate, SystemModstamp
+// - Lookup/Master-Detail fields
+// - Custom fields marked as External ID or Unique
+// - Custom indexes (request via Salesforce Support)
 ```
 
-### Minimal Reproduction
+### Step 4: Diagnose UNABLE_TO_LOCK_ROW
 
 ```typescript
-// Strip down to absolute minimum
+// UNABLE_TO_LOCK_ROW occurs when:
+// 1. Multiple processes update the same record simultaneously
+// 2. Bulk operations trigger cascading updates via triggers/flows
+// 3. Parent record locked by child DML (implicit lock)
+
+// Diagnostic query — find records with heavy automation
+const triggers = await conn.query(`
+  SELECT Name, TableEnumOrId, Body
+  FROM ApexTrigger
+  WHERE Status = 'Active'
+  ORDER BY TableEnumOrId
+`);
+
+console.log('Active triggers:', triggers.records.map(
+  (t: any) => `${t.Name} on ${t.TableEnumOrId}`
+));
+
+// Mitigation: Use Bulk API with serial mode
+await conn.bulk2.loadAndWaitForResults({
+  object: 'Account',
+  operation: 'update',
+  input: csvData,
+  lineEnding: 'LF',
+  // Bulk API processes in parallel by default
+  // For lock issues, reduce concurrency or use smaller batches
+});
+```
+
+### Step 5: EventLogFile Forensics (Enterprise+)
+
+```typescript
+// EventLogFile stores detailed API usage data for 30 days
+const conn = await getConnection();
+
+// Find heavy API consumers
+const apiEvents = await conn.query(`
+  SELECT Id, EventType, LogDate, LogFileLength
+  FROM EventLogFile
+  WHERE EventType = 'API'
+    AND LogDate >= LAST_N_DAYS:1
+  ORDER BY LogFileLength DESC
+  LIMIT 5
+`);
+
+for (const event of apiEvents.records) {
+  // Download the CSV log file
+  const csvContent = await conn.request(
+    `/services/data/v59.0/sobjects/EventLogFile/${event.Id}/LogFile`
+  );
+
+  // CSV columns include:
+  // TIMESTAMP, USER_ID, URI, METHOD, STATUS_CODE, RUN_TIME, CPU_TIME, DB_TOTAL_TIME
+  // Parse to find slow queries, high CPU operations, etc.
+  console.log(`${event.EventType} log (${event.LogDate}): ${event.LogFileLength} bytes`);
+}
+
+// Login forensics
+const loginEvents = await conn.query(`
+  SELECT Id, LogDate, LogFileLength
+  FROM EventLogFile
+  WHERE EventType = 'Login'
+    AND LogDate >= LAST_N_DAYS:7
+`);
+```
+
+### Step 6: Minimal Reproduction
+
+```typescript
+// Strip to absolute minimum to isolate the issue
 async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new SalesforceClient({
-    apiKey: process.env.SALESFORCE_API_KEY!,
+  const conn = new jsforce.Connection({
+    loginUrl: process.env.SF_LOGIN_URL,
+    version: '59.0', // Pin version
   });
 
-  // 2. Simplest possible call
+  await conn.login(process.env.SF_USERNAME!, process.env.SF_PASSWORD! + process.env.SF_SECURITY_TOKEN!);
+
+  // Test with simplest possible operation
   try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
+    // 1. Can we query at all?
+    const result = await conn.query('SELECT Id FROM Account LIMIT 1');
+    console.log('Basic query works:', result.totalSize);
+
+    // 2. Can we create?
+    const created = await conn.sobject('Account').create({ Name: 'Debug Test' });
+    console.log('Create works:', created.success);
+
+    // 3. Clean up
+    await conn.sobject('Account').destroy(created.id);
+    console.log('Delete works');
+  } catch (error: any) {
+    console.error('FAILURE:', {
+      errorCode: error.errorCode,
       message: error.message,
-      code: error.code,
-      stack: error.stack,
+      fields: error.fields,
     });
   }
 }
 ```
 
-## Timing Analysis
-
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
-
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Salesforce client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
-      console.warn('Potential memory leak in salesforce integration');
-    }
-  }
-}, 60000);
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class SalesforceConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
-
-```markdown
-## Salesforce Support Escalation
-
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
-
-### Issue Summary
-[One paragraph description]
-
-### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
-
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (salesforce-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
-```
-
-## Instructions
-
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
 ## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
+- Debug logging enabled with trace flags
+- Governor limit consumption identified
+- SOQL query plan analyzed for performance issues
+- EventLogFile data retrieved for API forensics
+- Minimal reproduction created for support escalation
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
-
-## Examples
-
-### Quick Layer Test
-```bash
-# Test each layer in sequence
-curl -v https://api.salesforce.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
-```
+| No debug logs appearing | Trace flag expired or wrong user | Recreate trace flag in Setup |
+| `SOQL_EXECUTE_LIMIT` | 100+ queries in one transaction | Consolidate queries, use collections |
+| Query plan shows TableScan | Non-selective filter | Add indexed field to WHERE clause |
+| EventLogFile empty | Not Enterprise+ edition | Use instrumented client logging instead |
 
 ## Resources
-- [Salesforce Support Portal](https://support.salesforce.com)
-- [Salesforce Status Page](https://status.salesforce.com)
+- [Debug Log Reference](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_debugging_debug_log.htm)
+- [SOQL Query Plan](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_SOQL_query_plan.htm)
+- [Governor Limits](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_gov_limits.htm)
+- [EventLogFile](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_eventlogfile.htm)
 
 ## Next Steps
 For load testing, see `salesforce-load-scale`.

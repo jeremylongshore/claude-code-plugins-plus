@@ -1,11 +1,11 @@
 ---
 name: salesforce-reliability-patterns
 description: |
-  Implement Salesforce reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Implement Salesforce reliability patterns including circuit breakers, idempotent upserts, and fallback caching.
   Use when building fault-tolerant Salesforce integrations, implementing retry strategies,
   or adding resilience to production Salesforce services.
   Trigger with phrases like "salesforce reliability", "salesforce circuit breaker",
-  "salesforce idempotent", "salesforce resilience", "salesforce fallback", "salesforce bulkhead".
+  "salesforce idempotent", "salesforce resilience", "salesforce fallback", "salesforce retry".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,276 +17,268 @@ compatible-with: claude-code
 # Salesforce Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Salesforce integrations.
+Production-grade reliability patterns for Salesforce integrations: circuit breakers for API outages, idempotent operations using External IDs, graceful degradation with cached data, and dead letter queues for failed operations.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
+- jsforce connection configured
+- Understanding of Salesforce error codes (see `salesforce-common-errors`)
+- Redis or database for state management (optional)
+- opossum or similar circuit breaker library
 
-## Circuit Breaker
+## Instructions
+
+### Step 1: Circuit Breaker for Salesforce API
 
 ```typescript
 import CircuitBreaker from 'opossum';
+import { getConnection } from './salesforce/connection';
 
-const salesforceBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
+// Circuit breaker wraps all Salesforce calls
+const sfBreaker = new CircuitBreaker(
+  async (fn: () => Promise<any>) => fn(),
   {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
+    timeout: 30000,                // SF calls can be slow — 30s timeout
+    errorThresholdPercentage: 50,  // Open circuit at 50% error rate
+    resetTimeout: 60000,           // Try again after 1 minute
+    volumeThreshold: 10,           // Need 10 calls before evaluating
+    errorFilter: (error: any) => {
+      // Don't count client errors as circuit-breaking failures
+      const nonCircuitErrors = ['INVALID_FIELD', 'MALFORMED_QUERY', 'REQUIRED_FIELD_MISSING'];
+      return nonCircuitErrors.includes(error.errorCode);
+    },
   }
 );
 
-// Events
-salesforceBreaker.on('open', () => {
-  console.warn('Salesforce circuit OPEN - requests failing fast');
-  alertOps('Salesforce circuit breaker opened');
+sfBreaker.on('open', () => {
+  console.error('CIRCUIT OPEN: Salesforce API failing — requests will fail fast');
+  // Alert ops team
 });
 
-salesforceBreaker.on('halfOpen', () => {
-  console.info('Salesforce circuit HALF-OPEN - testing recovery');
+sfBreaker.on('halfOpen', () => {
+  console.info('CIRCUIT HALF-OPEN: Testing Salesforce recovery...');
 });
 
-salesforceBreaker.on('close', () => {
-  console.info('Salesforce circuit CLOSED - normal operation');
+sfBreaker.on('close', () => {
+  console.info('CIRCUIT CLOSED: Salesforce API recovered');
 });
 
-// Usage
-async function safeSalesforceCall<T>(fn: () => Promise<T>): Promise<T> {
-  return salesforceBreaker.fire(fn);
+// Usage — all SF calls go through the breaker
+async function safeSfQuery<T>(soql: string): Promise<T[]> {
+  return sfBreaker.fire(async () => {
+    const conn = await getConnection();
+    const result = await conn.query<T>(soql);
+    return result.records;
+  });
 }
 ```
 
-## Idempotency Keys
+### Step 2: Idempotent Operations with External IDs
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+// Salesforce's upsert with External ID is naturally idempotent
+// Same data sent twice = same result (no duplicates)
 
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+async function idempotentSync(
+  objectType: string,
+  records: Record<string, any>[],
+  externalIdField: string = 'External_ID__c'
+): Promise<{ success: number; failed: number; errors: any[] }> {
+  const conn = await getConnection();
+  let success = 0;
+  let failed = 0;
+  const errors: any[] = [];
+
+  // Process in batches of 200 (sObject Collections limit)
+  for (let i = 0; i < records.length; i += 200) {
+    const batch = records.slice(i, i + 200);
+
+    const results = await conn.sobject(objectType).upsert(batch, externalIdField);
+
+    for (const result of Array.isArray(results) ? results : [results]) {
+      if (result.success) {
+        success++;
+      } else {
+        failed++;
+        errors.push(result.errors);
+      }
+    }
+  }
+
+  return { success, failed, errors };
 }
 
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
+// Safe to retry — same External_ID__c values will update, not duplicate
+await idempotentSync('Account', [
+  { External_ID__c: 'EXT-001', Name: 'Acme', Industry: 'Tech' },
+  { External_ID__c: 'EXT-002', Name: 'Globex', Industry: 'Manufacturing' },
+], 'External_ID__c');
+```
 
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
+### Step 3: Retry with Salesforce-Specific Error Classification
+
+```typescript
+const SF_RETRYABLE_ERRORS = [
+  'REQUEST_LIMIT_EXCEEDED',    // API limit — wait and retry
+  'SERVER_UNAVAILABLE',        // SF is down temporarily
+  'UNABLE_TO_LOCK_ROW',        // Record contention
+  'INVALID_SESSION_ID',        // Token expired — re-auth and retry
+];
+
+const SF_FATAL_ERRORS = [
+  'INVALID_FIELD',             // Code bug — won't fix itself
+  'MALFORMED_QUERY',           // Code bug
+  'REQUIRED_FIELD_MISSING',    // Data issue
+  'INVALID_TYPE',              // Wrong sObject name
+  'INSUFFICIENT_ACCESS_OR_READONLY', // Permission issue
+];
+
+async function retryableSfCall<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3
+): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      const errorCode = error.errorCode || error.name;
+
+      if (SF_FATAL_ERRORS.includes(errorCode)) {
+        throw error; // Don't retry — it won't help
+      }
+
+      if (errorCode === 'INVALID_SESSION_ID') {
+        // Re-authenticate, then retry
+        await getConnection(); // Forces re-login
+        continue;
+      }
+
+      if (attempt === maxRetries) throw error;
+
+      const delay = 2000 * Math.pow(2, attempt - 1); // 2s, 4s, 8s
+      console.warn(`Retryable SF error ${errorCode}, attempt ${attempt}/${maxRetries}`);
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+  throw new Error('Unreachable');
+}
+```
+
+### Step 4: Graceful Degradation with Stale Data
+
+```typescript
+import { Redis } from 'ioredis';
+const redis = new Redis(process.env.REDIS_URL);
+
+async function queryWithFallback<T>(
+  soql: string,
+  cacheKey: string,
+  cacheTtlSeconds = 300
+): Promise<{ data: T[]; stale: boolean }> {
+  try {
+    // Try live Salesforce query
+    const records = await safeSfQuery<T>(soql);
+
+    // Update cache for fallback
+    await redis.set(cacheKey, JSON.stringify(records), 'EX', cacheTtlSeconds * 10);
+
+    return { data: records, stale: false };
+  } catch (error) {
+    // Salesforce unavailable — serve cached data
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      console.warn(`SF unavailable, serving stale data for ${cacheKey}`);
+      return { data: JSON.parse(cached), stale: true };
     }
 
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
+    throw new Error(`Salesforce unavailable and no cached data for ${cacheKey}`);
   }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const salesforceQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedSalesforceCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return salesforceQueues[priority].add(fn);
 }
 
 // Usage
-await prioritizedSalesforceCall('critical', () =>
-  salesforceClient.processPayment(order)
+const { data: accounts, stale } = await queryWithFallback<Account>(
+  "SELECT Id, Name, Industry FROM Account WHERE Industry = 'Technology' LIMIT 50",
+  'sf:accounts:tech'
 );
-
-await prioritizedSalesforceCall('bulk', () =>
-  salesforceClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutSalesforceCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Salesforce ${operation} timeout`)), timeout)
-    ),
-  ]);
+if (stale) {
+  // Show warning to user: "Data may be outdated"
 }
 ```
 
-## Graceful Degradation
+### Step 5: Dead Letter Queue for Failed Operations
 
 ```typescript
-interface SalesforceFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withSalesforceFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Salesforce failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
+interface SfDeadLetter {
   id: string;
   operation: string;
-  payload: any;
-  error: string;
+  objectType: string;
+  payload: Record<string, any>;
+  errorCode: string;
+  errorMessage: string;
   attempts: number;
+  firstFailure: Date;
   lastAttempt: Date;
 }
 
 class SalesforceDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
+  async enqueue(entry: Omit<SfDeadLetter, 'id' | 'firstFailure' | 'lastAttempt' | 'attempts'>): Promise<void> {
+    const dlq: SfDeadLetter = {
       ...entry,
-      id: uuidv4(),
+      id: crypto.randomUUID(),
+      attempts: 1,
+      firstFailure: new Date(),
       lastAttempt: new Date(),
-    });
+    };
+    await redis.lpush('sf:dlq', JSON.stringify(dlq));
+    console.error(`DLQ: ${entry.operation} on ${entry.objectType} failed: ${entry.errorCode}`);
   }
 
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
+  async reprocess(): Promise<{ processed: number; failed: number }> {
+    let processed = 0, failed = 0;
+    let entry: string | null;
 
-    try {
-      await salesforceClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
+    while ((entry = await redis.rpop('sf:dlq')) !== null) {
+      const dlq: SfDeadLetter = JSON.parse(entry);
+      try {
+        const conn = await getConnection();
+        await conn.sobject(dlq.objectType)[dlq.operation](dlq.payload);
+        processed++;
+      } catch (error: any) {
+        dlq.attempts++;
+        dlq.lastAttempt = new Date();
+        if (dlq.attempts < 5) {
+          await redis.lpush('sf:dlq', JSON.stringify(dlq));
+        } else {
+          console.error(`DLQ: Giving up on ${dlq.id} after 5 attempts`);
+          // Move to permanent failure store
+        }
+        failed++;
       }
-      return false;
     }
+    return { processed, failed };
   }
 }
 ```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function salesforceHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: salesforceBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
-
-## Instructions
-
-### Step 1: Implement Circuit Breaker
-Wrap Salesforce calls with circuit breaker.
-
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
-
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
-
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
 
 ## Output
-- Circuit breaker protecting Salesforce calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+- Circuit breaker preventing cascading failures
+- Idempotent upserts using External IDs
+- Error classification (retryable vs fatal)
+- Graceful degradation with stale cache data
+- Dead letter queue for failed operations
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
-
-## Examples
-
-### Quick Circuit Check
-```typescript
-const state = salesforceBreaker.stats().state;
-console.log('Salesforce circuit:', state);
-```
+| Circuit stays open | SF outage or wrong threshold | Check status.salesforce.com; tune thresholds |
+| Duplicate records | Not using External ID upsert | Add External_ID__c field, use upsert |
+| DLQ growing | Persistent error (e.g., permission) | Check error codes — may need fix, not retry |
+| Stale cache too old | Long SF outage | Set max stale age, show user warning |
 
 ## Resources
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Salesforce Reliability Guide](https://docs.salesforce.com/reliability)
+- [External ID Fields](https://help.salesforce.com/s/articleView?id=sf.fields_about_external_ids.htm)
+- [Salesforce Error Codes](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/errorcodes.htm)
 
 ## Next Steps
 For policy enforcement, see `salesforce-policy-guardrails`.

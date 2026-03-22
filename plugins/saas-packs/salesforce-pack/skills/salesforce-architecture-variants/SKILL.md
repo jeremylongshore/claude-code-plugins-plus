@@ -1,11 +1,11 @@
 ---
 name: salesforce-architecture-variants
 description: |
-  Choose and implement Salesforce validated architecture blueprints for different scales.
-  Use when designing new Salesforce integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Salesforce applications.
-  Trigger with phrases like "salesforce architecture", "salesforce blueprint",
-  "how to structure salesforce", "salesforce project layout", "salesforce microservice".
+  Choose and implement Salesforce integration architecture patterns for different scales.
+  Use when designing new Salesforce integrations, choosing between polling/event-driven/Heroku Connect,
+  or planning migration paths for Salesforce applications.
+  Trigger with phrases like "salesforce architecture", "salesforce integration pattern",
+  "how to structure salesforce integration", "salesforce event-driven", "salesforce Heroku Connect".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,270 +17,212 @@ compatible-with: claude-code
 # Salesforce Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Salesforce integrations.
+Three validated architecture blueprints for Salesforce integrations: Direct API (simple), Event-Driven (scalable), and Middleware/iPaaS (enterprise). Each pattern addresses different scale, latency, and complexity requirements.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
+- Understanding of your data volume and sync frequency requirements
+- Decision on unidirectional vs bidirectional data flow
+- Knowledge of Salesforce edition (affects available features like CDC)
 
-## Variant A: Monolith (Simple)
+## Variant A: Direct API Integration (Simple)
 
-**Best for:** MVPs, small teams, < 10K daily active users
+**Best for:** MVPs, < 50K records/day, single-direction sync
 
 ```
-my-app/
-├── src/
-│   ├── salesforce/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── salesforce.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── salesforce.test.ts
-└── package.json
+┌─────────────┐     jsforce       ┌─────────────┐
+│   Your App  │ ──── REST API ──▶ │  Salesforce  │
+│ (Node.js)   │ ◀── SOQL/SOSL ── │     Org      │
+└─────────────┘                   └─────────────┘
+
+Data flow:
+- App queries SF via SOQL (polling or on-demand)
+- App writes to SF via sObject CRUD
+- Scheduled cron for periodic sync
 ```
 
 ### Key Characteristics
-- Single deployment unit
-- Synchronous Salesforce calls in request path
-- In-memory caching
-- Simple error handling
+- Single jsforce connection per process
+- Polling-based reads (cron schedule)
+- Direct REST writes
+- In-memory or Redis caching for describe/metadata
+- Suitable for: internal tools, admin dashboards, simple data sync
 
 ### Code Pattern
 ```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await salesforceClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+// Cron-based sync — runs every 15 minutes
+import cron from 'node-cron';
+
+cron.schedule('*/15 * * * *', async () => {
+  const conn = await getConnection();
+
+  // Fetch recently modified accounts
+  const accounts = await conn.query(`
+    SELECT Id, Name, Industry, AnnualRevenue
+    FROM Account
+    WHERE LastModifiedDate >= ${fifteenMinutesAgo}
+  `);
+
+  // Sync to local database
+  for (const account of accounts.records) {
+    await localDb.upsert('accounts', mapFromSalesforce(account));
   }
 });
 ```
 
 ---
 
-## Variant B: Service Layer (Moderate)
+## Variant B: Event-Driven Integration (Scalable)
 
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+**Best for:** Real-time sync, 50K-5M records/day, bidirectional flow
 
 ```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── salesforce/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── salesforce.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── salesforce-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── salesforce/
-└── package.json
+┌─────────────┐                      ┌─────────────┐
+│   Your App  │ ◀─── CDC Events ───  │  Salesforce  │
+│  (listener) │   Change Data Capture │     Org      │
+│             │                      │              │
+│             │ ── Bulk API 2.0 ──▶  │              │
+│             │    (write-back)      │              │
+└──────┬──────┘                      └─────────────┘
+       │
+  ┌────▼────┐
+  │  Queue  │  (Redis/SQS/Pub-Sub)
+  │  (async │
+  │  writes)│
+  └─────────┘
 ```
 
 ### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
+- CDC for real-time change notifications (no polling waste)
+- Bulk API 2.0 for high-volume writes
+- Queue-based async processing for write-back
+- ReplayId tracking for event resumption
+- Suitable for: CRM sync, data warehouse ETL, real-time dashboards
 
 ### Code Pattern
 ```typescript
-// Service layer abstraction
-class SalesforceService {
-  constructor(
-    private client: SalesforceClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
+// Event-driven — near-real-time sync
+import { getConnection } from './salesforce/connection';
 
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
+const conn = await getConnection();
 
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
+// Subscribe to Account changes via CDC
+conn.streaming.topic('/data/AccountChangeEvent').subscribe(async (event) => {
+  const { changeType, recordIds, changedFields } = event.payload.ChangeEventHeader;
 
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('salesforce.post-create', result);
-
-    return result;
+  switch (changeType) {
+    case 'CREATE':
+      await localDb.insert('accounts', mapFromSalesforce(event.payload));
+      break;
+    case 'UPDATE':
+      await localDb.update('accounts', recordIds[0], mapChangedFields(event.payload, changedFields));
+      break;
+    case 'DELETE':
+      await localDb.delete('accounts', recordIds[0]);
+      break;
   }
-}
+});
+
+// Write-back via queue (async, decoupled)
+queue.process('sync-to-salesforce', async (job) => {
+  const conn = await getConnection();
+  await conn.sobject(job.data.objectType).upsert(
+    job.data.records,
+    'External_ID__c'
+  );
+});
 ```
+
+### Required Salesforce Features
+- Change Data Capture (Enterprise Edition+)
+- Platform Events (all editions)
+- Bulk API 2.0 (all editions with API access)
 
 ---
 
-## Variant C: Microservice (Complex)
+## Variant C: Middleware/iPaaS Integration (Enterprise)
 
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
+**Best for:** Multi-system integration, 5M+ records/day, complex transformations
 
 ```
-salesforce-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── salesforce.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── salesforce/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls salesforce-service
-├── payment-service/
-└── notification-service/
+┌─────────────┐                ┌─────────────┐               ┌─────────────┐
+│   Your App  │ ── API ──────▶ │  Middleware  │ ── REST ────▶ │  Salesforce  │
+│             │                │ (MuleSoft/   │               │     Org      │
+│             │                │  Workato/    │ ◀─ CDC ──────│              │
+│             │ ◀─ Webhooks ── │  Zapier)     │               │              │
+└─────────────┘                └──────┬───────┘               └─────────────┘
+                                      │
+                                ┌─────▼──────┐
+                                │  Other      │
+                                │  Systems    │
+                                │ (ERP, DW,   │
+                                │  Marketing) │
+                                └─────────────┘
 ```
 
 ### Key Characteristics
-- Dedicated Salesforce microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
+- Middleware handles transformation, routing, error handling
+- Pre-built Salesforce connectors (no custom code for basic sync)
+- Visual flow builders for business users
+- Enterprise monitoring and audit trails
+- Suitable for: multi-system integration, complex business rules, compliance-heavy
 
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class SalesforceAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: SalesforceCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new SalesforceProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(SalesforceProcessedEvent)
-class SalesforceEventHandler {
-  async handle(event: SalesforceProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
+### iPaaS Options
+| Platform | Salesforce Integration | Best For |
+|----------|----------------------|----------|
+| MuleSoft | Native (Salesforce owns it) | Enterprise, complex flows |
+| Heroku Connect | Bi-directional auto-sync | Simple sync to Postgres |
+| Workato | Pre-built recipes | Business user automation |
+| Zapier | Trigger-based | Simple 1:1 integrations |
+| Dell Boomi | Enterprise iPaaS | Legacy system integration |
 
 ---
 
 ## Decision Matrix
 
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
+| Factor | Direct API (A) | Event-Driven (B) | Middleware (C) |
+|--------|---------------|-------------------|----------------|
+| Records/day | < 50K | 50K-5M | 5M+ |
+| Latency | Minutes (polling) | Seconds (CDC) | Depends on config |
+| Direction | Usually one-way | Bidirectional | Multi-directional |
+| API call efficiency | Medium | High (no polling) | High (batched) |
+| Complexity | Low | Medium | Low (config-driven) |
+| Cost | jsforce only | jsforce + queue infra | iPaaS license ($$$) |
+| SF Edition required | Any with API | Enterprise+ (CDC) | Any |
+| Team skills | Node.js developers | Node.js + streaming | Business analysts OK |
 
 ## Migration Path
 
 ```
-Monolith → Service Layer:
-1. Extract Salesforce code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated salesforce-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
+Variant A (Direct API)
+    │
+    │  Growing data volume / need real-time sync
+    ▼
+Variant B (Event-Driven)
+    │
+    │  Multiple systems / compliance / no-code needed
+    ▼
+Variant C (Middleware/iPaaS)
 ```
 
-## Instructions
-
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
-
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
-
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
-
 ## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+- Architecture variant selected based on requirements
+- Integration pattern implemented
+- Data flow documented
+- Scaling path planned
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| Polling misses changes | Interval too long | Switch to CDC (Variant B) |
+| CDC events lost | No replay tracking | Persist last replayId |
+| API limits exhausted | Polling too frequently | Batch with Collections/Bulk API |
+| Middleware cost too high | Over-engineered | Start with Variant A or B |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Salesforce Architecture Guide](https://docs.salesforce.com/architecture)
+- [Salesforce Integration Patterns](https://developer.salesforce.com/docs/atlas.en-us.integration_patterns_and_practices.meta/integration_patterns_and_practices/)
+- [Change Data Capture](https://developer.salesforce.com/docs/atlas.en-us.change_data_capture.meta/change_data_capture/)
+- [MuleSoft Salesforce Connector](https://docs.mulesoft.com/salesforce-connector/latest/)
+- [Heroku Connect](https://devcenter.heroku.com/articles/heroku-connect)
 
 ## Next Steps
 For common anti-patterns, see `salesforce-known-pitfalls`.

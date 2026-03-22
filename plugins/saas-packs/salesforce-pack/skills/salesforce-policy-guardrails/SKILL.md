@@ -1,11 +1,11 @@
 ---
 name: salesforce-policy-guardrails
 description: |
-  Implement Salesforce lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Salesforce integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Salesforce best practices.
+  Implement Salesforce lint rules, SOQL injection prevention, and API usage guardrails.
+  Use when enforcing Salesforce integration code quality, preventing SOQL injection,
+  or configuring CI policy checks for Salesforce best practices.
   Trigger with phrases like "salesforce policy", "salesforce lint",
-  "salesforce guardrails", "salesforce best practices check", "salesforce eslint".
+  "salesforce guardrails", "SOQL injection", "salesforce eslint", "salesforce code review".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,36 +17,76 @@ compatible-with: claude-code
 # Salesforce Policy & Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Salesforce integrations.
+Automated policy enforcement for Salesforce integrations: SOQL injection prevention, API key leak detection, governor limit guardrails, and CI pipeline checks.
 
 ## Prerequisites
 - ESLint configured in project
-- Pre-commit hooks infrastructure
+- jsforce TypeScript project
 - CI/CD pipeline with policy checks
-- TypeScript for type enforcement
+- Understanding of Salesforce security model
 
-## ESLint Rules
+## Instructions
 
-### Custom Salesforce Plugin
+### Step 1: SOQL Injection Prevention
+
+```typescript
+// CRITICAL: Never concatenate user input into SOQL strings
+
+// BAD — SOQL injection vulnerability
+async function findAccount(name: string) {
+  return conn.query(`SELECT Id FROM Account WHERE Name = '${name}'`);
+  // User input: "'; DELETE FROM Account; --"
+  // Result: SOQL injection (though Salesforce doesn't support DELETE via SOQL,
+  //         user can still extract data with UNION-like techniques)
+}
+
+// GOOD — Escape special characters
+function escapeSoql(value: string): string {
+  return value
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/%/g, '\\%')
+    .replace(/_/g, '\\_');
+}
+
+async function findAccountSafe(name: string) {
+  const safeName = escapeSoql(name);
+  return conn.query(`SELECT Id, Name FROM Account WHERE Name = '${safeName}'`);
+}
+
+// BEST — Use parameterized queries with jsforce
+// jsforce doesn't have native parameterized SOQL, so always use escapeSoql()
+// For Apex, use bind variables:
+// [SELECT Id FROM Account WHERE Name = :accountName]
+```
+
+### Step 2: ESLint Rules for Salesforce
+
 ```javascript
-// eslint-plugin-salesforce/rules/no-hardcoded-keys.js
+// eslint-plugin-salesforce-integration/rules/no-soql-injection.js
 module.exports = {
   meta: {
     type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Salesforce API keys',
-    },
-    fixable: 'code',
+    docs: { description: 'Prevent SOQL injection by detecting string concatenation in query calls' },
   },
   create(context) {
     return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Salesforce API key detected',
-            });
+      CallExpression(node) {
+        // Detect conn.query(`...${variable}...`)
+        if (
+          node.callee.property?.name === 'query' &&
+          node.arguments[0]?.type === 'TemplateLiteral' &&
+          node.arguments[0].expressions.length > 0
+        ) {
+          // Check if expressions use the escapeSoql wrapper
+          for (const expr of node.arguments[0].expressions) {
+            if (expr.type !== 'CallExpression' || expr.callee?.name !== 'escapeSoql') {
+              context.report({
+                node: expr,
+                message: 'SOQL injection risk: wrap user input with escapeSoql(). Example: `WHERE Name = \'${escapeSoql(userInput)}\'`',
+              });
+            }
           }
         }
       },
@@ -55,110 +95,84 @@ module.exports = {
 };
 ```
 
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['salesforce'],
-  rules: {
-    'salesforce/no-hardcoded-keys': 'error',
-    'salesforce/require-error-handling': 'warn',
-    'salesforce/use-typed-client': 'warn',
-  },
-};
+### Step 3: Credential Leak Detection
+
+```bash
+#!/bin/bash
+# pre-commit-salesforce-check.sh
+
+# Detect Salesforce credential patterns in staged files
+PATTERNS=(
+  '00D[a-zA-Z0-9]{15}'           # Org ID (shouldn't be hardcoded)
+  '005[a-zA-Z0-9]{15}'           # User ID (context-dependent)
+  'force://[a-zA-Z0-9]+'         # Salesforce login token
+  'SF_PASSWORD=.'                 # Password in code
+  'SF_SECURITY_TOKEN=.'          # Security token in code
+  'SF_CLIENT_SECRET=.'           # OAuth client secret in code
+)
+
+FOUND=0
+for PATTERN in "${PATTERNS[@]}"; do
+  if git diff --cached --name-only | xargs grep -l "$PATTERN" 2>/dev/null; then
+    echo "ERROR: Possible Salesforce credential found: $PATTERN"
+    FOUND=1
+  fi
+done
+
+# Check for .env files being committed
+if git diff --cached --name-only | grep -E '\.env$|\.env\.local$|\.env\.prod'; then
+  echo "ERROR: .env file staged for commit"
+  FOUND=1
+fi
+
+exit $FOUND
 ```
 
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: salesforce-secrets-check
-        name: Check for Salesforce secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: salesforce-config-validate
-        name: Validate Salesforce configuration
-        entry: node scripts/validate-salesforce-config.js
-        language: node
-        files: '\.salesforce\.json$'
-```
-
-## TypeScript Strict Patterns
+### Step 4: API Usage Guardrails
 
 ```typescript
-// Enforce typed configuration
-interface SalesforceStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
+// Runtime guardrails preventing API limit exhaustion
 
-// Disallow any in Salesforce code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
+class SalesforceGuardrails {
+  private callsThisMinute = 0;
+  private lastReset = Date.now();
+  private maxCallsPerMinute = 50; // Conservative limit
 
-// Prefer this
-const client = new SalesforceClient(config satisfies SalesforceStrictConfig);
-```
+  async guard(operation: string, estimatedCalls: number = 1): Promise<void> {
+    // Reset counter every minute
+    if (Date.now() - this.lastReset > 60000) {
+      this.callsThisMinute = 0;
+      this.lastReset = Date.now();
+    }
 
-## Architecture Decision Records
+    // Per-minute throttle (prevent burst)
+    if (this.callsThisMinute + estimatedCalls > this.maxCallsPerMinute) {
+      const waitMs = 60000 - (Date.now() - this.lastReset);
+      console.warn(`SF guardrail: throttling ${operation}, waiting ${waitMs}ms`);
+      await new Promise(r => setTimeout(r, waitMs));
+      this.callsThisMinute = 0;
+      this.lastReset = Date.now();
+    }
 
-### ADR Template
-```markdown
-# ADR-001: Salesforce Client Initialization
+    // Check daily limit before proceeding
+    const conn = await getConnection();
+    const limits = await conn.request('/services/data/v59.0/limits/');
+    const usagePercent = (limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining) / limits.DailyApiRequests.Max;
 
-## Status
-Accepted
+    if (usagePercent > 0.95) {
+      throw new Error(`SF guardrail: API usage at ${(usagePercent * 100).toFixed(1)}% — blocking ${operation}`);
+    }
 
-## Context
-We need to decide how to initialize the Salesforce client across our application.
+    if (usagePercent > 0.80) {
+      console.warn(`SF guardrail: API usage at ${(usagePercent * 100).toFixed(1)}%`);
+    }
 
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: salesforce/use-singleton-client
-- CI check: grep for "new SalesforceClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# salesforce-policy.rego
-package salesforce
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
+    this.callsThisMinute += estimatedCalls;
+  }
 }
 ```
 
-## CI Policy Checks
+### Step 5: CI Policy Checks
 
 ```yaml
 # .github/workflows/salesforce-policy.yml
@@ -172,88 +186,87 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check for hardcoded secrets
+      - name: Check for SOQL injection risks
         run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Salesforce keys found"
+          # Detect raw string interpolation in .query() calls
+          if grep -rn "\.query(\`.*\$\{" --include="*.ts" --include="*.js" src/ | grep -v "escapeSoql"; then
+            echo "ERROR: Possible SOQL injection — wrap user input with escapeSoql()"
             exit 1
           fi
 
-      - name: Validate configuration schema
+      - name: Check for hardcoded credentials
         run: |
-          npx ajv validate -s salesforce-config.schema.json -d config/salesforce/*.json
+          if grep -rE "(SF_PASSWORD|SF_SECURITY_TOKEN|SF_CLIENT_SECRET)\s*=" --include="*.ts" --include="*.js" src/; then
+            echo "ERROR: Hardcoded Salesforce credentials found"
+            exit 1
+          fi
 
-      - name: Run ESLint Salesforce rules
-        run: npx eslint --plugin salesforce --rule 'salesforce/no-hardcoded-keys: error' src/
+      - name: Check for production org IDs
+        run: |
+          if grep -rE "00D[a-zA-Z0-9]{15}" --include="*.ts" --include="*.js" --include="*.json" src/; then
+            echo "WARNING: Hardcoded Salesforce Org ID found — use environment variables"
+          fi
+
+      - name: Verify .gitignore includes sensitive files
+        run: |
+          for pattern in ".env" ".env.local" "server.key" "*.pem"; do
+            if ! grep -q "$pattern" .gitignore; then
+              echo "ERROR: .gitignore missing '$pattern'"
+              exit 1
+            fi
+          done
 ```
 
-## Runtime Guardrails
+### Step 6: SOQL Best Practices Enforcement
 
 ```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
+// Automated SOQL quality checks
+function validateSoql(soql: string): { valid: boolean; warnings: string[] } {
+  const warnings: string[] = [];
 
-function guardSalesforceOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.SALESFORCE_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Salesforce rate limit');
+  // Warn on SELECT FIELDS(ALL) — performance anti-pattern
+  if (soql.includes('FIELDS(ALL)')) {
+    warnings.push('Avoid FIELDS(ALL) — select only needed fields');
   }
 
-  if (requestsInWindow >= limit) {
-    throw new Error('Salesforce rate limit exceeded - request blocked');
+  // Warn on missing LIMIT
+  if (!soql.toUpperCase().includes('LIMIT') && !soql.toUpperCase().includes('COUNT(')) {
+    warnings.push('Missing LIMIT clause — add LIMIT to prevent hitting 50K row limit');
   }
+
+  // Warn on LIKE with leading wildcard
+  if (/LIKE\s+'%/.test(soql)) {
+    warnings.push("Leading wildcard in LIKE '%...' causes full table scan");
+  }
+
+  // Warn on missing WHERE clause
+  if (!soql.toUpperCase().includes('WHERE') && !soql.toUpperCase().includes('LIMIT 1')) {
+    warnings.push('No WHERE clause — query may return too many rows');
+  }
+
+  return { valid: warnings.length === 0, warnings };
 }
 ```
 
-## Instructions
-
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Salesforce patterns.
-
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
-
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
-
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
-
 ## Output
-- ESLint plugin with Salesforce rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+- SOQL injection prevention with escape function
+- ESLint rule detecting injection risks
+- Pre-commit hook blocking credential leaks
+- Runtime API usage guardrails
+- CI pipeline policy checks
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
-
-## Examples
-
-### Quick ESLint Check
-```bash
-npx eslint --plugin salesforce --rule 'salesforce/no-hardcoded-keys: error' src/
-```
+| ESLint rule false positive | escapeSoql used but not detected | Update rule to check function name |
+| Guardrail blocks valid request | Threshold too low | Tune per-minute and daily thresholds |
+| Pre-commit hook slow | Too many files | Use `lint-staged` for incremental checks |
+| SOQL injection detected | String concatenation | Apply escapeSoql() wrapper |
 
 ## Resources
+- [SOQL Injection](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/pages_security_tips_soql_injection.htm)
+- [Salesforce Security Guide](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
 For architecture blueprints, see `salesforce-architecture-variants`.

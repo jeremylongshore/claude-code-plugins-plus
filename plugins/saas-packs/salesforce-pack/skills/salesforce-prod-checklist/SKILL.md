@@ -1,12 +1,12 @@
 ---
 name: salesforce-prod-checklist
 description: |
-  Execute Salesforce production deployment checklist and rollback procedures.
+  Execute Salesforce production deployment checklist with sandbox testing and rollback.
   Use when deploying Salesforce integrations to production, preparing for launch,
   or implementing go-live procedures.
   Trigger with phrases like "salesforce production", "deploy salesforce",
-  "salesforce go-live", "salesforce launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  "salesforce go-live", "salesforce launch checklist", "salesforce sandbox to prod".
+allowed-tools: Read, Bash(sf:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,105 +17,133 @@ compatible-with: claude-code
 # Salesforce Production Checklist
 
 ## Overview
-Complete checklist for deploying Salesforce integrations to production.
+Complete checklist for deploying Salesforce integrations to production, including sandbox validation, API limit planning, and rollback procedures.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
+- Staging/sandbox environment tested and verified
+- Production Connected App configured
+- Dedicated integration user in production
 - Monitoring and alerting ready
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Pre-Deployment Configuration
+- [ ] Production Connected App has minimum OAuth scopes (not `full`)
+- [ ] Dedicated integration user with restricted profile (not admin)
+- [ ] SF_LOGIN_URL set to `https://login.salesforce.com` (not `test.salesforce.com`)
+- [ ] All credentials stored in vault/secrets manager (not env files)
+- [ ] IP restrictions configured on Connected App and user profile
+- [ ] JWT certificate uploaded (if using JWT Bearer flow)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Salesforce error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### API Limit Planning
+- [ ] Estimated daily API calls documented
+- [ ] API limit headroom > 20% (`GET /services/data/v59.0/limits/`)
+- [ ] Bulk API used for operations > 200 records
+- [ ] Composite API used for multi-object transactions
+- [ ] sObject Collections used for batch CRUD (max 200/call)
+- [ ] Caching implemented for describe/metadata calls
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Salesforce connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Code Quality
+- [ ] All SOQL queries use parameterized filters (no injection)
+- [ ] Error handling covers Salesforce error codes (`INVALID_FIELD`, `REQUEST_LIMIT_EXCEEDED`, etc.)
+- [ ] Retry logic implemented for transient errors (`UNABLE_TO_LOCK_ROW`, `SERVER_UNAVAILABLE`)
+- [ ] No hardcoded Salesforce IDs (use External IDs or SOQL lookups)
+- [ ] Connection auto-refreshes expired tokens
+- [ ] Logging redacts PII and credentials
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
+### Sandbox Validation
 ```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.salesforce.com
+# Test in Full sandbox first (mirrors production data)
+# 1. Deploy to sandbox
+sf project deploy start --target-org my-sandbox
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/salesforce-integration app=image:new --record
-kubectl rollout pause deployment/salesforce-integration
+# 2. Run integration tests against sandbox
+SF_LOGIN_URL=https://test.salesforce.com npm run test:integration
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
+# 3. Verify API limits are within budget
+sf limits api display --target-org my-sandbox --json | jq '.result[] | select(.name == "DailyApiRequests")'
 
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/salesforce-integration
-kubectl rollout pause deployment/salesforce-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/salesforce-integration
-kubectl rollout status deployment/salesforce-integration
+# 4. Check Apex test results
+sf apex run test --target-org my-sandbox --result-format human --code-coverage
 ```
 
-## Output
-- Deployed Salesforce integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
+### Health Check Endpoint
 ```typescript
-async function healthCheck(): Promise<{ status: string; salesforce: any }> {
+async function salesforceHealthCheck(): Promise<{
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  details: Record<string, any>;
+}> {
+  const conn = await getConnection();
   const start = Date.now();
+
   try {
-    await salesforceClient.ping();
-    return { status: 'healthy', salesforce: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', salesforce: { connected: false, latencyMs: Date.now() - start } };
+    const [identity, limits] = await Promise.all([
+      conn.identity(),
+      conn.request('/services/data/v59.0/limits/'),
+    ]);
+
+    const apiUsagePercent = ((limits.DailyApiRequests.Max - limits.DailyApiRequests.Remaining) / limits.DailyApiRequests.Max) * 100;
+
+    return {
+      status: apiUsagePercent > 90 ? 'degraded' : 'healthy',
+      details: {
+        connected: true,
+        latencyMs: Date.now() - start,
+        instance: conn.instanceUrl,
+        apiRemaining: limits.DailyApiRequests.Remaining,
+        apiUsagePercent: Math.round(apiUsagePercent),
+      },
+    };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      details: { connected: false, error: error.message, latencyMs: Date.now() - start },
+    };
   }
 }
 ```
 
-### Immediate Rollback
+### Deployment Steps
 ```bash
-kubectl rollout undo deployment/salesforce-integration
-kubectl rollout status deployment/salesforce-integration
+# 1. Pre-flight: check Salesforce system status
+curl -s https://api.status.salesforce.com/v1/incidents/active | jq 'length'
+
+# 2. Verify production API limits
+sf limits api display --target-org production --json
+
+# 3. Deploy metadata (if applicable)
+sf project deploy start --target-org production --dry-run  # Validate first
+sf project deploy start --target-org production             # Then deploy
+
+# 4. Verify health check
+curl -sf https://yourapp.com/health | jq '.services.salesforce'
+
+# 5. Monitor error rates for 30 minutes after deploy
 ```
 
+### Rollback Procedure
+```bash
+# Metadata rollback
+sf project deploy start --target-org production --metadata-dir rollback/
+
+# Integration rollback: revert to previous version
+# Feature flag: disable Salesforce integration without redeploying
+SF_INTEGRATION_ENABLED=false
+```
+
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| API Limit Warning | > 80% daily limit used | P3 |
+| API Limit Critical | > 95% daily limit used | P1 |
+| Auth Failure | INVALID_SESSION_ID errors | P1 |
+| SOQL Errors | MALFORMED_QUERY or INVALID_FIELD | P2 |
+| Record Lock | UNABLE_TO_LOCK_ROW spikes | P3 |
+
 ## Resources
-- [Salesforce Status](https://status.salesforce.com)
-- [Salesforce Support](https://docs.salesforce.com/support)
+- [Salesforce Status Page](https://status.salesforce.com)
+- [Deployment Best Practices](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_develop.htm)
+- [Sandbox Types](https://help.salesforce.com/s/articleView?id=sf.deploy_sandboxes_intro.htm)
 
 ## Next Steps
 For version upgrades, see `salesforce-upgrade-migration`.

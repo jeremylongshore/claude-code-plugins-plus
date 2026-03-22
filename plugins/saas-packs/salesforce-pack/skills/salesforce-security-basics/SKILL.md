@@ -1,11 +1,11 @@
 ---
 name: salesforce-security-basics
 description: |
-  Apply Salesforce security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
+  Apply Salesforce security best practices for Connected Apps, OAuth, and field-level security.
+  Use when securing API credentials, implementing least privilege access,
   or auditing Salesforce security configuration.
   Trigger with phrases like "salesforce security", "salesforce secrets",
-  "secure salesforce", "salesforce API key security".
+  "secure salesforce", "salesforce connected app security", "salesforce FLS".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,150 @@ compatible-with: claude-code
 # Salesforce Security Basics
 
 ## Overview
-Security best practices for Salesforce API keys, tokens, and access control.
+Security best practices for Salesforce integrations: Connected App configuration, OAuth scope management, field-level security, and credential rotation.
 
 ## Prerequisites
-- Salesforce SDK installed
-- Understanding of environment variables
-- Access to Salesforce dashboard
+- Salesforce org with System Administrator access
+- Connected App created in Setup > App Manager
+- Understanding of Salesforce security model (Profile, Permission Set, OWD)
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Secure Connected App Configuration
+```
+Setup > App Manager > New Connected App:
+
+1. Enable OAuth Settings
+2. Callback URL: https://yourapp.com/oauth/callback (NOT localhost in prod)
+3. Selected OAuth Scopes — USE MINIMUM REQUIRED:
+   - "Manage user data via APIs (api)" — for REST/SOQL access
+   - "Perform requests at any time (refresh_token, offline_access)" — for refresh tokens
+   - DO NOT add "Full access (full)" unless absolutely necessary
+
+4. Require Proof Key for Code Exchange (PKCE): Enable for public clients
+5. Require Secret for Web Server Flow: Enable
+6. IP Relaxation: "Enforce IP restrictions" (not "Relax IP restrictions")
+```
+
+### Step 2: Credential Storage
+
 ```bash
 # .env (NEVER commit to git)
-SALESFORCE_API_KEY=sk_live_***
-SALESFORCE_SECRET=***
+SF_LOGIN_URL=https://login.salesforce.com
+SF_USERNAME=integration-user@yourcompany.com
+SF_PASSWORD=<from-vault>
+SF_SECURITY_TOKEN=<from-vault>
+SF_CLIENT_ID=<connected-app-consumer-key>
+SF_CLIENT_SECRET=<connected-app-consumer-secret>
 
-# .gitignore
+# .gitignore — ALWAYS include
 .env
 .env.local
 .env.*.local
+server.key    # JWT private key
+*.pem
+*.key
 ```
 
-### Step 2: Implement Secret Rotation
+### Step 3: Use a Dedicated Integration User
+```
+Create a dedicated Salesforce user for API access:
+
+1. Profile: Create "API Integration" profile (clone from Standard User)
+   - Login Hours: restrict to expected operating hours
+   - Login IP Ranges: restrict to your server IPs
+   - Object permissions: ONLY objects your integration needs
+
+2. Permission Set: "Integration API Access"
+   - Object: Account — Read, Create, Edit (no Delete)
+   - Object: Contact — Read, Create, Edit (no Delete)
+   - Field-Level Security: only expose fields the integration reads/writes
+
+3. NEVER use a System Administrator user for integrations
+```
+
+### Step 4: Field-Level Security (FLS) Enforcement
+
+```typescript
+// Always check FLS before operations — especially for managed packages
+const conn = await getConnection();
+const meta = await conn.sobject('Account').describe();
+
+// Check if field is accessible (readable)
+const industryField = meta.fields.find(f => f.name === 'Industry');
+if (!industryField?.accessible) {
+  throw new Error('Industry field is not accessible — check FLS');
+}
+
+// Check if field is updateable (writable)
+if (!industryField?.updateable) {
+  console.warn('Industry field is read-only for this user');
+}
+
+// Check which fields the current user can actually see
+const accessibleFields = meta.fields
+  .filter(f => f.accessible)
+  .map(f => f.name);
+console.log('Accessible fields:', accessibleFields.length);
+```
+
+### Step 5: Security Token Rotation
+
 ```bash
-# 1. Generate new key in Salesforce dashboard
-# 2. Update environment variable
-export SALESFORCE_API_KEY="new_key_here"
+# Salesforce security tokens auto-reset when password changes
+# Rotation procedure:
+# 1. Setup > My Personal Information > Reset My Security Token
+# 2. New token is emailed to the user
+# 3. Update SF_SECURITY_TOKEN in your vault/env
+# 4. Verify connection works with new token
+# 5. For JWT: rotate the certificate in the Connected App
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${SALESFORCE_API_KEY}" \
-  https://api.salesforce.com/health
-
-# 4. Revoke old key in dashboard
+# Automate rotation check
+sf org display --target-org integration-user --json | jq '.result.accessToken'
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 6: Audit Logging
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new SalesforceClient({
-    apiKey: process.env.SALESFORCE_READ_KEY,
-  }),
-  writer: new SalesforceClient({
-    apiKey: process.env.SALESFORCE_WRITE_KEY,
-  }),
-};
-```
+// Query Setup Audit Trail for security events
+const auditTrail = await conn.query(`
+  SELECT CreatedDate, CreatedBy.Username, Action, Section, Display
+  FROM SetupAuditTrail
+  WHERE CreatedDate >= LAST_N_DAYS:7
+    AND (Section = 'Connected Apps' OR Section = 'Users' OR Section = 'Profiles')
+  ORDER BY CreatedDate DESC
+  LIMIT 50
+`);
 
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+for (const entry of auditTrail.records) {
+  console.log(`${entry.CreatedDate} | ${entry.CreatedBy?.Username} | ${entry.Action} | ${entry.Display}`);
 }
 ```
 
 ### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
+- [ ] Connected App uses minimum OAuth scopes (not `full`)
+- [ ] Dedicated integration user (not admin)
+- [ ] IP restrictions on Connected App and user profile
+- [ ] Credentials in vault/env vars, never in code
+- [ ] `.env` and `*.key` files in `.gitignore`
+- [ ] Field-Level Security restricts sensitive fields
+- [ ] Security token rotated regularly
+- [ ] Setup Audit Trail monitored
+- [ ] PKCE enabled for public clients
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Salesforce analytics
-  await salesforceClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'salesforce.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed credentials in git | `git log -p --all -S 'SF_PASSWORD'` | Rotate immediately, use git-secrets |
+| Overprivileged user | Check profile permissions | Create restricted integration profile |
+| Missing FLS | Describe call shows `accessible: false` | Update Permission Set |
+| IP not whitelisted | `LOGIN_MUST_USE_SECURITY_TOKEN` | Add IP to login IP ranges |
 
 ## Resources
-- [Salesforce Security Guide](https://docs.salesforce.com/security)
-- [Salesforce API Scopes](https://docs.salesforce.com/scopes)
+- [Salesforce Security Guide](https://developer.salesforce.com/docs/atlas.en-us.securityImplGuide.meta/securityImplGuide/)
+- [Connected Apps](https://help.salesforce.com/s/articleView?id=sf.connected_app_overview.htm)
+- [Field-Level Security](https://help.salesforce.com/s/articleView?id=sf.admin_fls.htm)
+- [Setup Audit Trail](https://help.salesforce.com/s/articleView?id=sf.admin_monitorsetup.htm)
 
 ## Next Steps
 For production deployment, see `salesforce-prod-checklist`.
