@@ -1,5 +1,5 @@
 {
-  "name": "@intentsolutionsio/supabase-skill-md-pack",
+  "name": "@intentsolutionsio/supabase-pack",
   "version": "1.0.0",
   "description": "Claude Code skill pack for Supabase - 30 skills covering database operations, authentication, edge functions, realtime subscriptions, and production operations",
   "main": "README.md",
@@ -36,7 +36,7 @@
   "bugs": {
     "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
   },
-  "homepage": "https://claudecodeplugins.io/plugins/supabase-pack",
+  "homepage": "https://tonsofskills.com/learn/supabase/",
   "publishConfig": {
     "access": "public"
   }

@@ -1,23 +1,14 @@
 {
-  "name": "guidewire-pack",
+  "name": "@intentsolutionsio/guidewire-pack",
   "version": "1.0.0",
-  "description": "Claude Code skill pack for Guidewire InsuranceSuite (24 skills)",
-  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "description": "Claude Code skill pack for Guidewire InsuranceSuite - 24 skills covering PolicyCenter, ClaimCenter, BillingCenter, and insurance operations",
+  "main": "README.md",
+  "type": "module",
+  "files": ["README.md", ".claude-plugin/", "skills/"],
+  "keywords": ["claude-code", "claude-code-plugin", "guidewire", "insurance", "insurancesuite", "policycenter", "claimcenter", "ai-skills", "saas-pack"],
+  "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
   "license": "MIT",
-  "keywords": [
-    "guidewire",
-    "insurance",
-    "insurancesuite",
-    "policycenter",
-    "claimcenter",
-    "billingcenter",
-    "saas",
-    "sdk",
-    "integration"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jeremylongshore/claude-code-plugins.git",
-    "directory": "plugins/saas-packs/guidewire-pack"
-  }
+  "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/guidewire-pack"},
+  "homepage": "https://tonsofskills.com/learn/guidewire/",
+  "publishConfig": {"access": "public"}
 }

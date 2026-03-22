@@ -9,6 +9,6 @@
   "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
   "license": "MIT",
   "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/clay-pack"},
-  "homepage": "https://claudecodeplugins.io/learn/clay/",
+  "homepage": "https://tonsofskills.com/learn/clay/",
   "publishConfig": {"access": "public"}
 }

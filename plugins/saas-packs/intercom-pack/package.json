@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/intercom-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Intercom - 24 skills covering customer messaging, support automation, and engagement",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "intercom",
+    "customer-messaging",
+    "support-automation",
+    "engagement",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/intercom-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/intercom/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/fathom-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Fathom - 18 skills covering AI meeting assistant, note-taking, and call summaries",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "fathom",
+    "meeting-assistant",
+    "note-taking",
+    "call-summaries",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/fathom-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/fathom/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

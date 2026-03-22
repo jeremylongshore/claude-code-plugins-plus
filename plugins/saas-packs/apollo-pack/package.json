@@ -29,7 +29,7 @@
     "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
     "directory": "plugins/saas-packs/apollo-pack"
   },
-  "homepage": "https://claudecodeplugins.io/learn/apollo/",
+  "homepage": "https://tonsofskills.com/learn/apollo/",
   "publishConfig": {
     "access": "public"
   }

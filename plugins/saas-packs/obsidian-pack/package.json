@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/obsidian-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Obsidian - 24 skills covering plugin development, vault management, and knowledge graphs",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "obsidian",
+    "plugin-development",
+    "vault-management",
+    "knowledge-graph",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/obsidian-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/obsidian/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

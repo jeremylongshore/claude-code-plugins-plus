@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/procore-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Procore - 24 skills covering construction management, project tracking, and field operations",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "procore",
+    "construction-management",
+    "project-tracking",
+    "field-operations",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/procore-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/procore/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

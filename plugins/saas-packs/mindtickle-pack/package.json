@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/mindtickle-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Mindtickle - 18 skills covering sales readiness, training, and revenue enablement",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "mindtickle",
+    "sales-readiness",
+    "training",
+    "revenue-enablement",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/mindtickle-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/mindtickle/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

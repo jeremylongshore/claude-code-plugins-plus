@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/clari-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Clari - 18 skills covering revenue operations, forecasting, and pipeline management",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "clari",
+    "revenue-operations",
+    "forecasting",
+    "pipeline-management",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/clari-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/clari/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

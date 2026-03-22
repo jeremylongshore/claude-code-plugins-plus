@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/serpapi-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for SerpApi - 18 skills covering search engine scraping, SERP data, and structured results",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "serpapi",
+    "search-engine",
+    "serp-data",
+    "web-scraping",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/serpapi-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/serpapi/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

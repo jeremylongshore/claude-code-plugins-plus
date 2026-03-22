@@ -1,0 +1,36 @@
+{
+  "name": "@intentsolutionsio/runway-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Runway - 18 skills covering AI video generation, creative tools, and generative media",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    ".claude-plugin/",
+    "skills/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "runway",
+    "ai-video",
+    "generative-media",
+    "creative-tools",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/runway-pack"
+  },
+  "homepage": "https://tonsofskills.com/learn/runway/",
+  "publishConfig": {
+    "access": "public"
+  }
+}

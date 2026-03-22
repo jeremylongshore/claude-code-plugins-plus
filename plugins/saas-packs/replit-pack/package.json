@@ -9,6 +9,6 @@
   "author": {"name": "Jeremy Longshore", "email": "jeremy@intentsolutions.io"},
   "license": "MIT",
   "repository": {"type": "git", "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git", "directory": "plugins/saas-packs/replit-pack"},
-  "homepage": "https://claudecodeplugins.io/learn/replit/",
+  "homepage": "https://tonsofskills.com/learn/replit/",
   "publishConfig": {"access": "public"}
 }
