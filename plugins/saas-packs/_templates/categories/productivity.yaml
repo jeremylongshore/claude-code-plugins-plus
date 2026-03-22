@@ -1,0 +1,199 @@
+# Productivity Tools Category Defaults
+# Applies to: notion, obsidian, apple-notes, onenote, clickup, linear,
+#   evernote, granola
+# Auth: API key or OAuth2. CRUD on pages/tasks/notes. Seat-based billing.
+
+auth_pattern: api_key
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: list workspaces/pages — the core object
+hello_world_ts: |
+  const pages = await client.pages.list({ limit: 5 });
+  console.log(`Found ${pages.total} pages. Recent:`);
+  pages.results.forEach(p => console.log(`  - ${p.title} (edited: ${p.lastEdited})`));
+hello_world_py: |
+  pages = client.pages.list(limit=5)
+  print(f"Found {pages.total} pages. Recent:")
+  for p in pages.results:
+      print(f"  - {p.title} (edited: {p.last_edited})")
+
+verification_code: |
+  const workspace = await client.workspace.get();
+  console.log(`Connected to workspace: ${workspace.name}`);
+
+# Primary workflow: Page & Content Management
+workflow_a_slug: content-management
+workflow_a_name: Page & Content Management
+workflow_a_description: |
+  Create, read, update, and organize pages, databases, and content blocks.
+  This is the primary workflow — programmatic content management.
+workflow_a_trigger: manage pages
+workflow_a_action: create or update pages
+workflow_a_use_case_1: creating pages from templates or external data
+workflow_a_use_case_2: updating task databases from CI/CD pipeline events
+workflow_a_use_case_3: archiving and organizing content by project or date
+workflow_a_step1_name: Create Page with Content
+workflow_a_step1_code: |
+  const page = await client.pages.create({
+    parentId: workspace.rootPageId,
+    title: 'Sprint 42 Retrospective',
+    content: [
+      { type: 'heading_2', text: 'What went well' },
+      { type: 'bulleted_list', items: ['Shipped feature X on time', 'Zero P0 incidents'] },
+      { type: 'heading_2', text: 'What to improve' },
+      { type: 'bulleted_list', items: ['Better test coverage', 'Earlier design reviews'] },
+    ],
+  });
+  console.log(`Created: ${page.url}`);
+workflow_a_step2_name: Query Database Records
+workflow_a_step2_code: |
+  const tasks = await client.databases.query(taskDbId, {
+    filter: {
+      and: [
+        { property: 'Status', status: { equals: 'In Progress' } },
+        { property: 'Assignee', people: { contains: userId } },
+      ],
+    },
+    sorts: [{ property: 'Priority', direction: 'descending' }],
+  });
+  console.log(`${tasks.results.length} tasks in progress`);
+workflow_a_step3_name: Update Records
+workflow_a_step3_code: |
+  for (const task of completedTasks) {
+    await client.pages.update(task.id, {
+      properties: {
+        Status: { status: { name: 'Done' } },
+        'Completed Date': { date: { start: new Date().toISOString() } },
+      },
+    });
+  }
+  console.log(`Marked ${completedTasks.length} tasks as Done`);
+workflow_a_error1_name: Page Not Found
+workflow_a_error1_cause: Page ID is invalid or page was deleted/archived
+workflow_a_error1_solution: Search by title instead of ID. Check trash/archive for deleted pages.
+workflow_a_error2_name: Validation Error
+workflow_a_error2_cause: Page content or property value doesn't match database schema
+workflow_a_error2_solution: Check database schema for required properties and allowed values.
+workflow_a_complete_example: |
+  const client = new ProductivityClient({ apiKey: process.env.API_KEY });
+
+  async function createFromTemplate(templateId: string, title: string, data: Record<string, any>) {
+    const template = await client.pages.get(templateId);
+    const page = await client.pages.create({
+      parentId: template.parentId,
+      title,
+      content: applyData(template.content, data),
+    });
+    return page;
+  }
+workflow_a_variations: |
+  - **Database sync**: Mirror external data (GitHub issues, Jira tickets) into a database
+  - **Template instantiation**: Create pages from templates with variable substitution
+  - **Bulk archive**: Archive completed items older than N days
+
+# Secondary workflow: Search & Knowledge Retrieval
+workflow_b_slug: search-retrieve
+workflow_b_name: Search & Knowledge Retrieval
+workflow_b_description: |
+  Search across all content and retrieve specific pages, blocks, or database entries.
+  The read workflow for building knowledge-aware applications.
+workflow_b_trigger: search
+workflow_b_action: search content
+workflow_b_use_case_1: finding relevant pages by keyword or tag
+workflow_b_use_case_2: building a knowledge base search for internal tools
+workflow_b_step1_name: Full-Text Search
+workflow_b_step1_code: |
+  const results = await client.search({
+    query: 'deployment runbook',
+    filter: { property: 'object', value: 'page' },
+    sort: { direction: 'descending', timestamp: 'last_edited_time' },
+  });
+  console.log(`Found ${results.results.length} matching pages`);
+workflow_b_step2_name: Get Page Content
+workflow_b_step2_code: |
+  const blocks = await client.blocks.children.list(pageId);
+  const text = blocks.results
+    .filter(b => b.type === 'paragraph')
+    .map(b => b.paragraph.rich_text.map(t => t.plain_text).join(''))
+    .join('\n');
+workflow_b_step3_name: Extract and Use
+workflow_b_step3_code: |
+  // Use retrieved content as context for AI, reports, or dashboards
+  console.log(`Retrieved ${text.length} characters from page`);
+  // Feed into RAG pipeline, generate summary, or display in dashboard
+workflow_b_complexity: Low
+workflow_b_perf: Fast (indexed search)
+workflow_b_complete_example: |
+  async function findAndRead(query: string) {
+    const results = await client.search({ query });
+    if (results.results.length === 0) return null;
+    const page = results.results[0];
+    const content = await client.blocks.children.list(page.id);
+    return { title: page.title, content };
+  }
+workflow_b_error_handling: |
+  try {
+    const results = await client.search({ query });
+    return results;
+  } catch (err) {
+    if (err.status === 400 && err.code === 'invalid_query') {
+      // Fall back to simpler search
+      return client.search({ query: query.split(' ')[0] });
+    }
+    throw err;
+  }
+
+# Error patterns for productivity tools
+error_1_name: Integration Not Connected
+error_1_message: "401 Unauthorized: Integration token is not connected to this workspace"
+error_1_cause: API integration hasn't been added to the workspace, or token lacks page access.
+error_1_solution: |
+  # Add integration in workspace settings → Connections
+  # Share specific pages/databases with the integration
+  # Use "internal integration" for full workspace access
+
+error_2_name: Page Not Found
+error_2_message: "404 Not Found: Could not find page with ID abc-123"
+error_2_cause: Page was deleted, archived, or integration lacks access to it.
+error_2_solution: |
+  # Check if page was moved to trash (search with in_trash filter)
+  # Verify integration has access (page must be shared with integration)
+  # Use search API instead of direct ID access
+
+error_3_name: Rate Limit Exceeded
+error_3_message: "429 Too Many Requests: Rate limit exceeded. Retry after 1 second."
+error_3_cause: Exceeded 3 requests/second (typical for productivity APIs).
+error_3_solution: |
+  # Productivity APIs have strict per-second limits (3-10 req/s)
+  # Use batch endpoints where available
+  # Implement request queue with 334ms minimum spacing
+
+tier_1_name: Free / Personal
+tier_1_rpm: "60"
+tier_1_rpd: "10,000"
+tier_2_name: Plus / Pro
+tier_2_rpm: "180"
+tier_2_rpd: "50,000"
+tier_3_name: Business / Enterprise
+tier_3_rpm: "600"
+tier_3_rpd: "Unlimited"
+
+op_1_name: Page Read
+op_1_p50: "100ms"
+op_1_p95: "400ms"
+op_1_p99: "1000ms"
+op_2_name: Search
+op_2_p50: "200ms"
+op_2_p95: "800ms"
+op_2_p99: "2000ms"
+op_3_name: Page Create (with content)
+op_3_p50: "300ms"
+op_3_p95: "1000ms"
+op_3_p99: "3000ms"
+
+deploy_pattern: webhook_worker
+deploy_description: |
+  Productivity tool integrations deploy as webhook listeners or scheduled
+  sync jobs — receiving page change events, syncing databases, or running
+  periodic content aggregation. Often combined with a queue for reliability.

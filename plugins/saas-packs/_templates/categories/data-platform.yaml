@@ -1,0 +1,217 @@
+# Data Platform Category Defaults
+# Applies to: supabase, databricks, clickhouse, hex, oraclecloud, algolia,
+#   posthog, snowflake, palantir
+# Auth: connection string or API key. Stateful connections. Query-based billing.
+
+auth_pattern: connection_string
+auth_env_suffix: DATABASE_URL
+auth_header: "Connection string or API key"
+
+# Hello world: run a real query, not generic client.call()
+hello_world_ts: |
+  const result = await client.query('SELECT 1 AS health_check');
+  console.log('Connected:', result.rows[0].health_check === 1 ? 'OK' : 'FAIL');
+hello_world_py: |
+  result = client.query("SELECT 1 AS health_check")
+  print("Connected:", "OK" if result[0]["health_check"] == 1 else "FAIL")
+
+verification_code: |
+  const tables = await client.query("SELECT table_name FROM information_schema.tables LIMIT 5");
+  console.log(`Connected — ${tables.rows.length} tables found`);
+
+# Primary workflow: Query & Transform Data
+workflow_a_slug: query-transform
+workflow_a_name: Query & Transform Data
+workflow_a_description: |
+  Write, optimize, and execute analytical queries against your data platform.
+  This is the primary workflow — read data, aggregate it, shape it for consumption.
+workflow_a_trigger: query data
+workflow_a_action: run analytical query
+workflow_a_use_case_1: writing analytical queries over production data
+workflow_a_use_case_2: building materialized views for dashboards
+workflow_a_use_case_3: transforming raw events into business metrics
+workflow_a_step1_name: Connect and Discover Schema
+workflow_a_step1_code: |
+  const schema = await client.query(`
+    SELECT column_name, data_type
+    FROM information_schema.columns
+    WHERE table_name = 'events'
+    ORDER BY ordinal_position
+  `);
+  console.log('Schema:', schema.rows);
+workflow_a_step2_name: Write and Execute Query
+workflow_a_step2_code: |
+  const metrics = await client.query(`
+    SELECT
+      date_trunc('day', created_at) AS day,
+      COUNT(*) AS event_count,
+      COUNT(DISTINCT user_id) AS unique_users
+    FROM events
+    WHERE created_at >= NOW() - INTERVAL '30 days'
+    GROUP BY 1
+    ORDER BY 1 DESC
+  `);
+workflow_a_step3_name: Process and Export Results
+workflow_a_step3_code: |
+  // Write results to downstream table or export
+  await client.query(`
+    CREATE TABLE IF NOT EXISTS daily_metrics AS
+    SELECT * FROM (${metricsQuery}) sub
+  `);
+  console.log(`Wrote ${metrics.rows.length} rows to daily_metrics`);
+workflow_a_error1_name: Query Timeout
+workflow_a_error1_cause: Query exceeded execution time limit (complex joins/scans)
+workflow_a_error1_solution: Add indexes, reduce scan range with WHERE clauses, or increase timeout.
+workflow_a_error2_name: Permission Denied
+workflow_a_error2_cause: Role lacks SELECT/INSERT privilege on target table
+workflow_a_error2_solution: GRANT required privileges or use a service role with broader access.
+workflow_a_complete_example: |
+  // Full query pipeline: schema discovery → query → export
+  const client = new DataClient({ connectionString: process.env.DATABASE_URL });
+
+  const result = await client.query(`
+    SELECT user_id, COUNT(*) as actions, MAX(created_at) as last_seen
+    FROM events
+    WHERE event_type = 'purchase'
+    GROUP BY user_id
+    HAVING COUNT(*) > 5
+    ORDER BY actions DESC
+    LIMIT 100
+  `);
+  console.log(`Top 100 buyers: ${result.rows.length} rows`);
+workflow_a_variations: |
+  - **Parameterized**: Use `$1, $2` placeholders to prevent SQL injection
+  - **Streaming**: Use cursor-based iteration for large result sets
+  - **Materialized views**: Pre-compute expensive aggregations on a schedule
+
+# Secondary workflow: Schema Migration & Data Modeling
+workflow_b_slug: schema-migration
+workflow_b_name: Schema Migration & Data Modeling
+workflow_b_description: |
+  Design schemas, create migrations, and evolve your data model safely.
+  The second core workflow — structure your data before you query it.
+workflow_b_trigger: migration
+workflow_b_action: run schema migration
+workflow_b_use_case_1: creating tables and indexes for a new feature
+workflow_b_use_case_2: altering columns without downtime
+workflow_b_step1_name: Generate Migration File
+workflow_b_step1_code: |
+  // migrations/001_create_events.sql
+  const migration = `
+    CREATE TABLE events (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL REFERENCES users(id),
+      event_type VARCHAR(64) NOT NULL,
+      payload JSONB DEFAULT '{}',
+      created_at TIMESTAMPTZ DEFAULT NOW()
+    );
+    CREATE INDEX idx_events_user ON events(user_id);
+    CREATE INDEX idx_events_type_date ON events(event_type, created_at);
+  `;
+workflow_b_step2_name: Apply Migration
+workflow_b_step2_code: |
+  // Run migration with transaction safety
+  await client.query('BEGIN');
+  try {
+    await client.query(migration);
+    await client.query("INSERT INTO schema_migrations (version) VALUES ('001')");
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  }
+workflow_b_step3_name: Verify Schema
+workflow_b_step3_code: |
+  const check = await client.query(`
+    SELECT column_name, data_type
+    FROM information_schema.columns
+    WHERE table_name = 'events'
+  `);
+  console.log('Migration applied:', check.rows.length, 'columns');
+workflow_b_complexity: High
+workflow_b_perf: Depends on table size (ALTER on large tables can lock)
+workflow_b_complete_example: |
+  // Safe migration with rollback
+  async function migrate(client, upSQL, downSQL) {
+    await client.query('BEGIN');
+    try {
+      await client.query(upSQL);
+      await client.query('COMMIT');
+      console.log('Migration applied successfully');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      console.error('Migration failed, rolled back:', err.message);
+    }
+  }
+workflow_b_error_handling: |
+  try {
+    await client.query(migrationSQL);
+  } catch (err) {
+    if (err.code === '42P07') { // relation already exists
+      console.log('Table already exists, skipping');
+    } else if (err.code === '23505') { // unique violation
+      console.log('Migration already applied');
+    } else {
+      throw err;
+    }
+  }
+
+# Error patterns specific to data platforms
+error_1_name: Connection Pool Exhausted
+error_1_message: "Error: too many clients already / connection pool timeout"
+error_1_cause: All connections in the pool are in use. Common with serverless functions creating new pools on each invocation.
+error_1_solution: |
+  # Use connection pooling (PgBouncer, built-in pooler)
+  # Set pool max to match your plan's connection limit
+  # Ensure connections are released after queries (finally blocks)
+
+error_2_name: Query Timeout
+error_2_message: "Error: canceling statement due to statement timeout (30000ms)"
+error_2_cause: Query execution exceeded the statement_timeout setting. Usually a missing index or full table scan.
+error_2_solution: |
+  # Analyze the query plan
+  EXPLAIN ANALYZE SELECT ...;
+  # Add covering index for common filter columns
+  CREATE INDEX CONCURRENTLY idx_name ON table(column);
+  # Increase timeout for one-off analytical queries only
+
+error_3_name: Relation Does Not Exist
+error_3_message: "ERROR: relation \"events\" does not exist"
+error_3_cause: Table not created yet, wrong schema search path, or typo in table name.
+error_3_solution: |
+  # Check available tables
+  SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';
+  # Set search_path if using custom schemas
+  SET search_path TO myschema, public;
+
+# Rate limits for data platforms (connection/query based)
+tier_1_name: Free / Developer
+tier_1_rpm: "500"
+tier_1_rpd: "50,000"
+tier_2_name: Pro
+tier_2_rpm: "5,000"
+tier_2_rpd: "1,000,000"
+tier_3_name: Enterprise
+tier_3_rpm: "Unlimited"
+tier_3_rpd: "Unlimited"
+
+# Performance benchmarks
+op_1_name: Simple SELECT (indexed)
+op_1_p50: "5ms"
+op_1_p95: "25ms"
+op_1_p99: "100ms"
+op_2_name: Analytical Aggregation
+op_2_p50: "200ms"
+op_2_p95: "2000ms"
+op_2_p99: "10000ms"
+op_3_name: Bulk INSERT (1000 rows)
+op_3_p50: "50ms"
+op_3_p95: "200ms"
+op_3_p99: "500ms"
+
+# Deploy: long-running data pipeline worker
+deploy_pattern: data_pipeline_worker
+deploy_description: |
+  Data platform integrations deploy as persistent workers or scheduled jobs —
+  ETL pipelines, cron-driven aggregations, or streaming consumers that maintain
+  database connections and process data continuously.

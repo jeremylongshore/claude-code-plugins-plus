@@ -1,0 +1,204 @@
+# Enterprise & Vertical SaaS Category Defaults
+# Applies to: adobe, flexport, guidewire, documenso, persona, shopify,
+#   navan, bamboohr, maintainx, workhuman, glean, veeva, procore, etc.
+# Auth: OAuth2 or API key. Domain-specific resources. Contract billing.
+
+auth_pattern: oauth2
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: list domain-specific resources
+hello_world_ts: |
+  const resources = await client.resources.list({ limit: 5 });
+  console.log(`Found ${resources.total} resources:`);
+  resources.data.forEach(r => console.log(`  - ${r.name} (${r.type}) — ${r.status}`));
+hello_world_py: |
+  resources = client.resources.list(limit=5)
+  print(f"Found {resources.total} resources:")
+  for r in resources.data:
+      print(f"  - {r.name} ({r.type}) — {r.status}")
+
+verification_code: |
+  const org = await client.organization.get();
+  console.log(`Connected: ${org.name} (${org.plan} plan)`);
+
+# Primary workflow: Domain Entity Management
+workflow_a_slug: entity-management
+workflow_a_name: Domain Entity Management
+workflow_a_description: |
+  Create, update, and manage domain-specific entities through the API.
+  This is the primary workflow — CRUD on the core business objects.
+workflow_a_trigger: manage entities
+workflow_a_action: create or update domain entities
+workflow_a_use_case_1: creating and managing domain-specific records via API
+workflow_a_use_case_2: automating data entry from external sources
+workflow_a_use_case_3: building custom workflows on top of domain data
+workflow_a_step1_name: List and Filter Entities
+workflow_a_step1_code: |
+  const entities = await client.entities.list({
+    filter: { status: 'active', type: 'primary' },
+    sort: { field: 'updated_at', direction: 'desc' },
+    limit: 50,
+  });
+  console.log(`Found ${entities.total} active entities`);
+workflow_a_step2_name: Create or Update
+workflow_a_step2_code: |
+  const entity = await client.entities.upsert({
+    externalId: record.id,
+    name: record.name,
+    type: record.type,
+    metadata: record.properties,
+    status: 'active',
+  });
+  console.log(`Entity ${entity.id}: ${entity.name} (${entity.status})`);
+workflow_a_step3_name: Trigger Workflow
+workflow_a_step3_code: |
+  // Trigger domain-specific workflow on the entity
+  const workflow = await client.workflows.trigger({
+    entityId: entity.id,
+    workflow: 'review-and-approve',
+    assignee: manager.id,
+  });
+  console.log(`Workflow ${workflow.id} started — awaiting approval`);
+workflow_a_error1_name: Validation Error
+workflow_a_error1_cause: Entity data doesn't match the domain schema or business rules
+workflow_a_error1_solution: Check required fields and validation rules. Get schema from /schema endpoint.
+workflow_a_error2_name: Permission Denied
+workflow_a_error2_cause: API user lacks required role for this operation
+workflow_a_error2_solution: Check user roles. Enterprise APIs often require admin or domain-specific roles.
+workflow_a_complete_example: |
+  const client = new EnterpriseClient({ apiKey: process.env.API_KEY });
+
+  async function syncRecords(source: ExternalRecord[]) {
+    const results = { created: 0, updated: 0, failed: 0 };
+    for (const record of source) {
+      try {
+        await client.entities.upsert({
+          externalId: record.id,
+          ...mapToSchema(record),
+        });
+        results.created++;
+      } catch (err) {
+        results.failed++;
+        console.error(`Failed: ${record.id} — ${err.message}`);
+      }
+    }
+    return results;
+  }
+workflow_a_variations: |
+  - **Bulk import**: Use batch API for large data migrations
+  - **Webhook sync**: Real-time sync via entity change webhooks
+  - **Approval flows**: Trigger review workflows on entity creation/update
+
+# Secondary workflow: Integration & Data Sync
+workflow_b_slug: data-sync
+workflow_b_name: Integration & Data Sync
+workflow_b_description: |
+  Sync data between the enterprise platform and other systems (ERP, accounting, HR).
+  The glue workflow that connects vertical SaaS to the rest of the tech stack.
+workflow_b_trigger: sync data
+workflow_b_action: sync between systems
+workflow_b_use_case_1: syncing records between systems on a schedule
+workflow_b_use_case_2: building real-time event-driven integrations
+workflow_b_step1_name: Fetch Changes Since Last Sync
+workflow_b_step1_code: |
+  const changes = await client.entities.list({
+    filter: { updated_after: lastSyncTimestamp },
+    sort: { field: 'updated_at', direction: 'asc' },
+  });
+  console.log(`${changes.total} records changed since last sync`);
+workflow_b_step2_name: Transform and Map
+workflow_b_step2_code: |
+  const mapped = changes.data.map(entity => ({
+    externalId: entity.id,
+    name: entity.name,
+    ...mapToTargetSchema(entity),
+  }));
+workflow_b_step3_name: Write to Target System
+workflow_b_step3_code: |
+  const results = await targetSystem.batchUpsert(mapped);
+  console.log(`Synced: ${results.success} success, ${results.failed} failed`);
+  // Update sync cursor
+  await saveSyncCursor(changes.data[changes.data.length - 1].updated_at);
+workflow_b_complexity: Medium-High
+workflow_b_perf: Depends on batch size and target system
+workflow_b_complete_example: |
+  async function incrementalSync() {
+    const cursor = await loadSyncCursor();
+    const changes = await client.entities.list({ filter: { updated_after: cursor } });
+    for (const batch of chunk(changes.data, 100)) {
+      await targetSystem.batchUpsert(batch.map(mapToTargetSchema));
+    }
+    await saveSyncCursor(new Date().toISOString());
+    return changes.total;
+  }
+workflow_b_error_handling: |
+  try {
+    await targetSystem.batchUpsert(records);
+  } catch (err) {
+    if (err.code === 'partial_failure') {
+      console.error(`${err.failedRecords.length} records failed`);
+      // Retry failed records individually
+      for (const failed of err.failedRecords) {
+        await retryQueue.push(failed);
+      }
+    }
+    throw err;
+  }
+
+# Error patterns for enterprise platforms
+error_1_name: Insufficient Permissions
+error_1_message: "403 Forbidden: API key lacks 'entities.write' scope"
+error_1_cause: API token doesn't have the required OAuth scope or RBAC role.
+error_1_solution: |
+  # Check required scopes in API docs
+  # Re-create token with correct scopes
+  # Enterprise platforms often require admin to approve API access
+  # Some operations need org-level admin, not just workspace-level
+
+error_2_name: Entity Validation Failed
+error_2_message: "422 Unprocessable Entity: Field 'industry_code' must match pattern ^[A-Z]{2}\\d{4}$"
+error_2_cause: Domain-specific validation rules on entity fields (industry codes, formats, ranges).
+error_2_solution: |
+  # Fetch field validation rules: client.schema.get('entity_type')
+  # Enterprise platforms have strict domain-specific validations
+  # Pre-validate data against schema before API submission
+
+error_3_name: Concurrent Modification
+error_3_message: "409 Conflict: Entity was modified by another process (version mismatch)"
+error_3_cause: Optimistic locking — another user or integration updated the entity since you read it.
+error_3_solution: |
+  # Read latest version before update (optimistic concurrency)
+  const latest = await client.entities.get(id);
+  await client.entities.update(id, { ...changes, version: latest.version });
+  # Implement retry with re-read on 409
+
+tier_1_name: Starter
+tier_1_rpm: "100"
+tier_1_rpd: "10,000"
+tier_2_name: Professional
+tier_2_rpm: "500"
+tier_2_rpd: "100,000"
+tier_3_name: Enterprise
+tier_3_rpm: "2,000"
+tier_3_rpd: "Unlimited"
+
+op_1_name: Entity CRUD
+op_1_p50: "200ms"
+op_1_p95: "600ms"
+op_1_p99: "1500ms"
+op_2_name: Search / Filter
+op_2_p50: "400ms"
+op_2_p95: "1200ms"
+op_2_p99: "3000ms"
+op_3_name: Batch Import (100 records)
+op_3_p50: "3s"
+op_3_p95: "10s"
+op_3_p99: "30s"
+
+deploy_pattern: scheduled_sync_worker
+deploy_description: |
+  Enterprise integrations deploy as scheduled sync workers — cron-driven
+  jobs that pull changes, transform data, and push to connected systems.
+  Often deployed in the enterprise's own cloud (not public internet) with
+  VPN/VPC peering for secure access.

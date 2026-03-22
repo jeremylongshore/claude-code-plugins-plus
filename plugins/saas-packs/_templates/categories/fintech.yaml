@@ -1,0 +1,200 @@
+# Fintech & Blockchain Category Defaults
+# Applies to: ramp, fondo, finta, alchemy, quicknode
+# Auth: API key (often with HMAC signing). Transaction-based. Compliance-heavy.
+
+auth_pattern: api_key
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: check balance or list transactions — the money action
+hello_world_ts: |
+  const account = await client.accounts.get();
+  console.log(`Account: ${account.name}`);
+  console.log(`Balance: $${(account.balance / 100).toFixed(2)} ${account.currency}`);
+hello_world_py: |
+  account = client.accounts.get()
+  print(f"Account: {account.name}")
+  print(f"Balance: ${account.balance / 100:.2f} {account.currency}")
+
+verification_code: |
+  const status = await client.health.check();
+  console.log(`API status: ${status.operational ? 'OK' : 'Degraded'}`);
+
+# Primary workflow: Transaction Processing
+workflow_a_slug: transaction-processing
+workflow_a_name: Transaction Processing
+workflow_a_description: |
+  Create, track, and reconcile financial transactions programmatically.
+  This is the primary workflow — money moves in, money moves out, everything reconciles.
+workflow_a_trigger: process transaction
+workflow_a_action: create and track transactions
+workflow_a_use_case_1: syncing expenses from corporate cards into accounting
+workflow_a_use_case_2: processing payments and tracking settlement status
+workflow_a_use_case_3: reconciling transactions across multiple accounts
+workflow_a_step1_name: List Recent Transactions
+workflow_a_step1_code: |
+  const transactions = await client.transactions.list({
+    from: '2026-03-01',
+    to: '2026-03-22',
+    limit: 100,
+  });
+  console.log(`${transactions.total} transactions in period`);
+  console.log(`Total: $${transactions.data.reduce((sum, t) => sum + t.amount, 0) / 100}`);
+workflow_a_step2_name: Categorize and Tag
+workflow_a_step2_code: |
+  for (const txn of transactions.data) {
+    const category = categorize(txn.merchant, txn.amount);
+    await client.transactions.update(txn.id, {
+      category: category.code,
+      memo: category.label,
+      tags: [category.department],
+    });
+  }
+workflow_a_step3_name: Export for Reconciliation
+workflow_a_step3_code: |
+  const report = await client.reports.generate({
+    type: 'transaction_summary',
+    period: '2026-03',
+    format: 'csv',
+    groupBy: 'category',
+  });
+  fs.writeFileSync('march-reconciliation.csv', report.data);
+  console.log('Exported reconciliation report');
+workflow_a_error1_name: Insufficient Funds
+workflow_a_error1_cause: Account balance too low for the requested transaction
+workflow_a_error1_solution: Check balance before initiating. Set up low-balance alerts.
+workflow_a_error2_name: Duplicate Transaction
+workflow_a_error2_cause: Idempotency key already used for a completed transaction
+workflow_a_error2_solution: Use unique idempotency keys per transaction. Check existing transactions.
+workflow_a_complete_example: |
+  const client = new FinanceClient({ apiKey: process.env.API_KEY });
+
+  async function syncExpenses(startDate: string) {
+    const txns = await client.transactions.list({ from: startDate, status: 'completed' });
+    for (const txn of txns.data) {
+      await accountingSystem.createExpense({
+        amount: txn.amount,
+        vendor: txn.merchant.name,
+        date: txn.date,
+        receipt: txn.receipt_url,
+      });
+    }
+    return txns.total;
+  }
+workflow_a_variations: |
+  - **Real-time sync**: Webhook on transaction.completed for instant reconciliation
+  - **Multi-currency**: Handle exchange rates and conversion fees
+  - **Receipt matching**: Auto-match receipts to transactions via OCR
+
+# Secondary workflow: Reporting & Compliance
+workflow_b_slug: reporting-compliance
+workflow_b_name: Reporting & Compliance
+workflow_b_description: |
+  Generate financial reports, audit trails, and compliance documentation.
+  Required for SOX, tax filing, and financial audits.
+workflow_b_trigger: financial report
+workflow_b_action: generate compliance report
+workflow_b_use_case_1: generating monthly expense reports for accounting
+workflow_b_use_case_2: producing audit trails for compliance reviews
+workflow_b_step1_name: Generate Report
+workflow_b_step1_code: |
+  const report = await client.reports.create({
+    type: 'expense_summary',
+    period: { start: '2026-01-01', end: '2026-03-31' },
+    groupBy: ['department', 'category'],
+    includeReceipts: true,
+  });
+workflow_b_step2_name: Extract Audit Trail
+workflow_b_step2_code: |
+  const auditLog = await client.audit.list({
+    from: '2026-01-01',
+    events: ['transaction.created', 'transaction.approved', 'card.issued'],
+  });
+  console.log(`${auditLog.total} audit events in period`);
+workflow_b_step3_name: Export Documentation
+workflow_b_step3_code: |
+  const docs = await client.compliance.export({
+    type: 'quarterly_review',
+    period: 'Q1-2026',
+    format: 'pdf',
+  });
+  fs.writeFileSync('Q1-2026-compliance.pdf', docs.data);
+workflow_b_complexity: Medium
+workflow_b_perf: Report generation can take 10-60s for large datasets
+workflow_b_complete_example: |
+  async function quarterlyReport(quarter: string) {
+    const report = await client.reports.create({ type: 'quarterly', period: quarter });
+    const audit = await client.audit.list({ period: quarter });
+    return { report, auditEventCount: audit.total };
+  }
+workflow_b_error_handling: |
+  try {
+    const report = await client.reports.create(params);
+    return report;
+  } catch (err) {
+    if (err.code === 'report_period_locked') {
+      console.error('Period is closed for edits. Contact finance admin.');
+    } else if (err.code === 'insufficient_permissions') {
+      console.error('Need finance-admin role to generate this report type.');
+    }
+    throw err;
+  }
+
+# Error patterns for fintech platforms
+error_1_name: Transaction Declined
+error_1_message: "402 Payment Required: Transaction declined — insufficient_funds"
+error_1_cause: Account balance or card limit insufficient for the transaction amount.
+error_1_solution: |
+  # Check available balance before initiating
+  const balance = await client.accounts.balance();
+  # Set up auto-reload thresholds
+  # For card transactions — check card limit, not just account balance
+
+error_2_name: Idempotency Conflict
+error_2_message: "409 Conflict: Idempotency key already used with different parameters"
+error_2_cause: Same idempotency key sent with different request body (retry with changed params).
+error_2_solution: |
+  # Generate unique idempotency key per transaction attempt
+  const idempotencyKey = `txn-${orderId}-${Date.now()}`;
+  # For retries, use the SAME key with the SAME parameters
+  # Different amounts/recipients need different keys
+
+error_3_name: Webhook Signature Invalid
+error_3_message: "401 Unauthorized: Webhook signature verification failed"
+error_3_cause: HMAC signature doesn't match — wrong webhook secret or tampered payload.
+error_3_solution: |
+  # Verify you're using the webhook signing secret (not API key)
+  const isValid = crypto.timingSafeEqual(
+    Buffer.from(computedSignature),
+    Buffer.from(headerSignature)
+  );
+  # Use raw request body for signature verification (not parsed JSON)
+
+tier_1_name: Starter
+tier_1_rpm: "60"
+tier_1_rpd: "5,000"
+tier_2_name: Growth
+tier_2_rpm: "300"
+tier_2_rpd: "50,000"
+tier_3_name: Enterprise
+tier_3_rpm: "1,000"
+tier_3_rpd: "Unlimited"
+
+op_1_name: Transaction List
+op_1_p50: "150ms"
+op_1_p95: "500ms"
+op_1_p99: "1200ms"
+op_2_name: Transaction Create
+op_2_p50: "500ms"
+op_2_p95: "1500ms"
+op_2_p99: "5000ms"
+op_3_name: Report Generation
+op_3_p50: "5s"
+op_3_p95: "30s"
+op_3_p99: "120s"
+
+deploy_pattern: webhook_worker
+deploy_description: |
+  Fintech integrations deploy as secure webhook workers with HMAC signature
+  verification. Often behind a WAF with IP allowlisting. Requires idempotent
+  processing and dead-letter queues for failed transactions.

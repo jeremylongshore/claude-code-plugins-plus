@@ -1,0 +1,204 @@
+# Communication & Messaging Category Defaults
+# Applies to: intercom, customerio, klaviyo, hootsuite, podium, linktree
+# Auth: API key or OAuth2. Event-driven messaging. Contact/message volume billing.
+
+auth_pattern: api_key
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: send a test message — the core action
+hello_world_ts: |
+  const result = await client.messages.send({
+    to: 'test@example.com',
+    subject: 'Hello from SDK',
+    body: 'This is a test message sent via the API.',
+  });
+  console.log(`Message sent: ${result.messageId} (status: ${result.status})`);
+hello_world_py: |
+  result = client.messages.send(
+      to="test@example.com",
+      subject="Hello from SDK",
+      body="This is a test message sent via the API.",
+  )
+  print(f"Message sent: {result.message_id} (status: {result.status})")
+
+verification_code: |
+  const account = await client.account.get();
+  console.log(`Connected: ${account.name} — ${account.plan} plan`);
+
+# Primary workflow: Campaign & Message Delivery
+workflow_a_slug: campaign-delivery
+workflow_a_name: Campaign & Message Delivery
+workflow_a_description: |
+  Create and send targeted messaging campaigns (email, SMS, push, in-app).
+  This is the primary workflow — reach the right audience with the right message.
+workflow_a_trigger: send campaign
+workflow_a_action: create and send campaign
+workflow_a_use_case_1: sending targeted email campaigns to user segments
+workflow_a_use_case_2: triggering transactional messages on user actions
+workflow_a_use_case_3: scheduling multi-channel drip sequences
+workflow_a_step1_name: Define Audience Segment
+workflow_a_step1_code: |
+  const segment = await client.segments.create({
+    name: 'Active Users — Last 30 Days',
+    filters: [
+      { field: 'last_active', operator: 'after', value: thirtyDaysAgo },
+      { field: 'plan', operator: 'eq', value: 'pro' },
+    ],
+  });
+  console.log(`Segment created: ${segment.id} (${segment.count} users)`);
+workflow_a_step2_name: Create Campaign
+workflow_a_step2_code: |
+  const campaign = await client.campaigns.create({
+    name: 'March Product Update',
+    segmentId: segment.id,
+    channel: 'email',
+    subject: 'New features just dropped',
+    body: emailTemplate,
+    trackOpens: true,
+    trackClicks: true,
+  });
+workflow_a_step3_name: Send and Monitor
+workflow_a_step3_code: |
+  const result = await client.campaigns.send(campaign.id);
+  console.log(`Sent to ${result.recipientCount} recipients`);
+
+  // Check delivery stats after a few minutes
+  const stats = await client.campaigns.stats(campaign.id);
+  console.log(`Delivered: ${stats.delivered}, Opens: ${stats.opens}, Clicks: ${stats.clicks}`);
+workflow_a_error1_name: Invalid Recipient
+workflow_a_error1_cause: Email/phone number failed validation or is on suppression list
+workflow_a_error1_solution: Validate recipient data before sending. Check suppression list status.
+workflow_a_error2_name: Template Rendering Failed
+workflow_a_error2_cause: Template variable referenced but not provided in send payload
+workflow_a_error2_solution: Ensure all template variables have values. Use default values in templates.
+workflow_a_complete_example: |
+  const client = new MessagingClient({ apiKey: process.env.API_KEY });
+
+  async function sendCampaign(segmentId: string, template: string) {
+    const campaign = await client.campaigns.create({
+      segmentId,
+      channel: 'email',
+      templateId: template,
+    });
+    return client.campaigns.send(campaign.id);
+  }
+workflow_a_variations: |
+  - **Transactional**: Single messages triggered by user events (welcome, receipt, password reset)
+  - **Drip sequence**: Multi-step flows with delays and conditions between messages
+  - **Multi-channel**: Send via email, SMS, push, or in-app based on user preference
+
+# Secondary workflow: Event Tracking & Segmentation
+workflow_b_slug: event-tracking
+workflow_b_name: Event Tracking & Segmentation
+workflow_b_description: |
+  Track user events and build dynamic segments for targeted messaging.
+  The data workflow that powers personalized communication.
+workflow_b_trigger: track events
+workflow_b_action: track user events
+workflow_b_use_case_1: tracking product usage events to trigger messages
+workflow_b_use_case_2: building behavioral segments for campaign targeting
+workflow_b_step1_name: Track User Events
+workflow_b_step1_code: |
+  await client.events.track({
+    userId: user.id,
+    event: 'feature_activated',
+    properties: {
+      feature: 'advanced-search',
+      plan: user.plan,
+      timestamp: new Date().toISOString(),
+    },
+  });
+workflow_b_step2_name: Build Dynamic Segments
+workflow_b_step2_code: |
+  const segment = await client.segments.create({
+    name: 'Activated Advanced Search',
+    filters: [
+      { event: 'feature_activated', property: 'feature', value: 'advanced-search' },
+      { field: 'created_at', operator: 'after', value: '2026-01-01' },
+    ],
+  });
+workflow_b_step3_name: Trigger Automated Flows
+workflow_b_step3_code: |
+  await client.automations.create({
+    trigger: { event: 'feature_activated', property: 'feature', value: 'advanced-search' },
+    actions: [
+      { type: 'send_email', templateId: 'advanced-search-tips', delay: '1h' },
+      { type: 'send_email', templateId: 'advanced-search-power-user', delay: '7d' },
+    ],
+  });
+workflow_b_complexity: Medium
+workflow_b_perf: Events are async (fire-and-forget)
+workflow_b_complete_example: |
+  // Event-driven messaging pipeline
+  async function onUserAction(userId: string, action: string, props: Record<string, any>) {
+    await client.events.track({ userId, event: action, properties: props });
+    // Segments and automations react automatically
+  }
+workflow_b_error_handling: |
+  try {
+    await client.events.track(eventData);
+  } catch (err) {
+    if (err.status === 413) {
+      console.error('Event payload too large. Max 64KB per event.');
+    }
+    // Events should be fire-and-forget — log but don't block the user
+    console.error('Event tracking failed:', err.message);
+  }
+
+# Error patterns for messaging platforms
+error_1_name: Suppressed Recipient
+error_1_message: "422 Unprocessable: Recipient is on suppression list (hard bounce)"
+error_1_cause: Recipient previously hard-bounced, unsubscribed, or marked message as spam.
+error_1_solution: |
+  # Check suppression status before sending
+  const status = await client.suppression.check('user@example.com');
+  # Remove from suppression only if they re-opted in
+  # Never send to hard-bounced addresses — damages sender reputation
+
+error_2_name: Sender Domain Not Verified
+error_2_message: "403 Forbidden: Sending domain not verified — add DKIM/SPF records"
+error_2_cause: Email sending domain lacks required DNS authentication records.
+error_2_solution: |
+  # Add DNS records at your registrar:
+  # SPF: TXT "v=spf1 include:vendor.com ~all"
+  # DKIM: CNAME selector._domainkey.example.com → dkim.vendor.com
+  # DMARC: TXT "v=DMARC1; p=quarantine"
+  # Verify in dashboard after DNS propagation
+
+error_3_name: Template Variable Missing
+error_3_message: "400 Bad Request: Template variable {{first_name}} has no value"
+error_3_cause: Email template references a variable not provided in the send payload.
+error_3_solution: |
+  # Use default values in templates: {{first_name | default: "there"}}
+  # Validate payload against template variables before sending
+  # Check for typos in variable names
+
+tier_1_name: Free
+tier_1_rpm: "60"
+tier_1_rpd: "1,000"
+tier_2_name: Growth
+tier_2_rpm: "300"
+tier_2_rpd: "50,000"
+tier_3_name: Enterprise
+tier_3_rpm: "1,000"
+tier_3_rpd: "Unlimited"
+
+op_1_name: Send Message (single)
+op_1_p50: "200ms"
+op_1_p95: "600ms"
+op_1_p99: "1500ms"
+op_2_name: Event Track
+op_2_p50: "50ms"
+op_2_p95: "150ms"
+op_2_p99: "400ms"
+op_3_name: Campaign Send (1000 recipients)
+op_3_p50: "5s"
+op_3_p95: "30s"
+op_3_p99: "120s"
+
+deploy_pattern: webhook_worker
+deploy_description: |
+  Communication platform integrations deploy as webhook workers that
+  receive user events and trigger messaging flows. Often paired with
+  a queue (SQS, Redis) to handle event bursts without losing data.

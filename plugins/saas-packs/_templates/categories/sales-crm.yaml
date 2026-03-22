@@ -1,0 +1,205 @@
+# Sales & CRM Category Defaults
+# Applies to: apollo, attio, clari, clay, instantly, hubspot, salesforce,
+#   juicebox, salesloft, mindtickle
+# Auth: OAuth2 or API key. CRUD on contacts/deals/companies. Seat + contact billing.
+
+auth_pattern: oauth2
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: list contacts — the core CRM object
+hello_world_ts: |
+  const contacts = await client.contacts.list({ limit: 5 });
+  console.log(`Found ${contacts.total} contacts. First 5:`);
+  contacts.data.forEach(c => console.log(`  - ${c.name} <${c.email}> (${c.company})`));
+hello_world_py: |
+  contacts = client.contacts.list(limit=5)
+  print(f"Found {contacts.total} contacts. First 5:")
+  for c in contacts.data:
+      print(f"  - {c.name} <{c.email}> ({c.company})")
+
+verification_code: |
+  const me = await client.users.me();
+  console.log(`Authenticated: ${me.name} — ${me.organization.name}`);
+
+# Primary workflow: Contact Sync & Enrichment
+workflow_a_slug: contact-sync
+workflow_a_name: Contact Sync & Enrichment
+workflow_a_description: |
+  Import, enrich, and sync contacts between your CRM and other data sources.
+  This is the primary workflow — clean data in, qualified leads out.
+workflow_a_trigger: sync contacts
+workflow_a_action: import and enrich contacts
+workflow_a_use_case_1: importing leads from a CSV or webhook into the CRM
+workflow_a_use_case_2: enriching contacts with company data and social profiles
+workflow_a_use_case_3: deduplicating and merging contact records
+workflow_a_step1_name: Import Contacts
+workflow_a_step1_code: |
+  const contacts = csvData.map(row => ({
+    email: row.email,
+    firstName: row.first_name,
+    lastName: row.last_name,
+    company: row.company,
+    title: row.title,
+  }));
+  const result = await client.contacts.batchCreate(contacts);
+  console.log(`Imported: ${result.created} new, ${result.updated} updated, ${result.failed} failed`);
+workflow_a_step2_name: Enrich with Company Data
+workflow_a_step2_code: |
+  for (const contact of result.created) {
+    const enriched = await client.contacts.enrich(contact.id);
+    console.log(`${contact.email}: ${enriched.company.industry} / ${enriched.company.size} employees`);
+  }
+workflow_a_step3_name: Assign to Pipeline
+workflow_a_step3_code: |
+  const qualified = enrichedContacts.filter(c =>
+    c.company.size >= 50 && c.company.industry === 'Technology'
+  );
+  for (const contact of qualified) {
+    await client.deals.create({
+      contactId: contact.id,
+      pipeline: 'sales',
+      stage: 'qualified',
+      value: estimateACV(contact.company.size),
+    });
+  }
+  console.log(`Created ${qualified.length} deals from ${enrichedContacts.length} contacts`);
+workflow_a_error1_name: Duplicate Contact
+workflow_a_error1_cause: Contact with same email already exists in CRM
+workflow_a_error1_solution: Use upsert mode or merge duplicates. Check existing records before import.
+workflow_a_error2_name: Invalid Email
+workflow_a_error2_cause: Email format validation failed or domain doesn't exist
+workflow_a_error2_solution: Validate emails before import. Use email verification service.
+workflow_a_complete_example: |
+  // Full contact import + enrichment pipeline
+  const client = new CRMClient({ apiKey: process.env.API_KEY });
+
+  async function importAndEnrich(csvPath: string) {
+    const raw = parseCsv(csvPath);
+    const imported = await client.contacts.batchCreate(raw);
+    for (const c of imported.created) {
+      await client.contacts.enrich(c.id);
+    }
+    return imported;
+  }
+workflow_a_variations: |
+  - **Webhook import**: Receive contacts from form submissions in real-time
+  - **Two-way sync**: Bi-directional sync between CRM and marketing platform
+  - **Score-based routing**: Auto-assign to reps based on lead scoring
+
+# Secondary workflow: Deal Pipeline Management
+workflow_b_slug: deal-pipeline
+workflow_b_name: Deal Pipeline Management
+workflow_b_description: |
+  Create, update, and track deals through your sales pipeline stages.
+  The revenue workflow — move deals from qualified to closed-won.
+workflow_b_trigger: pipeline
+workflow_b_action: manage deal pipeline
+workflow_b_use_case_1: creating deals from qualified leads
+workflow_b_use_case_2: updating deal stages as they progress through sales
+workflow_b_step1_name: Create Deal
+workflow_b_step1_code: |
+  const deal = await client.deals.create({
+    name: `${company.name} - Enterprise License`,
+    contactId: contact.id,
+    companyId: company.id,
+    value: 50000,
+    currency: 'USD',
+    pipeline: 'enterprise',
+    stage: 'discovery',
+    closeDate: '2026-06-30',
+  });
+workflow_b_step2_name: Update Deal Stage
+workflow_b_step2_code: |
+  await client.deals.update(deal.id, {
+    stage: 'proposal_sent',
+    notes: 'Sent pricing proposal. Decision expected by EOW.',
+    nextAction: 'follow_up',
+    nextActionDate: '2026-04-05',
+  });
+workflow_b_step3_name: Track Pipeline Metrics
+workflow_b_step3_code: |
+  const pipeline = await client.pipelines.get('enterprise');
+  const metrics = pipeline.stages.map(s => ({
+    stage: s.name,
+    deals: s.dealCount,
+    value: s.totalValue,
+  }));
+  console.table(metrics);
+workflow_b_complexity: Medium
+workflow_b_perf: Standard REST CRUD
+workflow_b_complete_example: |
+  async function moveDeal(dealId: string, newStage: string, notes: string) {
+    const deal = await client.deals.update(dealId, { stage: newStage, notes });
+    if (newStage === 'closed_won') {
+      await client.contacts.tag(deal.contactId, 'customer');
+      await notifySlack(`Deal closed: ${deal.name} — $${deal.value}`);
+    }
+    return deal;
+  }
+workflow_b_error_handling: |
+  try {
+    await client.deals.update(dealId, { stage: newStage });
+  } catch (err) {
+    if (err.code === 'invalid_stage_transition') {
+      console.error(`Cannot move from ${currentStage} to ${newStage} directly`);
+    } else if (err.code === 'deal_locked') {
+      console.error('Deal is locked (closed-won/lost). Reopen before updating.');
+    } else {
+      throw err;
+    }
+  }
+
+# Error patterns for CRM platforms
+error_1_name: Duplicate Record
+error_1_message: "409 Conflict: A contact with email user@example.com already exists"
+error_1_cause: Attempting to create a record that matches an existing unique field (email, phone).
+error_1_solution: |
+  # Use upsert endpoint instead of create
+  await client.contacts.upsert({ email: 'user@example.com', ...data });
+  # Or search first: client.contacts.search({ email: 'user@example.com' })
+
+error_2_name: API Rate Limit (Burst)
+error_2_message: "429 Too Many Requests: Retry after 10 seconds"
+error_2_cause: Exceeded per-second or per-minute API rate limit. CRM APIs have tight burst limits.
+error_2_solution: |
+  # Use batch endpoints for bulk operations (100 records per call)
+  # Implement retry with Retry-After header value
+  # Space requests: max 10 req/s for most CRM APIs
+
+error_3_name: Required Field Missing
+error_3_message: "422 Unprocessable Entity: 'email' is required for contact creation"
+error_3_cause: Missing a mandatory field defined in CRM configuration.
+error_3_solution: |
+  # Check required fields: client.schema.get('contact')
+  # Required fields vary by CRM configuration — check admin settings
+  # Map incoming data to all required fields before batch import
+
+tier_1_name: Starter
+tier_1_rpm: "100"
+tier_1_rpd: "10,000"
+tier_2_name: Professional
+tier_2_rpm: "500"
+tier_2_rpd: "100,000"
+tier_3_name: Enterprise
+tier_3_rpm: "2,000"
+tier_3_rpd: "Unlimited"
+
+op_1_name: Contact CRUD
+op_1_p50: "150ms"
+op_1_p95: "400ms"
+op_1_p99: "1000ms"
+op_2_name: Search / Filter
+op_2_p50: "300ms"
+op_2_p95: "800ms"
+op_2_p99: "2000ms"
+op_3_name: Batch Import (100 records)
+op_3_p50: "2s"
+op_3_p95: "5s"
+op_3_p99: "15s"
+
+deploy_pattern: webhook_worker
+deploy_description: |
+  CRM integrations deploy as webhook workers — an always-on endpoint
+  that receives CRM events (contact created, deal stage changed, form submitted)
+  and triggers downstream actions (enrichment, notifications, sync).

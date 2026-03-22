@@ -1,0 +1,186 @@
+# Design & Creative Tools Category Defaults
+# Applies to: figma, canva, framer, miro, gamma, anima, lucidchart,
+#   techsmith, webflow, adobe
+# Auth: OAuth2 (personal access token for API). Project/file based. Seat-based billing.
+
+auth_pattern: oauth2
+auth_env_suffix: ACCESS_TOKEN
+auth_header: "Authorization: Bearer $ACCESS_TOKEN"
+
+# Hello world: list projects/files — the core object in design tools
+hello_world_ts: |
+  const files = await client.files.list();
+  console.log(`Found ${files.length} design files:`);
+  files.slice(0, 5).forEach(f => console.log(`  - ${f.name} (modified: ${f.lastModified})`));
+hello_world_py: |
+  files = client.files.list()
+  print(f"Found {len(files)} design files:")
+  for f in files[:5]:
+      print(f"  - {f.name} (modified: {f.last_modified})")
+
+verification_code: |
+  const me = await client.users.me();
+  console.log(`Authenticated as ${me.name} — ${me.email}`);
+
+# Primary workflow: Export & Asset Pipeline
+workflow_a_slug: export-assets
+workflow_a_name: Export & Asset Pipeline
+workflow_a_description: |
+  Export design assets (images, SVGs, PDFs) from design files programmatically.
+  This is the primary integration workflow — bridging design to code.
+workflow_a_trigger: export assets
+workflow_a_action: export design assets
+workflow_a_use_case_1: exporting icons and images for a web build pipeline
+workflow_a_use_case_2: generating PDFs from design presentations
+workflow_a_use_case_3: syncing design tokens to CSS variables
+workflow_a_step1_name: Select File and Components
+workflow_a_step1_code: |
+  const file = await client.files.get(fileId);
+  const components = file.document.children
+    .filter(node => node.type === 'COMPONENT')
+    .map(c => ({ id: c.id, name: c.name }));
+  console.log(`Found ${components.length} exportable components`);
+workflow_a_step2_name: Request Export Renders
+workflow_a_step2_code: |
+  const exports = await client.files.export(fileId, {
+    ids: components.map(c => c.id),
+    format: 'svg', // svg, png, pdf, jpg
+    scale: 2,      // 2x for retina
+  });
+  // Returns { images: { [nodeId]: downloadUrl } }
+workflow_a_step3_name: Download and Save Assets
+workflow_a_step3_code: |
+  for (const [nodeId, url] of Object.entries(exports.images)) {
+    const name = components.find(c => c.id === nodeId)?.name || nodeId;
+    const response = await fetch(url);
+    const buffer = await response.arrayBuffer();
+    fs.writeFileSync(`assets/${name}.svg`, Buffer.from(buffer));
+    console.log(`Exported: ${name}.svg`);
+  }
+workflow_a_error1_name: File Not Found
+workflow_a_error1_cause: Invalid file ID or file was deleted/moved
+workflow_a_error1_solution: Verify file ID from the file URL. Check if file was moved to another project.
+workflow_a_error2_name: Export Timeout
+workflow_a_error2_cause: File too complex or too many nodes requested at once
+workflow_a_error2_solution: Reduce export batch size. Export individual pages instead of full file.
+workflow_a_complete_example: |
+  // Full asset export pipeline
+  const client = new DesignClient({ accessToken: process.env.ACCESS_TOKEN });
+
+  async function exportAssets(fileId: string, format = 'svg') {
+    const file = await client.files.get(fileId);
+    const nodes = file.document.children.filter(n => n.exportSettings?.length > 0);
+    const exports = await client.files.export(fileId, {
+      ids: nodes.map(n => n.id),
+      format,
+      scale: 2,
+    });
+    return exports.images;
+  }
+workflow_a_variations: |
+  - **SVG for icons**: `format: 'svg'` for infinitely scalable vector icons
+  - **PNG for images**: `format: 'png', scale: 2` for retina-ready rasters
+  - **PDF for print**: `format: 'pdf'` for print-ready exports
+
+# Secondary workflow: Design Token Sync
+workflow_b_slug: design-token-sync
+workflow_b_name: Design Token Sync
+workflow_b_description: |
+  Extract design tokens (colors, typography, spacing) from design files
+  and sync them to code as CSS variables, Tailwind config, or JSON.
+workflow_b_trigger: design tokens
+workflow_b_action: sync design tokens
+workflow_b_use_case_1: keeping CSS variables in sync with design system
+workflow_b_use_case_2: generating Tailwind theme config from design files
+workflow_b_step1_name: Extract Styles from File
+workflow_b_step1_code: |
+  const styles = await client.files.styles(fileId);
+  const colors = styles.filter(s => s.style_type === 'FILL');
+  const typography = styles.filter(s => s.style_type === 'TEXT');
+  console.log(`Colors: ${colors.length}, Typography: ${typography.length}`);
+workflow_b_step2_name: Transform to CSS Variables
+workflow_b_step2_code: |
+  const cssVars = colors.map(c => {
+    const { r, g, b, a } = c.color;
+    return `--${c.name.toLowerCase().replace(/\s+/g, '-')}: rgba(${Math.round(r*255)}, ${Math.round(g*255)}, ${Math.round(b*255)}, ${a});`;
+  }).join('\n  ');
+  const css = `:root {\n  ${cssVars}\n}`;
+workflow_b_step3_name: Write Token Files
+workflow_b_step3_code: |
+  fs.writeFileSync('src/styles/tokens.css', css);
+  fs.writeFileSync('src/tokens.json', JSON.stringify(tokenMap, null, 2));
+  console.log('Design tokens synced to code');
+workflow_b_complexity: Medium
+workflow_b_perf: Fast (API reads only)
+workflow_b_complete_example: |
+  async function syncTokens(fileId: string) {
+    const styles = await client.files.styles(fileId);
+    const tokens = transformToCSS(styles);
+    fs.writeFileSync('tokens.css', tokens);
+    return styles.length;
+  }
+workflow_b_error_handling: |
+  try {
+    const styles = await client.files.styles(fileId);
+    return styles;
+  } catch (err) {
+    if (err.status === 403) {
+      console.error('Missing file access. Share file with your API token user.');
+    }
+    throw err;
+  }
+
+# Error patterns for design tools
+error_1_name: OAuth Token Expired
+error_1_message: "403 Forbidden: Access token expired"
+error_1_cause: OAuth access token has expired (typically 1-24h lifetime).
+error_1_solution: |
+  # Refresh the token using your refresh_token
+  curl -X POST https://api.vendor.com/oauth/token \
+    -d "grant_type=refresh_token&refresh_token=$REFRESH_TOKEN"
+  # Store new access_token and update env var
+
+error_2_name: File Not Found
+error_2_message: "404 Not Found: File not found or you don't have access"
+error_2_cause: File ID is wrong, file was deleted, or API token doesn't have access.
+error_2_solution: |
+  # Verify file ID from the URL (e.g., figma.com/file/FILE_ID/...)
+  # Check file permissions — must be shared with the API token's user
+  # Use team/project listing to find correct file ID
+
+error_3_name: Rate Limited (File Exports)
+error_3_message: "429 Too Many Requests: Export rate limit exceeded"
+error_3_cause: Too many export requests in a short window (design APIs have tight export limits).
+error_3_solution: |
+  # Batch export requests — request multiple node IDs in one call
+  # Cache exported assets locally with content-hash filenames
+  # Implement backoff: wait 60s after hitting 429
+
+tier_1_name: Free / Starter
+tier_1_rpm: "30"
+tier_1_rpd: "5,000"
+tier_2_name: Professional
+tier_2_rpm: "120"
+tier_2_rpd: "50,000"
+tier_3_name: Organization / Enterprise
+tier_3_rpm: "600"
+tier_3_rpd: "Unlimited"
+
+op_1_name: File Read (metadata)
+op_1_p50: "200ms"
+op_1_p95: "800ms"
+op_1_p99: "2000ms"
+op_2_name: Asset Export (single node)
+op_2_p50: "1s"
+op_2_p95: "5s"
+op_2_p99: "15s"
+op_3_name: Style/Token Extraction
+op_3_p50: "300ms"
+op_3_p95: "1000ms"
+op_3_p99: "3000ms"
+
+deploy_pattern: build_pipeline_asset_sync
+deploy_description: |
+  Design tool integrations deploy as part of the build pipeline — a CI step
+  that exports assets, syncs tokens, or generates code from design files
+  before the main application build runs.

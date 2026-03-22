@@ -1,0 +1,208 @@
+# AI/ML Platform Category Defaults
+# Applies to: anthropic, openrouter, groq, mistral, cohere, perplexity, together,
+#   klingai, deepgram, elevenlabs, assemblyai, langchain, exa, retellai, etc.
+# Auth: API key (Bearer token). Stateless request/response. Token-based billing.
+
+auth_pattern: api_key
+auth_env_suffix: API_KEY
+auth_header: "Authorization: Bearer $API_KEY"
+
+# Hello world: actual model inference, not generic client.call()
+hello_world_ts: |
+  const response = await client.chat.completions.create({
+    model: 'default',
+    messages: [{ role: 'user', content: 'Say hello in one sentence.' }],
+    max_tokens: 64,
+  });
+  console.log(response.choices[0].message.content);
+hello_world_py: |
+  response = client.chat.completions.create(
+      model="default",
+      messages=[{"role": "user", "content": "Say hello in one sentence."}],
+      max_tokens=64,
+  )
+  print(response.choices[0].message.content)
+
+# Verification: list models endpoint (universal across AI APIs)
+verification_code: |
+  const models = await client.models.list();
+  console.log(`Connected — ${models.data.length} models available`);
+
+# Primary workflow: Model Inference Pipeline
+workflow_a_slug: model-inference
+workflow_a_name: Model Inference Pipeline
+workflow_a_description: |
+  Send prompts to the model API and process streaming or batch responses.
+  This is the core money-path — every integration starts here.
+workflow_a_trigger: inference
+workflow_a_action: run model inference
+workflow_a_use_case_1: sending chat completions with system prompts
+workflow_a_use_case_2: streaming responses for real-time UX
+workflow_a_use_case_3: batch processing documents through the model
+workflow_a_step1_name: Configure Model Parameters
+workflow_a_step1_code: |
+  const config = {
+    model: process.env.MODEL_ID || 'default',
+    temperature: 0.7,
+    max_tokens: 2048,
+    stream: true,
+  };
+workflow_a_step2_name: Send Completion Request
+workflow_a_step2_code: |
+  const stream = await client.chat.completions.create({
+    ...config,
+    messages: [
+      { role: 'system', content: 'You are a helpful assistant.' },
+      { role: 'user', content: userInput },
+    ],
+  });
+  for await (const chunk of stream) {
+    process.stdout.write(chunk.choices[0]?.delta?.content || '');
+  }
+workflow_a_step3_name: Handle Response and Token Usage
+workflow_a_step3_code: |
+  // For non-streaming responses:
+  const usage = response.usage;
+  console.log(`Tokens: ${usage.prompt_tokens} in / ${usage.completion_tokens} out`);
+  console.log(`Cost estimate: $${((usage.prompt_tokens * 0.003 + usage.completion_tokens * 0.015) / 1000).toFixed(4)}`);
+workflow_a_error1_name: Context Length Exceeded
+workflow_a_error1_cause: Input + max_tokens exceeds model context window
+workflow_a_error1_solution: Truncate input or reduce max_tokens. Check model's context limit.
+workflow_a_error2_name: Model Not Found
+workflow_a_error2_cause: Invalid model ID or model not available on your plan
+workflow_a_error2_solution: Call /models endpoint to list available models. Check plan access.
+workflow_a_complete_example: |
+  import { Client } from 'vendor-sdk';
+  const client = new Client({ apiKey: process.env.API_KEY });
+
+  async function inference(prompt: string) {
+    const response = await client.chat.completions.create({
+      model: 'default',
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1024,
+    });
+    return response.choices[0].message.content;
+  }
+workflow_a_variations: |
+  - **Streaming**: Set `stream: true` for real-time token delivery
+  - **JSON mode**: Set `response_format: { type: 'json_object' }` for structured output
+  - **Multi-turn**: Append assistant responses to messages array for conversation
+
+# Secondary workflow: Embeddings & Semantic Search
+workflow_b_slug: embeddings-search
+workflow_b_name: Embeddings & Semantic Search
+workflow_b_description: |
+  Generate vector embeddings for text and build semantic search over your data.
+  Essential for RAG pipelines, similarity matching, and knowledge retrieval.
+workflow_b_trigger: embeddings
+workflow_b_action: generate embeddings
+workflow_b_use_case_1: building a RAG pipeline over documents
+workflow_b_use_case_2: semantic similarity search across content
+workflow_b_step1_name: Generate Embeddings
+workflow_b_step1_code: |
+  const embedding = await client.embeddings.create({
+    model: 'text-embedding-3-small',
+    input: 'Your text to embed',
+  });
+  const vector = embedding.data[0].embedding; // float[] of 1536 dims
+workflow_b_step2_name: Store in Vector Database
+workflow_b_step2_code: |
+  // Store embedding with metadata
+  await vectorDb.upsert({
+    id: doc.id,
+    values: vector,
+    metadata: { source: doc.source, text: doc.text },
+  });
+workflow_b_step3_name: Query Similar Documents
+workflow_b_step3_code: |
+  const queryEmbed = await client.embeddings.create({
+    model: 'text-embedding-3-small',
+    input: userQuery,
+  });
+  const results = await vectorDb.query({
+    vector: queryEmbed.data[0].embedding,
+    topK: 5,
+  });
+workflow_b_complexity: Medium
+workflow_b_perf: Fast (50-200ms per embedding)
+workflow_b_complete_example: |
+  // Full RAG retrieval pipeline
+  async function retrieve(query: string, topK = 5) {
+    const queryEmbed = await client.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: query,
+    });
+    return vectorDb.query({ vector: queryEmbed.data[0].embedding, topK });
+  }
+workflow_b_error_handling: |
+  try {
+    const result = await client.embeddings.create({ model: 'text-embedding-3-small', input: text });
+    return result.data[0].embedding;
+  } catch (err) {
+    if (err.status === 429) {
+      await new Promise(r => setTimeout(r, 1000));
+      return retry(text); // exponential backoff
+    }
+    throw err;
+  }
+
+# Error patterns specific to AI/ML APIs
+error_1_name: Rate Limit / Token Quota Exceeded
+error_1_message: "429 Too Many Requests: rate_limit_exceeded"
+error_1_cause: Exceeded requests-per-minute or tokens-per-minute quota for your plan.
+error_1_solution: |
+  # Check current usage
+  curl -H "Authorization: Bearer $API_KEY" https://api.vendor.com/usage
+  # Implement exponential backoff with jitter
+  # Upgrade plan if consistently hitting limits
+
+error_2_name: Context Length Exceeded
+error_2_message: "400 Bad Request: This model's maximum context length is 128000 tokens. You requested 135421 tokens."
+error_2_cause: Combined prompt + max_tokens exceeds the model's context window.
+error_2_solution: |
+  # Count tokens before sending
+  const tokenCount = encode(prompt).length;
+  if (tokenCount > MODEL_CONTEXT - MAX_RESPONSE) {
+    prompt = truncateToFit(prompt, MODEL_CONTEXT - MAX_RESPONSE);
+  }
+
+error_3_name: Invalid API Key
+error_3_message: "401 Unauthorized: Invalid API key provided"
+error_3_cause: API key is missing, expired, revoked, or copied with extra whitespace.
+error_3_solution: |
+  # Verify key format (should start with sk- or similar prefix)
+  echo $API_KEY | head -c 8
+  # Regenerate from dashboard if expired
+  # Check for trailing newlines: echo -n "$API_KEY" | wc -c
+
+# Rate limits typical for AI APIs
+tier_1_name: Free / Developer
+tier_1_rpm: "60"
+tier_1_rpd: "1,000"
+tier_2_name: Pro / Growth
+tier_2_rpm: "600"
+tier_2_rpd: "50,000"
+tier_3_name: Enterprise
+tier_3_rpm: "6,000"
+tier_3_rpd: "Unlimited"
+
+# Performance benchmarks for inference
+op_1_name: Chat Completion (streaming first token)
+op_1_p50: "200ms"
+op_1_p95: "800ms"
+op_1_p99: "2000ms"
+op_2_name: Embedding Generation
+op_2_p50: "50ms"
+op_2_p95: "150ms"
+op_2_p99: "400ms"
+op_3_name: Batch Inference (100 items)
+op_3_p50: "15s"
+op_3_p95: "45s"
+op_3_p99: "120s"
+
+# Deploy: serverless API wrapper is the typical pattern
+deploy_pattern: serverless_api_wrapper
+deploy_description: |
+  AI/ML integrations typically deploy as stateless API wrappers — a thin
+  serverless function that receives user requests, calls the model API,
+  and returns results. No persistent state needed.

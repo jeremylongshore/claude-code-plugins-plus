@@ -26,6 +26,7 @@ except ImportError:
 SCRIPT_DIR = Path(__file__).parent
 TEMPLATES_DIR = SCRIPT_DIR.parent
 SLOTS_DIR = TEMPLATES_DIR / "slots"
+CATEGORIES_DIR = TEMPLATES_DIR / "categories"
 REPO_ROOT = TEMPLATES_DIR.parent.parent.parent
 SAAS_PACKS_DIR = REPO_ROOT / "plugins" / "saas-packs"
 VENDORS_DIR = SAAS_PACKS_DIR / "vendors"
@@ -66,36 +67,43 @@ def get_slots_for_tier(tier: str) -> list:
     return slots
 
 
-def load_vendor_config(company: str) -> dict:
-    """Load vendor configuration from YAML file."""
-    config_path = VENDORS_DIR / f"{company}.yaml"
-    if not config_path.exists():
-        # Return default config if no YAML exists
-        return get_default_config(company)
-
-    with open(config_path) as f:
-        return yaml.safe_load(f)
-
-
-def get_default_config(company: str) -> dict:
-    """Generate default configuration for a vendor."""
-    # Load from TRACKER.csv to get tier info
-    tier = "standard"
-    display_name = company.title()
-
+def get_tracker_info(company: str) -> dict:
+    """Read company metadata from TRACKER.csv (tier, display_name, category)."""
+    info = {"display_name": company.title(), "tier": "standard", "category": ""}
     if TRACKER_CSV.exists():
         with open(TRACKER_CSV) as f:
             for line in f:
                 if line.startswith(f"{company},"):
                     parts = line.strip().split(",")
-                    display_name = parts[1]
-                    tier = parts[2]
+                    info["display_name"] = parts[1]
+                    info["tier"] = parts[2]
+                    # category is column index 5 (after npm_package)
+                    if len(parts) > 5:
+                        info["category"] = parts[5]
                     break
+    return info
 
+
+def load_category_config(category: str) -> dict:
+    """Load category profile YAML. Returns empty dict if category not found."""
+    if not category:
+        return {}
+    config_path = CATEGORIES_DIR / f"{category}.yaml"
+    if not config_path.exists():
+        print(f"  Warning: No category profile for '{category}'")
+        return {}
+    with open(config_path) as f:
+        return yaml.safe_load(f) or {}
+
+
+def get_default_config(company: str, tracker_info: dict) -> dict:
+    """Generate auto-derived defaults for a vendor."""
+    display_name = tracker_info.get("display_name", company.title())
     return {
         "company": company,
         "display_name": display_name,
-        "tier": tier,
+        "tier": tracker_info.get("tier", "standard"),
+        "category": tracker_info.get("category", ""),
         "primary_language": "typescript",
         "npm_package": f"@{company}/sdk",
         "pip_package": company,
@@ -104,6 +112,28 @@ def get_default_config(company: str) -> dict:
         "docs_url": f"https://docs.{company}.com",
         "status_url": f"https://status.{company}.com",
     }
+
+
+def load_vendor_config(company: str) -> dict:
+    """Load merged config: category defaults → auto-generated defaults → vendor YAML overrides."""
+    tracker_info = get_tracker_info(company)
+    category = tracker_info.get("category", "")
+
+    # Layer 1: category profile defaults
+    config = load_category_config(category)
+
+    # Layer 2: auto-generated vendor defaults (overwrites category where keys overlap)
+    defaults = get_default_config(company, tracker_info)
+    config.update(defaults)
+
+    # Layer 3: vendor-specific YAML overrides (highest priority)
+    vendor_path = VENDORS_DIR / f"{company}.yaml"
+    if vendor_path.exists():
+        with open(vendor_path) as f:
+            vendor_overrides = yaml.safe_load(f) or {}
+        config.update(vendor_overrides)
+
+    return config
 
 
 def generate_plugin_json(company: str, display_name: str, tier: str, skill_count: int, config: dict) -> dict:
@@ -210,7 +240,8 @@ def generate_pack(company: str, dry_run: bool = False, force: bool = False) -> b
     display_name = config.get("display_name", company.title())
     slots = get_slots_for_tier(tier)
 
-    print(f"  Tier: {tier} ({len(slots)} skills)")
+    category = config.get("category", "unknown")
+    print(f"  Tier: {tier} | Category: {category} ({len(slots)} skills)")
 
     # Create pack directory
     pack_dir = SAAS_PACKS_DIR / f"{company}-pack"
