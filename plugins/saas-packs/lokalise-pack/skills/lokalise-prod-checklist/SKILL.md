@@ -460,35 +460,6 @@ A complete pre-deployment report covering:
 
 ## Examples
 
-### Run Full Checklist
-
-```bash
-#!/bin/bash
-# scripts/prod-checklist.sh — Run all checks sequentially
-set -euo pipefail
-
-echo "========================================="
-echo "  Lokalise Production Checklist"
-echo "  $(date -u '+%Y-%m-%d %H:%M UTC')"
-echo "========================================="
-echo ""
-
-scripts/audit-translation-coverage.sh
-echo ""
-scripts/detect-missing-keys.sh
-echo ""
-npx tsx scripts/validate-translation-format.ts
-echo ""
-
-echo "========================================="
-echo "  All automated checks passed."
-echo "  Complete manual checks:"
-echo "    - Contributor access review"
-echo "    - OTA freeze window check"
-echo "    - Stakeholder sign-off"
-echo "========================================="
-```
-
 ### Quick Spot-Check (Single Locale)
 
 ```bash

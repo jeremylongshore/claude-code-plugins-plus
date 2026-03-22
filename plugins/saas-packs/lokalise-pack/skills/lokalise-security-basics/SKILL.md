@@ -6,7 +6,7 @@ description: |
   or auditing Lokalise security configuration.
   Trigger with phrases like "lokalise security", "lokalise secrets",
   "secure lokalise", "lokalise API token security".
-allowed-tools: Read, Write, Grep
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(jq:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,125 +17,255 @@ tags: [saas, lokalise, api, security, audit]
 # Lokalise Security Basics
 
 ## Overview
-Security practices for Lokalise translation management integrations. Lokalise handles translation strings that may contain user-facing content, brand messaging, and occasionally PII embedded in translation keys.
+Security practices for Lokalise integrations: API token management with scoped permissions, translation content sanitization, CI/CD secret handling, webhook secret verification, and audit logging. Lokalise handles translation strings that may contain user-facing content, interpolation variables, and occasionally PII embedded in keys or values.
 
 ## Prerequisites
-- Lokalise API token provisioned
-- Understanding of token permission scopes
-- Secret management infrastructure
+- Lokalise API token provisioned (admin token for audit, scoped tokens for operations)
+- Understanding of Lokalise token permission model (read-only vs read-write)
+- Secret management infrastructure (GitHub Secrets, AWS Secrets Manager, GCP Secret Manager, or Vault)
 
 ## Instructions
 
 ### Step 1: Token Scope Management
 
-Lokalise tokens can have different permission levels. Use the minimum scope needed.
+Lokalise API tokens are either read-only or read-write. Create separate tokens per use case to enforce least privilege.
 
-```python
-import os
+```typescript
+import { LokaliseApi } from "@lokalise/node-api";
 
-# BAD: using admin token for read-only operations
-# GOOD: create scoped tokens per use case
+// Token strategy: separate tokens per context
+const TOKENS = {
+  // CI download pipeline — read-only token
+  ciDownload: process.env.LOKALISE_READ_TOKEN,
+  // CI upload pipeline — read-write token
+  ciUpload: process.env.LOKALISE_WRITE_TOKEN,
+  // Admin operations (contributor management, webhooks) — admin token
+  admin: process.env.LOKALISE_ADMIN_TOKEN,
+} as const;
 
-LOKALISE_READ_TOKEN = os.environ.get("LOKALISE_READ_TOKEN")    # read-only
-LOKALISE_WRITE_TOKEN = os.environ.get("LOKALISE_WRITE_TOKEN")  # read + write
-LOKALISE_ADMIN_TOKEN = os.environ.get("LOKALISE_ADMIN_TOKEN")  # admin (CI only)
+function getClient(scope: keyof typeof TOKENS): LokaliseApi {
+  const token = TOKENS[scope];
+  if (!token) {
+    throw new Error(
+      `LOKALISE_${scope.toUpperCase()}_TOKEN not set. ` +
+      `Generate at https://app.lokalise.com/profile#apitokens`
+    );
+  }
+  return new LokaliseApi({ apiKey: token, enableCompression: true });
+}
 
-def get_client(scope: str = "read"):
-    import lokalise
-    tokens = {"read": LOKALISE_READ_TOKEN, "write": LOKALISE_WRITE_TOKEN, "admin": LOKALISE_ADMIN_TOKEN}
-    token = tokens.get(scope)
-    if not token:
-        raise RuntimeError(f"LOKALISE_{scope.upper()}_TOKEN not configured")
-    return lokalise.Client(token)
+// Download translations — uses read-only token
+const readClient = getClient("ciDownload");
+const bundle = await readClient.files().download(projectId, {
+  format: "json",
+  original_filenames: false,
+  bundle_structure: "%LANG_ISO%.json",
+});
 ```
 
-### Step 2: Protect Translation Content
+### Step 2: Validate Translation Content
 
-Translation strings may contain interpolation variables. Validate before processing.
+Translation strings may contain interpolation variables, HTML, or user-generated content. Validate before rendering.
 
-```python
-import re
+```typescript
+interface ValidationIssue {
+  key: string;
+  severity: "critical" | "warning";
+  message: string;
+}
 
-def validate_translation(key: str, value: str) -> list[str]:
-    issues = []
-    # Check for potential code injection in translations
-    if re.search(r'<script|javascript:|on\w+=', value, re.IGNORECASE):
-        issues.append(f"Potential XSS in translation {key}")
-    # Check for leaked credentials
-    if re.search(r'(api_key|password|secret|token)\s*[:=]', value, re.IGNORECASE):
-        issues.append(f"Possible credential in translation {key}")
-    # Validate interpolation variables match expected format
-    placeholders = re.findall(r'\{[^}]+\}|%[sd]|\$\{[^}]+\}', value)
-    for p in placeholders:
-        if re.search(r'[<>\'"]', p):
-            issues.append(f"Suspicious placeholder in {key}: {p}")
-    return issues
+function validateTranslation(key: string, value: string): ValidationIssue[] {
+  const issues: ValidationIssue[] = [];
+
+  // XSS: Check for script injection in translations
+  if (/<script|javascript:|on\w+=/i.test(value)) {
+    issues.push({ key, severity: "critical", message: "Potential XSS payload" });
+  }
+
+  // Credential leak: Check for secrets in translation values
+  if (/(api_key|password|secret|token)\s*[:=]/i.test(value)) {
+    issues.push({ key, severity: "critical", message: "Possible credential in value" });
+  }
+
+  // Placeholder integrity: Ensure ICU/i18next placeholders are well-formed
+  const placeholders = value.match(/\{[^}]+\}|\{\{[^}]+\}\}/g) ?? [];
+  for (const p of placeholders) {
+    if (/[<>'"]/.test(p)) {
+      issues.push({ key, severity: "warning", message: `Suspicious placeholder: ${p}` });
+    }
+  }
+
+  return issues;
+}
+
+// Validate all translations after download
+import { readFileSync } from "fs";
+
+function auditTranslationFile(filePath: string): ValidationIssue[] {
+  const data: Record<string, string> = JSON.parse(
+    readFileSync(filePath, "utf-8")
+  );
+  return Object.entries(data).flatMap(([key, value]) =>
+    validateTranslation(key, value)
+  );
+}
+
+const issues = auditTranslationFile("./src/locales/de.json");
+const critical = issues.filter((i) => i.severity === "critical");
+if (critical.length > 0) {
+  console.error("CRITICAL security issues found in translations:");
+  critical.forEach((i) => console.error(`  ${i.key}: ${i.message}`));
+  process.exit(1);
+}
 ```
 
-### Step 3: CI/CD Token Security
+### Step 3: Webhook Secret Verification
+
+Lokalise sends a random alphanumeric secret in the `X-Secret` header. Always verify it.
+
+```typescript
+import express from "express";
+
+const WEBHOOK_SECRET = process.env.LOKALISE_WEBHOOK_SECRET!;
+
+function verifyWebhookSecret(
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+): void {
+  const secret = req.headers["x-secret"] as string | undefined;
+
+  if (!secret || secret !== WEBHOOK_SECRET) {
+    console.error("Webhook secret verification failed", {
+      ip: req.ip,
+      path: req.path,
+      hasSecret: !!secret,
+    });
+    res.status(401).json({ error: "Invalid webhook secret" });
+    return;
+  }
+  next();
+}
+```
+
+### Step 4: CI/CD Token Security
 
 ```yaml
-# GitHub Actions: use repository secrets
+# GitHub Actions: use repository secrets, never hardcode tokens
 name: Sync Translations
-on: push
+on:
+  push:
+    branches: [main]
+    paths: ['src/locales/en.json']
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Pull translations
         env:
-          LOKALISE_TOKEN: ${{ secrets.LOKALISE_READ_TOKEN }}
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_READ_TOKEN }}
+          LOKALISE_PROJECT_ID: ${{ vars.LOKALISE_PROJECT_ID }}
         run: |
+          # Token is masked in logs by GitHub Actions
           lokalise2 file download \
-            --token $LOKALISE_TOKEN \
-            --project-id ${{ vars.LOKALISE_PROJECT_ID }} \
+            --token "$LOKALISE_API_TOKEN" \
+            --project-id "$LOKALISE_PROJECT_ID" \
             --format json \
-            --dest ./locales/
+            --original-filenames=false \
+            --bundle-structure "%LANG_ISO%.json" \
+            --unzip-to ./src/locales/
 ```
 
-### Step 4: Audit Translation Changes
+### Step 5: Scan for Hardcoded Tokens
 
-Track who changed what translations for compliance.
+```bash
+#!/bin/bash
+# scripts/scan-secrets.sh — Run in CI or as pre-commit hook
+set -euo pipefail
 
-```python
-def audit_translation_change(project_id: str, key: str, old_value: str, new_value: str, user: str):
-    log_entry = {
-        "timestamp": datetime.utcnow().isoformat(),
-        "project_id": project_id,
-        "key": key,
-        "user": user,
-        "action": "update",
-        "changes": {"old_length": len(old_value), "new_length": len(new_value)}
-        # Don't log actual content if it may contain PII
-    }
-    audit_logger.info("Translation changed", extra=log_entry)
+echo "=== Lokalise Token Security Scan ==="
+
+# Check for hardcoded tokens in source files
+HARDCODED=$(grep -rn "X-Api-Token\|apiKey.*['\"][a-f0-9]\{32,\}" \
+  --include="*.ts" --include="*.js" --include="*.json" --include="*.yml" \
+  src/ .github/ 2>/dev/null \
+  | grep -v node_modules \
+  | grep -v "process.env\|secrets\.\|vars\.\|\${{" || true)
+
+if [[ -n "$HARDCODED" ]]; then
+  echo "FAIL: Potential hardcoded token found:"
+  echo "$HARDCODED"
+  exit 1
+fi
+
+# Verify .env files are gitignored
+if ! grep -q "\.env" .gitignore 2>/dev/null; then
+  echo "WARN: .env not in .gitignore — add it immediately"
+fi
+
+# Check git history for leaked tokens
+HISTORY_LEAK=$(git log --all -p --diff-filter=A -- '*.env' '*.env.*' 2>/dev/null \
+  | grep -i "LOKALISE_API_TOKEN=" | head -3 || true)
+
+if [[ -n "$HISTORY_LEAK" ]]; then
+  echo "CRITICAL: Token found in git history. Rotate immediately."
+  echo "  Use 'git filter-repo' to remove, then rotate the token."
+  exit 1
+fi
+
+echo "PASS: No hardcoded tokens detected"
 ```
+
+### Step 6: Audit Translation Changes
+
+```typescript
+interface TranslationAuditEntry {
+  timestamp: string;
+  projectId: string;
+  key: string;
+  locale: string;
+  userId: string;
+  action: "create" | "update" | "delete";
+  // Never log actual content — may contain PII
+  oldLength: number;
+  newLength: number;
+}
+
+function logTranslationChange(entry: TranslationAuditEntry): void {
+  // Ship to your logging backend (Datadog, CloudWatch, etc.)
+  console.log(JSON.stringify({
+    level: "info",
+    event: "translation_change",
+    ...entry,
+  }));
+}
+```
+
+## Output
+- Scoped token configuration with separate read/write/admin tokens
+- Translation content validator catching XSS, credential leaks, and malformed placeholders
+- Webhook secret verification middleware for Express
+- CI/CD workflow using repository secrets with masked output
+- Pre-commit/CI scan script for hardcoded tokens
+- Audit logging for translation changes (PII-safe)
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Token leaked in CI logs | Token in command output | Use environment variables, mask in CI |
-| XSS via translations | Unsanitized translation content | Validate translations before use |
-| Overprivileged access | Using admin token everywhere | Create scoped read/write tokens |
-| Unauthorized changes | No audit trail | Log translation changes with user info |
-
-## Examples
-
-### Security Check Script
-```bash
-# Scan for hardcoded tokens
-grep -rn "LOKALISE" --include="*.py" --include="*.ts" src/ | grep -v "os.environ\|process.env"
-```
+| Token leaked in CI logs | Token in command output | Use env variables; GitHub Actions auto-masks secrets |
+| XSS via translations | Unsanitized translation rendered as HTML | Validate with `validateTranslation()` before use |
+| Overprivileged access | Using admin token for read-only operations | Create scoped tokens per use case |
+| Unauthorized changes | No audit trail | Register webhook for `project.translation.updated` events |
+| Token in git history | Committed .env file | Rotate token immediately, use `git filter-repo` to scrub |
 
 ## Resources
-- [Lokalise API Auth](https://developers.lokalise.com/reference/api-authentication)
+- [Lokalise API Authentication](https://developers.lokalise.com/reference/api-authentication)
 - [Lokalise Security](https://lokalise.com/security)
+- [Webhook Events Reference](https://developers.lokalise.com/docs/webhook-events)
+- [OWASP Secrets Management](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 
-## Output
-
-- Scoped token configuration: separate `LOKALISE_READ_TOKEN`, `LOKALISE_WRITE_TOKEN`, and `LOKALISE_ADMIN_TOKEN` environment variables with least-privilege assignment
-- Translation content validator catching XSS payloads, leaked credentials, and suspicious interpolation placeholders
-- CI/CD workflow using repository secrets with masked token output and read-only scope for pull operations
-- Audit logging function recording translation changes with timestamp, user, project, and key metadata (content omitted for PII safety)
-- Hardcoded token scan command for pre-commit or CI gate verification
+## Next Steps
+For enterprise-level access control with SSO and contributor groups, see `lokalise-enterprise-rbac`.
