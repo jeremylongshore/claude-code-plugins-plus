@@ -1,11 +1,10 @@
 ---
 name: clickup-multi-env-setup
 description: |
-  Configure ClickUp across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific ClickUp configurations.
-  Trigger with phrases like "clickup environments", "clickup staging",
-  "clickup dev prod", "clickup environment setup", "clickup config by env".
+  Configure ClickUp API access across dev, staging, and production environments
+  with per-environment tokens and workspace isolation.
+  Trigger: "clickup environments", "clickup staging", "clickup dev prod",
+  "clickup environment setup", "clickup config by env", "clickup multi-env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
@@ -17,208 +16,188 @@ compatible-with: claude-code
 # ClickUp Multi-Environment Setup
 
 ## Overview
-Configure ClickUp across development, staging, and production environments.
 
-## Prerequisites
-- Separate ClickUp accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+Configure separate ClickUp workspaces and API tokens for development, staging, and production. ClickUp does not have sandbox environments, so the recommended approach is separate workspaces with separate tokens per environment.
 
 ## Environment Strategy
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
+| Environment | Workspace | Token | Rate Limit | Purpose |
+|-------------|-----------|-------|-----------|---------|
+| Development | Dev workspace | Personal token | 100 req/min | Local development, testing |
+| Staging | Staging workspace | Service token | 100 req/min | Integration testing, QA |
+| Production | Production workspace | Service token | Per plan | Live traffic |
 
-## Configuration Structure
+**Key point:** All ClickUp API calls go to `https://api.clickup.com/api/v2/` regardless of environment. Environment isolation comes from using different tokens that are authorized for different workspaces.
 
-```
-config/
-├── clickup/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${CLICKUP_API_KEY}",
-  "baseUrl": "https://api-sandbox.clickup.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${CLICKUP_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.clickup.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${CLICKUP_API_KEY_PROD}",
-  "baseUrl": "https://api.clickup.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
+## Configuration
 
 ```typescript
-// src/clickup/config.ts
-import baseConfig from '../../config/clickup/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
+// src/config/clickup.ts
+interface ClickUpEnvConfig {
+  token: string;
+  teamId: string;
+  defaultListId?: string;
+  timeout: number;
+  retries: number;
+  cacheEnabled: boolean;
+  cacheTtlMs: number;
 }
 
-export function getClickUpConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/clickup/${env}.json`);
+function getClickUpConfig(): ClickUpEnvConfig {
+  const env = process.env.NODE_ENV ?? 'development';
 
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
+  const base = {
+    timeout: 30000,
+    retries: 3,
+    cacheEnabled: true,
+    cacheTtlMs: 60000,
   };
+
+  switch (env) {
+    case 'production':
+      return {
+        ...base,
+        token: requireEnv('CLICKUP_API_TOKEN_PROD'),
+        teamId: requireEnv('CLICKUP_TEAM_ID_PROD'),
+        retries: 5,          // More retries in prod
+        cacheTtlMs: 300000,  // 5 min cache in prod
+      };
+    case 'staging':
+      return {
+        ...base,
+        token: requireEnv('CLICKUP_API_TOKEN_STAGING'),
+        teamId: requireEnv('CLICKUP_TEAM_ID_STAGING'),
+      };
+    default:
+      return {
+        ...base,
+        token: requireEnv('CLICKUP_API_TOKEN'),
+        teamId: process.env.CLICKUP_TEAM_ID ?? '',
+        cacheEnabled: false,  // No cache in dev for fresh data
+      };
+  }
+}
+
+function requireEnv(key: string): string {
+  const value = process.env[key];
+  if (!value) throw new Error(`Missing required env var: ${key}`);
+  return value;
 }
 ```
 
-## Secret Management by Environment
+## Environment Files
 
-### Local Development
 ```bash
-# .env.local (git-ignored)
-CLICKUP_API_KEY=sk_test_dev_***
+# .env.development (local dev, git-ignored)
+CLICKUP_API_TOKEN=pk_dev_12345_ABCDEF
+CLICKUP_TEAM_ID=1111111
+
+# .env.staging (CI/CD only, git-ignored)
+CLICKUP_API_TOKEN_STAGING=pk_stg_67890_GHIJKL
+CLICKUP_TEAM_ID_STAGING=2222222
+
+# .env.production (secrets manager only, NEVER in files)
+# CLICKUP_API_TOKEN_PROD=pk_prod_... (stored in Vault/AWS/GCP)
+# CLICKUP_TEAM_ID_PROD=3333333
 ```
 
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  CLICKUP_API_KEY: ${{ secrets.CLICKUP_API_KEY_${{ matrix.environment }} }}
+```bash
+# .env.example (commit this as template)
+CLICKUP_API_TOKEN=pk_your_token_here
+CLICKUP_TEAM_ID=your_team_id_here
 ```
 
-### Production (Vault/Secrets Manager)
+## Secrets by Platform
+
 ```bash
+# GitHub Actions
+gh secret set CLICKUP_API_TOKEN_STAGING --body "pk_stg_..."
+gh secret set CLICKUP_API_TOKEN_PROD --body "pk_prod_..."
+
 # AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id clickup/production/api-key
+aws secretsmanager create-secret \
+  --name clickup/production/api-token \
+  --secret-string "pk_prod_..."
 
 # GCP Secret Manager
-gcloud secrets versions access latest --secret=clickup-api-key
+echo -n "pk_prod_..." | gcloud secrets create clickup-api-token-prod --data-file=-
 
 # HashiCorp Vault
-vault kv get -field=api_key secret/clickup/production
+vault kv put secret/clickup/production api_token="pk_prod_..."
 ```
 
-## Environment Isolation
+## Environment Guards
 
 ```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
+// Prevent destructive operations in production
+function guardDestructiveOp(operation: string): void {
   const config = getClickUpConfig();
+  const env = process.env.NODE_ENV ?? 'development';
 
-  if (config.environment !== 'production') {
-    console.warn(`[clickup] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
+  // In production, require explicit confirmation
+  if (env === 'production' && !process.env.CLICKUP_ALLOW_DESTRUCTIVE) {
+    throw new Error(
+      `${operation} blocked in production. Set CLICKUP_ALLOW_DESTRUCTIVE=true to override.`
+    );
   }
 }
 
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
+// Usage: prevent bulk delete in prod
+async function deleteCompletedTasks(listId: string) {
+  guardDestructiveOp('deleteCompletedTasks');
+
+  const { tasks } = await clickupRequest(
+    `/list/${listId}/task?statuses[]=complete`
+  );
+  for (const task of tasks) {
+    await clickupRequest(`/task/${task.id}`, { method: 'DELETE' });
+  }
 }
 ```
 
-## Feature Flags by Environment
+## Verify Environment Setup
 
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
+```bash
+#!/bin/bash
+# verify-clickup-env.sh
+echo "=== ClickUp Environment Verification ==="
+echo "NODE_ENV: ${NODE_ENV:-development}"
+
+for ENV_SUFFIX in "" "_STAGING" "_PROD"; do
+  TOKEN_VAR="CLICKUP_API_TOKEN${ENV_SUFFIX}"
+  TOKEN="${!TOKEN_VAR}"
+
+  if [ -z "$TOKEN" ]; then
+    echo "${TOKEN_VAR}: NOT SET"
+    continue
+  fi
+
+  echo -n "${TOKEN_VAR}: "
+  RESULT=$(curl -sf https://api.clickup.com/api/v2/user \
+    -H "Authorization: $TOKEN" 2>/dev/null)
+  if [ $? -eq 0 ]; then
+    USERNAME=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin)['user']['username'])" 2>/dev/null)
+    echo "OK (user: $USERNAME)"
+  else
+    echo "FAILED"
+  fi
+done
 ```
-
-## Instructions
-
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
-
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
-
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getClickUpConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
+| Wrong workspace in prod | Using dev token | Verify CLICKUP_TEAM_ID matches token's workspace |
+| Missing env var | Not configured | Check .env file or secrets manager |
+| Cross-env data leak | Shared token | Use separate tokens per environment |
+| Destructive op in prod | Missing guard | Implement environment guards |
 
 ## Resources
-- [ClickUp Environments Guide](https://docs.clickup.com/environments)
+
+- [ClickUp Authentication](https://developer.clickup.com/docs/authentication)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
+
 For observability setup, see `clickup-observability`.

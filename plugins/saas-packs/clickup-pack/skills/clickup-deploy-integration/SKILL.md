@@ -1,11 +1,10 @@
 ---
 name: clickup-deploy-integration
 description: |
-  Deploy ClickUp integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying ClickUp-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy clickup", "clickup Vercel",
-  "clickup production deploy", "clickup Cloud Run", "clickup Fly.io".
+  Deploy ClickUp API integrations to Vercel, Fly.io, and Cloud Run with
+  secure secrets management and health checks.
+  Trigger: "deploy clickup", "clickup Vercel", "clickup production deploy",
+  "clickup Cloud Run", "clickup Fly.io", "clickup hosting".
 allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
@@ -17,50 +16,61 @@ compatible-with: claude-code
 # ClickUp Deploy Integration
 
 ## Overview
-Deploy ClickUp-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- ClickUp API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Deploy ClickUp-powered applications with secure token management. ClickUp API v2 is a standard REST API -- your app just needs `CLICKUP_API_TOKEN` available at runtime and outbound HTTPS to `api.clickup.com`.
+
+## Required Environment Variables
+
+| Variable | Purpose | Required |
+|----------|---------|----------|
+| `CLICKUP_API_TOKEN` | Personal API token or OAuth access token | Yes |
+| `CLICKUP_TEAM_ID` | Workspace ID for scoped operations | Recommended |
+| `CLICKUP_WEBHOOK_SECRET` | For webhook signature validation | If using webhooks |
 
 ## Vercel Deployment
 
-### Environment Setup
 ```bash
-# Add ClickUp secrets to Vercel
-vercel secrets add clickup_api_key sk_live_***
-vercel secrets add clickup_webhook_secret whsec_***
+# Add secrets
+vercel env add CLICKUP_API_TOKEN production
+vercel env add CLICKUP_TEAM_ID production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "CLICKUP_API_KEY": "@clickup_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+```typescript
+// api/clickup/tasks.ts (Vercel serverless function)
+export async function GET(request: Request) {
+  const listId = new URL(request.url).searchParams.get('list_id');
+  if (!listId) return Response.json({ error: 'list_id required' }, { status: 400 });
+
+  const response = await fetch(
+    `https://api.clickup.com/api/v2/list/${listId}/task?archived=false`,
+    { headers: { 'Authorization': process.env.CLICKUP_API_TOKEN! } }
+  );
+
+  if (!response.ok) {
+    return Response.json({ error: 'ClickUp API error' }, { status: response.status });
   }
+
+  const data = await response.json();
+  return Response.json(data.tasks);
 }
 ```
 
 ## Fly.io Deployment
 
-### fly.toml
+```bash
+# Set secrets (encrypted at rest)
+fly secrets set CLICKUP_API_TOKEN=pk_12345678_YOUR_TOKEN
+fly secrets set CLICKUP_TEAM_ID=1234567
+
+# Deploy
+fly deploy
+```
+
 ```toml
+# fly.toml
 app = "my-clickup-app"
 primary_region = "iad"
 
@@ -72,140 +82,100 @@ primary_region = "iad"
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
-```
 
-### Secrets
-```bash
-# Set ClickUp secrets
-fly secrets set CLICKUP_API_KEY=sk_live_***
-fly secrets set CLICKUP_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
+[[http_service.checks]]
+  grace_period = "5s"
+  interval = "30s"
+  method = "GET"
+  path = "/health"
+  timeout = "5s"
 ```
 
 ## Google Cloud Run
 
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+# Store token in Secret Manager
+echo -n "pk_12345678_YOUR_TOKEN" | gcloud secrets create clickup-api-token --data-file=-
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="clickup-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=CLICKUP_API_KEY=clickup-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/clickup.ts
-interface ClickUpConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getClickUpConfig(): ClickUpConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CLICKUP_API_KEY!,
-    environment: env as ClickUpConfig['environment'],
-    webhookSecret: process.env.CLICKUP_WEBHOOK_SECRET,
-  };
-}
+# Deploy with secret mounted as env var
+gcloud run deploy clickup-service \
+  --image gcr.io/$PROJECT_ID/clickup-service \
+  --region us-central1 \
+  --set-secrets=CLICKUP_API_TOKEN=clickup-api-token:latest \
+  --set-env-vars=CLICKUP_TEAM_ID=1234567 \
+  --allow-unauthenticated
 ```
 
 ## Health Check Endpoint
 
 ```typescript
-// api/health.ts
-export async function GET() {
-  const clickupStatus = await checkClickUpConnection();
+// src/health.ts — verify ClickUp connectivity
+export async function healthCheck() {
+  const start = Date.now();
 
-  return Response.json({
-    status: clickupStatus ? 'healthy' : 'degraded',
-    services: {
-      clickup: clickupStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+  try {
+    const response = await fetch('https://api.clickup.com/api/v2/user', {
+      headers: { 'Authorization': process.env.CLICKUP_API_TOKEN! },
+      signal: AbortSignal.timeout(5000),
+    });
+
+    const remaining = response.headers.get('X-RateLimit-Remaining');
+
+    return {
+      status: response.ok ? 'healthy' : 'degraded',
+      clickup: {
+        connected: response.ok,
+        httpStatus: response.status,
+        latencyMs: Date.now() - start,
+        rateLimitRemaining: remaining ? parseInt(remaining) : null,
+      },
+    };
+  } catch (error) {
+    return {
+      status: 'unhealthy',
+      clickup: {
+        connected: false,
+        error: error instanceof Error ? error.message : 'Unknown',
+        latencyMs: Date.now() - start,
+      },
+    };
+  }
 }
 ```
 
-## Instructions
+## Webhook Endpoint for Deployments
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+```typescript
+// api/webhooks/clickup.ts — receive ClickUp webhook events
+export async function POST(request: Request) {
+  const body = await request.json();
 
-### Step 2: Configure Secrets
-Store ClickUp API keys securely using the platform's secrets management.
+  // ClickUp webhook payloads include event type and history_items
+  const { event, task_id, history_items } = body;
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with ClickUp integration.
+  // Process async (respond within 30s or ClickUp marks as failed)
+  // Queue for processing if needed
+  console.log(`ClickUp event: ${event} for task ${task_id}`);
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm ClickUp connectivity.
-
-## Output
-- Application deployed to production
-- ClickUp secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add clickup_api_key "$CLICKUP_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CLICKUP_API_KEY="$CLICKUP_API_KEY"
-    fly deploy
-    ;;
-esac
+  return Response.json({ received: true });
+}
 ```
 
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found in runtime | Missing env config | Verify with platform CLI |
+| Cold start timeout | ClickUp API slow on first call | Set min instances = 1 |
+| Health check fails | Token rotated | Update secret, redeploy |
+| Webhook endpoint 5xx | Slow processing | Respond 200 immediately, process async |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [ClickUp Deploy Guide](https://docs.clickup.com/deploy)
+
+- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Fly.io Secrets](https://fly.io/docs/reference/secrets/)
+- [Cloud Run Secret Manager](https://cloud.google.com/run/docs/configuring/secrets)
 
 ## Next Steps
-For webhook handling, see `clickup-webhooks-events`.
+
+For webhook event handling, see `clickup-webhooks-events`.

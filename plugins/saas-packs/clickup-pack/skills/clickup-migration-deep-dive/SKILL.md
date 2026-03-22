@@ -1,12 +1,12 @@
 ---
 name: clickup-migration-deep-dive
 description: |
-  Execute ClickUp major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from ClickUp, performing major version upgrades,
-  or re-platforming existing integrations to ClickUp.
-  Trigger with phrases like "migrate clickup", "clickup migration",
-  "switch to clickup", "clickup replatform", "clickup upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate to ClickUp from other project management tools (Jira, Asana, Trello)
+  or migrate data between ClickUp workspaces using API v2.
+  Trigger: "migrate to clickup", "clickup migration", "jira to clickup",
+  "asana to clickup", "trello to clickup", "clickup data migration",
+  "move tasks to clickup", "clickup import".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,230 +17,222 @@ compatible-with: claude-code
 # ClickUp Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from ClickUp, or major version upgrades.
 
-## Prerequisites
-- Current system documentation
-- ClickUp SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+Migrate project data to ClickUp from external tools or between ClickUp workspaces using API v2. Covers data mapping, batch creation, custom field migration, and validation.
 
 ## Migration Types
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+| Source | Complexity | Key Challenge |
+|--------|-----------|---------------|
+| Trello | Low | Board -> List mapping, labels -> tags |
+| Asana | Medium | Sections -> statuses, custom fields |
+| Jira | High | Epics/stories/subtasks, custom fields, workflows |
+| Another ClickUp workspace | Medium | Custom field UUIDs differ per workspace |
 
-## Pre-Migration Assessment
+## ClickUp Hierarchy Mapping
 
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "clickup" > clickup-files.txt
-
-# Count integration points
-wc -l clickup-files.txt
-
-# Identify dependencies
-npm list | grep clickup
-pip freeze | grep clickup
+```
+External Concept        ClickUp API v2 Target
+─────────────────       ──────────────────────
+Project/Board       →   Space   (POST /team/{team_id}/space)
+Epic/Section        →   Folder  (POST /space/{space_id}/folder)
+Sprint/Column       →   List    (POST /folder/{folder_id}/list)
+Issue/Card/Task     →   Task    (POST /list/{list_id}/task)
+Subtask             →   Task with parent  (parent field)
+Label/Tag           →   Tag     (POST /task/{task_id}/tag/{tag_name})
+Custom Field        →   Custom Field (POST /task/{task_id}/field/{field_id})
+Comment             →   Comment (POST /task/{task_id}/comment)
+Attachment          →   Attachment (POST /task/{task_id}/attachment)
 ```
 
-### Step 2: Data Inventory
+## Migration Script
+
 ```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
+// src/migrate-to-clickup.ts
+interface MigrationItem {
+  externalId: string;
+  name: string;
+  description: string;
+  status: string;
+  priority?: 'urgent' | 'high' | 'normal' | 'low';
+  assigneeEmail?: string;
+  dueDate?: string;
+  labels?: string[];
+  subtasks?: MigrationItem[];
 }
 
-async function assessClickUpMigration(): Promise<MigrationInventory> {
+const PRIORITY_MAP: Record<string, number> = {
+  urgent: 1, high: 2, normal: 3, low: 4,
+};
+
+const STATUS_MAP: Record<string, string> = {
+  'To Do': 'to do',
+  'In Progress': 'in progress',
+  'Done': 'complete',
+  'Backlog': 'to do',
+  // Add your status mappings here
+};
+
+async function migrateItems(
+  items: MigrationItem[],
+  listId: string,
+  memberEmails: Map<string, number>, // email -> ClickUp user ID
+): Promise<{ migrated: number; errors: Array<{ item: string; error: string }> }> {
+  let migrated = 0;
+  const errors: Array<{ item: string; error: string }> = [];
+
+  for (const item of items) {
+    try {
+      const assignees = item.assigneeEmail && memberEmails.has(item.assigneeEmail)
+        ? [memberEmails.get(item.assigneeEmail)!]
+        : [];
+
+      const task = await clickupRequest(`/list/${listId}/task`, {
+        method: 'POST',
+        body: JSON.stringify({
+          name: item.name,
+          markdown_description: item.description,
+          status: STATUS_MAP[item.status] ?? 'to do',
+          priority: item.priority ? PRIORITY_MAP[item.priority] : null,
+          assignees,
+          due_date: item.dueDate ? new Date(item.dueDate).getTime() : undefined,
+          due_date_time: !!item.dueDate,
+          tags: item.labels ?? [],
+        }),
+      });
+
+      // Migrate subtasks
+      if (item.subtasks?.length) {
+        for (const subtask of item.subtasks) {
+          await clickupRequest(`/list/${listId}/task`, {
+            method: 'POST',
+            body: JSON.stringify({
+              name: subtask.name,
+              markdown_description: subtask.description,
+              parent: task.id,
+              status: STATUS_MAP[subtask.status] ?? 'to do',
+            }),
+          });
+        }
+      }
+
+      migrated++;
+      console.log(`Migrated: ${item.name} -> ${task.id}`);
+
+      // Rate limit: stay under 100 req/min
+      await new Promise(r => setTimeout(r, 700));
+    } catch (error) {
+      errors.push({ item: item.name, error: String(error) });
+    }
+  }
+
+  return { migrated, errors };
+}
+```
+
+## Build Member Lookup
+
+```typescript
+// Map external emails to ClickUp user IDs
+async function buildMemberLookup(teamId: string): Promise<Map<string, number>> {
+  const data = await clickupRequest(`/team/${teamId}`);
+  const lookup = new Map<string, number>();
+
+  for (const member of data.team.members) {
+    lookup.set(member.user.email, member.user.id);
+  }
+
+  return lookup;
+}
+```
+
+## Workspace-to-Workspace Migration
+
+```typescript
+async function cloneListBetweenWorkspaces(
+  sourceToken: string,
+  sourceListId: string,
+  destToken: string,
+  destListId: string,
+) {
+  // Fetch all tasks from source
+  const sourceTasks = [];
+  let page = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const data = await fetch(
+      `https://api.clickup.com/api/v2/list/${sourceListId}/task?page=${page}&subtasks=true&include_closed=true`,
+      { headers: { 'Authorization': sourceToken } }
+    ).then(r => r.json());
+
+    sourceTasks.push(...data.tasks);
+    hasMore = data.tasks.length === 100;
+    page++;
+  }
+
+  console.log(`Fetched ${sourceTasks.length} tasks from source`);
+
+  // Create tasks in destination
+  for (const task of sourceTasks) {
+    if (task.parent) continue; // Handle subtasks separately
+
+    const created = await fetch(
+      `https://api.clickup.com/api/v2/list/${destListId}/task`,
+      {
+        method: 'POST',
+        headers: { 'Authorization': destToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: task.name,
+          markdown_description: task.description,
+          priority: task.priority?.id ? parseInt(task.priority.id) : null,
+          tags: task.tags.map((t: any) => t.name),
+        }),
+      }
+    ).then(r => r.json());
+
+    console.log(`Cloned: ${task.name} -> ${created.id}`);
+    await new Promise(r => setTimeout(r, 700)); // Rate limit
+  }
+}
+```
+
+## Validation
+
+```typescript
+async function validateMigration(
+  sourceItems: MigrationItem[],
+  listId: string,
+): Promise<{ match: number; missing: string[] }> {
+  const tasks = await clickupRequest(`/list/${listId}/task?include_closed=true`);
+  const taskNames = new Set(tasks.tasks.map((t: any) => t.name));
+
+  const missing = sourceItems
+    .filter(item => !taskNames.has(item.name))
+    .map(item => item.name);
+
   return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
+    match: sourceItems.length - missing.length,
+    missing,
   };
 }
 ```
 
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  ClickUp   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install ClickUp SDK
-npm install @clickup/sdk
-
-# Configure credentials
-cp .env.example .env.clickup
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@clickup/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/clickup.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class ClickUpAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const clickupData = this.transform(data);
-    return clickupClient.create(clickupData);
-  }
-
-  private transform(data: CreateInput): ClickUpInput {
-    // Map from old format to ClickUp format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateClickUpData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await clickupClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const clickupPercentage = getFeatureFlag('clickup_migration_percentage');
-
-  if (Math.random() * 100 < clickupPercentage) {
-    return new ClickUpAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app CLICKUP_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.clickup'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateClickUpMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new ClickUp integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to ClickUp
-
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateClickUpMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Rate limited during migration | Too many creates | Add 700ms delay between requests |
+| Status not found | Status name mismatch | Map source statuses to ClickUp statuses |
+| Assignee not found | Email not in workspace | Invite user first or skip assignment |
+| Custom field UUID mismatch | Different workspace | Re-fetch field UUIDs via `/list/{id}/field` |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [ClickUp Migration Guide](https://docs.clickup.com/migration)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `clickup-advanced-troubleshooting`.
+- [ClickUp Create Task](https://developer.clickup.com/reference/createtask)
+- [ClickUp Get Tasks](https://developer.clickup.com/reference/gettasks)
+- [ClickUp Import Guide](https://help.clickup.com/hc/en-us/categories/6301007545623-Import-Export)
+
+## Next Steps
+
+For advanced troubleshooting during migration, see `clickup-debug-bundle`.

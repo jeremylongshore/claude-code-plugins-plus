@@ -1,11 +1,10 @@
 ---
 name: clickup-data-handling
 description: |
-  Implement ClickUp PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for ClickUp integrations.
-  Trigger with phrases like "clickup data", "clickup PII",
-  "clickup GDPR", "clickup data retention", "clickup privacy", "clickup CCPA".
+  Handle ClickUp data exports, PII redaction, GDPR compliance, and
+  data retention for ClickUp API integrations.
+  Trigger: "clickup data", "clickup PII", "clickup GDPR", "clickup data retention",
+  "clickup privacy", "clickup CCPA", "clickup data export".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,40 +16,61 @@ compatible-with: claude-code
 # ClickUp Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with ClickUp.
 
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- ClickUp SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+Handle sensitive data from ClickUp API v2 responses. ClickUp task data often contains PII (assignee emails, names) and business-sensitive information (task descriptions, comments, custom field values).
 
-## Data Classification
+## ClickUp Data Classification
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
+| Data Source | PII Risk | Handling |
+|-------------|----------|----------|
+| `/user` response | High (email, username) | Redact in logs |
+| `/team` members | High (emails, names) | Minimize; cache only IDs |
+| Task assignees | Medium (user IDs, names) | Aggregate when possible |
+| Task descriptions | Variable (may contain PII) | Scan before storing |
+| Custom field values | High (email, phone fields) | Encrypt at rest |
+| Comments | Variable (user content) | Scan before logging |
+| Webhook payloads | Medium (user objects in history) | Redact before queuing |
 
-## PII Detection
+## PII Detection in ClickUp Data
 
 ```typescript
+interface PiiFindings {
+  field: string;
+  type: string;
+  value: string;
+}
+
 const PII_PATTERNS = [
   { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
   { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
   { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
 ];
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+function scanClickUpTaskForPii(task: any): PiiFindings[] {
+  const findings: PiiFindings[] = [];
 
+  // Check description
   for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
+    const matches = (task.description ?? '').matchAll(pattern.regex);
+    for (const m of matches) {
+      findings.push({ field: 'description', type: pattern.type, value: m[0] });
+    }
+  }
+
+  // Check custom fields
+  for (const cf of task.custom_fields ?? []) {
+    if (cf.type === 'email' && cf.value) {
+      findings.push({ field: `custom_field:${cf.name}`, type: 'email', value: cf.value });
+    }
+    if (cf.type === 'phone' && cf.value) {
+      findings.push({ field: `custom_field:${cf.name}`, type: 'phone', value: cf.value });
+    }
+  }
+
+  // Check assignees
+  for (const assignee of task.assignees ?? []) {
+    if (assignee.email) {
+      findings.push({ field: 'assignee', type: 'email', value: assignee.email });
     }
   }
 
@@ -58,165 +78,130 @@ function detectPII(text: string): { type: string; match: string }[] {
 }
 ```
 
-## Data Redaction
+## Redaction for Logging
 
 ```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+function redactClickUpResponse(data: any): any {
+  const redacted = JSON.parse(JSON.stringify(data));
 
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
+  // Redact user objects
+  const redactUser = (user: any) => {
+    if (user?.email) user.email = '[REDACTED]';
+    if (user?.username) user.username = user.username.substring(0, 2) + '***';
+  };
+
+  // Task-level redaction
+  if (redacted.assignees) redacted.assignees.forEach(redactUser);
+  if (redacted.creator) redactUser(redacted.creator);
+
+  // Webhook payload redaction
+  if (redacted.history_items) {
+    for (const item of redacted.history_items) {
+      if (item.user) redactUser(item.user);
+    }
+  }
+
+  // Custom fields with PII types
+  if (redacted.custom_fields) {
+    for (const cf of redacted.custom_fields) {
+      if (['email', 'phone'].includes(cf.type) && cf.value) {
+        cf.value = '[REDACTED]';
+      }
     }
   }
 
   return redacted;
 }
 
-// Use in logging
-console.log('ClickUp request:', redactPII(requestData));
+// Use when logging API responses
+console.log('[clickup] task fetched:', JSON.stringify(redactClickUpResponse(task)));
 ```
 
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
+## Data Export for GDPR/CCPA
 
 ```typescript
-async function cleanupClickUpData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
+async function exportUserClickUpData(userId: number, teamId: string) {
+  // 1. Get user profile
+  const user = await clickupRequest('/user');
 
-  await db.clickupLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
+  // 2. Get tasks assigned to user across workspace
+  const tasks = await clickupRequest(
+    `/team/${teamId}/task?assignees[]=${userId}&include_closed=true`
+  );
 
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupClickUpData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const clickupData = await clickupClient.getUserData(userId);
+  // 3. Get time entries by user
+  const timeEntries = await clickupRequest(
+    `/team/${teamId}/time_entries?assignee=${userId}`
+  );
 
   return {
-    source: 'ClickUp',
     exportedAt: new Date().toISOString(),
-    data: {
-      profile: clickupData.profile,
-      activities: clickupData.activities,
-      // Include all user-related data
+    source: 'ClickUp API v2',
+    userData: {
+      id: user.user.id,
+      username: user.user.username,
+      email: user.user.email,
     },
+    tasks: tasks.tasks.map((t: any) => ({
+      id: t.id,
+      name: t.name,
+      status: t.status.status,
+      url: t.url,
+    })),
+    timeEntries: timeEntries.data?.map((e: any) => ({
+      id: e.id,
+      duration: e.duration,
+      description: e.description,
+      task_id: e.task?.id,
+    })) ?? [],
   };
 }
 ```
 
-### Right to Deletion
+## Data Retention
 
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from ClickUp
-  await clickupClient.deleteUser(userId);
+// Track ClickUp API data locally with retention policies
+interface RetentionPolicy {
+  dataType: string;
+  retentionDays: number;
+  reason: string;
+}
 
-  // 2. Delete local copies
-  await db.clickupUserCache.deleteMany({ userId });
+const RETENTION_POLICIES: RetentionPolicy[] = [
+  { dataType: 'api_request_logs', retentionDays: 30, reason: 'Debugging' },
+  { dataType: 'webhook_events', retentionDays: 90, reason: 'Audit trail' },
+  { dataType: 'cached_tasks', retentionDays: 1, reason: 'Performance' },
+  { dataType: 'time_entries', retentionDays: 365, reason: 'Billing' },
+  { dataType: 'audit_logs', retentionDays: 2555, reason: 'Compliance (7 years)' },
+];
 
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'clickup',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
+async function enforceRetention(db: any) {
+  for (const policy of RETENTION_POLICIES) {
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - policy.retentionDays);
+    await db.collection(policy.dataType).deleteMany({
+      createdAt: { $lt: cutoff },
+    });
+  }
 }
 ```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await clickupClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all ClickUp data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('ClickUp response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+| PII in logs | Missing redaction | Wrap all logging with `redactClickUpResponse` |
+| GDPR export incomplete | Pagination not handled | Use async generator for full export |
+| Retention job fails | DB connection | Add retry logic to cron job |
+| Custom field PII missed | New field types | Re-scan fields via `/list/{id}/field` |
 
 ## Resources
+
+- [ClickUp Privacy Policy](https://clickup.com/privacy)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [ClickUp Privacy Guide](https://docs.clickup.com/privacy)
+- [ClickUp API User Endpoint](https://developer.clickup.com/reference/getauthorizeduser)
 
 ## Next Steps
+
 For enterprise access control, see `clickup-enterprise-rbac`.

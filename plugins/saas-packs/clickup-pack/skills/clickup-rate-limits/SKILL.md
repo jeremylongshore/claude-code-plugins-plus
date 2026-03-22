@@ -1,11 +1,11 @@
 ---
 name: clickup-rate-limits
 description: |
-  Implement ClickUp rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for ClickUp.
-  Trigger with phrases like "clickup rate limit", "clickup throttling",
-  "clickup 429", "clickup retry", "clickup backoff".
+  Handle ClickUp API rate limits with backoff, queuing, and header monitoring.
+  Use when hitting 429 errors, implementing retry logic, or optimizing
+  API throughput against ClickUp's per-plan rate limits.
+  Trigger: "clickup rate limit", "clickup 429", "clickup throttling",
+  "clickup retry", "clickup backoff", "clickup request queue".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,135 +17,173 @@ compatible-with: claude-code
 # ClickUp Rate Limits
 
 ## Overview
-Handle ClickUp rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- ClickUp SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+ClickUp enforces per-token, per-minute rate limits that vary by Workspace plan. When exceeded, the API returns HTTP 429 with rate limit headers.
 
-## Instructions
+## Rate Limit Tiers
 
-### Step 1: Understand Rate Limit Tiers
+| Workspace Plan | Requests/Min/Token | Burst Support |
+|----------------|-------------------|---------------|
+| Free Forever | 100 | No |
+| Unlimited | 100 | No |
+| Business | 100 | No |
+| Business Plus | 1,000 | Yes |
+| Enterprise | 10,000 | Yes |
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+## Rate Limit Headers
 
-### Step 2: Implement Exponential Backoff with Jitter
+Every ClickUp API response includes these headers:
+
+| Header | Description | Example |
+|--------|-------------|---------|
+| `X-RateLimit-Limit` | Max requests in window | `100` |
+| `X-RateLimit-Remaining` | Requests left in window | `95` |
+| `X-RateLimit-Reset` | Unix timestamp when limit resets | `1695000060` |
+
+## Exponential Backoff with Jitter
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+async function clickupRequestWithRetry<T>(
+  path: string,
+  options: RequestInit = {},
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 60000 }
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+    const response = await fetch(`https://api.clickup.com/api/v2${path}`, {
+      ...options,
+      headers: {
+        'Authorization': process.env.CLICKUP_API_TOKEN!,
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+    if (response.ok) return response.json();
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+    if (response.status === 429) {
+      // Use server-provided reset time when available
+      const resetTimestamp = response.headers.get('X-RateLimit-Reset');
+      let waitMs: number;
+
+      if (resetTimestamp) {
+        waitMs = Math.max(0, parseInt(resetTimestamp) * 1000 - Date.now()) + 1000;
+      } else {
+        // Exponential backoff with jitter
+        const exponential = config.baseDelayMs * Math.pow(2, attempt);
+        const jitter = Math.random() * 1000;
+        waitMs = Math.min(exponential + jitter, config.maxDelayMs);
+      }
+
+      console.warn(`Rate limited. Waiting ${(waitMs / 1000).toFixed(1)}s (attempt ${attempt + 1})`);
+      await new Promise(r => setTimeout(r, waitMs));
+      continue;
+    }
+
+    // Non-retryable errors
+    if (response.status < 500 && response.status !== 429) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(`ClickUp ${response.status}: ${error.err ?? 'Unknown error'}`);
+    }
+
+    // Server errors: retry with backoff
+    if (attempt < config.maxRetries) {
+      const delay = config.baseDelayMs * Math.pow(2, attempt);
       await new Promise(r => setTimeout(r, delay));
     }
   }
-  throw new Error('Unreachable');
+
+  throw new Error(`ClickUp API: max retries exceeded for ${path}`);
 }
 ```
 
-### Step 3: Add Idempotency Keys
+## Rate Limit Monitor
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+class ClickUpRateLimitMonitor {
+  private remaining = 100;
+  private limit = 100;
+  private resetAt = 0;
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+  updateFromResponse(response: Response): void {
+    const remaining = response.headers.get('X-RateLimit-Remaining');
+    const limit = response.headers.get('X-RateLimit-Limit');
+    const reset = response.headers.get('X-RateLimit-Reset');
 
-async function idempotentRequest<T>(
-  client: ClickUpClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
+    if (remaining) this.remaining = parseInt(remaining);
+    if (limit) this.limit = parseInt(limit);
+    if (reset) this.resetAt = parseInt(reset) * 1000;
   }
 
   shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
+    return this.remaining < 10 && Date.now() < this.resetAt;
   }
 
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
+  getWaitMs(): number {
+    return Math.max(0, this.resetAt - Date.now());
+  }
+
+  getUsagePercent(): number {
+    return ((this.limit - this.remaining) / this.limit) * 100;
   }
 }
 ```
 
+## Queue-Based Rate Limiting
+
+```typescript
+import PQueue from 'p-queue';
+
+// Stay under 100 req/min for Free/Unlimited/Business
+const clickupQueue = new PQueue({
+  concurrency: 5,        // Max parallel requests
+  interval: 1000,        // Per second window
+  intervalCap: 1,         // 1 request per second = 60/min (safe margin)
+});
+
+async function queuedClickUpRequest<T>(path: string, options?: RequestInit): Promise<T> {
+  return clickupQueue.add(() => clickupRequestWithRetry(path, options));
+}
+
+// Bulk operations stay within limits automatically
+const taskIds = ['abc', 'def', 'ghi', 'jkl'];
+const tasks = await Promise.all(
+  taskIds.map(id => queuedClickUpRequest(`/task/${id}`))
+);
+```
+
+## Pre-Flight Throttling
+
+```typescript
+// Check headers before sending burst of requests
+async function preFlightCheck(): Promise<{ safe: boolean; waitMs: number }> {
+  const response = await fetch('https://api.clickup.com/api/v2/user', {
+    headers: { 'Authorization': process.env.CLICKUP_API_TOKEN! },
+  });
+
+  const remaining = parseInt(response.headers.get('X-RateLimit-Remaining') || '100');
+  const reset = parseInt(response.headers.get('X-RateLimit-Reset') || '0') * 1000;
+
+  if (remaining < 10) {
+    return { safe: false, waitMs: Math.max(0, reset - Date.now()) };
+  }
+  return { safe: true, waitMs: 0 };
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Constant 429s | Exceeding plan limit | Upgrade plan or add request queuing |
+| Thundering herd | All retries fire at same time | Add random jitter to backoff |
+| Missing reset header | Older API version | Fall back to exponential backoff |
+| Burst rejected | Too many concurrent | Reduce `concurrency` in queue |
+
 ## Resources
-- [ClickUp Rate Limits](https://docs.clickup.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [ClickUp Rate Limits](https://developer.clickup.com/docs/rate-limits)
+- [p-queue Library](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `clickup-security-basics`.

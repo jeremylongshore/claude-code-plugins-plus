@@ -1,11 +1,10 @@
 ---
 name: clickup-observability
 description: |
-  Set up comprehensive observability for ClickUp integrations with metrics, traces, and alerts.
-  Use when implementing monitoring for ClickUp operations, setting up dashboards,
-  or configuring alerting for ClickUp integration health.
-  Trigger with phrases like "clickup monitoring", "clickup metrics",
-  "clickup observability", "monitor clickup", "clickup alerts", "clickup tracing".
+  Monitor ClickUp API integrations with metrics, tracing, structured logging,
+  and alerting using Prometheus, OpenTelemetry, and Grafana.
+  Trigger: "clickup monitoring", "clickup metrics", "clickup observability",
+  "monitor clickup", "clickup alerts", "clickup tracing", "clickup dashboard".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,25 +16,20 @@ compatible-with: claude-code
 # ClickUp Observability
 
 ## Overview
-Set up comprehensive observability for ClickUp integrations.
 
-## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+Monitor ClickUp API v2 integrations with metrics (request rate, latency, errors, rate limit usage), distributed tracing, and alerting.
 
-## Metrics Collection
+## Key Metrics
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `clickup_requests_total` | Counter | Total API requests |
-| `clickup_request_duration_seconds` | Histogram | Request latency |
-| `clickup_errors_total` | Counter | Error count by type |
-| `clickup_rate_limit_remaining` | Gauge | Rate limit headroom |
+| Metric | Type | Labels | Description |
+|--------|------|--------|-------------|
+| `clickup_requests_total` | Counter | method, endpoint, status | Total API requests |
+| `clickup_request_duration_seconds` | Histogram | method, endpoint | Request latency |
+| `clickup_errors_total` | Counter | status_code, error_type | Errors by type |
+| `clickup_rate_limit_remaining` | Gauge | token_hash | Rate limit headroom |
+| `clickup_rate_limit_resets_total` | Counter | | Times we hit 429 |
 
-### Prometheus Metrics
+## Prometheus Instrumentation
 
 ```typescript
 import { Registry, Counter, Histogram, Gauge } from 'prom-client';
@@ -44,43 +38,76 @@ const registry = new Registry();
 
 const requestCounter = new Counter({
   name: 'clickup_requests_total',
-  help: 'Total ClickUp API requests',
-  labelNames: ['method', 'status'],
+  help: 'Total ClickUp API v2 requests',
+  labelNames: ['method', 'endpoint', 'status'] as const,
   registers: [registry],
 });
 
 const requestDuration = new Histogram({
   name: 'clickup_request_duration_seconds',
-  help: 'ClickUp request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  help: 'ClickUp API request duration in seconds',
+  labelNames: ['method', 'endpoint'] as const,
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2, 5],
+  registers: [registry],
+});
+
+const rateLimitGauge = new Gauge({
+  name: 'clickup_rate_limit_remaining',
+  help: 'ClickUp rate limit remaining requests',
   registers: [registry],
 });
 
 const errorCounter = new Counter({
   name: 'clickup_errors_total',
-  help: 'ClickUp errors by type',
-  labelNames: ['error_type'],
+  help: 'ClickUp API errors by status code',
+  labelNames: ['status_code', 'error_type'] as const,
   registers: [registry],
 });
 ```
 
-### Instrumented Client
+## Instrumented Client
 
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
+async function instrumentedClickUpRequest<T>(
+  path: string,
+  options: RequestInit = {}
 ): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+  const method = options.method ?? 'GET';
+  // Normalize endpoint for cardinality control (replace UUIDs)
+  const endpoint = path.replace(/\/[a-zA-Z0-9]{6,}(?=\/|$|\?)/g, '/:id');
+  const timer = requestDuration.startTimer({ method, endpoint });
 
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
+    const response = await fetch(`https://api.clickup.com/api/v2${path}`, {
+      ...options,
+      headers: {
+        'Authorization': process.env.CLICKUP_API_TOKEN!,
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    // Update rate limit gauge
+    const remaining = response.headers.get('X-RateLimit-Remaining');
+    if (remaining) rateLimitGauge.set(parseInt(remaining));
+
+    const status = response.ok ? 'success' : `${response.status}`;
+    requestCounter.inc({ method, endpoint, status });
+
+    if (!response.ok) {
+      const body = await response.json().catch(() => ({}));
+      errorCounter.inc({
+        status_code: String(response.status),
+        error_type: body.ECODE ?? 'unknown',
+      });
+      throw new Error(`ClickUp ${response.status}: ${body.err}`);
+    }
+
+    return response.json();
+  } catch (error) {
+    if (!(error instanceof Error && error.message.startsWith('ClickUp'))) {
+      errorCounter.inc({ status_code: 'network', error_type: 'fetch_error' });
+    }
     throw error;
   } finally {
     timer();
@@ -88,22 +115,24 @@ async function instrumentedRequest<T>(
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
+## OpenTelemetry Tracing
 
 ```typescript
 import { trace, SpanStatusCode } from '@opentelemetry/api';
 
-const tracer = trace.getTracer('clickup-client');
+const tracer = trace.getTracer('clickup-integration', '1.0.0');
 
 async function tracedClickUpCall<T>(
   operationName: string,
-  operation: () => Promise<T>
+  path: string,
+  fn: () => Promise<T>
 ): Promise<T> {
   return tracer.startActiveSpan(`clickup.${operationName}`, async (span) => {
+    span.setAttribute('clickup.path', path);
+    span.setAttribute('clickup.method', 'GET');
+
     try {
-      const result = await operation();
+      const result = await fn();
       span.setStatus({ code: SpanStatusCode.OK });
       return result;
     } catch (error: any) {
@@ -117,125 +146,66 @@ async function tracedClickUpCall<T>(
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
+## Structured Logging
 
 ```typescript
 import pino from 'pino';
 
-const logger = pino({
-  name: 'clickup',
-  level: process.env.LOG_LEVEL || 'info',
-});
+const logger = pino({ name: 'clickup', level: process.env.LOG_LEVEL ?? 'info' });
 
-function logClickUpOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
+function logClickUpCall(data: {
+  method: string;
+  path: string;
+  status: number;
+  durationMs: number;
+  rateLimitRemaining?: number;
+  error?: string;
+}): void {
+  const level = data.status >= 500 ? 'error' : data.status >= 400 ? 'warn' : 'info';
+  logger[level]({
     service: 'clickup',
-    operation,
-    duration_ms: duration,
     ...data,
-  });
+  }, `ClickUp ${data.method} ${data.path} -> ${data.status} (${data.durationMs}ms)`);
 }
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
+## Alert Rules
 
 ```yaml
-# clickup_alerts.yaml
+# prometheus/clickup_alerts.yaml
 groups:
-  - name: clickup_alerts
+  - name: clickup
     rules:
       - alert: ClickUpHighErrorRate
-        expr: |
-          rate(clickup_errors_total[5m]) /
-          rate(clickup_requests_total[5m]) > 0.05
+        expr: rate(clickup_errors_total[5m]) / rate(clickup_requests_total[5m]) > 0.05
         for: 5m
-        labels:
-          severity: warning
+        labels: { severity: warning }
         annotations:
-          summary: "ClickUp error rate > 5%"
+          summary: "ClickUp API error rate > 5%"
 
       - alert: ClickUpHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(clickup_request_duration_seconds_bucket[5m])
-          ) > 2
+        expr: histogram_quantile(0.95, rate(clickup_request_duration_seconds_bucket[5m])) > 3
         for: 5m
-        labels:
-          severity: warning
+        labels: { severity: warning }
         annotations:
-          summary: "ClickUp P95 latency > 2s"
+          summary: "ClickUp P95 latency > 3s"
 
-      - alert: ClickUpDown
-        expr: up{job="clickup"} == 0
+      - alert: ClickUpRateLimitLow
+        expr: clickup_rate_limit_remaining < 10
         for: 1m
-        labels:
-          severity: critical
+        labels: { severity: critical }
         annotations:
-          summary: "ClickUp integration is down"
+          summary: "ClickUp rate limit nearly exhausted"
+
+      - alert: ClickUpAuthFailures
+        expr: increase(clickup_errors_total{status_code="401"}[5m]) > 0
+        labels: { severity: critical }
+        annotations:
+          summary: "ClickUp authentication failures detected"
 ```
 
-## Dashboard
+## Metrics Endpoint
 
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "ClickUp Request Rate",
-      "targets": [{
-        "expr": "rate(clickup_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "ClickUp Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(clickup_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
-
-## Examples
-
-### Quick Metrics Endpoint
 ```typescript
 app.get('/metrics', async (req, res) => {
   res.set('Content-Type', registry.contentType);
@@ -243,10 +213,21 @@ app.get('/metrics', async (req, res) => {
 });
 ```
 
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| High cardinality | Dynamic IDs in labels | Normalize paths (replace IDs with `:id`) |
+| Missing metrics | Uninstrumented code path | Wrap all API calls through instrumented client |
+| Alert storm | Threshold too sensitive | Tune `for` duration and threshold |
+| Trace gaps | Missing context propagation | Ensure span context is passed |
+
 ## Resources
+
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [ClickUp Observability Guide](https://docs.clickup.com/observability)
+- [OpenTelemetry JS SDK](https://opentelemetry.io/docs/languages/js/)
+- [ClickUp Rate Limits](https://developer.clickup.com/docs/rate-limits)
 
 ## Next Steps
+
 For incident response, see `clickup-incident-runbook`.

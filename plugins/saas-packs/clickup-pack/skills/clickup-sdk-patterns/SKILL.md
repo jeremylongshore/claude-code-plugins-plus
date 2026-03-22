@@ -1,11 +1,10 @@
 ---
 name: clickup-sdk-patterns
 description: |
-  Apply production-ready ClickUp SDK patterns for TypeScript and Python.
-  Use when implementing ClickUp integrations, refactoring SDK usage,
-  or establishing team coding standards for ClickUp.
-  Trigger with phrases like "clickup SDK patterns", "clickup best practices",
-  "clickup code patterns", "idiomatic clickup".
+  Production-ready ClickUp API v2 client patterns with typed wrappers,
+  error handling, caching, and multi-tenant support.
+  Trigger: "clickup client wrapper", "clickup SDK patterns", "clickup best practices",
+  "clickup typescript client", "clickup API wrapper", "production clickup code".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,133 +16,253 @@ compatible-with: claude-code
 # ClickUp SDK Patterns
 
 ## Overview
-Production-ready patterns for ClickUp SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `clickup-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+ClickUp has no official SDK. Build a typed REST client wrapper around `https://api.clickup.com/api/v2/`. These patterns provide singleton clients, typed responses, error boundaries, and multi-tenant support.
 
-## Instructions
+## Typed Client Wrapper
 
-### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
 // src/clickup/client.ts
-import { ClickUpClient } from '@clickup/sdk';
+const CLICKUP_BASE = 'https://api.clickup.com/api/v2';
 
-let instance: ClickUpClient | null = null;
+interface ClickUpClientConfig {
+  token: string;
+  timeout?: number;
+  onRateLimit?: (waitMs: number) => void;
+}
 
-export function getClickUpClient(): ClickUpClient {
-  if (!instance) {
-    instance = new ClickUpClient({
-      apiKey: process.env.CLICKUP_API_KEY!,
-      // Additional options
+class ClickUpClient {
+  private token: string;
+  private timeout: number;
+  private rateLimitRemaining = 100;
+  private rateLimitReset = 0;
+
+  constructor(config: ClickUpClientConfig) {
+    this.token = config.token;
+    this.timeout = config.timeout ?? 30000;
+  }
+
+  async request<T>(path: string, options: RequestInit = {}): Promise<T> {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeout);
+
+    try {
+      const response = await fetch(`${CLICKUP_BASE}${path}`, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          'Authorization': this.token,
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+      });
+
+      // Track rate limit state from response headers
+      this.rateLimitRemaining = parseInt(
+        response.headers.get('X-RateLimit-Remaining') ?? '100'
+      );
+      this.rateLimitReset = parseInt(
+        response.headers.get('X-RateLimit-Reset') ?? '0'
+      ) * 1000;
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw new ClickUpApiError(response.status, body.err, body.ECODE);
+      }
+
+      return response.json();
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  // Convenience methods
+  async getUser(): Promise<ClickUpUser> {
+    const data = await this.request<{ user: ClickUpUser }>('/user');
+    return data.user;
+  }
+
+  async getTeams(): Promise<ClickUpTeam[]> {
+    const data = await this.request<{ teams: ClickUpTeam[] }>('/team');
+    return data.teams;
+  }
+
+  async getSpaces(teamId: string): Promise<ClickUpSpace[]> {
+    const data = await this.request<{ spaces: ClickUpSpace[] }>(
+      `/team/${teamId}/space?archived=false`
+    );
+    return data.spaces;
+  }
+
+  async createTask(listId: string, task: CreateTaskInput): Promise<ClickUpTask> {
+    return this.request<ClickUpTask>(`/list/${listId}/task`, {
+      method: 'POST',
+      body: JSON.stringify(task),
     });
   }
-  return instance;
-}
-```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { ClickUpError } from '@clickup/sdk';
+  async getTask(taskId: string): Promise<ClickUpTask> {
+    return this.request<ClickUpTask>(`/task/${taskId}`);
+  }
 
-async function safeClickUpCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof ClickUpError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+  async updateTask(taskId: string, updates: Partial<CreateTaskInput>): Promise<ClickUpTask> {
+    return this.request<ClickUpTask>(`/task/${taskId}`, {
+      method: 'PUT',
+      body: JSON.stringify(updates),
+    });
+  }
+
+  isRateLimited(): boolean {
+    return this.rateLimitRemaining < 5 && Date.now() < this.rateLimitReset;
   }
 }
 ```
 
-### Step 3: Implement Retry Logic
+## TypeScript Types
+
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
+// src/clickup/types.ts
+interface ClickUpUser {
+  id: number;
+  username: string;
+  email: string;
+  color: string;
+  profilePicture: string | null;
+}
+
+interface ClickUpTeam {
+  id: string;
+  name: string;
+  color: string;
+  members: Array<{ user: ClickUpUser; role: number }>;
+}
+
+interface ClickUpSpace {
+  id: string;
+  name: string;
+  private: boolean;
+  statuses: Array<{ status: string; color: string; type: string }>;
+  features: Record<string, { enabled: boolean }>;
+}
+
+interface ClickUpTask {
+  id: string;
+  custom_id: string | null;
+  name: string;
+  description: string;
+  status: { status: string; color: string; type: string };
+  priority: { id: string; priority: string; color: string } | null;
+  date_created: string;
+  date_updated: string;
+  due_date: string | null;
+  assignees: ClickUpUser[];
+  tags: Array<{ name: string }>;
+  url: string;
+  list: { id: string; name: string };
+  folder: { id: string; name: string };
+  space: { id: string };
+  custom_fields: ClickUpCustomFieldValue[];
+}
+
+interface CreateTaskInput {
+  name: string;
+  description?: string;
+  markdown_description?: string;
+  assignees?: number[];
+  priority?: 1 | 2 | 3 | 4 | null;
+  status?: string;
+  due_date?: number;
+  due_date_time?: boolean;
+  parent?: string;
+  tags?: string[];
+  custom_fields?: Array<{ id: string; value: any }>;
+}
+
+interface ClickUpCustomFieldValue {
+  id: string;
+  name: string;
+  type: string;
+  value: any;
+}
+
+class ClickUpApiError extends Error {
+  constructor(
+    public readonly status: number,
+    public readonly err: string,
+    public readonly ecode?: string,
+  ) {
+    super(`ClickUp API ${status}: ${err}${ecode ? ` (${ecode})` : ''}`);
   }
-  throw new Error('Unreachable');
+
+  get isRateLimited(): boolean { return this.status === 429; }
+  get isAuthError(): boolean { return this.status === 401; }
+  get isNotFound(): boolean { return this.status === 404; }
+  get isRetryable(): boolean { return this.status === 429 || this.status >= 500; }
 }
 ```
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+## Singleton Pattern
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
 ```typescript
-const clients = new Map<string, ClickUpClient>();
+// src/clickup/index.ts
+let defaultClient: ClickUpClient | null = null;
 
-export function getClientForTenant(tenantId: string): ClickUpClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new ClickUpClient({ apiKey }));
+export function getClickUpClient(): ClickUpClient {
+  if (!defaultClient) {
+    const token = process.env.CLICKUP_API_TOKEN;
+    if (!token) throw new Error('CLICKUP_API_TOKEN not set');
+    defaultClient = new ClickUpClient({ token });
   }
-  return clients.get(tenantId)!;
+  return defaultClient;
 }
 ```
 
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from clickup import ClickUpClient
+## Multi-Tenant Factory
 
-@asynccontextmanager
-async def get_clickup_client():
-    client = ClickUpClient()
-    try:
-        yield client
-    finally:
-        await client.close()
+```typescript
+const tenantClients = new Map<string, ClickUpClient>();
+
+function getClientForTenant(tenantId: string, token: string): ClickUpClient {
+  if (!tenantClients.has(tenantId)) {
+    tenantClients.set(tenantId, new ClickUpClient({ token }));
+  }
+  return tenantClients.get(tenantId)!;
+}
 ```
 
-### Zod Validation
+## Zod Response Validation
+
 ```typescript
 import { z } from 'zod';
 
-const clickupResponseSchema = z.object({
+const TaskSchema = z.object({
   id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+  name: z.string(),
+  status: z.object({ status: z.string(), color: z.string() }),
+  priority: z.object({ priority: z.string() }).nullable(),
+  url: z.string().url(),
 });
+
+async function getValidatedTask(taskId: string) {
+  const raw = await getClickUpClient().getTask(taskId);
+  return TaskSchema.parse(raw);
+}
 ```
 
+## Error Handling
+
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Typed error class | All API calls | Type-safe error discrimination |
+| Singleton | Single-tenant apps | Shared rate limit tracking |
+| Factory | Multi-tenant SaaS | Per-tenant isolation |
+| Zod validation | Response parsing | Catches API contract changes |
+
 ## Resources
-- [ClickUp SDK Reference](https://docs.clickup.com/sdk)
-- [ClickUp API Types](https://docs.clickup.com/types)
+
+- [ClickUp API Reference](https://developer.clickup.com/)
 - [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
-Apply patterns in `clickup-core-workflow-a` for real-world usage.
+
+Apply patterns in `clickup-core-workflow-a` for task management.

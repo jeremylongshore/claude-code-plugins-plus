@@ -1,11 +1,11 @@
 ---
 name: clickup-webhooks-events
 description: |
-  Implement ClickUp webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling ClickUp event notifications securely.
-  Trigger with phrases like "clickup webhook", "clickup events",
-  "clickup webhook signature", "handle clickup events", "clickup notifications".
+  Create and manage ClickUp webhooks for real-time event notifications.
+  Use when setting up webhook listeners for task/list/space events,
+  implementing two-way sync, or handling ClickUp event payloads.
+  Trigger: "clickup webhook", "clickup events", "clickup notifications",
+  "clickup real-time", "clickup event listener", "clickup webhook create".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,185 +17,187 @@ compatible-with: claude-code
 # ClickUp Webhooks & Events
 
 ## Overview
-Securely handle ClickUp webhooks with signature validation and replay protection.
 
-## Prerequisites
-- ClickUp webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+ClickUp webhooks send HTTP POST notifications when resources change. Register webhooks via API, subscribe to specific events, and receive payloads with `history_items` showing what changed.
 
-## Webhook Endpoint Setup
+## Webhook Endpoints
 
-### Express.js
+```
+POST   /api/v2/team/{team_id}/webhook    Create webhook
+GET    /api/v2/team/{team_id}/webhook    Get webhooks
+PUT    /api/v2/webhook/{webhook_id}      Update webhook
+DELETE /api/v2/webhook/{webhook_id}      Delete webhook
+```
+
+## Create a Webhook
+
+```typescript
+async function createWebhook(teamId: string, endpoint: string, events: string[]) {
+  return clickupRequest(`/team/${teamId}/webhook`, {
+    method: 'POST',
+    body: JSON.stringify({
+      endpoint,        // Your HTTPS URL
+      events,          // Array of event names
+      space_id: null,  // Optional: limit to specific space
+      folder_id: null, // Optional: limit to specific folder
+      list_id: null,   // Optional: limit to specific list
+      task_id: null,   // Optional: limit to specific task
+    }),
+  });
+}
+
+// Subscribe to task and list events
+const webhook = await createWebhook('1234567', 'https://myapp.com/webhooks/clickup', [
+  'taskCreated',
+  'taskUpdated',
+  'taskDeleted',
+  'taskStatusUpdated',
+  'taskAssigneeUpdated',
+  'taskDueDateUpdated',
+  'taskCommentPosted',
+  'taskTimeTrackedUpdated',
+  'listCreated',
+  'listUpdated',
+  'listDeleted',
+]);
+
+// Response:
+// { "id": "wh_abc123", "webhook": { "id": "...", "endpoint": "...", "events": [...] } }
+```
+
+## Available Events
+
+| Category | Events |
+|----------|--------|
+| **Task** | `taskCreated`, `taskUpdated`, `taskDeleted`, `taskStatusUpdated`, `taskAssigneeUpdated`, `taskDueDateUpdated`, `taskTagUpdated`, `taskMoved`, `taskCommentPosted`, `taskCommentUpdated`, `taskTimeTrackedUpdated`, `taskTimeEstimateUpdated`, `taskPriorityUpdated` |
+| **List** | `listCreated`, `listUpdated`, `listDeleted` |
+| **Folder** | `folderCreated`, `folderUpdated`, `folderDeleted` |
+| **Space** | `spaceCreated`, `spaceUpdated`, `spaceDeleted` |
+| **Goal** | `goalCreated`, `goalUpdated`, `goalDeleted`, `keyResultCreated`, `keyResultUpdated`, `keyResultDeleted` |
+
+## Webhook Payload Format
+
+```json
+{
+  "event": "taskUpdated",
+  "webhook_id": "wh_abc123",
+  "task_id": "abc123",
+  "history_items": [
+    {
+      "id": "hist_001",
+      "type": 1,
+      "date": "1695000000000",
+      "field": "status",
+      "parent_id": "abc123",
+      "data": {},
+      "source": null,
+      "user": { "id": 183, "username": "john", "email": "john@example.com" },
+      "before": { "status": "to do", "color": "#d3d3d3", "type": "open" },
+      "after": { "status": "in progress", "color": "#4194f6", "type": "custom" }
+    }
+  ]
+}
+```
+
+## Webhook Handler (Express)
+
 ```typescript
 import express from 'express';
-import crypto from 'crypto';
 
 const app = express();
+app.use(express.json());
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/clickup',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-clickup-signature'] as string;
-    const timestamp = req.headers['x-clickup-timestamp'] as string;
+app.post('/webhooks/clickup', async (req, res) => {
+  const { event, webhook_id, task_id, history_items } = req.body;
 
-    if (!verifyClickUpSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
+  // Immediately acknowledge (ClickUp expects 200 within 30s)
+  res.status(200).json({ received: true });
 
-    const event = JSON.parse(req.body.toString());
-    await handleClickUpEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyClickUpSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.CLICKUP_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ClickUpEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ClickUpEvent {
-  id: string;
-  type: ClickUpEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<ClickUpEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleClickUpEvent(event: ClickUpEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
+  // Process asynchronously
   try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
+    await processClickUpEvent(event, task_id, history_items);
+  } catch (err) {
+    console.error(`Failed to process ${event} for task ${task_id}:`, err);
+  }
+});
+
+async function processClickUpEvent(
+  event: string,
+  taskId: string,
+  historyItems: any[]
+) {
+  switch (event) {
+    case 'taskCreated':
+      console.log(`New task: ${taskId}`);
+      break;
+    case 'taskStatusUpdated': {
+      const change = historyItems[0];
+      console.log(`Task ${taskId}: ${change.before.status} -> ${change.after.status}`);
+      // Trigger downstream actions (e.g., notify Slack, update external system)
+      break;
+    }
+    case 'taskCommentPosted':
+      console.log(`New comment on task ${taskId}`);
+      break;
+    case 'taskTimeTrackedUpdated':
+      console.log(`Time tracked updated on task ${taskId}`);
+      break;
+    default:
+      console.log(`Unhandled event: ${event}`);
   }
 }
 ```
 
-## Idempotency Handling
+## Idempotency (Prevent Duplicate Processing)
 
 ```typescript
-import { Redis } from 'ioredis';
+const processedEvents = new Map<string, number>();
 
-const redis = new Redis(process.env.REDIS_URL);
+function isDuplicate(webhookId: string, historyItemId: string): boolean {
+  const key = `${webhookId}:${historyItemId}`;
+  if (processedEvents.has(key)) return true;
+  processedEvents.set(key, Date.now());
 
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `clickup:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `clickup:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+  // Clean old entries every 1000 events
+  if (processedEvents.size > 10000) {
+    const cutoff = Date.now() - 3600000; // 1 hour
+    for (const [k, v] of processedEvents) {
+      if (v < cutoff) processedEvents.delete(k);
+    }
+  }
+  return false;
 }
 ```
 
-## Webhook Testing
+## List and Manage Webhooks
 
 ```bash
-# Use ClickUp CLI to send test events
-clickup webhooks trigger resource.created --url http://localhost:3000/webhooks/clickup
+# List all webhooks for a workspace
+TEAM_ID="1234567"
+curl -s "https://api.clickup.com/api/v2/team/${TEAM_ID}/webhook" \
+  -H "Authorization: $CLICKUP_API_TOKEN" | jq '.webhooks[] | {id, endpoint, events}'
 
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
+# Delete a webhook
+curl -s -X DELETE "https://api.clickup.com/api/v2/webhook/WH_ID" \
+  -H "Authorization: $CLICKUP_API_TOKEN"
 ```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the ClickUp dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/clickup \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Webhook not firing | Endpoint not HTTPS | Webhooks require HTTPS URLs |
+| Duplicate events | No idempotency | Track history_item IDs |
+| Timeout (no 200) | Slow processing | Respond 200 immediately, process async |
+| Webhook auto-disabled | Repeated failures | ClickUp disables after many 5xx responses |
 
 ## Resources
-- [ClickUp Webhooks Guide](https://docs.clickup.com/webhooks)
-- [Webhook Security Best Practices](https://docs.clickup.com/webhooks/security)
+
+- [ClickUp Webhooks Guide](https://developer.clickup.com/docs/webhooks)
+- [Task Webhook Payloads](https://developer.clickup.com/docs/webhooktaskpayloads)
+- [List Webhook Payloads](https://developer.clickup.com/docs/webhooklistpayloads)
+- [Create Webhook API](https://clickup.com/api/clickupreference/operation/CreateWebhook/)
 
 ## Next Steps
+
 For performance optimization, see `clickup-performance-tuning`.

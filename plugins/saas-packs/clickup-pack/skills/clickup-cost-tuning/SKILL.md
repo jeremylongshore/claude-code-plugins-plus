@@ -1,11 +1,10 @@
 ---
 name: clickup-cost-tuning
 description: |
-  Optimize ClickUp costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing ClickUp billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "clickup cost", "clickup billing",
-  "reduce clickup costs", "clickup pricing", "clickup expensive", "clickup budget".
+  Optimize ClickUp API usage costs through plan selection, request reduction,
+  caching, and usage monitoring.
+  Trigger: "clickup cost", "clickup billing", "reduce clickup usage",
+  "clickup pricing", "clickup plan comparison", "clickup API usage".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +16,157 @@ compatible-with: claude-code
 # ClickUp Cost Tuning
 
 ## Overview
-Optimize ClickUp costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to ClickUp billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+ClickUp charges per-seat, not per-API-call. However, rate limits constrain throughput per plan tier. Optimizing API usage means reducing request count to stay within rate limits and avoid needing plan upgrades.
 
-## Pricing Tiers
+## ClickUp Pricing (Per Member/Month)
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+| Plan | Price | Rate Limit | Key API Features |
+|------|-------|-----------|------------------|
+| Free Forever | $0 | 100 req/min | Full API access, 100 uses of automations |
+| Unlimited | $7/member | 100 req/min | Unlimited storage, integrations |
+| Business | $12/member | 100 req/min | Custom fields, time tracking, goals |
+| Business Plus | $19/member | 1,000 req/min | Custom role creation, admin training |
+| Enterprise | Custom | 10,000 req/min | SSO/SAML, advanced permissions, dedicated support |
 
-## Cost Estimation
+## Request Reduction Strategies
+
+### 1. Cache Workspace Structure
+
+Spaces, folders, and lists change rarely. Cache them aggressively.
 
 ```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
+import { LRUCache } from 'lru-cache';
 
-function estimateClickUpCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+const structureCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 300000, // 5 minutes for hierarchy data
+});
+
+async function getCachedSpaces(teamId: string) {
+  const key = `spaces:${teamId}`;
+  let spaces = structureCache.get(key);
+  if (!spaces) {
+    const data = await clickupRequest(`/team/${teamId}/space?archived=false`);
+    spaces = data.spaces;
+    structureCache.set(key, spaces);
   }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
+  return spaces;
 }
+```
+
+### 2. Use Pagination Efficiently
+
+Get Tasks returns max 100 per page. Fetch only what you need.
+
+```typescript
+// Bad: fetch all pages when you only need recent tasks
+// Good: use filters to minimize pages
+async function getRecentTasks(listId: string, limit = 25) {
+  return clickupRequest(`/list/${listId}/task?${new URLSearchParams({
+    page: '0',
+    order_by: 'updated',
+    reverse: 'true',
+    subtasks: 'true',
+    include_closed: 'false',
+  })}`);
+}
+```
+
+### 3. Batch with Custom Fields
+
+Set custom fields during task creation instead of separate calls.
+
+```typescript
+// Bad: 3 API calls (create + 2 custom field updates)
+const task = await createTask(listId, { name: 'Task' });
+await setCustomField(task.id, field1Id, value1);
+await setCustomField(task.id, field2Id, value2);
+
+// Good: 1 API call (custom fields in create body)
+await createTask(listId, {
+  name: 'Task',
+  custom_fields: [
+    { id: field1Id, value: value1 },
+    { id: field2Id, value: value2 },
+  ],
+});
+```
+
+### 4. Use Webhooks Instead of Polling
+
+```typescript
+// Bad: poll every 30 seconds (2 req/min wasted)
+setInterval(() => checkForUpdates(), 30000);
+
+// Good: register webhook, process events on-demand (0 polling requests)
+await clickupRequest(`/team/${teamId}/webhook`, {
+  method: 'POST',
+  body: JSON.stringify({
+    endpoint: 'https://myapp.com/webhooks/clickup',
+    events: ['taskUpdated', 'taskCreated'],
+  }),
+});
 ```
 
 ## Usage Monitoring
 
 ```typescript
-class ClickUpUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
+class ClickUpUsageTracker {
+  private requestLog: Array<{ timestamp: number; endpoint: string }> = [];
 
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  track(endpoint: string): void {
+    this.requestLog.push({ timestamp: Date.now(), endpoint });
+
+    // Keep only last hour
+    const cutoff = Date.now() - 3600000;
+    this.requestLog = this.requestLog.filter(r => r.timestamp > cutoff);
   }
 
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
+  getRequestsPerMinute(): number {
+    const oneMinAgo = Date.now() - 60000;
+    return this.requestLog.filter(r => r.timestamp > oneMinAgo).length;
+  }
 
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching ClickUp budget limit');
+  getTopEndpoints(n = 5): Array<{ endpoint: string; count: number }> {
+    const counts = new Map<string, number>();
+    for (const r of this.requestLog) {
+      counts.set(r.endpoint, (counts.get(r.endpoint) ?? 0) + 1);
     }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([endpoint, count]) => ({ endpoint, count }));
   }
 
-  estimatedCost(): number {
-    return estimateClickUpCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
+  needsUpgrade(): boolean {
+    return this.getRequestsPerMinute() > 80; // 80% of Free tier limit
   }
 }
 ```
 
-## Cost Reduction Strategies
+## Cost Decision Matrix
 
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await clickupClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => clickupClient.get(id)));
-
-// Use batch endpoint (1 call)
-await clickupClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new ClickUpClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in ClickUp dashboard
-# Or use API if available:
-# Check ClickUp documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM clickup_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review ClickUp dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+| Monthly Requests | Recommended Plan | Rationale |
+|-----------------|-----------------|-----------|
+| < 144,000 | Free Forever | 100/min * 60min * 24h = 144K/day max |
+| 100-1000 req/min sustained | Business Plus | 10x rate limit increase |
+| > 1000 req/min sustained | Enterprise | 10,000 req/min + dedicated support |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateClickUpCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Constant 429 errors | Hit rate ceiling | Implement queuing or upgrade |
+| Cache stale data | TTL too long | Invalidate via webhooks |
+| Redundant API calls | No deduplication | Use DataLoader batching |
+| Polling overhead | No webhook setup | Switch to event-driven |
 
 ## Resources
+
 - [ClickUp Pricing](https://clickup.com/pricing)
-- [ClickUp Billing Dashboard](https://dashboard.clickup.com/billing)
+- [ClickUp Rate Limits](https://developer.clickup.com/docs/rate-limits)
 
 ## Next Steps
+
 For architecture patterns, see `clickup-reference-architecture`.

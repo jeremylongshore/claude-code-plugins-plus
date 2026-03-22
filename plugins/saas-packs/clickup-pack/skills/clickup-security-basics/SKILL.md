@@ -1,11 +1,11 @@
 ---
 name: clickup-security-basics
 description: |
-  Apply ClickUp security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing ClickUp security configuration.
-  Trigger with phrases like "clickup security", "clickup secrets",
-  "secure clickup", "clickup API key security".
+  Secure ClickUp API tokens, implement least-privilege access, and audit usage.
+  Use when securing API keys, rotating tokens, configuring per-environment
+  credentials, or auditing ClickUp API access patterns.
+  Trigger: "clickup security", "clickup secrets", "secure clickup token",
+  "clickup API key rotation", "clickup access audit".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,158 @@ compatible-with: claude-code
 # ClickUp Security Basics
 
 ## Overview
-Security best practices for ClickUp API keys, tokens, and access control.
 
-## Prerequisites
-- ClickUp SDK installed
-- Understanding of environment variables
-- Access to ClickUp dashboard
+Secure ClickUp API credentials and access patterns. ClickUp personal tokens never expire, making rotation discipline critical. OAuth tokens also do not expire but can be revoked.
 
-## Instructions
+## Token Types and Risk
 
-### Step 1: Configure Environment Variables
+| Token Type | Prefix | Expires | Scope | Risk Level |
+|------------|--------|---------|-------|------------|
+| Personal API Token | `pk_` | Never | Full user access | High -- treat like password |
+| OAuth Access Token | Varies | Never | Per-authorized workspace | Medium -- per-user |
+| OAuth Client Secret | N/A | Never | App-level | Critical -- server-side only |
+
+## Secure Storage
+
 ```bash
-# .env (NEVER commit to git)
-CLICKUP_API_KEY=sk_live_***
-CLICKUP_SECRET=***
+# .env (NEVER commit)
+CLICKUP_API_TOKEN=pk_12345678_ABCDEFGHIJKLMNOPQRSTUVWXYZ
 
-# .gitignore
+# .gitignore (mandatory)
 .env
 .env.local
 .env.*.local
+*.pem
 ```
 
-### Step 2: Implement Secret Rotation
 ```bash
-# 1. Generate new key in ClickUp dashboard
-# 2. Update environment variable
-export CLICKUP_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${CLICKUP_API_KEY}" \
-  https://api.clickup.com/health
-
-# 4. Revoke old key in dashboard
+# Git pre-commit hook to catch leaked tokens
+# .git/hooks/pre-commit
+#!/bin/bash
+if git diff --cached --diff-filter=ACM | grep -qE "pk_[a-zA-Z0-9_]{30,}"; then
+  echo "ERROR: ClickUp API token detected in staged files!"
+  echo "Remove the token and use environment variables instead."
+  exit 1
+fi
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+## Token Rotation Procedure
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+```bash
+# 1. Generate new token: ClickUp > Settings > Apps > Regenerate
+# 2. Update environment
+export CLICKUP_API_TOKEN="pk_NEW_TOKEN_HERE"
+
+# 3. Verify new token works
+curl -sf https://api.clickup.com/api/v2/user \
+  -H "Authorization: $CLICKUP_API_TOKEN" | jq '.user.username'
+
+# 4. Update secrets in deployment platform
+gh secret set CLICKUP_API_TOKEN --body "$CLICKUP_API_TOKEN"
+# or: vault kv put secret/clickup/api-token value="$CLICKUP_API_TOKEN"
+# or: aws secretsmanager update-secret --secret-id clickup-api-token --secret-string "$CLICKUP_API_TOKEN"
+
+# 5. Old token is automatically invalidated when you regenerate
+```
+
+## Least Privilege with OAuth Scopes
+
+When building OAuth apps, request only needed access. ClickUp OAuth grants workspace-level access per authorized workspace.
+
+```typescript
+// OAuth: only request the workspaces you need
+function getAuthUrl(workspaceId?: string): string {
+  const params = new URLSearchParams({
+    client_id: process.env.CLICKUP_CLIENT_ID!,
+    redirect_uri: process.env.CLICKUP_REDIRECT_URI!,
+  });
+  return `https://app.clickup.com/api?${params}`;
+}
+```
+
+## Environment-Specific Tokens
+
+```typescript
+function getClickUpToken(): string {
+  const env = process.env.NODE_ENV ?? 'development';
+  const tokenKey = {
+    development: 'CLICKUP_API_TOKEN_DEV',
+    staging: 'CLICKUP_API_TOKEN_STAGING',
+    production: 'CLICKUP_API_TOKEN_PROD',
+  }[env] ?? 'CLICKUP_API_TOKEN';
+
+  const token = process.env[tokenKey];
+  if (!token) throw new Error(`Missing ${tokenKey} for environment: ${env}`);
+  return token;
+}
+```
+
+## Audit Logging
+
+```typescript
+interface ClickUpAuditEntry {
+  timestamp: string;
+  method: string;
+  endpoint: string;
+  statusCode: number;
+  rateLimitRemaining: number;
+  userId?: string;
+}
+
+function logApiCall(entry: ClickUpAuditEntry): void {
+  // Structured log for SIEM/audit systems
+  console.log(JSON.stringify({
+    level: 'audit',
+    service: 'clickup',
+    ...entry,
+  }));
+}
+
+// Wrap all API calls
+async function auditedRequest(path: string, options: RequestInit = {}) {
+  const response = await fetch(`https://api.clickup.com/api/v2${path}`, {
+    ...options,
+    headers: { 'Authorization': getClickUpToken(), ...options.headers },
+  });
+
+  logApiCall({
+    timestamp: new Date().toISOString(),
+    method: options.method ?? 'GET',
+    endpoint: path,
+    statusCode: response.status,
+    rateLimitRemaining: parseInt(
+      response.headers.get('X-RateLimit-Remaining') ?? '-1'
+    ),
+  });
+
+  return response;
+}
+```
+
+## Security Checklist
+
+- [ ] API tokens stored in environment variables, never in code
+- [ ] `.env` files listed in `.gitignore`
+- [ ] Pre-commit hook scanning for token patterns (`pk_*`)
+- [ ] Separate tokens for dev/staging/production
+- [ ] Token rotation procedure documented and tested
+- [ ] Audit logging on all API calls
+- [ ] OAuth client secret server-side only (never in frontend)
+- [ ] Webhook endpoints use HTTPS only
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
 
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new ClickUpClient({
-    apiKey: process.env.CLICKUP_READ_KEY,
-  }),
-  writer: new ClickUpClient({
-    apiKey: process.env.CLICKUP_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to ClickUp analytics
-  await clickupClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'clickup.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+| Issue | Detection | Mitigation |
+|-------|-----------|------------|
+| Token in git history | `git log -p --all -S 'pk_'` | Rotate token immediately; use BFG Repo-Cleaner |
+| Token in client bundle | Build output grep | Move to server-side only |
+| Stale token after rotation | 401 errors spike | Update all deployments |
 
 ## Resources
-- [ClickUp Security Guide](https://docs.clickup.com/security)
-- [ClickUp API Scopes](https://docs.clickup.com/scopes)
+
+- [ClickUp Authentication](https://developer.clickup.com/docs/authentication)
+- [ClickUp Common Errors](https://developer.clickup.com/docs/common_errors)
 
 ## Next Steps
+
 For production deployment, see `clickup-prod-checklist`.
