@@ -1,113 +1,45 @@
 ---
 name: onenote-common-errors
 description: |
-  Diagnose and fix OneNote common errors and exceptions.
-  Use when encountering OneNote errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "onenote error", "fix onenote",
-  "onenote not working", "debug onenote".
+  Diagnose and fix OneNote common errors.
+  Trigger: "onenote error", "fix onenote", "debug onenote".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote]
+tags: [saas, onenote, microsoft]
 compatible-with: claude-code
 ---
 
 # OneNote Common Errors
 
 ## Overview
-Quick reference for the top 10 most common OneNote errors and their solutions.
+Quick reference for OneNote API errors with solutions.
 
-## Prerequisites
-- OneNote SDK installed
-- API credentials configured
-- Access to error logs
+### 401 — Unauthorized
+**Fix:** Token expired. Refresh OAuth token. Note: app-only auth deprecated since March 2025 — use delegated auth.
 
-## Instructions
+### 403 — Forbidden
+**Fix:** Missing Graph permissions. Ensure `Notes.ReadWrite` scope.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 404 — Not Found
+**Fix:** Notebook/section/page ID invalid or user lacks access.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 — Throttled
+**Fix:** Microsoft Graph: 10,000 requests/10 min. Check `Retry-After`.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### 507 — Insufficient Storage
+**Fix:** OneNote storage quota exceeded. Archive old notebooks.
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Quick Diagnostic
 ```bash
-# Verify API key is set
-echo $ONENOTE_API_KEY
+# Check API connectivity
+curl -s -w "\nHTTP %{http_code}" https://graph.microsoft.com/v1.0/me/onenote/health 2>/dev/null || echo "Endpoint check needed"
+echo $MICROSOFT_GRAPH_TOKEN | head -c 10
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `onenote-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check OneNote status
-curl -s https://status.onenote.com
-
-# Verify API connectivity
-curl -I https://api.onenote.com
-
-# Check local configuration
-env | grep ONENOTE
-```
-
-### Escalation Path
-1. Collect evidence with `onenote-debug-bundle`
-2. Check OneNote status page
-3. Contact support with request ID
 
 ## Resources
-- [OneNote Status Page](https://status.onenote.com)
-- [OneNote Support](https://docs.onenote.com/support)
-- [OneNote Error Codes](https://docs.onenote.com/errors)
+- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
 
 ## Next Steps
-For comprehensive debugging, see `onenote-debug-bundle`.
+See `onenote-debug-bundle`.

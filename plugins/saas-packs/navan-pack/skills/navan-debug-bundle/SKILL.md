@@ -1,113 +1,31 @@
 ---
 name: navan-debug-bundle
 description: |
-  Collect Navan debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Navan problems.
-  Trigger with phrases like "navan debug", "navan support bundle",
-  "collect navan logs", "navan diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Debug Bundle for Navan.
+  Trigger: "navan debug bundle".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan]
+tags: [saas, navan, travel]
 compatible-with: claude-code
 ---
 
 # Navan Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for Navan support tickets.
-
-## Prerequisites
-- Navan SDK installed
-- Access to application logs
-- Permission to collect environment info
-
-## Instructions
-
-### Step 1: Create Debug Bundle Script
+## Debug Script
 ```bash
 #!/bin/bash
-# navan-debug-bundle.sh
-
-BUNDLE_DIR="navan-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Navan Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+BUNDLE="navan-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
+echo "NAVAN_API_KEY: ${NAVAN_API_KEY:+SET}" > "$BUNDLE/summary.txt"
+echo "Timestamp: $(date -u)" >> "$BUNDLE/summary.txt"
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "NAVAN_API_KEY: ${NAVAN_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @navan/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "navan" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.navan.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `navan-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash navan-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Navan support portal
 
 ## Resources
-- [Navan Support](https://docs.navan.com/support)
-- [Navan Status](https://status.navan.com)
+- [Navan Support](https://app.navan.com/app/helpcenter)
 
 ## Next Steps
-For rate limit issues, see `navan-rate-limits`.
+See `navan-rate-limits`.

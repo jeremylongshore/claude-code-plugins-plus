@@ -1,12 +1,12 @@
 ---
 name: anth-incident-runbook
 description: |
-  Execute Anthropic incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Anthropic-related outages, investigating errors,
-  or running post-incident reviews for Anthropic integration failures.
-  Trigger with phrases like "anthropic incident", "anthropic outage",
-  "anthropic down", "anthropic on-call", "anthropic emergency", "anthropic broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  Execute incident response procedures for Claude API outages and degradation.
+  Use when Claude API is returning errors, experiencing high latency,
+  or showing degraded performance in production.
+  Trigger with phrases like "anthropic incident", "claude api down",
+  "anthropic outage", "claude degraded", "anthropic runbook".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -16,190 +16,116 @@ compatible-with: claude-code
 
 # Anthropic Incident Runbook
 
-## Overview
-Rapid incident response procedures for Anthropic-related outages.
+## Severity Classification
 
-## Prerequisites
-- Access to Anthropic dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+| Severity | Condition | Response Time |
+|----------|-----------|---------------|
+| P1 | API returning 500/529 for all requests | Immediate |
+| P2 | Rate limiting (429) or high latency (>10s p99) | 15 minutes |
+| P3 | Intermittent errors (<5% error rate) | 1 hour |
+| P4 | Degraded quality (not errors) | Next business day |
 
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Anthropic API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
+## Immediate Triage (First 5 Minutes)
 
 ```bash
-# 1. Check Anthropic status
-curl -s https://status.anthropic.com | jq
+# 1. Check Anthropic status page
+curl -s https://status.anthropic.com/api/v2/status.json | python3 -c \
+  "import sys,json; d=json.load(sys.stdin); print(d['status']['indicator'], '-', d['status']['description'])"
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.anthropic'
+# 2. Test API connectivity
+curl -s -w "\nHTTP %{http_code} | Time: %{time_total}s\n" \
+  https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model":"claude-haiku-4-20250514","max_tokens":8,"messages":[{"role":"user","content":"1"}]}'
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(anthropic_errors_total[5m])
-
-# 4. Recent error logs
-kubectl logs -l app=anthropic-integration --since=5m | grep -i error | tail -20
+# 3. Check rate limit headers
+curl -s -D - https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model":"claude-haiku-4-20250514","max_tokens":8,"messages":[{"role":"user","content":"1"}]}' \
+  2>/dev/null | grep -i "ratelimit\|retry-after\|request-id"
 ```
 
 ## Decision Tree
 
 ```
-Anthropic API returning errors?
-├─ YES: Is status.anthropic.com showing incident?
-│   ├─ YES → Wait for Anthropic to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+API returning errors?
+├── 401/403 → Key issue → Check ANTHROPIC_API_KEY is set and valid
+├── 429 → Rate limited → Check headers, reduce traffic, wait for retry-after
+├── 500 → Server error → Check status.anthropic.com, retry with backoff
+├── 529 → Overloaded → Temporary, retry after 30-60s
+└── Timeouts → Network or long generation → Increase timeout, check max_tokens
 ```
 
-## Immediate Actions by Error Type
+## Mitigation Actions
 
-### 401/403 - Authentication
+### Rate Limiting (429)
+```python
+# Immediate: reduce traffic
+# 1. Enable circuit breaker
+# 2. Queue non-critical requests
+# 3. Switch to Message Batches for bulk work
+# 4. Reduce max_tokens to shorten generation time
+```
+
+### API Outage (500/529)
+```python
+# Graceful degradation
+def get_response_with_fallback(prompt: str) -> str:
+    try:
+        msg = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return msg.content[0].text
+    except (anthropic.InternalServerError, anthropic.APIStatusError):
+        return "Our AI assistant is temporarily unavailable. Please try again shortly."
+```
+
+### Key Compromise
 ```bash
-# Verify API key is set
-kubectl get secret anthropic-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in Anthropic dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic anthropic-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/anthropic-integration
+# 1. Immediately revoke key at console.anthropic.com
+# 2. Generate new key
+# 3. Deploy new key to all environments
+# 4. Audit recent usage for unauthorized calls
+# 5. File incident report
 ```
 
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.anthropic.com 2>&1 | grep -i rate
+## Postmortem Template
 
-# Enable request queuing
-kubectl set env deployment/anthropic-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Anthropic for limit increase
-```
-
-### 500/503 - Anthropic Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/anthropic-integration ANTHROPIC_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor Anthropic status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: Anthropic Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Anthropic Integration Issue
-
-We're experiencing issues with our Anthropic integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/anthropic-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=anthropic-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=anthropic_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
 ```markdown
-## Incident: Anthropic [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+## Incident: [Title]
+- **Duration:** [start] to [end]
+- **Severity:** P[1-4]
+- **Impact:** [what users experienced]
+- **Root Cause:** [what went wrong]
+- **Detection:** [how we found out]
+- **Mitigation:** [what we did to fix it]
+- **Request IDs:** [from debug logs]
+- **Action Items:**
+  - [ ] [preventive measure 1]
+  - [ ] [preventive measure 2]
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Anthropic-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
 
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.anthropic.status' || echo "UNHEALTHY"
-```
+| Symptom | Likely Cause | Quick Fix |
+|---------|-------------|-----------|
+| All requests fail 401 | Key rotated/expired | Check Console for active keys |
+| Sudden 429 spike | Traffic burst or tier change | Check rate limit headers |
+| Slow responses (>10s) | Large max_tokens or complex prompt | Reduce max_tokens, use Haiku |
+| Intermittent 500s | Upstream API issue | Check status.anthropic.com |
 
 ## Resources
-- [Anthropic Status Page](https://status.anthropic.com)
-- [Anthropic Support](https://support.anthropic.com)
+
+- [API Status](https://status.anthropic.com)
+- [Error Reference](https://docs.anthropic.com/en/api/errors)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
-For data handling, see `anthropic-data-handling`.
+
+For data compliance, see `anth-data-handling`.

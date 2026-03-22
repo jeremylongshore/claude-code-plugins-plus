@@ -1,92 +1,66 @@
 ---
 name: linktree-install-auth
 description: |
-  Install and configure Linktree SDK/CLI authentication.
-  Use when setting up a new Linktree integration, configuring API keys,
-  or initializing Linktree in your project.
-  Trigger with phrases like "install linktree", "setup linktree",
-  "linktree auth", "configure linktree API key".
+  Install and configure Linktree SDK/API authentication.
+  Use when setting up a new Linktree integration.
+  Trigger: "install linktree", "setup linktree", "linktree auth".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree]
+tags: [saas, linktree, social]
 compatible-with: claude-code
 ---
 
 # Linktree Install & Auth
 
 ## Overview
-Set up Linktree SDK/CLI and configure authentication credentials.
+Set up Linktree API for programmatic link-in-bio management with 25M+ creators.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Linktree account with API access
-- API key from Linktree dashboard
+- Linktree account and API access
+- API key/credentials from Linktree dashboard
+- Node.js 18+ or Python 3.8+
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-# Node.js
 npm install @linktree/sdk
-
-# Python
-pip install linktree
+# or: pip install linktree-sdk
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-# Set environment variable
-export LINKTREE_API_KEY="your-api-key"
-
-# Or create .env file
+export LINKTREE_API_KEY="your-api-key-here"
 echo 'LINKTREE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
-```
-
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Linktree dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.linktree.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
+### Step 3: Verify Connection (TypeScript)
 ```typescript
 import { LinktreeClient } from '@linktree/sdk';
-
-const client = new LinktreeClient({
-  apiKey: process.env.LINKTREE_API_KEY,
-});
+const client = new LinktreeClient({ apiKey: process.env.LINKTREE_API_KEY });
+const profile = await client.profiles.get('myprofile');
+console.log(`Profile: ${profile.username} — ${profile.links.length} links`);
 ```
 
-### Python Setup
+### Step 4: Verify Connection (Python)
 ```python
-from linktree import LinktreeClient
-
-client = LinktreeClient(
-    api_key=os.environ.get('LINKTREE_API_KEY')
-)
+import linktree
+client = linktree.Client(api_key=os.environ['LINKTREE_API_KEY'])
+profile = client.profiles.get('myprofile')
+print(f'Profile: {profile.username} — {len(profile.links)} links')
 ```
+
+## Error Handling
+| Error | Code | Solution |
+|-------|------|----------|
+| Invalid API key | 401 | Verify credentials in dashboard |
+| Permission denied | 403 | Check API scopes/permissions |
+| Rate limited | 429 | Implement backoff |
 
 ## Resources
-- [Linktree Documentation](https://docs.linktree.com)
-- [Linktree Dashboard](https://api.linktree.com)
-- [Linktree Status](https://status.linktree.com)
+- [Linktree Documentation](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
-After successful auth, proceed to `linktree-hello-world` for your first API call.
+After auth, proceed to `linktree-hello-world`.

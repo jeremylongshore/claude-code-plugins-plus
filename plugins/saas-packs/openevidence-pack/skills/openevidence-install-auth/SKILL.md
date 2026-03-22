@@ -1,161 +1,71 @@
 ---
 name: openevidence-install-auth
 description: |
-  Install and configure OpenEvidence API authentication.
-  Use when setting up a new OpenEvidence integration, configuring API credentials,
-  or initializing OpenEvidence in your healthcare application.
-  Trigger with phrases like "install openevidence", "setup openevidence",
-  "openevidence auth", "configure openevidence API key".
+  Install and configure OpenEvidence SDK/API authentication.
+  Use when setting up a new OpenEvidence integration.
+  Trigger: "install openevidence", "setup openevidence", "openevidence auth".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, open-evidence, api, authentication]
-
+tags: [saas, openevidence, healthcare]
+compatible-with: claude-code
 ---
+
 # OpenEvidence Install & Auth
 
 ## Overview
-Set up OpenEvidence API access and configure authentication for clinical decision support queries.
+Set up OpenEvidence Medical AI API for clinical decision support and evidence-based queries.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- OpenEvidence Enterprise API access (contact sales@openevidence.com)
-- Signed BAA (Business Associate Agreement) for PHI handling
-- API credentials from OpenEvidence dashboard
+- OpenEvidence account and API access
+- API key/credentials from OpenEvidence dashboard
+- Node.js 18+ or Python 3.8+
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-set -euo pipefail
-# Node.js
 npm install @openevidence/sdk
-
-# Python
-pip install openevidence
+# API key from OpenEvidence developer portal
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-# Set environment variables (NEVER commit to git)
-export OPENEVIDENCE_API_KEY="oe_live_***"
-export OPENEVIDENCE_ORG_ID="org_***"
-
-# Or create .env file
-cat >> .env << 'EOF'
-OPENEVIDENCE_API_KEY=oe_live_***
-OPENEVIDENCE_ORG_ID=org_***
-OPENEVIDENCE_ENVIRONMENT=production
-EOF
+export OPENEVIDENCE_API_KEY="your-api-key-here"
+echo 'OPENEVIDENCE_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Add to .gitignore
-```bash
-# Prevent credential exposure
-echo '.env' >> .gitignore
-echo '.env.local' >> .gitignore
-echo '.env.*.local' >> .gitignore
-```
-
-### Step 4: Verify Connection
+### Step 3: Verify Connection (TypeScript)
 ```typescript
 import { OpenEvidenceClient } from '@openevidence/sdk';
-
 const client = new OpenEvidenceClient({
   apiKey: process.env.OPENEVIDENCE_API_KEY,
-  orgId: process.env.OPENEVIDENCE_ORG_ID,
+  organization: process.env.OPENEVIDENCE_ORG_ID
 });
-
-// Test connection with a simple query
-async function verifyConnection() {
-  try {
-    const health = await client.health.check();
-    console.log('OpenEvidence connection verified:', health.status);
-    return true;
-  } catch (error) {
-    console.error('Connection failed:', error.message);
-    return false;
-  }
-}
-
-verifyConnection();
+const result = await client.query({ question: 'What are first-line treatments for Type 2 diabetes?' });
+console.log(`Answer: ${result.answer.substring(0, 100)}...`);
+console.log(`Citations: ${result.citations.length} references`);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variables configured with API credentials
-- .gitignore updated to prevent credential exposure
-- Successful connection verification output
+### Step 4: Verify Connection (Python)
+```python
+import openevidence
+client = openevidence.Client(api_key=os.environ['OPENEVIDENCE_API_KEY'])
+result = client.query(question='What are first-line treatments for Type 2 diabetes?')
+print(f'Answer: {result.answer[:100]}...')
+print(f'Citations: {len(result.citations)} references')
+```
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in OpenEvidence dashboard |
-| Missing BAA | No signed Business Associate Agreement | Contact OpenEvidence compliance team |
-| Organization Not Found | Wrong org_id | Check organization settings in dashboard |
-| Network Error | Firewall blocking | Ensure outbound HTTPS to api.openevidence.com |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { OpenEvidenceClient } from '@openevidence/sdk';
-
-const client = new OpenEvidenceClient({
-  apiKey: process.env.OPENEVIDENCE_API_KEY,
-  orgId: process.env.OPENEVIDENCE_ORG_ID,
-  timeout: 30000, // 30 second timeout for clinical queries  # 30000: 30 seconds in ms
-  retries: 3,
-});
-
-export default client;
-```
-
-### Python Setup
-```python
-import os
-from openevidence import OpenEvidenceClient
-
-client = OpenEvidenceClient(
-    api_key=os.environ.get('OPENEVIDENCE_API_KEY'),
-    org_id=os.environ.get('OPENEVIDENCE_ORG_ID'),
-    timeout=30,
-    max_retries=3
-)
-```
-
-### Environment-Based Configuration
-```typescript
-const environments = {
-  development: {
-    baseUrl: 'https://api.sandbox.openevidence.com',
-    timeout: 60000,  # 60000: 1 minute in ms
-  },
-  staging: {
-    baseUrl: 'https://api.staging.openevidence.com',
-    timeout: 45000,  # 45000 = configured value
-  },
-  production: {
-    baseUrl: 'https://api.openevidence.com',
-    timeout: 30000,  # 30000: 30 seconds in ms
-  },
-};
-
-const env = process.env.NODE_ENV || 'development';
-const client = new OpenEvidenceClient({
-  apiKey: process.env.OPENEVIDENCE_API_KEY,
-  ...environments[env],
-});
-```
+| Error | Code | Solution |
+|-------|------|----------|
+| Invalid API key | 401 | Verify credentials in dashboard |
+| Permission denied | 403 | Check API scopes/permissions |
+| Rate limited | 429 | Implement backoff |
 
 ## Resources
-- [OpenEvidence](https://www.openevidence.com/)
-- [OpenEvidence API Terms](https://www.openevidence.com/policies/api)
-- [OpenEvidence Security](https://www.openevidence.com/security)
+- [OpenEvidence Documentation](https://www.openevidence.com)
 
 ## Next Steps
-After successful auth, proceed to `openevidence-hello-world` for your first clinical query.
+After auth, proceed to `openevidence-hello-world`.

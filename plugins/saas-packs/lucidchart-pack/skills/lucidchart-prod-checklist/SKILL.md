@@ -1,121 +1,36 @@
 ---
 name: lucidchart-prod-checklist
 description: |
-  Execute Lucidchart production deployment checklist and rollback procedures.
-  Use when deploying Lucidchart integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "lucidchart production", "deploy lucidchart",
-  "lucidchart go-live", "lucidchart launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Prod Checklist for Lucidchart.
+  Trigger: "lucidchart prod checklist".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
 # Lucidchart Production Checklist
 
-## Overview
-Complete checklist for deploying Lucidchart integrations to production.
-
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
-
-## Instructions
-
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Lucidchart error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Lucidchart connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
+## Pre-Launch
+- [ ] Production credentials in secret manager
+- [ ] Rate limiting implemented
+- [ ] Error handling for all API codes
+- [ ] Health check endpoint
+- [ ] Monitoring and alerting
 - [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.lucidchart.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/lucidchart-integration app=image:new --record
-kubectl rollout pause deployment/lucidchart-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/lucidchart-integration
-kubectl rollout pause deployment/lucidchart-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/lucidchart-integration
-kubectl rollout status deployment/lucidchart-integration
-```
-
-## Output
-- Deployed Lucidchart integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
+## Health Check
 ```typescript
-async function healthCheck(): Promise<{ status: string; lucidchart: any }> {
-  const start = Date.now();
-  try {
-    await lucidchartClient.ping();
-    return { status: 'healthy', lucidchart: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', lucidchart: { connected: false, latencyMs: Date.now() - start } };
-  }
+async function health() {
+  try { /* test Lucidchart API call */ return { status: 'healthy' }; }
+  catch { return { status: 'degraded' }; }
 }
 ```
 
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/lucidchart-integration
-kubectl rollout status deployment/lucidchart-integration
-```
-
 ## Resources
-- [Lucidchart Status](https://status.lucidchart.com)
-- [Lucidchart Support](https://docs.lucidchart.com/support)
+- [Lucidchart Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-For version upgrades, see `lucidchart-upgrade-migration`.
+See `lucidchart-upgrade-migration`.

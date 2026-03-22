@@ -1,12 +1,12 @@
 ---
 name: anth-data-handling
 description: |
-  Implement Anthropic PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Anthropic integrations.
-  Trigger with phrases like "anthropic data", "anthropic PII",
-  "anthropic GDPR", "anthropic data retention", "anthropic privacy", "anthropic CCPA".
-allowed-tools: Read, Write, Edit
+  Implement data privacy, PII handling, and compliance patterns for Claude API.
+  Use when handling sensitive data, implementing PII redaction,
+  or configuring data retention for GDPR/CCPA compliance with Claude.
+  Trigger with phrases like "anthropic data privacy", "claude PII",
+  "anthropic gdpr", "claude data handling", "redact data claude".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,206 +17,125 @@ compatible-with: claude-code
 # Anthropic Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Anthropic.
 
-## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Anthropic SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+Anthropic's data policies: API inputs/outputs are NOT used for model training (commercial API). Zero-day retention is available. This skill covers PII redaction before sending to Claude and compliance patterns.
 
-## Data Classification
+## Anthropic Data Policies
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
+| Policy | Details |
+|--------|---------|
+| Training data | API data is NOT used for training (commercial API) |
+| Data retention | 30-day default; 0-day available via agreement |
+| Encryption | TLS 1.2+ in transit, AES-256 at rest |
+| SOC 2 Type II | Certified |
+| HIPAA BAA | Available for eligible customers |
 
-## PII Detection
+## PII Redaction Before API Calls
 
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
+```python
+import re
+import anthropic
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+def redact_pii(text: str) -> tuple[str, dict]:
+    """Redact PII before sending to Claude, return redaction map for restoration."""
+    redaction_map = {}
+    patterns = [
+        (r'\b\d{3}-\d{2}-\d{4}\b', 'SSN', '[SSN-REDACTED-{}]'),
+        (r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', 'EMAIL', '[EMAIL-REDACTED-{}]'),
+        (r'\b\d{3}[-.]?\d{3}[-.]?\d{4}\b', 'PHONE', '[PHONE-REDACTED-{}]'),
+        (r'\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b', 'CARD', '[CARD-REDACTED-{}]'),
+    ]
 
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
+    counter = 0
+    for pattern, label, replacement in patterns:
+        for match in re.finditer(pattern, text):
+            counter += 1
+            placeholder = replacement.format(counter)
+            redaction_map[placeholder] = match.group()
+            text = text.replace(match.group(), placeholder, 1)
 
-  return findings;
-}
+    return text, redaction_map
+
+def restore_pii(text: str, redaction_map: dict) -> str:
+    """Restore redacted PII in Claude's response."""
+    for placeholder, original in redaction_map.items():
+        text = text.replace(placeholder, original)
+    return text
+
+# Usage
+user_input = "Contact John at john@example.com or 555-123-4567"
+safe_input, redactions = redact_pii(user_input)
+# safe_input: "Contact John at [EMAIL-REDACTED-1] or [PHONE-REDACTED-2]"
+
+client = anthropic.Anthropic()
+msg = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=256,
+    messages=[{"role": "user", "content": safe_input}]
+)
+final_output = restore_pii(msg.content[0].text, redactions)
 ```
 
-## Data Redaction
+## Audit Logging
 
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+```python
+import json
+import logging
+from datetime import datetime, timezone
 
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
+audit_logger = logging.getLogger("claude.audit")
 
-  return redacted;
-}
+def audited_request(client, user_id: str, purpose: str, **kwargs):
+    """Wrap Claude API calls with audit logging."""
+    # Log request metadata (never log content)
+    audit_logger.info(json.dumps({
+        "event": "claude.request",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "user_id": user_id,
+        "purpose": purpose,
+        "model": kwargs.get("model"),
+        "max_tokens": kwargs.get("max_tokens"),
+    }))
 
-// Use in logging
-console.log('Anthropic request:', redactPII(requestData));
+    response = client.messages.create(**kwargs)
+
+    audit_logger.info(json.dumps({
+        "event": "claude.response",
+        "request_id": response._request_id,
+        "input_tokens": response.usage.input_tokens,
+        "output_tokens": response.usage.output_tokens,
+        "stop_reason": response.stop_reason,
+    }))
+
+    return response
 ```
 
-## Data Retention Policy
+## Data Handling Checklist
 
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupAnthropicData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.anthropicLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupAnthropicData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const anthropicData = await anthropicClient.getUserData(userId);
-
-  return {
-    source: 'Anthropic',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: anthropicData.profile,
-      activities: anthropicData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Anthropic
-  await anthropicClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.anthropicUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'anthropic',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await anthropicClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Anthropic data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+- [ ] PII redacted before sending to Claude API
+- [ ] Audit logs capture who accessed what and when
+- [ ] Logs never contain message content or PII
+- [ ] Data retention policy matches your compliance needs
+- [ ] Zero-day retention enabled if required (contact Anthropic)
+- [ ] HIPAA BAA in place if handling PHI
+- [ ] User consent obtained for AI processing
+- [ ] Data deletion procedures documented
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
 
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Anthropic response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+| Risk | Mitigation |
+|------|------------|
+| PII in prompts | Pre-call redaction pipeline |
+| PII in responses | Post-call output scanning |
+| Audit log gaps | Centralized logging with alerting |
+| Data subject access request | Searchable audit trail by user_id |
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Anthropic Privacy Guide](https://docs.anthropic.com/privacy)
+
+- [Anthropic Privacy Policy](https://www.anthropic.com/privacy)
+- [Anthropic Security](https://www.anthropic.com/security)
+- [Usage Policy](https://www.anthropic.com/usage-policy)
 
 ## Next Steps
-For enterprise access control, see `anthropic-enterprise-rbac`.
+
+For enterprise access control, see `anth-enterprise-rbac`.

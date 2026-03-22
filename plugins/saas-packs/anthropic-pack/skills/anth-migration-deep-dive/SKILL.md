@@ -1,12 +1,12 @@
 ---
 name: anth-migration-deep-dive
 description: |
-  Execute Anthropic major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Anthropic, performing major version upgrades,
-  or re-platforming existing integrations to Anthropic.
-  Trigger with phrases like "migrate anthropic", "anthropic migration",
-  "switch to anthropic", "anthropic replatform", "anthropic upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate to Claude API from OpenAI, Gemini, or other LLM providers.
+  Use when switching from GPT-4 to Claude, migrating from Text Completions,
+  or building a multi-provider abstraction layer.
+  Trigger with phrases like "migrate to claude", "openai to anthropic",
+  "switch from gpt to claude", "multi-provider llm".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,230 +17,132 @@ compatible-with: claude-code
 # Anthropic Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Anthropic, or major version upgrades.
 
-## Prerequisites
-- Current system documentation
-- Anthropic SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+Migration strategies for switching to Claude from OpenAI, Google, or other LLM providers, including API mapping, prompt translation, and multi-provider abstraction.
 
-## Migration Types
+## OpenAI to Anthropic API Mapping
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+| OpenAI | Anthropic | Notes |
+|--------|-----------|-------|
+| `openai.ChatCompletion.create()` | `anthropic.messages.create()` | Different response shape |
+| `model: "gpt-4"` | `model: "claude-sonnet-4-20250514"` | Different model IDs |
+| `messages: [{role, content}]` | `messages: [{role, content}]` | Same format |
+| `functions` / `tools` | `tools` | Similar but different schema key names |
+| `function_call` | `tool_choice` | Different naming |
+| `response.choices[0].message.content` | `response.content[0].text` | Different access path |
+| `stream: true` → yields chunks | `stream: true` → SSE events | Different event format |
+| System message in `messages[]` | `system` parameter (separate) | Claude separates system prompt |
+| `n` (multiple completions) | Not supported | Use multiple requests |
+| `logprobs` | Not supported | N/A |
 
-## Pre-Migration Assessment
+## Side-by-Side Code Comparison
 
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "anthropic" > anthropic-files.txt
+```python
+# === OpenAI ===
+from openai import OpenAI
+client = OpenAI()
+response = client.chat.completions.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": "You are helpful."},
+        {"role": "user", "content": "Hello"}
+    ],
+    max_tokens=1024,
+    temperature=0.7
+)
+text = response.choices[0].message.content
 
-# Count integration points
-wc -l anthropic-files.txt
-
-# Identify dependencies
-npm list | grep anthropic
-pip freeze | grep anthropic
+# === Anthropic ===
+import anthropic
+client = anthropic.Anthropic()
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    system="You are helpful.",           # System prompt is separate
+    messages=[
+        {"role": "user", "content": "Hello"}
+    ],
+    max_tokens=1024,                     # Required (not optional)
+    temperature=0.7
+)
+text = response.content[0].text
 ```
 
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
+## Tool Use Migration
 
-async function assessAnthropicMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Anthropic   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Anthropic SDK
-npm install @anthropic/sdk
-
-# Configure credentials
-cp .env.example .env.anthropic
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@anthropic/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/anthropic.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class AnthropicAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const anthropicData = this.transform(data);
-    return anthropicClient.create(anthropicData);
-  }
-
-  private transform(data: CreateInput): AnthropicInput {
-    // Map from old format to Anthropic format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateAnthropicData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await anthropicClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
+```python
+# OpenAI tools format
+openai_tools = [{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "parameters": {"type": "object", "properties": {"city": {"type": "string"}}}
     }
+}]
 
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
+# Anthropic tools format — flatter structure
+anthropic_tools = [{
+    "name": "get_weather",
+    "description": "Get weather for a city",  # Required in Anthropic
+    "input_schema": {"type": "object", "properties": {"city": {"type": "string"}}}
+}]
 ```
 
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const anthropicPercentage = getFeatureFlag('anthropic_migration_percentage');
+## Multi-Provider Abstraction
 
-  if (Math.random() * 100 < anthropicPercentage) {
-    return new AnthropicAdapter();
-  }
+```python
+from abc import ABC, abstractmethod
 
-  return new LegacyAdapter();
-}
+class LLMProvider(ABC):
+    @abstractmethod
+    def complete(self, prompt: str, system: str = "", **kwargs) -> str: ...
+
+class AnthropicProvider(LLMProvider):
+    def __init__(self):
+        import anthropic
+        self.client = anthropic.Anthropic()
+
+    def complete(self, prompt: str, system: str = "", **kwargs) -> str:
+        msg = self.client.messages.create(
+            model=kwargs.get("model", "claude-sonnet-4-20250514"),
+            max_tokens=kwargs.get("max_tokens", 1024),
+            system=system,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return msg.content[0].text
+
+class OpenAIProvider(LLMProvider):
+    def __init__(self):
+        from openai import OpenAI
+        self.client = OpenAI()
+
+    def complete(self, prompt: str, system: str = "", **kwargs) -> str:
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+        resp = self.client.chat.completions.create(
+            model=kwargs.get("model", "gpt-4"),
+            messages=messages,
+            max_tokens=kwargs.get("max_tokens", 1024)
+        )
+        return resp.choices[0].message.content
 ```
 
-## Rollback Plan
+## Migration Checklist
 
-```bash
-# Immediate rollback
-kubectl set env deployment/app ANTHROPIC_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.anthropic'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateAnthropicMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Anthropic integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Anthropic
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateAnthropicMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+- [ ] Map model names (GPT-4 → Claude Sonnet, GPT-3.5 → Claude Haiku)
+- [ ] Move system prompts from `messages[]` to `system` parameter
+- [ ] Update response access path (`.choices[0].message.content` → `.content[0].text`)
+- [ ] Make `max_tokens` explicit (required in Anthropic, optional in OpenAI)
+- [ ] Update tool definitions to Anthropic format
+- [ ] Test prompt behavior (Claude may respond differently to same prompts)
+- [ ] Update error handling for Anthropic error types
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Anthropic Migration Guide](https://docs.anthropic.com/migration)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `anthropic-advanced-troubleshooting`.
+- [Anthropic vs OpenAI Migration](https://docs.anthropic.com/en/docs/about-claude/models)
+- [Messages API Reference](https://docs.anthropic.com/en/api/messages)
+
+## Next Steps
+
+For advanced debugging, see `anth-advanced-troubleshooting`.

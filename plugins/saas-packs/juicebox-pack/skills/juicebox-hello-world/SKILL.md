@@ -1,115 +1,67 @@
 ---
 name: juicebox-hello-world
 description: |
-  Create a minimal working Juicebox example.
-  Use when getting started with Juicebox, creating your first search,
-  or testing basic people search functionality.
-  Trigger with phrases like "juicebox hello world", "first juicebox search",
-  "simple juicebox example", "test juicebox".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Create a minimal Juicebox people search example.
+  Trigger: "juicebox hello world", "first people search", "test juicebox".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-compatible-with: claude-code, codex, openclaw
-tags: [saas, juicebox, testing]
-
+tags: [saas, recruiting, juicebox]
+compatible-with: claude-code
 ---
+
 # Juicebox Hello World
 
 ## Overview
-Create a minimal working example to search for people using Juicebox AI.
-
-## Prerequisites
-- Juicebox SDK installed (`juicebox-install-auth` completed)
-- Valid API key configured
-- Node.js or Python environment
+Three examples: natural language people search, profile enrichment, and contact data from 800M+ profiles.
 
 ## Instructions
 
-### Step 1: Create Search Script
+### Example 1: Natural Language Search
 ```typescript
-// search.ts
 import { JuiceboxClient } from '@juicebox/sdk';
+const client = new JuiceboxClient({ apiKey: process.env.JUICEBOX_API_KEY });
 
-const client = new JuiceboxClient({
-  apiKey: process.env.JUICEBOX_API_KEY
+const results = await client.search({
+  query: 'senior ML engineer at FAANG with PhD in Bay Area',
+  limit: 10,
+  filters: { experience_years: { min: 5 } }
 });
+results.profiles.forEach(p =>
+  console.log(`${p.name} | ${p.title} at ${p.company} | ${p.location}`)
+);
+```
 
-async function searchPeople() {
-  const results = await client.search.people({
-    query: 'software engineer at Google',
-    limit: 5
-  });
-
-  console.log(`Found ${results.total} people`);
-  results.profiles.forEach(profile => {
-    console.log(`- ${profile.name} | ${profile.title} at ${profile.company}`);
-  });
+### Example 2: Profile Enrichment
+```typescript
+const enriched = await client.enrich({
+  linkedin_url: 'https://linkedin.com/in/example',
+  fields: ['skills', 'experience', 'education', 'contact']
+});
+console.log(`Skills: ${enriched.skills.join(', ')}`);
+if (enriched.tech_profile?.github) {
+  console.log(`GitHub: ${enriched.tech_profile.github.repos} repos`);
 }
-
-searchPeople();
 ```
 
-### Step 2: Run the Search
-```bash
-npx ts-node search.ts
+### Example 3: Contact Data (Python)
+```python
+results = client.search(query='PM fintech NYC', limit=5, include_contact=True)
+for p in results.profiles:
+    email = p.contact.email if p.contact else 'N/A'
+    print(f"{p.name} | {p.title} | {email}")
 ```
-
-### Step 3: Verify Output
-Expected output:
-```
-Found 150 people
-- Jane Smith | Senior Software Engineer at Google
-- John Doe | Staff Engineer at Google
-- ...
-```
-
-## Output
-- Working search script
-- Console output with search results
-- Profile data including name, title, company
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Empty Results | Query too specific | Broaden search terms |
-| Timeout | Large result set | Add `limit` parameter |
-| Invalid Query | Malformed syntax | Check query format |
-
-## Examples
-
-### Python Example
-```python
-from juicebox import JuiceboxClient
-import os
-
-client = JuiceboxClient(api_key=os.environ.get('JUICEBOX_API_KEY'))
-
-results = client.search.people(
-    query='product manager in San Francisco',
-    limit=10
-)
-
-for profile in results.profiles:
-    print(f"- {profile.name} | {profile.title}")
-```
-
-### Advanced Search
-```typescript
-const results = await client.search.people({
-  query: 'senior engineer',
-  filters: {
-    location: 'New York',
-    company_size: '1000+',  # 1000: 1 second in ms
-    experience_years: { min: 5 }
-  },
-  limit: 20
-});
-```
+| Empty results | Query too narrow | Broaden terms or remove filters |
+| Partial contact | Limited coverage | Not all profiles have contact data |
 
 ## Resources
-- [Search API Reference](https://juicebox.ai/docs/api/search)
-- [Query Syntax Guide](https://juicebox.ai/docs/queries)
+- [Search API](https://docs.juicebox.work/api/search)
+- [PeopleGPT](https://juicebox.ai/peoplegpt)
 
 ## Next Steps
-After your first search, explore `juicebox-sdk-patterns` for production-ready code.
+Explore `juicebox-sdk-patterns` for production code.

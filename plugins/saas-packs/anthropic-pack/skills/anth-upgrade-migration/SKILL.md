@@ -1,12 +1,12 @@
 ---
 name: anth-upgrade-migration
 description: |
-  Analyze, plan, and execute Anthropic SDK upgrades with breaking change detection.
-  Use when upgrading Anthropic SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade anthropic", "anthropic migration",
-  "anthropic breaking changes", "update anthropic SDK", "analyze anthropic version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Upgrade Anthropic SDK versions and migrate between Claude API versions.
+  Use when upgrading the Python/TypeScript SDK, migrating from Text Completions
+  to Messages API, or adopting new API features like tool use or batches.
+  Trigger with phrases like "upgrade anthropic sdk", "anthropic migration",
+  "update claude sdk", "migrate to messages api".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,98 +17,149 @@ compatible-with: claude-code
 # Anthropic Upgrade & Migration
 
 ## Overview
-Guide for upgrading Anthropic SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Anthropic SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Guide for upgrading the Anthropic SDK and migrating between API versions. The SDK follows semver — major versions may have breaking changes.
 
-## Instructions
+## Check Current Versions
 
-### Step 1: Check Current Version
 ```bash
-npm list @anthropic/sdk
-npm view @anthropic/sdk version
+# Python
+pip show anthropic | grep Version
+# Version: 0.40.0
+
+# TypeScript
+npm list @anthropic-ai/sdk
+# @anthropic-ai/sdk@0.35.0
+
+# Check latest available
+pip index versions anthropic 2>/dev/null | head -1
+npm view @anthropic-ai/sdk version
 ```
 
-### Step 2: Review Changelog
+## Upgrade Path
+
+### Step 1: Create Upgrade Branch
+
 ```bash
-open https://github.com/anthropic/sdk/releases
+git checkout -b upgrade/anthropic-sdk
 ```
 
-### Step 3: Create Upgrade Branch
+### Step 2: Upgrade SDK
+
 ```bash
-git checkout -b upgrade/anthropic-sdk-vX.Y.Z
-npm install @anthropic/sdk@latest
+# Python
+pip install --upgrade anthropic
+pip show anthropic | grep Version
+
+# TypeScript
+npm install @anthropic-ai/sdk@latest
+```
+
+### Step 3: Review Breaking Changes
+
+Key breaking changes by version:
+
+**Python SDK 0.20+ (anthropic-version: 2023-06-01)**
+```python
+# OLD: Text Completions API (deprecated)
+response = client.completions.create(
+    model="claude-2",
+    prompt="\n\nHuman: Hello\n\nAssistant:",
+    max_tokens_to_sample=256
+)
+
+# NEW: Messages API
+response = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=256,
+    messages=[{"role": "user", "content": "Hello"}]
+)
+```
+
+**Python SDK 0.30+ (streaming changes)**
+```python
+# OLD: Manual SSE parsing
+response = client.messages.create(..., stream=True)
+for line in response.iter_lines():
+    ...
+
+# NEW: High-level streaming
+with client.messages.stream(...) as stream:
+    for text in stream.text_stream:
+        print(text)
+```
+
+**TypeScript SDK 0.20+ (import path change)**
+```typescript
+// OLD
+import Anthropic from 'anthropic';
+
+// NEW
+import Anthropic from '@anthropic-ai/sdk';
+```
+
+### Step 4: Update API Version Header
+
+```python
+# The SDK sends anthropic-version header automatically
+# To pin a specific version:
+client = anthropic.Anthropic(
+    default_headers={"anthropic-version": "2023-06-01"}
+)
+
+# For beta features:
+client = anthropic.Anthropic(
+    default_headers={"anthropic-beta": "token-counting-2024-11-01"}
+)
+```
+
+### Step 5: Run Tests and Verify
+
+```bash
+# Run your test suite
+python -m pytest tests/ -v
 npm test
+
+# Verify a live call
+python3 -c "
+import anthropic
+c = anthropic.Anthropic()
+m = c.messages.create(model='claude-haiku-4-20250514', max_tokens=8, messages=[{'role':'user','content':'hi'}])
+print(f'OK: {m.model} {m.usage}')
+"
 ```
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
+## Migration: Text Completions to Messages
 
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
+| Text Completions | Messages API |
+|-----------------|--------------|
+| `client.completions.create()` | `client.messages.create()` |
+| `prompt` (string) | `messages` (array) |
+| `max_tokens_to_sample` | `max_tokens` |
+| `model: "claude-2"` | `model: "claude-sonnet-4-20250514"` |
+| `\n\nHuman:...\n\nAssistant:` | `[{role: "user"}, {role: "assistant"}]` |
+| `response.completion` | `response.content[0].text` |
 
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
+## Rollback
 
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@anthropic/sdk';
-
-// After (v2.x)
-import { AnthropicClient } from '@anthropic/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new AnthropicClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
 ```bash
-npm install @anthropic/sdk@1.x.x --save-exact
-```
+# Python — pin to previous version
+pip install anthropic==0.39.0
 
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Anthropic]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
+# TypeScript — pin to previous version
+npm install @anthropic-ai/sdk@0.34.0
 
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+# Git rollback
+git checkout main -- package.json package-lock.json
+npm install
 ```
 
 ## Resources
-- [Anthropic Changelog](https://github.com/anthropic/sdk/releases)
-- [Anthropic Migration Guide](https://docs.anthropic.com/migration)
+
+- [Python SDK Changelog](https://github.com/anthropics/anthropic-sdk-python/releases)
+- [TypeScript SDK Changelog](https://github.com/anthropics/anthropic-sdk-typescript/releases)
+- [API Versioning](https://docs.anthropic.com/en/api/versioning)
 
 ## Next Steps
-For CI integration during upgrades, see `anthropic-ci-integration`.
+
+For CI integration during upgrades, see `anth-ci-integration`.

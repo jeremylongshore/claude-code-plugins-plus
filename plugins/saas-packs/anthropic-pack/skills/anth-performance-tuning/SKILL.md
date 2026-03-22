@@ -1,12 +1,13 @@
 ---
 name: anth-performance-tuning
 description: |
-  Optimize Anthropic API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Anthropic integrations.
-  Trigger with phrases like "anthropic performance", "optimize anthropic",
-  "anthropic latency", "anthropic caching", "anthropic slow", "anthropic batch".
-allowed-tools: Read, Write, Edit
+  Optimize Claude API performance with prompt caching, model selection,
+  streaming, and latency reduction techniques.
+  Use when experiencing slow responses, optimizing token usage,
+  or reducing time-to-first-token in production.
+  Trigger with phrases like "anthropic performance", "claude speed",
+  "optimize claude latency", "anthropic caching", "faster claude responses".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,200 +18,140 @@ compatible-with: claude-code
 # Anthropic Performance Tuning
 
 ## Overview
-Optimize Anthropic API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Anthropic SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize Claude API latency and throughput via prompt caching, model selection, streaming, and request optimization. The biggest wins come from prompt caching (90% input cost reduction) and model selection (Haiku is 4x faster than Sonnet).
 
-## Latency Benchmarks
+## Prompt Caching (Biggest Win)
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+```python
+import anthropic
 
-## Caching Strategy
+client = anthropic.Anthropic()
 
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
+# Mark long, reusable content with cache_control
+# Cached content: 90% cheaper on subsequent requests, near-zero latency for cached portion
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    system=[
+        {
+            "type": "text",
+            "text": "You are an expert on the following 50-page document: ...<long document>...",
+            "cache_control": {"type": "ephemeral"}  # Cache this block
+        }
+    ],
+    messages=[{"role": "user", "content": "What does section 3.2 say?"}]
+)
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedAnthropicRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
+# Check cache performance
+print(f"Cache read tokens: {message.usage.cache_read_input_tokens}")   # Free/cheap
+print(f"Cache creation tokens: {message.usage.cache_creation_input_tokens}")  # First call only
+print(f"Uncached input tokens: {message.usage.input_tokens}")
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
+**Cache requirements:** Minimum 1,024 tokens for Sonnet/Opus, 2,048 for Haiku. Cache lives for 5 minutes (refreshed on each hit).
 
-const redis = new Redis(process.env.REDIS_URL);
+## Model Selection for Speed
 
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
+| Model | Speed | Cost (per MTok in/out) | Best For |
+|-------|-------|----------------------|----------|
+| Claude Haiku | Fastest | $0.80 / $4.00 | Classification, extraction, routing |
+| Claude Sonnet | Balanced | $3.00 / $15.00 | General tasks, tool use, code |
+| Claude Opus | Deepest | $15.00 / $75.00 | Complex reasoning, research |
 
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const anthropicLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Anthropic
-    const results = await anthropicClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  anthropicLoader.load('id-1'),
-  anthropicLoader.load('id-2'),
-  anthropicLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new AnthropicClient({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedAnthropicList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
+```python
+# Route by task complexity
+def select_model(task_type: str) -> str:
+    routing = {
+        "classify": "claude-haiku-4-20250514",
+        "extract": "claude-haiku-4-20250514",
+        "summarize": "claude-sonnet-4-20250514",
+        "code": "claude-sonnet-4-20250514",
+        "research": "claude-opus-4-20250514",
     }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedAnthropicList(cursor =>
-  anthropicClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
+    return routing.get(task_type, "claude-sonnet-4-20250514")
 ```
 
-## Performance Monitoring
+## Streaming for Perceived Speed
+
+```python
+# Streaming reduces time-to-first-token from seconds to ~200ms
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=2048,
+    messages=[{"role": "user", "content": prompt}]
+) as stream:
+    for text in stream.text_stream:
+        yield text  # User sees response immediately
+```
+
+## Reduce Token Count
+
+```python
+# 1. Set max_tokens to what you actually need (not max)
+msg = client.messages.create(
+    model="claude-haiku-4-20250514",
+    max_tokens=128,  # Not 4096 — smaller = faster generation
+    messages=[{"role": "user", "content": "Classify as positive/negative: 'Great product!'"}]
+)
+
+# 2. Use prefill to skip preamble
+msg = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=64,
+    messages=[
+        {"role": "user", "content": "Classify sentiment: 'Great product!'"},
+        {"role": "assistant", "content": "Sentiment:"}  # Skip "Sure, I'd be happy to..."
+    ]
+)
+
+# 3. Pre-check token count for large inputs
+count = client.messages.count_tokens(
+    model="claude-sonnet-4-20250514",
+    messages=[{"role": "user", "content": large_document}]
+)
+if count.input_tokens > 100_000:
+    # Chunk or summarize first
+    pass
+```
+
+## Parallel Requests
 
 ```typescript
-async function measuredAnthropicCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
+import Anthropic from '@anthropic-ai/sdk';
+import PQueue from 'p-queue';
+
+const client = new Anthropic();
+const queue = new PQueue({ concurrency: 10 });
+
+// Process multiple prompts in parallel (within rate limits)
+const results = await Promise.all(
+  prompts.map(p => queue.add(() =>
+    client.messages.create({
+      model: 'claude-haiku-4-20250514',
+      max_tokens: 256,
+      messages: [{ role: 'user', content: p }],
+    })
+  ))
+);
 ```
 
-## Instructions
+## Performance Benchmarks
 
-### Step 1: Establish Baseline
-Measure current latency for critical Anthropic operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredAnthropicCall(name, () =>
-    cachedAnthropicRequest(`cache:${name}`, fn)
-  );
-```
+| Optimization | Latency Impact | Cost Impact |
+|-------------|----------------|-------------|
+| Prompt caching | -50% (cached portion) | -90% input cost |
+| Haiku over Sonnet | -75% TTFT | -73% cost |
+| Streaming | -80% TTFT (perceived) | Same cost |
+| Lower max_tokens | -10-30% total time | Same cost |
+| Prefill technique | -20% output tokens | Proportional savings |
 
 ## Resources
-- [Anthropic Performance Guide](https://docs.anthropic.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+- [Token Counting](https://docs.anthropic.com/en/docs/build-with-claude/token-counting)
+- [Pricing](https://docs.anthropic.com/en/docs/about-claude/pricing)
 
 ## Next Steps
-For cost optimization, see `anthropic-cost-tuning`.
+
+For cost optimization, see `anth-cost-tuning`.

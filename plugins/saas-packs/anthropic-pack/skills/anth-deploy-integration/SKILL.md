@@ -1,12 +1,12 @@
 ---
 name: anth-deploy-integration
 description: |
-  Deploy Anthropic integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Anthropic-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy anthropic", "anthropic Vercel",
-  "anthropic production deploy", "anthropic Cloud Run", "anthropic Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Claude API integrations to production cloud environments.
+  Use when deploying Claude-powered services to Docker, Cloud Run, ECS,
+  or Kubernetes with proper secret management and health checks.
+  Trigger with phrases like "deploy anthropic", "claude production deploy",
+  "ship claude integration", "anthropic cloud deployment".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,195 +17,99 @@ compatible-with: claude-code
 # Anthropic Deploy Integration
 
 ## Overview
-Deploy Anthropic-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Anthropic API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Deploy Claude API integrations with proper secret management, health checks, and rollback procedures across Docker, GCP Cloud Run, and Kubernetes.
 
-## Vercel Deployment
+## Docker Deployment
 
-### Environment Setup
-```bash
-# Add Anthropic secrets to Vercel
-vercel secrets add anthropic_api_key sk_live_***
-vercel secrets add anthropic_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "ANTHROPIC_API_KEY": "@anthropic_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-anthropic-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Anthropic secrets
-fly secrets set ANTHROPIC_API_KEY=sk_live_***
-fly secrets set ANTHROPIC_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
 ```dockerfile
-FROM node:20-slim
+FROM python:3.12-slim
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src/ ./src/
+ENV ANTHROPIC_API_KEY=""
+EXPOSE 8000
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ```
 
-### Deploy Script
+```python
+# src/main.py
+from fastapi import FastAPI, HTTPException
+import anthropic
+
+app = FastAPI()
+client = anthropic.Anthropic()
+
+@app.get("/health")
+async def health():
+    try:
+        count = client.messages.count_tokens(
+            model="claude-haiku-4-20250514",
+            messages=[{"role": "user", "content": "ping"}]
+        )
+        return {"status": "healthy", "api": "connected"}
+    except Exception as e:
+        raise HTTPException(503, detail=str(e))
+```
+
+## GCP Cloud Run
+
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
+echo -n "sk-ant-api03-..." | gcloud secrets create anthropic-key --data-file=-
 
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="anthropic-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ANTHROPIC_API_KEY=anthropic-api-key:latest
+gcloud run deploy claude-service \
+  --image gcr.io/my-project/claude-service \
+  --set-secrets ANTHROPIC_API_KEY=anthropic-key:latest \
+  --min-instances 1 --max-instances 10 \
+  --memory 512Mi --timeout 120s
 ```
 
-## Environment Configuration Pattern
+## Kubernetes
 
-```typescript
-// config/anthropic.ts
-interface AnthropicConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getAnthropicConfig(): AnthropicConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ANTHROPIC_API_KEY!,
-    environment: env as AnthropicConfig['environment'],
-    webhookSecret: process.env.ANTHROPIC_WEBHOOK_SECRET,
-  };
-}
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata: { name: claude-service }
+spec:
+  replicas: 3
+  strategy: { type: RollingUpdate, rollingUpdate: { maxUnavailable: 1 } }
+  template:
+    spec:
+      containers:
+        - name: app
+          env:
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef: { name: anthropic-secrets, key: api-key }
+          livenessProbe:
+            httpGet: { path: /health, port: 8000 }
+            periodSeconds: 30
 ```
 
-## Health Check Endpoint
+## Rollback
 
-```typescript
-// api/health.ts
-export async function GET() {
-  const anthropicStatus = await checkAnthropicConnection();
+```bash
+# Cloud Run
+gcloud run services update-traffic claude-service --to-revisions=PREVIOUS=100
 
-  return Response.json({
-    status: anthropicStatus ? 'healthy' : 'degraded',
-    services: {
-      anthropic: anthropicStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
+# Kubernetes
+kubectl rollout undo deployment/claude-service
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Anthropic API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Anthropic integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Anthropic connectivity.
-
-## Output
-- Application deployed to production
-- Anthropic secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
 
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add anthropic_api_key "$ANTHROPIC_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ANTHROPIC_API_KEY="$ANTHROPIC_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Container crash on start | Missing API key env var | Verify secret binding |
+| Health check fails | Key invalid in prod | Test key with curl |
+| 429 after scaling up | More replicas = more RPM | Shared rate limiter (Redis) |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Anthropic Deploy Guide](https://docs.anthropic.com/deploy)
+
+- [API Getting Started](https://docs.anthropic.com/en/api/getting-started)
+- [API Status](https://status.anthropic.com)
 
 ## Next Steps
-For webhook handling, see `anthropic-webhooks-events`.
+
+For event-driven patterns, see `anth-webhooks-events`.

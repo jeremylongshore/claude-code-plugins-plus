@@ -1,119 +1,42 @@
 ---
 name: onenote-local-dev-loop
 description: |
-  Configure OneNote local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with OneNote.
-  Trigger with phrases like "onenote dev setup", "onenote local development",
-  "onenote dev environment", "develop with onenote".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Local Dev Loop for OneNote.
+  Trigger: "onenote local dev loop".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote]
+tags: [saas, onenote, microsoft]
 compatible-with: claude-code
 ---
 
 # OneNote Local Dev Loop
 
-## Overview
-Set up a fast, reproducible local development workflow for OneNote.
-
-## Prerequisites
-- Completed `onenote-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
-
-## Instructions
-
-### Step 1: Create Project Structure
+## Project Structure
 ```
-my-onenote-project/
-├── src/
-│   ├── onenote/
-│   │   ├── client.ts       # OneNote client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── onenote.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+my-onenote-app/
+├── .env                # MICROSOFT_GRAPH_TOKEN=...
+├── src/client.ts       # Singleton
+├── tests/fixtures/     # Mock responses
+└── scripts/dev.ts
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+## Mock Data
+```typescript
+export const mockResponse = {
+  status: 'success',
+  data: { /* mock OneNote response */ }
+};
 ```
 
-### Step 3: Setup Hot Reload
+## Dev Script
 ```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { OneNoteClient } from '../src/onenote/client';
-
-describe('OneNote Client', () => {
-  it('should initialize with API key', () => {
-    const client = new OneNoteClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for OneNote development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock OneNote Responses
-```typescript
-vi.mock('@onenote/sdk', () => ({
-  OneNoteClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=ONENOTE=* npm run dev
+{ "scripts": { "dev": "tsx watch src/index.ts", "test": "vitest" } }
 ```
 
 ## Resources
-- [OneNote SDK Reference](https://docs.onenote.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
 
 ## Next Steps
-See `onenote-sdk-patterns` for production-ready code patterns.
+See `onenote-sdk-patterns`.

@@ -1,211 +1,31 @@
 ---
 name: onenote-deploy-integration
 description: |
-  Deploy OneNote integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying OneNote-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy onenote", "onenote Vercel",
-  "onenote production deploy", "onenote Cloud Run", "onenote Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Integration for OneNote.
+  Trigger: "onenote deploy integration".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote]
+tags: [saas, onenote, microsoft]
 compatible-with: claude-code
 ---
 
 # OneNote Deploy Integration
 
-## Overview
-Deploy OneNote-powered applications to popular platforms with proper secrets management.
-
-## Prerequisites
-- OneNote API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add OneNote secrets to Vercel
-vercel secrets add onenote_api_key sk_live_***
-vercel secrets add onenote_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "ONENOTE_API_KEY": "@onenote_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-onenote-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set OneNote secrets
-fly secrets set ONENOTE_API_KEY=sk_live_***
-fly secrets set ONENOTE_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+## Docker
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="onenote-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ONENOTE_API_KEY=onenote-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/onenote.ts
-interface OneNoteConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getOneNoteConfig(): OneNoteConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.ONENOTE_API_KEY!,
-    environment: env as OneNoteConfig['environment'],
-    webhookSecret: process.env.ONENOTE_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const onenoteStatus = await checkOneNoteConnection();
-
-  return Response.json({
-    status: onenoteStatus ? 'healthy' : 'degraded',
-    services: {
-      onenote: onenoteStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store OneNote API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with OneNote integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm OneNote connectivity.
-
-## Output
-- Application deployed to production
-- OneNote secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add onenote_api_key "$ONENOTE_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ONENOTE_API_KEY="$ONENOTE_API_KEY"
-    fly deploy
-    ;;
-esac
+RUN npm ci --production
+COPY dist/ ./dist/
+ENV MICROSOFT_GRAPH_TOKEN=""
+CMD ["node", "dist/index.js"]
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [OneNote Deploy Guide](https://docs.onenote.com/deploy)
+- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
 
 ## Next Steps
-For webhook handling, see `onenote-webhooks-events`.
+See `onenote-webhooks-events`.

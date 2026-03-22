@@ -1,8 +1,8 @@
 # Juicebox Skill Pack
 
-> Claude Code skill pack for Juicebox integration (24 skills)
+> Claude Code skill pack for Juicebox PeopleGPT integration (24 skills)
 
-Juicebox is an AI-powered people search and recruiting platform that helps teams find and connect with professionals.
+AI-powered people search and recruiting platform with 800M+ profiles. Build candidate sourcing pipelines with natural language search, enrichment, contact data, and ATS integration.
 
 ## Installation
 
@@ -15,47 +15,44 @@ Juicebox is an AI-powered people search and recruiting platform that helps teams
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-install-auth` | Install and configure Juicebox SDK/CLI authentication |
-| `juicebox-hello-world` | Create a minimal working Juicebox example |
-| `juicebox-local-dev-loop` | Configure Juicebox local development workflow |
-| `juicebox-sdk-patterns` | Apply production-ready Juicebox SDK patterns |
-| `juicebox-core-workflow-a` | Execute Juicebox people search workflow |
-| `juicebox-core-workflow-b` | Implement Juicebox candidate enrichment workflow |
-| `juicebox-common-errors` | Diagnose and fix Juicebox common errors |
-| `juicebox-debug-bundle` | Collect Juicebox debug evidence for support |
-| `juicebox-rate-limits` | Implement Juicebox rate limiting and backoff |
-| `juicebox-security-basics` | Apply Juicebox security best practices |
-| `juicebox-prod-checklist` | Execute Juicebox production deployment checklist |
-| `juicebox-upgrade-migration` | Plan and execute Juicebox SDK upgrades |
+| `juicebox-install-auth` | Install SDK and configure PeopleGPT API authentication |
+| `juicebox-hello-world` | First search: people search, enrichment, contact data |
+| `juicebox-local-dev-loop` | Dev environment with mock data and cost control |
+| `juicebox-sdk-patterns` | Singleton client, batch search, error wrapper |
+| `juicebox-core-workflow-a` | People search with power filters and ATS export |
+| `juicebox-core-workflow-b` | Profile enrichment and outreach sequences |
+| `juicebox-common-errors` | API error codes with diagnostic commands |
+| `juicebox-debug-bundle` | Debug evidence collection for support |
+| `juicebox-rate-limits` | Rate limiting by plan tier |
+| `juicebox-security-basics` | API key management and candidate data privacy |
+| `juicebox-prod-checklist` | Production deployment checklist |
+| `juicebox-upgrade-migration` | SDK version upgrades |
 
 ### Pro Skills (P13-P18)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-ci-integration` | Configure Juicebox CI/CD integration |
-| `juicebox-deploy-integration` | Deploy Juicebox integrations to production |
-| `juicebox-webhooks-events` | Implement Juicebox webhook handling |
-| `juicebox-performance-tuning` | Optimize Juicebox API performance |
-| `juicebox-cost-tuning` | Optimize Juicebox costs and usage |
-| `juicebox-reference-architecture` | Implement Juicebox reference architecture |
+| `juicebox-ci-integration` | CI/CD with mock and integration tests |
+| `juicebox-deploy-integration` | Docker and Cloud Run deployment |
+| `juicebox-webhooks-events` | Outreach tracking and enrichment webhooks |
+| `juicebox-performance-tuning` | Query optimization and result caching |
+| `juicebox-cost-tuning` | Quota management and cost reduction |
+| `juicebox-reference-architecture` | Recruiting platform architecture |
 
 ### Flagship Skills (F19-F24)
 | Skill | Description |
 |-------|-------------|
-| `juicebox-multi-env-setup` | Configure Juicebox multi-environment setup |
-| `juicebox-observability` | Set up Juicebox monitoring and observability |
-| `juicebox-incident-runbook` | Execute Juicebox incident response procedures |
-| `juicebox-data-handling` | Implement Juicebox data privacy and handling |
-| `juicebox-enterprise-rbac` | Configure Juicebox enterprise role-based access |
-| `juicebox-migration-deep-dive` | Advanced Juicebox data migration strategies |
+| `juicebox-multi-env-setup` | Dev/staging/prod with isolated keys |
+| `juicebox-observability` | Search metrics, latency, quota monitoring |
+| `juicebox-incident-runbook` | API outage triage and mitigation |
+| `juicebox-data-handling` | GDPR/CCPA compliance for candidate data |
+| `juicebox-enterprise-rbac` | Team roles: recruiter, sourcer, manager |
+| `juicebox-migration-deep-dive` | Migrate from LinkedIn Recruiter or SeekOut |
 
-## Usage
+## Resources
 
-Skills trigger automatically when you discuss Juicebox topics. For example:
-
-- "Help me set up Juicebox" triggers `juicebox-install-auth`
-- "Debug this Juicebox error" triggers `juicebox-common-errors`
-- "Search for candidates with Juicebox" triggers `juicebox-core-workflow-a`
-- "Deploy my Juicebox integration" triggers `juicebox-deploy-integration`
+- [Juicebox Docs](https://docs.juicebox.work)
+- [PeopleGPT](https://juicebox.ai/peoplegpt)
+- [Integrations](https://juicebox.ai/integrations)
 
 ## License
 

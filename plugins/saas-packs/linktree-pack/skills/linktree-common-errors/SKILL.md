@@ -1,113 +1,42 @@
 ---
 name: linktree-common-errors
 description: |
-  Diagnose and fix Linktree common errors and exceptions.
-  Use when encountering Linktree errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "linktree error", "fix linktree",
-  "linktree not working", "debug linktree".
+  Diagnose and fix Linktree common errors.
+  Trigger: "linktree error", "fix linktree", "debug linktree".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree]
+tags: [saas, linktree, social]
 compatible-with: claude-code
 ---
 
 # Linktree Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Linktree errors and their solutions.
+Quick reference for Linktree API errors with solutions.
 
-## Prerequisites
-- Linktree SDK installed
-- API credentials configured
-- Access to error logs
+### 400 — Invalid Request
+**Fix:** Check request body format, ensure URLs are valid.
 
-## Instructions
+### 401 — Authentication Failed
+**Fix:** Verify API key at linktr.ee developer portal.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 404 — Profile/Link Not Found
+**Fix:** Verify profile username or link ID exists.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 — Rate Limited
+**Fix:** Implement exponential backoff. Check `Retry-After` header.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Quick Diagnostic
 ```bash
-# Verify API key is set
-echo $LINKTREE_API_KEY
+# Check API connectivity
+curl -s -w "\nHTTP %{http_code}" https://api.linktr.ee/v1/health 2>/dev/null || echo "Endpoint check needed"
+echo $LINKTREE_API_KEY | head -c 10
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `linktree-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Linktree status
-curl -s https://status.linktree.com
-
-# Verify API connectivity
-curl -I https://api.linktree.com
-
-# Check local configuration
-env | grep LINKTREE
-```
-
-### Escalation Path
-1. Collect evidence with `linktree-debug-bundle`
-2. Check Linktree status page
-3. Contact support with request ID
 
 ## Resources
-- [Linktree Status Page](https://status.linktree.com)
-- [Linktree Support](https://docs.linktree.com/support)
-- [Linktree Error Codes](https://docs.linktree.com/errors)
+- [Linktree Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
-For comprehensive debugging, see `linktree-debug-bundle`.
+See `linktree-debug-bundle`.

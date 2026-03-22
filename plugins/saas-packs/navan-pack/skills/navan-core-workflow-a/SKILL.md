@@ -1,71 +1,64 @@
 ---
 name: navan-core-workflow-a
 description: |
-  Execute Navan primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "navan main workflow",
-  "primary task with navan".
+  Execute Navan primary workflow: Travel Booking & Management.
+  Trigger: "navan travel booking & management", "primary navan workflow".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, navan]
+tags: [saas, navan, travel]
 compatible-with: claude-code
 ---
 
-# Navan Core Workflow A
+# Navan — Travel Booking & Management
 
 ## Overview
-Primary money-path workflow for Navan. This is the most common use case.
-
-## Prerequisites
-- Completed `navan-install-auth` setup
-- Understanding of Navan core concepts
-- Valid API credentials configured
+Primary workflow for Navan integration.
 
 ## Instructions
 
-### Step 1: Initialize
+### Step 1: Search Flights
 ```typescript
-// Step 1 implementation
+const flights = await client.flights.search({
+  origin: 'SFO', destination: 'JFK',
+  departure_date: '2026-05-01',
+  return_date: '2026-05-05',
+  travelers: 1,
+  cabin_class: 'economy',
+  policy_check: true  // Validate against company travel policy
+});
+
+flights.results.forEach(f =>
+  console.log(`${f.airline} ${f.flight_number}: $${f.price} | ${f.duration} | ${f.policy_compliant ? 'IN POLICY' : 'OUT OF POLICY'}`)
+);
 ```
 
-### Step 2: Execute
+### Step 2: Book Trip
 ```typescript
-// Step 2 implementation
+const booking = await client.bookings.create({
+  flight_id: flights.results[0].id,
+  traveler: { employee_id: 'emp_123', name: 'Jane Smith', email: 'jane@company.com' },
+  cost_center: 'engineering',
+  project_code: 'PROJ-456',
+  approver_id: 'mgr_789'
+});
+console.log(`Booking: ${booking.id} | Status: ${booking.status}`);
 ```
 
-### Step 3: Finalize
+### Step 3: Track Trips
 ```typescript
-// Step 3 implementation
+const activeTrips = await client.trips.list({
+  status: 'active',
+  department: 'engineering'
+});
+activeTrips.forEach(t =>
+  console.log(`${t.traveler.name}: ${t.origin} → ${t.destination} | ${t.dates}`)
+);
 ```
-
-## Output
-- Completed Core Workflow A execution
-- Expected results from Navan API
-- Success confirmation or error details
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
 
 ## Resources
-- [Navan Documentation](https://docs.navan.com)
-- [Navan API Reference](https://docs.navan.com/api)
+- [Navan Docs](https://app.navan.com/app/helpcenter)
 
 ## Next Steps
-For secondary workflow, see `navan-core-workflow-b`.
+See `navan-core-workflow-b`.

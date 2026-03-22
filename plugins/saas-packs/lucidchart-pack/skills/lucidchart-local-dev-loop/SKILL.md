@@ -1,119 +1,42 @@
 ---
 name: lucidchart-local-dev-loop
 description: |
-  Configure Lucidchart local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Lucidchart.
-  Trigger with phrases like "lucidchart dev setup", "lucidchart local development",
-  "lucidchart dev environment", "develop with lucidchart".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Local Dev Loop for Lucidchart.
+  Trigger: "lucidchart local dev loop".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
 # Lucidchart Local Dev Loop
 
-## Overview
-Set up a fast, reproducible local development workflow for Lucidchart.
-
-## Prerequisites
-- Completed `lucidchart-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
-
-## Instructions
-
-### Step 1: Create Project Structure
+## Project Structure
 ```
-my-lucidchart-project/
-├── src/
-│   ├── lucidchart/
-│   │   ├── client.ts       # Lucidchart client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── lucidchart.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+my-lucidchart-app/
+├── .env                # LUCID_API_KEY=...
+├── src/client.ts       # Singleton
+├── tests/fixtures/     # Mock responses
+└── scripts/dev.ts
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+## Mock Data
+```typescript
+export const mockResponse = {
+  status: 'success',
+  data: { /* mock Lucidchart response */ }
+};
 ```
 
-### Step 3: Setup Hot Reload
+## Dev Script
 ```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { LucidchartClient } from '../src/lucidchart/client';
-
-describe('Lucidchart Client', () => {
-  it('should initialize with API key', () => {
-    const client = new LucidchartClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Lucidchart development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Lucidchart Responses
-```typescript
-vi.mock('@lucidchart/sdk', () => ({
-  LucidchartClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=LUCIDCHART=* npm run dev
+{ "scripts": { "dev": "tsx watch src/index.ts", "test": "vitest" } }
 ```
 
 ## Resources
-- [Lucidchart SDK Reference](https://docs.lucidchart.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [Lucidchart Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-See `lucidchart-sdk-patterns` for production-ready code patterns.
+See `lucidchart-sdk-patterns`.

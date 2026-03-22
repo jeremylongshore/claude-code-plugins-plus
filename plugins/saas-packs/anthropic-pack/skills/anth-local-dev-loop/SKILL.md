@@ -1,12 +1,12 @@
 ---
 name: anth-local-dev-loop
 description: |
-  Configure Anthropic local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Anthropic.
-  Trigger with phrases like "anthropic dev setup", "anthropic local development",
-  "anthropic dev environment", "develop with anthropic".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Configure a local development workflow for Anthropic Claude API projects.
+  Use when setting up dev environment, configuring hot reload,
+  or establishing a fast iteration cycle with the Messages API.
+  Trigger with phrases like "anthropic local dev", "claude dev setup",
+  "anthropic development workflow", "test claude locally".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,103 +17,135 @@ compatible-with: claude-code
 # Anthropic Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Anthropic.
+
+Set up a fast local development cycle for Claude API projects with environment management, request logging, cost tracking, and hot-reload.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+
+- Completed `anth-install-auth` setup
+- Node.js 18+ or Python 3.8+
+- `.env` file with `ANTHROPIC_API_KEY`
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-anthropic-project/
+my-claude-app/
+├── .env                  # ANTHROPIC_API_KEY=sk-ant-...
+├── .env.example          # ANTHROPIC_API_KEY=your-key-here
+├── .gitignore            # Include .env
 ├── src/
-│   ├── anthropic/
-│   │   ├── client.ts       # Anthropic client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+│   ├── client.ts         # Singleton client
+│   ├── prompts/          # System prompts as files
+│   └── tools/            # Tool definitions
 ├── tests/
-│   └── anthropic.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+│   └── mock-responses/   # Saved API responses for testing
+└── scripts/
+    └── dev.ts            # Dev runner with logging
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Singleton Client with Request Logging
 
-# Install dependencies
-npm install
+```typescript
+// src/client.ts
+import Anthropic from '@anthropic-ai/sdk';
 
-# Start development server
-npm run dev
-```
+let client: Anthropic | null = null;
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+export function getClient(): Anthropic {
+  if (!client) {
+    client = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      maxRetries: 2,
+      timeout: 30_000,
+    });
   }
+  return client;
+}
+
+// Development logger — tracks cost per request
+export function logUsage(messageId: string, usage: { input_tokens: number; output_tokens: number }, model: string) {
+  const pricing: Record<string, { input: number; output: number }> = {
+    'claude-sonnet-4-20250514': { input: 3.0, output: 15.0 },
+    'claude-haiku-4-20250514': { input: 0.80, output: 4.0 },
+    'claude-opus-4-20250514': { input: 15.0, output: 75.0 },
+  };
+  const rates = pricing[model] || pricing['claude-sonnet-4-20250514'];
+  const cost = (usage.input_tokens * rates.input + usage.output_tokens * rates.output) / 1_000_000;
+  console.log(`[${messageId}] ${model} | ${usage.input_tokens}+${usage.output_tokens} tokens | $${cost.toFixed(4)}`);
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { AnthropicClient } from '../src/anthropic/client';
+### Step 3: Mock Responses for Tests
 
-describe('Anthropic Client', () => {
-  it('should initialize with API key', () => {
-    const client = new AnthropicClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+```typescript
+// tests/mock-client.ts
+import { type Message } from '@anthropic-ai/sdk/resources/messages';
+
+export function mockMessage(text: string): Message {
+  return {
+    id: 'msg_test_123',
+    type: 'message',
+    role: 'assistant',
+    model: 'claude-sonnet-4-20250514',
+    content: [{ type: 'text', text }],
+    stop_reason: 'end_turn',
+    stop_sequence: null,
+    usage: { input_tokens: 10, output_tokens: 20 },
+  };
+}
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Anthropic development
+### Step 4: Hot-Reload Dev Script
+
+```bash
+# package.json scripts
+"scripts": {
+  "dev": "tsx watch src/index.ts",
+  "dev:debug": "ANTHROPIC_LOG=debug tsx watch src/index.ts",
+  "test": "vitest",
+  "test:live": "LIVE_API=1 vitest --run"
+}
+```
+
+## Environment Management
+
+```bash
+# .env.example (commit this)
+ANTHROPIC_API_KEY=your-key-here
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MAX_TOKENS=1024
+ANTHROPIC_LOG=warn     # debug | info | warn | error
+
+# Enable SDK debug logging
+export ANTHROPIC_LOG=debug  # Logs all requests/responses
+```
+
+## Cost Control During Development
+
+```python
+import os
+
+DEV_MODEL = "claude-haiku-4-20250514"      # $0.80/$4.00 per MTok
+PROD_MODEL = "claude-sonnet-4-20250514"    # $3.00/$15.00 per MTok
+
+model = DEV_MODEL if os.getenv("ENV") == "development" else PROD_MODEL
+```
 
 ## Error Handling
-| Error | Cause | Solution |
+
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Anthropic Responses
-```typescript
-vi.mock('@anthropic/sdk', () => ({
-  AnthropicClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=ANTHROPIC=* npm run dev
-```
+| Hot reload triggers duplicate requests | File save causes restart | Add debounce or save-on-explicit-action |
+| `.env` not loading | Missing dotenv setup | Use `dotenv` package or `tsx --env-file=.env` |
+| Mock tests pass but live fails | Response shape changed | Update mocks from real API responses |
 
 ## Resources
-- [Anthropic SDK Reference](https://docs.anthropic.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [SDK Debug Logging](https://github.com/anthropics/anthropic-sdk-python#logging)
+- [Pricing](https://docs.anthropic.com/en/docs/about-claude/pricing)
 
 ## Next Steps
-See `anthropic-sdk-patterns` for production-ready code patterns.
+
+Apply patterns in `anth-sdk-patterns` for production-ready code.

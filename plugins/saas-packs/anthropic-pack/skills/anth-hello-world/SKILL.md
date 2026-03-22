@@ -1,11 +1,11 @@
 ---
 name: anth-hello-world
 description: |
-  Create a minimal working Anthropic example.
-  Use when starting a new Anthropic integration, testing your setup,
-  or learning basic Anthropic API patterns.
-  Trigger with phrases like "anthropic hello world", "anthropic example",
-  "anthropic quick start", "simple anthropic code".
+  Create a minimal working Anthropic Claude Messages API example.
+  Use when starting a new Claude integration, testing your setup,
+  or learning basic Messages API patterns for text, vision, and streaming.
+  Trigger with phrases like "anthropic hello world", "claude api example",
+  "anthropic quick start", "simple claude code", "first messages api call".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,82 +17,128 @@ compatible-with: claude-code
 # Anthropic Hello World
 
 ## Overview
-Minimal working example demonstrating core Anthropic functionality.
+
+Three minimal examples covering the Claude Messages API core surfaces: basic text completion, vision (image analysis), and streaming responses.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+
+- Completed `anth-install-auth` setup
+- Valid `ANTHROPIC_API_KEY` in environment
+- Python 3.8+ with `anthropic` package or Node.js 18+ with `@anthropic-ai/sdk`
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Example 1: Basic Text Message (Python)
 
-### Step 2: Import and Initialize Client
-```typescript
-import { AnthropicClient } from '@anthropic/sdk';
+```python
+import anthropic
 
-const client = new AnthropicClient({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+client = anthropic.Anthropic()
+
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[
+        {"role": "user", "content": "Explain quantum computing in 3 sentences."}
+    ]
+)
+
+# Response structure
+print(message.content[0].text)       # The actual text response
+print(f"ID: {message.id}")           # msg_01XFDUDYJgAACzvnptvVoYEL
+print(f"Model: {message.model}")     # claude-sonnet-4-20250514
+print(f"Stop: {message.stop_reason}")# end_turn
+print(f"Usage: {message.usage.input_tokens}in / {message.usage.output_tokens}out")
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Example 2: Vision — Analyze an Image (TypeScript)
 
-main().catch(console.error);
+```typescript
+import Anthropic from '@anthropic-ai/sdk';
+import * as fs from 'fs';
+
+const client = new Anthropic();
+
+// From file (base64)
+const imageData = fs.readFileSync('chart.png').toString('base64');
+
+const message = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 1024,
+  messages: [{
+    role: 'user',
+    content: [
+      {
+        type: 'image',
+        source: {
+          type: 'base64',
+          media_type: 'image/png',
+          data: imageData,
+        },
+      },
+      { type: 'text', text: 'Describe what this chart shows.' },
+    ],
+  }],
+});
+
+console.log(message.content[0].type === 'text' ? message.content[0].text : '');
+```
+
+### Example 3: Streaming Response (Python)
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Write a haiku about APIs."}]
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+
+# Get final message with full metadata
+final = stream.get_final_message()
+print(f"\nTokens used: {final.usage.input_tokens}+{final.usage.output_tokens}")
 ```
 
 ## Output
-- Working code file with Anthropic client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Anthropic connection is working.
-```
+
+- Working code file with Claude client initialization
+- Successful API response with text content
+- Console output showing model response and usage metadata
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
 
-## Examples
+| Error | HTTP Code | Cause | Solution |
+|-------|-----------|-------|----------|
+| `authentication_error` | 401 | Invalid API key | Check `ANTHROPIC_API_KEY` |
+| `invalid_request_error` | 400 | Bad params (e.g., empty messages) | Validate request body |
+| `rate_limit_error` | 429 | Too many requests | Implement backoff (see `anth-rate-limits`) |
+| `overloaded_error` | 529 | API temporarily overloaded | Retry after 30-60s |
+| `api_error` | 500 | Server error | Retry with exponential backoff |
 
-### TypeScript Example
-```typescript
-import { AnthropicClient } from '@anthropic/sdk';
+## Key API Parameters
 
-const client = new AnthropicClient({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from anthropic import AnthropicClient
-
-client = AnthropicClient()
-
-# Your first API call here
-```
+| Parameter | Required | Description |
+|-----------|----------|-------------|
+| `model` | Yes | Model ID: `claude-sonnet-4-20250514`, `claude-haiku-4-20250514`, `claude-opus-4-20250514` |
+| `max_tokens` | Yes | Maximum output tokens (model-dependent max) |
+| `messages` | Yes | Array of `{role, content}` objects |
+| `system` | No | System prompt (string or content blocks) |
+| `temperature` | No | 0.0-1.0, default 1.0 |
+| `top_p` | No | Nucleus sampling (use temperature OR top_p) |
+| `stop_sequences` | No | Array of strings that stop generation |
+| `stream` | No | Enable SSE streaming |
 
 ## Resources
-- [Anthropic Getting Started](https://docs.anthropic.com/getting-started)
-- [Anthropic API Reference](https://docs.anthropic.com/api)
-- [Anthropic Examples](https://docs.anthropic.com/examples)
+
+- [Messages API Reference](https://docs.anthropic.com/en/api/messages)
+- [Messages Examples](https://docs.anthropic.com/en/api/messages-examples)
+- [Vision Guide](https://docs.anthropic.com/en/docs/build-with-claude/vision)
 
 ## Next Steps
-Proceed to `anthropic-local-dev-loop` for development workflow setup.
+
+Proceed to `anth-local-dev-loop` for development workflow setup.

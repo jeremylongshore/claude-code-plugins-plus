@@ -2,97 +2,71 @@
 name: lucidchart-hello-world
 description: |
   Create a minimal working Lucidchart example.
-  Use when starting a new Lucidchart integration, testing your setup,
-  or learning basic Lucidchart API patterns.
-  Trigger with phrases like "lucidchart hello world", "lucidchart example",
-  "lucidchart quick start", "simple lucidchart code".
-allowed-tools: Read, Write, Edit
+  Trigger: "lucidchart hello world", "lucidchart example", "test lucidchart".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
 # Lucidchart Hello World
 
 ## Overview
-Minimal working example demonstrating core Lucidchart functionality.
-
-## Prerequisites
-- Completed `lucidchart-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+Minimal working examples demonstrating core Lucidchart API functionality.
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
+### Step 1: Create a Document
 ```typescript
-import { LucidchartClient } from '@lucidchart/sdk';
-
-const client = new LucidchartClient({
-  apiKey: process.env.LUCIDCHART_API_KEY,
+const doc = await client.documents.create({
+  title: 'API Architecture Diagram',
+  product: 'lucidchart'  // or 'lucidspark'
 });
+console.log(`Document: ${doc.documentId}`);
+console.log(`Edit URL: ${doc.editUrl}`);
 ```
 
-### Step 3: Make Your First API Call
+### Step 2: Add Shapes via Standard Import
 ```typescript
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
+// Lucid Standard Import uses .lucid file format
+const importData = {
+  pages: [{
+    id: 'page1',
+    title: 'Main',
+    shapes: [
+      { id: 's1', type: 'rectangle', boundingBox: { x: 100, y: 100, w: 200, h: 80 },
+        text: 'API Gateway', style: { fill: '#4A90D9' } },
+      { id: 's2', type: 'rectangle', boundingBox: { x: 100, y: 300, w: 200, h: 80 },
+        text: 'Database', style: { fill: '#7B68EE' } }
+    ],
+    lines: [
+      { id: 'l1', endpoint1: { shapeId: 's1' }, endpoint2: { shapeId: 's2' },
+        stroke: { color: '#333', width: 2 } }
+    ]
+  }]
+};
+await client.documents.import(doc.documentId, importData);
 ```
 
-## Output
-- Working code file with Lucidchart client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Lucidchart connection is working.
+### Step 3: Export Document
+```typescript
+const png = await client.documents.export(doc.documentId, {
+  format: 'png', pageIndex: 0, scale: 2
+});
+fs.writeFileSync('diagram.png', png);
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { LucidchartClient } from '@lucidchart/sdk';
-
-const client = new LucidchartClient({
-  apiKey: process.env.LUCIDCHART_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from lucidchart import LucidchartClient
-
-client = LucidchartClient()
-
-# Your first API call here
-```
+| Auth error | Invalid credentials | Check LUCID_API_KEY |
+| Not found | Invalid endpoint | Verify API URL |
+| Rate limit | Too many requests | Implement backoff |
 
 ## Resources
-- [Lucidchart Getting Started](https://docs.lucidchart.com/getting-started)
-- [Lucidchart API Reference](https://docs.lucidchart.com/api)
-- [Lucidchart Examples](https://docs.lucidchart.com/examples)
+- [Lucidchart API Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-Proceed to `lucidchart-local-dev-loop` for development workflow setup.
+See `lucidchart-local-dev-loop`.

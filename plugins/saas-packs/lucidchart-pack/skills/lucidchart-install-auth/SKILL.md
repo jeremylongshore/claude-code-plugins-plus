@@ -1,92 +1,70 @@
 ---
 name: lucidchart-install-auth
 description: |
-  Install and configure Lucidchart SDK/CLI authentication.
-  Use when setting up a new Lucidchart integration, configuring API keys,
-  or initializing Lucidchart in your project.
-  Trigger with phrases like "install lucidchart", "setup lucidchart",
-  "lucidchart auth", "configure lucidchart API key".
+  Install and configure Lucidchart SDK/API authentication.
+  Use when setting up a new Lucidchart integration.
+  Trigger: "install lucidchart", "setup lucidchart", "lucidchart auth".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
 # Lucidchart Install & Auth
 
 ## Overview
-Set up Lucidchart SDK/CLI and configure authentication credentials.
+Set up Lucid REST API for programmatic diagram creation and document management.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Lucidchart account with API access
-- API key from Lucidchart dashboard
+- Lucidchart account and API access
+- API key/credentials from Lucidchart dashboard
+- Node.js 18+ or Python 3.8+
 
 ## Instructions
 
 ### Step 1: Install SDK
 ```bash
-# Node.js
-npm install @lucidchart/sdk
-
-# Python
-pip install lucidchart
+npm install @lucid-co/sdk
+# OAuth2 app credentials from developer.lucid.co
 ```
 
 ### Step 2: Configure Authentication
 ```bash
-# Set environment variable
-export LUCIDCHART_API_KEY="your-api-key"
-
-# Or create .env file
-echo 'LUCIDCHART_API_KEY=your-api-key' >> .env
+export LUCID_API_KEY="your-api-key-here"
+echo 'LUCID_API_KEY=your-api-key' >> .env
 ```
 
-### Step 3: Verify Connection
+### Step 3: Verify Connection (TypeScript)
 ```typescript
-// Test connection code here
+import { LucidClient } from '@lucid-co/sdk';
+const client = new LucidClient({
+  clientId: process.env.LUCID_CLIENT_ID,
+  clientSecret: process.env.LUCID_CLIENT_SECRET
+});
+const docs = await client.documents.list();
+console.log(`Found ${docs.length} documents`);
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: Verify Connection (Python)
+```python
+import lucid
+client = lucid.Client(client_id=os.environ['LUCID_CLIENT_ID'],
+                      client_secret=os.environ['LUCID_CLIENT_SECRET'])
+docs = client.documents.list()
+print(f'Found {len(docs)} documents')
+```
 
 ## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Lucidchart dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.lucidchart.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { LucidchartClient } from '@lucidchart/sdk';
-
-const client = new LucidchartClient({
-  apiKey: process.env.LUCIDCHART_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from lucidchart import LucidchartClient
-
-client = LucidchartClient(
-    api_key=os.environ.get('LUCIDCHART_API_KEY')
-)
-```
+| Error | Code | Solution |
+|-------|------|----------|
+| Invalid API key | 401 | Verify credentials in dashboard |
+| Permission denied | 403 | Check API scopes/permissions |
+| Rate limited | 429 | Implement backoff |
 
 ## Resources
-- [Lucidchart Documentation](https://docs.lucidchart.com)
-- [Lucidchart Dashboard](https://api.lucidchart.com)
-- [Lucidchart Status](https://status.lucidchart.com)
+- [Lucidchart Documentation](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-After successful auth, proceed to `lucidchart-hello-world` for your first API call.
+After auth, proceed to `lucidchart-hello-world`.

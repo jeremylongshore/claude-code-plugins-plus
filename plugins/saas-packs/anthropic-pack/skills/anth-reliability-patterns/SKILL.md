@@ -1,12 +1,11 @@
 ---
 name: anth-reliability-patterns
 description: |
-  Implement Anthropic reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Anthropic integrations, implementing retry strategies,
-  or adding resilience to production Anthropic services.
-  Trigger with phrases like "anthropic reliability", "anthropic circuit breaker",
-  "anthropic idempotent", "anthropic resilience", "anthropic fallback", "anthropic bulkhead".
-allowed-tools: Read, Write, Edit
+  Implement reliability patterns for Claude API: circuit breakers,
+  graceful degradation, idempotency, and fallback strategies.
+  Trigger with phrases like "anthropic reliability", "claude circuit breaker",
+  "claude fallback", "anthropic fault tolerance".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,276 +16,154 @@ compatible-with: claude-code
 # Anthropic Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Anthropic integrations.
 
-## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
+Production reliability patterns for Claude API: circuit breaker (prevent cascading failures), graceful degradation (serve fallbacks), idempotency (safe retries), and timeout management.
 
 ## Circuit Breaker
 
-```typescript
-import CircuitBreaker from 'opossum';
+```python
+import time
+from enum import Enum
 
-const anthropicBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
+class CircuitState(Enum):
+    CLOSED = "closed"       # Normal operation
+    OPEN = "open"           # Failing, reject requests
+    HALF_OPEN = "half_open" # Testing recovery
 
-// Events
-anthropicBreaker.on('open', () => {
-  console.warn('Anthropic circuit OPEN - requests failing fast');
-  alertOps('Anthropic circuit breaker opened');
-});
+class ClaudeCircuitBreaker:
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: int = 60):
+        self.state = CircuitState.CLOSED
+        self.failures = 0
+        self.threshold = failure_threshold
+        self.recovery_timeout = recovery_timeout
+        self.last_failure_time = 0.0
 
-anthropicBreaker.on('halfOpen', () => {
-  console.info('Anthropic circuit HALF-OPEN - testing recovery');
-});
+    def call(self, func, *args, **kwargs):
+        if self.state == CircuitState.OPEN:
+            if time.time() - self.last_failure_time > self.recovery_timeout:
+                self.state = CircuitState.HALF_OPEN
+            else:
+                raise Exception("Circuit breaker OPEN — Claude API unavailable")
 
-anthropicBreaker.on('close', () => {
-  console.info('Anthropic circuit CLOSED - normal operation');
-});
+        try:
+            result = func(*args, **kwargs)
+            if self.state == CircuitState.HALF_OPEN:
+                self.state = CircuitState.CLOSED
+                self.failures = 0
+            return result
+        except Exception as e:
+            self.failures += 1
+            self.last_failure_time = time.time()
+            if self.failures >= self.threshold:
+                self.state = CircuitState.OPEN
+            raise
 
-// Usage
-async function safeAnthropicCall<T>(fn: () => Promise<T>): Promise<T> {
-  return anthropicBreaker.fire(fn);
-}
-```
+# Usage
+breaker = ClaudeCircuitBreaker(failure_threshold=5, recovery_timeout=60)
 
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const anthropicQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedAnthropicCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return anthropicQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedAnthropicCall('critical', () =>
-  anthropicClient.processPayment(order)
-);
-
-await prioritizedAnthropicCall('bulk', () =>
-  anthropicClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutAnthropicCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Anthropic ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
+def safe_claude_call(prompt: str) -> str:
+    try:
+        return breaker.call(
+            client.messages.create,
+            model="claude-sonnet-4-20250514",
+            max_tokens=1024,
+            messages=[{"role": "user", "content": prompt}]
+        ).content[0].text
+    except Exception:
+        return "AI assistant is temporarily unavailable."
 ```
 
 ## Graceful Degradation
 
-```typescript
-interface AnthropicFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
+```python
+import anthropic
 
-async function withAnthropicFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Anthropic failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
+def complete_with_fallback(prompt: str) -> str:
+    """Try Sonnet → Haiku → cached response → static fallback."""
+    models = ["claude-sonnet-4-20250514", "claude-haiku-4-20250514"]
+
+    for model in models:
+        try:
+            msg = client.messages.create(
+                model=model,
+                max_tokens=1024,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return msg.content[0].text
+        except anthropic.RateLimitError:
+            continue  # Try cheaper model
+        except anthropic.APIStatusError:
+            continue  # Try next model
+
+    # All models failed — return cached or static response
+    cached = cache.get(f"claude:{hash(prompt)}")
+    if cached:
+        return f"[Cached response] {cached}"
+
+    return "Our AI assistant is temporarily unavailable. Please try again in a few minutes."
 ```
 
-## Dead Letter Queue
+## Idempotent Requests
 
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
+```python
+import hashlib
+import json
 
-class AnthropicDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
+class IdempotentClaude:
+    def __init__(self):
+        self.client = anthropic.Anthropic()
+        self.cache = {}  # Use Redis in production
 
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
+    def create_message(self, idempotency_key: str | None = None, **kwargs) -> str:
+        # Generate deterministic key from request params if not provided
+        if not idempotency_key:
+            idempotency_key = hashlib.sha256(
+                json.dumps(kwargs, sort_keys=True, default=str).encode()
+            ).hexdigest()
 
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
+        # Return cached result for duplicate requests
+        if idempotency_key in self.cache:
+            return self.cache[idempotency_key]
 
-    try {
-      await anthropicClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
+        msg = self.client.messages.create(**kwargs)
+        result = msg.content[0].text
+        self.cache[idempotency_key] = result
+        return result
 ```
 
-## Health Check with Degraded State
+## Timeout Configuration
 
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+```python
+# Layer timeouts for defense-in-depth
+client = anthropic.Anthropic(
+    timeout=60.0,      # SDK-level timeout (covers connect + read)
+    max_retries=3,     # Auto-retry on 429/5xx
+)
 
-async function anthropicHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: anthropicBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
+# Per-request timeout override
+msg = client.messages.create(
+    model="claude-haiku-4-20250514",
+    max_tokens=64,
+    messages=[{"role": "user", "content": "Quick question"}],
+    timeout=10.0  # Override for fast operations
+)
 ```
 
-## Instructions
+## Reliability Checklist
 
-### Step 1: Implement Circuit Breaker
-Wrap Anthropic calls with circuit breaker.
-
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
-
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
-
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
-
-## Output
-- Circuit breaker protecting Anthropic calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
-
-## Examples
-
-### Quick Circuit Check
-```typescript
-const state = anthropicBreaker.stats().state;
-console.log('Anthropic circuit:', state);
-```
+- [ ] Circuit breaker prevents cascading failures
+- [ ] Graceful degradation serves fallback responses
+- [ ] Idempotency keys prevent duplicate processing
+- [ ] Timeouts configured at SDK and application level
+- [ ] Health check probes API connectivity
+- [ ] Retry logic uses exponential backoff (SDK default)
+- [ ] Rate limit headers monitored for pre-emptive throttling
 
 ## Resources
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Anthropic Reliability Guide](https://docs.anthropic.com/reliability)
+
+- [API Error Types](https://docs.anthropic.com/en/api/errors)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
-For policy enforcement, see `anthropic-policy-guardrails`.
+
+For policy guardrails, see `anth-policy-guardrails`.

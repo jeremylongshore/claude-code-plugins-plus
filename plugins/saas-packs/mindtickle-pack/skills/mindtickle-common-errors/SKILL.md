@@ -1,113 +1,42 @@
 ---
 name: mindtickle-common-errors
 description: |
-  Diagnose and fix Mindtickle common errors and exceptions.
-  Use when encountering Mindtickle errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "mindtickle error", "fix mindtickle",
-  "mindtickle not working", "debug mindtickle".
+  Diagnose and fix MindTickle common errors.
+  Trigger: "mindtickle error", "fix mindtickle", "debug mindtickle".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle]
+tags: [saas, mindtickle, sales]
 compatible-with: claude-code
 ---
 
-# Mindtickle Common Errors
+# MindTickle Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Mindtickle errors and their solutions.
+Quick reference for MindTickle API errors with solutions.
 
-## Prerequisites
-- Mindtickle SDK installed
-- API credentials configured
-- Access to error logs
+### 401 — Invalid API Key
+**Fix:** Verify key at MindTickle Admin > Integrations.
 
-## Instructions
+### 403 — Insufficient Permissions
+**Fix:** API key needs admin-level access.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 404 — Resource Not Found
+**Fix:** Verify module/user/team ID exists.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 — Rate Limited
+**Fix:** MindTickle API: 60 requests/minute. Implement backoff.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Quick Diagnostic
 ```bash
-# Verify API key is set
-echo $MINDTICKLE_API_KEY
+# Check API connectivity
+curl -s -w "\nHTTP %{http_code}" https://api.mindtickle.com/v2/health 2>/dev/null || echo "Endpoint check needed"
+echo $MINDTICKLE_API_KEY | head -c 10
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `mindtickle-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Mindtickle status
-curl -s https://status.mindtickle.com
-
-# Verify API connectivity
-curl -I https://api.mindtickle.com
-
-# Check local configuration
-env | grep MINDTICKLE
-```
-
-### Escalation Path
-1. Collect evidence with `mindtickle-debug-bundle`
-2. Check Mindtickle status page
-3. Contact support with request ID
 
 ## Resources
-- [Mindtickle Status Page](https://status.mindtickle.com)
-- [Mindtickle Support](https://docs.mindtickle.com/support)
-- [Mindtickle Error Codes](https://docs.mindtickle.com/errors)
+- [MindTickle Docs](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
-For comprehensive debugging, see `mindtickle-debug-bundle`.
+See `mindtickle-debug-bundle`.

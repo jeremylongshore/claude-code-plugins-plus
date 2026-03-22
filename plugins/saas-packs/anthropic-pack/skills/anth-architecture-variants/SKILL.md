@@ -1,12 +1,11 @@
 ---
 name: anth-architecture-variants
 description: |
-  Choose and implement Anthropic validated architecture blueprints for different scales.
-  Use when designing new Anthropic integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Anthropic applications.
-  Trigger with phrases like "anthropic architecture", "anthropic blueprint",
-  "how to structure anthropic", "anthropic project layout", "anthropic microservice".
-allowed-tools: Read, Grep
+  Choose and implement Claude API architecture patterns for different scales:
+  serverless, microservice, event-driven, and edge deployment.
+  Trigger with phrases like "anthropic architecture", "claude serverless",
+  "claude microservice design", "edge claude deployment".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,270 +16,139 @@ compatible-with: claude-code
 # Anthropic Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Anthropic integrations.
 
-## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
+Four validated architecture patterns for Claude API integrations at different scales and use cases.
 
-## Variant A: Monolith (Simple)
+## Variant 1: Serverless (AWS Lambda / Cloud Functions)
 
-**Best for:** MVPs, small teams, < 10K daily active users
+```python
+# Best for: < 100 RPM, event-driven, pay-per-invocation
+# lambda_function.py
+import anthropic
+import json
 
-```
-my-app/
-├── src/
-│   ├── anthropic/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── anthropic.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── anthropic.test.ts
-└── package.json
-```
+def handler(event, context):
+    client = anthropic.Anthropic()  # Key from Lambda env var
 
-### Key Characteristics
-- Single deployment unit
-- Synchronous Anthropic calls in request path
-- In-memory caching
-- Simple error handling
+    body = json.loads(event["body"])
+    msg = client.messages.create(
+        model="claude-haiku-4-20250514",  # Haiku for Lambda speed
+        max_tokens=512,
+        messages=[{"role": "user", "content": body["prompt"]}]
+    )
 
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await anthropicClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+    return {
+        "statusCode": 200,
+        "body": json.dumps({
+            "text": msg.content[0].text,
+            "tokens": msg.usage.input_tokens + msg.usage.output_tokens
+        })
+    }
 ```
 
----
+**Trade-offs:** Cold starts add 1-3s. Lambda timeout (15min) limits long generations. No connection pooling between invocations.
 
-## Variant B: Service Layer (Moderate)
+## Variant 2: Streaming Microservice (FastAPI + WebSocket)
 
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+```python
+# Best for: chatbots, interactive UIs, real-time responses
+from fastapi import FastAPI, WebSocket
+import anthropic
 
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── anthropic/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── anthropic.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── anthropic-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── anthropic/
-└── package.json
-```
+app = FastAPI()
+client = anthropic.Anthropic()
 
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class AnthropicService {
-  constructor(
-    private client: AnthropicClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('anthropic.post-create', result);
-
-    return result;
-  }
-}
+@app.websocket("/chat")
+async def chat_ws(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        prompt = await websocket.receive_text()
+        with client.messages.stream(
+            model="claude-sonnet-4-20250514",
+            max_tokens=2048,
+            messages=[{"role": "user", "content": prompt}]
+        ) as stream:
+            for text in stream.text_stream:
+                await websocket.send_text(text)
+            await websocket.send_text("[DONE]")
 ```
 
----
+## Variant 3: Queue-Based Pipeline (Celery / Cloud Tasks)
 
-## Variant C: Microservice (Complex)
+```python
+# Best for: batch processing, async workflows, high volume
+from celery import Celery
+import anthropic
 
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
+app = Celery("tasks", broker="redis://localhost")
 
-```
-anthropic-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── anthropic.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── anthropic/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls anthropic-service
-├── payment-service/
-└── notification-service/
+@app.task(bind=True, max_retries=3, default_retry_delay=30)
+def process_document(self, doc_id: str, content: str):
+    try:
+        client = anthropic.Anthropic()
+        msg = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=2048,
+            messages=[{"role": "user", "content": f"Summarize:\n\n{content}"}]
+        )
+        save_result(doc_id, msg.content[0].text)
+    except anthropic.RateLimitError as e:
+        self.retry(exc=e, countdown=int(e.response.headers.get("retry-after", 30)))
 ```
 
-### Key Characteristics
-- Dedicated Anthropic microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
+## Variant 4: Multi-Model Orchestrator
 
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class AnthropicAggregate {
-  private events: DomainEvent[] = [];
+```python
+# Best for: complex workflows needing different model strengths
+class ClaudeOrchestrator:
+    def __init__(self):
+        self.client = anthropic.Anthropic()
 
-  process(command: AnthropicCommand): void {
-    // Domain logic
-    const result = this.execute(command);
+    def classify_then_respond(self, user_input: str) -> str:
+        # Step 1: Classify intent with Haiku (fast, cheap)
+        classification = self.client.messages.create(
+            model="claude-haiku-4-20250514",
+            max_tokens=32,
+            messages=[{
+                "role": "user",
+                "content": f"Classify as: question|task|creative|code\nInput: {user_input[:200]}"
+            }]
+        )
+        intent = classification.content[0].text.strip().lower()
 
-    // Emit domain event
-    this.events.push(new AnthropicProcessedEvent(result));
-  }
+        # Step 2: Route to optimal model
+        model = {
+            "question": "claude-haiku-4-20250514",
+            "task": "claude-sonnet-4-20250514",
+            "creative": "claude-sonnet-4-20250514",
+            "code": "claude-sonnet-4-20250514",
+        }.get(intent, "claude-sonnet-4-20250514")
 
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(AnthropicProcessedEvent)
-class AnthropicEventHandler {
-  async handle(event: AnthropicProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
+        # Step 3: Generate response
+        msg = self.client.messages.create(
+            model=model,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": user_input}]
+        )
+        return msg.content[0].text
 ```
 
----
+## Architecture Selection Guide
 
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Anthropic code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated anthropic-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
-
-## Instructions
-
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
-
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
-
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
-
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| Factor | Serverless | Microservice | Queue-Based | Orchestrator |
+|--------|-----------|-------------|-------------|-------------|
+| Latency | High (cold start) | Low (streaming) | N/A (async) | Medium |
+| Volume | Low (<100 RPM) | Medium | High | Medium |
+| Cost | Pay-per-use | Fixed infra | Batch savings | Optimized per-task |
+| Complexity | Low | Medium | Medium | High |
+| Best for | APIs, triggers | Chatbots | ETL, processing | Complex workflows |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Anthropic Architecture Guide](https://docs.anthropic.com/architecture)
+
+- [API Getting Started](https://docs.anthropic.com/en/api/getting-started)
+- [Streaming](https://docs.anthropic.com/en/api/messages-streaming)
+- [Batches](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
-For common anti-patterns, see `anthropic-known-pitfalls`.
+
+For common pitfalls, see `anth-known-pitfalls`.

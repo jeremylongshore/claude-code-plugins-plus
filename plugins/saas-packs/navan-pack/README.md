@@ -2,6 +2,8 @@
 
 > Claude Code skill pack for Navan integration (24 skills)
 
+Corporate travel and expense management API for flight booking, expense reporting, and spend analytics.
+
 ## Installation
 
 ```bash
@@ -13,46 +15,42 @@
 ### Standard Skills (S01-S12)
 | Skill | Description |
 |-------|-------------|
-| `navan-install-auth` | Install Auth |
-| `navan-hello-world` | Hello World |
-| `navan-local-dev-loop` | Local Dev Loop |
-| `navan-sdk-patterns` | Sdk Patterns |
+| `navan-common-errors` | Common Errors |
 | `navan-core-workflow-a` | Core Workflow A |
 | `navan-core-workflow-b` | Core Workflow B |
-| `navan-common-errors` | Common Errors |
 | `navan-debug-bundle` | Debug Bundle |
-| `navan-rate-limits` | Rate Limits |
-| `navan-security-basics` | Security Basics |
+| `navan-hello-world` | Hello World |
+| `navan-install-auth` | Install Auth |
+| `navan-local-dev-loop` | Local Dev Loop |
 | `navan-prod-checklist` | Prod Checklist |
+| `navan-rate-limits` | Rate Limits |
+| `navan-sdk-patterns` | Sdk Patterns |
+| `navan-security-basics` | Security Basics |
 | `navan-upgrade-migration` | Upgrade Migration |
 
 ### Pro Skills (P13-P18)
 | Skill | Description |
 |-------|-------------|
 | `navan-ci-integration` | Ci Integration |
-| `navan-deploy-integration` | Deploy Integration |
-| `navan-webhooks-events` | Webhooks Events |
-| `navan-performance-tuning` | Performance Tuning |
 | `navan-cost-tuning` | Cost Tuning |
+| `navan-deploy-integration` | Deploy Integration |
+| `navan-performance-tuning` | Performance Tuning |
 | `navan-reference-architecture` | Reference Architecture |
+| `navan-webhooks-events` | Webhooks Events |
 
 ### Flagship Skills (F19-F24)
 | Skill | Description |
 |-------|-------------|
-| `navan-multi-env-setup` | Multi Env Setup |
-| `navan-observability` | Observability |
-| `navan-incident-runbook` | Incident Runbook |
 | `navan-data-handling` | Data Handling |
 | `navan-enterprise-rbac` | Enterprise Rbac |
+| `navan-incident-runbook` | Incident Runbook |
 | `navan-migration-deep-dive` | Migration Deep Dive |
+| `navan-multi-env-setup` | Multi Env Setup |
+| `navan-observability` | Observability |
 
 ## Usage
 
-Skills trigger automatically when you discuss Navan topics. For example:
-
-- "Help me set up Navan" → triggers `navan-install-auth`
-- "Debug this Navan error" → triggers `navan-common-errors`
-- "Deploy my Navan integration" → triggers `navan-deploy-integration`
+Skills trigger automatically when you discuss Navan topics.
 
 ## License
 

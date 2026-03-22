@@ -1,12 +1,12 @@
 ---
 name: anth-webhooks-events
 description: |
-  Implement Anthropic webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Anthropic event notifications securely.
-  Trigger with phrases like "anthropic webhook", "anthropic events",
-  "anthropic webhook signature", "handle anthropic events", "anthropic notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Implement event-driven patterns with Claude API: streaming SSE events,
+  Message Batches callbacks, and async processing architectures.
+  Use when building real-time Claude integrations or processing batch results.
+  Trigger with phrases like "anthropic events", "claude streaming events",
+  "anthropic async processing", "claude batch callbacks".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,188 +14,134 @@ tags: [saas, ai, anthropic]
 compatible-with: claude-code
 ---
 
-# Anthropic Webhooks & Events
+# Anthropic Events & Async Processing
 
 ## Overview
-Securely handle Anthropic webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Anthropic webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+The Claude API does not use traditional webhooks. Instead it provides two event-driven patterns: Server-Sent Events (SSE) for real-time streaming and the Message Batches API for async bulk processing. This skill covers both.
 
-## Webhook Endpoint Setup
+## SSE Streaming Events
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
+```python
+import anthropic
 
-const app = express();
+client = anthropic.Anthropic()
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/anthropic',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-anthropic-signature'] as string;
-    const timestamp = req.headers['x-anthropic-timestamp'] as string;
-
-    if (!verifyAnthropicSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleAnthropicEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
+# Process each SSE event type
+with client.messages.stream(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Explain microservices."}]
+) as stream:
+    for event in stream:
+        match event.type:
+            case "message_start":
+                print(f"Started: {event.message.id}")
+            case "content_block_start":
+                if event.content_block.type == "tool_use":
+                    print(f"Tool call: {event.content_block.name}")
+            case "content_block_delta":
+                if event.delta.type == "text_delta":
+                    print(event.delta.text, end="", flush=True)
+                elif event.delta.type == "input_json_delta":
+                    print(event.delta.partial_json, end="")
+            case "message_delta":
+                print(f"\nStop: {event.delta.stop_reason}")
+                print(f"Output tokens: {event.usage.output_tokens}")
+            case "message_stop":
+                print("[Complete]")
 ```
 
-## Signature Verification
+## SSE Event Reference
 
-```typescript
-function verifyAnthropicSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.ANTHROPIC_WEBHOOK_SECRET!;
+| Event | When | Key Data |
+|-------|------|----------|
+| `message_start` | Stream begins | `message.id`, `message.model`, `message.usage.input_tokens` |
+| `content_block_start` | New block begins | `content_block.type` (text or tool_use), `index` |
+| `content_block_delta` | Incremental content | `delta.text` or `delta.partial_json` |
+| `content_block_stop` | Block finishes | `index` |
+| `message_delta` | Message-level update | `delta.stop_reason`, `usage.output_tokens` |
+| `message_stop` | Stream complete | (empty) |
+| `ping` | Keepalive | (empty) |
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
+## Async Batch Processing
 
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
+```python
+# Submit batch (up to 100K requests, 50% cheaper)
+batch = client.messages.batches.create(
+    requests=[
+        {
+            "custom_id": f"doc-{i}",
+            "params": {
+                "model": "claude-sonnet-4-20250514",
+                "max_tokens": 1024,
+                "messages": [{"role": "user", "content": f"Summarize: {doc}"}]
+            }
+        }
+        for i, doc in enumerate(documents)
+    ]
+)
 
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
+# Poll for completion
+import time
+while True:
+    status = client.messages.batches.retrieve(batch.id)
+    if status.processing_status == "ended":
+        break
+    counts = status.request_counts
+    print(f"Processing: {counts.processing} | Done: {counts.succeeded} | Errors: {counts.errored}")
+    time.sleep(30)
+
+# Stream results
+for result in client.messages.batches.results(batch.id):
+    if result.result.type == "succeeded":
+        print(f"[{result.custom_id}]: {result.result.message.content[0].text[:100]}")
+    else:
+        print(f"[{result.custom_id}] ERROR: {result.result.error}")
 ```
 
-## Event Handler Pattern
+## Event-Driven Architecture Pattern
 
-```typescript
-type AnthropicEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
+```python
+# Use queues to decouple Claude requests from user-facing endpoints
+from redis import Redis
+from rq import Queue
 
-interface AnthropicEvent {
-  id: string;
-  type: AnthropicEventType;
-  data: Record<string, any>;
-  created: string;
-}
+redis = Redis()
+queue = Queue(connection=redis)
 
-const eventHandlers: Record<AnthropicEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
+def process_with_claude(prompt: str, callback_url: str):
+    """Background job for async Claude processing."""
+    client = anthropic.Anthropic()
+    msg = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    # Notify your system via internal callback
+    import requests
+    requests.post(callback_url, json={
+        "text": msg.content[0].text,
+        "usage": {"input": msg.usage.input_tokens, "output": msg.usage.output_tokens}
+    })
 
-async function handleAnthropicEvent(event: AnthropicEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
+# Enqueue from your API handler
+job = queue.enqueue(process_with_claude, prompt="...", callback_url="https://internal/callback")
 ```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `anthropic:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `anthropic:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Anthropic CLI to send test events
-anthropic webhooks trigger resource.created --url http://localhost:3000/webhooks/anthropic
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Anthropic dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
 
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/anthropic \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Stream disconnects | Network timeout | Reconnect and re-request (responses are not resumable) |
+| Batch `expired` | Not processed in 24h | Resubmit the batch |
+| `errored` results | Individual request was invalid | Check `result.error.message` per request |
 
 ## Resources
-- [Anthropic Webhooks Guide](https://docs.anthropic.com/webhooks)
-- [Webhook Security Best Practices](https://docs.anthropic.com/webhooks/security)
+
+- [Streaming API](https://docs.anthropic.com/en/api/messages-streaming)
+- [Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches)
 
 ## Next Steps
-For performance optimization, see `anthropic-performance-tuning`.
+
+For performance optimization, see `anth-performance-tuning`.

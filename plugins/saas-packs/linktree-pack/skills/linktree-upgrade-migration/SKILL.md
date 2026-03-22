@@ -1,114 +1,39 @@
 ---
 name: linktree-upgrade-migration
 description: |
-  Analyze, plan, and execute Linktree SDK upgrades with breaking change detection.
-  Use when upgrading Linktree SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade linktree", "linktree migration",
-  "linktree breaking changes", "update linktree SDK", "analyze linktree version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Upgrade Migration for Linktree.
+  Trigger: "linktree upgrade migration".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree]
+tags: [saas, linktree, social]
 compatible-with: claude-code
 ---
 
 # Linktree Upgrade & Migration
 
-## Overview
-Guide for upgrading Linktree SDK versions and handling breaking changes.
-
-## Prerequisites
-- Current Linktree SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
-
-## Instructions
-
-### Step 1: Check Current Version
+## Check Version
 ```bash
-npm list @linktree/sdk
-npm view @linktree/sdk version
+npm list | grep linktree
+pip show linktree 2>/dev/null
 ```
 
-### Step 2: Review Changelog
+## Upgrade
 ```bash
-open https://github.com/linktree/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/linktree-sdk-vX.Y.Z
-npm install @linktree/sdk@latest
+git checkout -b upgrade/linktree
+npm update  # or pip install --upgrade
 npm test
 ```
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@linktree/sdk';
-
-// After (v2.x)
-import { LinktreeClient } from '@linktree/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new LinktreeClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
+## Rollback
 ```bash
-npm install @linktree/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Linktree]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+git checkout main -- package.json
+npm install
 ```
 
 ## Resources
-- [Linktree Changelog](https://github.com/linktree/sdk/releases)
-- [Linktree Migration Guide](https://docs.linktree.com/migration)
+- [Linktree Changelog](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
-For CI integration during upgrades, see `linktree-ci-integration`.
+See `linktree-ci-integration`.

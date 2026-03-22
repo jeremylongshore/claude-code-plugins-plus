@@ -1,113 +1,42 @@
 ---
 name: lucidchart-common-errors
 description: |
-  Diagnose and fix Lucidchart common errors and exceptions.
-  Use when encountering Lucidchart errors, debugging failed requests,
-  or troubleshooting integration issues.
-  Trigger with phrases like "lucidchart error", "fix lucidchart",
-  "lucidchart not working", "debug lucidchart".
+  Diagnose and fix Lucidchart common errors.
+  Trigger: "lucidchart error", "fix lucidchart", "debug lucidchart".
 allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
 # Lucidchart Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Lucidchart errors and their solutions.
+Quick reference for Lucidchart API errors with solutions.
 
-## Prerequisites
-- Lucidchart SDK installed
-- API credentials configured
-- Access to error logs
+### 401 — Authentication Failed
+**Fix:** Verify OAuth2 credentials at developer.lucid.co.
 
-## Instructions
+### 403 — Insufficient Permissions
+**Fix:** Check OAuth scopes include required permissions.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 404 — Document Not Found
+**Fix:** Verify document ID. User must have access.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 — Rate Limited
+**Fix:** Implement backoff. Lucid API: 100 requests/minute.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
-
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
-
-## Error Handling
-
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
+## Quick Diagnostic
 ```bash
-# Verify API key is set
-echo $LUCIDCHART_API_KEY
+# Check API connectivity
+curl -s -w "\nHTTP %{http_code}" https://api.lucid.co/v1/health 2>/dev/null || echo "Endpoint check needed"
+echo $LUCID_API_KEY | head -c 10
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `lucidchart-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Lucidchart status
-curl -s https://status.lucidchart.com
-
-# Verify API connectivity
-curl -I https://api.lucidchart.com
-
-# Check local configuration
-env | grep LUCIDCHART
-```
-
-### Escalation Path
-1. Collect evidence with `lucidchart-debug-bundle`
-2. Check Lucidchart status page
-3. Contact support with request ID
 
 ## Resources
-- [Lucidchart Status Page](https://status.lucidchart.com)
-- [Lucidchart Support](https://docs.lucidchart.com/support)
-- [Lucidchart Error Codes](https://docs.lucidchart.com/errors)
+- [Lucidchart Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-For comprehensive debugging, see `lucidchart-debug-bundle`.
+See `lucidchart-debug-bundle`.

@@ -1,71 +1,58 @@
 ---
 name: linktree-core-workflow-a
 description: |
-  Execute Linktree primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "linktree main workflow",
-  "primary task with linktree".
+  Execute Linktree primary workflow: Profile & Links Management.
+  Trigger: "linktree profile & links management", "primary linktree workflow".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree]
+tags: [saas, linktree, social]
 compatible-with: claude-code
 ---
 
-# Linktree Core Workflow A
+# Linktree — Profile & Links Management
 
 ## Overview
-Primary money-path workflow for Linktree. This is the most common use case.
-
-## Prerequisites
-- Completed `linktree-install-auth` setup
-- Understanding of Linktree core concepts
-- Valid API credentials configured
+Primary workflow for Linktree integration.
 
 ## Instructions
 
-### Step 1: Initialize
+### Step 1: Get Profile
 ```typescript
-// Step 1 implementation
+const profile = await client.profiles.get('myprofile');
+console.log(`Bio: ${profile.bio}`);
+console.log(`Links: ${profile.links.length}`);
 ```
 
-### Step 2: Execute
+### Step 2: Create a Link
 ```typescript
-// Step 2 implementation
+const link = await client.links.create({
+  profile_id: profile.id,
+  title: 'My Website',
+  url: 'https://example.com',
+  position: 0,  // Top of list
+  thumbnail: 'https://example.com/icon.png'
+});
+console.log(`Created link: ${link.id}`);
 ```
 
-### Step 3: Finalize
+### Step 3: Update Link
 ```typescript
-// Step 3 implementation
+await client.links.update(link.id, {
+  title: 'Updated Title',
+  archived: false
+});
 ```
 
-## Output
-- Completed Core Workflow A execution
-- Expected results from Linktree API
-- Success confirmation or error details
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
+### Step 4: List All Links
 ```typescript
-// Complete workflow example
+const links = await client.links.list({ profile_id: profile.id });
+links.forEach(l => console.log(`${l.position}: ${l.title} → ${l.url}`));
 ```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
 
 ## Resources
-- [Linktree Documentation](https://docs.linktree.com)
-- [Linktree API Reference](https://docs.linktree.com/api)
+- [Linktree Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
-For secondary workflow, see `linktree-core-workflow-b`.
+See `linktree-core-workflow-b`.

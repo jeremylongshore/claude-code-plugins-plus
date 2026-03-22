@@ -1,12 +1,12 @@
 ---
 name: anth-reference-architecture
 description: |
-  Implement Anthropic reference architecture with best-practice project layout.
-  Use when designing new Anthropic integrations, reviewing project structure,
-  or establishing architecture standards for Anthropic applications.
-  Trigger with phrases like "anthropic architecture", "anthropic best practices",
-  "anthropic project structure", "how to organize anthropic", "anthropic layout".
-allowed-tools: Read, Grep
+  Implement Claude API reference architectures for common use cases.
+  Use when designing a Claude-powered application, choosing between
+  direct API vs queue-based, or planning a multi-model architecture.
+  Trigger with phrases like "anthropic architecture", "claude system design",
+  "anthropic reference architecture", "design claude integration".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,224 +17,151 @@ compatible-with: claude-code
 # Anthropic Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Anthropic integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Anthropic SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Three validated architecture patterns for Claude API integrations: synchronous API gateway, async queue-based processing, and multi-model routing.
 
-## Project Structure
+## Architecture 1: Sync API Gateway (Simple)
 
 ```
-my-anthropic-project/
+User → API Gateway → Claude Service → Messages API
+                                     ↓
+                                   Response → User
+```
+
+```python
+# Best for: chatbots, interactive tools, low-volume (<100 RPM)
+from fastapi import FastAPI
+import anthropic
+
+app = FastAPI()
+client = anthropic.Anthropic(max_retries=3, timeout=60.0)
+
+@app.post("/chat")
+async def chat(prompt: str):
+    msg = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return {"text": msg.content[0].text, "tokens": msg.usage.output_tokens}
+```
+
+## Architecture 2: Async Queue-Based (Scalable)
+
+```
+User → API → Queue (Redis/SQS) → Worker Pool → Messages API
+  ↑                                                ↓
+  └──────────── Status/Result ←── Result Store ←───┘
+```
+
+```python
+# Best for: batch processing, high-volume, background tasks
+from redis import Redis
+from rq import Queue
+import anthropic
+
+redis = Redis()
+task_queue = Queue("claude-tasks", connection=redis)
+result_store = Redis(db=1)
+
+def process_task(task_id: str, prompt: str, model: str):
+    client = anthropic.Anthropic()
+    msg = client.messages.create(
+        model=model,
+        max_tokens=1024,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    result_store.setex(f"result:{task_id}", 3600, msg.content[0].text)
+
+# Enqueue
+import uuid
+task_id = str(uuid.uuid4())
+task_queue.enqueue(process_task, task_id, prompt, "claude-sonnet-4-20250514")
+```
+
+## Architecture 3: Multi-Model Router
+
+```
+User → Router → Haiku    (classify/extract)
+              → Sonnet   (general/code)
+              → Opus     (research/complex)
+              → Batches  (bulk/offline)
+```
+
+```python
+class ModelRouter:
+    def __init__(self):
+        self.client = anthropic.Anthropic()
+        self.classifier = anthropic.Anthropic()  # Can be same client
+
+    def route_and_execute(self, prompt: str, context: dict) -> str:
+        # Step 1: Classify with Haiku (cheap, fast)
+        classification = self.classifier.messages.create(
+            model="claude-haiku-4-20250514",
+            max_tokens=32,
+            messages=[{
+                "role": "user",
+                "content": f"Classify this request as: simple|moderate|complex|bulk\n\n{prompt[:200]}"
+            }]
+        )
+        complexity = classification.content[0].text.strip().lower()
+
+        # Step 2: Route to appropriate model
+        model_map = {
+            "simple": "claude-haiku-4-20250514",
+            "moderate": "claude-sonnet-4-20250514",
+            "complex": "claude-opus-4-20250514",
+        }
+        model = model_map.get(complexity, "claude-sonnet-4-20250514")
+
+        # Step 3: Execute with selected model
+        msg = self.client.messages.create(
+            model=model,
+            max_tokens=4096,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return msg.content[0].text
+```
+
+## Project Layout
+
+```
+my-claude-app/
 ├── src/
-│   ├── anthropic/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── anthropic/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── anthropic/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── anthropic/
-│           └── sync.ts         # Background sync job
+│   ├── main.py              # FastAPI app
+│   ├── claude/
+│   │   ├── client.py         # Singleton + config
+│   │   ├── router.py         # Model routing logic
+│   │   ├── tools.py          # Tool definitions
+│   │   └── prompts/          # System prompts as files
+│   ├── workers/
+│   │   └── claude_worker.py  # Queue consumer
+│   └── middleware/
+│       ├── rate_limiter.py   # App-level rate limiting
+│       └── cost_tracker.py   # Spend monitoring
 ├── tests/
-│   ├── unit/
-│   │   └── anthropic/
-│   └── integration/
-│       └── anthropic/
-├── config/
-│   ├── anthropic.development.json
-│   ├── anthropic.staging.json
-│   └── anthropic.production.json
-└── docs/
-    └── anthropic/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── unit/                 # Mocked tests
+│   └── integration/          # Live API tests
+└── config/
+    ├── .env.development
+    ├── .env.staging
+    └── .env.production
 ```
-
-## Layer Architecture
-
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Anthropic Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/anthropic/client.ts
-export class AnthropicService {
-  private client: AnthropicClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: AnthropicConfig) {
-    this.client = new AnthropicClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('anthropic');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/anthropic/errors.ts
-export class AnthropicServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'AnthropicServiceError';
-  }
-}
-
-export function wrapAnthropicError(error: unknown): AnthropicServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/anthropic/health.ts
-export async function checkAnthropicHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await anthropicClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Anthropic    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Anthropic    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/anthropic.ts
-export interface AnthropicConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadAnthropicConfig(): AnthropicConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./anthropic.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Anthropic operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Anthropic connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Anthropic types |
-| Test isolation | Shared state | Use dependency injection |
 
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/anthropic/{handlers} src/services/anthropic src/api/anthropic
-touch src/anthropic/{client,config,types,errors}.ts
-touch src/services/anthropic/{index,sync,cache}.ts
-```
+| Architecture | Failure Mode | Mitigation |
+|-------------|-------------|------------|
+| Sync Gateway | 429/5xx blocks user | Circuit breaker + fallback response |
+| Queue-Based | Worker crashes | Dead-letter queue + retry policy |
+| Multi-Model | Router misclassifies | Default to Sonnet (safest middle) |
 
 ## Resources
-- [Anthropic SDK Documentation](https://docs.anthropic.com/sdk)
-- [Anthropic Best Practices](https://docs.anthropic.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `anthropic-multi-env-setup`.
+- [API Overview](https://docs.anthropic.com/en/api/getting-started)
+- [Tool Use](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
+
+## Next Steps
+
+For multi-environment setup, see `anth-multi-env-setup`.

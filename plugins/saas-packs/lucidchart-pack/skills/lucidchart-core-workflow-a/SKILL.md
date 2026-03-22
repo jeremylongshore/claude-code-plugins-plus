@@ -1,71 +1,65 @@
 ---
 name: lucidchart-core-workflow-a
 description: |
-  Execute Lucidchart primary workflow: Core Workflow A.
-  Use when implementing primary use case,
-  building main features, or core integration tasks.
-  Trigger with phrases like "lucidchart main workflow",
-  "primary task with lucidchart".
+  Execute Lucidchart primary workflow: Document & Shape Creation.
+  Trigger: "lucidchart document & shape creation", "primary lucidchart workflow".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, lucidchart]
+tags: [saas, lucidchart, diagramming]
 compatible-with: claude-code
 ---
 
-# Lucidchart Core Workflow A
+# Lucidchart — Document & Shape Creation
 
 ## Overview
-Primary money-path workflow for Lucidchart. This is the most common use case.
-
-## Prerequisites
-- Completed `lucidchart-install-auth` setup
-- Understanding of Lucidchart core concepts
-- Valid API credentials configured
+Primary workflow for Lucidchart integration.
 
 ## Instructions
 
-### Step 1: Initialize
+### Step 1: Create a Document
 ```typescript
-// Step 1 implementation
+const doc = await client.documents.create({
+  title: 'API Architecture Diagram',
+  product: 'lucidchart'  // or 'lucidspark'
+});
+console.log(`Document: ${doc.documentId}`);
+console.log(`Edit URL: ${doc.editUrl}`);
 ```
 
-### Step 2: Execute
+### Step 2: Add Shapes via Standard Import
 ```typescript
-// Step 2 implementation
+// Lucid Standard Import uses .lucid file format
+const importData = {
+  pages: [{
+    id: 'page1',
+    title: 'Main',
+    shapes: [
+      { id: 's1', type: 'rectangle', boundingBox: { x: 100, y: 100, w: 200, h: 80 },
+        text: 'API Gateway', style: { fill: '#4A90D9' } },
+      { id: 's2', type: 'rectangle', boundingBox: { x: 100, y: 300, w: 200, h: 80 },
+        text: 'Database', style: { fill: '#7B68EE' } }
+    ],
+    lines: [
+      { id: 'l1', endpoint1: { shapeId: 's1' }, endpoint2: { shapeId: 's2' },
+        stroke: { color: '#333', width: 2 } }
+    ]
+  }]
+};
+await client.documents.import(doc.documentId, importData);
 ```
 
-### Step 3: Finalize
+### Step 3: Export Document
 ```typescript
-// Step 3 implementation
+const png = await client.documents.export(doc.documentId, {
+  format: 'png', pageIndex: 0, scale: 2
+});
+fs.writeFileSync('diagram.png', png);
 ```
-
-## Output
-- Completed Core Workflow A execution
-- Expected results from Lucidchart API
-- Success confirmation or error details
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Error 1 | Cause | Solution |
-| Error 2 | Cause | Solution |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Common Variations
-- Variation 1: Description
-- Variation 2: Description
 
 ## Resources
-- [Lucidchart Documentation](https://docs.lucidchart.com)
-- [Lucidchart API Reference](https://docs.lucidchart.com/api)
+- [Lucidchart Docs](https://developer.lucid.co/reference/overview)
 
 ## Next Steps
-For secondary workflow, see `lucidchart-core-workflow-b`.
+See `lucidchart-core-workflow-b`.

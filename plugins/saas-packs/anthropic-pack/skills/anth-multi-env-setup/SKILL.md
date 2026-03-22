@@ -1,12 +1,11 @@
 ---
 name: anth-multi-env-setup
 description: |
-  Configure Anthropic across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Anthropic configurations.
-  Trigger with phrases like "anthropic environments", "anthropic staging",
-  "anthropic dev prod", "anthropic environment setup", "anthropic config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  Configure Claude API across dev, staging, and production environments
+  with isolated keys, model routing, and spend controls per environment.
+  Trigger with phrases like "anthropic environments", "claude multi-env",
+  "anthropic staging setup", "claude dev vs prod config".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,208 +16,125 @@ compatible-with: claude-code
 # Anthropic Multi-Environment Setup
 
 ## Overview
-Configure Anthropic across development, staging, and production environments.
 
-## Prerequisites
-- Separate Anthropic accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+Configure isolated Claude API environments with per-env API keys, model selection, and spend controls using Anthropic Workspaces.
 
-## Environment Strategy
+## Environment Configuration
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
+```python
+# config.py
+import os
+from dataclasses import dataclass
 
-## Configuration Structure
+@dataclass
+class ClaudeConfig:
+    api_key: str
+    model: str
+    max_tokens: int
+    max_retries: int
+    timeout: float
+    monthly_budget_usd: float
 
-```
-config/
-├── anthropic/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY}",
-  "baseUrl": "https://api-sandbox.anthropic.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.anthropic.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${ANTHROPIC_API_KEY_PROD}",
-  "baseUrl": "https://api.anthropic.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/anthropic/config.ts
-import baseConfig from '../../config/anthropic/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
+CONFIGS = {
+    "development": ClaudeConfig(
+        api_key=os.environ["ANTHROPIC_API_KEY_DEV"],
+        model="claude-haiku-4-20250514",       # Cheap for dev
+        max_tokens=256,
+        max_retries=1,
+        timeout=15.0,
+        monthly_budget_usd=10.0,
+    ),
+    "staging": ClaudeConfig(
+        api_key=os.environ["ANTHROPIC_API_KEY_STAGING"],
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        max_retries=2,
+        timeout=30.0,
+        monthly_budget_usd=50.0,
+    ),
+    "production": ClaudeConfig(
+        api_key=os.environ["ANTHROPIC_API_KEY_PROD"],
+        model="claude-sonnet-4-20250514",
+        max_tokens=4096,
+        max_retries=5,
+        timeout=120.0,
+        monthly_budget_usd=5000.0,
+    ),
 }
 
-export function getAnthropicConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/anthropic/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
+def get_config() -> ClaudeConfig:
+    env = os.getenv("APP_ENV", "development")
+    return CONFIGS[env]
 ```
 
-## Secret Management by Environment
+## Anthropic Workspaces (Key Isolation)
 
-### Local Development
+Create separate Workspaces in [console.anthropic.com](https://console.anthropic.com/settings/workspaces):
+
+| Workspace | Purpose | Rate Limit Tier |
+|-----------|---------|-----------------|
+| `dev` | Development & testing | Tier 1 |
+| `staging` | Pre-production validation | Tier 2 |
+| `production` | Live traffic | Tier 3+ |
+
+Each workspace has independent API keys, usage tracking, and rate limits.
+
+## Environment Files
+
 ```bash
-# .env.local (git-ignored)
-ANTHROPIC_API_KEY=sk_test_dev_***
+# .env.development
+ANTHROPIC_API_KEY_DEV=sk-ant-api03-dev-...
+APP_ENV=development
+
+# .env.staging
+ANTHROPIC_API_KEY_STAGING=sk-ant-api03-stg-...
+APP_ENV=staging
+
+# .env.production (stored in secret manager, not files)
+ANTHROPIC_API_KEY_PROD=sk-ant-api03-prd-...
+APP_ENV=production
 ```
 
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY_${{ matrix.environment }} }}
+## Client Factory
+
+```python
+import anthropic
+
+def create_client() -> anthropic.Anthropic:
+    config = get_config()
+    return anthropic.Anthropic(
+        api_key=config.api_key,
+        max_retries=config.max_retries,
+        timeout=config.timeout,
+    )
 ```
 
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id anthropic/production/api-key
+## Per-Environment Model Override
 
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=anthropic-api-key
+```python
+# Development: always use Haiku (cheapest)
+# Staging: use production model for accuracy testing
+# Production: use configured model
 
-# HashiCorp Vault
-vault kv get -field=api_key secret/anthropic/production
+def get_model(override: str | None = None) -> str:
+    if override:
+        return override
+    return get_config().model
 ```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getAnthropicConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[anthropic] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
-
-## Instructions
-
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
-
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
-
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
 
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getAnthropicConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| Dev key used in prod | Wrong env loaded | Validate key prefix matches environment |
+| Staging rate limited | Low tier workspace | Upgrade staging workspace tier |
+| Cost overrun in dev | No budget guard | Add per-env spend limits |
 
 ## Resources
-- [Anthropic Environments Guide](https://docs.anthropic.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+
+- [Workspaces](https://docs.anthropic.com/en/docs/administration/workspaces)
+- [Console](https://console.anthropic.com)
 
 ## Next Steps
-For observability setup, see `anthropic-observability`.
+
+For monitoring, see `anth-observability`.

@@ -1,12 +1,12 @@
 ---
 name: anth-prod-checklist
 description: |
-  Execute Anthropic production deployment checklist and rollback procedures.
-  Use when deploying Anthropic integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "anthropic production", "deploy anthropic",
-  "anthropic go-live", "anthropic launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Execute production deployment checklist for Claude API integrations.
+  Use when deploying Claude-powered features to production,
+  preparing for launch, or implementing go-live validation.
+  Trigger with phrases like "anthropic production", "deploy claude",
+  "claude go-live", "anthropic launch checklist", "production ready claude".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,105 +17,113 @@ compatible-with: claude-code
 # Anthropic Production Checklist
 
 ## Overview
-Complete checklist for deploying Anthropic integrations to production.
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+Complete checklist for deploying Claude API integrations to production with reliability, observability, and cost controls.
 
-## Instructions
+## Pre-Launch Checklist
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Authentication & Keys
+- [ ] Production API key from dedicated Workspace
+- [ ] Key stored in secret manager (not env files on servers)
+- [ ] Key rotation procedure documented and tested
+- [ ] Separate keys for each environment (dev/staging/prod)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Anthropic error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Error Handling
+- [ ] All 5 error types handled: `authentication_error`, `invalid_request_error`, `rate_limit_error`, `api_error`, `overloaded_error`
+- [ ] SDK `maxRetries` set (recommended: 3-5 for production)
+- [ ] Custom error logging with `request-id` captured
+- [ ] Circuit breaker for sustained API failures
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Anthropic connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Rate Limits & Cost
+- [ ] Usage tier verified at [console.anthropic.com](https://console.anthropic.com/settings/limits)
+- [ ] Application-level rate limiting implemented
+- [ ] Cost alerts configured (monthly spend caps)
+- [ ] Model selection optimized (Haiku for simple tasks, Sonnet for complex)
+- [ ] `max_tokens` set to realistic values (not inflated)
+- [ ] Prompt caching enabled for repeated system prompts
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
+### Reliability
+- [ ] Timeout configured (`timeout` parameter, recommended 60-120s)
+- [ ] Graceful degradation when API is unavailable
+- [ ] Health check endpoint tests API connectivity
+
+```python
+async def health_check():
+    try:
+        # Use token counting as a cheap health probe (no generation cost)
+        count = client.messages.count_tokens(
+            model="claude-haiku-4-20250514",
+            messages=[{"role": "user", "content": "ping"}]
+        )
+        return {"status": "healthy", "tokens": count.input_tokens}
+    except Exception as e:
+        return {"status": "degraded", "error": str(e)}
+```
+
+### Observability
+- [ ] Request/response logging (redact content, keep metadata)
+- [ ] Latency tracking (p50, p95, p99)
+- [ ] Token usage tracking (input + output per request)
+- [ ] Cost tracking per feature/customer
+- [ ] Error rate alerting (429s, 5xx, timeouts)
+
+```python
+import logging
+import time
+
+logger = logging.getLogger("anthropic")
+
+def tracked_create(**kwargs):
+    start = time.monotonic()
+    try:
+        response = client.messages.create(**kwargs)
+        duration = time.monotonic() - start
+        logger.info(
+            "claude_request",
+            extra={
+                "request_id": response._request_id,
+                "model": response.model,
+                "input_tokens": response.usage.input_tokens,
+                "output_tokens": response.usage.output_tokens,
+                "duration_ms": int(duration * 1000),
+                "stop_reason": response.stop_reason,
+            }
+        )
+        return response
+    except Exception as e:
+        duration = time.monotonic() - start
+        logger.error("claude_error", extra={"error": str(e), "duration_ms": int(duration * 1000)})
+        raise
+```
+
+### Content Safety
+- [ ] System prompts reviewed for injection resistance
+- [ ] User input validated and length-limited
+- [ ] Output scanned for sensitive data leakage
+- [ ] Content moderation for user-facing responses
+
+### Infrastructure
+- [ ] Deployment uses canary/rolling strategy
+- [ ] Rollback procedure documented and tested
+- [ ] Runbook created (see `anth-incident-runbook`)
 - [ ] On-call escalation path defined
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.anthropic.com
+## Alerting Thresholds
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/anthropic-integration app=image:new --record
-kubectl rollout pause deployment/anthropic-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/anthropic-integration
-kubectl rollout pause deployment/anthropic-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/anthropic-integration
-kubectl rollout status deployment/anthropic-integration
-```
-
-## Output
-- Deployed Anthropic integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; anthropic: any }> {
-  const start = Date.now();
-  try {
-    await anthropicClient.ping();
-    return { status: 'healthy', anthropic: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', anthropic: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/anthropic-integration
-kubectl rollout status deployment/anthropic-integration
-```
+| Metric | Warning | Critical |
+|--------|---------|----------|
+| Error rate (5xx) | > 1% | > 5% |
+| p99 latency | > 10s | > 30s |
+| 429 rate | > 5/min | > 20/min |
+| Daily cost | > 80% budget | > 100% budget |
+| Auth failures (401/403) | > 0 | > 0 (immediate) |
 
 ## Resources
-- [Anthropic Status](https://status.anthropic.com)
-- [Anthropic Support](https://docs.anthropic.com/support)
+
+- [API Status](https://status.anthropic.com)
+- [Pricing](https://docs.anthropic.com/en/docs/about-claude/pricing)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
-For version upgrades, see `anthropic-upgrade-migration`.
+
+For version upgrades, see `anth-upgrade-migration`.

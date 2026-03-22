@@ -2,10 +2,10 @@
 name: anth-sdk-patterns
 description: |
   Apply production-ready Anthropic SDK patterns for TypeScript and Python.
-  Use when implementing Anthropic integrations, refactoring SDK usage,
-  or establishing team coding standards for Anthropic.
-  Trigger with phrases like "anthropic SDK patterns", "anthropic best practices",
-  "anthropic code patterns", "idiomatic anthropic".
+  Use when implementing Claude integrations, building reusable wrappers,
+  or establishing team coding standards for the Messages API.
+  Trigger with phrases like "anthropic SDK patterns", "claude best practices",
+  "anthropic code patterns", "production claude code".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,133 +17,179 @@ compatible-with: claude-code
 # Anthropic SDK Patterns
 
 ## Overview
-Production-ready patterns for Anthropic SDK usage in TypeScript and Python.
+
+Production-ready patterns for the Anthropic SDK covering client management, error handling, type safety, and multi-tenant configurations.
 
 ## Prerequisites
-- Completed `anthropic-install-auth` setup
+
+- Completed `anth-install-auth` setup
 - Familiarity with async/await patterns
-- Understanding of error handling best practices
+- TypeScript 5+ or Python 3.10+
 
-## Instructions
+## Pattern 1: Typed Wrapper with Retry
 
-### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
-// src/anthropic/client.ts
-import { AnthropicClient } from '@anthropic/sdk';
+import Anthropic from '@anthropic-ai/sdk';
+import type { Message, MessageCreateParams } from '@anthropic-ai/sdk/resources/messages';
 
-let instance: AnthropicClient | null = null;
+class ClaudeService {
+  private client: Anthropic;
 
-export function getAnthropicClient(): AnthropicClient {
-  if (!instance) {
-    instance = new AnthropicClient({
-      apiKey: process.env.ANTHROPIC_API_KEY!,
-      // Additional options
+  constructor(apiKey?: string) {
+    this.client = new Anthropic({
+      apiKey: apiKey || process.env.ANTHROPIC_API_KEY,
+      maxRetries: 3,      // SDK handles 429 + 5xx automatically
+      timeout: 60_000,
     });
   }
-  return instance;
-}
-```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { AnthropicError } from '@anthropic/sdk';
+  async complete(
+    prompt: string,
+    options: Partial<MessageCreateParams> = {}
+  ): Promise<string> {
+    const message = await this.client.messages.create({
+      model: options.model || 'claude-sonnet-4-20250514',
+      max_tokens: options.max_tokens || 1024,
+      messages: [{ role: 'user', content: prompt }],
+      ...options,
+    });
 
-async function safeAnthropicCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof AnthropicError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+    const textBlock = message.content.find((b) => b.type === 'text');
+    if (!textBlock || textBlock.type !== 'text') {
+      throw new Error(`No text in response: ${message.stop_reason}`);
     }
-    return { data: null, error: err as Error };
+    return textBlock.text;
   }
-}
-```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
+  async *stream(prompt: string, model = 'claude-sonnet-4-20250514'): AsyncGenerator<string> {
+    const stream = this.client.messages.stream({
+      model,
+      max_tokens: 4096,
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    for await (const event of stream) {
+      if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+        yield event.delta.text;
+      }
     }
   }
-  throw new Error('Unreachable');
 }
 ```
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+## Pattern 2: Multi-Turn Conversation Manager
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+```python
+import anthropic
+from dataclasses import dataclass, field
 
-## Examples
+@dataclass
+class Conversation:
+    client: anthropic.Anthropic = field(default_factory=anthropic.Anthropic)
+    model: str = "claude-sonnet-4-20250514"
+    system: str = ""
+    messages: list = field(default_factory=list)
+    max_tokens: int = 4096
 
-### Factory Pattern (Multi-tenant)
+    def say(self, user_message: str) -> str:
+        self.messages.append({"role": "user", "content": user_message})
+
+        response = self.client.messages.create(
+            model=self.model,
+            max_tokens=self.max_tokens,
+            system=self.system,
+            messages=self.messages,
+        )
+
+        assistant_text = response.content[0].text
+        self.messages.append({"role": "assistant", "content": assistant_text})
+        return assistant_text
+
+    @property
+    def token_count(self) -> int:
+        """Estimate total tokens in conversation."""
+        return sum(len(str(m["content"])) // 4 for m in self.messages)
+
+# Usage
+conv = Conversation(system="You are a helpful coding assistant.")
+print(conv.say("What is a closure in JavaScript?"))
+print(conv.say("Can you show me an example?"))  # Has full context
+```
+
+## Pattern 3: Structured Output with Prefill
+
+```python
+import json
+import anthropic
+
+client = anthropic.Anthropic()
+
+def extract_structured(text: str, schema_description: str) -> dict:
+    """Force JSON output using assistant prefill technique."""
+    message = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=1024,
+        messages=[
+            {"role": "user", "content": f"Extract data from this text as JSON.\n\nSchema: {schema_description}\n\nText: {text}"},
+            {"role": "assistant", "content": "{"}  # Prefill forces JSON output
+        ]
+    )
+    json_str = "{" + message.content[0].text
+    return json.loads(json_str)
+
+# Usage
+data = extract_structured(
+    "John Smith, 35, lives in NYC and works at Google as a PM.",
+    '{"name": str, "age": int, "city": str, "company": str, "role": str}'
+)
+# {"name": "John Smith", "age": 35, "city": "NYC", "company": "Google", "role": "PM"}
+```
+
+## Pattern 4: Multi-Tenant Client Factory
+
 ```typescript
-const clients = new Map<string, AnthropicClient>();
+const clients = new Map<string, Anthropic>();
 
-export function getClientForTenant(tenantId: string): AnthropicClient {
+export function getClientForTenant(tenantId: string): Anthropic {
   if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new AnthropicClient({ apiKey }));
+    const apiKey = getApiKeyForTenant(tenantId);  // From your secret store
+    clients.set(tenantId, new Anthropic({ apiKey }));
   }
   return clients.get(tenantId)!;
 }
 ```
 
-### Python Context Manager
+## Pattern 5: Token-Aware Request Sizing
+
 ```python
-from contextlib import asynccontextmanager
-from anthropic import AnthropicClient
+# Use the Token Counting API to pre-check request size
+count = client.messages.count_tokens(
+    model="claude-sonnet-4-20250514",
+    messages=[{"role": "user", "content": long_document}],
+    system="You are a summarizer."
+)
+print(f"Input will use {count.input_tokens} tokens")
 
-@asynccontextmanager
-async def get_anthropic_client():
-    client = AnthropicClient()
-    try:
-        yield client
-    finally:
-        await client.close()
+# Adjust max_tokens to stay within budget
+remaining_budget = 200_000 - count.input_tokens
+max_tokens = min(4096, remaining_budget)
 ```
 
-### Zod Validation
-```typescript
-import { z } from 'zod';
+## Error Handling
 
-const anthropicResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| SDK `maxRetries` | 429 / 5xx errors | Built-in exponential backoff |
+| Prefill technique | Force JSON output | No regex parsing needed |
+| Token counting | Long documents | Prevent context overflow |
+| Client factory | Multi-tenant SaaS | Key isolation per customer |
 
 ## Resources
-- [Anthropic SDK Reference](https://docs.anthropic.com/sdk)
-- [Anthropic API Types](https://docs.anthropic.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Client SDKs](https://docs.anthropic.com/en/api/client-sdks)
+- [Token Counting API](https://docs.anthropic.com/en/docs/build-with-claude/token-counting)
+- [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 
 ## Next Steps
-Apply patterns in `anthropic-core-workflow-a` for real-world usage.
+
+Apply patterns in `anth-core-workflow-a` for tool use workflows.

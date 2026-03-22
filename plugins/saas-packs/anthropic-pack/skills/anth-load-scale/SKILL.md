@@ -1,12 +1,12 @@
 ---
 name: anth-load-scale
 description: |
-  Implement Anthropic load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Anthropic integrations.
-  Trigger with phrases like "anthropic load test", "anthropic scale",
-  "anthropic performance test", "anthropic capacity", "anthropic k6", "anthropic benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  Implement load testing, auto-scaling, and capacity planning for Claude API.
+  Use when running performance benchmarks, planning for traffic spikes,
+  or configuring horizontal scaling for Claude-powered services.
+  Trigger with phrases like "anthropic load test", "claude scaling",
+  "anthropic capacity planning", "scale claude api".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,260 +17,147 @@ compatible-with: claude-code
 # Anthropic Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Anthropic integrations.
 
-## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
-
-## Load Testing with k6
-
-### Basic Load Test
-```javascript
-// anthropic-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
-
-export const options = {
-  stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
-  ],
-  thresholds: {
-    http_req_duration: ['p(95)<500'],
-    http_req_failed: ['rate<0.01'],
-  },
-};
-
-export default function () {
-  const response = http.post(
-    'https://api.anthropic.com/v1/resource',
-    JSON.stringify({ test: true }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.ANTHROPIC_API_KEY}`,
-      },
-    }
-  );
-
-  check(response, {
-    'status is 200': (r) => r.status === 200,
-    'latency < 500ms': (r) => r.timings.duration < 500,
-  });
-
-  sleep(1);
-}
-```
-
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY} anthropic-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 anthropic-load-test.js
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: anthropic-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: anthropic-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: anthropic_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
-```typescript
-import { Pool } from 'generic-pool';
-
-const anthropicPool = Pool.create({
-  create: async () => {
-    return new AnthropicClient({
-      apiKey: process.env.ANTHROPIC_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,
-});
-
-async function withAnthropicClient<T>(
-  fn: (client: AnthropicClient) => Promise<T>
-): Promise<T> {
-  const client = await anthropicPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    anthropicPool.release(client);
-  }
-}
-```
+Capacity planning and load testing for Claude API integrations. Key constraint: your rate limits (RPM/ITPM/OTPM) are the ceiling, not your infrastructure.
 
 ## Capacity Planning
 
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
+```python
+# Calculate required tier based on traffic
+def plan_capacity(
+    requests_per_minute: int,
+    avg_input_tokens: int,
+    avg_output_tokens: int,
+    model: str = "claude-sonnet-4-20250514"
+) -> dict:
+    itpm = requests_per_minute * avg_input_tokens
+    otpm = requests_per_minute * avg_output_tokens
 
-### Capacity Calculation
-```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
+    # Estimate monthly cost
+    pricing = {
+        "claude-haiku-4-20250514": (0.80, 4.00),
+        "claude-sonnet-4-20250514": (3.00, 15.00),
+        "claude-opus-4-20250514": (15.00, 75.00),
+    }
+    rates = pricing[model]
+    cost_per_request = (avg_input_tokens * rates[0] + avg_output_tokens * rates[1]) / 1_000_000
+    monthly_cost = cost_per_request * requests_per_minute * 60 * 24 * 30
 
-function estimateAnthropicCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
+    return {
+        "rpm_needed": requests_per_minute,
+        "itpm_needed": itpm,
+        "otpm_needed": otpm,
+        "cost_per_request": f"${cost_per_request:.4f}",
+        "monthly_estimate": f"${monthly_cost:,.0f}",
+        "recommendation": "Contact Anthropic sales for Scale tier" if requests_per_minute > 500 else "Self-serve tiers sufficient",
+    }
 
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
+print(plan_capacity(100, 500, 200))
 ```
 
-## Benchmark Results Template
+## Load Testing Script
 
-```markdown
-## Anthropic Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+```python
+import anthropic
+import asyncio
+import time
+from dataclasses import dataclass
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
+@dataclass
+class LoadTestResult:
+    total_requests: int = 0
+    successful: int = 0
+    failed: int = 0
+    rate_limited: int = 0
+    avg_latency_ms: float = 0
+    p99_latency_ms: float = 0
+    total_input_tokens: int = 0
+    total_output_tokens: int = 0
 
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
+async def load_test(
+    concurrency: int = 10,
+    total_requests: int = 100,
+    model: str = "claude-haiku-4-20250514"
+) -> LoadTestResult:
+    client = anthropic.Anthropic()
+    result = LoadTestResult()
+    latencies = []
+    semaphore = asyncio.Semaphore(concurrency)
 
-### Observations
-- [Key finding 1]
-- [Key finding 2]
+    async def single_request():
+        async with semaphore:
+            start = time.monotonic()
+            try:
+                msg = client.messages.create(
+                    model=model,
+                    max_tokens=64,
+                    messages=[{"role": "user", "content": "Respond with exactly: OK"}]
+                )
+                duration = (time.monotonic() - start) * 1000
+                latencies.append(duration)
+                result.successful += 1
+                result.total_input_tokens += msg.usage.input_tokens
+                result.total_output_tokens += msg.usage.output_tokens
+            except anthropic.RateLimitError:
+                result.rate_limited += 1
+            except Exception:
+                result.failed += 1
+            result.total_requests += 1
 
-### Recommendations
-- [Scaling recommendation]
+    tasks = [single_request() for _ in range(total_requests)]
+    await asyncio.gather(*tasks)
+
+    if latencies:
+        latencies.sort()
+        result.avg_latency_ms = sum(latencies) / len(latencies)
+        result.p99_latency_ms = latencies[int(len(latencies) * 0.99)]
+
+    return result
+
+# Run: asyncio.run(load_test(concurrency=10, total_requests=50))
 ```
 
-## Instructions
+## Scaling Strategies
 
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
+| Strategy | When | Implementation |
+|----------|------|---------------|
+| Queue-based processing | > 50 RPM sustained | Redis/SQS queue + worker pool |
+| Model routing | Mixed workloads | Haiku for simple, Sonnet for complex |
+| Message Batches | Offline processing | 100K requests, 50% cheaper, no RPM impact |
+| Prompt caching | Repeated system prompts | 90% input token savings |
+| Request coalescing | Duplicate prompts | Cache identical request hashes |
 
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
+## Horizontal Scaling Pattern
 
-### Step 3: Run Load Test
-Execute test and collect metrics.
+```python
+# Multiple application instances sharing the same API key
+# Rate limits are per-organization, NOT per-instance
+# Use a shared rate limiter (Redis) to coordinate
 
-### Step 4: Analyze and Document
-Record results in benchmark template.
+import redis
 
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+r = redis.Redis()
+
+def check_rate_limit(key: str = "claude:rpm", limit: int = 100, window: int = 60) -> bool:
+    current = r.incr(key)
+    if current == 1:
+        r.expire(key, window)
+    return current <= limit
+```
 
 ## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
 
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s anthropic-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateAnthropicCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-kubectl scale deployment anthropic-integration --replicas=5
-kubectl get hpa anthropic-integration-hpa
-```
+| Issue | Cause | Fix |
+|-------|-------|-----|
+| 429 during load test | Exceeded tier limits | Reduce concurrency or upgrade tier |
+| Increasing latency under load | Output queue saturation | Reduce max_tokens |
+| Uneven request distribution | No load balancing | Use queue for fair distribution |
 
 ## Resources
-- [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Anthropic Rate Limits](https://docs.anthropic.com/rate-limits)
+
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
+- [Service Tiers](https://docs.anthropic.com/en/api/service-tiers)
 
 ## Next Steps
-For reliability patterns, see `anthropic-reliability-patterns`.
+
+For reliability patterns, see `anth-reliability-patterns`.

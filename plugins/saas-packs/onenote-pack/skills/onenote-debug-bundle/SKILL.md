@@ -1,113 +1,31 @@
 ---
 name: onenote-debug-bundle
 description: |
-  Collect OneNote debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for OneNote problems.
-  Trigger with phrases like "onenote debug", "onenote support bundle",
-  "collect onenote logs", "onenote diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Debug Bundle for OneNote.
+  Trigger: "onenote debug bundle".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote]
+tags: [saas, onenote, microsoft]
 compatible-with: claude-code
 ---
 
 # OneNote Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for OneNote support tickets.
-
-## Prerequisites
-- OneNote SDK installed
-- Access to application logs
-- Permission to collect environment info
-
-## Instructions
-
-### Step 1: Create Debug Bundle Script
+## Debug Script
 ```bash
 #!/bin/bash
-# onenote-debug-bundle.sh
-
-BUNDLE_DIR="onenote-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== OneNote Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+BUNDLE="onenote-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
+echo "MICROSOFT_GRAPH_TOKEN: ${MICROSOFT_GRAPH_TOKEN:+SET}" > "$BUNDLE/summary.txt"
+echo "Timestamp: $(date -u)" >> "$BUNDLE/summary.txt"
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "ONENOTE_API_KEY: ${ONENOTE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @onenote/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "onenote" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.onenote.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `onenote-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash onenote-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to OneNote support portal
 
 ## Resources
-- [OneNote Support](https://docs.onenote.com/support)
-- [OneNote Status](https://status.onenote.com)
+- [OneNote Support](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
 
 ## Next Steps
-For rate limit issues, see `onenote-rate-limits`.
+See `onenote-rate-limits`.

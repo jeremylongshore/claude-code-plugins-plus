@@ -1,119 +1,42 @@
 ---
 name: mindtickle-local-dev-loop
 description: |
-  Configure Mindtickle local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Mindtickle.
-  Trigger with phrases like "mindtickle dev setup", "mindtickle local development",
-  "mindtickle dev environment", "develop with mindtickle".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Local Dev Loop for MindTickle.
+  Trigger: "mindtickle local dev loop".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, mindtickle]
+tags: [saas, mindtickle, sales]
 compatible-with: claude-code
 ---
 
-# Mindtickle Local Dev Loop
+# MindTickle Local Dev Loop
 
-## Overview
-Set up a fast, reproducible local development workflow for Mindtickle.
-
-## Prerequisites
-- Completed `mindtickle-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
-
-## Instructions
-
-### Step 1: Create Project Structure
+## Project Structure
 ```
-my-mindtickle-project/
-├── src/
-│   ├── mindtickle/
-│   │   ├── client.ts       # Mindtickle client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── mindtickle.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+my-mindtickle-app/
+├── .env                # MINDTICKLE_API_KEY=...
+├── src/client.ts       # Singleton
+├── tests/fixtures/     # Mock responses
+└── scripts/dev.ts
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+## Mock Data
+```typescript
+export const mockResponse = {
+  status: 'success',
+  data: { /* mock MindTickle response */ }
+};
 ```
 
-### Step 3: Setup Hot Reload
+## Dev Script
 ```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { MindtickleClient } from '../src/mindtickle/client';
-
-describe('Mindtickle Client', () => {
-  it('should initialize with API key', () => {
-    const client = new MindtickleClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Mindtickle development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Mindtickle Responses
-```typescript
-vi.mock('@mindtickle/sdk', () => ({
-  MindtickleClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=MINDTICKLE=* npm run dev
+{ "scripts": { "dev": "tsx watch src/index.ts", "test": "vitest" } }
 ```
 
 ## Resources
-- [Mindtickle SDK Reference](https://docs.mindtickle.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+- [MindTickle Docs](https://www.mindtickle.com/platform/integrations/)
 
 ## Next Steps
-See `mindtickle-sdk-patterns` for production-ready code patterns.
+See `mindtickle-sdk-patterns`.

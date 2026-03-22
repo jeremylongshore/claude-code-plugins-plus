@@ -1,73 +1,68 @@
 ---
 name: onenote-core-workflow-b
 description: |
-  Execute OneNote secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "onenote secondary workflow",
-  "secondary task with onenote".
+  Execute OneNote secondary workflow: Search & Content Extraction.
+  Trigger: "onenote search & content extraction", "secondary onenote workflow".
 allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, onenote]
+tags: [saas, onenote, microsoft]
 compatible-with: claude-code
 ---
 
-# OneNote Core Workflow B
+# OneNote — Search & Content Extraction
 
 ## Overview
-Secondary workflow for OneNote. Complements the primary workflow.
-
-## Prerequisites
-- Completed `onenote-install-auth` setup
-- Familiarity with `onenote-core-workflow-a`
-- Valid API credentials configured
+Secondary workflow complementing the primary workflow.
 
 ## Instructions
 
-### Step 1: Setup
+### Step 1: List All Pages
 ```typescript
-// Step 1 implementation
+const pages = await client.api('/me/onenote/pages')
+  .top(20)
+  .orderby('lastModifiedDateTime desc')
+  .get();
+pages.value.forEach(p =>
+  console.log(`${p.title} — Modified: ${p.lastModifiedDateTime}`)
+);
 ```
 
-### Step 2: Process
+### Step 2: Get Pages from Specific Notebook
 ```typescript
-// Step 2 implementation
+const notebookPages = await client.api(
+  `/me/onenote/notebooks/${notebookId}/pages`
+).expand('parentSection').get();
+
+notebookPages.value.forEach(p =>
+  console.log(`[${p.parentSection.displayName}] ${p.title}`)
+);
 ```
 
-### Step 3: Complete
+### Step 3: Search Pages by Content
 ```typescript
-// Step 3 implementation
+// OData filter for pages
+const results = await client.api('/me/onenote/pages')
+  .filter("contains(title, 'meeting')")
+  .top(10)
+  .get();
 ```
 
-## Output
-- Completed Core Workflow B execution
-- Results from OneNote API
-- Success confirmation or error details
-
-## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
+### Step 4: Update Page Content
 ```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
+// PATCH with specific target (append, replace, etc.)
+await client.api(`/me/onenote/pages/${pageId}/content`).patch([
+  {
+    target: 'body',
+    action: 'append',
+    content: '<p>Updated: New action item added</p>'
+  }
+]);
 ```
 
 ## Resources
-- [OneNote Documentation](https://docs.onenote.com)
-- [OneNote API Reference](https://docs.onenote.com/api)
+- [OneNote Docs](https://learn.microsoft.com/en-us/graph/api/resources/onenote-api-overview)
 
 ## Next Steps
-For common errors, see `onenote-common-errors`.
+See `onenote-common-errors`.

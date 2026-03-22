@@ -2,97 +2,64 @@
 name: linktree-hello-world
 description: |
   Create a minimal working Linktree example.
-  Use when starting a new Linktree integration, testing your setup,
-  or learning basic Linktree API patterns.
-  Trigger with phrases like "linktree hello world", "linktree example",
-  "linktree quick start", "simple linktree code".
-allowed-tools: Read, Write, Edit
+  Trigger: "linktree hello world", "linktree example", "test linktree".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, linktree]
+tags: [saas, linktree, social]
 compatible-with: claude-code
 ---
 
 # Linktree Hello World
 
 ## Overview
-Minimal working example demonstrating core Linktree functionality.
-
-## Prerequisites
-- Completed `linktree-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+Minimal working examples demonstrating core Linktree API functionality.
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
-
-### Step 2: Import and Initialize Client
+### Step 1: Get Profile
 ```typescript
-import { LinktreeClient } from '@linktree/sdk';
+const profile = await client.profiles.get('myprofile');
+console.log(`Bio: ${profile.bio}`);
+console.log(`Links: ${profile.links.length}`);
+```
 
-const client = new LinktreeClient({
-  apiKey: process.env.LINKTREE_API_KEY,
+### Step 2: Create a Link
+```typescript
+const link = await client.links.create({
+  profile_id: profile.id,
+  title: 'My Website',
+  url: 'https://example.com',
+  position: 0,  // Top of list
+  thumbnail: 'https://example.com/icon.png'
+});
+console.log(`Created link: ${link.id}`);
+```
+
+### Step 3: Update Link
+```typescript
+await client.links.update(link.id, {
+  title: 'Updated Title',
+  archived: false
 });
 ```
 
-### Step 3: Make Your First API Call
+### Step 4: List All Links
 ```typescript
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-## Output
-- Working code file with Linktree client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Linktree connection is working.
+const links = await client.links.list({ profile_id: profile.id });
+links.forEach(l => console.log(`${l.position}: ${l.title} → ${l.url}`));
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { LinktreeClient } from '@linktree/sdk';
-
-const client = new LinktreeClient({
-  apiKey: process.env.LINKTREE_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from linktree import LinktreeClient
-
-client = LinktreeClient()
-
-# Your first API call here
-```
+| Auth error | Invalid credentials | Check LINKTREE_API_KEY |
+| Not found | Invalid endpoint | Verify API URL |
+| Rate limit | Too many requests | Implement backoff |
 
 ## Resources
-- [Linktree Getting Started](https://docs.linktree.com/getting-started)
-- [Linktree API Reference](https://docs.linktree.com/api)
-- [Linktree Examples](https://docs.linktree.com/examples)
+- [Linktree API Docs](https://linktr.ee/marketplace/developer)
 
 ## Next Steps
-Proceed to `linktree-local-dev-loop` for development workflow setup.
+See `linktree-local-dev-loop`.

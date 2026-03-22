@@ -1,12 +1,11 @@
 ---
 name: anth-advanced-troubleshooting
 description: |
-  Apply Anthropic advanced debugging techniques for hard-to-diagnose issues.
-  Use when standard troubleshooting fails, investigating complex race conditions,
-  or preparing evidence bundles for Anthropic support escalation.
-  Trigger with phrases like "anthropic hard bug", "anthropic mystery error",
-  "anthropic impossible to debug", "difficult anthropic issue", "anthropic deep debug".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
+  Debug complex Claude API issues including context window overflow,
+  tool use failures, streaming corruption, and response quality problems.
+  Trigger with phrases like "anthropic advanced debug", "claude complex issue",
+  "claude tool use failing", "claude context overflow".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -16,248 +15,148 @@ compatible-with: claude-code
 
 # Anthropic Advanced Troubleshooting
 
-## Overview
-Deep debugging techniques for complex Anthropic issues that resist standard troubleshooting.
+## Issue: Context Window Overflow
 
-## Prerequisites
-- Access to production logs and metrics
-- kubectl access to clusters
-- Network capture tools available
-- Understanding of distributed tracing
+```python
+# Symptom: invalid_request_error about token count
+# Diagnosis: pre-check with Token Counting API
+import anthropic
 
-## Evidence Collection Framework
+client = anthropic.Anthropic()
 
-### Comprehensive Debug Bundle
+count = client.messages.count_tokens(
+    model="claude-sonnet-4-20250514",
+    messages=conversation_history,
+    system=system_prompt
+)
+print(f"Input tokens: {count.input_tokens}")
+# Claude Sonnet: 200K context, Claude Opus: 200K context
+
+# Fix: truncate oldest messages or summarize
+def trim_conversation(messages: list, max_tokens: int = 180_000) -> list:
+    """Keep recent messages within token budget."""
+    # Always keep first (system context) and last 5 messages
+    if len(messages) <= 5:
+        return messages
+    return messages[:1] + messages[-5:]  # Crude but effective
+```
+
+## Issue: Tool Use Not Triggering
+
+```python
+# Symptom: Claude responds with text instead of calling tools
+# Diagnosis checklist:
+# 1. Tool description must clearly state WHEN to use the tool
+# 2. User message must match the tool's trigger condition
+
+# BAD description (too vague):
+{"name": "search", "description": "Search for things"}
+
+# GOOD description (clear trigger):
+{"name": "search_products", "description": "Search the product catalog by name, category, or price range. Use whenever the user asks about products, pricing, or availability."}
+
+# Force tool use if needed:
+message = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=1024,
+    tools=tools,
+    tool_choice={"type": "any"},  # Must call at least one tool
+    messages=[{"role": "user", "content": "Find products under $50"}]
+)
+```
+
+## Issue: Streaming Drops or Corruption
+
+```python
+# Symptom: stream ends prematurely or text is garbled
+# Cause: network interruption, proxy timeout, or large response
+
+# Fix: implement reconnection with content tracking
+def resilient_stream(client, **kwargs):
+    """Stream with reconnection on failure."""
+    collected_text = ""
+    max_retries = 3
+
+    for attempt in range(max_retries):
+        try:
+            with client.messages.stream(**kwargs) as stream:
+                for text in stream.text_stream:
+                    collected_text += text
+                    yield text
+                return  # Success
+        except Exception as e:
+            if attempt == max_retries - 1:
+                raise
+            # Note: Claude streams are NOT resumable
+            # Must restart from beginning
+            collected_text = ""
+            print(f"Stream interrupted, retrying ({attempt + 1}/{max_retries})")
+```
+
+## Issue: Unexpected Stop Reason
+
+| Stop Reason | Meaning | Action |
+|-------------|---------|--------|
+| `end_turn` | Normal completion | Expected |
+| `max_tokens` | Hit token limit | Increase `max_tokens` |
+| `stop_sequence` | Hit stop sequence | Check `stop_sequences` array |
+| `tool_use` | Wants to call a tool | Process tool call and continue |
+
+```python
+# Debug unexpected truncation
+msg = client.messages.create(
+    model="claude-sonnet-4-20250514",
+    max_tokens=4096,  # Was it too low?
+    messages=[{"role": "user", "content": long_prompt}]
+)
+print(f"Stop reason: {msg.stop_reason}")
+print(f"Output tokens: {msg.usage.output_tokens}")
+print(f"Max tokens: 4096")
+# If output_tokens == max_tokens, response was truncated
+```
+
+## Issue: Response Quality Degradation
+
+```python
+# Checklist for quality issues:
+# 1. System prompt too long or contradictory?
+# 2. Conversation history too noisy (too many turns)?
+# 3. Wrong model for task complexity?
+# 4. Temperature too high for deterministic tasks?
+
+# Debug: log the full request for review
+import json
+request_params = {
+    "model": model,
+    "max_tokens": max_tokens,
+    "system": system[:200] + "...",  # Truncated for logging
+    "message_count": len(messages),
+    "temperature": temperature,
+}
+print(f"Request config: {json.dumps(request_params, indent=2)}")
+```
+
+## Diagnostic Curl Commands
+
 ```bash
-#!/bin/bash
-# advanced-anthropic-debug.sh
-
-BUNDLE="anthropic-advanced-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE"/{logs,metrics,network,config,traces}
-
-# 1. Extended logs (1 hour window)
-kubectl logs -l app=anthropic-integration --since=1h > "$BUNDLE/logs/pods.log"
-journalctl -u anthropic-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
-
-# 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=anthropic_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=anthropic_errors_total > "$BUNDLE/metrics/errors.json"
-
-# 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
-
-# 4. Distributed traces
-curl -s localhost:16686/api/traces?service=anthropic > "$BUNDLE/traces/jaeger.json"
-
-# 5. Configuration state
-kubectl get cm anthropic-config -o yaml > "$BUNDLE/config/configmap.yaml"
-kubectl get secret anthropic-secrets -o yaml > "$BUNDLE/config/secrets-redacted.yaml"
-
-tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
-echo "Advanced debug bundle: $BUNDLE.tar.gz"
-```
-
-## Systematic Isolation
-
-### Layer-by-Layer Testing
-
-```typescript
-// Test each layer independently
-async function diagnoseAnthropicIssue(): Promise<DiagnosisReport> {
-  const results: DiagnosisResult[] = [];
-
-  // Layer 1: Network connectivity
-  results.push(await testNetworkConnectivity());
-
-  // Layer 2: DNS resolution
-  results.push(await testDNSResolution('api.anthropic.com'));
-
-  // Layer 3: TLS handshake
-  results.push(await testTLSHandshake('api.anthropic.com'));
-
-  // Layer 4: Authentication
-  results.push(await testAuthentication());
-
-  // Layer 5: API response
-  results.push(await testAPIResponse());
-
-  // Layer 6: Response parsing
-  results.push(await testResponseParsing());
-
-  return { results, firstFailure: results.find(r => !r.success) };
-}
-```
-
-### Minimal Reproduction
-
-```typescript
-// Strip down to absolute minimum
-async function minimalRepro(): Promise<void> {
-  // 1. Fresh client, no customization
-  const client = new AnthropicClient({
-    apiKey: process.env.ANTHROPIC_API_KEY!,
-  });
-
-  // 2. Simplest possible call
-  try {
-    const result = await client.ping();
-    console.log('Ping successful:', result);
-  } catch (error) {
-    console.error('Ping failed:', {
-      message: error.message,
-      code: error.code,
-      stack: error.stack,
-    });
-  }
-}
-```
-
-## Timing Analysis
-
-```typescript
-class TimingAnalyzer {
-  private timings: Map<string, number[]> = new Map();
-
-  async measure<T>(label: string, fn: () => Promise<T>): Promise<T> {
-    const start = performance.now();
-    try {
-      return await fn();
-    } finally {
-      const duration = performance.now() - start;
-      const existing = this.timings.get(label) || [];
-      existing.push(duration);
-      this.timings.set(label, existing);
-    }
-  }
-
-  report(): TimingReport {
-    const report: TimingReport = {};
-    for (const [label, times] of this.timings) {
-      report[label] = {
-        count: times.length,
-        min: Math.min(...times),
-        max: Math.max(...times),
-        avg: times.reduce((a, b) => a + b, 0) / times.length,
-        p95: this.percentile(times, 95),
-      };
-    }
-    return report;
-  }
-}
-```
-
-## Memory and Resource Analysis
-
-```typescript
-// Detect memory leaks in Anthropic client usage
-const heapUsed: number[] = [];
-
-setInterval(() => {
-  const usage = process.memoryUsage();
-  heapUsed.push(usage.heapUsed);
-
-  // Alert on sustained growth
-  if (heapUsed.length > 60) { // 1 hour at 1/min
-    const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
-      console.warn('Potential memory leak in anthropic integration');
-    }
-  }
-}, 60000);
-```
-
-## Race Condition Detection
-
-```typescript
-// Detect concurrent access issues
-class AnthropicConcurrencyChecker {
-  private inProgress: Set<string> = new Set();
-
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    if (this.inProgress.has(key)) {
-      console.warn(`Concurrent access detected for ${key}`);
-    }
-
-    this.inProgress.add(key);
-    try {
-      return await fn();
-    } finally {
-      this.inProgress.delete(key);
-    }
-  }
-}
-```
-
-## Support Escalation Template
-
-```markdown
-## Anthropic Support Escalation
-
-**Severity:** P[1-4]
-**Request ID:** [from error response]
-**Timestamp:** [ISO 8601]
-
-### Issue Summary
-[One paragraph description]
-
-### Steps to Reproduce
-1. [Step 1]
-2. [Step 2]
-
-### Expected vs Actual
-- Expected: [behavior]
-- Actual: [behavior]
-
-### Evidence Attached
-- [ ] Debug bundle (anthropic-advanced-debug-*.tar.gz)
-- [ ] Minimal reproduction code
-- [ ] Timing analysis
-- [ ] Network capture (if relevant)
-
-### Workarounds Attempted
-1. [Workaround 1] - Result: [outcome]
-2. [Workaround 2] - Result: [outcome]
-```
-
-## Instructions
-
-### Step 1: Collect Evidence Bundle
-Run the comprehensive debug script to gather all relevant data.
-
-### Step 2: Systematic Isolation
-Test each layer independently to identify the failure point.
-
-### Step 3: Create Minimal Reproduction
-Strip down to the simplest failing case.
-
-### Step 4: Escalate with Evidence
-Use the support template with all collected evidence.
-
-## Output
-- Comprehensive debug bundle collected
-- Failure layer identified
-- Minimal reproduction created
-- Support escalation submitted
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reproduce | Race condition | Add timing analysis |
-| Intermittent failure | Timing-dependent | Increase sample size |
-| No useful logs | Missing instrumentation | Add debug logging |
-| Memory growth | Resource leak | Use heap profiling |
-
-## Examples
-
-### Quick Layer Test
-```bash
-# Test each layer in sequence
-curl -v https://api.anthropic.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+# Test specific model availability
+for model in claude-haiku-4-20250514 claude-sonnet-4-20250514 claude-opus-4-20250514; do
+  echo -n "$model: "
+  curl -s -o /dev/null -w "%{http_code}" https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $ANTHROPIC_API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
+    -H "content-type: application/json" \
+    -d "{\"model\":\"$model\",\"max_tokens\":8,\"messages\":[{\"role\":\"user\",\"content\":\"hi\"}]}"
+  echo
+done
 ```
 
 ## Resources
-- [Anthropic Support Portal](https://support.anthropic.com)
-- [Anthropic Status Page](https://status.anthropic.com)
+
+- [Error Reference](https://docs.anthropic.com/en/api/errors)
+- [Token Counting](https://docs.anthropic.com/en/docs/build-with-claude/token-counting)
+- [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 
 ## Next Steps
-For load testing, see `anthropic-load-scale`.
+
+For load testing, see `anth-load-scale`.

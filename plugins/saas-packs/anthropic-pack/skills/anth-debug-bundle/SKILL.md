@@ -1,11 +1,11 @@
 ---
 name: anth-debug-bundle
 description: |
-  Collect Anthropic debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Anthropic problems.
-  Trigger with phrases like "anthropic debug", "anthropic support bundle",
-  "collect anthropic logs", "anthropic diagnostic".
+  Collect Anthropic Claude API debug evidence for support and troubleshooting.
+  Use when encountering persistent API issues, preparing support tickets,
+  or collecting diagnostic information including request IDs and rate limit headers.
+  Trigger with phrases like "anthropic debug", "claude debug bundle",
+  "collect anthropic logs", "anthropic diagnostic", "claude support ticket".
 allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,97 +17,121 @@ compatible-with: claude-code
 # Anthropic Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Anthropic support tickets.
+
+Collect diagnostic information for Claude API issues. Every API response includes a `request-id` header — this is the single most important piece of data for Anthropic support.
 
 ## Prerequisites
+
 - Anthropic SDK installed
 - Access to application logs
-- Permission to collect environment info
+- `ANTHROPIC_API_KEY` set in environment
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Capture Request ID
+
+```python
+import anthropic
+
+client = anthropic.Anthropic()
+
+try:
+    message = client.messages.create(
+        model="claude-sonnet-4-20250514",
+        max_tokens=64,
+        messages=[{"role": "user", "content": "test"}]
+    )
+    print(f"Request ID: {message._request_id}")  # req_01A1B2C3...
+except anthropic.APIStatusError as e:
+    print(f"Request ID: {e.response.headers.get('request-id')}")
+    print(f"Status: {e.status_code}")
+    print(f"Error: {e.message}")
+```
+
+```typescript
+// TypeScript — access raw response headers
+const response = await client.messages.create({
+  model: 'claude-sonnet-4-20250514',
+  max_tokens: 64,
+  messages: [{ role: 'user', content: 'test' }],
+}).asResponse();
+
+console.log('Request ID:', response.headers.get('request-id'));
+console.log('Rate limit remaining:', response.headers.get('anthropic-ratelimit-requests-remaining'));
+```
+
+### Step 2: Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # anthropic-debug-bundle.sh
-
 BUNDLE_DIR="anthropic-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
 
 echo "=== Anthropic Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$BUNDLE_DIR/summary.txt"
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
+# SDK versions
+echo -e "\n--- SDK Versions ---" >> "$BUNDLE_DIR/summary.txt"
+pip show anthropic 2>/dev/null | grep -E "^(Name|Version)" >> "$BUNDLE_DIR/summary.txt"
+npm list @anthropic-ai/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+python3 --version >> "$BUNDLE_DIR/summary.txt" 2>&1
 node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @anthropic/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+# API key status (NEVER log the key itself)
+echo -e "\n--- Auth Status ---" >> "$BUNDLE_DIR/summary.txt"
+echo "ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:+SET (${#ANTHROPIC_API_KEY} chars)}" >> "$BUNDLE_DIR/summary.txt"
 
-# Recent logs (redacted)
-grep -i "anthropic" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+# Connectivity test with headers
+echo -e "\n--- API Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s -w "\nHTTP %{http_code} | Time: %{time_total}s" \
+  -o "$BUNDLE_DIR/api-response.json" \
+  -D "$BUNDLE_DIR/response-headers.txt" \
+  https://api.anthropic.com/v1/messages \
+  -H "x-api-key: $ANTHROPIC_API_KEY" \
+  -H "anthropic-version: 2023-06-01" \
+  -H "content-type: application/json" \
+  -d '{"model":"claude-sonnet-4-20250514","max_tokens":8,"messages":[{"role":"user","content":"1"}]}' \
+  >> "$BUNDLE_DIR/summary.txt"
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+# Rate limit headers
+echo -e "\n--- Rate Limit Headers ---" >> "$BUNDLE_DIR/summary.txt"
+grep -i "ratelimit\|request-id\|retry-after" "$BUNDLE_DIR/response-headers.txt" >> "$BUNDLE_DIR/summary.txt"
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.anthropic.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+# API status page
+echo -e "\n--- API Status ---" >> "$BUNDLE_DIR/summary.txt"
+curl -s https://status.anthropic.com/api/v2/status.json | python3 -c \
+  "import sys,json; d=json.load(sys.stdin); print(d['status']['description'])" >> "$BUNDLE_DIR/summary.txt" 2>&1
 
-### Step 4: Package Bundle
-```bash
+# Package and clean up
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+rm -rf "$BUNDLE_DIR"
+echo "Bundle: $BUNDLE_DIR.tar.gz"
 ```
 
-## Output
-- `anthropic-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+### Step 3: Redaction Rules
 
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
+**ALWAYS REDACT:** API keys, user content/PII, authorization headers
 
-## Examples
+**SAFE TO INCLUDE:** Request IDs, error messages, rate limit headers, SDK versions, status codes, timestamps
 
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
+## Key Headers for Debugging
 
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash anthropic-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Anthropic support portal
+| Header | Example | Use |
+|--------|---------|-----|
+| `request-id` | `req_01A1B2C3...` | Support ticket reference |
+| `anthropic-ratelimit-requests-limit` | `1000` | Your RPM cap |
+| `anthropic-ratelimit-requests-remaining` | `995` | Requests left |
+| `anthropic-ratelimit-tokens-limit` | `80000` | Your TPM cap |
+| `anthropic-ratelimit-tokens-remaining` | `79000` | Tokens left |
+| `retry-after` | `30` | Seconds to wait (on 429) |
 
 ## Resources
-- [Anthropic Support](https://docs.anthropic.com/support)
-- [Anthropic Status](https://status.anthropic.com)
+
+- [API Status](https://status.anthropic.com)
+- [Error Types](https://docs.anthropic.com/en/api/errors)
+- [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
-For rate limit issues, see `anthropic-rate-limits`.
+
+For rate limit issues, see `anth-rate-limits`.

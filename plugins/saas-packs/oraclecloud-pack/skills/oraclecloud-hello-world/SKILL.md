@@ -2,97 +2,79 @@
 name: oraclecloud-hello-world
 description: |
   Create a minimal working Oracle Cloud example.
-  Use when starting a new Oracle Cloud integration, testing your setup,
-  or learning basic Oracle Cloud API patterns.
-  Trigger with phrases like "oraclecloud hello world", "oraclecloud example",
-  "oraclecloud quick start", "simple oraclecloud code".
-allowed-tools: Read, Write, Edit
+  Trigger: "oraclecloud hello world", "oraclecloud example", "test oraclecloud".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, oraclecloud]
+tags: [saas, oraclecloud, infrastructure]
 compatible-with: claude-code
 ---
 
 # Oracle Cloud Hello World
 
 ## Overview
-Minimal working example demonstrating core Oracle Cloud functionality.
-
-## Prerequisites
-- Completed `oraclecloud-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+Minimal working examples demonstrating core Oracle Cloud API functionality.
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: List Instances
+```python
+import oci
 
-### Step 2: Import and Initialize Client
-```typescript
-import { OracleCloudClient } from '@oraclecloud/sdk';
+config = oci.config.from_file()
+compute = oci.core.ComputeClient(config)
 
-const client = new OracleCloudClient({
-  apiKey: process.env.ORACLECLOUD_API_KEY,
-});
+instances = compute.list_instances(compartment_id=config['tenancy'])
+for inst in instances.data:
+    print(f"{inst.display_name} | {inst.lifecycle_state} | {inst.shape}")
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 2: Launch an Instance
+```python
+launch_details = oci.core.models.LaunchInstanceDetails(
+    compartment_id=config['tenancy'],
+    availability_domain='Uocm:US-ASHBURN-AD-1',
+    display_name='my-instance',
+    shape='VM.Standard.E4.Flex',
+    shape_config=oci.core.models.LaunchInstanceShapeConfigDetails(
+        ocpus=2, memory_in_gbs=16
+    ),
+    source_details=oci.core.models.InstanceSourceViaImageDetails(
+        image_id='ocid1.image.oc1...',
+        boot_volume_size_in_gbs=50
+    ),
+    create_vnic_details=oci.core.models.CreateVnicDetails(
+        subnet_id='ocid1.subnet.oc1...'
+    ),
+    metadata={'ssh_authorized_keys': open(os.path.expanduser('~/.ssh/id_rsa.pub')).read()}
+)
 
-main().catch(console.error);
+response = compute.launch_instance(launch_details)
+print(f"Launching: {response.data.id} | Status: {response.data.lifecycle_state}")
 ```
 
-## Output
-- Working code file with Oracle Cloud client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Oracle Cloud connection is working.
+### Step 3: Stop/Start Instance
+```python
+# Stop
+compute.instance_action(instance_id='ocid1.instance...', action='STOP')
+
+# Start
+compute.instance_action(instance_id='ocid1.instance...', action='START')
+
+# Terminate
+compute.terminate_instance(instance_id='ocid1.instance...')
 ```
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { OracleCloudClient } from '@oraclecloud/sdk';
-
-const client = new OracleCloudClient({
-  apiKey: process.env.ORACLECLOUD_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from oraclecloud import OracleCloudClient
-
-client = OracleCloudClient()
-
-# Your first API call here
-```
+| Auth error | Invalid credentials | Check OCI_CONFIG_FILE |
+| Not found | Invalid endpoint | Verify API URL |
+| Rate limit | Too many requests | Implement backoff |
 
 ## Resources
-- [Oracle Cloud Getting Started](https://docs.oraclecloud.com/getting-started)
-- [Oracle Cloud API Reference](https://docs.oraclecloud.com/api)
-- [Oracle Cloud Examples](https://docs.oraclecloud.com/examples)
+- [Oracle Cloud API Docs](https://docs.oracle.com/en-us/iaas/api/)
 
 ## Next Steps
-Proceed to `oraclecloud-local-dev-loop` for development workflow setup.
+See `oraclecloud-local-dev-loop`.
