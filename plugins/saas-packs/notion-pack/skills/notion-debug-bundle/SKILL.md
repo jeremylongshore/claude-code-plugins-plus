@@ -1,7 +1,7 @@
 ---
 name: notion-debug-bundle
 description: |
-  Collect Notion debug evidence for support tickets and troubleshooting.
+  Collect Notion API debug evidence for troubleshooting and support.
   Use when encountering persistent issues, preparing support tickets,
   or collecting diagnostic information for Notion problems.
   Trigger with phrases like "notion debug", "notion support bundle",
@@ -17,97 +17,178 @@ compatible-with: claude-code
 # Notion Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Notion support tickets.
+Collect diagnostic information for Notion API issues: SDK version, connectivity, auth status, API version, and error logs.
 
 ## Prerequisites
-- Notion SDK installed
+- `@notionhq/client` installed
+- `NOTION_TOKEN` configured
 - Access to application logs
-- Permission to collect environment info
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Quick Connectivity Check
+```bash
+#!/bin/bash
+echo "=== Notion Debug Check ==="
+echo "Timestamp: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+
+# 1. SDK version
+echo -e "\n--- SDK Version ---"
+npm list @notionhq/client 2>/dev/null || echo "SDK not found in node_modules"
+
+# 2. Node version
+echo -e "\n--- Runtime ---"
+node --version
+echo "NOTION_TOKEN: ${NOTION_TOKEN:+SET (${#NOTION_TOKEN} chars)}"
+
+# 3. API connectivity (uses /v1/users/me as health check)
+echo -e "\n--- API Connectivity ---"
+RESPONSE=$(curl -s -w "\n%{http_code}\n%{time_total}" \
+  https://api.notion.com/v1/users/me \
+  -H "Authorization: Bearer ${NOTION_TOKEN}" \
+  -H "Notion-Version: 2022-06-28" 2>&1)
+
+HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+LATENCY=$(echo "$RESPONSE" | tail -2 | head -1)
+BODY=$(echo "$RESPONSE" | head -n -2)
+
+echo "HTTP Status: $HTTP_CODE"
+echo "Latency: ${LATENCY}s"
+
+if [ "$HTTP_CODE" = "200" ]; then
+  echo "Bot Name: $(echo $BODY | jq -r '.name // "unknown"')"
+  echo "Bot Type: $(echo $BODY | jq -r '.type // "unknown"')"
+else
+  echo "Error: $(echo $BODY | jq -r '.code // "unknown"')"
+  echo "Message: $(echo $BODY | jq -r '.message // "unknown"')"
+fi
+
+# 4. Notion status page
+echo -e "\n--- Notion Status ---"
+curl -s https://status.notion.com/api/v2/status.json | jq -r '.status.description' 2>/dev/null || echo "Could not reach status page"
+```
+
+### Step 2: Full Debug Bundle Script
 ```bash
 #!/bin/bash
 # notion-debug-bundle.sh
+BUNDLE="notion-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="notion-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
-
-echo "=== Notion Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 2: Collect Environment Info
-```bash
 # Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "NOTION_API_KEY: ${NOTION_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+cat > "$BUNDLE/environment.txt" << EOF
+Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)
+Node: $(node --version 2>/dev/null || echo "not found")
+npm: $(npm --version 2>/dev/null || echo "not found")
+SDK: $(npm list @notionhq/client 2>/dev/null | grep notionhq || echo "not found")
+NOTION_TOKEN: ${NOTION_TOKEN:+SET}
+OS: $(uname -a)
+EOF
+
+# API response (redacted)
+curl -s https://api.notion.com/v1/users/me \
+  -H "Authorization: Bearer ${NOTION_TOKEN}" \
+  -H "Notion-Version: 2022-06-28" \
+  | jq 'del(.avatar_url)' > "$BUNDLE/api-response.json" 2>/dev/null
+
+# Notion platform status
+curl -s https://status.notion.com/api/v2/summary.json \
+  | jq '{status: .status, incidents: [.incidents[] | {name, status, updated_at}]}' \
+  > "$BUNDLE/platform-status.json" 2>/dev/null
+
+# Application logs (redacted — remove tokens)
+if [ -f "app.log" ]; then
+  grep -i "notion\|notionhq" app.log | tail -100 \
+    | sed 's/ntn_[a-zA-Z0-9]*/ntn_[REDACTED]/g' \
+    | sed 's/secret_[a-zA-Z0-9]*/secret_[REDACTED]/g' \
+    > "$BUNDLE/app-logs-redacted.txt"
+fi
+
+# Package lock for dependency info
+[ -f "package-lock.json" ] && jq '.packages | to_entries[] | select(.key | contains("notionhq"))' package-lock.json > "$BUNDLE/dependencies.json" 2>/dev/null
+
+# Config (redacted)
+if [ -f ".env" ]; then
+  sed 's/=.*/=[REDACTED]/' .env > "$BUNDLE/env-redacted.txt"
+fi
+
+# Package
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+rm -rf "$BUNDLE"
+echo "Bundle created: $BUNDLE.tar.gz"
 ```
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @notion/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+### Step 3: Programmatic Debug Info
+```typescript
+import { Client, isNotionClientError } from '@notionhq/client';
 
-# Recent logs (redacted)
-grep -i "notion" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+async function collectDebugInfo() {
+  const notion = new Client({ auth: process.env.NOTION_TOKEN });
+  const debug: Record<string, any> = {
+    timestamp: new Date().toISOString(),
+    sdk: '@notionhq/client',
+    nodeVersion: process.version,
+    tokenSet: !!process.env.NOTION_TOKEN,
+    tokenPrefix: process.env.NOTION_TOKEN?.substring(0, 4) ?? 'unset',
+  };
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+  // Test authentication
+  try {
+    const me = await notion.users.me({});
+    debug.auth = { status: 'ok', botName: me.name, type: me.type };
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      debug.auth = { status: 'error', code: error.code, message: error.message };
+    }
+  }
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.notion.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+  // Test search (verifies workspace access)
+  try {
+    const search = await notion.search({ page_size: 1 });
+    debug.search = { status: 'ok', hasResults: search.results.length > 0 };
+  } catch (error) {
+    if (isNotionClientError(error)) {
+      debug.search = { status: 'error', code: error.code };
+    }
+  }
 
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+  return debug;
+}
 ```
 
 ## Output
-- `notion-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+- `notion-debug-YYYYMMDD-HHMMSS.tar.gz` containing:
+  - `environment.txt` — SDK version, Node version, token status
+  - `api-response.json` — Bot user info (avatar redacted)
+  - `platform-status.json` — Notion service status
+  - `app-logs-redacted.txt` — Recent Notion-related logs (tokens masked)
+  - `env-redacted.txt` — Environment config (values masked)
 
 ## Error Handling
 | Item | Purpose | Included |
 |------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
+| SDK version | Version-specific issues | Yes |
+| API response | Auth and connectivity | Yes |
+| Platform status | Notion outage check | Yes |
+| Error logs (redacted) | Root cause analysis | Yes |
+| Config (redacted) | Configuration issues | Yes |
 
 ## Examples
 
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
+### ALWAYS REDACT
+- Integration secrets (`ntn_*`, `secret_*`)
+- OAuth client secrets
+- User PII (emails, names)
 
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash notion-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Notion support portal
+### Safe to Include
+- Error codes and messages
+- HTTP status codes and latencies
+- SDK and runtime versions
+- Notion platform status
 
 ## Resources
-- [Notion Support](https://docs.notion.com/support)
-- [Notion Status](https://status.notion.com)
+- [Notion Status Page](https://status.notion.com)
+- [Notion API Introduction](https://developers.notion.com/reference/intro)
 
 ## Next Steps
 For rate limit issues, see `notion-rate-limits`.

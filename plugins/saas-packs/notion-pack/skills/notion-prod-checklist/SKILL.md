@@ -1,11 +1,11 @@
 ---
 name: notion-prod-checklist
 description: |
-  Execute Notion production deployment checklist and rollback procedures.
+  Execute Notion production deployment checklist and readiness verification.
   Use when deploying Notion integrations to production, preparing for launch,
-  or implementing go-live procedures.
+  or verifying go-live readiness.
   Trigger with phrases like "notion production", "deploy notion",
-  "notion go-live", "notion launch checklist".
+  "notion go-live", "notion launch checklist", "notion production ready".
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,105 +17,146 @@ compatible-with: claude-code
 # Notion Production Checklist
 
 ## Overview
-Complete checklist for deploying Notion integrations to production.
+Complete checklist for deploying Notion integrations to production, covering auth, error handling, rate limits, monitoring, and rollback.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Working integration tested in staging
+- Production Notion token ready
+- Deployment platform configured
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Authentication & Secrets
+- [ ] Production `NOTION_TOKEN` stored in secret manager (not env files)
+- [ ] Token has minimum required capabilities (least privilege)
+- [ ] All target pages/databases shared with production integration
+- [ ] Token rotation procedure documented
+- [ ] No tokens in source code or git history (`grep -r "ntn_\|secret_" .`)
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Notion error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Error Handling
+- [ ] All API calls wrapped in try/catch with `isNotionClientError`
+- [ ] 429 rate limits handled (SDK built-in retry enabled)
+- [ ] 404 errors handled gracefully (page not shared vs not exists)
+- [ ] 401/403 errors trigger alerts (token expired or revoked)
+- [ ] Validation errors (400) logged with full error message
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Notion connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Rate Limit Compliance
+- [ ] Bulk operations use queuing (p-queue at 3 req/s max)
+- [ ] Pagination uses `start_cursor`, not repeated full queries
+- [ ] No unbounded parallel requests (`Promise.all` over large arrays)
+- [ ] Batch size respects API limits (100 items per query, 100 blocks per append)
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.notion.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/notion-integration app=image:new --record
-kubectl rollout pause deployment/notion-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/notion-integration
-kubectl rollout pause deployment/notion-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/notion-integration
-kubectl rollout status deployment/notion-integration
-```
-
-## Output
-- Deployed Notion integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
+### Monitoring & Alerting
 ```typescript
-async function healthCheck(): Promise<{ status: string; notion: any }> {
+// Health check endpoint
+async function notionHealthCheck() {
   const start = Date.now();
   try {
-    await notionClient.ping();
-    return { status: 'healthy', notion: { connected: true, latencyMs: Date.now() - start } };
+    const me = await notion.users.me({});
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+      bot: me.name,
+    };
   } catch (error) {
-    return { status: 'degraded', notion: { connected: false, latencyMs: Date.now() - start } };
+    return {
+      status: 'unhealthy',
+      latencyMs: Date.now() - start,
+      error: isNotionClientError(error) ? error.code : 'unknown',
+    };
   }
 }
 ```
 
-### Immediate Rollback
+- [ ] Health check endpoint includes Notion connectivity test
+- [ ] Alerts configured for: auth failures, high error rate, elevated latency
+- [ ] Structured logging for all Notion API calls (request ID, latency, status)
+
+### Data Integrity
+- [ ] Page property names match production database schema exactly
+- [ ] Required title property always included in `pages.create`
+- [ ] Select/multi-select option names match existing options
+- [ ] Date properties use ISO 8601 format (`2026-04-01`)
+- [ ] Rich text arrays are never empty (Notion rejects `[]`)
+
+### API Version
+```typescript
+// Pin the API version explicitly
+const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+  notionVersion: '2022-06-28', // Pin to tested version
+});
+```
+- [ ] `notionVersion` pinned in client configuration
+- [ ] Tested against the specific API version in production
+
+### Graceful Degradation
+```typescript
+async function getDataWithFallback(dbId: string) {
+  try {
+    return await notion.databases.query({ database_id: dbId });
+  } catch (error) {
+    console.error('Notion unavailable, using cached data');
+    return getCachedResults(dbId);
+  }
+}
+```
+- [ ] Application works (degraded) when Notion is unavailable
+- [ ] Cached data available for read-heavy endpoints
+- [ ] Users notified of degraded state (not silent failures)
+
+### Rollback Plan
 ```bash
-kubectl rollout undo deployment/notion-integration
-kubectl rollout status deployment/notion-integration
+# Verify pre-deployment
+curl -sf https://api.notion.com/v1/users/me \
+  -H "Authorization: Bearer ${NOTION_TOKEN}" \
+  -H "Notion-Version: 2022-06-28" | jq .name
+
+# Quick rollback: revert to previous deployment
+# (platform-specific: kubectl rollout undo, vercel rollback, etc.)
+```
+- [ ] Previous working version tagged and deployable
+- [ ] Rollback procedure documented and tested
+- [ ] Data migration (if any) is reversible
+
+## Output
+- All checklist items verified
+- Health check passing against production Notion API
+- Monitoring and alerting active
+- Rollback procedure tested
+
+## Error Handling
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| Auth Failure | 401/403 errors > 0 | P1 — token may be revoked |
+| High Error Rate | >5% of requests failing | P2 |
+| Rate Limited | 429 errors sustained | P2 — review request patterns |
+| High Latency | P95 > 3000ms | P3 |
+| Notion Down | status.notion.com incident | P2 — activate fallback |
+
+## Examples
+
+### Pre-Deploy Smoke Test
+```bash
+#!/bin/bash
+echo "Notion Production Smoke Test"
+RESULT=$(curl -s -o /dev/null -w "%{http_code}" \
+  https://api.notion.com/v1/users/me \
+  -H "Authorization: Bearer ${NOTION_TOKEN}" \
+  -H "Notion-Version: 2022-06-28")
+
+if [ "$RESULT" = "200" ]; then
+  echo "PASS: Auth OK"
+else
+  echo "FAIL: HTTP $RESULT"
+  exit 1
+fi
 ```
 
 ## Resources
-- [Notion Status](https://status.notion.com)
-- [Notion Support](https://docs.notion.com/support)
+- [Notion API Best Practices](https://developers.notion.com/docs/best-practices-for-handling-api-keys)
+- [Notion Status Page](https://status.notion.com)
+- [API Request Limits](https://developers.notion.com/reference/request-limits)
 
 ## Next Steps
 For version upgrades, see `notion-upgrade-migration`.

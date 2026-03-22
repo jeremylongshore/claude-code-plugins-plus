@@ -1,11 +1,12 @@
 ---
 name: notion-reliability-patterns
 description: |
-  Implement Notion reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Notion integrations, implementing retry strategies,
-  or adding resilience to production Notion services.
+  Implement reliability patterns for Notion integrations: circuit breaker,
+  graceful degradation, idempotency, and dead letter queues.
+  Use when building fault-tolerant Notion integrations or adding resilience
+  to production Notion services.
   Trigger with phrases like "notion reliability", "notion circuit breaker",
-  "notion idempotent", "notion resilience", "notion fallback", "notion bulkhead".
+  "notion resilience", "notion fallback", "notion fault tolerant".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,276 +18,321 @@ compatible-with: claude-code
 # Notion Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Notion integrations.
+Production-grade reliability patterns for Notion integrations: circuit breaker to prevent cascade failures, graceful degradation with cached fallbacks, idempotent operations, and dead letter queues for failed writes.
 
 ## Prerequisites
+- `@notionhq/client` installed
 - Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
+- Cache infrastructure (LRU or Redis)
 
-## Circuit Breaker
+## Instructions
 
+### Step 1: Circuit Breaker for Notion API
 ```typescript
-import CircuitBreaker from 'opossum';
+import { Client, isNotionClientError, APIErrorCode } from '@notionhq/client';
 
-const notionBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
+type CircuitState = 'closed' | 'open' | 'half-open';
 
-// Events
-notionBreaker.on('open', () => {
-  console.warn('Notion circuit OPEN - requests failing fast');
-  alertOps('Notion circuit breaker opened');
-});
+class NotionCircuitBreaker {
+  private state: CircuitState = 'closed';
+  private failureCount = 0;
+  private lastFailureTime = 0;
+  private readonly failureThreshold = 5;    // Open after 5 consecutive failures
+  private readonly resetTimeoutMs = 30_000;  // Try again after 30s
 
-notionBreaker.on('halfOpen', () => {
-  console.info('Notion circuit HALF-OPEN - testing recovery');
-});
-
-notionBreaker.on('close', () => {
-  console.info('Notion circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeNotionCall<T>(fn: () => Promise<T>): Promise<T> {
-  return notionBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
+  async execute<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.state === 'open') {
+      if (Date.now() - this.lastFailureTime > this.resetTimeoutMs) {
+        this.state = 'half-open';
+        console.log('Circuit half-open: testing Notion connectivity');
+      } else {
+        throw new Error('Circuit open: Notion API calls are disabled');
+      }
     }
 
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
+    try {
+      const result = await fn();
+      this.onSuccess();
+      return result;
+    } catch (error) {
+      this.onFailure(error);
+      throw error;
+    }
+  }
+
+  private onSuccess() {
+    this.failureCount = 0;
+    if (this.state === 'half-open') {
+      this.state = 'closed';
+      console.log('Circuit closed: Notion connectivity restored');
+    }
+  }
+
+  private onFailure(error: unknown) {
+    // Only count server errors and rate limits, not client errors
+    if (isNotionClientError(error)) {
+      const isTransient = error.code === APIErrorCode.RateLimited ||
+        error.code === APIErrorCode.InternalServerError ||
+        error.code === APIErrorCode.ServiceUnavailable;
+
+      if (!isTransient) return; // Don't trip circuit on 400/401/404
+    }
+
+    this.failureCount++;
+    this.lastFailureTime = Date.now();
+
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'open';
+      console.warn(`Circuit OPEN after ${this.failureCount} failures`);
+    }
+  }
+
+  getState(): { state: CircuitState; failures: number } {
+    return { state: this.state, failures: this.failureCount };
   }
 }
-```
 
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const notionQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedNotionCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return notionQueues[priority].add(fn);
-}
+const circuitBreaker = new NotionCircuitBreaker();
 
 // Usage
-await prioritizedNotionCall('critical', () =>
-  notionClient.processPayment(order)
-);
-
-await prioritizedNotionCall('bulk', () =>
-  notionClient.syncCatalog(products)
+const pages = await circuitBreaker.execute(() =>
+  notion.databases.query({ database_id: dbId })
 );
 ```
 
-## Timeout Hierarchy
-
+### Step 2: Graceful Degradation with Cached Fallback
 ```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
+import { LRUCache } from 'lru-cache';
 
-async function timedoutNotionCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
+const fallbackCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 3600_000, // 1 hour — stale data is better than no data
+});
 
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Notion ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
+async function queryWithFallback(dbId: string, filter?: any) {
+  const cacheKey = `query:${dbId}:${JSON.stringify(filter ?? {})}`;
 
-## Graceful Degradation
-
-```typescript
-interface NotionFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withNotionFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
   try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
+    const result = await circuitBreaker.execute(() =>
+      notion.databases.query({ database_id: dbId, filter, page_size: 100 })
+    );
+
+    // Update cache on success
+    fallbackCache.set(cacheKey, result);
+    return { data: result, source: 'live' as const };
   } catch (error) {
-    console.warn('Notion failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
+    // Try cached data
+    const cached = fallbackCache.get(cacheKey);
+    if (cached) {
+      console.warn('Using cached Notion data (API unavailable)');
+      return { data: cached, source: 'cache' as const };
+    }
+
+    // No cache available — propagate error
+    throw error;
   }
 }
+
+// Caller can check source and show staleness indicator
+const { data, source } = await queryWithFallback(dbId);
+if (source === 'cache') {
+  console.log('Warning: showing cached data. Notion API is currently unavailable.');
+}
 ```
 
-## Dead Letter Queue
-
+### Step 3: Idempotent Page Creation
 ```typescript
-interface DeadLetterEntry {
+import crypto from 'crypto';
+
+// Generate deterministic key from content
+function idempotencyKey(dbId: string, titleContent: string, extraData?: string): string {
+  const input = `${dbId}:${titleContent}:${extraData ?? ''}`;
+  return crypto.createHash('sha256').update(input).digest('hex').substring(0, 16);
+}
+
+// Track created pages to prevent duplicates
+const createdPages = new Map<string, string>(); // key -> pageId
+
+async function idempotentCreatePage(
+  dbId: string,
+  properties: any,
+  uniqueKey?: string
+) {
+  // Generate key from title content
+  const titleProp = Object.values(properties).find((p: any) => p.title);
+  const titleText = (titleProp as any)?.title?.[0]?.text?.content ?? '';
+  const key = uniqueKey ?? idempotencyKey(dbId, titleText);
+
+  // Check if already created
+  if (createdPages.has(key)) {
+    console.log(`Page already created (idempotency key: ${key})`);
+    return { id: createdPages.get(key)!, duplicate: true };
+  }
+
+  const page = await notion.pages.create({
+    parent: { database_id: dbId },
+    properties,
+  });
+
+  createdPages.set(key, page.id);
+  return { id: page.id, duplicate: false };
+}
+```
+
+### Step 4: Dead Letter Queue for Failed Writes
+```typescript
+interface DLQEntry {
   id: string;
-  operation: string;
+  operation: 'create' | 'update' | 'append';
   payload: any;
   error: string;
   attempts: number;
   lastAttempt: Date;
+  firstAttempt: Date;
 }
 
 class NotionDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
+  private entries: DLQEntry[] = [];
+  private readonly maxAttempts = 5;
 
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
+  add(operation: DLQEntry['operation'], payload: any, error: string) {
+    this.entries.push({
+      id: crypto.randomUUID(),
+      operation,
+      payload,
+      error,
+      attempts: 1,
       lastAttempt: new Date(),
+      firstAttempt: new Date(),
     });
+    console.warn(`DLQ: Added failed ${operation} (${this.entries.length} total)`);
   }
 
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
+  async retryAll(notion: Client): Promise<{ succeeded: number; failed: number }> {
+    let succeeded = 0;
+    let failed = 0;
+    const remaining: DLQEntry[] = [];
 
-    try {
-      await notionClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
+    for (const entry of this.entries) {
+      try {
+        switch (entry.operation) {
+          case 'create':
+            await notion.pages.create(entry.payload);
+            break;
+          case 'update':
+            await notion.pages.update(entry.payload);
+            break;
+          case 'append':
+            await notion.blocks.children.append(entry.payload);
+            break;
+        }
+        succeeded++;
+        // Rate limit compliance
+        await new Promise(r => setTimeout(r, 350));
+      } catch (error: any) {
+        entry.attempts++;
+        entry.lastAttempt = new Date();
+        entry.error = error.message;
 
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
+        if (entry.attempts < this.maxAttempts) {
+          remaining.push(entry);
+        } else {
+          console.error(`DLQ: Giving up on ${entry.id} after ${entry.attempts} attempts`);
+        }
+        failed++;
       }
-      return false;
     }
+
+    this.entries = remaining;
+    console.log(`DLQ retry: ${succeeded} succeeded, ${failed} failed, ${remaining.length} remaining`);
+    return { succeeded, failed };
+  }
+
+  get size() { return this.entries.length; }
+
+  getEntries() { return [...this.entries]; }
+}
+
+const dlq = new NotionDeadLetterQueue();
+
+// Usage: wrap writes with DLQ fallback
+async function resilientPageCreate(dbId: string, properties: any) {
+  try {
+    return await circuitBreaker.execute(() =>
+      notion.pages.create({ parent: { database_id: dbId }, properties })
+    );
+  } catch (error: any) {
+    dlq.add('create', { parent: { database_id: dbId }, properties }, error.message);
+    return null;
   }
 }
 ```
 
-## Health Check with Degraded State
-
+### Step 5: Priority Queue for Mixed Workloads
 ```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+import PQueue from 'p-queue';
 
-async function notionHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: notionBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
+// Separate queues prevent bulk operations from blocking critical reads
+const queues = {
+  critical: new PQueue({ concurrency: 2, interval: 1000, intervalCap: 2 }),
+  normal: new PQueue({ concurrency: 1, interval: 1000, intervalCap: 1 }),
+};
 
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
+// Critical: user-facing reads
+async function readPage(pageId: string) {
+  return queues.critical.add(() => notion.pages.retrieve({ page_id: pageId }));
 }
+
+// Normal: background syncs and batch writes
+async function backgroundSync(dbId: string, items: any[]) {
+  for (const item of items) {
+    await queues.normal.add(() =>
+      notion.pages.create({ parent: { database_id: dbId }, properties: item })
+    );
+  }
+}
+
+// Total: 3 req/s (2 critical + 1 normal)
 ```
-
-## Instructions
-
-### Step 1: Implement Circuit Breaker
-Wrap Notion calls with circuit breaker.
-
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
-
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
-
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
 
 ## Output
-- Circuit breaker protecting Notion calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+- Circuit breaker preventing cascade failures on Notion outages
+- Graceful degradation serving cached data when API is down
+- Idempotent page creation preventing duplicates
+- Dead letter queue for failed writes with automatic retry
+- Priority queues for mixed workloads
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Circuit stays open | Threshold too low | Increase `failureThreshold` |
+| Stale cached data | Long TTL | Add freshness indicator in UI |
+| DLQ growing | Persistent API issue | Check circuit breaker state |
+| Duplicate pages | Missing idempotency | Use `idempotentCreatePage` |
 
 ## Examples
 
-### Quick Circuit Check
+### Health Dashboard
 ```typescript
-const state = notionBreaker.stats().state;
-console.log('Notion circuit:', state);
+function getSystemHealth() {
+  return {
+    circuit: circuitBreaker.getState(),
+    dlq: { size: dlq.size, entries: dlq.getEntries().map(e => ({
+      operation: e.operation, attempts: e.attempts, lastAttempt: e.lastAttempt,
+    }))},
+    queues: {
+      critical: { pending: queues.critical.size, active: queues.critical.pending },
+      normal: { pending: queues.normal.size, active: queues.normal.pending },
+    },
+  };
+}
 ```
 
 ## Resources
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Notion Reliability Guide](https://docs.notion.com/reliability)
+- [Notion Request Limits](https://developers.notion.com/reference/request-limits)
+- [p-queue](https://github.com/sindresorhus/p-queue)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For policy enforcement, see `notion-policy-guardrails`.

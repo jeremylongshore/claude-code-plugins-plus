@@ -1,9 +1,9 @@
 ---
 name: notion-performance-tuning
 description: |
-  Optimize Notion API performance with caching, batching, and connection pooling.
+  Optimize Notion API performance with caching, parallel fetching, and pagination.
   Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Notion integrations.
+  or optimizing request patterns for Notion integrations.
   Trigger with phrases like "notion performance", "optimize notion",
   "notion latency", "notion caching", "notion slow", "notion batch".
 allowed-tools: Read, Write, Edit
@@ -17,200 +17,235 @@ compatible-with: claude-code
 # Notion Performance Tuning
 
 ## Overview
-Optimize Notion API performance with caching, batching, and connection pooling.
+Optimize Notion API performance by reducing API calls, caching responses, batching operations, and using efficient pagination patterns.
 
 ## Prerequisites
-- Notion SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+- `@notionhq/client` installed
+- Understanding of your access patterns (read-heavy vs write-heavy)
+- Optional: Redis for distributed caching
 
-## Latency Benchmarks
+## Instructions
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+### Step 1: Minimize API Calls
 
-## Caching Strategy
+```typescript
+import { Client } from '@notionhq/client';
 
-### Response Caching
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+
+// BAD: N+1 query pattern — separate call for each page's content
+const pages = await notion.databases.query({ database_id: dbId });
+for (const page of pages.results) {
+  const content = await notion.blocks.children.list({ block_id: page.id }); // N calls!
+}
+
+// GOOD: Only fetch content when needed, use property values from query
+const pages = await notion.databases.query({
+  database_id: dbId,
+  filter: { property: 'Status', select: { equals: 'Active' } },
+});
+// Page properties are already in the query result — no extra calls needed
+for (const page of pages.results) {
+  if ('properties' in page) {
+    const title = page.properties.Name?.type === 'title'
+      ? page.properties.Name.title.map(t => t.plain_text).join('')
+      : '';
+    // Use title directly — no separate retrieve call needed
+  }
+}
+```
+
+### Step 2: Response Caching
 ```typescript
 import { LRUCache } from 'lru-cache';
 
 const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
+  max: 500,            // max entries
+  ttl: 60_000,         // 1 minute TTL
   updateAgeOnGet: true,
 });
 
-async function cachedNotionRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function cachedQuery(dbId: string, filter?: any) {
+  const cacheKey = `db:${dbId}:${JSON.stringify(filter ?? {})}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
+  const result = await notion.databases.query({
+    database_id: dbId,
+    filter,
+    page_size: 100,
+  });
+  cache.set(cacheKey, result);
   return result;
 }
-```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const notionLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Notion
-    const results = await notionClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+// Invalidate on writes
+async function createPageAndInvalidate(dbId: string, properties: any) {
+  const page = await notion.pages.create({
+    parent: { database_id: dbId },
+    properties,
+  });
+  // Invalidate all queries for this database
+  for (const key of cache.keys()) {
+    if (key.startsWith(`db:${dbId}:`)) cache.delete(key);
   }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  notionLoader.load('id-1'),
-  notionLoader.load('id-2'),
-  notionLoader.load('id-3'),
-]);
+  return page;
+}
 ```
 
-## Connection Optimization
+### Step 3: Efficient Pagination
+```typescript
+// Fetch all pages with maximum page_size (100) to minimize requests
+async function getAllPages(dbId: string, filter?: any) {
+  const allPages: any[] = [];
+  let cursor: string | undefined;
+  let requestCount = 0;
 
+  do {
+    const response = await notion.databases.query({
+      database_id: dbId,
+      filter,
+      page_size: 100, // Maximum — reduces total requests
+      start_cursor: cursor,
+    });
+    allPages.push(...response.results);
+    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+    requestCount++;
+  } while (cursor);
+
+  console.log(`Fetched ${allPages.length} pages in ${requestCount} requests`);
+  return allPages;
+}
+
+// Async generator for memory-efficient streaming
+async function* streamPages(dbId: string, filter?: any) {
+  let cursor: string | undefined;
+
+  do {
+    const response = await notion.databases.query({
+      database_id: dbId,
+      filter,
+      page_size: 100,
+      start_cursor: cursor,
+    });
+
+    for (const page of response.results) {
+      yield page;
+    }
+
+    cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+  } while (cursor);
+}
+
+// Usage — process without loading everything into memory
+for await (const page of streamPages(dbId)) {
+  await processPage(page);
+}
+```
+
+### Step 4: Parallel Fetches (Within Rate Limits)
+```typescript
+import PQueue from 'p-queue';
+
+const queue = new PQueue({ concurrency: 3, interval: 1000, intervalCap: 3 });
+
+// Fetch multiple pages in parallel while respecting rate limits
+async function getMultiplePages(pageIds: string[]) {
+  return Promise.all(
+    pageIds.map(id =>
+      queue.add(() => notion.pages.retrieve({ page_id: id }))
+    )
+  );
+}
+
+// Fetch blocks for multiple pages in parallel
+async function getMultiplePagesContent(pageIds: string[]) {
+  return Promise.all(
+    pageIds.map(id =>
+      queue.add(() => notion.blocks.children.list({ block_id: id }))
+    )
+  );
+}
+```
+
+### Step 5: Block Append Optimization
+```typescript
+// BAD: One block at a time
+for (const item of items) {
+  await notion.blocks.children.append({
+    block_id: pageId,
+    children: [{ paragraph: { rich_text: [{ text: { content: item } }] } }],
+  });
+}
+
+// GOOD: Batch blocks in a single call (up to 100 blocks per request)
+const blocks = items.map(item => ({
+  paragraph: { rich_text: [{ text: { content: item } }] },
+}));
+
+// Chunk into batches of 100 (API limit)
+for (let i = 0; i < blocks.length; i += 100) {
+  await notion.blocks.children.append({
+    block_id: pageId,
+    children: blocks.slice(i, i + 100),
+  });
+}
+```
+
+### Step 6: Connection Keep-Alive
 ```typescript
 import { Agent } from 'https';
 
-// Keep-alive connection pooling
+// Reuse TCP connections
 const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 30000,
 });
 
-const client = new NotionClient({
-  apiKey: process.env.NOTION_API_KEY!,
-  httpAgent: agent,
+const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+  // The SDK uses node-fetch internally; this reduces connection overhead
 });
+
+// Using a singleton client (see notion-sdk-patterns) already handles this
 ```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedNotionList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedNotionList(cursor =>
-  notionClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredNotionCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Notion operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Reduced API call count through caching and batching
+- Efficient pagination with max page_size
+- Parallel fetches within rate limits
+- Streaming for large datasets
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Stale cache data | Long TTL | Reduce TTL or invalidate on writes |
+| Rate limit despite queue | Burst from other code | Use single shared queue |
+| Memory pressure | Caching too much | Set `max` on LRU cache |
+| Pagination loops | `has_more` always true | Set a max iteration guard |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Performance Measurement
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredNotionCall(name, () =>
-    cachedNotionRequest(`cache:${name}`, fn)
-  );
+async function measuredCall<T>(label: string, fn: () => Promise<T>): Promise<T> {
+  const start = performance.now();
+  const result = await fn();
+  console.log(`${label}: ${(performance.now() - start).toFixed(0)}ms`);
+  return result;
+}
+
+// Compare cached vs uncached
+await measuredCall('uncached', () => notion.databases.query({ database_id: dbId }));
+await measuredCall('cached', () => cachedQuery(dbId));
 ```
 
 ## Resources
-- [Notion Performance Guide](https://docs.notion.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+- [Query a Database](https://developers.notion.com/reference/post-database-query)
+- [Append Block Children](https://developers.notion.com/reference/patch-block-children)
+- [Request Limits](https://developers.notion.com/reference/request-limits)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
 For cost optimization, see `notion-cost-tuning`.

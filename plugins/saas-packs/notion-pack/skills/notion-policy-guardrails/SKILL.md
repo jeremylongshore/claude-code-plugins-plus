@@ -1,11 +1,11 @@
 ---
 name: notion-policy-guardrails
 description: |
-  Implement Notion lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Notion integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Notion best practices.
+  Implement lint rules, CI checks, and runtime guardrails for Notion integrations.
+  Use when setting up code quality rules, implementing pre-commit hooks,
+  or configuring automated validation for Notion API usage.
   Trigger with phrases like "notion policy", "notion lint",
-  "notion guardrails", "notion best practices check", "notion eslint".
+  "notion guardrails", "notion best practices check", "notion code review".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,35 +17,86 @@ compatible-with: claude-code
 # Notion Policy & Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Notion integrations.
+Automated policy enforcement for Notion integrations: secret scanning, API usage validation, runtime guards, and CI checks.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
+- ESLint or similar linter configured
+- CI/CD pipeline (GitHub Actions)
+- TypeScript for compile-time checks
 
-## ESLint Rules
+## Instructions
 
-### Custom Notion Plugin
+### Step 1: Secret Scanning
+```bash
+#!/bin/bash
+# scripts/scan-notion-secrets.sh
+echo "Scanning for Notion tokens..."
+
+# Notion internal integration tokens
+if grep -rE "(ntn_|secret_)[a-zA-Z0-9]{30,}" \
+  --include="*.ts" --include="*.js" --include="*.json" --include="*.yaml" \
+  --exclude-dir=node_modules --exclude-dir=.git .; then
+  echo "ERROR: Notion token found in source code!"
+  echo "Move tokens to environment variables."
+  exit 1
+fi
+
+# OAuth client secrets
+if grep -rE "NOTION_OAUTH_CLIENT_SECRET.*=.*['\"][a-zA-Z0-9]{20,}['\"]" \
+  --include="*.ts" --include="*.js" --exclude-dir=node_modules .; then
+  echo "ERROR: Notion OAuth secret found in source code!"
+  exit 1
+fi
+
+echo "OK: No Notion tokens found in source."
+```
+
+### Step 2: ESLint Rules for Notion Patterns
 ```javascript
-// eslint-plugin-notion/rules/no-hardcoded-keys.js
+// eslint-rules/no-notion-secrets.js
 module.exports = {
   meta: {
     type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Notion API keys',
-    },
-    fixable: 'code',
+    docs: { description: 'Disallow hardcoded Notion tokens' },
   },
   create(context) {
     return {
       Literal(node) {
         if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
+          if (/^(ntn_|secret_)[a-zA-Z0-9]{30,}/.test(node.value)) {
             context.report({
               node,
-              message: 'Hardcoded Notion API key detected',
+              message: 'Hardcoded Notion token detected. Use process.env.NOTION_TOKEN.',
+            });
+          }
+        }
+      },
+    };
+  },
+};
+
+// eslint-rules/notion-require-error-handling.js
+module.exports = {
+  meta: {
+    type: 'suggestion',
+    docs: { description: 'Require error handling for Notion API calls' },
+  },
+  create(context) {
+    return {
+      // Flag notion.X.Y() calls not in try/catch
+      CallExpression(node) {
+        if (node.callee?.object?.object?.name === 'notion') {
+          // Check if inside try block
+          let parent = node.parent;
+          let inTry = false;
+          while (parent) {
+            if (parent.type === 'TryStatement') { inTry = true; break; }
+            parent = parent.parent;
+          }
+          if (!inTry) {
+            context.report({
+              node,
+              message: 'Notion API calls should be wrapped in try/catch for error handling.',
             });
           }
         }
@@ -55,205 +106,186 @@ module.exports = {
 };
 ```
 
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['notion'],
-  rules: {
-    'notion/no-hardcoded-keys': 'error',
-    'notion/require-error-handling': 'warn',
-    'notion/use-typed-client': 'warn',
-  },
+### Step 3: CI Policy Checks
+```yaml
+# .github/workflows/notion-policy.yml
+name: Notion Policy Check
+on: [push, pull_request]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for Notion secrets
+        run: |
+          if grep -rE "(ntn_|secret_)[a-zA-Z0-9]{30,}" \
+            --include="*.ts" --include="*.js" --include="*.json" \
+            --exclude-dir=node_modules --exclude-dir=.git .; then
+            echo "::error::Notion token found in source code"
+            exit 1
+          fi
+
+      - name: Check .env files not committed
+        run: |
+          if git ls-files | grep -E "^\.env($|\.local|\.production)"; then
+            echo "::error::.env file committed to repository"
+            exit 1
+          fi
+
+      - name: Verify NOTION_TOKEN from env only
+        run: |
+          if grep -rn "new Client.*auth:.*['\"]ntn_\|new Client.*auth:.*['\"]secret_" \
+            --include="*.ts" --include="*.js" \
+            --exclude-dir=node_modules .; then
+            echo "::error::Client initialized with hardcoded token"
+            exit 1
+          fi
+```
+
+### Step 4: TypeScript Compile-Time Guards
+```typescript
+// src/notion/types.ts
+
+// Enforce that properties match expected types
+type NotionPropertyType = 'title' | 'rich_text' | 'number' | 'select' |
+  'multi_select' | 'date' | 'checkbox' | 'url' | 'email' |
+  'phone_number' | 'people' | 'relation' | 'formula' | 'rollup';
+
+// Define your database schema as a type
+interface TaskDbSchema {
+  Name: 'title';
+  Status: 'select';
+  Priority: 'select';
+  'Due Date': 'date';
+  Tags: 'multi_select';
+  Assignee: 'people';
+  Archived: 'checkbox';
+}
+
+// Type-safe property builder
+type PropertyValueFor<T extends NotionPropertyType> =
+  T extends 'title' ? { title: Array<{ text: { content: string } }> } :
+  T extends 'select' ? { select: { name: string } | null } :
+  T extends 'multi_select' ? { multi_select: Array<{ name: string }> } :
+  T extends 'date' ? { date: { start: string; end?: string } | null } :
+  T extends 'number' ? { number: number | null } :
+  T extends 'checkbox' ? { checkbox: boolean } :
+  T extends 'rich_text' ? { rich_text: Array<{ text: { content: string } }> } :
+  T extends 'url' ? { url: string | null } :
+  T extends 'email' ? { email: string | null } :
+  never;
+
+// Usage: compile-time validation of property types
+type TaskProperties = {
+  [K in keyof TaskDbSchema]: PropertyValueFor<TaskDbSchema[K]>;
+};
+
+// This will give a TypeScript error if you use wrong types:
+const taskProps: Partial<TaskProperties> = {
+  Name: { title: [{ text: { content: 'My Task' } }] },
+  Status: { select: { name: 'Done' } },
+  // Status: { number: 42 }, // TypeScript ERROR: not assignable
 };
 ```
 
-## Pre-Commit Hooks
+### Step 5: Runtime Guards
+```typescript
+// Prevent dangerous operations in production
+const PRODUCTION_BLOCKED_PATTERNS = [
+  /delete.*all/i,
+  /archive.*all/i,
+  /clear.*database/i,
+  /reset.*data/i,
+];
 
+function guardDangerousOperation(description: string) {
+  if (process.env.NODE_ENV === 'production') {
+    if (PRODUCTION_BLOCKED_PATTERNS.some(p => p.test(description))) {
+      throw new Error(`Operation "${description}" is blocked in production`);
+    }
+  }
+}
+
+// Rate limit self-protection
+class SelfRateLimiter {
+  private requestTimestamps: number[] = [];
+  private readonly windowMs = 1000;
+  private readonly maxPerWindow = 3;
+
+  check(): boolean {
+    const now = Date.now();
+    this.requestTimestamps = this.requestTimestamps.filter(t => t > now - this.windowMs);
+
+    if (this.requestTimestamps.length >= this.maxPerWindow) {
+      console.warn('Self-rate-limit: approaching Notion API limit');
+      return false;
+    }
+
+    this.requestTimestamps.push(now);
+    return true;
+  }
+}
+
+// Startup validation
+function validateNotionConfig() {
+  const checks = [
+    { name: 'NOTION_TOKEN set', pass: !!process.env.NOTION_TOKEN },
+    { name: 'Token format valid', pass: /^(ntn_|secret_)/.test(process.env.NOTION_TOKEN ?? '') },
+    { name: 'Not a production token in dev', pass: !(process.env.NODE_ENV === 'development' && process.env.NOTION_TOKEN?.includes('prod')) },
+  ];
+
+  const failed = checks.filter(c => !c.pass);
+  if (failed.length > 0) {
+    console.error('Notion config validation failed:');
+    failed.forEach(c => console.error(`  FAIL: ${c.name}`));
+    throw new Error('Notion configuration invalid');
+  }
+  console.log('Notion config validation passed');
+}
+```
+
+### Step 6: Pre-Commit Hook
 ```yaml
 # .pre-commit-config.yaml
 repos:
   - repo: local
     hooks:
-      - id: notion-secrets-check
-        name: Check for Notion secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
+      - id: notion-secrets
+        name: Check for Notion tokens
+        entry: bash scripts/scan-notion-secrets.sh
         language: system
         pass_filenames: false
-
-      - id: notion-config-validate
-        name: Validate Notion configuration
-        entry: node scripts/validate-notion-config.js
-        language: node
-        files: '\.notion\.json$'
 ```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface NotionStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Notion code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new NotionClient(config satisfies NotionStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Notion Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Notion client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: notion/use-singleton-client
-- CI check: grep for "new NotionClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# notion-policy.rego
-package notion
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/notion-policy.yml
-name: Notion Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Notion keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s notion-config.schema.json -d config/notion/*.json
-
-      - name: Run ESLint Notion rules
-        run: npx eslint --plugin notion --rule 'notion/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardNotionOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.NOTION_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Notion rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Notion rate limit exceeded - request blocked');
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Notion patterns.
-
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
-
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
-
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
 
 ## Output
-- ESLint plugin with Notion rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+- Secret scanning catching tokens before commit
+- ESLint rules enforcing Notion best practices
+- CI pipeline blocking policy violations
+- TypeScript types preventing property mismatches
+- Runtime guards protecting production
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| False positive in secret scan | Test fixtures | Add `--exclude` for test files |
+| ESLint rule not triggering | Plugin not loaded | Check ESLint config |
+| Type errors too strict | Schema changed | Update TypeScript schema types |
+| Runtime guard blocking valid operation | Pattern too broad | Narrow regex |
 
 ## Examples
 
-### Quick ESLint Check
+### Quick Policy Check
 ```bash
-npx eslint --plugin notion --rule 'notion/no-hardcoded-keys: error' src/
+# One-line secret scan
+grep -rn "ntn_\|secret_" --include="*.ts" src/ && echo "FAIL" || echo "PASS"
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
+- [Notion Best Practices for API Keys](https://developers.notion.com/docs/best-practices-for-handling-api-keys)
+- [ESLint Custom Rules](https://eslint.org/docs/latest/extend/plugins)
 - [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
 
 ## Next Steps
 For architecture blueprints, see `notion-architecture-variants`.

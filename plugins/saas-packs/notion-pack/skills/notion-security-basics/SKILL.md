@@ -1,11 +1,11 @@
 ---
 name: notion-security-basics
 description: |
-  Apply Notion security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
+  Apply Notion API security best practices for tokens, permissions, and access control.
+  Use when securing integration tokens, configuring least-privilege capabilities,
   or auditing Notion security configuration.
   Trigger with phrases like "notion security", "notion secrets",
-  "secure notion", "notion API key security".
+  "secure notion", "notion API key security", "notion permissions".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
@@ -17,126 +17,188 @@ compatible-with: claude-code
 # Notion Security Basics
 
 ## Overview
-Security best practices for Notion API keys, tokens, and access control.
+Security best practices for Notion integration tokens, page-level permissions, and webhook verification.
 
 ## Prerequisites
-- Notion SDK installed
+- Notion integration created at notion.so/my-integrations
 - Understanding of environment variables
-- Access to Notion dashboard
+- Access to deployment platform for secrets management
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Token Management
 ```bash
-# .env (NEVER commit to git)
-NOTION_API_KEY=sk_live_***
-NOTION_SECRET=***
+# Tokens start with ntn_ (new) or secret_ (legacy)
+# NEVER commit tokens to git
 
 # .gitignore
 .env
 .env.local
 .env.*.local
+
+# .env (local only)
+NOTION_TOKEN=ntn_your_secret_here
 ```
 
-### Step 2: Implement Secret Rotation
+```typescript
+// Always load from environment
+import { Client } from '@notionhq/client';
+
+if (!process.env.NOTION_TOKEN) {
+  throw new Error('NOTION_TOKEN is required');
+}
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+
+// NEVER do this:
+// const notion = new Client({ auth: 'ntn_actual_token_here' }); // Exposed in source!
+```
+
+### Step 2: Least-Privilege Capabilities
+Configure integration capabilities at https://www.notion.so/my-integrations:
+
+| Capability | When Needed |
+|------------|-------------|
+| Read content | Reading pages, databases, blocks |
+| Update content | Modifying existing pages and blocks |
+| Insert content | Creating new pages and appending blocks |
+| Read comments | Listing and reading comments |
+| Create comments | Adding comments to pages/blocks |
+| Read user information (with email) | Only if you need user emails |
+| Read user information (without email) | Default for user references |
+
+**Best practice:** Only enable capabilities your integration actually uses. A read-only dashboard integration should not have Insert or Update capabilities.
+
+### Step 3: Page-Level Access Control
+Notion uses page-level sharing, not workspace-wide access:
+
+```typescript
+// Integration can ONLY access pages explicitly shared with it
+// Even workspace-level tokens respect page sharing
+
+// This will 404 if the page isn't shared:
+try {
+  await notion.pages.retrieve({ page_id: 'unshared-page-id' });
+} catch (error) {
+  // error.code === 'object_not_found'
+  // Cannot distinguish "doesn't exist" from "not shared" — by design
+}
+```
+
+**Sharing hierarchy:**
+- Share a parent page to grant access to all children
+- Sharing a child page alone does NOT grant access to its parent
+- Removing integration access from a parent removes it from all children
+
+### Step 4: Token Rotation
 ```bash
-# 1. Generate new key in Notion dashboard
-# 2. Update environment variable
-export NOTION_API_KEY="new_key_here"
+# 1. Generate new token at notion.so/my-integrations
+#    (Click integration → "Regenerate" under Internal Integration Secret)
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${NOTION_API_KEY}" \
-  https://api.notion.com/health
+# 2. Update in your secret manager FIRST
+# AWS:
+aws secretsmanager update-secret --secret-id notion-token --secret-string "ntn_new_token"
+# GCP:
+echo -n "ntn_new_token" | gcloud secrets versions add notion-token --data-file=-
 
-# 4. Revoke old key in dashboard
+# 3. Deploy/restart with new token
+
+# 4. Verify new token works
+curl -s https://api.notion.com/v1/users/me \
+  -H "Authorization: Bearer ${NOTION_TOKEN}" \
+  -H "Notion-Version: 2022-06-28" | jq .name
+
+# 5. Old token is automatically invalidated on regeneration
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 5: Webhook Security
+```typescript
+// Notion webhooks require verification of the webhook URL
+// Configure webhook at: https://www.notion.so/my-integrations
+
+// Verify webhook events come from Notion:
+// 1. Only accept requests from Notion's IP ranges
+// 2. Validate the payload structure matches Notion's schema
+// 3. Use HTTPS endpoints only
+
+import express from 'express';
+
+const app = express();
+
+app.post('/webhooks/notion',
+  express.json(),
+  async (req, res) => {
+    // Notion verifies your endpoint during setup with a verification request
+    if (req.body.type === 'url_verification') {
+      // Echo the challenge back
+      return res.json({ challenge: req.body.challenge });
+    }
+
+    // Process actual events
+    const event = req.body;
+    console.log(`Event: ${event.type}`, event.data);
+
+    // Always respond 200 quickly — process async
+    res.status(200).json({ ok: true });
+  }
+);
+```
+
+### Step 6: Git Secret Scanning
+```yaml
+# .github/workflows/secret-scan.yml
+name: Secret Scan
+on: [push, pull_request]
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Notion tokens
+        run: |
+          if grep -rE "(ntn_|secret_)[a-zA-Z0-9]{30,}" --include="*.ts" --include="*.js" --include="*.json" .; then
+            echo "ERROR: Notion token found in source code!"
+            exit 1
+          fi
+```
 
 ## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
+- Tokens stored securely in environment variables
+- Integration capabilities set to minimum required
+- Page-level access properly configured
+- Token rotation procedure documented
+- Webhook endpoint secured
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
 |----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
+| Token in source code | Git scanning, grep | Rotate immediately, add to .gitignore |
+| Over-privileged integration | Capability audit | Remove unused capabilities |
+| Unshared pages returning 404 | Application logs | Document required page sharing |
+| Token never rotated | Token age tracking | Schedule quarterly rotation |
 
 ## Examples
 
-### Service Account Pattern
+### Separate Read/Write Integrations
 ```typescript
-const clients = {
-  reader: new NotionClient({
-    apiKey: process.env.NOTION_READ_KEY,
-  }),
-  writer: new NotionClient({
-    apiKey: process.env.NOTION_WRITE_KEY,
-  }),
-};
-```
+// Create two integrations with different capabilities:
+// "my-app-reader" — Read content only
+// "my-app-writer" — Read + Update + Insert
 
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
+const readerNotion = new Client({ auth: process.env.NOTION_READ_TOKEN });
+const writerNotion = new Client({ auth: process.env.NOTION_WRITE_TOKEN });
 
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
+// Use reader for dashboards, search, data export
+const pages = await readerNotion.databases.query({ database_id: dbId });
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Notion analytics
-  await notionClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'notion.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
+// Use writer only when mutations are needed
+await writerNotion.pages.update({ page_id: pageId, properties: { ... } });
 ```
 
 ## Resources
-- [Notion Security Guide](https://docs.notion.com/security)
-- [Notion API Scopes](https://docs.notion.com/scopes)
+- [Notion API Authorization](https://developers.notion.com/docs/authorization)
+- [Best Practices for API Keys](https://developers.notion.com/docs/best-practices-for-handling-api-keys)
+- [Integration Capabilities](https://developers.notion.com/docs/create-a-notion-integration)
 
 ## Next Steps
 For production deployment, see `notion-prod-checklist`.

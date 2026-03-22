@@ -1,11 +1,11 @@
 ---
 name: notion-rate-limits
 description: |
-  Implement Notion rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
+  Handle Notion API rate limits with backoff, queuing, and throttling.
+  Use when hitting 429 errors, implementing retry logic,
   or optimizing API request throughput for Notion.
   Trigger with phrases like "notion rate limit", "notion throttling",
-  "notion 429", "notion retry", "notion backoff".
+  "notion 429", "notion retry", "notion backoff", "notion too many requests".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,44 +17,86 @@ compatible-with: claude-code
 # Notion Rate Limits
 
 ## Overview
-Handle Notion rate limits gracefully with exponential backoff and idempotency.
+The Notion API enforces a rate limit averaging 3 requests per second per integration. Handle 429 responses gracefully with the `Retry-After` header, exponential backoff, and request queuing.
 
 ## Prerequisites
-- Notion SDK installed
+- `@notionhq/client` installed (has built-in retry)
 - Understanding of async/await patterns
-- Access to rate limit headers
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Understand Notion's Rate Limits
+| Aspect | Value |
+|--------|-------|
+| Rate limit | Average 3 requests/second per integration |
+| Burst | Some bursts above average are allowed |
+| Response on limit | HTTP 429 with `Retry-After` header (seconds) |
+| Applies per | Integration token (not per user or workspace) |
+| Payload size limit | 1000 block children per request |
+| Page size limit | 100 results per paginated request |
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+There are no tiered rate limits. All integrations get the same limit regardless of plan.
 
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 2: Built-in SDK Retry
+The `@notionhq/client` SDK retries 429 errors automatically:
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+import { Client } from '@notionhq/client';
+
+const notion = new Client({
+  auth: process.env.NOTION_TOKEN,
+  // Built-in retry defaults:
+  // maxRetries: 2 (total 3 attempts)
+  // initialRetryDelayMs: 1000
+  // maxRetryDelayMs: 60000
+});
+
+// For heavier workloads, increase retries:
+const notionHeavy = new Client({
+  auth: process.env.NOTION_TOKEN,
+  // @ts-ignore — retry config is supported but not in all type defs
+  retry: {
+    maxRetries: 5,
+    initialRetryDelayMs: 500,
+    maxRetryDelayMs: 60_000,
+  },
+});
+```
+
+### Step 3: Custom Backoff for Batch Operations
+```typescript
+import { isNotionClientError, APIErrorCode } from '@notionhq/client';
+
+async function withBackoff<T>(
+  fn: () => Promise<T>,
+  opts = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000 }
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= opts.maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      return await fn();
+    } catch (error) {
+      if (attempt === opts.maxRetries) throw error;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      // Only retry rate limits and server errors
+      if (isNotionClientError(error)) {
+        if (error.code === APIErrorCode.RateLimited) {
+          const retryAfter = parseInt(error.headers?.['retry-after'] ?? '1');
+          console.log(`Rate limited. Waiting ${retryAfter}s (attempt ${attempt + 1})`);
+          await new Promise(r => setTimeout(r, retryAfter * 1000));
+          continue;
+        }
+        // Don't retry client errors (400, 401, 404, etc.)
+        if (error.status && error.status < 500 && error.status !== 429) {
+          throw error;
+        }
+      }
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      // Exponential backoff with jitter for server errors
+      const delay = Math.min(
+        opts.baseDelayMs * Math.pow(2, attempt) + Math.random() * 500,
+        opts.maxDelayMs
+      );
+      console.log(`Server error. Retrying in ${Math.round(delay)}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +104,96 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: NotionClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
+### Step 4: Queue-Based Throttling
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
+// Enforce 3 req/s with concurrency control
+const notionQueue = new PQueue({
+  concurrency: 3,          // max parallel requests
+  interval: 1000,          // per 1 second
+  intervalCap: 3,          // max 3 per interval
+  carryoverConcurrencyCount: true,
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function throttledNotionCall<T>(fn: () => Promise<T>): Promise<T> {
+  return notionQueue.add(fn, { throwOnTimeout: true });
 }
+
+// Usage — all calls are automatically throttled
+const pages = await Promise.all(
+  pageIds.map(id =>
+    throttledNotionCall(() => notion.pages.retrieve({ page_id: id }))
+  )
+);
 ```
 
-### Monitor Rate Limit Usage
+### Step 5: Batch Processing Pattern
 ```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+async function processBatch<T, R>(
+  items: T[],
+  processor: (item: T) => Promise<R>,
+  batchSize = 3,
+  delayMs = 350 // ~3/second
+): Promise<R[]> {
+  const results: R[] = [];
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    const batchResults = await Promise.all(batch.map(processor));
+    results.push(...batchResults);
+
+    // Delay between batches (skip after last batch)
+    if (i + batchSize < items.length) {
+      await new Promise(r => setTimeout(r, delayMs));
     }
   }
 
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
+  return results;
 }
+
+// Usage: update 100 pages without hitting rate limits
+const updates = await processBatch(
+  pageIds,
+  (id) => notion.pages.update({
+    page_id: id,
+    properties: { Status: { select: { name: 'Processed' } } },
+  }),
+  3,    // 3 concurrent
+  400   // 400ms between batches
+);
+```
+
+## Output
+- Rate limit errors handled with automatic retry
+- Request throughput optimized within API limits
+- Batch operations processed without 429 errors
+
+## Error Handling
+| Scenario | Strategy |
+|----------|----------|
+| Single 429 | Honor `Retry-After` header |
+| Repeated 429s | Exponential backoff + reduce concurrency |
+| Bulk operations (50+ items) | Queue with `p-queue` at 3/s |
+| Burst then steady | SDK built-in retry sufficient |
+
+## Examples
+
+### Monitor Queue Health
+```typescript
+notionQueue.on('active', () => {
+  console.log(`Queue: ${notionQueue.size} pending, ${notionQueue.pending} active`);
+});
+
+notionQueue.on('idle', () => {
+  console.log('Queue: all requests complete');
+});
 ```
 
 ## Resources
-- [Notion Rate Limits](https://docs.notion.com/rate-limits)
+- [Notion Rate Limits](https://developers.notion.com/reference/request-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+- [@notionhq/client Retry Config](https://github.com/makenotion/notion-sdk-js)
 
 ## Next Steps
 For security configuration, see `notion-security-basics`.

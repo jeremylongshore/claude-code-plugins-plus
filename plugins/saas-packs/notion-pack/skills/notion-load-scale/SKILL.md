@@ -1,12 +1,12 @@
 ---
 name: notion-load-scale
 description: |
-  Implement Notion load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Notion integrations.
+  Implement Notion load testing, throughput optimization, and scaling strategies.
+  Use when testing integration performance at scale, optimizing for Notion's
+  rate limits, or planning capacity for high-volume Notion operations.
   Trigger with phrases like "notion load test", "notion scale",
-  "notion performance test", "notion capacity", "notion k6", "notion benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  "notion performance test", "notion capacity", "notion benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(node:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,260 +17,276 @@ compatible-with: claude-code
 # Notion Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Notion integrations.
+Load testing and scaling strategies for Notion integrations, working within the 3 requests/second rate limit. Includes throughput benchmarks, k6 load scripts, and scaling patterns.
 
 ## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+- `@notionhq/client` installed
+- k6 load testing tool (optional)
+- Test database in Notion (dedicated for load tests)
 
-## Load Testing with k6
+## Instructions
 
-### Basic Load Test
+### Step 1: Understand Notion's Throughput Limits
+```
+Rate limit: 3 requests/second average (per integration token)
+Burst: Some bursts allowed above average
+Page size: Max 100 results per query
+Block append: Max 100 blocks per request
+No bulk create: Pages must be created one at a time
+
+Theoretical maximums per hour:
+  - Reads (query/retrieve): ~10,800 (3/s × 3,600s)
+  - Pages queried: ~1,080,000 (10,800 × 100 per page)
+  - Pages created: ~10,800 (one at a time, 3/s)
+  - Blocks appended: ~1,080,000 (10,800 × 100 per batch)
+```
+
+### Step 2: Throughput Benchmark
+```typescript
+import { Client } from '@notionhq/client';
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN });
+
+async function benchmarkThroughput(dbId: string, durationMs = 30_000) {
+  const results = {
+    queries: 0,
+    pagesRead: 0,
+    errors: 0,
+    rateLimits: 0,
+    startTime: Date.now(),
+    latencies: [] as number[],
+  };
+
+  const endTime = Date.now() + durationMs;
+
+  while (Date.now() < endTime) {
+    const start = performance.now();
+    try {
+      const response = await notion.databases.query({
+        database_id: dbId,
+        page_size: 100,
+      });
+      results.queries++;
+      results.pagesRead += response.results.length;
+      results.latencies.push(performance.now() - start);
+    } catch (error: any) {
+      results.errors++;
+      if (error.code === 'rate_limited') {
+        results.rateLimits++;
+        // Wait for rate limit to clear
+        const retryAfter = parseInt(error.headers?.['retry-after'] ?? '1');
+        await new Promise(r => setTimeout(r, retryAfter * 1000));
+      }
+    }
+  }
+
+  const durationSec = (Date.now() - results.startTime) / 1000;
+  const sorted = results.latencies.sort((a, b) => a - b);
+
+  console.log('=== Notion Throughput Benchmark ===');
+  console.log(`Duration: ${durationSec.toFixed(1)}s`);
+  console.log(`Queries: ${results.queries} (${(results.queries / durationSec).toFixed(1)}/s)`);
+  console.log(`Pages read: ${results.pagesRead}`);
+  console.log(`Errors: ${results.errors} (${results.rateLimits} rate limits)`);
+  console.log(`Latency P50: ${Math.round(sorted[Math.floor(sorted.length * 0.5)])}ms`);
+  console.log(`Latency P95: ${Math.round(sorted[Math.floor(sorted.length * 0.95)])}ms`);
+  console.log(`Latency P99: ${Math.round(sorted[Math.floor(sorted.length * 0.99)])}ms`);
+
+  return results;
+}
+```
+
+### Step 3: k6 Load Test Script
 ```javascript
 // notion-load-test.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
+
+const errorRate = new Rate('notion_errors');
+const queryLatency = new Trend('notion_query_latency');
 
 export const options = {
-  stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
-  ],
+  scenarios: {
+    steady_rate: {
+      executor: 'constant-arrival-rate',
+      rate: 3,              // 3 requests per second (Notion limit)
+      timeUnit: '1s',
+      duration: '2m',
+      preAllocatedVUs: 5,
+      maxVUs: 10,
+    },
+  },
   thresholds: {
-    http_req_duration: ['p(95)<500'],
-    http_req_failed: ['rate<0.01'],
+    notion_errors: ['rate<0.05'],          // < 5% error rate
+    notion_query_latency: ['p(95)<2000'],  // P95 < 2s
   },
 };
 
+const DB_ID = __ENV.NOTION_TEST_DB_ID;
+const TOKEN = __ENV.NOTION_TOKEN;
+
 export default function () {
-  const response = http.post(
-    'https://api.notion.com/v1/resource',
-    JSON.stringify({ test: true }),
+  const res = http.post(
+    `https://api.notion.com/v1/databases/${DB_ID}/query`,
+    JSON.stringify({ page_size: 10 }),
     {
       headers: {
+        'Authorization': `Bearer ${TOKEN}`,
+        'Notion-Version': '2022-06-28',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.NOTION_API_KEY}`,
       },
+      timeout: '30s',
     }
   );
 
-  check(response, {
+  const success = check(res, {
     'status is 200': (r) => r.status === 200,
-    'latency < 500ms': (r) => r.timings.duration < 500,
+    'has results': (r) => JSON.parse(r.body).results !== undefined,
   });
 
-  sleep(1);
-}
-```
+  errorRate.add(!success);
+  queryLatency.add(res.timings.duration);
 
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
-
-# Run test
-k6 run --env NOTION_API_KEY=${NOTION_API_KEY} notion-load-test.js
-
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 notion-load-test.js
-```
-
-## Scaling Patterns
-
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: notion-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: notion-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: notion_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
-```
-
-### Connection Pooling
-```typescript
-import { Pool } from 'generic-pool';
-
-const notionPool = Pool.create({
-  create: async () => {
-    return new NotionClient({
-      apiKey: process.env.NOTION_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,
-});
-
-async function withNotionClient<T>(
-  fn: (client: NotionClient) => Promise<T>
-): Promise<T> {
-  const client = await notionPool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    notionPool.release(client);
+  if (res.status === 429) {
+    const retryAfter = parseInt(res.headers['Retry-After'] || '1');
+    sleep(retryAfter);
   }
 }
 ```
 
-## Capacity Planning
+```bash
+# Run k6 test
+k6 run \
+  --env NOTION_TOKEN=${NOTION_TOKEN} \
+  --env NOTION_TEST_DB_ID=${NOTION_TEST_DB_ID} \
+  notion-load-test.js
+```
 
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
+### Step 4: Scaling Patterns
 
-### Capacity Calculation
+**Pattern A: Multiple Integration Tokens**
 ```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
+// Each integration token gets its own 3 req/s limit
+// Use separate integrations for independent workloads
+
+const readers = [
+  new Client({ auth: process.env.NOTION_TOKEN_READ_1 }),
+  new Client({ auth: process.env.NOTION_TOKEN_READ_2 }),
+];
+
+// Round-robin across clients
+let clientIndex = 0;
+function getNextClient(): Client {
+  const client = readers[clientIndex % readers.length];
+  clientIndex++;
+  return client;
 }
 
-function estimateNotionCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
+// 6 req/s total with 2 tokens
+```
 
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
+**Pattern B: Read-Through Cache**
+```typescript
+import { LRUCache } from 'lru-cache';
 
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
+const pageCache = new LRUCache<string, any>({ max: 1000, ttl: 300_000 }); // 5 min TTL
+
+async function getPage(pageId: string): Promise<any> {
+  const cached = pageCache.get(pageId);
+  if (cached) return cached; // Zero API cost for cache hits
+
+  const page = await notion.pages.retrieve({ page_id: pageId });
+  pageCache.set(pageId, page);
+  return page;
 }
+
+// For high-read workloads, cache hit rates of 80%+ reduce effective
+// API usage from 3 req/s to < 1 req/s of actual API calls
 ```
 
-## Benchmark Results Template
+**Pattern C: Queue-Based Write Batching**
+```typescript
+import PQueue from 'p-queue';
 
-```markdown
-## Notion Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
+const writeQueue = new PQueue({
+  concurrency: 1,         // Serialize writes
+  interval: 350,          // ~3/second
+  intervalCap: 1,
+});
 
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
+// Enqueue writes — they execute at controlled rate
+async function schedulePageCreate(dbId: string, properties: any) {
+  return writeQueue.add(() =>
+    notion.pages.create({ parent: { database_id: dbId }, properties })
+  );
+}
 
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
+// Monitor queue depth
+setInterval(() => {
+  if (writeQueue.size > 100) {
+    console.warn(`Write queue depth: ${writeQueue.size} — consider increasing rate`);
+  }
+}, 5000);
 ```
 
-## Instructions
+### Step 5: Capacity Planning
+```typescript
+function planCapacity(requirements: {
+  readsPerMinute: number;
+  writesPerMinute: number;
+  cacheHitRate: number; // 0-1
+}) {
+  const effectiveReads = requirements.readsPerMinute * (1 - requirements.cacheHitRate);
+  const totalReqPerMinute = effectiveReads + requirements.writesPerMinute;
+  const reqPerSecond = totalReqPerMinute / 60;
+  const tokensNeeded = Math.ceil(reqPerSecond / 3);
 
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
+  console.log('Capacity Plan:');
+  console.log(`  Raw reads/min: ${requirements.readsPerMinute}`);
+  console.log(`  Cache hit rate: ${(requirements.cacheHitRate * 100).toFixed(0)}%`);
+  console.log(`  Effective reads/min: ${Math.round(effectiveReads)}`);
+  console.log(`  Writes/min: ${requirements.writesPerMinute}`);
+  console.log(`  Total req/s: ${reqPerSecond.toFixed(1)}`);
+  console.log(`  Integration tokens needed: ${tokensNeeded}`);
+  console.log(`  Headroom: ${((tokensNeeded * 3 - reqPerSecond) / (tokensNeeded * 3) * 100).toFixed(0)}%`);
+}
 
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
+// Example
+planCapacity({ readsPerMinute: 500, writesPerMinute: 50, cacheHitRate: 0.8 });
+```
 
 ## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+- Throughput benchmark results with latency percentiles
+- k6 load test for sustained rate testing
+- Scaling patterns for exceeding single-token limits
+- Capacity planning tool
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
+| Sustained 429s | Exceeding 3 req/s | Add PQueue throttling |
+| k6 all errors | Wrong token or DB ID | Verify env vars |
+| Latency spikes | Notion server load | Expected variance, use P95 not max |
+| Queue growing | Write rate > 3/s | Add more integration tokens |
 
 ## Examples
 
-### Quick k6 Test
+### Quick Benchmark
 ```bash
-k6 run --vus 10 --duration 30s notion-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateNotionCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-kubectl scale deployment notion-integration --replicas=5
-kubectl get hpa notion-integration-hpa
+# Time 10 sequential API calls
+time for i in $(seq 1 10); do
+  curl -s -o /dev/null -w "%{time_total}s\n" \
+    https://api.notion.com/v1/users/me \
+    -H "Authorization: Bearer ${NOTION_TOKEN}" \
+    -H "Notion-Version: 2022-06-28"
+done
 ```
 
 ## Resources
+- [Notion Request Limits](https://developers.notion.com/reference/request-limits)
 - [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Notion Rate Limits](https://docs.notion.com/rate-limits)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
 For reliability patterns, see `notion-reliability-patterns`.

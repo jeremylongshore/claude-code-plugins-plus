@@ -1,11 +1,11 @@
 ---
 name: notion-reference-architecture
 description: |
-  Implement Notion reference architecture with best-practice project layout.
+  Implement a production-ready Notion integration architecture with proper layering.
   Use when designing new Notion integrations, reviewing project structure,
   or establishing architecture standards for Notion applications.
-  Trigger with phrases like "notion architecture", "notion best practices",
-  "notion project structure", "how to organize notion", "notion layout".
+  Trigger with phrases like "notion architecture", "notion project structure",
+  "how to organize notion", "notion layout", "notion reference architecture".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +17,278 @@ compatible-with: claude-code
 # Notion Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Notion integrations.
+Production-ready architecture for Notion integrations with proper layering: API client, service layer, caching, error handling, and testing.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Notion SDK knowledge
-- TypeScript project setup
-- Testing framework configured
-
-## Project Structure
-
-```
-my-notion-project/
-├── src/
-│   ├── notion/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── notion/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── notion/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── notion/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── notion/
-│   └── integration/
-│       └── notion/
-├── config/
-│   ├── notion.development.json
-│   ├── notion.staging.json
-│   └── notion.production.json
-└── docs/
-    └── notion/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
-
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Notion Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/notion/client.ts
-export class NotionService {
-  private client: NotionClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: NotionConfig) {
-    this.client = new NotionClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('notion');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/notion/errors.ts
-export class NotionServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'NotionServiceError';
-  }
-}
-
-export function wrapNotionError(error: unknown): NotionServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/notion/health.ts
-export async function checkNotionHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await notionClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Notion    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Notion    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/notion.ts
-export interface NotionConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadNotionConfig(): NotionConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./notion.${env}.json`);
-}
-```
+- `@notionhq/client` installed
+- TypeScript project with strict mode
+- Understanding of your integration requirements
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Project Structure
+```
+my-notion-integration/
+├── src/
+│   ├── notion/
+│   │   ├── client.ts           # Singleton client, retry config
+│   │   ├── types.ts            # Typed wrappers for properties
+│   │   ├── extractors.ts       # Property value extraction helpers
+│   │   └── errors.ts           # Error classification
+│   ├── services/
+│   │   ├── database.service.ts # Business logic for database operations
+│   │   ├── page.service.ts     # Page CRUD operations
+│   │   └── sync.service.ts     # Sync/polling logic
+│   ├── api/
+│   │   ├── routes.ts           # Express/Next.js routes
+│   │   └── webhooks.ts         # Webhook handler
+│   ├── cache/
+│   │   └── notion-cache.ts     # LRU or Redis cache layer
+│   └── index.ts
+├── tests/
+│   ├── unit/
+│   │   ├── extractors.test.ts
+│   │   └── database.service.test.ts
+│   └── integration/
+│       └── notion-api.test.ts
+├── .env.example
+└── package.json
+```
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+### Step 2: Client Layer
+```typescript
+// src/notion/client.ts
+import { Client, LogLevel } from '@notionhq/client';
 
-### Step 3: Add Error Handling
-Implement custom error classes for Notion operations.
+let client: Client | null = null;
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Notion connectivity.
+export function getNotionClient(): Client {
+  if (!client) {
+    if (!process.env.NOTION_TOKEN) {
+      throw new Error('NOTION_TOKEN required');
+    }
+    client = new Client({
+      auth: process.env.NOTION_TOKEN,
+      logLevel: process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.WARN,
+      timeoutMs: 30_000,
+    });
+  }
+  return client;
+}
+
+// For testing — allow client injection
+export function setNotionClient(mockClient: Client) {
+  client = mockClient;
+}
+```
+
+### Step 3: Type-Safe Property Extractors
+```typescript
+// src/notion/extractors.ts
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+
+export function extractTitle(page: PageObjectResponse, prop: string): string {
+  const p = page.properties[prop];
+  return p?.type === 'title' ? p.title.map(t => t.plain_text).join('') : '';
+}
+
+export function extractSelect(page: PageObjectResponse, prop: string): string | null {
+  const p = page.properties[prop];
+  return p?.type === 'select' ? p.select?.name ?? null : null;
+}
+
+export function extractMultiSelect(page: PageObjectResponse, prop: string): string[] {
+  const p = page.properties[prop];
+  return p?.type === 'multi_select' ? p.multi_select.map(s => s.name) : [];
+}
+
+export function extractNumber(page: PageObjectResponse, prop: string): number | null {
+  const p = page.properties[prop];
+  return p?.type === 'number' ? p.number : null;
+}
+
+export function extractDate(page: PageObjectResponse, prop: string): { start: string; end: string | null } | null {
+  const p = page.properties[prop];
+  return p?.type === 'date' && p.date ? { start: p.date.start, end: p.date.end } : null;
+}
+
+export function extractCheckbox(page: PageObjectResponse, prop: string): boolean {
+  const p = page.properties[prop];
+  return p?.type === 'checkbox' ? p.checkbox : false;
+}
+
+export function extractRichText(page: PageObjectResponse, prop: string): string {
+  const p = page.properties[prop];
+  return p?.type === 'rich_text' ? p.rich_text.map(t => t.plain_text).join('') : '';
+}
+
+export function extractRelation(page: PageObjectResponse, prop: string): string[] {
+  const p = page.properties[prop];
+  return p?.type === 'relation' ? p.relation.map(r => r.id) : [];
+}
+```
+
+### Step 4: Service Layer
+```typescript
+// src/services/database.service.ts
+import { getNotionClient } from '../notion/client';
+import { extractTitle, extractSelect } from '../notion/extractors';
+import type { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
+
+export interface TaskItem {
+  id: string;
+  title: string;
+  status: string | null;
+  url: string;
+  lastEdited: string;
+}
+
+export class DatabaseService {
+  private notion = getNotionClient();
+
+  async queryTasks(dbId: string, statusFilter?: string): Promise<TaskItem[]> {
+    const filter = statusFilter
+      ? { property: 'Status', select: { equals: statusFilter } }
+      : undefined;
+
+    const pages: PageObjectResponse[] = [];
+    let cursor: string | undefined;
+
+    do {
+      const response = await this.notion.databases.query({
+        database_id: dbId,
+        filter,
+        sorts: [{ property: 'Created', direction: 'descending' }],
+        page_size: 100,
+        start_cursor: cursor,
+      });
+
+      for (const result of response.results) {
+        if ('properties' in result) {
+          pages.push(result as PageObjectResponse);
+        }
+      }
+
+      cursor = response.has_more ? response.next_cursor ?? undefined : undefined;
+    } while (cursor);
+
+    return pages.map(page => ({
+      id: page.id,
+      title: extractTitle(page, 'Name'),
+      status: extractSelect(page, 'Status'),
+      url: page.url,
+      lastEdited: page.last_edited_time,
+    }));
+  }
+
+  async createTask(dbId: string, title: string, status?: string) {
+    const properties: any = {
+      Name: { title: [{ text: { content: title } }] },
+    };
+    if (status) {
+      properties.Status = { select: { name: status } };
+    }
+
+    return this.notion.pages.create({
+      parent: { database_id: dbId },
+      properties,
+    });
+  }
+
+  async updateStatus(pageId: string, status: string) {
+    return this.notion.pages.update({
+      page_id: pageId,
+      properties: { Status: { select: { name: status } } },
+    });
+  }
+}
+```
+
+### Step 5: Error Classification
+```typescript
+// src/notion/errors.ts
+import { isNotionClientError, APIErrorCode } from '@notionhq/client';
+
+export type NotionErrorType = 'auth' | 'not_found' | 'validation' | 'rate_limit' | 'server' | 'unknown';
+
+export function classifyError(error: unknown): { type: NotionErrorType; message: string; retryable: boolean } {
+  if (!isNotionClientError(error)) {
+    return { type: 'unknown', message: String(error), retryable: false };
+  }
+
+  switch (error.code) {
+    case APIErrorCode.Unauthorized:
+      return { type: 'auth', message: 'Invalid token', retryable: false };
+    case APIErrorCode.ObjectNotFound:
+      return { type: 'not_found', message: 'Resource not found or not shared', retryable: false };
+    case APIErrorCode.ValidationError:
+      return { type: 'validation', message: error.message, retryable: false };
+    case APIErrorCode.RateLimited:
+      return { type: 'rate_limit', message: 'Rate limited', retryable: true };
+    case APIErrorCode.InternalServerError:
+    case APIErrorCode.ServiceUnavailable:
+      return { type: 'server', message: error.message, retryable: true };
+    default:
+      return { type: 'unknown', message: error.message, retryable: false };
+  }
+}
+```
+
+### Step 6: Data Flow
+
+```
+Client Request
+     │
+     ▼
+┌──────────────┐
+│  API Routes  │  ← Express/Next.js handlers
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐    ┌──────────────┐
+│   Service    │───▶│    Cache     │  ← LRU / Redis
+│    Layer     │    │    Layer     │
+└──────┬───────┘    └──────────────┘
+       │
+       ▼
+┌──────────────┐
+│   Notion     │  ← @notionhq/client singleton
+│   Client     │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│  Notion API  │  ← api.notion.com
+└──────────────┘
+```
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+- Layered project structure with separation of concerns
+- Type-safe property extractors for all common types
+- Service layer with business logic
+- Error classification for consistent handling
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Notion types |
-| Test isolation | Shared state | Use dependency injection |
+| Circular dependencies | Wrong layer imports | Only import downward |
+| Property type mismatch | Schema changed in Notion | Use `databases.retrieve` to verify |
+| Test isolation | Shared singleton | Use `setNotionClient` for injection |
+| Missing types | SDK version mismatch | Update `@notionhq/client` |
 
 ## Examples
 
-### Quick Setup Script
+### Quick Setup
 ```bash
-# Create reference structure
-mkdir -p src/notion/{handlers} src/services/notion src/api/notion
-touch src/notion/{client,config,types,errors}.ts
-touch src/services/notion/{index,sync,cache}.ts
+mkdir -p src/{notion,services,api,cache} tests/{unit,integration}
+touch src/notion/{client,types,extractors,errors}.ts
+touch src/services/{database,page,sync}.service.ts
 ```
 
 ## Resources
-- [Notion SDK Documentation](https://docs.notion.com/sdk)
-- [Notion Best Practices](https://docs.notion.com/best-practices)
+- [Notion API Reference](https://developers.notion.com/reference/intro)
+- [@notionhq/client TypeScript Types](https://github.com/makenotion/notion-sdk-js)
+- [Working with Databases](https://developers.notion.com/docs/working-with-databases)
 
-## Flagship Skills
+## Next Steps
 For multi-environment setup, see `notion-multi-env-setup`.
