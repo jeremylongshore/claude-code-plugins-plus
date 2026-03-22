@@ -1,12 +1,12 @@
 ---
 name: snowflake-incident-runbook
 description: |
-  Execute Snowflake incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Snowflake-related outages, investigating errors,
-  or running post-incident reviews for Snowflake integration failures.
+  Execute Snowflake incident response with triage, rollback, and postmortem using real SQL diagnostics.
+  Use when responding to Snowflake outages, investigating query failures,
+  or running post-incident reviews for pipeline failures.
   Trigger with phrases like "snowflake incident", "snowflake outage",
-  "snowflake down", "snowflake on-call", "snowflake emergency", "snowflake broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "snowflake down", "snowflake on-call", "snowflake emergency".
+allowed-tools: Read, Grep, Bash(curl:*), Bash(snowsql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,189 +17,215 @@ compatible-with: claude-code
 # Snowflake Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Snowflake-related outages.
 
-## Prerequisites
-- Access to Snowflake dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response procedures for Snowflake infrastructure, pipeline failures, and query issues.
 
 ## Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Snowflake API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| P1 | Complete outage | < 15 min | All queries failing, auth broken |
+| P2 | Degraded service | < 1 hour | High latency, task failures |
+| P3 | Minor impact | < 4 hours | Snowpipe delays, non-critical errors |
+| P4 | No user impact | Next business day | Monitoring gaps, cost anomalies |
 
-## Quick Triage
+## Quick Triage (First 5 Minutes)
+
+### Step 1: Is Snowflake Itself Down?
 
 ```bash
-# 1. Check Snowflake status
-curl -s https://status.snowflake.com | jq
+# Check Snowflake status page
+curl -s https://status.snowflake.com/api/v2/summary.json | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+print(f\"Status: {data['status']['description']}\")
+for c in data['components']:
+    if c['status'] != 'operational':
+        print(f\"  DEGRADED: {c['name']} - {c['status']}\")
+"
+```
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.snowflake'
+### Step 2: Can We Connect?
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(snowflake_errors_total[5m])
+```sql
+-- Quick connectivity test
+SELECT CURRENT_TIMESTAMP(), CURRENT_ACCOUNT(), CURRENT_REGION();
 
-# 4. Recent error logs
-kubectl logs -l app=snowflake-integration --since=5m | grep -i error | tail -20
+-- If this fails, the issue is connectivity/auth, not query logic
+```
+
+### Step 3: What's Failing?
+
+```sql
+-- Recent failures (last 30 minutes)
+SELECT error_code, error_message, COUNT(*) AS occurrences,
+       MIN(start_time) AS first_seen, MAX(start_time) AS last_seen
+FROM SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY
+WHERE execution_status = 'FAIL'
+  AND start_time >= DATEADD(minutes, -30, CURRENT_TIMESTAMP())
+GROUP BY error_code, error_message
+ORDER BY occurrences DESC;
+
+-- Failed tasks
+SELECT name, state, error_message, scheduled_time, completed_time
+FROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY(
+  SCHEDULED_TIME_RANGE_START => DATEADD(hours, -1, CURRENT_TIMESTAMP())
+))
+WHERE state = 'FAILED'
+ORDER BY scheduled_time DESC;
+
+-- Stale streams (data loss risk)
+SHOW STREAMS;
+-- Check STALE column — if TRUE, stream offset is beyond retention
 ```
 
 ## Decision Tree
 
 ```
-Snowflake API returning errors?
-├─ YES: Is status.snowflake.com showing incident?
-│   ├─ YES → Wait for Snowflake to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Query failures?
+├─ Auth errors (390100, 390144)
+│   → Check credentials, key pair, network policy
+├─ Object not found (002003)
+│   → Wrong context? Permissions? Object dropped?
+├─ Warehouse issues (000606)
+│   → Warehouse suspended? Resource monitor hit?
+├─ Timeout (100038)
+│   → Query too slow? Warehouse too small?
+└─ Snowflake platform issue (5xx, connectivity)
+    → Check status.snowflake.com → enable fallback
+
+Pipeline failures?
+├─ Task failed
+│   → Check TASK_HISTORY error_message
+│   → Is source stream stale?
+├─ Snowpipe not loading
+│   → SYSTEM$PIPE_STATUS('pipe_name')
+│   → Check S3 event notifications
+└─ Dynamic table not refreshing
+    → Check DYNAMIC_TABLE_REFRESH_HISTORY
 ```
 
-## Immediate Actions by Error Type
+## Immediate Actions
 
-### 401/403 - Authentication
-```bash
-# Verify API key is set
-kubectl get secret snowflake-secrets -o jsonpath='{.data.api-key}' | base64 -d
+### Authentication Failure (P1)
 
-# Check if key was rotated
-# → Verify in Snowflake dashboard
+```sql
+-- Check login failures
+SELECT user_name, client_ip, error_code, error_message, event_timestamp
+FROM SNOWFLAKE.ACCOUNT_USAGE.LOGIN_HISTORY
+WHERE is_success = 'NO'
+  AND event_timestamp >= DATEADD(minutes, -30, CURRENT_TIMESTAMP())
+ORDER BY event_timestamp DESC;
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic snowflake-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/snowflake-integration
+-- If key pair issue — verify public key assignment
+DESC USER svc_etl;
+-- Check RSA_PUBLIC_KEY and RSA_PUBLIC_KEY_2
 ```
 
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.snowflake.com 2>&1 | grep -i rate
+### Warehouse Suspended by Resource Monitor (P1)
 
-# Enable request queuing
-kubectl set env deployment/snowflake-integration RATE_LIMIT_MODE=queue
+```sql
+-- Check resource monitor status
+SHOW RESOURCE MONITORS;
 
-# Long-term: Contact Snowflake for limit increase
+-- Temporarily increase quota
+ALTER RESOURCE MONITOR prod_monitor SET CREDIT_QUOTA = 3000;
+
+-- Or switch to a different warehouse
+ALTER SESSION SET WAREHOUSE = BACKUP_WH;
 ```
 
-### 500/503 - Snowflake Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/snowflake-integration SNOWFLAKE_FALLBACK=true
+### Pipeline Failure — Stale Stream (P1)
 
-# Notify users of degraded service
-# Update status page
+```sql
+-- If stream is stale, data between old and new offset is lost
+-- You must recreate the stream and backfill
 
-# Monitor Snowflake status for resolution
+-- Check stream status
+SELECT * FROM TABLE(INFORMATION_SCHEMA.STREAMS())
+WHERE stale = TRUE;
+
+-- Recreate stream
+DROP STREAM IF EXISTS orders_stream;
+CREATE STREAM orders_stream ON TABLE raw_orders;
+
+-- Backfill from Time Travel
+INSERT INTO dim_orders
+SELECT * FROM raw_orders
+AT (TIMESTAMP => '<last_known_good_timestamp>'::TIMESTAMP_NTZ)
+WHERE order_id NOT IN (SELECT order_id FROM dim_orders);
+```
+
+### Rollback a Bad Deployment (P2)
+
+```sql
+-- Use Time Travel to restore table to pre-deployment state
+CREATE OR REPLACE TABLE prod_dw.silver.users
+  CLONE prod_dw.silver.users
+  AT (TIMESTAMP => '2026-03-22 08:00:00'::TIMESTAMP_NTZ);
+
+-- Or use UNDROP for accidentally dropped objects
+UNDROP TABLE prod_dw.silver.users;
+UNDROP SCHEMA prod_dw.silver;
+UNDROP DATABASE prod_dw;
+
+-- Suspend problematic tasks
+ALTER TASK transform_orders SUSPEND;
 ```
 
 ## Communication Templates
 
-### Internal (Slack)
+**Internal (Slack):**
 ```
-🔴 P1 INCIDENT: Snowflake Integration
+P1 INCIDENT: Snowflake [Category]
 Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
+Impact: [Describe user/pipeline impact]
+Current action: [What you're doing now]
 Next update: [Time]
 Incident commander: @[name]
 ```
 
-### External (Status Page)
-```
-Snowflake Integration Issue
-
-We're experiencing issues with our Snowflake integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/snowflake-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=snowflake-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=snowflake_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
+**Postmortem Template:**
 ```markdown
-## Incident: Snowflake [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
+## Incident: [Title]
+**Date:** YYYY-MM-DD | **Duration:** X hours | **Severity:** P[1-4]
 
 ### Summary
-[1-2 sentence description]
+[1-2 sentences]
 
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+### Timeline (UTC)
+- HH:MM — [Event/detection]
+- HH:MM — [Response action]
+- HH:MM — [Resolution]
 
 ### Root Cause
-[Technical explanation]
+[Technical explanation referencing specific error codes and query IDs]
 
 ### Impact
-- Users affected: N
-- Revenue impact: $X
+- Pipelines affected: N
+- Data freshness delay: X hours
+- Credit overage: Y credits
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Preventive measure] — Owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Snowflake-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.snowflake.status' || echo "UNHEALTHY"
-```
+| Can't query ACCOUNT_USAGE | Missing privileges | Use ACCOUNTADMIN or grant IMPORTED PRIVILEGES |
+| Time Travel expired | Past retention period | Cannot recover; increase retention proactively |
+| Task won't resume | Dependency chain issue | Resume children first, then parent |
+| Snowpipe backlog | S3 notification gap | Check SQS queue, run `ALTER PIPE x REFRESH` |
 
 ## Resources
-- [Snowflake Status Page](https://status.snowflake.com)
-- [Snowflake Support](https://support.snowflake.com)
+
+- [Snowflake Status](https://status.snowflake.com)
+- [Time Travel](https://docs.snowflake.com/en/user-guide/data-time-travel)
+- [UNDROP](https://docs.snowflake.com/en/sql-reference/sql/undrop)
+- [Snowflake Support](https://community.snowflake.com/s/article/How-To-Submit-a-Support-Case-in-Snowflake-Lodge)
 
 ## Next Steps
-For data handling, see `snowflake-data-handling`.
+
+For data governance, see `snowflake-data-handling`.

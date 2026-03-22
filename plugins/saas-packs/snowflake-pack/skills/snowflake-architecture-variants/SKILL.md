@@ -1,11 +1,12 @@
 ---
 name: snowflake-architecture-variants
 description: |
-  Choose and implement Snowflake validated architecture blueprints for different scales.
-  Use when designing new Snowflake integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Snowflake applications.
-  Trigger with phrases like "snowflake architecture", "snowflake blueprint",
-  "how to structure snowflake", "snowflake project layout", "snowflake microservice".
+  Choose and implement Snowflake architecture blueprints: data lakehouse, data mesh,
+  data sharing, and Snowpark-native patterns for different scales.
+  Use when designing Snowflake data platforms, choosing between architectures,
+  or implementing data sharing and Snowpark patterns.
+  Trigger with phrases like "snowflake architecture", "snowflake lakehouse",
+  "snowflake data mesh", "snowflake data sharing", "snowflake Snowpark".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,270 +18,230 @@ compatible-with: claude-code
 # Snowflake Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Snowflake integrations.
 
-## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
+Three validated architecture blueprints for Snowflake deployments: traditional data warehouse, lakehouse with Iceberg, and data mesh with data sharing.
 
-## Variant A: Monolith (Simple)
+## Variant A: Traditional Data Warehouse
 
-**Best for:** MVPs, small teams, < 10K daily active users
+**Best for:** Single team, centralized analytics, < 50 users
 
 ```
-my-app/
-├── src/
-│   ├── snowflake/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── snowflake.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── snowflake.test.ts
-└── package.json
+┌──────────────────────────┐
+│   Snowflake Account      │
+│                          │
+│  ┌────────┐  ┌────────┐  │
+│  │ Bronze │→ │ Silver │→ Gold │
+│  └────────┘  └────────┘       │
+│                               │
+│  ┌─────────────────────┐      │
+│  │ Single ETL Warehouse │      │
+│  └─────────────────────┘      │
+│                               │
+│  ┌──────────┐ ┌──────────┐   │
+│  │ BI Tools │ │ Analysts │   │
+│  └──────────┘ └──────────┘   │
+└──────────────────────────────┘
 ```
 
-### Key Characteristics
-- Single deployment unit
-- Synchronous Snowflake calls in request path
-- In-memory caching
-- Simple error handling
+```sql
+-- Simple single-account setup
+CREATE DATABASE DW;
+CREATE SCHEMA DW.RAW;
+CREATE SCHEMA DW.CURATED;
+CREATE SCHEMA DW.ANALYTICS;
 
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await snowflakeClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+CREATE WAREHOUSE ETL_WH WAREHOUSE_SIZE = 'MEDIUM' AUTO_SUSPEND = 120;
+CREATE WAREHOUSE QUERY_WH WAREHOUSE_SIZE = 'SMALL' AUTO_SUSPEND = 60;
 ```
 
----
+## Variant B: Lakehouse with Iceberg Tables
 
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+**Best for:** Hybrid cloud/on-prem, existing data lake, open table format requirement
 
 ```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── snowflake/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── snowflake.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── snowflake-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── snowflake/
-└── package.json
+┌──────────────────────┐     ┌─────────────────────┐
+│   External Storage   │     │  Snowflake Account   │
+│   (S3/GCS/Azure)     │     │                      │
+│                      │     │  ┌────────────────┐   │
+│  ┌─────────────┐     │←───→│  │ Iceberg Tables │   │
+│  │ Parquet/    │     │     │  │ (managed)      │   │
+│  │ Iceberg     │     │     │  └────────────────┘   │
+│  │ files       │     │     │                      │
+│  └─────────────┘     │     │  ┌────────────────┐   │
+│                      │     │  │ Native Tables  │   │
+│  ┌─────────────┐     │     │  │ (hot data)     │   │
+│  │ Spark/Flink │     │     │  └────────────────┘   │
+│  │ (external)  │     │     │                      │
+│  └─────────────┘     │     │  ┌────────────────┐   │
+└──────────────────────┘     │  │ Dynamic Tables │   │
+                             │  │ (transforms)   │   │
+                             │  └────────────────┘   │
+                             └──────────────────────┘
 ```
 
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
+```sql
+-- Iceberg table backed by external storage
+CREATE ICEBERG TABLE events_iceberg (
+  event_id STRING,
+  event_type STRING,
+  event_data VARIANT,
+  event_timestamp TIMESTAMP_NTZ
+)
+  CATALOG = 'SNOWFLAKE'
+  EXTERNAL_VOLUME = 'my_s3_volume'
+  BASE_LOCATION = 'iceberg/events/';
 
-### Code Pattern
-```typescript
-// Service layer abstraction
-class SnowflakeService {
-  constructor(
-    private client: SnowflakeClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
+-- External volume for S3
+CREATE EXTERNAL VOLUME my_s3_volume
+  STORAGE_LOCATIONS = (
+    (NAME = 'primary'
+     STORAGE_BASE_URL = 's3://my-data-lake/'
+     STORAGE_PROVIDER = 'S3'
+     STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::123456789:role/snowflake-iceberg')
+  );
 
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('snowflake.post-create', result);
-
-    return result;
-  }
-}
+-- Dynamic Iceberg table for transforms (writes back to your storage)
+CREATE DYNAMIC ICEBERG TABLE curated_events
+  TARGET_LAG = '30 minutes'
+  WAREHOUSE = ETL_WH
+  CATALOG = 'SNOWFLAKE'
+  EXTERNAL_VOLUME = 'my_s3_volume'
+  BASE_LOCATION = 'iceberg/curated_events/'
+AS
+  SELECT event_id, event_type, event_data,
+         event_timestamp, CURRENT_TIMESTAMP() AS processed_at
+  FROM events_iceberg
+  WHERE event_type IS NOT NULL;
 ```
 
----
+## Variant C: Data Mesh with Data Sharing
 
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
+**Best for:** Multi-team, multi-account, decentralized ownership
 
 ```
-snowflake-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── snowflake.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── snowflake/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls snowflake-service
-├── payment-service/
-└── notification-service/
+┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
+│  Finance Account │   │  Marketing Acct  │   │  Engineering    │
+│                  │   │                  │   │  Account        │
+│  ┌────────────┐  │   │  ┌────────────┐  │   │  ┌────────────┐ │
+│  │ Finance DB │  │   │  │ Marketing  │  │   │  │ Product DB │ │
+│  │ (owner)    │──┼──→│  │ DB (owner) │──┼──→│  │ (owner)    │ │
+│  └────────────┘  │   │  └────────────┘  │   │  └────────────┘ │
+│                  │   │                  │   │                 │
+│  ┌────────────┐  │   │  ┌────────────┐  │   │  ┌────────────┐ │
+│  │ Shared:    │  │   │  │ Shared:    │  │   │  │ Shared:    │ │
+│  │ Product,   │←─┼───┼──│ Finance    │←─┼───┼──│ Marketing, │ │
+│  │ Marketing  │  │   │  │ Product    │  │   │  │ Finance    │ │
+│  └────────────┘  │   │  └────────────┘  │   │  └────────────┘ │
+└─────────────────┘   └─────────────────┘   └─────────────────┘
 ```
 
-### Key Characteristics
-- Dedicated Snowflake microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
+```sql
+-- PROVIDER: Create a share from Finance account
+CREATE SHARE finance_share;
+GRANT USAGE ON DATABASE FINANCE_DW TO SHARE finance_share;
+GRANT USAGE ON SCHEMA FINANCE_DW.GOLD TO SHARE finance_share;
 
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class SnowflakeAggregate {
-  private events: DomainEvent[] = [];
+-- Only share secure views (hides underlying SQL)
+CREATE SECURE VIEW FINANCE_DW.GOLD.REVENUE_SUMMARY AS
+  SELECT region, product_line,
+         SUM(revenue) AS total_revenue,
+         COUNT(DISTINCT customer_id) AS customer_count
+  FROM FINANCE_DW.SILVER.TRANSACTIONS
+  GROUP BY region, product_line;
 
-  process(command: SnowflakeCommand): void {
-    // Domain logic
-    const result = this.execute(command);
+GRANT SELECT ON VIEW FINANCE_DW.GOLD.REVENUE_SUMMARY TO SHARE finance_share;
 
-    // Emit domain event
-    this.events.push(new SnowflakeProcessedEvent(result));
-  }
+-- Add consumer accounts
+ALTER SHARE finance_share ADD ACCOUNTS = myorg.marketing_account, myorg.engineering_account;
 
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
+-- CONSUMER: Create database from share
+CREATE DATABASE FINANCE_SHARED FROM SHARE myorg.finance_account.finance_share;
+-- Zero-copy, real-time, no data movement
 
-// Event handler
-@EventHandler(SnowflakeProcessedEvent)
-class SnowflakeEventHandler {
-  async handle(event: SnowflakeProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
+-- Query shared data as if it's local
+SELECT * FROM FINANCE_SHARED.GOLD.REVENUE_SUMMARY
+WHERE region = 'North America';
 ```
 
----
+## Variant D: Snowpark-Native Application
+
+**Best for:** ML/AI workloads, Python-heavy teams, stored procedure logic
+
+```python
+# Snowpark Python — run Python natively inside Snowflake
+from snowflake.snowpark import Session
+from snowflake.snowpark.functions import col, sum as sf_sum, avg
+
+# Create session
+session = Session.builder.configs({
+    "account": os.environ['SNOWFLAKE_ACCOUNT'],
+    "user": os.environ['SNOWFLAKE_USER'],
+    "password": os.environ['SNOWFLAKE_PASSWORD'],
+    "warehouse": "ML_WH",
+    "database": "PROD_DW",
+    "schema": "GOLD",
+}).create()
+
+# DataFrame API (lazy evaluation, pushdown to Snowflake)
+orders_df = session.table("orders")
+revenue = (
+    orders_df
+    .filter(col("order_date") >= "2026-01-01")
+    .group_by("customer_id")
+    .agg(
+        sf_sum("amount").alias("total_spend"),
+        avg("amount").alias("avg_order"),
+    )
+    .filter(col("total_spend") > 1000)
+    .sort(col("total_spend").desc())
+)
+revenue.show()  # Executes in Snowflake, not locally
+
+# Register as stored procedure (runs inside Snowflake)
+@session.sproc(name="train_model", replace=True, is_permanent=True,
+               stage_location="@ML_STAGE", packages=["scikit-learn"])
+def train_model(session: Session, table_name: str) -> str:
+    df = session.table(table_name).to_pandas()
+    from sklearn.ensemble import RandomForestClassifier
+    model = RandomForestClassifier()
+    model.fit(df[['feature1', 'feature2']], df['label'])
+    return f"Trained on {len(df)} rows, score: {model.score(...)}"
+
+# Register UDF
+@session.udf(name="predict_churn", replace=True, is_permanent=True,
+             stage_location="@ML_STAGE")
+def predict_churn(tenure: int, monthly_charge: float) -> float:
+    # Model loaded from stage at runtime
+    return model.predict_proba([[tenure, monthly_charge]])[0][1]
+```
 
 ## Decision Matrix
 
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Snowflake code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated snowflake-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
-
-## Instructions
-
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
-
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
-
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
-
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+| Factor | Traditional DW | Lakehouse | Data Mesh | Snowpark |
+|--------|---------------|-----------|-----------|----------|
+| Team Size | 1-10 | 5-30 | 10+ (multi-team) | 3-20 |
+| Data Volume | Any | Large (10TB+) | Any | Any |
+| External Tools | BI only | Spark, Flink, Presto | BI per domain | Python/ML |
+| Governance | Centralized | Centralized | Federated | Centralized |
+| Complexity | Low | Medium | High | Medium |
+| Cost Model | Compute + storage | Reduced storage | Per-domain | Compute-heavy |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| Share access denied | Consumer not added | `ALTER SHARE x ADD ACCOUNTS = y` |
+| Iceberg sync delay | External catalog lag | Check external volume config |
+| Snowpark OOM | Large DataFrame | Use `session.table()` not `to_pandas()` for large data |
+| Cross-account query slow | Network latency | Deploy in same region |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Snowflake Architecture Guide](https://docs.snowflake.com/architecture)
+
+- [Data Sharing](https://docs.snowflake.com/en/user-guide/data-sharing-intro)
+- [Iceberg Tables](https://docs.snowflake.com/en/user-guide/tables-iceberg)
+- [Snowpark Python](https://docs.snowflake.com/en/developer-guide/snowpark/python/index)
+- [Secure Views](https://docs.snowflake.com/en/user-guide/views-secure)
 
 ## Next Steps
+
 For common anti-patterns, see `snowflake-known-pitfalls`.

@@ -1,11 +1,11 @@
 ---
 name: snowflake-prod-checklist
 description: |
-  Execute Snowflake production deployment checklist and rollback procedures.
-  Use when deploying Snowflake integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "snowflake production", "deploy snowflake",
-  "snowflake go-live", "snowflake launch checklist".
+  Execute Snowflake production readiness checklist with monitoring and rollback.
+  Use when deploying Snowflake pipelines to production, preparing for go-live,
+  or validating production Snowflake configuration.
+  Trigger with phrases like "snowflake production", "snowflake go-live",
+  "snowflake launch checklist", "snowflake prod ready".
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
@@ -17,105 +17,189 @@ compatible-with: claude-code
 # Snowflake Production Checklist
 
 ## Overview
-Complete checklist for deploying Snowflake integrations to production.
+
+Complete checklist for deploying Snowflake data pipelines and integrations to production.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
 
-## Instructions
+- Staging environment validated
+- Production Snowflake account configured
+- Resource monitors in place
+- Monitoring infrastructure ready
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+## Pre-Deployment Checklist
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Snowflake error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+### Authentication & Secrets
+- [ ] Service accounts use key pair auth (not password)
+- [ ] Private keys stored in secret manager (not files/env vars)
+- [ ] Key rotation procedure documented and tested
+- [ ] Network policy applied to production account
+- [ ] Connection parameters use production account identifier
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Snowflake connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Warehouse Configuration
+- [ ] Production warehouses created with appropriate sizing
+- [ ] Auto-suspend configured (60-300s based on workload)
+- [ ] Auto-resume enabled
+- [ ] Resource monitors with credit quotas and alerts
+- [ ] Separate warehouses for ETL, analytics, and dashboard workloads
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+```sql
+-- Production warehouse setup
+CREATE WAREHOUSE IF NOT EXISTS PROD_ETL_WH
+  WAREHOUSE_SIZE = 'LARGE'
+  AUTO_SUSPEND = 120
+  AUTO_RESUME = TRUE;
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.snowflake.com
+CREATE WAREHOUSE IF NOT EXISTS PROD_ANALYTICS_WH
+  WAREHOUSE_SIZE = 'MEDIUM'
+  MIN_CLUSTER_COUNT = 1
+  MAX_CLUSTER_COUNT = 3
+  SCALING_POLICY = 'STANDARD'
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE;
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/snowflake-integration app=image:new --record
-kubectl rollout pause deployment/snowflake-integration
+-- Resource monitor with alerts
+CREATE OR REPLACE RESOURCE MONITOR prod_monitor
+  WITH CREDIT_QUOTA = 1000
+  FREQUENCY = MONTHLY
+  START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS
+    ON 75 PERCENT DO NOTIFY
+    ON 90 PERCENT DO NOTIFY
+    ON 100 PERCENT DO SUSPEND
+    ON 110 PERCENT DO SUSPEND_IMMEDIATE;
 
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/snowflake-integration
-kubectl rollout pause deployment/snowflake-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/snowflake-integration
-kubectl rollout status deployment/snowflake-integration
+ALTER WAREHOUSE PROD_ETL_WH SET RESOURCE_MONITOR = prod_monitor;
+ALTER WAREHOUSE PROD_ANALYTICS_WH SET RESOURCE_MONITOR = prod_monitor;
 ```
 
-## Output
-- Deployed Snowflake integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+### Data Pipeline Readiness
+- [ ] All tasks resumed and running on schedule
+- [ ] Streams not stale (check with `SHOW STREAMS`)
+- [ ] Snowpipe notifications configured and verified
+- [ ] COPY INTO error handling set (`ON_ERROR = 'CONTINUE'` or `'SKIP_FILE'`)
+- [ ] Data retention set appropriately (`DATA_RETENTION_TIME_IN_DAYS`)
+
+### Query & Performance
+- [ ] Critical queries tested at production data volume
+- [ ] Clustering keys set on large tables (>1TB)
+- [ ] Statement timeout configured per warehouse
+- [ ] Result caching enabled (`USE_CACHED_RESULT = TRUE`)
+
+```sql
+-- Set statement timeout for production
+ALTER WAREHOUSE PROD_ETL_WH SET STATEMENT_TIMEOUT_IN_SECONDS = 3600;
+ALTER WAREHOUSE PROD_ANALYTICS_WH SET STATEMENT_TIMEOUT_IN_SECONDS = 600;
+
+-- Enable query result caching (default is ON)
+ALTER ACCOUNT SET USE_CACHED_RESULT = TRUE;
+```
+
+### Access Control
+- [ ] RBAC hierarchy follows Snowflake best practices
+- [ ] No users have ACCOUNTADMIN as default role
+- [ ] Service accounts have minimal required privileges
+- [ ] Object ownership assigned to functional roles
+
+```sql
+-- Verify no one defaults to ACCOUNTADMIN
+SELECT name, default_role
+FROM SNOWFLAKE.ACCOUNT_USAGE.USERS
+WHERE default_role = 'ACCOUNTADMIN' AND disabled = 'false';
+```
+
+### Monitoring & Alerting
+- [ ] Query failure alerts configured
+- [ ] Warehouse credit consumption dashboards
+- [ ] Task failure notifications
+- [ ] Login failure monitoring
+
+```sql
+-- Create alert for task failures (Snowflake Alerts feature)
+CREATE OR REPLACE ALERT task_failure_alert
+  WAREHOUSE = PROD_ANALYTICS_WH
+  SCHEDULE = '5 MINUTE'
+  IF (EXISTS (
+    SELECT *
+    FROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY(
+      SCHEDULED_TIME_RANGE_START => DATEADD(minutes, -10, CURRENT_TIMESTAMP())
+    ))
+    WHERE state = 'FAILED'
+  ))
+  THEN
+    CALL SYSTEM$SEND_EMAIL(
+      'prod_notifications',
+      'oncall@company.com',
+      'Snowflake Task Failure',
+      'One or more tasks failed in the last 10 minutes. Check TASK_HISTORY.'
+    );
+
+ALTER ALERT task_failure_alert RESUME;
+```
+
+### Disaster Recovery
+- [ ] Time Travel retention set (Enterprise: up to 90 days)
+- [ ] Database replication configured for critical databases
+- [ ] Failover tested to secondary account/region
+- [ ] Backup procedure documented
+
+```sql
+-- Enable 14-day Time Travel on production tables
+ALTER TABLE prod_db.core.orders SET DATA_RETENTION_TIME_IN_DAYS = 14;
+
+-- Enable database replication
+ALTER DATABASE prod_db ENABLE REPLICATION TO ACCOUNTS myorg.secondary_account;
+```
+
+## Health Check Query
+
+```sql
+-- Run this before and after deployment
+SELECT 'Warehouses' AS check_type,
+       COUNT(*) AS count,
+       COUNT_IF(state = 'STARTED') AS active
+FROM TABLE(INFORMATION_SCHEMA.WAREHOUSES())
+UNION ALL
+SELECT 'Tasks', COUNT(*), COUNT_IF(state = 'started')
+FROM TABLE(INFORMATION_SCHEMA.TASKS())
+UNION ALL
+SELECT 'Streams', COUNT(*), COUNT_IF(stale = FALSE)
+FROM TABLE(INFORMATION_SCHEMA.STREAMS())
+UNION ALL
+SELECT 'Pipes', COUNT(*), COUNT_IF(is_autoingest_enabled = 'true')
+FROM TABLE(INFORMATION_SCHEMA.PIPES());
+```
+
+## Rollback Procedure
+
+```sql
+-- Use Time Travel to revert a table
+CREATE OR REPLACE TABLE prod_db.core.orders
+  CLONE prod_db.core.orders AT (TIMESTAMP => '2026-03-21 12:00:00'::TIMESTAMP_NTZ);
+
+-- Suspend problematic tasks
+ALTER TASK transform_orders SUSPEND;
+
+-- Revert warehouse changes
+ALTER WAREHOUSE PROD_ETL_WH SET WAREHOUSE_SIZE = 'MEDIUM';
+```
 
 ## Error Handling
+
 | Alert | Condition | Severity |
 |-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; snowflake: any }> {
-  const start = Date.now();
-  try {
-    await snowflakeClient.ping();
-    return { status: 'healthy', snowflake: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', snowflake: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/snowflake-integration
-kubectl rollout status deployment/snowflake-integration
-```
+| Task failure | `state = 'FAILED'` in TASK_HISTORY | P1 |
+| Stream stale | `stale = TRUE` in SHOW STREAMS | P1 |
+| Credit quota >90% | Resource monitor trigger | P2 |
+| Query queue >5min | `avg_queued_load > 0` sustained | P2 |
+| Login failures spike | >10 failures/hour | P2 |
 
 ## Resources
-- [Snowflake Status](https://status.snowflake.com)
-- [Snowflake Support](https://docs.snowflake.com/support)
+
+- [Resource Monitors](https://docs.snowflake.com/en/user-guide/resource-monitors)
+- [Business Continuity](https://docs.snowflake.com/en/user-guide/replication-intro)
+- [Access Control Best Practices](https://docs.snowflake.com/en/user-guide/security-access-control-considerations)
 
 ## Next Steps
+
 For version upgrades, see `snowflake-upgrade-migration`.

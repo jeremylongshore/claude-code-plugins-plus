@@ -1,11 +1,12 @@
 ---
 name: snowflake-cost-tuning
 description: |
-  Optimize Snowflake costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Snowflake billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
+  Optimize Snowflake costs with resource monitors, warehouse auto-suspend,
+  right-sizing, and credit consumption analysis.
+  Use when analyzing Snowflake billing, reducing credit consumption,
+  or implementing cost controls and budget alerts.
   Trigger with phrases like "snowflake cost", "snowflake billing",
-  "reduce snowflake costs", "snowflake pricing", "snowflake expensive", "snowflake budget".
+  "reduce snowflake cost", "snowflake credits", "snowflake expensive", "snowflake budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +18,211 @@ compatible-with: claude-code
 # Snowflake Cost Tuning
 
 ## Overview
-Optimize Snowflake costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Snowflake billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+Optimize Snowflake costs through resource monitors, warehouse right-sizing, auto-suspend tuning, and credit consumption analysis.
 
-## Pricing Tiers
+## Snowflake Pricing Model
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+| Cost Component | What It Measures | Typical % of Bill |
+|---------------|-----------------|-------------------|
+| Compute (credits) | Warehouse running time | 60-80% |
+| Storage | Data at rest (compressed) | 10-20% |
+| Cloud services | Metadata ops, auth, compilation | 5-10% |
+| Data transfer | Egress between regions/clouds | 0-5% |
+| Serverless | Snowpipe, auto-clustering, MV refresh | Variable |
 
-## Cost Estimation
+**Credit rates by warehouse size:**
 
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateSnowflakeCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class SnowflakeUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Snowflake budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateSnowflakeCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await snowflakeClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => snowflakeClient.get(id)));
-
-// Use batch endpoint (1 call)
-await snowflakeClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new SnowflakeClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Snowflake dashboard
-# Or use API if available:
-# Check Snowflake documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM snowflake_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+| Size | Credits/Hour | Nodes |
+|------|-------------|-------|
+| X-Small | 1 | 1 |
+| Small | 2 | 2 |
+| Medium | 4 | 4 |
+| Large | 8 | 8 |
+| X-Large | 16 | 16 |
+| 2X-Large | 32 | 32 |
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Snowflake dashboard for usage patterns and costs.
+### Step 1: Analyze Current Credit Consumption
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+```sql
+-- Credits by warehouse (last 30 days)
+SELECT warehouse_name,
+       SUM(credits_used) AS total_credits,
+       SUM(credits_used_compute) AS compute_credits,
+       SUM(credits_used_cloud_services) AS cloud_credits,
+       ROUND(SUM(credits_used) * 3.0, 2) AS est_cost_usd  -- ~$3/credit standard
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+WHERE start_time >= DATEADD(days, -30, CURRENT_TIMESTAMP())
+GROUP BY warehouse_name
+ORDER BY total_credits DESC;
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+-- Daily credit trend
+SELECT DATE_TRUNC('day', start_time) AS day,
+       SUM(credits_used) AS credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+WHERE start_time >= DATEADD(days, -30, CURRENT_TIMESTAMP())
+GROUP BY day
+ORDER BY day;
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateSnowflakeCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+-- Idle warehouse time (credits wasted while no queries running)
+SELECT warehouse_name,
+       SUM(credits_used) AS total_credits,
+       COUNT(DISTINCT query_id) AS queries,
+       CASE WHEN COUNT(DISTINCT query_id) = 0 THEN SUM(credits_used)
+            ELSE 0 END AS idle_credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY w
+LEFT JOIN SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY q
+  ON w.warehouse_name = q.warehouse_name
+  AND DATE_TRUNC('hour', w.start_time) = DATE_TRUNC('hour', q.start_time)
+WHERE w.start_time >= DATEADD(days, -7, CURRENT_TIMESTAMP())
+GROUP BY warehouse_name
+ORDER BY idle_credits DESC;
 ```
 
+### Step 2: Set Up Resource Monitors
+
+```sql
+-- Account-level resource monitor
+CREATE OR REPLACE RESOURCE MONITOR account_monthly
+  WITH CREDIT_QUOTA = 5000
+  FREQUENCY = MONTHLY
+  START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS
+    ON 50 PERCENT DO NOTIFY
+    ON 75 PERCENT DO NOTIFY
+    ON 90 PERCENT DO NOTIFY
+    ON 100 PERCENT DO SUSPEND
+    ON 110 PERCENT DO SUSPEND_IMMEDIATE;
+
+ALTER ACCOUNT SET RESOURCE_MONITOR = account_monthly;
+
+-- Per-warehouse monitor for ETL
+CREATE OR REPLACE RESOURCE MONITOR etl_daily
+  WITH CREDIT_QUOTA = 100
+  FREQUENCY = DAILY
+  START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS
+    ON 80 PERCENT DO NOTIFY
+    ON 100 PERCENT DO SUSPEND;
+
+ALTER WAREHOUSE PROD_ETL_WH SET RESOURCE_MONITOR = etl_daily;
+```
+
+### Step 3: Optimize Auto-Suspend
+
+```sql
+-- Short auto-suspend for bursty workloads (ETL)
+ALTER WAREHOUSE ETL_WH SET AUTO_SUSPEND = 60;     -- 1 minute
+
+-- Longer for interactive analytics (avoids constant resume)
+ALTER WAREHOUSE ANALYTICS_WH SET AUTO_SUSPEND = 300;  -- 5 minutes
+
+-- Check current auto-suspend settings
+SELECT name, size, auto_suspend, auto_resume,
+       CASE WHEN auto_suspend > 300 THEN 'REVIEW: high auto_suspend'
+            ELSE 'OK' END AS recommendation
+FROM INFORMATION_SCHEMA.WAREHOUSES;
+
+-- Never set auto_suspend = 0 in production (warehouse runs forever)
+```
+
+### Step 4: Right-Size Warehouses
+
+```sql
+-- Find oversized warehouses (low utilization)
+SELECT warehouse_name, warehouse_size,
+       AVG(avg_running) AS avg_queries_running,
+       AVG(avg_queued_load) AS avg_queries_queued,
+       CASE
+         WHEN AVG(avg_queued_load) > 1 THEN 'SCALE UP or add clusters'
+         WHEN AVG(avg_running) < 1 THEN 'Consider DOWNSIZE'
+         ELSE 'RIGHT-SIZED'
+       END AS recommendation
+FROM TABLE(INFORMATION_SCHEMA.WAREHOUSE_LOAD_HISTORY(
+  DATE_RANGE_START => DATEADD(days, -7, CURRENT_TIMESTAMP())
+))
+GROUP BY warehouse_name, warehouse_size;
+
+-- Downsize underutilized warehouses
+ALTER WAREHOUSE DEV_WH SET WAREHOUSE_SIZE = 'XSMALL';
+```
+
+### Step 5: Reduce Storage Costs
+
+```sql
+-- Find large unused tables
+SELECT table_catalog, table_schema, table_name,
+       bytes / 1e9 AS gb,
+       row_count,
+       last_altered,
+       DATEDIFF('day', last_altered, CURRENT_DATE()) AS days_since_modified
+FROM SNOWFLAKE.ACCOUNT_USAGE.TABLE_STORAGE_METRICS
+WHERE bytes > 1e9  -- > 1 GB
+  AND DATEDIFF('day', last_altered, CURRENT_DATE()) > 90
+ORDER BY bytes DESC;
+
+-- Reduce Time Travel retention for non-critical tables
+ALTER TABLE staging.temp_data SET DATA_RETENTION_TIME_IN_DAYS = 1;
+
+-- Use transient tables for staging (no Fail-safe storage)
+CREATE TRANSIENT TABLE staging.temp_load (
+  id INTEGER, data VARIANT
+);
+```
+
+### Step 6: Serverless Feature Cost Control
+
+```sql
+-- Monitor Snowpipe costs
+SELECT pipe_name, SUM(credits_used) AS credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.PIPE_USAGE_HISTORY
+WHERE start_time >= DATEADD(days, -30, CURRENT_TIMESTAMP())
+GROUP BY pipe_name
+ORDER BY credits DESC;
+
+-- Monitor auto-clustering costs
+SELECT table_name, SUM(credits_used) AS credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.AUTOMATIC_CLUSTERING_HISTORY
+WHERE start_time >= DATEADD(days, -30, CURRENT_TIMESTAMP())
+GROUP BY table_name
+ORDER BY credits DESC;
+
+-- Monitor materialized view refresh costs
+SELECT table_name, SUM(credits_used) AS credits
+FROM SNOWFLAKE.ACCOUNT_USAGE.MATERIALIZED_VIEW_REFRESH_HISTORY
+WHERE start_time >= DATEADD(days, -30, CURRENT_TIMESTAMP())
+GROUP BY table_name
+ORDER BY credits DESC;
+```
+
+## Cost Reduction Checklist
+
+- [ ] Resource monitors on all production warehouses
+- [ ] Auto-suspend < 5 minutes on all warehouses
+- [ ] No `WAREHOUSE_SIZE > 'MEDIUM'` without justification
+- [ ] Transient tables for staging/temp data
+- [ ] Time Travel retention minimized for non-critical tables
+- [ ] Clustering keys only on tables > 1TB with frequent filter queries
+- [ ] Review serverless feature costs monthly
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected credit spike | Runaway query or always-on warehouse | Check QUERY_HISTORY, set auto-suspend |
+| Resource monitor suspended warehouse | Exceeded quota | Increase quota or optimize workload |
+| High cloud services cost | Many small metadata queries | Batch operations, reduce DDL frequency |
+| Storage growing fast | No cleanup policy | Archive old data, use transient tables |
+
 ## Resources
-- [Snowflake Pricing](https://snowflake.com/pricing)
-- [Snowflake Billing Dashboard](https://dashboard.snowflake.com/billing)
+
+- [Cost Controls](https://docs.snowflake.com/en/user-guide/cost-controlling-controls)
+- [Resource Monitors](https://docs.snowflake.com/en/user-guide/resource-monitors)
+- [CREATE RESOURCE MONITOR](https://docs.snowflake.com/en/sql-reference/sql/create-resource-monitor)
+- [Budgets](https://docs.snowflake.com/en/user-guide/budgets)
 
 ## Next Steps
+
 For architecture patterns, see `snowflake-reference-architecture`.

@@ -1,12 +1,12 @@
 ---
 name: snowflake-load-scale
 description: |
-  Implement Snowflake load testing, auto-scaling, and capacity planning strategies.
-  Use when running performance tests, configuring horizontal scaling,
-  or planning capacity for Snowflake integrations.
+  Implement Snowflake load testing, warehouse scaling, and capacity planning.
+  Use when testing query performance at scale, configuring multi-cluster warehouses,
+  or planning capacity for production Snowflake workloads.
   Trigger with phrases like "snowflake load test", "snowflake scale",
-  "snowflake performance test", "snowflake capacity", "snowflake k6", "snowflake benchmark".
-allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
+  "snowflake capacity", "snowflake benchmark", "snowflake multi-cluster".
+allowed-tools: Read, Write, Edit, Bash(python3:*), Bash(snowsql:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,260 +17,255 @@ compatible-with: claude-code
 # Snowflake Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for Snowflake integrations.
 
-## Prerequisites
-- k6 load testing tool installed
-- Kubernetes cluster with HPA configured
-- Prometheus for metrics collection
-- Test environment API keys
+Load testing, scaling strategies, and capacity planning for Snowflake workloads using warehouse sizing, multi-cluster configuration, and concurrent query simulation.
 
-## Load Testing with k6
+## Scaling Model
 
-### Basic Load Test
-```javascript
-// snowflake-load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
+| Dimension | How to Scale | When |
+|-----------|-------------|------|
+| Single query speed | Scale UP (bigger warehouse) | Complex queries, large scans |
+| Concurrent queries | Scale OUT (multi-cluster) | Many users, dashboard refresh |
+| Data volume | Scale UP + clustering | Tables > 1TB |
+| Mixed workloads | Separate warehouses | ETL + analytics on same data |
 
-export const options = {
-  stages: [
-    { duration: '2m', target: 10 },   // Ramp up
-    { duration: '5m', target: 10 },   // Steady state
-    { duration: '2m', target: 50 },   // Ramp to peak
-    { duration: '5m', target: 50 },   // Stress test
-    { duration: '2m', target: 0 },    // Ramp down
-  ],
-  thresholds: {
-    http_req_duration: ['p(95)<500'],
-    http_req_failed: ['rate<0.01'],
-  },
-};
+## Instructions
 
-export default function () {
-  const response = http.post(
-    'https://api.snowflake.com/v1/resource',
-    JSON.stringify({ test: true }),
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.SNOWFLAKE_API_KEY}`,
-      },
-    }
-  );
+### Step 1: Benchmark Current Performance
 
-  check(response, {
-    'status is 200': (r) => r.status === 200,
-    'latency < 500ms': (r) => r.timings.duration < 500,
-  });
+```sql
+-- Baseline metrics for critical queries
+-- Run each query 3 times and record results
 
-  sleep(1);
-}
+-- Disable result cache for accurate benchmarking
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
+
+-- Test query 1: Point lookup
+SELECT * FROM orders WHERE order_id = 12345;
+
+-- Test query 2: Aggregation
+SELECT DATE_TRUNC('month', order_date) AS month,
+       COUNT(*) AS orders, SUM(amount) AS revenue
+FROM orders
+WHERE order_date >= '2025-01-01'
+GROUP BY month ORDER BY month;
+
+-- Test query 3: Join + filter
+SELECT c.name, SUM(o.amount) AS total_spend
+FROM customers c
+JOIN orders o ON c.id = o.customer_id
+WHERE o.order_date >= DATEADD(days, -90, CURRENT_DATE())
+GROUP BY c.name
+ORDER BY total_spend DESC
+LIMIT 100;
+
+-- Record results
+SELECT query_id, query_text, warehouse_name, warehouse_size,
+       total_elapsed_time / 1000 AS seconds,
+       bytes_scanned / 1e9 AS gb_scanned,
+       rows_produced, partitions_scanned, partitions_total,
+       bytes_spilled_to_local_storage, bytes_spilled_to_remote_storage
+FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
+ORDER BY start_time DESC
+LIMIT 10;
+
+-- Re-enable cache
+ALTER SESSION SET USE_CACHED_RESULT = TRUE;
 ```
 
-### Run Load Test
-```bash
-# Install k6
-brew install k6  # macOS
-# or: sudo apt install k6  # Linux
+### Step 2: Test Warehouse Size Impact
 
-# Run test
-k6 run --env SNOWFLAKE_API_KEY=${SNOWFLAKE_API_KEY} snowflake-load-test.js
+```sql
+-- Run same query on different warehouse sizes to find optimal
+-- XS → S → M → L → XL
 
-# Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 snowflake-load-test.js
+ALTER WAREHOUSE BENCHMARK_WH SET WAREHOUSE_SIZE = 'XSMALL';
+ALTER SESSION SET USE_CACHED_RESULT = FALSE;
+
+-- Run your benchmark query
+SELECT /* BENCHMARK_XS */ ...;
+
+ALTER WAREHOUSE BENCHMARK_WH SET WAREHOUSE_SIZE = 'SMALL';
+SELECT /* BENCHMARK_S */ ...;
+
+ALTER WAREHOUSE BENCHMARK_WH SET WAREHOUSE_SIZE = 'MEDIUM';
+SELECT /* BENCHMARK_M */ ...;
+
+-- Compare results
+SELECT warehouse_size, query_id,
+       total_elapsed_time / 1000 AS seconds,
+       bytes_scanned / 1e9 AS gb_scanned
+FROM TABLE(INFORMATION_SCHEMA.QUERY_HISTORY_BY_SESSION())
+WHERE query_text LIKE '%BENCHMARK_%'
+ORDER BY start_time DESC;
+
+-- Typical scaling: doubling size halves runtime for scan-heavy queries
+-- Diminishing returns for small/simple queries
 ```
 
-## Scaling Patterns
+### Step 3: Concurrent Load Testing
 
-### Horizontal Scaling
-```yaml
-# kubernetes HPA
-apiVersion: autoscaling/v2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: snowflake-integration-hpa
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: snowflake-integration
-  minReplicas: 2
-  maxReplicas: 20
-  metrics:
-    - type: Resource
-      resource:
-        name: cpu
-        target:
-          type: Utilization
-          averageUtilization: 70
-    - type: Pods
-      pods:
-        metric:
-          name: snowflake_queue_depth
-        target:
-          type: AverageValue
-          averageValue: 100
+```python
+# load_test.py — simulate concurrent Snowflake queries
+import snowflake.connector
+import threading
+import time
+import os
+from statistics import mean, median
+
+CONCURRENT_USERS = 20
+QUERIES_PER_USER = 10
+WAREHOUSE = 'LOAD_TEST_WH'
+
+TEST_QUERIES = [
+    "SELECT COUNT(*) FROM orders WHERE order_date = CURRENT_DATE() - 1",
+    "SELECT customer_id, SUM(amount) FROM orders GROUP BY customer_id LIMIT 100",
+    "SELECT * FROM orders WHERE order_id = %s",
+]
+
+results = []
+errors = []
+
+def run_user_session(user_id: int):
+    conn = snowflake.connector.connect(
+        account=os.environ['SNOWFLAKE_ACCOUNT'],
+        user=os.environ['SNOWFLAKE_USER'],
+        password=os.environ['SNOWFLAKE_PASSWORD'],
+        warehouse=WAREHOUSE,
+        database='PROD_DW',
+        schema='GOLD',
+    )
+    cursor = conn.cursor()
+    for i in range(QUERIES_PER_USER):
+        query = TEST_QUERIES[i % len(TEST_QUERIES)]
+        start = time.time()
+        try:
+            if '%s' in query:
+                cursor.execute(query, (user_id * 1000 + i,))
+            else:
+                cursor.execute(query)
+            cursor.fetchall()
+            elapsed = time.time() - start
+            results.append({'user': user_id, 'query': i, 'seconds': elapsed})
+        except Exception as e:
+            errors.append({'user': user_id, 'query': i, 'error': str(e)})
+    conn.close()
+
+# Run concurrent sessions
+threads = []
+start_time = time.time()
+for uid in range(CONCURRENT_USERS):
+    t = threading.Thread(target=run_user_session, args=(uid,))
+    threads.append(t)
+    t.start()
+for t in threads:
+    t.join()
+total_time = time.time() - start_time
+
+# Report
+times = [r['seconds'] for r in results]
+print(f"=== Load Test Results ===")
+print(f"Users: {CONCURRENT_USERS}, Queries/user: {QUERIES_PER_USER}")
+print(f"Total queries: {len(results)}, Errors: {len(errors)}")
+print(f"Total time: {total_time:.1f}s")
+print(f"Avg latency: {mean(times):.3f}s")
+print(f"Median: {median(times):.3f}s")
+print(f"P95: {sorted(times)[int(len(times)*0.95)]:.3f}s")
+print(f"QPS: {len(results)/total_time:.1f}")
 ```
 
-### Connection Pooling
-```typescript
-import { Pool } from 'generic-pool';
+### Step 4: Multi-Cluster Warehouse Configuration
 
-const snowflakePool = Pool.create({
-  create: async () => {
-    return new SnowflakeClient({
-      apiKey: process.env.SNOWFLAKE_API_KEY!,
-    });
-  },
-  destroy: async (client) => {
-    await client.close();
-  },
-  max: 20,
-  min: 5,
-  idleTimeoutMillis: 30000,
-});
+```sql
+-- Standard scaling: Snowflake adds clusters when queries queue
+CREATE OR REPLACE WAREHOUSE ANALYTICS_WH
+  WAREHOUSE_SIZE = 'MEDIUM'
+  MIN_CLUSTER_COUNT = 1
+  MAX_CLUSTER_COUNT = 6
+  SCALING_POLICY = 'STANDARD'
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE;
 
-async function withSnowflakeClient<T>(
-  fn: (client: SnowflakeClient) => Promise<T>
-): Promise<T> {
-  const client = await snowflakePool.acquire();
-  try {
-    return await fn(client);
-  } finally {
-    snowflakePool.release(client);
-  }
-}
+-- Economy scaling: tolerates queuing, minimizes cost
+ALTER WAREHOUSE ANALYTICS_WH SET SCALING_POLICY = 'ECONOMY';
+
+-- Maximized mode: all clusters always running (predictable latency)
+CREATE WAREHOUSE DASHBOARD_WH
+  WAREHOUSE_SIZE = 'SMALL'
+  MIN_CLUSTER_COUNT = 3
+  MAX_CLUSTER_COUNT = 3    -- Same = maximized mode
+  AUTO_SUSPEND = 120
+  AUTO_RESUME = TRUE;
+
+-- Monitor multi-cluster behavior
+SELECT start_time, warehouse_name,
+       avg_running, avg_queued_load, avg_queued_provisioning
+FROM TABLE(INFORMATION_SCHEMA.WAREHOUSE_LOAD_HISTORY(
+  DATE_RANGE_START => DATEADD(hours, -4, CURRENT_TIMESTAMP()),
+  WAREHOUSE_NAME => 'ANALYTICS_WH'
+))
+WHERE avg_queued_load > 0
+ORDER BY start_time DESC;
 ```
 
-## Capacity Planning
+### Step 5: Capacity Planning
 
-### Metrics to Monitor
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| CPU Utilization | > 70% | > 85% |
-| Memory Usage | > 75% | > 90% |
-| Request Queue Depth | > 100 | > 500 |
-| Error Rate | > 1% | > 5% |
-| P95 Latency | > 1000ms | > 3000ms |
+```sql
+-- Weekly growth analysis
+SELECT DATE_TRUNC('week', start_time) AS week,
+       SUM(credits_used) AS weekly_credits,
+       COUNT(DISTINCT query_id) AS weekly_queries,
+       ROUND(SUM(credits_used) / NULLIF(COUNT(DISTINCT query_id), 0), 4) AS credits_per_query
+FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY w
+JOIN SNOWFLAKE.ACCOUNT_USAGE.QUERY_HISTORY q
+  ON w.warehouse_name = q.warehouse_name
+WHERE w.start_time >= DATEADD(months, -3, CURRENT_TIMESTAMP())
+GROUP BY week
+ORDER BY week;
 
-### Capacity Calculation
-```typescript
-interface CapacityEstimate {
-  currentRPS: number;
-  maxRPS: number;
-  headroom: number;
-  scaleRecommendation: string;
-}
-
-function estimateSnowflakeCapacity(
-  metrics: SystemMetrics
-): CapacityEstimate {
-  const currentRPS = metrics.requestsPerSecond;
-  const avgLatency = metrics.p50Latency;
-  const cpuUtilization = metrics.cpuPercent;
-
-  // Estimate max RPS based on current performance
-  const maxRPS = currentRPS / (cpuUtilization / 100) * 0.7; // 70% target
-  const headroom = ((maxRPS - currentRPS) / currentRPS) * 100;
-
-  return {
-    currentRPS,
-    maxRPS: Math.floor(maxRPS),
-    headroom: Math.round(headroom),
-    scaleRecommendation: headroom < 30
-      ? 'Scale up soon'
-      : headroom < 50
-      ? 'Monitor closely'
-      : 'Adequate capacity',
-  };
-}
+-- Storage growth trend
+SELECT usage_date,
+       ROUND(storage_bytes / 1e12, 3) AS data_tb,
+       LAG(ROUND(storage_bytes / 1e12, 3)) OVER (ORDER BY usage_date) AS prev_tb,
+       ROUND((storage_bytes - LAG(storage_bytes) OVER (ORDER BY usage_date)) / 1e9, 1) AS daily_growth_gb
+FROM SNOWFLAKE.ACCOUNT_USAGE.STORAGE_USAGE
+WHERE usage_date >= DATEADD(days, -30, CURRENT_DATE())
+ORDER BY usage_date;
 ```
 
 ## Benchmark Results Template
 
-```markdown
-## Snowflake Performance Benchmark
-**Date:** YYYY-MM-DD
-**Environment:** [staging/production]
-**SDK Version:** X.Y.Z
-
-### Test Configuration
-- Duration: 10 minutes
-- Ramp: 10 → 100 → 10 VUs
-- Target endpoint: /v1/resource
-
-### Results
-| Metric | Value |
-|--------|-------|
-| Total Requests | 50,000 |
-| Success Rate | 99.9% |
-| P50 Latency | 120ms |
-| P95 Latency | 350ms |
-| P99 Latency | 800ms |
-| Max RPS Achieved | 150 |
-
-### Observations
-- [Key finding 1]
-- [Key finding 2]
-
-### Recommendations
-- [Scaling recommendation]
 ```
+## Snowflake Performance Benchmark
+Date: YYYY-MM-DD
+Environment: [staging/production]
+Table size: [X rows, Y GB]
 
-## Instructions
+| Warehouse | Query Type | Avg (s) | P95 (s) | GB Scanned | Spill |
+|-----------|-----------|---------|---------|-----------|-------|
+| XS        | Agg       |         |         |           |       |
+| S         | Agg       |         |         |           |       |
+| M         | Agg       |         |         |           |       |
 
-### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
-
-### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
-
-### Step 3: Run Load Test
-Execute test and collect metrics.
-
-### Step 4: Analyze and Document
-Record results in benchmark template.
-
-## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+Concurrent: [N users, M queries, QPS achieved]
+Recommendation: [sizing/clustering/multi-cluster advice]
+```
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| k6 timeout | Rate limited | Reduce RPS |
-| HPA not scaling | Wrong metrics | Verify metric name |
-| Connection refused | Pool exhausted | Increase pool size |
-| Inconsistent results | Warm-up needed | Add ramp-up phase |
-
-## Examples
-
-### Quick k6 Test
-```bash
-k6 run --vus 10 --duration 30s snowflake-load-test.js
-```
-
-### Check Current Capacity
-```typescript
-const metrics = await getSystemMetrics();
-const capacity = estimateSnowflakeCapacity(metrics);
-console.log('Headroom:', capacity.headroom + '%');
-console.log('Recommendation:', capacity.scaleRecommendation);
-```
-
-### Scale HPA Manually
-```bash
-kubectl scale deployment snowflake-integration --replicas=5
-kubectl get hpa snowflake-integration-hpa
-```
+| Queries queuing | Concurrency > capacity | Add multi-cluster or separate warehouse |
+| Linear scaling fails | Query not parallelizable | Optimize SQL (reduce shuffle) |
+| Spilling on larger warehouse | Data skew | Check for hot partition/join skew |
+| Load test throttled | Login rate limit | Use connection pooling |
 
 ## Resources
-- [k6 Documentation](https://k6.io/docs/)
-- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Snowflake Rate Limits](https://docs.snowflake.com/rate-limits)
+
+- [Warehouse Considerations](https://docs.snowflake.com/en/user-guide/warehouses-considerations)
+- [Multi-Cluster Warehouses](https://docs.snowflake.com/en/user-guide/warehouses-multicluster)
+- [Warehouse Load Monitoring](https://docs.snowflake.com/en/user-guide/warehouses-load-monitoring)
 
 ## Next Steps
+
 For reliability patterns, see `snowflake-reliability-patterns`.

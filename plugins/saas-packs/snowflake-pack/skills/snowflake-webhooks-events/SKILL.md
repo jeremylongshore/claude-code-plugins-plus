@@ -1,11 +1,11 @@
 ---
 name: snowflake-webhooks-events
 description: |
-  Implement Snowflake webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Snowflake event notifications securely.
-  Trigger with phrases like "snowflake webhook", "snowflake events",
-  "snowflake webhook signature", "handle snowflake events", "snowflake notifications".
+  Implement Snowflake event-driven patterns with alerts, notifications, and external functions.
+  Use when setting up Snowflake alerts, email notifications, external API calls,
+  or event-driven pipelines triggered by Snowflake data changes.
+  Trigger with phrases like "snowflake alerts", "snowflake notifications",
+  "snowflake events", "snowflake external function", "snowflake email".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,185 +17,228 @@ compatible-with: claude-code
 # Snowflake Webhooks & Events
 
 ## Overview
-Securely handle Snowflake webhooks with signature validation and replay protection.
+
+Snowflake uses alerts, email notifications, external functions, and notification integrations for event-driven patterns (not traditional webhooks).
 
 ## Prerequisites
-- Snowflake webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
 
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/snowflake',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-snowflake-signature'] as string;
-    const timestamp = req.headers['x-snowflake-timestamp'] as string;
-
-    if (!verifySnowflakeSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleSnowflakeEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifySnowflakeSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.SNOWFLAKE_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type SnowflakeEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface SnowflakeEvent {
-  id: string;
-  type: SnowflakeEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<SnowflakeEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleSnowflakeEvent(event: SnowflakeEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `snowflake:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `snowflake:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Snowflake CLI to send test events
-snowflake webhooks trigger resource.created --url http://localhost:3000/webhooks/snowflake
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- ACCOUNTADMIN or role with `CREATE ALERT` privilege
+- Email notification integration configured
+- For external functions: API Gateway (AWS/GCP/Azure) configured
+- For S3/GCS event notifications: Snowpipe configured
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Snowflake dashboard.
+### Step 1: Snowflake Alerts (Built-in Event System)
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```sql
+-- Alert when daily revenue drops below threshold
+CREATE OR REPLACE ALERT revenue_drop_alert
+  WAREHOUSE = ANALYTICS_WH
+  SCHEDULE = '60 MINUTE'
+  IF (EXISTS (
+    SELECT 1
+    FROM daily_order_metrics
+    WHERE metric_date = CURRENT_DATE()
+      AND total_revenue < (
+        SELECT AVG(total_revenue) * 0.5
+        FROM daily_order_metrics
+        WHERE metric_date BETWEEN DATEADD(days, -30, CURRENT_DATE())
+          AND DATEADD(days, -1, CURRENT_DATE())
+      )
+  ))
+  THEN
+    CALL SYSTEM$SEND_EMAIL(
+      'revenue_notifications',
+      'oncall@company.com',
+      'Revenue Alert: Below 50% of 30-day average',
+      'Daily revenue has dropped significantly. Check dashboard.'
+    );
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+ALTER ALERT revenue_drop_alert RESUME;
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+-- Alert when warehouse credits exceed daily budget
+CREATE OR REPLACE ALERT credit_usage_alert
+  WAREHOUSE = ANALYTICS_WH
+  SCHEDULE = '30 MINUTE'
+  IF (EXISTS (
+    SELECT 1
+    FROM SNOWFLAKE.ACCOUNT_USAGE.WAREHOUSE_METERING_HISTORY
+    WHERE start_time >= CURRENT_DATE()
+    GROUP BY ALL
+    HAVING SUM(credits_used) > 100  -- Daily budget: 100 credits
+  ))
+  THEN
+    CALL SYSTEM$SEND_EMAIL(
+      'ops_notifications',
+      'ops@company.com',
+      'Snowflake Credit Alert',
+      'Daily credit usage has exceeded 100 credits.'
+    );
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/snowflake \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+-- Monitor alert history
+SELECT *
+FROM TABLE(INFORMATION_SCHEMA.ALERT_HISTORY(
+  SCHEDULED_TIME_RANGE_START => DATEADD(hours, -24, CURRENT_TIMESTAMP())
+))
+ORDER BY scheduled_time DESC;
 ```
 
+### Step 2: Email Notification Integration
+
+```sql
+-- Set up email notification integration
+CREATE OR REPLACE NOTIFICATION INTEGRATION email_notifications
+  TYPE = EMAIL
+  ENABLED = TRUE
+  ALLOWED_RECIPIENTS = (
+    'oncall@company.com',
+    'ops@company.com',
+    'data-team@company.com'
+  );
+
+-- Send email from stored procedure
+CREATE OR REPLACE PROCEDURE send_data_quality_report()
+  RETURNS VARCHAR
+  LANGUAGE SQL
+AS
+$$
+BEGIN
+  LET row_count INTEGER;
+  SELECT COUNT(*) INTO :row_count
+  FROM orders WHERE order_date = CURRENT_DATE() AND amount IS NULL;
+
+  IF (row_count > 0) THEN
+    CALL SYSTEM$SEND_EMAIL(
+      'email_notifications',
+      'data-team@company.com',
+      'Data Quality Issue: NULL amounts detected',
+      row_count || ' orders have NULL amounts today.'
+    );
+    RETURN 'Alert sent for ' || row_count || ' records';
+  END IF;
+  RETURN 'No issues found';
+END;
+$$;
+```
+
+### Step 3: External Functions (Call External APIs)
+
+```sql
+-- Create API integration for external function
+CREATE OR REPLACE API INTEGRATION my_api_integration
+  API_PROVIDER = aws_api_gateway
+  API_AWS_ROLE_ARN = 'arn:aws:iam::123456789:role/snowflake-api-role'
+  ENABLED = TRUE
+  API_ALLOWED_PREFIXES = ('https://api.execute-api.us-east-1.amazonaws.com/');
+
+-- Create external function that calls your API
+CREATE OR REPLACE EXTERNAL FUNCTION notify_slack(message VARCHAR)
+  RETURNS VARIANT
+  API_INTEGRATION = my_api_integration
+  AS 'https://api.execute-api.us-east-1.amazonaws.com/prod/slack-notify';
+
+-- Use in a task to notify on data changes
+CREATE OR REPLACE TASK notify_new_high_value_orders
+  WAREHOUSE = ANALYTICS_WH
+  SCHEDULE = '15 MINUTE'
+  WHEN SYSTEM$STREAM_HAS_DATA('orders_stream')
+AS
+  SELECT notify_slack(
+    'New high-value order: $' || amount || ' from customer ' || customer_id
+  )
+  FROM orders_stream
+  WHERE METADATA$ACTION = 'INSERT' AND amount >= 10000;
+```
+
+### Step 4: Cloud Event Notifications (S3/GCS/Azure)
+
+```sql
+-- S3 event notification for auto-ingest (Snowpipe)
+-- This triggers when new files land in S3
+CREATE OR REPLACE PIPE auto_ingest_pipe
+  AUTO_INGEST = TRUE
+  AS
+  COPY INTO raw_events
+    FROM @my_s3_stage/events/
+    FILE_FORMAT = my_json_format;
+
+-- Get the SQS queue ARN to configure S3 event notifications
+SHOW PIPES LIKE 'auto_ingest_pipe';
+-- Copy notification_channel value → S3 bucket event configuration
+
+-- GCS pub/sub notification
+CREATE OR REPLACE NOTIFICATION INTEGRATION gcs_notification
+  TYPE = QUEUE
+  NOTIFICATION_PROVIDER = GCP_PUBSUB
+  ENABLED = TRUE
+  GCP_PUBSUB_SUBSCRIPTION_NAME = 'projects/my-project/subscriptions/snowflake-sub';
+```
+
+### Step 5: Application-Side Event Processing
+
+```typescript
+// src/snowflake/event-processor.ts
+// Poll for changes using streams (app-side consumption)
+
+interface OrderEvent {
+  ORDER_ID: number;
+  CUSTOMER_ID: number;
+  AMOUNT: number;
+  METADATA$ACTION: 'INSERT' | 'DELETE';
+}
+
+async function processOrderEvents(conn: snowflake.Connection) {
+  // Check if stream has data
+  const hasData = await query<{ HAS_DATA: boolean }>(conn,
+    "SELECT SYSTEM$STREAM_HAS_DATA('orders_stream') AS HAS_DATA"
+  );
+  if (!hasData.rows[0]?.HAS_DATA) return;
+
+  // Consume stream within a transaction
+  await query(conn, 'BEGIN');
+  try {
+    const events = await query<OrderEvent>(conn,
+      'SELECT * FROM orders_stream'
+    );
+
+    for (const event of events.rows) {
+      if (event.METADATA$ACTION === 'INSERT' && event.AMOUNT >= 10000) {
+        await notifySlack(`High-value order: $${event.AMOUNT}`);
+      }
+    }
+
+    // Advance the stream offset by writing to target
+    await query(conn, `
+      INSERT INTO processed_orders
+      SELECT order_id, customer_id, amount, CURRENT_TIMESTAMP()
+      FROM orders_stream WHERE METADATA$ACTION = 'INSERT'
+    `);
+
+    await query(conn, 'COMMIT');
+  } catch (err) {
+    await query(conn, 'ROLLBACK');
+    throw err;
+  }
+}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Alert not firing | Alert suspended | `ALTER ALERT x RESUME` |
+| Email not delivered | Recipient not in allowlist | Add to `ALLOWED_RECIPIENTS` |
+| External function timeout | API too slow | Increase timeout, check API health |
+| Snowpipe not triggering | S3 event config missing | Configure SQS notification from `SHOW PIPES` |
+| Stream data loss | Stream stale | Recreate stream, increase retention |
+
 ## Resources
-- [Snowflake Webhooks Guide](https://docs.snowflake.com/webhooks)
-- [Webhook Security Best Practices](https://docs.snowflake.com/webhooks/security)
+
+- [Snowflake Alerts](https://docs.snowflake.com/en/user-guide/alerts)
+- [External Functions](https://docs.snowflake.com/en/sql-reference/external-functions)
+- [Snowpipe Auto-Ingest](https://docs.snowflake.com/en/user-guide/data-load-snowpipe-intro)
 
 ## Next Steps
+
 For performance optimization, see `snowflake-performance-tuning`.

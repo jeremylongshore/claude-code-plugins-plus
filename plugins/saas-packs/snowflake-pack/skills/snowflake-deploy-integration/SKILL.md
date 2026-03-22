@@ -1,12 +1,12 @@
 ---
 name: snowflake-deploy-integration
 description: |
-  Deploy Snowflake integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Snowflake-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy snowflake", "snowflake Vercel",
-  "snowflake production deploy", "snowflake Cloud Run", "snowflake Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Snowflake-powered applications with proper connection management and secrets.
+  Use when deploying apps that query Snowflake, configuring connection pools
+  for serverless/container platforms, or managing Snowflake credentials in production.
+  Trigger with phrases like "deploy snowflake", "snowflake serverless",
+  "snowflake production deploy", "snowflake Cloud Run", "snowflake Lambda".
+allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*), Bash(docker:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,195 +17,204 @@ compatible-with: claude-code
 # Snowflake Deploy Integration
 
 ## Overview
-Deploy Snowflake-powered applications to popular platforms with proper secrets management.
+
+Deploy applications that connect to Snowflake on serverless platforms, containers, and VMs with proper connection lifecycle management.
 
 ## Prerequisites
-- Snowflake API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+- Snowflake service account with key pair auth
+- Platform CLI installed (gcloud, aws, docker)
+- Application tested against staging Snowflake
 
-### Environment Setup
-```bash
-# Add Snowflake secrets to Vercel
-vercel secrets add snowflake_api_key sk_live_***
-vercel secrets add snowflake_webhook_secret whsec_***
+## Instructions
 
-# Link to project
-vercel link
+### Step 1: Connection Management for Serverless
 
-# Deploy preview
-vercel
+```typescript
+// src/snowflake/serverless-connection.ts
+import snowflake from 'snowflake-sdk';
 
-# Deploy production
-vercel --prod
-```
+let cachedConnection: snowflake.Connection | null = null;
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "SNOWFLAKE_API_KEY": "@snowflake_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+/**
+ * Reuse connection across Lambda/Cloud Function invocations.
+ * Serverless containers may be reused — avoid reconnecting every call.
+ */
+export async function getConnection(): Promise<snowflake.Connection> {
+  if (cachedConnection?.isUp()) {
+    return cachedConnection;
   }
+
+  const conn = snowflake.createConnection({
+    account: process.env.SNOWFLAKE_ACCOUNT!,
+    username: process.env.SNOWFLAKE_USER!,
+    authenticator: 'SNOWFLAKE_JWT',
+    privateKey: process.env.SNOWFLAKE_PRIVATE_KEY!,
+    warehouse: process.env.SNOWFLAKE_WAREHOUSE!,
+    database: process.env.SNOWFLAKE_DATABASE!,
+    schema: process.env.SNOWFLAKE_SCHEMA || 'PUBLIC',
+    clientSessionKeepAlive: true,  // Keep session alive between invocations
+  });
+
+  await new Promise<void>((resolve, reject) => {
+    conn.connect((err) => (err ? reject(err) : resolve()));
+  });
+
+  cachedConnection = conn;
+  return conn;
 }
 ```
 
-## Fly.io Deployment
+### Step 2: Google Cloud Run Deployment
 
-### fly.toml
-```toml
-app = "my-snowflake-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Snowflake secrets
-fly secrets set SNOWFLAKE_API_KEY=sk_live_***
-fly secrets set SNOWFLAKE_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
 ```dockerfile
+# Dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
+COPY dist/ ./dist/
+ENV NODE_ENV=production
+CMD ["node", "dist/index.js"]
 ```
 
-### Deploy Script
 ```bash
 #!/bin/bash
 # deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="snowflake-service"
+PROJECT_ID="${GCP_PROJECT_ID}"
+SERVICE_NAME="snowflake-api"
 REGION="us-central1"
 
-# Build and push image
+# Build and push
 gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
 
-# Deploy to Cloud Run
+# Deploy with Snowflake credentials from Secret Manager
 gcloud run deploy $SERVICE_NAME \
   --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
   --region $REGION \
   --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=SNOWFLAKE_API_KEY=snowflake-api-key:latest
+  --set-secrets="SNOWFLAKE_ACCOUNT=snowflake-account:latest,\
+SNOWFLAKE_USER=snowflake-user:latest,\
+SNOWFLAKE_PRIVATE_KEY=snowflake-private-key:latest" \
+  --set-env-vars="SNOWFLAKE_WAREHOUSE=PROD_ANALYTICS_WH,\
+SNOWFLAKE_DATABASE=PROD_DB,\
+SNOWFLAKE_SCHEMA=PUBLIC" \
+  --min-instances=1 \
+  --max-instances=10 \
+  --timeout=300
 ```
 
-## Environment Configuration Pattern
+### Step 3: AWS Lambda Deployment
 
 ```typescript
-// config/snowflake.ts
-interface SnowflakeConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// lambda/handler.ts
+import { getConnection } from './snowflake/serverless-connection';
 
-export function getSnowflakeConfig(): SnowflakeConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.SNOWFLAKE_API_KEY!,
-    environment: env as SnowflakeConfig['environment'],
-    webhookSecret: process.env.SNOWFLAKE_WEBHOOK_SECRET,
-  };
+export async function handler(event: any) {
+  try {
+    const conn = await getConnection();
+    const rows = await new Promise<any[]>((resolve, reject) => {
+      conn.execute({
+        sqlText: 'SELECT COUNT(*) AS total FROM orders WHERE order_date = CURRENT_DATE()',
+        complete: (err, stmt, rows) => (err ? reject(err) : resolve(rows || [])),
+      });
+    });
+    return { statusCode: 200, body: JSON.stringify(rows[0]) };
+  } catch (error: any) {
+    return { statusCode: 500, body: JSON.stringify({ error: error.message }) };
+  }
 }
 ```
 
-## Health Check Endpoint
+```bash
+# Store Snowflake private key in AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name snowflake/prod/private-key \
+  --secret-string "$(cat rsa_key.p8)"
+
+# Lambda environment variables
+aws lambda update-function-configuration \
+  --function-name snowflake-api \
+  --environment "Variables={
+    SNOWFLAKE_ACCOUNT=myorg-myaccount,
+    SNOWFLAKE_USER=svc_lambda,
+    SNOWFLAKE_WAREHOUSE=PROD_ANALYTICS_WH,
+    SNOWFLAKE_DATABASE=PROD_DB
+  }" \
+  --timeout 300
+```
+
+### Step 4: Docker Compose for Self-Hosted
+
+```yaml
+# docker-compose.yml
+services:
+  snowflake-app:
+    build: .
+    environment:
+      - SNOWFLAKE_ACCOUNT=${SNOWFLAKE_ACCOUNT}
+      - SNOWFLAKE_USER=${SNOWFLAKE_USER}
+      - SNOWFLAKE_PRIVATE_KEY_PATH=/run/secrets/snowflake_key
+      - SNOWFLAKE_WAREHOUSE=PROD_ANALYTICS_WH
+      - SNOWFLAKE_DATABASE=PROD_DB
+    secrets:
+      - snowflake_key
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+secrets:
+  snowflake_key:
+    file: ./rsa_key.p8  # Never commit this file
+```
+
+### Step 5: Health Check Endpoint
 
 ```typescript
-// api/health.ts
-export async function GET() {
-  const snowflakeStatus = await checkSnowflakeConnection();
+// src/health.ts
+import { getConnection } from './snowflake/serverless-connection';
 
-  return Response.json({
-    status: snowflakeStatus ? 'healthy' : 'degraded',
-    services: {
-      snowflake: snowflakeStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+export async function healthCheck() {
+  const start = Date.now();
+  try {
+    const conn = await getConnection();
+    const rows = await new Promise<any[]>((resolve, reject) => {
+      conn.execute({
+        sqlText: 'SELECT 1 AS health_check',
+        complete: (err, _, rows) => (err ? reject(err) : resolve(rows || [])),
+      });
+    });
+    return {
+      status: 'healthy',
+      snowflake: { connected: true, latencyMs: Date.now() - start },
+    };
+  } catch (error: any) {
+    return {
+      status: 'degraded',
+      snowflake: { connected: false, error: error.message, latencyMs: Date.now() - start },
+    };
+  }
 }
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Snowflake API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Snowflake integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Snowflake connectivity.
-
-## Output
-- Application deployed to production
-- Snowflake secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add snowflake_api_key "$SNOWFLAKE_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set SNOWFLAKE_API_KEY="$SNOWFLAKE_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| Cold start timeout | Warehouse resuming | Set `min-instances=1` or pre-warm warehouse |
+| Connection refused in container | Wrong network config | Check DNS resolution for `*.snowflakecomputing.com` |
+| Secret not found | Missing secret binding | Verify secret manager config |
+| `privateKey` format error | Key has headers/newlines | Strip PEM headers or use file path |
+| Session expired | Long-running serverless | Set `clientSessionKeepAlive: true` |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Snowflake Deploy Guide](https://docs.snowflake.com/deploy)
+
+- [Node.js Connection Options](https://docs.snowflake.com/en/developer-guide/node-js/nodejs-driver-options)
+- [Cloud Run Docs](https://cloud.google.com/run/docs)
+- [AWS Lambda Docs](https://docs.aws.amazon.com/lambda/latest/dg/)
 
 ## Next Steps
-For webhook handling, see `snowflake-webhooks-events`.
+
+For event-driven patterns, see `snowflake-webhooks-events`.

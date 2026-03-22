@@ -1,11 +1,10 @@
 ---
 name: snowflake-multi-env-setup
 description: |
-  Configure Snowflake across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Snowflake configurations.
+  Configure Snowflake across dev, staging, and production with account-level isolation,
+  zero-copy clones, and environment-specific RBAC.
   Trigger with phrases like "snowflake environments", "snowflake staging",
-  "snowflake dev prod", "snowflake environment setup", "snowflake config by env".
+  "snowflake dev prod", "snowflake clone", "snowflake environment setup".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
@@ -17,208 +16,198 @@ compatible-with: claude-code
 # Snowflake Multi-Environment Setup
 
 ## Overview
-Configure Snowflake across development, staging, and production environments.
 
-## Prerequisites
-- Separate Snowflake accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+Configure dev/staging/production environments using Snowflake's zero-copy cloning, separate databases, and environment-specific roles and warehouses.
 
 ## Environment Strategy
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
-
-## Configuration Structure
-
-```
-config/
-├── snowflake/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
-
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${SNOWFLAKE_API_KEY}",
-  "baseUrl": "https://api-sandbox.snowflake.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${SNOWFLAKE_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.snowflake.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${SNOWFLAKE_API_KEY_PROD}",
-  "baseUrl": "https://api.snowflake.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
-```typescript
-// src/snowflake/config.ts
-import baseConfig from '../../config/snowflake/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getSnowflakeConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/snowflake/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-SNOWFLAKE_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  SNOWFLAKE_API_KEY: ${{ secrets.SNOWFLAKE_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id snowflake/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=snowflake-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/snowflake/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getSnowflakeConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[snowflake] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
+| Environment | Approach | Data | Warehouse | Cost |
+|-------------|----------|------|-----------|------|
+| Development | Cloned DB, XSMALL WH | Zero-copy clone (refreshed weekly) | DEV_WH_XS | Minimal |
+| Staging | Cloned DB, same-size WH | Zero-copy clone (refreshed daily) | STAGING_WH | Moderate |
+| Production | Source of truth | Real data | PROD_WH (multi-cluster) | Full |
 
 ## Instructions
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+### Step 1: Create Environment Databases with Zero-Copy Cloning
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+```sql
+-- Zero-copy clone creates instant copy with no additional storage cost
+-- Storage cost only accrues when cloned data diverges from source
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
+-- Clone production to staging (point-in-time)
+CREATE DATABASE STAGING_DW CLONE PROD_DW;
 
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
+-- Clone to dev
+CREATE DATABASE DEV_DW CLONE PROD_DW;
 
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+-- Clone from a specific point in time (Time Travel)
+CREATE DATABASE STAGING_DW CLONE PROD_DW
+  AT (TIMESTAMP => '2026-03-21 06:00:00'::TIMESTAMP_NTZ);
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
+-- Refresh clone (drop and re-clone)
+-- Schedule this as a task:
+CREATE OR REPLACE TASK refresh_staging_clone
+  WAREHOUSE = ADMIN_WH
+  SCHEDULE = 'USING CRON 0 4 * * * America/New_York'  -- 4 AM ET daily
+AS
+  BEGIN
+    DROP DATABASE IF EXISTS STAGING_DW;
+    CREATE DATABASE STAGING_DW CLONE PROD_DW;
+    -- Re-grant permissions after clone
+    GRANT USAGE ON DATABASE STAGING_DW TO ROLE STAGING_ROLE;
+    GRANT USAGE ON ALL SCHEMAS IN DATABASE STAGING_DW TO ROLE STAGING_ROLE;
+    GRANT SELECT ON ALL TABLES IN DATABASE STAGING_DW TO ROLE STAGING_ROLE;
+  END;
 
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getSnowflakeConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+ALTER TASK refresh_staging_clone RESUME;
 ```
 
+### Step 2: Environment-Specific Warehouses
+
+```sql
+-- Development: minimal size, aggressive auto-suspend
+CREATE WAREHOUSE DEV_WH
+  WAREHOUSE_SIZE = 'XSMALL'
+  AUTO_SUSPEND = 60
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  RESOURCE_MONITOR = dev_monitor;
+
+-- Staging: mirrors production size for realistic testing
+CREATE WAREHOUSE STAGING_WH
+  WAREHOUSE_SIZE = 'MEDIUM'
+  AUTO_SUSPEND = 120
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  RESOURCE_MONITOR = staging_monitor;
+
+-- Production: multi-cluster for concurrency
+CREATE WAREHOUSE PROD_WH
+  WAREHOUSE_SIZE = 'MEDIUM'
+  MIN_CLUSTER_COUNT = 1
+  MAX_CLUSTER_COUNT = 4
+  SCALING_POLICY = 'STANDARD'
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE
+  RESOURCE_MONITOR = prod_monitor;
+
+-- Resource monitors per environment
+CREATE RESOURCE MONITOR dev_monitor
+  WITH CREDIT_QUOTA = 50 FREQUENCY = MONTHLY START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS ON 100 PERCENT DO SUSPEND;
+
+CREATE RESOURCE MONITOR staging_monitor
+  WITH CREDIT_QUOTA = 200 FREQUENCY = MONTHLY START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS ON 90 PERCENT DO NOTIFY ON 100 PERCENT DO SUSPEND;
+
+CREATE RESOURCE MONITOR prod_monitor
+  WITH CREDIT_QUOTA = 2000 FREQUENCY = MONTHLY START_TIMESTAMP = IMMEDIATELY
+  TRIGGERS ON 75 PERCENT DO NOTIFY ON 90 PERCENT DO NOTIFY ON 100 PERCENT DO SUSPEND;
+```
+
+### Step 3: Environment-Specific Roles
+
+```sql
+-- Dev role: full access to dev DB only
+CREATE ROLE DEV_ROLE;
+GRANT USAGE ON WAREHOUSE DEV_WH TO ROLE DEV_ROLE;
+GRANT ALL ON DATABASE DEV_DW TO ROLE DEV_ROLE;
+GRANT ALL ON ALL SCHEMAS IN DATABASE DEV_DW TO ROLE DEV_ROLE;
+
+-- Staging role: read/write staging, read-only prod
+CREATE ROLE STAGING_ROLE;
+GRANT USAGE ON WAREHOUSE STAGING_WH TO ROLE STAGING_ROLE;
+GRANT ALL ON DATABASE STAGING_DW TO ROLE STAGING_ROLE;
+GRANT USAGE ON DATABASE PROD_DW TO ROLE STAGING_ROLE;
+GRANT SELECT ON ALL TABLES IN DATABASE PROD_DW TO ROLE STAGING_ROLE;
+
+-- Production role: minimal, service-account driven
+CREATE ROLE PROD_ETL_ROLE;
+GRANT USAGE ON WAREHOUSE PROD_WH TO ROLE PROD_ETL_ROLE;
+GRANT ALL ON DATABASE PROD_DW TO ROLE PROD_ETL_ROLE;
+
+-- Hierarchy
+GRANT ROLE DEV_ROLE TO ROLE SYSADMIN;
+GRANT ROLE STAGING_ROLE TO ROLE SYSADMIN;
+GRANT ROLE PROD_ETL_ROLE TO ROLE SYSADMIN;
+```
+
+### Step 4: Application Configuration
+
+```typescript
+// src/snowflake/env-config.ts
+type Environment = 'development' | 'staging' | 'production';
+
+interface SnowflakeEnvConfig {
+  account: string;
+  warehouse: string;
+  database: string;
+  role: string;
+}
+
+const ENV_CONFIGS: Record<Environment, SnowflakeEnvConfig> = {
+  development: {
+    account: process.env.SNOWFLAKE_ACCOUNT!,
+    warehouse: 'DEV_WH',
+    database: 'DEV_DW',
+    role: 'DEV_ROLE',
+  },
+  staging: {
+    account: process.env.SNOWFLAKE_ACCOUNT!,
+    warehouse: 'STAGING_WH',
+    database: 'STAGING_DW',
+    role: 'STAGING_ROLE',
+  },
+  production: {
+    account: process.env.SNOWFLAKE_ACCOUNT!,
+    warehouse: 'PROD_WH',
+    database: 'PROD_DW',
+    role: 'PROD_ETL_ROLE',
+  },
+};
+
+export function getEnvConfig(): SnowflakeEnvConfig {
+  const env = (process.env.NODE_ENV || 'development') as Environment;
+  const config = ENV_CONFIGS[env];
+  if (!config) throw new Error(`Unknown environment: ${env}`);
+  return config;
+}
+```
+
+### Step 5: Data Masking for Non-Production
+
+```sql
+-- Mask PII in dev/staging clones
+CREATE OR REPLACE MASKING POLICY pii_mask AS (val STRING)
+  RETURNS STRING ->
+  CASE
+    WHEN CURRENT_DATABASE() = 'PROD_DW' THEN val
+    ELSE SHA2(val)  -- Hash PII in non-prod
+  END;
+
+-- Apply to sensitive columns
+ALTER TABLE DEV_DW.SILVER.USERS MODIFY COLUMN email
+  SET MASKING POLICY pii_mask;
+ALTER TABLE STAGING_DW.SILVER.USERS MODIFY COLUMN email
+  SET MASKING POLICY pii_mask;
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Clone takes too long | Very large DB | Clone is instant; check for metadata operations |
+| Wrong database context | Environment mismatch | Verify `NODE_ENV` and connection config |
+| Dev credits exhausted | Resource monitor hit | Increase quota or wait for monthly reset |
+| Clone permissions lost | Grants not re-applied after refresh | Add grants to refresh task |
+
 ## Resources
-- [Snowflake Environments Guide](https://docs.snowflake.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+
+- [Zero-Copy Cloning](https://docs.snowflake.com/en/sql-reference/sql/create-clone)
+- [Time Travel](https://docs.snowflake.com/en/user-guide/data-time-travel)
+- [Masking Policies](https://docs.snowflake.com/en/user-guide/tag-based-masking-policies)
 
 ## Next Steps
+
 For observability setup, see `snowflake-observability`.
