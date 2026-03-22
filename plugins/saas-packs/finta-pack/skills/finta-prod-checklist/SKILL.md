@@ -1,121 +1,45 @@
 ---
 name: finta-prod-checklist
 description: |
-  Execute Finta production deployment checklist and rollback procedures.
-  Use when deploying Finta integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "finta production", "deploy finta",
-  "finta go-live", "finta launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Fundraise launch checklist using Finta CRM.
+  Trigger with phrases like "finta checklist", "finta launch", "finta go-live".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Production Checklist
 
-## Overview
-Complete checklist for deploying Finta integrations to production.
+## Pre-Fundraise Setup
+- [ ] Company profile complete (sector, stage, metrics)
+- [ ] Email sync connected (Gmail/Outlook)
+- [ ] Calendar sync connected
+- [ ] Financial integrations (Stripe, Mercury, Brex)
+- [ ] Pitch deck uploaded to deal room
+- [ ] Financial model in data room
+- [ ] Cap table imported
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+## Pipeline Configuration
+- [ ] Pipeline stages customized for your process
+- [ ] Automation rules configured (email reply -> stage advance)
+- [ ] Target investor list imported (50-200 investors typical)
+- [ ] Aurora AI reviewed for additional prospects
 
-## Instructions
+## Outreach Preparation
+- [ ] Email templates drafted
+- [ ] Warm intro requests sent to network
+- [ ] Deal room links generated and tested
+- [ ] Investor update template prepared
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
-
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Finta error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Finta connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.finta.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/finta-integration app=image:new --record
-kubectl rollout pause deployment/finta-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/finta-integration
-kubectl rollout pause deployment/finta-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/finta-integration
-kubectl rollout status deployment/finta-integration
-```
-
-## Output
-- Deployed Finta integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; finta: any }> {
-  const start = Date.now();
-  try {
-    await fintaClient.ping();
-    return { status: 'healthy', finta: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', finta: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/finta-integration
-kubectl rollout status deployment/finta-integration
-```
-
-## Resources
-- [Finta Status](https://status.finta.com)
-- [Finta Support](https://docs.finta.com/support)
+## Post-Close
+- [ ] Payment collection configured (Stripe/ACH)
+- [ ] Investor update schedule set (monthly/quarterly)
+- [ ] Cap table updated with new investors
+- [ ] Access revoked for investors who passed
 
 ## Next Steps
-For version upgrades, see `finta-upgrade-migration`.
+
+For upgrades, see `finta-upgrade-migration`.

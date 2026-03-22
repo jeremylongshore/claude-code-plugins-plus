@@ -1,149 +1,235 @@
 ---
 name: clari-sdk-patterns
 description: |
-  Apply production-ready Clari SDK patterns for TypeScript and Python.
-  Use when implementing Clari integrations, refactoring SDK usage,
-  or establishing team coding standards for Clari.
-  Trigger with phrases like "clari SDK patterns", "clari best practices",
-  "clari code patterns", "idiomatic clari".
+  Production-ready Clari API client patterns in Python and TypeScript.
+  Use when building reusable Clari clients, implementing export pipelines,
+  or wrapping the Clari v4 API for team use.
+  Trigger with phrases like "clari API patterns", "clari client wrapper",
+  "clari Python client", "clari TypeScript client".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari SDK Patterns
 
 ## Overview
-Production-ready patterns for Clari SDK usage in TypeScript and Python.
+
+Clari has no official SDK -- build typed wrappers around the v4 REST API. These patterns cover the Export API for forecasts, job polling, and data transformation pipelines.
 
 ## Prerequisites
+
 - Completed `clari-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Python 3.10+ (primary) or TypeScript 5+
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Python Client
+
+```python
+# clari_client.py
+import os
+import time
+import requests
+from dataclasses import dataclass, field
+from typing import Optional
+
+@dataclass
+class ClariConfig:
+    api_key: str
+    base_url: str = "https://api.clari.com/v4"
+    poll_interval: int = 5
+    max_poll_attempts: int = 60
+
+class ClariClient:
+    def __init__(self, config: Optional[ClariConfig] = None):
+        self.config = config or ClariConfig(
+            api_key=os.environ["CLARI_API_KEY"]
+        )
+        self.session = requests.Session()
+        self.session.headers.update({
+            "apikey": self.config.api_key,
+            "Content-Type": "text/plain",
+        })
+
+    def list_forecasts(self) -> list[dict]:
+        resp = self.session.get(f"{self.config.base_url}/export/forecast/list")
+        resp.raise_for_status()
+        return resp.json()["forecasts"]
+
+    def export_forecast(
+        self,
+        forecast_name: str,
+        time_period: str,
+        types: list[str] = None,
+        currency: str = "USD",
+        export_format: str = "JSON",
+    ) -> dict:
+        payload = {
+            "timePeriod": time_period,
+            "typesToExport": types or [
+                "forecast", "quota", "forecast_updated",
+                "adjustment", "crm_total", "crm_closed"
+            ],
+            "currency": currency,
+            "schedule": "NONE",
+            "includeHistorical": False,
+            "exportFormat": export_format,
+        }
+
+        resp = self.session.post(
+            f"{self.config.base_url}/export/forecast/{forecast_name}",
+            json=payload,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def wait_for_job(self, job_id: str) -> dict:
+        for attempt in range(self.config.max_poll_attempts):
+            resp = self.session.get(
+                f"{self.config.base_url}/export/jobs/{job_id}",
+            )
+            resp.raise_for_status()
+            status = resp.json()
+
+            if status["status"] == "COMPLETED":
+                return status
+            if status["status"] == "FAILED":
+                raise ClariExportError(f"Job {job_id} failed: {status}")
+
+            time.sleep(self.config.poll_interval)
+
+        raise ClariExportError(f"Job {job_id} timed out after {self.config.max_poll_attempts} attempts")
+
+    def download_export(self, download_url: str) -> dict:
+        resp = requests.get(download_url)
+        resp.raise_for_status()
+        return resp.json()
+
+    def export_and_download(
+        self, forecast_name: str, time_period: str
+    ) -> dict:
+        job = self.export_forecast(forecast_name, time_period)
+        completed = self.wait_for_job(job["jobId"])
+        return self.download_export(completed["downloadUrl"])
+
+class ClariExportError(Exception):
+    pass
+```
+
+### Step 2: TypeScript Client
+
 ```typescript
-// src/clari/client.ts
-import { ClariClient } from '@clari/sdk';
+// clari-client.ts
+interface ClariConfig {
+  apiKey: string;
+  baseUrl?: string;
+  pollIntervalMs?: number;
+  maxPollAttempts?: number;
+}
 
-let instance: ClariClient | null = null;
+interface ForecastExport {
+  entries: ForecastEntry[];
+}
 
-export function getClariClient(): ClariClient {
-  if (!instance) {
-    instance = new ClariClient({
-      apiKey: process.env.CLARI_API_KEY!,
-      // Additional options
+interface ForecastEntry {
+  ownerName: string;
+  ownerEmail: string;
+  forecastAmount: number;
+  quotaAmount: number;
+  crmTotal: number;
+  crmClosed: number;
+  adjustmentAmount: number;
+  timePeriod: string;
+}
+
+class ClariClient {
+  private apiKey: string;
+  private baseUrl: string;
+  private pollIntervalMs: number;
+  private maxPollAttempts: number;
+
+  constructor(config: ClariConfig) {
+    this.apiKey = config.apiKey;
+    this.baseUrl = config.baseUrl ?? "https://api.clari.com/v4";
+    this.pollIntervalMs = config.pollIntervalMs ?? 5000;
+    this.maxPollAttempts = config.maxPollAttempts ?? 60;
+  }
+
+  private async request<T>(path: string, options?: RequestInit): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${path}`, {
+      ...options,
+      headers: {
+        apikey: this.apiKey,
+        "Content-Type": "text/plain",
+        ...options?.headers,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Clari API ${response.status}: ${await response.text()}`);
+    }
+
+    return response.json();
+  }
+
+  async listForecasts(): Promise<{ forecasts: any[] }> {
+    return this.request("/export/forecast/list");
+  }
+
+  async exportForecast(forecastName: string, timePeriod: string): Promise<any> {
+    return this.request(`/export/forecast/${forecastName}`, {
+      method: "POST",
+      body: JSON.stringify({
+        timePeriod,
+        typesToExport: ["forecast", "quota", "crm_total", "crm_closed"],
+        currency: "USD",
+        schedule: "NONE",
+        includeHistorical: false,
+        exportFormat: "JSON",
+      }),
     });
   }
-  return instance;
-}
-```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { ClariError } from '@clari/sdk';
+  async exportAndDownload(
+    forecastName: string,
+    timePeriod: string
+  ): Promise<ForecastExport> {
+    const job = await this.exportForecast(forecastName, timePeriod);
+    const completed = await this.waitForJob(job.jobId);
+    const resp = await fetch(completed.downloadUrl);
+    return resp.json();
+  }
 
-async function safeClariCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof ClariError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+  private async waitForJob(jobId: string): Promise<any> {
+    for (let i = 0; i < this.maxPollAttempts; i++) {
+      const status = await this.request(`/export/jobs/${jobId}`);
+      if (status.status === "COMPLETED") return status;
+      if (status.status === "FAILED") throw new Error(`Job failed: ${jobId}`);
+      await new Promise((r) => setTimeout(r, this.pollIntervalMs));
     }
-    return { data: null, error: err as Error };
+    throw new Error(`Job ${jobId} timed out`);
   }
 }
 ```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
 
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, ClariClient>();
-
-export function getClientForTenant(tenantId: string): ClariClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new ClariClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from clari import ClariClient
-
-@asynccontextmanager
-async def get_clari_client():
-    client = ClariClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const clariResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Status | Meaning | Action |
+|--------|---------|--------|
+| 401 | Invalid API key | Regenerate token |
+| 403 | Insufficient permissions | Admin must grant API access |
+| 404 | Wrong forecast name | List forecasts first |
+| 429 | Rate limited | Back off and retry |
 
 ## Resources
-- [Clari SDK Reference](https://docs.clari.com/sdk)
-- [Clari API Types](https://docs.clari.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Clari API Reference](https://developer.clari.com/documentation/external_spec)
+- [Clari Community API Guide](https://community.clari.com/product-q-a-6/clari-api-all-you-need-to-know-556)
 
 ## Next Steps
-Apply patterns in `clari-core-workflow-a` for real-world usage.
+
+Apply patterns in `clari-core-workflow-a` for forecast export pipelines.

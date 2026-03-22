@@ -1,92 +1,140 @@
 ---
 name: castai-install-auth
 description: |
-  Install and configure Cast AI SDK/CLI authentication.
-  Use when setting up a new Cast AI integration, configuring API keys,
-  or initializing Cast AI in your project.
-  Trigger with phrases like "install castai", "setup castai",
-  "castai auth", "configure castai API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+  Install and configure CAST AI agent on a Kubernetes cluster with API key authentication.
+  Use when onboarding a cluster to CAST AI, setting up Helm charts,
+  or configuring Terraform provider authentication.
+  Trigger with phrases like "install cast ai", "connect cluster to cast ai",
+  "cast ai setup", "cast ai api key", "cast ai helm install".
+allowed-tools: Read, Write, Edit, Bash(helm:*), Bash(kubectl:*), Bash(terraform:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Install & Auth
+# CAST AI Install & Auth
 
 ## Overview
-Set up Cast AI SDK/CLI and configure authentication credentials.
+
+Connect a Kubernetes cluster (EKS, GKE, AKS, or KOPS) to CAST AI for cost optimization, autoscaling, and security scanning. Covers API key generation, Helm chart installation of the CAST AI agent, and Terraform provider setup.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Cast AI account with API access
-- API key from Cast AI dashboard
+
+- A running Kubernetes cluster (EKS, GKE, AKS, or KOPS)
+- `kubectl` configured with cluster admin access
+- `helm` v3 installed
+- A CAST AI account at https://console.cast.ai
 
 ## Instructions
 
-### Step 1: Install SDK
+### Step 1: Generate an API Key
+
+Log in to https://console.cast.ai and navigate to **API** > **API Access Keys**. Create a Full Access key for Terraform-managed clusters, or Read-Only for monitoring-only.
+
 ```bash
-# Node.js
-npm install @castai/sdk
+export CASTAI_API_KEY="your-api-key-here"
 
-# Python
-pip install castai
+# Verify the key works
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  https://api.cast.ai/v1/kubernetes/external-clusters | jq '.items | length'
 ```
 
-### Step 2: Configure Authentication
+### Step 2: Install the CAST AI Agent via Helm
+
 ```bash
-# Set environment variable
-export CASTAI_API_KEY="your-api-key"
+# Add the CAST AI Helm repository
+helm repo add castai-helm https://castai.github.io/helm-charts
+helm repo update
 
-# Or create .env file
-echo 'CASTAI_API_KEY=your-api-key' >> .env
+# Install the read-only monitoring agent (Phase 1)
+helm upgrade --install castai-agent castai-helm/castai-agent \
+  -n castai-agent --create-namespace \
+  --set apiKey="${CASTAI_API_KEY}" \
+  --set provider="eks"  # eks | gke | aks
+
+kubectl get pods -n castai-agent
 ```
 
-### Step 3: Verify Connection
-```typescript
-// Test connection code here
+### Step 3: Enable Full Automation (Phase 2)
+
+```bash
+export CASTAI_CLUSTER_ID="your-cluster-id"
+
+# Cluster controller -- manages node lifecycle
+helm upgrade --install cluster-controller castai-helm/castai-cluster-controller \
+  -n castai-agent \
+  --set castai.apiKey="${CASTAI_API_KEY}" \
+  --set castai.clusterID="${CASTAI_CLUSTER_ID}"
+
+# Evictor -- consolidates underutilized nodes
+helm upgrade --install castai-evictor castai-helm/castai-evictor \
+  -n castai-agent \
+  --set castai.apiKey="${CASTAI_API_KEY}" \
+  --set castai.clusterID="${CASTAI_CLUSTER_ID}"
+
+# Spot handler -- graceful spot instance interruption
+helm upgrade --install castai-spot-handler castai-helm/castai-spot-handler \
+  -n castai-agent \
+  --set castai.provider="eks" \
+  --set castai.clusterID="${CASTAI_CLUSTER_ID}"
 ```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+### Step 4: Terraform Provider (Alternative)
+
+```hcl
+terraform {
+  required_providers {
+    castai = {
+      source  = "castai/castai"
+      version = "~> 7.0"
+    }
+  }
+}
+
+provider "castai" {
+  api_token = var.castai_api_token
+}
+
+variable "castai_api_token" {
+  type      = string
+  sensitive = true
+}
+
+resource "castai_eks_cluster" "this" {
+  account_id = data.aws_caller_identity.current.account_id
+  region     = var.aws_region
+  name       = var.cluster_name
+}
+```
+
+### Step 5: Verify Connection
+
+```bash
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/external-clusters/${CASTAI_CLUSTER_ID}" \
+  | jq '{name: .name, status: .status, agentStatus: .agentStatus}'
+# => { "name": "my-cluster", "status": "ready", "agentStatus": "online" }
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Cast AI dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.castai.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { CastAIClient } from '@castai/sdk';
-
-const client = new CastAIClient({
-  apiKey: process.env.CASTAI_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from castai import CastAIClient
-
-client = CastAIClient(
-    api_key=os.environ.get('CASTAI_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid or expired API key | Regenerate at console.cast.ai > API |
+| `403 Forbidden` | Key lacks permissions | Use Full Access key for write operations |
+| Agent `CrashLoopBackOff` | RBAC misconfiguration | Check `kubectl logs -n castai-agent` |
+| `cluster not found` | Wrong cluster ID | Verify ID at console.cast.ai > Clusters |
+| Helm chart not found | Repo not added | Run `helm repo add castai-helm ...` |
 
 ## Resources
-- [Cast AI Documentation](https://docs.castai.com)
-- [Cast AI Dashboard](https://api.castai.com)
-- [Cast AI Status](https://status.castai.com)
+
+- [CAST AI Getting Started](https://docs.cast.ai/docs/getting-started)
+- [CAST AI Helm Charts](https://docs.cast.ai/docs/helm-charts)
+- [Terraform Provider](https://registry.terraform.io/providers/castai/castai/latest/docs)
+- [API Reference](https://api.cast.ai/v1/spec/openapi.json)
 
 ## Next Steps
-After successful auth, proceed to `castai-hello-world` for your first API call.
+
+Proceed to `castai-hello-world` to query cluster savings and node status.

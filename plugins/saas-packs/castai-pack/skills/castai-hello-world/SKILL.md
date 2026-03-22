@@ -1,98 +1,117 @@
 ---
 name: castai-hello-world
 description: |
-  Create a minimal working Cast AI example.
-  Use when starting a new Cast AI integration, testing your setup,
-  or learning basic Cast AI API patterns.
-  Trigger with phrases like "castai hello world", "castai example",
-  "castai quick start", "simple castai code".
-allowed-tools: Read, Write, Edit
+  Query CAST AI cluster savings report and node inventory.
+  Use when verifying CAST AI connectivity, viewing cluster cost savings,
+  or listing managed nodes after onboarding.
+  Trigger with phrases like "cast ai hello world", "cast ai savings",
+  "cast ai cluster status", "test cast ai connection".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Hello World
+# CAST AI Hello World
 
 ## Overview
-Minimal working example demonstrating core Cast AI functionality.
+
+First API calls against the CAST AI REST API: list connected clusters, retrieve the savings report, and inspect node inventory. All examples use `curl` with the `X-API-Key` header -- no SDK required.
 
 ## Prerequisites
+
 - Completed `castai-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- `CASTAI_API_KEY` environment variable set
+- At least one cluster connected to CAST AI
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: List Connected Clusters
 
-### Step 2: Import and Initialize Client
-```typescript
-import { CastAIClient } from '@castai/sdk';
-
-const client = new CastAIClient({
-  apiKey: process.env.CASTAI_API_KEY,
-});
+```bash
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  https://api.cast.ai/v1/kubernetes/external-clusters \
+  | jq '.items[] | {id, name, status, providerType}'
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
+Expected output:
+```json
+{
+  "id": "abc123-def456",
+  "name": "production-eks",
+  "status": "ready",
+  "providerType": "eks"
 }
+```
 
-main().catch(console.error);
+### Step 2: Get Cluster Savings Report
+
+```bash
+export CASTAI_CLUSTER_ID="your-cluster-id"
+
+# Current month savings
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/savings" \
+  | jq '{
+    monthlySavings: .monthlySavings,
+    savingsPercentage: .savingsPercentage,
+    currentCost: .currentMonthlyCost,
+    optimizedCost: .optimizedMonthlyCost
+  }'
+```
+
+### Step 3: List Cluster Nodes
+
+```bash
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/external-clusters/${CASTAI_CLUSTER_ID}/nodes" \
+  | jq '.items[] | {
+    name: .name,
+    instanceType: .instanceType,
+    lifecycle: .lifecycle,
+    cpu: .allocatableCpu,
+    memory: .allocatableMemory,
+    zone: .zone
+  }'
+```
+
+### Step 4: Check Autoscaler Policies
+
+```bash
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+  | jq '{
+    enabled: .enabled,
+    unschedulablePods: .unschedulablePods.enabled,
+    nodeDownscaler: .nodeDownscaler.enabled,
+    spotInstances: .spotInstances.enabled
+  }'
 ```
 
 ## Output
-- Working code file with Cast AI client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Cast AI connection is working.
-```
+
+- List of connected clusters with IDs and status
+- Monthly savings report with before/after cost
+- Node inventory with instance types and lifecycle (spot vs on-demand)
+- Autoscaler policy status
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { CastAIClient } from '@castai/sdk';
-
-const client = new CastAIClient({
-  apiKey: process.env.CASTAI_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from castai import CastAIClient
-
-client = CastAIClient()
-
-# Your first API call here
-```
+| `401 Unauthorized` | Bad API key | Regenerate at console.cast.ai |
+| `404 Not Found` | Wrong cluster ID | List clusters first to get correct ID |
+| Empty `items` array | No clusters connected | Run `castai-install-auth` to onboard |
+| `agentStatus: offline` | Agent not running | Check `kubectl get pods -n castai-agent` |
 
 ## Resources
-- [Cast AI Getting Started](https://docs.castai.com/getting-started)
-- [Cast AI API Reference](https://docs.castai.com/api)
-- [Cast AI Examples](https://docs.castai.com/examples)
+
+- [CAST AI API Reference](https://api.cast.ai/v1/spec/openapi.json)
+- [CAST AI Console](https://console.cast.ai)
+- [Savings Report Docs](https://docs.cast.ai/docs/getting-started)
 
 ## Next Steps
-Proceed to `castai-local-dev-loop` for development workflow setup.
+
+Proceed to `castai-local-dev-loop` to set up a development workflow.

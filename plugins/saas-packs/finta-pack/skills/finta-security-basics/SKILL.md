@@ -1,142 +1,38 @@
 ---
 name: finta-security-basics
 description: |
-  Apply Finta security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Finta security configuration.
-  Trigger with phrases like "finta security", "finta secrets",
-  "secure finta", "finta API key security".
-allowed-tools: Read, Write, Grep
+  Secure Finta fundraising data and investor information.
+  Trigger with phrases like "finta security", "finta data privacy".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Security Basics
 
-## Overview
-Security best practices for Finta API keys, tokens, and access control.
+## Data Security
 
-## Prerequisites
-- Finta SDK installed
-- Understanding of environment variables
-- Access to Finta dashboard
+- Finta encrypts data at rest and in transit
+- Deal rooms and data rooms support permission-based access
+- View tracking shows who accessed what documents
 
-## Instructions
+## Security Checklist
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-FINTA_API_KEY=sk_live_***
-FINTA_SECRET=***
-
-# .gitignore
-.env
-.env.local
-.env.*.local
-```
-
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Finta dashboard
-# 2. Update environment variable
-export FINTA_API_KEY="new_key_here"
-
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FINTA_API_KEY}" \
-  https://api.finta.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FintaClient({
-    apiKey: process.env.FINTA_READ_KEY,
-  }),
-  writer: new FintaClient({
-    apiKey: process.env.FINTA_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Finta analytics
-  await fintaClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'finta.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] Strong password + 2FA on Finta account
+- [ ] Review deal room access permissions regularly
+- [ ] Revoke access for investors who pass on the round
+- [ ] Use data room permissions (view-only vs download)
+- [ ] Review connected integration permissions periodically
+- [ ] Export and backup pipeline data regularly
+- [ ] Limit team member access to sensitive financial data
 
 ## Resources
-- [Finta Security Guide](https://docs.finta.com/security)
-- [Finta API Scopes](https://docs.finta.com/scopes)
+
+- [Finta Website](https://www.trustfinta.com)
 
 ## Next Steps
-For production deployment, see `finta-prod-checklist`.
+
+For production readiness, see `finta-prod-checklist`.

@@ -1,216 +1,186 @@
 ---
 name: castai-performance-tuning
 description: |
-  Optimize Cast AI API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Cast AI integrations.
-  Trigger with phrases like "castai performance", "optimize castai",
-  "castai latency", "castai caching", "castai slow", "castai batch".
-allowed-tools: Read, Write, Edit
+  Optimize CAST AI autoscaler performance, node provisioning speed, and API efficiency.
+  Use when nodes take too long to provision, autoscaler is not reacting fast enough,
+  or optimizing API call patterns for multi-cluster dashboards.
+  Trigger with phrases like "cast ai performance", "cast ai slow",
+  "cast ai node provisioning", "cast ai autoscaler speed".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Performance Tuning
+# CAST AI Performance Tuning
 
 ## Overview
-Optimize Cast AI API performance with caching, batching, and connection pooling.
+
+Tune CAST AI for faster node provisioning, more responsive autoscaling, and efficient API usage. Covers headroom configuration, instance family selection, and API caching for multi-cluster dashboards.
 
 ## Prerequisites
-- Cast AI SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
 
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedCast AIRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const castaiLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Cast AI
-    const results = await castaiClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  castaiLoader.load('id-1'),
-  castaiLoader.load('id-2'),
-  castaiLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new CastAIClient({
-  apiKey: process.env.CASTAI_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedCast AIList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedCast AIList(cursor =>
-  castaiClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredCast AICall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- CAST AI Phase 2 (full automation) enabled
+- Understanding of workload scheduling patterns
+- Access to autoscaler policy configuration
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Cast AI operations.
+### Step 1: Optimize Node Provisioning Speed
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredCast AICall(name, () =>
-    cachedCast AIRequest(`cache:${name}`, fn)
-  );
+```bash
+# Configure headroom for proactive scaling (avoids waiting for pending pods)
+curl -X PUT -H "X-API-Key: ${CASTAI_API_KEY}" \
+  -H "Content-Type: application/json" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+  -d '{
+    "enabled": true,
+    "unschedulablePods": {
+      "enabled": true,
+      "headroom": {
+        "enabled": true,
+        "cpuPercentage": 15,
+        "memoryPercentage": 15
+      }
+    }
+  }'
 ```
 
+Headroom pre-provisions spare capacity so pods schedule immediately instead of waiting 2-5 minutes for new nodes.
+
+### Step 2: Instance Family Optimization
+
+```hcl
+# Terraform: Prefer instance families with fast launch times
+resource "castai_node_template" "fast_launch" {
+  cluster_id = castai_eks_cluster.this.id
+  name       = "fast-launch-workers"
+
+  constraints {
+    spot                  = true
+    use_spot_fallbacks    = true
+    fallback_restore_rate_seconds = 300
+
+    # Newer instance types launch faster and have better availability
+    instance_families {
+      include = ["m6i", "m7i", "c6i", "c7i", "r6i", "r7i"]
+    }
+
+    # Enable spot diversity for faster provisioning
+    spot_diversity_price_increase_limit_percent = 25
+
+    architectures = ["amd64"]
+  }
+}
+```
+
+### Step 3: Evictor Tuning for Faster Consolidation
+
+```bash
+# Reduce empty node delay for dev/staging (faster downscale)
+helm upgrade castai-evictor castai-helm/castai-evictor \
+  -n castai-agent \
+  --reuse-values \
+  --set evictor.aggressiveMode=true \
+  --set evictor.cycleInterval=120
+
+# For production, use non-aggressive with longer intervals
+# --set evictor.aggressiveMode=false
+# --set evictor.cycleInterval=600
+```
+
+### Step 4: API Performance for Multi-Cluster Dashboards
+
+```typescript
+import { LRUCache } from "lru-cache";
+
+const cache = new LRUCache<string, unknown>({ max: 100, ttl: 60_000 });
+
+interface ClusterSummary {
+  id: string;
+  name: string;
+  savings: number;
+  savingsPercent: number;
+  nodeCount: number;
+  spotPercent: number;
+}
+
+async function getClusterSummary(clusterId: string): Promise<ClusterSummary> {
+  const cacheKey = `summary:${clusterId}`;
+  const cached = cache.get(cacheKey) as ClusterSummary | undefined;
+  if (cached) return cached;
+
+  const [cluster, savings, nodes] = await Promise.all([
+    castaiGet(`/v1/kubernetes/external-clusters/${clusterId}`),
+    castaiGet(`/v1/kubernetes/clusters/${clusterId}/savings`),
+    castaiGet(`/v1/kubernetes/external-clusters/${clusterId}/nodes`),
+  ]);
+
+  const spotNodes = nodes.items.filter(
+    (n: { lifecycle: string }) => n.lifecycle === "spot"
+  ).length;
+
+  const summary: ClusterSummary = {
+    id: clusterId,
+    name: cluster.name,
+    savings: savings.monthlySavings,
+    savingsPercent: savings.savingsPercentage,
+    nodeCount: nodes.items.length,
+    spotPercent: nodes.items.length > 0
+      ? (spotNodes / nodes.items.length) * 100
+      : 0,
+  };
+
+  cache.set(cacheKey, summary);
+  return summary;
+}
+
+// Aggregate across all clusters
+async function getDashboardData(
+  clusterIds: string[]
+): Promise<ClusterSummary[]> {
+  return Promise.all(clusterIds.map(getClusterSummary));
+}
+```
+
+### Step 5: Workload Autoscaler Tuning
+
+```yaml
+# Faster resource adjustment with shorter cooldown
+# (use with caution in production)
+metadata:
+  annotations:
+    autoscaling.cast.ai/cpu-headroom: "10"     # Lower headroom = tighter fit
+    autoscaling.cast.ai/memory-headroom: "15"
+    autoscaling.cast.ai/apply-type: "immediate" # Apply without waiting
+```
+
+## Performance Benchmarks
+
+| Metric | Default | Tuned |
+|--------|---------|-------|
+| Node provision time | 3-5 min | 1-3 min (with headroom) |
+| Empty node removal | 5 min | 2 min (aggressive evictor) |
+| Workload resize | 5 min cooldown | Immediate |
+| API response (cached) | 200ms | <5ms |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Headroom over-provisioning | Percentage too high | Reduce to 5-10% |
+| Aggressive evictor causing disruptions | PDB not set | Add PodDisruptionBudgets |
+| Cache stale data | TTL too long | Reduce cache TTL to 30s |
+| Instance type unavailable | Too narrow constraints | Add more instance families |
+
 ## Resources
-- [Cast AI Performance Guide](https://docs.castai.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Autoscaler Settings](https://docs.cast.ai/docs/autoscaler-settings)
+- [Workload Autoscaler Annotations](https://docs.cast.ai/docs/workload-autoscaler-annotations-reference)
+- [Node Configuration](https://docs.cast.ai/docs/node-configuration)
 
 ## Next Steps
-For cost optimization, see `castai-cost-tuning`.
+
+For cost optimization strategies, see `castai-cost-tuning`.

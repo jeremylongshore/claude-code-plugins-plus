@@ -1,113 +1,36 @@
 ---
 name: fathom-debug-bundle
 description: |
-  Collect Fathom debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Fathom problems.
-  Trigger with phrases like "fathom debug", "fathom support bundle",
-  "collect fathom logs", "fathom diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect Fathom API diagnostics for support cases.
+  Trigger with phrases like "fathom debug", "fathom diagnostics".
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for Fathom support tickets.
-
-## Prerequisites
-- Fathom SDK installed
-- Access to application logs
-- Permission to collect environment info
-
-## Instructions
-
-### Step 1: Create Debug Bundle Script
 ```bash
 #!/bin/bash
-# fathom-debug-bundle.sh
+BUNDLE="fathom-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="fathom-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+echo "API Key: ${FATHOM_API_KEY:+[SET]}" > "$BUNDLE/summary.txt"
+HTTP=$(curl -s -o /dev/null -w "%{http_code}" -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  https://api.fathom.ai/external/v1/meetings?limit=1)
+echo "API Status: $HTTP" >> "$BUNDLE/summary.txt"
 
-echo "=== Fathom Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  "https://api.fathom.ai/external/v1/meetings?limit=3" \
+  | jq '.meetings[] | {id, title, created_at}' > "$BUNDLE/recent-meetings.json" 2>&1
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "FATHOM_API_KEY: ${FATHOM_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @fathom/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "fathom" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.fathom.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `fathom-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash fathom-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Fathom support portal
-
-## Resources
-- [Fathom Support](https://docs.fathom.com/support)
-- [Fathom Status](https://status.fathom.com)
 
 ## Next Steps
-For rate limit issues, see `fathom-rate-limits`.
+
+For rate limits, see `fathom-rate-limits`.

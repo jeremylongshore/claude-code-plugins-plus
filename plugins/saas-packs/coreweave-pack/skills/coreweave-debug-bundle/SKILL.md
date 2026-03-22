@@ -1,113 +1,47 @@
 ---
 name: coreweave-debug-bundle
 description: |
-  Collect CoreWeave debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for CoreWeave problems.
-  Trigger with phrases like "coreweave debug", "coreweave support bundle",
-  "collect coreweave logs", "coreweave diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect CoreWeave cluster diagnostics for support tickets.
+  Use when preparing a support case, collecting GPU node status,
+  or documenting pod failures.
+  Trigger with phrases like "coreweave debug", "coreweave support",
+  "coreweave diagnostics", "collect coreweave logs".
+allowed-tools: Read, Bash(kubectl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for CoreWeave support tickets.
-
-## Prerequisites
-- CoreWeave SDK installed
-- Access to application logs
-- Permission to collect environment info
-
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
 ```bash
 #!/bin/bash
-# coreweave-debug-bundle.sh
+set -euo pipefail
+BUNDLE="coreweave-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="coreweave-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+kubectl get nodes -o wide > "$BUNDLE/nodes.txt"
+kubectl get pods --all-namespaces -o wide > "$BUNDLE/pods.txt"
+kubectl get events --sort-by=.lastTimestamp > "$BUNDLE/events.txt"
+kubectl describe nodes | grep -A10 "Allocated resources" > "$BUNDLE/gpu-allocation.txt"
 
-echo "=== CoreWeave Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+# Pod logs for failing pods
+for pod in $(kubectl get pods --field-selector=status.phase=Failed -o name); do
+  kubectl logs "$pod" --tail=100 > "$BUNDLE/$(basename $pod)-logs.txt" 2>&1
+done
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE" && rm -rf "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "COREWEAVE_API_KEY: ${COREWEAVE_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @coreweave/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "coreweave" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.coreweave.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `coreweave-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash coreweave-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to CoreWeave support portal
 
 ## Resources
-- [CoreWeave Support](https://docs.coreweave.com/support)
-- [CoreWeave Status](https://status.coreweave.com)
+
+- [CoreWeave Support](https://www.coreweave.com/support)
 
 ## Next Steps
-For rate limit issues, see `coreweave-rate-limits`.
+
+For rate limit handling, see `coreweave-rate-limits`.

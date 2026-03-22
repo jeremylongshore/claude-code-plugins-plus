@@ -1,205 +1,67 @@
 ---
 name: coreweave-incident-runbook
 description: |
-  Execute CoreWeave incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to CoreWeave-related outages, investigating errors,
-  or running post-incident reviews for CoreWeave integration failures.
+  Incident response runbook for CoreWeave GPU workload failures.
+  Use when inference services are down, GPUs are unavailable,
+  or responding to production incidents on CoreWeave.
   Trigger with phrases like "coreweave incident", "coreweave outage",
-  "coreweave down", "coreweave on-call", "coreweave emergency", "coreweave broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+  "coreweave runbook", "coreweave service down".
+allowed-tools: Read, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Incident Runbook
 
-## Overview
-Rapid incident response procedures for CoreWeave-related outages.
-
-## Prerequisites
-- Access to CoreWeave dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
-
-## Severity Levels
-
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | CoreWeave API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
-
-## Quick Triage
+## Triage Steps
 
 ```bash
-# 1. Check CoreWeave status
-curl -s https://status.coreweave.com | jq
+# 1. Check pod status
+kubectl get pods -l app=inference -o wide
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.coreweave'
+# 2. Check recent events
+kubectl get events --sort-by=.lastTimestamp | tail -20
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(coreweave_errors_total[5m])
+# 3. Check node status
+kubectl get nodes -l gpu.nvidia.com/class -o wide
 
-# 4. Recent error logs
-kubectl logs -l app=coreweave-integration --since=5m | grep -i error | tail -20
+# 4. Check GPU health
+kubectl exec -it $(kubectl get pod -l app=inference -o name | head -1) -- nvidia-smi
 ```
 
-## Decision Tree
+## Common Incidents
 
-```
-CoreWeave API returning errors?
-├─ YES: Is status.coreweave.com showing incident?
-│   ├─ YES → Wait for CoreWeave to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
-```
+### Inference Service Down
+1. Check pod status and events
+2. If OOMKilled: reduce batch size or upgrade GPU
+3. If ImagePullBackOff: check registry credentials
+4. If Pending: check GPU quota and availability
 
-## Immediate Actions by Error Type
+### GPU Node Failure
+1. Pods will be rescheduled automatically
+2. If no capacity: scale down non-critical workloads
+3. Contact CoreWeave support for extended outages
 
-### 401/403 - Authentication
+### Model Loading Failure
+1. Check HuggingFace token secret exists
+2. Verify model name spelling
+3. Check PVC has sufficient storage
+4. Review container logs for download errors
+
+## Rollback
+
 ```bash
-# Verify API key is set
-kubectl get secret coreweave-secrets -o jsonpath='{.data.api-key}' | base64 -d
-
-# Check if key was rotated
-# → Verify in CoreWeave dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic coreweave-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/coreweave-integration
-```
-
-### 429 - Rate Limited
-```bash
-# Check rate limit headers
-curl -v https://api.coreweave.com 2>&1 | grep -i rate
-
-# Enable request queuing
-kubectl set env deployment/coreweave-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact CoreWeave for limit increase
-```
-
-### 500/503 - CoreWeave Errors
-```bash
-# Enable graceful degradation
-kubectl set env deployment/coreweave-integration COREWEAVE_FALLBACK=true
-
-# Notify users of degraded service
-# Update status page
-
-# Monitor CoreWeave status for resolution
-```
-
-## Communication Templates
-
-### Internal (Slack)
-```
-🔴 P1 INCIDENT: CoreWeave Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-CoreWeave Integration Issue
-
-We're experiencing issues with our CoreWeave integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/coreweave-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=coreweave-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=coreweave_errors_total&start=2h" > metrics.json
-```
-
-### Postmortem Template
-```markdown
-## Incident: CoreWeave [Error Type]
-**Date:** YYYY-MM-DD
-**Duration:** X hours Y minutes
-**Severity:** P[1-4]
-
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
-
-### Root Cause
-[Technical explanation]
-
-### Impact
-- Users affected: N
-- Revenue impact: $X
-
-### Action Items
-- [ ] [Preventive measure] - Owner - Due date
-```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is CoreWeave-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.coreweave.status' || echo "UNHEALTHY"
+kubectl rollout undo deployment/inference
 ```
 
 ## Resources
-- [CoreWeave Status Page](https://status.coreweave.com)
-- [CoreWeave Support](https://support.coreweave.com)
+
+- [CoreWeave Support](https://www.coreweave.com/support)
+- [CoreWeave Status](https://status.coreweave.com)
 
 ## Next Steps
+
 For data handling, see `coreweave-data-handling`.

@@ -1,98 +1,88 @@
 ---
 name: fathom-hello-world
 description: |
-  Create a minimal working Fathom example.
-  Use when starting a new Fathom integration, testing your setup,
-  or learning basic Fathom API patterns.
-  Trigger with phrases like "fathom hello world", "fathom example",
-  "fathom quick start", "simple fathom code".
-allowed-tools: Read, Write, Edit
+  Retrieve meeting transcripts and summaries from the Fathom API.
+  Use when fetching meeting data, testing API access,
+  or learning Fathom API response structure.
+  Trigger with phrases like "fathom hello world", "fathom first api call",
+  "get fathom transcript", "fathom meeting data".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom Hello World
 
 ## Overview
-Minimal working example demonstrating core Fathom functionality.
+
+First API calls against Fathom: list meetings, get a transcript, retrieve AI-generated summaries and action items.
 
 ## Prerequisites
+
 - Completed `fathom-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- At least one recorded meeting in Fathom
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: List Meetings
 
-### Step 2: Import and Initialize Client
-```typescript
-import { FathomClient } from '@fathom/sdk';
-
-const client = new FathomClient({
-  apiKey: process.env.FATHOM_API_KEY,
-});
+```bash
+curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  "https://api.fathom.ai/external/v1/meetings?limit=5" \
+  | jq '.meetings[] | {id, title, created_at, duration_seconds}'
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+### Step 2: Get Meeting Transcript
 
-main().catch(console.error);
+```bash
+RECORDING_ID="your-recording-id"
+
+curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  "https://api.fathom.ai/external/v1/recordings/${RECORDING_ID}/transcript" \
+  | jq '.segments[] | {speaker, text, start_time}'
+```
+
+### Step 3: Get AI Summary and Action Items
+
+```bash
+# Get meeting with summary included
+curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  "https://api.fathom.ai/external/v1/meetings?include_summary=true&limit=1" \
+  | jq '.meetings[0] | {title, summary, action_items}'
+```
+
+### Step 4: Filter Meetings by Date
+
+```bash
+# Meetings from the last 7 days
+curl -s -H "X-Api-Key: ${FATHOM_API_KEY}" \
+  "https://api.fathom.ai/external/v1/meetings?created_after=2026-03-15T00:00:00Z&limit=20" \
+  | jq '.meetings | length'
 ```
 
 ## Output
-- Working code file with Fathom client initialization
-- Successful API response confirming connection
-- Console output showing:
-```
-Success! Your Fathom connection is working.
-```
+
+- List of meetings with IDs and metadata
+- Full transcript with speaker labels and timestamps
+- AI-generated summary and action items
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { FathomClient } from '@fathom/sdk';
-
-const client = new FathomClient({
-  apiKey: process.env.FATHOM_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from fathom import FathomClient
-
-client = FathomClient()
-
-# Your first API call here
-```
+| Empty meetings array | No recordings in account | Record a meeting in Fathom |
+| `404` on recording ID | Wrong ID or deleted | List meetings to get valid IDs |
+| No summary available | Meeting still processing | Wait a few minutes after recording |
+| Transcript empty | Recording too short | Minimum meeting length required |
 
 ## Resources
-- [Fathom Getting Started](https://docs.fathom.com/getting-started)
-- [Fathom API Reference](https://docs.fathom.com/api)
-- [Fathom Examples](https://docs.fathom.com/examples)
+
+- [Fathom API Reference](https://developers.fathom.ai/api-reference)
+- [Get Transcript](https://developers.fathom.ai/api-reference/recordings/get-transcript)
 
 ## Next Steps
+
 Proceed to `fathom-local-dev-loop` for development workflow setup.

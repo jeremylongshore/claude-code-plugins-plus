@@ -1,113 +1,79 @@
 ---
 name: clari-debug-bundle
 description: |
-  Collect Clari debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Clari problems.
+  Collect Clari API diagnostic info for support cases.
+  Use when preparing a support ticket, collecting API response samples,
+  or documenting integration issues.
   Trigger with phrases like "clari debug", "clari support bundle",
-  "collect clari logs", "clari diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  "collect clari diagnostics", "clari troubleshoot".
+allowed-tools: Read, Bash(curl:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Clari support tickets.
 
-## Prerequisites
-- Clari SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect Clari API diagnostic information for support: API connectivity, forecast list, job history, and error responses. All secrets are redacted.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # clari-debug-bundle.sh
+set -euo pipefail
 
 BUNDLE_DIR="clari-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
 
-echo "=== Clari Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "=== Clari Debug Bundle ===" | tee "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date -u)" | tee -a "$BUNDLE_DIR/summary.txt"
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
+# 1. API connectivity
+echo "--- API Connectivity ---" >> "$BUNDLE_DIR/summary.txt"
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" \
+  -H "apikey: ${CLARI_API_KEY}" \
+  https://api.clari.com/v4/export/forecast/list)
+echo "API Status: HTTP ${HTTP_CODE}" >> "$BUNDLE_DIR/summary.txt"
+
+# 2. Forecast list (no sensitive data)
+curl -s -H "apikey: ${CLARI_API_KEY}" \
+  https://api.clari.com/v4/export/forecast/list \
+  | jq '.forecasts[] | {forecastName, forecastId}' \
+  > "$BUNDLE_DIR/forecasts.json" 2>&1
+
+# 3. Recent export jobs
+curl -s -H "apikey: ${CLARI_API_KEY}" \
+  https://api.clari.com/v4/export/jobs \
+  | jq '.jobs[] | {jobId, status, createdAt, forecastName}' \
+  > "$BUNDLE_DIR/jobs.json" 2>&1
+
+# 4. Environment info (redacted)
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
 echo "CLARI_API_KEY: ${CLARI_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
+python3 --version >> "$BUNDLE_DIR/summary.txt" 2>&1
+pip3 show requests 2>/dev/null | grep Version >> "$BUNDLE_DIR/summary.txt" || true
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @clari/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "clari" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.clari.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
+# 5. Package
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+rm -rf "$BUNDLE_DIR"
+echo "Bundle: $BUNDLE_DIR.tar.gz"
 ```
 
-## Output
-- `clari-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash clari-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Clari support portal
+**Safe to share**: Forecast names, job IDs, HTTP status codes, library versions.
+**Never share**: API key, forecast amounts, rep names, email addresses.
 
 ## Resources
-- [Clari Support](https://docs.clari.com/support)
-- [Clari Status](https://status.clari.com)
+
+- [Clari Community](https://community.clari.com)
+- [Clari Developer Portal](https://developer.clari.com)
 
 ## Next Steps
-For rate limit issues, see `clari-rate-limits`.
+
+For rate limit handling, see `clari-rate-limits`.

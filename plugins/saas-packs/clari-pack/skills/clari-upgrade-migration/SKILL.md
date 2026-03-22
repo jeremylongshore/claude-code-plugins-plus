@@ -1,114 +1,86 @@
 ---
 name: clari-upgrade-migration
 description: |
-  Analyze, plan, and execute Clari SDK upgrades with breaking change detection.
-  Use when upgrading Clari SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade clari", "clari migration",
-  "clari breaking changes", "update clari SDK", "analyze clari version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Handle Clari API version changes and export schema migrations.
+  Use when Clari updates their API, export format changes,
+  or migrating from v3 to v4 API.
+  Trigger with phrases like "upgrade clari", "clari api migration",
+  "clari schema change", "clari v4 migration".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Upgrade & Migration
 
 ## Overview
-Guide for upgrading Clari SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Clari SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Handle Clari API changes: version migrations, export schema updates, and Copilot API adoption.
 
 ## Instructions
 
-### Step 1: Check Current Version
+### Step 1: Check Current API Version
+
 ```bash
-npm list @clari/sdk
-npm view @clari/sdk version
+# v4 is the current version
+curl -s -H "apikey: ${CLARI_API_KEY}" \
+  https://api.clari.com/v4/export/forecast/list | jq .
+
+# If using v3 (deprecated), migrate to v4
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/clari/sdk/releases
-```
+### Step 2: Schema Change Detection
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/clari-sdk-vX.Y.Z
-npm install @clari/sdk@latest
-npm test
-```
+```python
+def detect_schema_changes(
+    current_export: dict, expected_fields: set[str]
+) -> dict:
+    if not current_export.get("entries"):
+        return {"status": "empty", "changes": []}
 
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
+    actual_fields = set(current_export["entries"][0].keys())
+    new_fields = actual_fields - expected_fields
+    removed_fields = expected_fields - actual_fields
 
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@clari/sdk';
-
-// After (v2.x)
-import { ClariClient } from '@clari/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new ClariClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @clari/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Clari]', warning.message);
-      // Log to tracking system for proactive updates
+    return {
+        "status": "changed" if new_fields or removed_fields else "compatible",
+        "new_fields": list(new_fields),
+        "removed_fields": list(removed_fields),
     }
-  });
-}
 
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+# Track expected schema
+EXPECTED_FIELDS = {
+    "ownerName", "ownerEmail", "forecastAmount", "quotaAmount",
+    "crmTotal", "crmClosed", "adjustmentAmount", "timePeriod"
+}
+```
+
+### Step 3: Database Schema Migration
+
+```sql
+-- Add new columns when Clari adds export fields
+ALTER TABLE clari_forecasts ADD COLUMN IF NOT EXISTS new_field_name VARCHAR;
+
+-- Backfill historical data
+UPDATE clari_forecasts SET new_field_name = 'default' WHERE new_field_name IS NULL;
+```
+
+### Rollback
+
+Keep the previous client version alongside the new one until migration is verified:
+```python
+# Pin client to specific behavior
+client_v4 = ClariClient(ClariConfig(api_key=api_key, base_url="https://api.clari.com/v4"))
 ```
 
 ## Resources
-- [Clari Changelog](https://github.com/clari/sdk/releases)
-- [Clari Migration Guide](https://docs.clari.com/migration)
+
+- [Clari Developer Portal](https://developer.clari.com)
+- [Clari Community](https://community.clari.com)
 
 ## Next Steps
-For CI integration during upgrades, see `clari-ci-integration`.
+
+For CI integration, see `clari-ci-integration`.

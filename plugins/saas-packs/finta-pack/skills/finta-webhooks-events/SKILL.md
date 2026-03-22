@@ -1,201 +1,64 @@
 ---
 name: finta-webhooks-events
 description: |
-  Implement Finta webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Finta event notifications securely.
-  Trigger with phrases like "finta webhook", "finta events",
-  "finta webhook signature", "handle finta events", "finta notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Automate Finta pipeline events with Zapier and email triggers.
+  Use when setting up notifications for investor responses,
+  automating follow-up reminders, or syncing events to other tools.
+  Trigger with phrases like "finta automation", "finta notifications",
+  "finta pipeline events", "finta zapier".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Webhooks & Events
 
 ## Overview
-Securely handle Finta webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Finta webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+Finta supports event automation through its built-in automation rules and Zapier integration. Pipeline stage changes, investor replies, and deal room views can trigger external actions.
 
-## Webhook Endpoint Setup
+## Built-in Automation Rules
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
+Configure in Settings > Automation:
+- **Email reply detected** -> Move to next stage
+- **Calendar meeting scheduled** -> Log and notify team
+- **Deal room viewed** -> Send Slack notification
+- **No response in X days** -> Create follow-up reminder
 
-const app = express();
+## Zapier Integration
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/finta',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-finta-signature'] as string;
-    const timestamp = req.headers['x-finta-timestamp'] as string;
+Available triggers:
+1. Pipeline stage changed
+2. New investor added
+3. Deal room accessed
+4. Investor update sent
 
-    if (!verifyFintaSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
+Example Zap: Finta stage change -> Slack message + Google Sheets row
 
-    const event = JSON.parse(req.body.toString());
-    await handleFintaEvent(event);
+## Custom Reminder System
 
-    res.status(200).json({ received: true });
-  }
-);
-```
+```python
+import pandas as pd
+from datetime import datetime, timedelta
 
-## Signature Verification
-
-```typescript
-function verifyFintaSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.FINTA_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type FintaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface FintaEvent {
-  id: string;
-  type: FintaEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<FintaEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleFintaEvent(event: FintaEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `finta:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `finta:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Finta CLI to send test events
-finta webhooks trigger resource.created --url http://localhost:3000/webhooks/finta
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Finta dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/finta \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+def get_followup_reminders(export_path: str, days: int = 5) -> list:
+    df = pd.read_csv(export_path)
+    df["Last Contact"] = pd.to_datetime(df["Last Contact"])
+    cutoff = datetime.now() - timedelta(days=days)
+    overdue = df[
+        (df["Stage"].isin(["Reaching Out", "Follow-up"]))
+        & (df["Last Contact"] < cutoff)
+    ]
+    return overdue[["Name", "Firm", "Email", "Last Contact", "Stage"]].to_dict("records")
 ```
 
 ## Resources
-- [Finta Webhooks Guide](https://docs.finta.com/webhooks)
-- [Webhook Security Best Practices](https://docs.finta.com/webhooks/security)
+
+- [Finta Website](https://www.trustfinta.com)
 
 ## Next Steps
-For performance optimization, see `finta-performance-tuning`.
+
+For performance, see `finta-performance-tuning`.

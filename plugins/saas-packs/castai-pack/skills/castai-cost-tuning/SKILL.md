@@ -1,203 +1,186 @@
 ---
 name: castai-cost-tuning
 description: |
-  Optimize Cast AI costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Cast AI billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "castai cost", "castai billing",
-  "reduce castai costs", "castai pricing", "castai expensive", "castai budget".
-allowed-tools: Read, Grep
+  Maximize Kubernetes cost savings with CAST AI spot strategies and right-sizing.
+  Use when analyzing cloud spend, optimizing spot-to-on-demand ratios,
+  or configuring CAST AI for maximum savings.
+  Trigger with phrases like "cast ai cost", "cast ai savings",
+  "cast ai spot strategy", "reduce kubernetes cost", "cast ai budget".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Cost Tuning
+# CAST AI Cost Tuning
 
 ## Overview
-Optimize Cast AI costs through smart tier selection, sampling, and usage monitoring.
+
+Maximize Kubernetes cost savings through CAST AI: spot instance strategies, workload right-sizing, cluster hibernation, and savings tracking. Typical savings: 50-70% on cloud compute costs.
 
 ## Prerequisites
-- Access to Cast AI billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
 
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateCast AICost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class Cast AIUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Cast AI budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateCast AICost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await castaiClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => castaiClient.get(id)));
-
-// Use batch endpoint (1 call)
-await castaiClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new CastAIClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Cast AI dashboard
-# Or use API if available:
-# Check Cast AI documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM castai_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- CAST AI Phase 2 enabled with full automation
+- Savings report available (requires 24h+ of data)
+- Understanding of workload criticality tiers
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Cast AI dashboard for usage patterns and costs.
+### Step 1: Analyze Current Savings
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+```bash
+# Get savings breakdown
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/savings" \
+  | jq '{
+    currentMonthlyCost: .currentMonthlyCost,
+    optimizedMonthlyCost: .optimizedMonthlyCost,
+    monthlySavings: .monthlySavings,
+    savingsPercentage: .savingsPercentage,
+    spotSavings: .spotSavings,
+    rightSizingSavings: .rightSizingSavings
+  }'
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 2: Maximize Spot Usage
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+```bash
+# Enable aggressive spot with diversity and fallbacks
+curl -X PUT -H "X-API-Key: ${CASTAI_API_KEY}" \
+  -H "Content-Type: application/json" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+  -d '{
+    "enabled": true,
+    "spotInstances": {
+      "enabled": true,
+      "clouds": ["aws"],
+      "spotDiversityEnabled": true,
+      "spotDiversityPriceIncreaseLimitPercent": 20,
+      "spotBackups": {
+        "enabled": true,
+        "spotBackupRestoreRateSeconds": 600
+      }
+    }
+  }'
+```
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+**Spot allocation strategy by workload tier:**
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Workload Type | Spot % | Rationale |
+|---------------|--------|-----------|
+| Batch jobs, CI runners | 100% spot | Interruptible, restartable |
+| Stateless APIs (behind LB) | 80% spot | Can handle brief interruptions |
+| Stateful services, databases | 0% spot | Use on-demand or reserved |
+| ML training | 80-100% spot | Checkpointing handles interrupts |
 
-## Examples
+### Step 3: Workload Right-Sizing
 
-### Quick Cost Check
+```bash
+# Get resource waste analysis
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/workload-autoscaling/clusters/${CASTAI_CLUSTER_ID}/workloads" \
+  | jq '[.items[] | select(.estimatedSavingsPercent > 20) | {
+    name: .workloadName,
+    namespace: .namespace,
+    wastedCpu: (.currentCpuRequest - .recommendedCpuRequest),
+    wastedMemory: (.currentMemoryRequest - .recommendedMemoryRequest),
+    savingsPercent: .estimatedSavingsPercent
+  }] | sort_by(-.savingsPercent) | .[0:10]'
+```
+
+### Step 4: Cluster Hibernation (Dev/Staging)
+
+```bash
+# Hibernate non-production clusters during off-hours
+# Scales nodes to zero, resume on demand
+
+# Enable hibernation
+curl -X POST -H "X-API-Key: ${CASTAI_API_KEY}" \
+  -H "Content-Type: application/json" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/hibernate" \
+  -d '{
+    "schedule": {
+      "enabled": true,
+      "hibernateAt": "20:00",
+      "wakeUpAt": "08:00",
+      "timezone": "America/New_York",
+      "weekdaysOnly": true
+    }
+  }'
+```
+
+### Step 5: Cost Tracking Dashboard
+
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateCast AICost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
+interface CostReport {
+  cluster: string;
+  period: string;
+  currentCost: number;
+  optimizedCost: number;
+  savings: number;
+  spotPercent: number;
+}
+
+async function generateMonthlyCostReport(
+  clusterIds: string[]
+): Promise<CostReport[]> {
+  const reports: CostReport[] = [];
+
+  for (const clusterId of clusterIds) {
+    const [cluster, savings, nodes] = await Promise.all([
+      castaiGet(`/v1/kubernetes/external-clusters/${clusterId}`),
+      castaiGet(`/v1/kubernetes/clusters/${clusterId}/savings`),
+      castaiGet(`/v1/kubernetes/external-clusters/${clusterId}/nodes`),
+    ]);
+
+    const spotNodes = nodes.items.filter(
+      (n: { lifecycle: string }) => n.lifecycle === "spot"
+    ).length;
+
+    reports.push({
+      cluster: cluster.name,
+      period: new Date().toISOString().slice(0, 7),
+      currentCost: savings.currentMonthlyCost,
+      optimizedCost: savings.optimizedMonthlyCost,
+      savings: savings.monthlySavings,
+      spotPercent:
+        nodes.items.length > 0
+          ? (spotNodes / nodes.items.length) * 100
+          : 0,
+    });
+  }
+
+  return reports;
 }
 ```
 
+## Cost Optimization Checklist
+
+- [ ] Spot instances enabled with diversity
+- [ ] Workload autoscaler right-sizing resources
+- [ ] Dev/staging clusters hibernated off-hours
+- [ ] Empty node downscaler enabled
+- [ ] Instance families include latest generation (cheaper)
+- [ ] Reserved/savings plan for baseline on-demand nodes
+- [ ] Weekly savings report review
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Savings lower than expected | Too many on-demand constraints | Relax node template constraints |
+| Spot interruptions too frequent | Single instance type | Enable spot diversity |
+| Hibernation not triggering | Schedule timezone wrong | Use IANA timezone format |
+| Right-sizing too aggressive | Low headroom | Increase memory headroom to 20% |
+
 ## Resources
-- [Cast AI Pricing](https://castai.com/pricing)
-- [Cast AI Billing Dashboard](https://dashboard.castai.com/billing)
+
+- [CAST AI Savings Report](https://docs.cast.ai/docs/getting-started)
+- [Spot Instance Best Practices](https://docs.cast.ai/docs/autoscaler-settings)
+- [Cluster Hibernation](https://docs.cast.ai/docs/autoscaling-cluster-hibernation)
 
 ## Next Steps
+
 For architecture patterns, see `castai-reference-architecture`.

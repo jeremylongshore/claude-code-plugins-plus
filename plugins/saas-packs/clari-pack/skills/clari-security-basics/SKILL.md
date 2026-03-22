@@ -1,142 +1,79 @@
 ---
 name: clari-security-basics
 description: |
-  Apply Clari security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Clari security configuration.
-  Trigger with phrases like "clari security", "clari secrets",
-  "secure clari", "clari API key security".
-allowed-tools: Read, Write, Grep
+  Secure Clari API tokens and implement data handling best practices.
+  Use when managing API tokens, restricting data access,
+  or implementing PII handling for exported forecast data.
+  Trigger with phrases like "clari security", "clari api key rotation",
+  "secure clari", "clari pii handling".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Security Basics
 
 ## Overview
-Security best practices for Clari API keys, tokens, and access control.
 
-## Prerequisites
-- Clari SDK installed
-- Understanding of environment variables
-- Access to Clari dashboard
+Secure your Clari integration: API token management, exported data PII handling, and access control best practices.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Token Management
+
 ```bash
-# .env (NEVER commit to git)
-CLARI_API_KEY=sk_live_***
-CLARI_SECRET=***
+# Store token in secrets manager
+aws secretsmanager create-secret \
+  --name "clari/prod/api-token" \
+  --secret-string "${CLARI_API_KEY}"
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+# In CI/CD, load from secrets
+export CLARI_API_KEY=$(aws secretsmanager get-secret-value \
+  --secret-id "clari/prod/api-token" --query SecretString --output text)
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Clari dashboard
-# 2. Update environment variable
-export CLARI_API_KEY="new_key_here"
+**Rotation**: Clari API tokens are generated per-user. To rotate, generate a new token in User Settings, update all consumers, then discard the old one.
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${CLARI_API_KEY}" \
-  https://api.clari.com/health
+### Step 2: Exported Data PII Handling
 
-# 4. Revoke old key in dashboard
+Clari export data contains PII (rep names, emails, deal amounts):
+
+```python
+def redact_pii(entries: list[dict]) -> list[dict]:
+    """Redact PII from forecast entries for non-production use."""
+    import hashlib
+
+    redacted = []
+    for entry in entries:
+        r = entry.copy()
+        if "ownerEmail" in r:
+            r["ownerEmail"] = hashlib.sha256(
+                r["ownerEmail"].encode()
+            ).hexdigest()[:12] + "@redacted"
+        if "ownerName" in r:
+            r["ownerName"] = f"Rep-{hashlib.sha256(r['ownerName'].encode()).hexdigest()[:6]}"
+        redacted.append(r)
+    return redacted
 ```
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
+### Step 3: Security Checklist
 
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new ClariClient({
-    apiKey: process.env.CLARI_READ_KEY,
-  }),
-  writer: new ClariClient({
-    apiKey: process.env.CLARI_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
+- [ ] API token in secrets manager, not in code
 - [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Clari analytics
-  await clariClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'clari.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] Exported data stored in access-controlled warehouse
+- [ ] PII redacted in non-production environments
+- [ ] Export download URLs are temporary -- do not cache
+- [ ] Audit who has API token access
+- [ ] Token regenerated if any team member leaves
 
 ## Resources
-- [Clari Security Guide](https://docs.clari.com/security)
-- [Clari API Scopes](https://docs.clari.com/scopes)
+
+- [Clari Security](https://www.clari.com/trust)
+- [Clari Developer Portal](https://developer.clari.com)
 
 ## Next Steps
+
 For production deployment, see `clari-prod-checklist`.

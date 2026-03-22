@@ -1,211 +1,37 @@
 ---
 name: finta-deploy-integration
 description: |
-  Deploy Finta integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Finta-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy finta", "finta Vercel",
-  "finta production deploy", "finta Cloud Run", "finta Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Finta integrations and reporting dashboards.
+  Trigger with phrases like "deploy finta", "finta dashboard".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Deploy Integration
 
-## Overview
-Deploy Finta-powered applications to popular platforms with proper secrets management.
+## Google Sheets Dashboard
 
-## Prerequisites
-- Finta API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+Sync Finta data to Google Sheets for live dashboards:
 
-## Vercel Deployment
+1. Export CSV from Finta weekly
+2. Upload to Google Sheets (or use Zapier auto-sync)
+3. Build charts: pipeline funnel, stage distribution, timeline
 
-### Environment Setup
-```bash
-# Add Finta secrets to Vercel
-vercel secrets add finta_api_key sk_live_***
-vercel secrets add finta_webhook_secret whsec_***
+## Slack Notifications
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "FINTA_API_KEY": "@finta_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-finta-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Finta secrets
-fly secrets set FINTA_API_KEY=sk_live_***
-fly secrets set FINTA_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="finta-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=FINTA_API_KEY=finta-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/finta.ts
-interface FintaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getFintaConfig(): FintaConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.FINTA_API_KEY!,
-    environment: env as FintaConfig['environment'],
-    webhookSecret: process.env.FINTA_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const fintaStatus = await checkFintaConnection();
-
-  return Response.json({
-    status: fintaStatus ? 'healthy' : 'degraded',
-    services: {
-      finta: fintaStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Finta API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Finta integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Finta connectivity.
-
-## Output
-- Application deployed to production
-- Finta secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add finta_api_key "$FINTA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set FINTA_API_KEY="$FINTA_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+Use Zapier to post pipeline updates to Slack:
+- New investor added -> #fundraising channel
+- Stage change -> thread update
+- Deal closed -> celebration notification
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Finta Deploy Guide](https://docs.finta.com/deploy)
+
+- [Finta Website](https://www.trustfinta.com)
 
 ## Next Steps
-For webhook handling, see `finta-webhooks-events`.
+
+For event automation, see `finta-webhooks-events`.

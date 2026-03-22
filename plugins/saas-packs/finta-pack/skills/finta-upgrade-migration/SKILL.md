@@ -1,114 +1,40 @@
 ---
 name: finta-upgrade-migration
 description: |
-  Analyze, plan, and execute Finta SDK upgrades with breaking change detection.
-  Use when upgrading Finta SDK versions, detecting deprecations,
-  or migrating to new API versions.
-  Trigger with phrases like "upgrade finta", "finta migration",
-  "finta breaking changes", "update finta SDK", "analyze finta version".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
+  Handle Finta platform updates and data migration.
+  Trigger with phrases like "finta upgrade", "finta migration".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Upgrade & Migration
 
-## Overview
-Guide for upgrading Finta SDK versions and handling breaking changes.
+## Plan Upgrades
 
-## Prerequisites
-- Current Finta SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Upgrade from Free to Pro at Settings > Billing for unlimited deal rooms, payment collection, and full Aurora AI access.
 
-## Instructions
+## Data Export for Migration
 
-### Step 1: Check Current Version
-```bash
-npm list @finta/sdk
-npm view @finta/sdk version
-```
+1. Export pipeline as CSV from Pipeline > Export
+2. Export investor contacts
+3. Download deal room documents
+4. Save investor update history
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/finta/sdk/releases
-```
+## Importing from Other CRMs
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/finta-sdk-vX.Y.Z
-npm install @finta/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@finta/sdk';
-
-// After (v2.x)
-import { FintaClient } from '@finta/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new FintaClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @finta/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Finta]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
-```
+Moving from Affinity, Streak, or spreadsheets:
+1. Export from existing tool as CSV
+2. Map columns to Finta fields (Name, Firm, Email, Stage)
+3. Import via Finta CSV import
 
 ## Resources
-- [Finta Changelog](https://github.com/finta/sdk/releases)
-- [Finta Migration Guide](https://docs.finta.com/migration)
+
+- [Finta Changelog](https://www.trustfinta.com/change-log)
 
 ## Next Steps
-For CI integration during upgrades, see `finta-ci-integration`.
+
+For CI, see `finta-ci-integration`.

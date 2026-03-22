@@ -1,119 +1,136 @@
 ---
 name: clari-local-dev-loop
 description: |
-  Configure Clari local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Clari.
-  Trigger with phrases like "clari dev setup", "clari local development",
-  "clari dev environment", "develop with clari".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up local development for Clari API integrations with mock data.
+  Use when building forecast dashboards, testing export pipelines,
+  or iterating on Clari data transformations locally.
+  Trigger with phrases like "clari dev setup", "clari local testing",
+  "develop with clari", "clari mock data".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Clari.
+
+Local development workflow for Clari integrations: mock forecast data for offline testing, schedule recurring exports, and build data transformation pipelines.
 
 ## Prerequisites
+
 - Completed `clari-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- Python 3.10+ or Node.js 18+
+- Local database or data warehouse access for testing
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-clari-project/
+clari-integration/
 ├── src/
-│   ├── clari/
-│   │   ├── client.ts       # Clari client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+│   ├── clari_client.py       # API client wrapper
+│   ├── export_pipeline.py    # Export and transform pipeline
+│   ├── models.py             # Data models for forecast data
+│   └── config.py             # Environment config
 ├── tests/
-│   └── clari.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+│   ├── fixtures/
+│   │   ├── forecast_export.json    # Sample export response
+│   │   └── job_status.json         # Sample job status
+│   └── test_pipeline.py
+├── .env.local                # Dev credentials (git-ignored)
+├── .env.example
+└── requirements.txt
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Mock Forecast Data for Testing
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
+```python
+# tests/fixtures/forecast_export.json
+MOCK_FORECAST = {
+    "entries": [
+        {
+            "ownerName": "Jane Smith",
+            "ownerEmail": "jane@example.com",
+            "forecastAmount": 250000,
+            "quotaAmount": 300000,
+            "crmTotal": 180000,
+            "crmClosed": 120000,
+            "adjustmentAmount": 15000,
+            "timePeriod": "2026_Q1"
+        },
+        {
+            "ownerName": "Bob Johnson",
+            "ownerEmail": "bob@example.com",
+            "forecastAmount": 180000,
+            "quotaAmount": 250000,
+            "crmTotal": 140000,
+            "crmClosed": 90000,
+            "adjustmentAmount": 0,
+            "timePeriod": "2026_Q1"
+        }
+    ]
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { ClariClient } from '../src/clari/client';
+### Step 3: Test Pipeline Without API Calls
 
-describe('Clari Client', () => {
-  it('should initialize with API key', () => {
-    const client = new ClariClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+```python
+# tests/test_pipeline.py
+import pytest
+from src.export_pipeline import transform_forecast_data
+
+def test_forecast_aggregation():
+    data = MOCK_FORECAST
+    result = transform_forecast_data(data)
+    assert result["total_forecast"] == 430000
+    assert result["total_quota"] == 550000
+    assert result["attainment_percent"] == pytest.approx(78.2, rel=0.1)
+    assert len(result["reps"]) == 2
+
+def test_handles_empty_export():
+    result = transform_forecast_data({"entries": []})
+    assert result["total_forecast"] == 0
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Clari development
+### Step 4: Development Run Script
+
+```bash
+#!/bin/bash
+# scripts/dev-export.sh
+set -euo pipefail
+
+source .env.local
+
+echo "=== Clari Dev Export ==="
+python3 src/export_pipeline.py \
+  --forecast "company_forecast" \
+  --period "2026_Q1" \
+  --format json \
+  --output ./data/latest-export.json
+
+echo "Export saved to ./data/latest-export.json"
+echo "Records: $(jq '.entries | length' ./data/latest-export.json)"
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Clari Responses
-```typescript
-vi.mock('@clari/sdk', () => ({
-  ClariClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=CLARI=* npm run dev
-```
+| Import error | Missing dependency | `pip install -r requirements.txt` |
+| Empty export | Wrong time period | Use a period with submitted forecasts |
+| Mock data stale | Schema changed | Re-download a sample from API |
+| `.env.local` not loading | Missing dotenv | `pip install python-dotenv` |
 
 ## Resources
-- [Clari SDK Reference](https://docs.clari.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Clari API Reference](https://developer.clari.com/documentation/external_spec)
+- [pytest Documentation](https://docs.pytest.org)
 
 ## Next Steps
-See `clari-sdk-patterns` for production-ready code patterns.
+
+See `clari-sdk-patterns` for production-ready API wrappers.

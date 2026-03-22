@@ -1,126 +1,45 @@
 ---
 name: fathom-ci-integration
 description: |
-  Configure Fathom CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating Fathom tests into your build process.
-  Trigger with phrases like "fathom CI", "fathom GitHub Actions",
-  "fathom automated tests", "CI fathom".
+  Test Fathom integrations in CI/CD pipelines.
+  Trigger with phrases like "fathom CI", "fathom github actions", "test fathom pipeline".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom CI Integration
 
-## Overview
-Set up CI/CD pipelines for Fathom integrations with automated testing.
-
-## Prerequisites
-- GitHub repository with Actions enabled
-- Fathom test API key
-- npm/pnpm project configured
-
-## Instructions
-
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/fathom-integration.yml`:
-
 ```yaml
 name: Fathom Integration Tests
-
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  FATHOM_API_KEY: ${{ secrets.FATHOM_API_KEY }}
-
+    paths: ["src/fathom/**"]
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      FATHOM_API_KEY: ${{ secrets.FATHOM_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: pip install -r requirements.txt
+      - run: pytest tests/ -v -k "not integration"
+      - name: API connectivity check
+        if: github.ref == 'refs/heads/main'
+        env:
+          FATHOM_API_KEY: ${{ secrets.FATHOM_API_KEY }}
+        run: |
+          python -c "
+          from fathom_client import FathomClient
+          client = FathomClient()
+          meetings = client.list_meetings(limit=1)
+          print(f'API connected: {len(meetings)} meetings')
+          "
 ```
-
-### Step 2: Configure Secrets
-```bash
-gh secret set FATHOM_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Fathom Integration', () => {
-  it.skipIf(!process.env.FATHOM_API_KEY)('should connect', async () => {
-    const client = getFathomClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      FATHOM_API_KEY: ${{ secrets.FATHOM_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Fathom production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "fathom-integration"
-```
-
-## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Fathom CI Guide](https://docs.fathom.com/ci)
 
 ## Next Steps
-For deployment patterns, see `fathom-deploy-integration`.
+
+For deployment, see `fathom-deploy-integration`.

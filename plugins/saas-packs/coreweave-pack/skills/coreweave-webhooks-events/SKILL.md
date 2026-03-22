@@ -1,201 +1,65 @@
 ---
 name: coreweave-webhooks-events
 description: |
-  Implement CoreWeave webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling CoreWeave event notifications securely.
-  Trigger with phrases like "coreweave webhook", "coreweave events",
-  "coreweave webhook signature", "handle coreweave events", "coreweave notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Monitor CoreWeave cluster events and GPU workload status.
+  Use when tracking pod lifecycle events, monitoring GPU utilization,
+  or alerting on inference service health changes.
+  Trigger with phrases like "coreweave events", "coreweave monitoring",
+  "coreweave pod alerts", "coreweave gpu monitoring".
+allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Webhooks & Events
 
-## Overview
-Securely handle CoreWeave webhooks with signature validation and replay protection.
-
-## Prerequisites
-- CoreWeave webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/coreweave',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-coreweave-signature'] as string;
-    const timestamp = req.headers['x-coreweave-timestamp'] as string;
-
-    if (!verifyCoreWeaveSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleCoreWeaveEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyCoreWeaveSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.COREWEAVE_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type CoreWeaveEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface CoreWeaveEvent {
-  id: string;
-  type: CoreWeaveEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<CoreWeaveEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleCoreWeaveEvent(event: CoreWeaveEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `coreweave:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `coreweave:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
+## Kubernetes Event Monitoring
 
 ```bash
-# Use CoreWeave CLI to send test events
-coreweave webhooks trigger resource.created --url http://localhost:3000/webhooks/coreweave
+# Watch GPU pod events
+kubectl get events --watch --field-selector=reason=Scheduled,reason=Pulled,reason=Failed
 
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
+# Monitor GPU utilization via exec
+kubectl exec -it deployment/inference -- nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv -l 5
 ```
 
-## Instructions
+## Prometheus GPU Metrics
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the CoreWeave dashboard.
+```yaml
+# DCGM exporter for GPU metrics (pre-installed on CKS)
+# Key metrics:
+# DCGM_FI_DEV_GPU_UTIL - GPU utilization %
+# DCGM_FI_DEV_FB_USED - GPU memory used
+# DCGM_FI_DEV_POWER_USAGE - Power draw
+```
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+## Slack Alert Integration
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+```python
+import subprocess, json, requests
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+def check_inference_health(deployment: str, slack_url: str):
+    result = subprocess.run(
+        ["kubectl", "get", "deployment", deployment, "-o", "json"],
+        capture_output=True, text=True,
+    )
+    deploy = json.loads(result.stdout)
+    ready = deploy["status"].get("readyReplicas", 0)
+    desired = deploy["spec"]["replicas"]
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/coreweave \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+    if ready < desired:
+        requests.post(slack_url, json={
+            "text": f"CoreWeave: {deployment} has {ready}/{desired} replicas ready"
+        })
 ```
 
 ## Resources
-- [CoreWeave Webhooks Guide](https://docs.coreweave.com/webhooks)
-- [Webhook Security Best Practices](https://docs.coreweave.com/webhooks/security)
+
+- [CoreWeave Observability](https://www.coreweave.com/observability)
 
 ## Next Steps
+
 For performance optimization, see `coreweave-performance-tuning`.

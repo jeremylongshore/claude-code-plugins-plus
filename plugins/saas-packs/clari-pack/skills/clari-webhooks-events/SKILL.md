@@ -1,201 +1,152 @@
 ---
 name: clari-webhooks-events
 description: |
-  Implement Clari webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Clari event notifications securely.
-  Trigger with phrases like "clari webhook", "clari events",
-  "clari webhook signature", "handle clari events", "clari notifications".
-allowed-tools: Read, Write, Edit, Bash(curl:*)
+  Monitor Clari forecast changes using export job polling and change detection.
+  Use when tracking forecast submission changes, building alerts
+  for significant forecast movements, or syncing Clari data in near-real-time.
+  Trigger with phrases like "clari webhooks", "clari notifications",
+  "clari forecast alerts", "clari change detection".
+allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(python3:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Webhooks & Events
 
 ## Overview
-Securely handle Clari webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Clari webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/clari',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-clari-signature'] as string;
-    const timestamp = req.headers['x-clari-timestamp'] as string;
-
-    if (!verifyClariSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleClariEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyClariSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.CLARI_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ClariEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ClariEvent {
-  id: string;
-  type: ClariEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<ClariEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleClariEvent(event: ClariEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `clari:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `clari:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Clari CLI to send test events
-clari webhooks trigger resource.created --url http://localhost:3000/webhooks/clari
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Clari does not provide real-time webhooks. Instead, build change detection by comparing periodic exports. This skill covers scheduled export diffing, Slack alerts for forecast movements, and Copilot webhook integration.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Clari dashboard.
+### Step 1: Forecast Change Detection Pipeline
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```python
+# forecast_monitor.py
+import json
+from pathlib import Path
+from datetime import datetime
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+def detect_changes(
+    current: list[dict],
+    previous: list[dict],
+    threshold_pct: float = 10.0,
+) -> list[dict]:
+    prev_map = {e["ownerEmail"]: e for e in previous}
+    changes = []
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+    for entry in current:
+        prev = prev_map.get(entry["ownerEmail"])
+        if not prev:
+            continue
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+        prev_fc = prev["forecastAmount"]
+        curr_fc = entry["forecastAmount"]
+        if prev_fc == 0:
+            continue
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+        change_pct = ((curr_fc - prev_fc) / prev_fc) * 100
+        if abs(change_pct) >= threshold_pct:
+            changes.append({
+                "rep": entry["ownerName"],
+                "previous": prev_fc,
+                "current": curr_fc,
+                "change_pct": round(change_pct, 1),
+                "direction": "increased" if change_pct > 0 else "decreased",
+                "detected_at": datetime.utcnow().isoformat(),
+            })
 
-## Examples
+    return sorted(changes, key=lambda x: abs(x["change_pct"]), reverse=True)
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+def save_snapshot(entries: list[dict], path: str = "data/latest.json"):
+    Path(path).parent.mkdir(exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(entries, f)
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/clari \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+def load_snapshot(path: str = "data/latest.json") -> list[dict]:
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
 ```
 
+### Step 2: Slack Alert for Forecast Changes
+
+```python
+import requests
+
+def send_forecast_alert(changes: list[dict], slack_webhook: str):
+    if not changes:
+        return
+
+    blocks = [f"*Clari Forecast Changes Detected*\n"]
+    for c in changes[:10]:
+        emoji = ":chart_with_upwards_trend:" if c["direction"] == "increased" else ":chart_with_downwards_trend:"
+        blocks.append(
+            f"{emoji} *{c['rep']}*: ${c['previous']:,.0f} -> ${c['current']:,.0f} "
+            f"({c['change_pct']:+.1f}%)"
+        )
+
+    requests.post(slack_webhook, json={"text": "\n".join(blocks)})
+```
+
+### Step 3: Scheduled Monitor (Cron)
+
+```bash
+#!/bin/bash
+# Run every 4 hours: 0 */4 * * * /path/to/clari-monitor.sh
+cd /opt/clari-integration
+python3 -c "
+from clari_client import ClariClient
+from forecast_monitor import detect_changes, save_snapshot, load_snapshot, send_forecast_alert
+import os
+
+client = ClariClient()
+data = client.export_and_download('company_forecast', '2026_Q1')
+current = data.get('entries', [])
+previous = load_snapshot()
+
+changes = detect_changes(current, previous)
+if changes:
+    send_forecast_alert(changes, os.environ['SLACK_WEBHOOK_URL'])
+    print(f'Detected {len(changes)} changes')
+
+save_snapshot(current)
+"
+```
+
+### Step 4: Copilot Webhook (Conversation Intelligence)
+
+The Clari Copilot API supports real-time webhooks for call events:
+
+```bash
+# Register webhook with Copilot API
+curl -X POST https://api.copilot.clari.com/v1/webhooks \
+  -H "Authorization: Bearer ${COPILOT_ACCESS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "url": "https://your-app.com/webhooks/clari-copilot",
+    "events": ["call.completed", "call.analyzed"]
+  }'
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| False change alerts | Data timing differences | Increase threshold to 15% |
+| Snapshot file missing | First run | Initialize with empty list |
+| Slack post fails | Bad webhook URL | Test URL with `curl` |
+
 ## Resources
-- [Clari Webhooks Guide](https://docs.clari.com/webhooks)
-- [Webhook Security Best Practices](https://docs.clari.com/webhooks/security)
+
+- [Clari Copilot API](https://api-doc.copilot.clari.com)
+- [Clari Developer Portal](https://developer.clari.com)
 
 ## Next Steps
+
 For performance optimization, see `clari-performance-tuning`.

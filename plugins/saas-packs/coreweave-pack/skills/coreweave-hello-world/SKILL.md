@@ -1,98 +1,171 @@
 ---
 name: coreweave-hello-world
 description: |
-  Create a minimal working CoreWeave example.
-  Use when starting a new CoreWeave integration, testing your setup,
-  or learning basic CoreWeave API patterns.
-  Trigger with phrases like "coreweave hello world", "coreweave example",
-  "coreweave quick start", "simple coreweave code".
-allowed-tools: Read, Write, Edit
+  Deploy a GPU workload on CoreWeave with kubectl.
+  Use when running your first GPU job, testing inference,
+  or verifying CoreWeave cluster access.
+  Trigger with phrases like "coreweave hello world", "coreweave first deploy",
+  "coreweave gpu test", "run on coreweave".
+allowed-tools: Read, Write, Edit, Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Hello World
 
 ## Overview
-Minimal working example demonstrating core CoreWeave functionality.
+
+Deploy your first GPU workload on CoreWeave: a simple inference service using vLLM or a batch CUDA job. CoreWeave runs Kubernetes on bare-metal GPU nodes with A100, H100, and L40 GPUs.
 
 ## Prerequisites
+
 - Completed `coreweave-install-auth` setup
-- Valid API credentials configured
-- Development environment ready
+- kubectl configured with CoreWeave kubeconfig
+- Namespace with GPU quota
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new file for your hello world example.
+### Step 1: Deploy a vLLM Inference Server
 
-### Step 2: Import and Initialize Client
-```typescript
-import { CoreWeaveClient } from '@coreweave/sdk';
-
-const client = new CoreWeaveClient({
-  apiKey: process.env.COREWEAVE_API_KEY,
-});
+```yaml
+# vllm-inference.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-server
+  template:
+    metadata:
+      labels:
+        app: vllm-server
+    spec:
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:latest
+          args:
+            - "--model"
+            - "meta-llama/Llama-3.1-8B-Instruct"
+            - "--port"
+            - "8000"
+          ports:
+            - containerPort: 8000
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              memory: 48Gi
+              cpu: "8"
+            requests:
+              nvidia.com/gpu: 1
+              memory: 32Gi
+              cpu: "4"
+          env:
+            - name: HUGGING_FACE_HUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-token
+                  key: token
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: gpu.nvidia.com/class
+                    operator: In
+                    values: ["A100_PCIE_80GB"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-server
+spec:
+  selector:
+    app: vllm-server
+  ports:
+    - port: 8000
+      targetPort: 8000
+  type: ClusterIP
 ```
 
-### Step 3: Make Your First API Call
-```typescript
-async function main() {
-  // Your first API call here
-}
+```bash
+# Create HuggingFace token secret
+kubectl create secret generic hf-token --from-literal=token="${HF_TOKEN}"
 
-main().catch(console.error);
+# Deploy
+kubectl apply -f vllm-inference.yaml
+kubectl get pods -w  # Wait for Running state
+
+# Port-forward and test
+kubectl port-forward svc/vllm-server 8000:8000 &
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{"model": "meta-llama/Llama-3.1-8B-Instruct", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
 
-## Output
-- Working code file with CoreWeave client initialization
-- Successful API response confirming connection
-- Console output showing:
+### Step 2: Batch GPU Job
+
+```yaml
+# gpu-batch-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gpu-benchmark
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: benchmark
+          image: pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+          command: ["python3", "-c"]
+          args:
+            - |
+              import torch
+              print(f"CUDA available: {torch.cuda.is_available()}")
+              print(f"GPU: {torch.cuda.get_device_name(0)}")
+              x = torch.randn(10000, 10000, device="cuda")
+              y = torch.matmul(x, x)
+              print(f"Matrix multiply result shape: {y.shape}")
+              print("CoreWeave GPU test passed!")
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: gpu.nvidia.com/class
+                    operator: In
+                    values: ["A100_PCIE_80GB"]
 ```
-Success! Your CoreWeave connection is working.
+
+```bash
+kubectl apply -f gpu-batch-job.yaml
+kubectl logs job/gpu-benchmark --follow
 ```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list` or `pip show` |
-| Auth Error | Invalid credentials | Check environment variable is set |
-| Timeout | Network issues | Increase timeout or check connectivity |
-| Rate Limit | Too many requests | Wait and retry with exponential backoff |
-
-## Examples
-
-### TypeScript Example
-```typescript
-import { CoreWeaveClient } from '@coreweave/sdk';
-
-const client = new CoreWeaveClient({
-  apiKey: process.env.COREWEAVE_API_KEY,
-});
-
-async function main() {
-  // Your first API call here
-}
-
-main().catch(console.error);
-```
-
-### Python Example
-```python
-from coreweave import CoreWeaveClient
-
-client = CoreWeaveClient()
-
-# Your first API call here
-```
+| Pod stuck Pending | No GPU capacity | Try different GPU type or check quota |
+| `nvidia-smi` not found | Wrong base image | Use NVIDIA CUDA images |
+| OOMKilled | Insufficient GPU memory | Use larger GPU (80GB A100) |
+| Image pull error | Registry auth | Create imagePullSecret |
 
 ## Resources
-- [CoreWeave Getting Started](https://docs.coreweave.com/getting-started)
-- [CoreWeave API Reference](https://docs.coreweave.com/api)
-- [CoreWeave Examples](https://docs.coreweave.com/examples)
+
+- [CoreWeave GPU Instances](https://docs.coreweave.com/docs/platform/instances/gpu-instances)
+- [Deploy vLLM](https://docs.coreweave.com/docs/products/cks/tutorials/deploy-vllm-inference)
+- [CoreWeave Examples](https://github.com/coreweave/kubernetes-cloud)
 
 ## Next Steps
+
 Proceed to `coreweave-local-dev-loop` for development workflow setup.

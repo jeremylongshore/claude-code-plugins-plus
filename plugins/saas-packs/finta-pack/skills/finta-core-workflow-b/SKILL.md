@@ -1,73 +1,81 @@
 ---
 name: finta-core-workflow-b
 description: |
-  Execute Finta secondary workflow: Core Workflow B.
-  Use when implementing secondary use case,
-  or complementing primary workflow.
-  Trigger with phrases like "finta secondary workflow",
-  "secondary task with finta".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
+  Manage ongoing investor relations and updates with Finta.
+  Use when sending investor updates, tracking cap table changes,
+  or maintaining LP relationships post-close.
+  Trigger with phrases like "finta investor updates", "finta LP management",
+  "finta post-close", "finta investor relations".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
-# Finta Core Workflow B
+# Finta Core Workflow: Investor Relations
 
 ## Overview
-Secondary workflow for Finta. Complements the primary workflow.
 
-## Prerequisites
-- Completed `finta-install-auth` setup
-- Familiarity with `finta-core-workflow-a`
-- Valid API credentials configured
+Post-fundraise investor management: send periodic updates, share metrics, manage cap table, and maintain relationships for future rounds.
 
 ## Instructions
 
-### Step 1: Setup
-```typescript
-// Step 1 implementation
+### Investor Updates
+
+1. Go to **Updates** > **New Update**
+2. Select template (monthly, quarterly, or custom)
+3. Finta auto-populates metrics from connected financial tools:
+   - MRR/ARR from Stripe
+   - Cash and burn rate from Mercury/Brex
+   - Runway calculation
+4. Add qualitative updates (milestones, challenges, asks)
+5. Send to all investors or select groups
+
+### Update Template
+
+```
+Subject: [Company] Monthly Update - March 2026
+
+Key Metrics:
+- MRR: $X (up Y% MoM)
+- ARR: $X
+- Burn Rate: $X/month
+- Runway: X months
+- Headcount: X
+
+Highlights:
+- [Achievement 1]
+- [Achievement 2]
+
+Challenges:
+- [Challenge and plan to address]
+
+Asks:
+- Introductions to [specific companies/people]
+- Feedback on [specific topic]
 ```
 
-### Step 2: Process
-```typescript
-// Step 2 implementation
-```
+### Warm Introduction Network
 
-### Step 3: Complete
-```typescript
-// Step 3 implementation
-```
+Finta's network feature identifies 2nd-degree connections:
+1. Go to **Network** > **Find Introductions**
+2. Select target investor
+3. Finta shows mutual connections from your team, advisors, and existing investors
+4. Request introduction through the platform
 
-## Output
-- Completed Core Workflow B execution
-- Results from Finta API
-- Success confirmation or error details
+### Cap Table Tracking
 
-## Error Handling
-| Aspect | Workflow A | Workflow B |
-|--------|------------|------------|
-| Use Case | Primary | Secondary |
-| Complexity | Medium | Lower |
-| Performance | Standard | Optimized |
-
-## Examples
-
-### Complete Workflow
-```typescript
-// Complete workflow example
-```
-
-### Error Recovery
-```typescript
-// Error handling code
-```
+- Import cap table from Carta, Pulley, or CSV
+- Track ownership percentages after each round
+- Model dilution for future rounds
+- Export for legal and compliance
 
 ## Resources
-- [Finta Documentation](https://docs.finta.com)
-- [Finta API Reference](https://docs.finta.com/api)
+
+- [Finta for Fund Managers](https://www.trustfinta.com/blog/finta-for-fund-managers-venture-capital-crm)
 
 ## Next Steps
-For common errors, see `finta-common-errors`.
+
+For troubleshooting, see `finta-common-errors`.

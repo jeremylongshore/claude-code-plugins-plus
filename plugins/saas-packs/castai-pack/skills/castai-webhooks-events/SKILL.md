@@ -1,201 +1,175 @@
 ---
 name: castai-webhooks-events
 description: |
-  Implement Cast AI webhook signature validation and event handling.
-  Use when setting up webhook endpoints, implementing signature verification,
-  or handling Cast AI event notifications securely.
-  Trigger with phrases like "castai webhook", "castai events",
-  "castai webhook signature", "handle castai events", "castai notifications".
+  Configure CAST AI webhook notifications for cluster events and audit logs.
+  Use when setting up alerts for node scaling, cost threshold events,
+  or integrating CAST AI events with Slack, PagerDuty, or custom endpoints.
+  Trigger with phrases like "cast ai webhooks", "cast ai notifications",
+  "cast ai slack alerts", "cast ai events".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Webhooks & Events
+# CAST AI Webhooks & Events
 
 ## Overview
-Securely handle Cast AI webhooks with signature validation and replay protection.
+
+CAST AI emits events for node lifecycle changes, autoscaler decisions, and security findings. Configure webhook endpoints or use the audit log API to track all cluster operations. Integrates with Slack, PagerDuty, and custom HTTP endpoints.
 
 ## Prerequisites
-- Cast AI webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
 
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/castai',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-castai-signature'] as string;
-    const timestamp = req.headers['x-castai-timestamp'] as string;
-
-    if (!verifyCast AISignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleCast AIEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyCast AISignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.CASTAI_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type Cast AIEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface Cast AIEvent {
-  id: string;
-  type: Cast AIEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<Cast AIEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleCast AIEvent(event: Cast AIEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `castai:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `castai:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Cast AI CLI to send test events
-castai webhooks trigger resource.created --url http://localhost:3000/webhooks/castai
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+- CAST AI cluster connected and active
+- HTTPS endpoint for receiving webhooks (or Slack webhook URL)
+- API key with Full Access
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Cast AI dashboard.
+### Step 1: Configure Notification Channels in Console
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+Navigate to console.cast.ai > your cluster > Notifications. Available channels:
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+- **Slack**: Webhook URL integration
+- **Email**: Per-user notifications
+- **PagerDuty**: Incident escalation
+- **Custom webhook**: Any HTTPS endpoint
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+### Step 2: Query Audit Log via API
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
 ```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/castai \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+# Get recent cluster operations
+curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/audit-log?limit=20" \
+  | jq '.items[] | {
+    time: .createdAt,
+    action: .action,
+    initiator: .initiatedBy,
+    details: .details
+  }'
 ```
 
+### Step 3: Build a Custom Notification Handler
+
+```typescript
+// castai-webhook-handler.ts
+import express from "express";
+
+const app = express();
+app.use(express.json());
+
+interface CastAIEvent {
+  eventType: string;
+  clusterId: string;
+  clusterName: string;
+  timestamp: string;
+  data: {
+    nodeName?: string;
+    instanceType?: string;
+    lifecycle?: string;
+    action?: string;
+    savingsImpact?: number;
+  };
+}
+
+app.post("/castai/events", async (req, res) => {
+  const event: CastAIEvent = req.body;
+
+  switch (event.eventType) {
+    case "node.added":
+      console.log(
+        `Node added: ${event.data.nodeName} (${event.data.instanceType}, ${event.data.lifecycle})`
+      );
+      await notifySlack(
+        `New ${event.data.lifecycle} node: ${event.data.instanceType}`
+      );
+      break;
+
+    case "node.removed":
+      console.log(`Node removed: ${event.data.nodeName}`);
+      break;
+
+    case "node.spot_interrupted":
+      console.log(`Spot interruption: ${event.data.nodeName}`);
+      await notifyPagerDuty("Spot instance interrupted", event);
+      break;
+
+    case "savings.threshold":
+      console.log(`Savings threshold crossed: ${event.data.savingsImpact}%`);
+      break;
+
+    default:
+      console.log(`Unhandled event: ${event.eventType}`);
+  }
+
+  res.status(200).json({ received: true });
+});
+
+async function notifySlack(message: string): Promise<void> {
+  await fetch(process.env.SLACK_WEBHOOK_URL!, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: `:kubernetes: CAST AI: ${message}`,
+    }),
+  });
+}
+
+app.listen(3000, () => console.log("CAST AI webhook handler on :3000"));
+```
+
+### Step 4: Kubernetes-Native Event Monitoring
+
+```bash
+# Watch CAST AI events in the cluster
+kubectl get events -n castai-agent --watch \
+  --field-selector=source=castai
+
+# Or use a CronJob to post daily summaries
+```
+
+```yaml
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: castai-daily-summary
+spec:
+  schedule: "0 9 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: summary
+              image: curlimages/curl
+              command:
+                - sh
+                - -c
+                - |
+                  SAVINGS=$(curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+                    "https://api.cast.ai/v1/kubernetes/clusters/${CLUSTER_ID}/savings")
+                  curl -X POST ${SLACK_WEBHOOK_URL} \
+                    -H "Content-Type: application/json" \
+                    -d "{\"text\": \"Daily CAST AI savings: $(echo $SAVINGS | jq -r '.monthlySavings') USD/month\"}"
+          restartPolicy: Never
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Webhook not firing | Wrong URL in console | Verify endpoint is reachable |
+| Slack message empty | Payload format changed | Check current event schema |
+| Duplicate events | No idempotency | Track event IDs in your handler |
+| Events delayed | Queue backlog | Monitor CAST AI status page |
+
 ## Resources
-- [Cast AI Webhooks Guide](https://docs.castai.com/webhooks)
-- [Webhook Security Best Practices](https://docs.castai.com/webhooks/security)
+
+- [CAST AI Notifications](https://docs.cast.ai/docs/getting-started)
+- [CAST AI API Reference](https://api.cast.ai/v1/spec/openapi.json)
 
 ## Next Steps
+
 For performance optimization, see `castai-performance-tuning`.

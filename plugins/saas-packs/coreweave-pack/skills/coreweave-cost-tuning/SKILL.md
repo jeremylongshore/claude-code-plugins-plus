@@ -1,203 +1,64 @@
 ---
 name: coreweave-cost-tuning
 description: |
-  Optimize CoreWeave costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing CoreWeave billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "coreweave cost", "coreweave billing",
-  "reduce coreweave costs", "coreweave pricing", "coreweave expensive", "coreweave budget".
-allowed-tools: Read, Grep
+  Optimize CoreWeave GPU cloud costs with right-sizing and scheduling.
+  Use when reducing GPU spend, selecting cost-effective instances,
+  or implementing scale-to-zero for dev workloads.
+  Trigger with phrases like "coreweave cost", "coreweave pricing",
+  "reduce coreweave spend", "coreweave budget".
+allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Cost Tuning
 
-## Overview
-Optimize CoreWeave costs through smart tier selection, sampling, and usage monitoring.
+## GPU Pricing Reference (approximate)
 
-## Prerequisites
-- Access to CoreWeave billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+| GPU | Per GPU/hour | Best For |
+|-----|-------------|----------|
+| A100 40GB PCIe | ~$1.50 | Development, smaller models |
+| A100 80GB PCIe | ~$2.21 | Production inference |
+| H100 80GB PCIe | ~$4.76 | High-throughput inference |
+| H100 SXM5 (8x) | ~$6.15/GPU | Training, multi-GPU |
+| L40 | ~$1.10 | Image generation, light inference |
 
-## Pricing Tiers
+## Cost Optimization Strategies
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateCoreWeaveCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
+### Scale-to-Zero for Dev/Staging
+```yaml
+autoscaling.knative.dev/minScale: "0"
+autoscaling.knative.dev/scaleDownDelay: "5m"
 ```
 
-## Usage Monitoring
-
-```typescript
-class CoreWeaveUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching CoreWeave budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateCoreWeaveCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
+### Right-Size GPU Selection
+```python
+def recommend_gpu(model_size_b: float, inference_only: bool = True) -> str:
+    if model_size_b <= 7:
+        return "L40" if inference_only else "A100_PCIE_80GB"
+    elif model_size_b <= 13:
+        return "A100_PCIE_80GB"
+    elif model_size_b <= 70:
+        return "A100_PCIE_80GB (4x tensor parallel)"
+    else:
+        return "H100_SXM5 (8x tensor parallel)"
 ```
 
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await coreweaveClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => coreweaveClient.get(id)));
-
-// Use batch endpoint (1 call)
-await coreweaveClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new CoreWeaveClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
+### Quantization to Use Smaller GPUs
+Use AWQ or GPTQ quantization to fit larger models on smaller GPUs:
 ```bash
-# Set up billing alerts in CoreWeave dashboard
-# Or use API if available:
-# Check CoreWeave documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM coreweave_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review CoreWeave dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateCoreWeaveCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+# 70B model at 4-bit fits on single A100-80GB instead of 4x
+vllm serve meta-llama/Llama-3.1-70B-Instruct-AWQ --quantization awq
 ```
 
 ## Resources
-- [CoreWeave Pricing](https://coreweave.com/pricing)
-- [CoreWeave Billing Dashboard](https://dashboard.coreweave.com/billing)
+
+- [CoreWeave Pricing](https://www.coreweave.com/pricing)
+- [CoreWeave GPU Instances](https://docs.coreweave.com/docs/platform/instances/gpu-instances)
 
 ## Next Steps
+
 For architecture patterns, see `coreweave-reference-architecture`.

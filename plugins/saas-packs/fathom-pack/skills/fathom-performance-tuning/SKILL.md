@@ -1,216 +1,59 @@
 ---
 name: fathom-performance-tuning
 description: |
-  Optimize Fathom API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Fathom integrations.
-  Trigger with phrases like "fathom performance", "optimize fathom",
-  "fathom latency", "fathom caching", "fathom slow", "fathom batch".
+  Optimize Fathom API performance with caching and batch processing.
+  Trigger with phrases like "fathom performance", "fathom caching", "optimize fathom".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom Performance Tuning
 
-## Overview
-Optimize Fathom API performance with caching, batching, and connection pooling.
+## Cache Meeting Data
 
-## Prerequisites
-- Fathom SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+```python
+from functools import lru_cache
+import time
 
-## Latency Benchmarks
+class CachedFathomClient(FathomClient):
+    def __init__(self, cache_ttl=300, **kwargs):
+        super().__init__(**kwargs)
+        self._cache = {}
+        self._cache_ttl = cache_ttl
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedFathomRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
+    def get_transcript_cached(self, recording_id: str) -> dict:
+        key = f"transcript:{recording_id}"
+        if key in self._cache:
+            data, ts = self._cache[key]
+            if time.time() - ts < self._cache_ttl:
+                return data
+        result = self.get_transcript(recording_id)
+        self._cache[key] = (result, time.time())
+        return result
 ```
 
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
+## Use Webhooks Instead of Polling
 
-const redis = new Redis(process.env.REDIS_URL);
+Instead of polling for new meetings, use webhooks (see `fathom-webhooks-events`) to receive data as soon as it is ready.
 
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
+## Batch Processing Within Rate Limits
 
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
+```python
+import time
+
+def process_meetings_batch(client, meeting_ids, batch_size=50):
+    for i in range(0, len(meeting_ids), batch_size):
+        batch = meeting_ids[i:i+batch_size]
+        for mid in batch:
+            client.get_transcript(mid)
+        if i + batch_size < len(meeting_ids):
+            time.sleep(60)  # Respect 60 req/min limit
 ```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const fathomLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Fathom
-    const results = await fathomClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  fathomLoader.load('id-1'),
-  fathomLoader.load('id-2'),
-  fathomLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new FathomClient({
-  apiKey: process.env.FATHOM_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFathomList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFathomList(cursor =>
-  fathomClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFathomCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Fathom operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFathomCall(name, () =>
-    cachedFathomRequest(`cache:${name}`, fn)
-  );
-```
-
-## Resources
-- [Fathom Performance Guide](https://docs.fathom.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
 
 ## Next Steps
+
 For cost optimization, see `fathom-cost-tuning`.

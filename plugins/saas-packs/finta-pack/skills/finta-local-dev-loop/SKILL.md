@@ -1,119 +1,82 @@
 ---
 name: finta-local-dev-loop
 description: |
-  Configure Finta local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Finta.
-  Trigger with phrases like "finta dev setup", "finta local development",
-  "finta dev environment", "develop with finta".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up Finta workflow automation and data export for local analysis.
+  Use when building fundraising reports, exporting pipeline data,
+  or automating investor outreach workflows.
+  Trigger with phrases like "finta workflow", "finta automation",
+  "finta data export", "finta reporting".
+allowed-tools: Read, Write, Edit, Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Finta.
 
-## Prerequisites
-- Completed `finta-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Finta is primarily UI-driven without a public API. For local automation, use CSV exports from Finta combined with Python scripts for analysis, reporting, and integration with other tools.
 
 ## Instructions
 
-### Step 1: Create Project Structure
-```
-my-finta-project/
-├── src/
-│   ├── finta/
-│   │   ├── client.ts       # Finta client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── finta.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
-```
+### Export Pipeline Data
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+1. In Finta, go to **Pipeline** > **Export** > **CSV**
+2. Save as `pipeline-export.csv`
 
-# Install dependencies
-npm install
+### Analyze Fundraise Pipeline
 
-# Start development server
-npm run dev
-```
+```python
+import pandas as pd
+from datetime import datetime
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
+# Load Finta export
+df = pd.read_csv("pipeline-export.csv")
+
+# Pipeline summary
+summary = df.groupby("Stage").agg(
+    count=("Name", "count"),
+    avg_check=("Check Size", "mean"),
+).reset_index()
+
+print("Pipeline Summary:")
+print(summary.to_string(index=False))
+
+# Conversion rates
+stages = ["Researching", "Reaching Out", "Intro Meeting", "Follow-up", "Due Diligence", "Term Sheet", "Closed"]
+for i in range(len(stages) - 1):
+    current = len(df[df["Stage"] == stages[i]])
+    next_stage = len(df[df["Stage"] == stages[i+1]])
+    rate = (next_stage / current * 100) if current > 0 else 0
+    print(f"  {stages[i]} -> {stages[i+1]}: {rate:.0f}%")
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { FintaClient } from '../src/finta/client';
+### Weekly Pipeline Report
 
-describe('Finta Client', () => {
-  it('should initialize with API key', () => {
-    const client = new FintaClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
+```python
+def generate_weekly_report(df: pd.DataFrame) -> str:
+    total = len(df)
+    active = len(df[df["Stage"].isin(["Intro Meeting", "Follow-up", "Due Diligence"])])
+    term_sheets = len(df[df["Stage"] == "Term Sheet"])
+    closed = len(df[df["Stage"] == "Closed"])
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Finta development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Finta Responses
-```typescript
-vi.mock('@finta/sdk', () => ({
-  FintaClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=FINTA=* npm run dev
+    return f"""
+Fundraise Pipeline Report ({datetime.now().strftime('%Y-%m-%d')})
+==================================================
+Total investors: {total}
+Active conversations: {active}
+Term sheets: {term_sheets}
+Closed: {closed}
+"""
 ```
 
 ## Resources
-- [Finta SDK Reference](https://docs.finta.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Finta Website](https://www.trustfinta.com)
 
 ## Next Steps
-See `finta-sdk-patterns` for production-ready code patterns.
+
+See `finta-sdk-patterns` for integration patterns.

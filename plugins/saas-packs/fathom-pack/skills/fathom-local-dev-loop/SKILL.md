@@ -1,119 +1,76 @@
 ---
 name: fathom-local-dev-loop
 description: |
-  Configure Fathom local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Fathom.
-  Trigger with phrases like "fathom dev setup", "fathom local development",
-  "fathom dev environment", "develop with fathom".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up local development for Fathom API integrations with mock meeting data.
+  Use when building meeting analytics tools, testing webhook handlers,
+  or iterating on transcript processing pipelines.
+  Trigger with phrases like "fathom dev setup", "fathom local testing",
+  "develop with fathom", "fathom mock data".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(python3:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom Local Dev Loop
 
-## Overview
-Set up a fast, reproducible local development workflow for Fathom.
+## Project Structure
 
-## Prerequisites
-- Completed `fathom-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
-
-## Instructions
-
-### Step 1: Create Project Structure
 ```
-my-fathom-project/
+fathom-integration/
 ├── src/
-│   ├── fathom/
-│   │   ├── client.ts       # Fathom client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+│   ├── fathom_client.py
+│   ├── transcript_processor.py
+│   └── webhook_handler.py
 ├── tests/
-│   └── fathom.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+│   ├── fixtures/
+│   │   ├── meeting.json
+│   │   └── transcript.json
+│   └── test_processor.py
+├── .env.local
+└── requirements.txt
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+## Mock Meeting Data
 
-# Install dependencies
-npm install
+```python
+MOCK_MEETING = {
+    "id": "mtg-123",
+    "title": "Product Review Q1",
+    "created_at": "2026-03-20T14:00:00Z",
+    "duration_seconds": 1800,
+    "participants": ["alice@example.com", "bob@example.com"],
+    "summary": "Discussed Q1 roadmap priorities. Agreed to focus on API improvements.",
+    "action_items": [
+        {"text": "Alice to draft API spec by Friday", "assignee": "alice@example.com"},
+        {"text": "Bob to review competitor analysis", "assignee": "bob@example.com"}
+    ]
+}
 
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
+MOCK_TRANSCRIPT = {
+    "segments": [
+        {"speaker": "Alice", "text": "Let us review the Q1 priorities.", "start_time": 0.0},
+        {"speaker": "Bob", "text": "I think the API work should come first.", "start_time": 5.2},
+    ]
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { FathomClient } from '../src/fathom/client';
+## Development Script
 
-describe('Fathom Client', () => {
-  it('should initialize with API key', () => {
-    const client = new FathomClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
-```
-
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Fathom development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Fathom Responses
-```typescript
-vi.mock('@fathom/sdk', () => ({
-  FathomClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
 ```bash
-# Enable verbose logging
-DEBUG=FATHOM=* npm run dev
+# Run with mock data (no API calls)
+FATHOM_MOCK=true python3 src/transcript_processor.py
+
+# Run with real API
+python3 src/transcript_processor.py
 ```
 
 ## Resources
-- [Fathom SDK Reference](https://docs.fathom.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Fathom API Docs](https://developers.fathom.ai)
 
 ## Next Steps
-See `fathom-sdk-patterns` for production-ready code patterns.
+
+See `fathom-sdk-patterns` for production API wrappers.

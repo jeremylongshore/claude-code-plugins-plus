@@ -1,211 +1,154 @@
 ---
 name: castai-deploy-integration
 description: |
-  Deploy Cast AI integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Cast AI-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy castai", "castai Vercel",
-  "castai production deploy", "castai Cloud Run", "castai Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy CAST AI across multi-cloud Kubernetes clusters with Terraform modules.
+  Use when onboarding EKS, GKE, or AKS clusters to CAST AI using
+  infrastructure-as-code patterns.
+  Trigger with phrases like "deploy cast ai", "cast ai eks",
+  "cast ai gke", "cast ai aks", "cast ai terraform module".
+allowed-tools: Read, Write, Edit, Bash(terraform:*), Bash(helm:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Deploy Integration
+# CAST AI Deploy Integration
 
 ## Overview
-Deploy Cast AI-powered applications to popular platforms with proper secrets management.
+
+Deploy CAST AI to EKS, GKE, and AKS clusters using official Terraform modules. Each cloud provider has a dedicated CAST AI module that handles IAM roles, node configuration, and autoscaler setup.
 
 ## Prerequisites
-- Cast AI API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Cast AI secrets to Vercel
-vercel secrets add castai_api_key sk_live_***
-vercel secrets add castai_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "CASTAI_API_KEY": "@castai_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-castai-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Cast AI secrets
-fly secrets set CASTAI_API_KEY=sk_live_***
-fly secrets set CASTAI_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="castai-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=CASTAI_API_KEY=castai-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/castai.ts
-interface Cast AIConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getCast AIConfig(): Cast AIConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CASTAI_API_KEY!,
-    environment: env as Cast AIConfig['environment'],
-    webhookSecret: process.env.CASTAI_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const castaiStatus = await checkCast AIConnection();
-
-  return Response.json({
-    status: castaiStatus ? 'healthy' : 'degraded',
-    services: {
-      castai: castaiStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- Terraform 1.0+
+- CAST AI Full Access API key
+- Cloud provider credentials configured
+- Existing Kubernetes cluster
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### EKS Deployment
 
-### Step 2: Configure Secrets
-Store Cast AI API keys securely using the platform's secrets management.
+```hcl
+# main.tf -- EKS cluster onboarding
+module "castai_eks" {
+  source  = "castai/eks-cluster/castai"
+  version = "~> 3.0"
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Cast AI integration.
+  api_token           = var.castai_api_token
+  aws_account_id      = data.aws_caller_identity.current.account_id
+  aws_cluster_region  = var.region
+  aws_cluster_name    = var.cluster_name
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm Cast AI connectivity.
+  # IAM role for CAST AI to manage nodes
+  aws_instance_profile_arn = aws_iam_instance_profile.castai.arn
 
-## Output
-- Application deployed to production
-- Cast AI secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+  # Autoscaler configuration
+  autoscaler_policies_json = jsonencode({
+    enabled = true
+    unschedulablePods = { enabled = true }
+    nodeDownscaler = {
+      enabled = true
+      emptyNodes = { enabled = true, delaySeconds = 300 }
+    }
+    spotInstances = {
+      enabled = true
+      spotDiversityEnabled = true
+    }
+    clusterLimits = {
+      enabled = true
+      cpu = { minCores = 4, maxCores = 200 }
+    }
+  })
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add castai_api_key "$CASTAI_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CASTAI_API_KEY="$CASTAI_API_KEY"
-    fly deploy
-    ;;
-esac
+  # Node templates
+  default_node_configuration = module.castai_eks.castai_node_configurations["default"]
+}
 ```
 
+### GKE Deployment
+
+```hcl
+module "castai_gke" {
+  source  = "castai/gke-cluster/castai"
+  version = "~> 2.0"
+
+  api_token            = var.castai_api_token
+  project_id           = var.gcp_project_id
+  gke_cluster_name     = var.cluster_name
+  gke_cluster_location = var.region
+
+  gke_credentials = base64decode(
+    google_container_cluster.this.master_auth[0].cluster_ca_certificate
+  )
+
+  autoscaler_policies_json = jsonencode({
+    enabled = true
+    unschedulablePods = { enabled = true }
+    nodeDownscaler = {
+      enabled = true
+      emptyNodes = { enabled = true, delaySeconds = 300 }
+    }
+  })
+}
+```
+
+### AKS Deployment
+
+```hcl
+module "castai_aks" {
+  source  = "castai/aks/castai"
+  version = "~> 1.0"
+
+  api_token              = var.castai_api_token
+  aks_cluster_name       = var.cluster_name
+  aks_cluster_region     = var.region
+  node_resource_group    = azurerm_kubernetes_cluster.this.node_resource_group
+  azure_subscription_id  = data.azurerm_subscription.current.subscription_id
+  azure_tenant_id        = data.azurerm_client_config.current.tenant_id
+
+  autoscaler_policies_json = jsonencode({
+    enabled = true
+    unschedulablePods = { enabled = true }
+    spotInstances = { enabled = true }
+  })
+}
+```
+
+### Multi-Cluster Deployment Pattern
+
+```hcl
+# Deploy CAST AI across all clusters with a for_each
+variable "clusters" {
+  type = map(object({
+    name     = string
+    provider = string  # eks, gke, aks
+    region   = string
+    max_cpu  = number
+  }))
+}
+
+# Then reference the appropriate module per provider
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| IAM role error | Missing permissions | Check CAST AI IAM docs for required policies |
+| Module version conflict | Terraform lock | Run `terraform init -upgrade` |
+| Cluster not appearing | Wrong credentials | Verify cloud provider auth |
+| Policies not applying | JSON encoding error | Validate `jsonencode()` output |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Cast AI Deploy Guide](https://docs.castai.com/deploy)
+
+- [EKS Module](https://registry.terraform.io/modules/castai/eks-cluster/castai/latest)
+- [GKE Module](https://registry.terraform.io/modules/castai/gke-cluster/castai/latest)
+- [AKS Module](https://registry.terraform.io/modules/castai/aks/castai/latest)
+- [CAST AI Terraform Provider](https://registry.terraform.io/providers/castai/castai/latest/docs)
 
 ## Next Steps
-For webhook handling, see `castai-webhooks-events`.
+
+For webhook-based automation, see `castai-webhooks-events`.

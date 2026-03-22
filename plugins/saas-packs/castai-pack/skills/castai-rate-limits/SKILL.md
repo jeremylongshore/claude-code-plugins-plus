@@ -1,151 +1,170 @@
 ---
 name: castai-rate-limits
 description: |
-  Implement Cast AI rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Cast AI.
-  Trigger with phrases like "castai rate limit", "castai throttling",
-  "castai 429", "castai retry", "castai backoff".
+  Handle CAST AI API rate limits with backoff and request queuing.
+  Use when hitting 429 errors, optimizing API call patterns,
+  or implementing rate-aware batch operations.
+  Trigger with phrases like "cast ai rate limit", "cast ai 429",
+  "cast ai throttle", "cast ai API limits".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Rate Limits
+# CAST AI Rate Limits
 
 ## Overview
-Handle Cast AI rate limits gracefully with exponential backoff and idempotency.
+
+The CAST AI REST API enforces rate limits per API key. The autoscaler agent communicates cluster state at 15-second intervals. For custom API integrations, implement exponential backoff and request queuing to avoid hitting limits.
 
 ## Prerequisites
-- Cast AI SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+
+- CAST AI API key configured
+- Understanding of the API endpoints you call
+
+## Rate Limit Behavior
+
+| Aspect | Value |
+|--------|-------|
+| Rate limit scope | Per API key |
+| Response on limit | HTTP 429 with `Retry-After` header |
+| Agent sync interval | Every 15 seconds |
+| Recommended polling | No more than once per 30 seconds |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Detect Rate Limits from Response Headers
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+async function castaiRequest(path: string): Promise<Response> {
+  const response = await fetch(`https://api.cast.ai${path}`, {
+    headers: { "X-API-Key": process.env.CASTAI_API_KEY! },
+  });
+
+  // Log rate limit headers for monitoring
+  const remaining = response.headers.get("X-RateLimit-Remaining");
+  const reset = response.headers.get("X-RateLimit-Reset");
+  if (remaining) {
+    console.log(`Rate limit remaining: ${remaining}, resets: ${reset}`);
+  }
+
+  if (response.status === 429) {
+    const retryAfter = parseInt(response.headers.get("Retry-After") ?? "5");
+    throw new RateLimitError(retryAfter);
+  }
+
+  return response;
+}
+
+class RateLimitError extends Error {
+  constructor(public retryAfterSeconds: number) {
+    super(`Rate limited. Retry after ${retryAfterSeconds}s`);
+  }
+}
+```
+
+### Step 2: Exponential Backoff with Jitter
+
+```typescript
+async function withBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries = 5
 ): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      return await fn();
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      let delayMs: number;
+      if (err instanceof RateLimitError) {
+        delayMs = err.retryAfterSeconds * 1000;
+      } else {
+        delayMs = Math.min(1000 * Math.pow(2, attempt), 30000);
+      }
+      // Add jitter to prevent thundering herd
+      delayMs += Math.random() * 1000;
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+      console.log(`Retry ${attempt + 1}/${maxRetries} in ${delayMs}ms`);
+      await new Promise((r) => setTimeout(r, delayMs));
     }
   }
-  throw new Error('Unreachable');
+  throw new Error("Unreachable");
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 3: Request Queue for Batch Operations
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+import PQueue from "p-queue";
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: CastAIClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
+// Limit concurrent requests and enforce interval
+const castaiQueue = new PQueue({
+  concurrency: 3,
   interval: 1000,
-  intervalCap: 10,
+  intervalCap: 5,   // Max 5 requests per second
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
+async function queuedCastAIRequest<T>(fn: () => Promise<T>): Promise<T> {
+  return castaiQueue.add(() => withBackoff(fn));
 }
+
+// Batch process multiple clusters
+const clusterIds = ["id1", "id2", "id3", "id4", "id5"];
+const savings = await Promise.all(
+  clusterIds.map((id) =>
+    queuedCastAIRequest(() =>
+      fetch(`https://api.cast.ai/v1/kubernetes/clusters/${id}/savings`, {
+        headers: { "X-API-Key": process.env.CASTAI_API_KEY! },
+      }).then((r) => r.json())
+    )
+  )
+);
 ```
 
-### Monitor Rate Limit Usage
+### Step 4: Polling Best Practice
+
 ```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
+// Do NOT poll faster than 30 seconds for cluster state
+// The agent syncs every 15s; polling faster adds no value
 
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+async function pollClusterStatus(
+  clusterId: string,
+  intervalMs = 30000
+): Promise<void> {
+  const timer = setInterval(async () => {
+    try {
+      const status = await queuedCastAIRequest(() =>
+        fetch(
+          `https://api.cast.ai/v1/kubernetes/external-clusters/${clusterId}`,
+          { headers: { "X-API-Key": process.env.CASTAI_API_KEY! } }
+        ).then((r) => r.json())
+      );
+      console.log(`Cluster ${clusterId}: ${status.agentStatus}`);
+    } catch (err) {
+      console.error("Poll failed:", err);
     }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
+  }, intervalMs);
 }
 ```
+
+## Error Handling
+
+| Scenario | Detection | Response |
+|----------|-----------|----------|
+| 429 with Retry-After | Check header | Wait exact duration |
+| 429 without header | Status code only | Exponential backoff from 1s |
+| 5xx errors | Status >= 500 | Retry up to 3 times |
+| Connection timeout | Fetch throws | Retry with longer timeout |
 
 ## Resources
-- [Cast AI Rate Limits](https://docs.castai.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [CAST AI API Reference](https://api.cast.ai/v1/spec/openapi.json)
+- [p-queue](https://github.com/sindresorhus/p-queue) -- concurrent request queue
 
 ## Next Steps
+
 For security configuration, see `castai-security-basics`.

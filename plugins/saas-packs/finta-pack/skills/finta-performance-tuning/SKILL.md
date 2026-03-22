@@ -1,216 +1,39 @@
 ---
 name: finta-performance-tuning
 description: |
-  Optimize Finta API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Finta integrations.
-  Trigger with phrases like "finta performance", "optimize finta",
-  "finta latency", "finta caching", "finta slow", "finta batch".
-allowed-tools: Read, Write, Edit
+  Optimize Finta fundraise workflow efficiency.
+  Trigger with phrases like "finta performance", "finta efficiency", "optimize finta".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, finta]
+tags: [saas, fundraising-crm, investor-management, finta]
 compatible-with: claude-code
 ---
 
 # Finta Performance Tuning
 
-## Overview
-Optimize Finta API performance with caching, batching, and connection pooling.
+## Pipeline Efficiency Tips
 
-## Prerequisites
-- Finta SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+1. **Batch outreach**: Send 20-30 emails per week, not 100 at once
+2. **Use Aurora AI first**: Let AI rank investors before manual research
+3. **Template emails**: Create 3-4 templates for different investor types
+4. **Deal room analytics**: Focus follow-up on investors who viewed materials
+5. **Weekly pipeline review**: Spend 30 min reviewing and updating stages
 
-## Latency Benchmarks
+## Conversion Rate Optimization
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedFintaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const fintaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Finta
-    const results = await fintaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  fintaLoader.load('id-1'),
-  fintaLoader.load('id-2'),
-  fintaLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new FintaClient({
-  apiKey: process.env.FINTA_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFintaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFintaList(cursor =>
-  fintaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFintaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Finta operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFintaCall(name, () =>
-    cachedFintaRequest(`cache:${name}`, fn)
-  );
-```
+| Stage | Target Conversion | Improvement |
+|-------|-------------------|-------------|
+| Outreach -> Intro Meeting | 20-30% | Better targeting |
+| Intro -> Follow-up | 50-60% | Stronger pitch |
+| Follow-up -> Due Diligence | 30-40% | Address concerns proactively |
+| Due Diligence -> Term Sheet | 40-50% | Fast document delivery |
 
 ## Resources
-- [Finta Performance Guide](https://docs.finta.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Finta Blog](https://www.trustfinta.com/blog)
 
 ## Next Steps
+
 For cost optimization, see `finta-cost-tuning`.

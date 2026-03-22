@@ -1,119 +1,149 @@
 ---
 name: castai-local-dev-loop
 description: |
-  Configure Cast AI local development with hot reload and testing.
-  Use when setting up a development environment, configuring test workflows,
-  or establishing a fast iteration cycle with Cast AI.
-  Trigger with phrases like "castai dev setup", "castai local development",
-  "castai dev environment", "develop with castai".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
+  Set up a local Kubernetes development loop with CAST AI cost monitoring.
+  Use when building cost-aware deployments, testing autoscaler policies,
+  or iterating on Terraform CAST AI configurations locally.
+  Trigger with phrases like "cast ai dev setup", "cast ai local testing",
+  "develop with cast ai", "cast ai terraform dev".
+allowed-tools: Read, Write, Edit, Bash(kubectl:*), Bash(helm:*), Bash(terraform:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Local Dev Loop
+# CAST AI Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Cast AI.
+
+Fast iteration workflow for CAST AI integrations: test autoscaler policies in a dev cluster, validate Terraform modules before applying to production, and use the CAST AI API to measure savings impact during development.
 
 ## Prerequisites
+
 - Completed `castai-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- A development Kubernetes cluster (kind, minikube, or cloud dev cluster)
+- `kubectl`, `helm`, and optionally `terraform` installed
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-castai-project/
-├── src/
-│   ├── castai/
-│   │   ├── client.ts       # Cast AI client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
-├── tests/
-│   └── castai.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
-└── package.json
+my-castai-infra/
+├── terraform/
+│   ├── environments/
+│   │   ├── dev.tfvars
+│   │   ├── staging.tfvars
+│   │   └── prod.tfvars
+│   ├── modules/
+│   │   └── castai-cluster/
+│   │       ├── main.tf
+│   │       ├── variables.tf
+│   │       └── outputs.tf
+│   └── main.tf
+├── policies/
+│   ├── dev-policy.json
+│   └── prod-policy.json
+├── scripts/
+│   ├── check-savings.sh
+│   └── validate-policies.sh
+├── .env.dev            # Dev API key (git-ignored)
+└── .env.example
 ```
 
-### Step 2: Configure Environment
+### Step 2: Dev Cluster with Relaxed Policies
+
 ```bash
-# Copy environment template
-cp .env.example .env.local
+# Connect your dev cluster (read-only first)
+helm upgrade --install castai-agent castai-helm/castai-agent \
+  -n castai-agent --create-namespace \
+  --set apiKey="${CASTAI_API_KEY_DEV}" \
+  --set provider="eks"
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
+# Apply development-safe autoscaler policy
+curl -X PUT -H "X-API-Key: ${CASTAI_API_KEY_DEV}" \
+  -H "Content-Type: application/json" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+  -d '{
+    "enabled": true,
+    "unschedulablePods": { "enabled": true },
+    "nodeDownscaler": {
+      "enabled": true,
+      "emptyNodes": { "enabled": true, "delaySeconds": 300 }
+    },
+    "clusterLimits": {
+      "enabled": true,
+      "cpu": { "minCores": 2, "maxCores": 16 }
+    }
+  }'
 ```
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
+### Step 3: Quick Savings Check Script
+
+```bash
+#!/bin/bash
+# scripts/check-savings.sh
+set -euo pipefail
+
+API_KEY="${CASTAI_API_KEY_DEV}"
+CLUSTER_ID="${CASTAI_CLUSTER_ID}"
+
+echo "=== CAST AI Dev Cluster Savings ==="
+curl -s -H "X-API-Key: ${API_KEY}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CLUSTER_ID}/savings" \
+  | jq '{
+    monthlySavings: .monthlySavings,
+    percentage: .savingsPercentage,
+    spotNodes: [.nodes[] | select(.lifecycle == "spot")] | length,
+    totalNodes: [.nodes[]] | length
+  }'
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { CastAIClient } from '../src/castai/client';
+### Step 4: Terraform Plan-Apply Loop
 
-describe('Cast AI Client', () => {
-  it('should initialize with API key', () => {
-    const client = new CastAIClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
-  });
-});
+```bash
+# Plan with dev variables
+cd terraform/
+terraform plan -var-file=environments/dev.tfvars -out=plan.tfplan
+
+# Apply and check CAST AI result
+terraform apply plan.tfplan
+
+# Verify policies took effect
+curl -s -H "X-API-Key: ${CASTAI_API_KEY_DEV}" \
+  "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+  | jq .
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Cast AI development
+### Step 5: Watch Node Changes in Real Time
+
+```bash
+# Terminal 1: Watch CAST AI node operations
+watch -n 15 'curl -s -H "X-API-Key: ${CASTAI_API_KEY_DEV}" \
+  "https://api.cast.ai/v1/kubernetes/external-clusters/${CASTAI_CLUSTER_ID}/nodes" \
+  | jq "[.items[] | {name, instanceType, lifecycle, age: .createdAt}] | length"'
+
+# Terminal 2: Watch kubectl node status
+kubectl get nodes -w
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Cast AI Responses
-```typescript
-vi.mock('@castai/sdk', () => ({
-  CastAIClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=CASTAI=* npm run dev
-```
+| Dev cluster not found | Wrong cluster ID | List clusters with API first |
+| Policy rejected | Invalid JSON | Validate with `jq . < policy.json` |
+| Terraform drift | Manual console changes | Run `terraform refresh` |
+| Agent offline after restart | Helm release stale | `helm upgrade --install` again |
 
 ## Resources
-- [Cast AI SDK Reference](https://docs.castai.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [CAST AI Terraform Provider](https://registry.terraform.io/providers/castai/castai/latest/docs)
+- [Autoscaler Policies](https://docs.cast.ai/docs/autoscaler-settings)
+- [Node Configuration](https://docs.cast.ai/docs/node-configuration)
 
 ## Next Steps
-See `castai-sdk-patterns` for production-ready code patterns.
+
+See `castai-sdk-patterns` for reusable API wrapper patterns.

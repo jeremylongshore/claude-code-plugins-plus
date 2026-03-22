@@ -1,149 +1,95 @@
 ---
 name: fathom-sdk-patterns
 description: |
-  Apply production-ready Fathom SDK patterns for TypeScript and Python.
-  Use when implementing Fathom integrations, refactoring SDK usage,
-  or establishing team coding standards for Fathom.
-  Trigger with phrases like "fathom SDK patterns", "fathom best practices",
-  "fathom code patterns", "idiomatic fathom".
+  Production-ready Fathom API client patterns in Python and TypeScript.
+  Use when building reusable Fathom clients, implementing meeting data pipelines,
+  or wrapping the Fathom REST API.
+  Trigger with phrases like "fathom API patterns", "fathom client wrapper",
+  "fathom Python client", "fathom TypeScript".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom SDK Patterns
 
-## Overview
-Production-ready patterns for Fathom SDK usage in TypeScript and Python.
+## Python Client
 
-## Prerequisites
-- Completed `fathom-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+```python
+import os, requests
+from dataclasses import dataclass
+from typing import Optional
 
-## Instructions
+@dataclass
+class FathomConfig:
+    api_key: str
+    base_url: str = "https://api.fathom.ai/external/v1"
+    timeout: int = 30
 
-### Step 1: Implement Singleton Pattern (Recommended)
-```typescript
-// src/fathom/client.ts
-import { FathomClient } from '@fathom/sdk';
+class FathomClient:
+    def __init__(self, config: Optional[FathomConfig] = None):
+        self.config = config or FathomConfig(api_key=os.environ["FATHOM_API_KEY"])
+        self.session = requests.Session()
+        self.session.headers.update({"X-Api-Key": self.config.api_key})
 
-let instance: FathomClient | null = null;
+    def list_meetings(self, limit: int = 20, **filters) -> list[dict]:
+        params = {"limit": limit, **filters}
+        resp = self.session.get(f"{self.config.base_url}/meetings", params=params, timeout=self.config.timeout)
+        resp.raise_for_status()
+        return resp.json().get("meetings", [])
 
-export function getFathomClient(): FathomClient {
-  if (!instance) {
-    instance = new FathomClient({
-      apiKey: process.env.FATHOM_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
-}
+    def get_transcript(self, recording_id: str) -> dict:
+        resp = self.session.get(f"{self.config.base_url}/recordings/{recording_id}/transcript", timeout=self.config.timeout)
+        resp.raise_for_status()
+        return resp.json()
+
+    def get_summary(self, recording_id: str) -> dict:
+        resp = self.session.get(f"{self.config.base_url}/recordings/{recording_id}/summary", timeout=self.config.timeout)
+        resp.raise_for_status()
+        return resp.json()
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { FathomError } from '@fathom/sdk';
+## TypeScript Client
 
-async function safeFathomCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof FathomError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
+```typescript
+class FathomClient {
+  private apiKey: string;
+  private baseUrl: string;
+
+  constructor(apiKey?: string) {
+    this.apiKey = apiKey ?? process.env.FATHOM_API_KEY!;
+    this.baseUrl = "https://api.fathom.ai/external/v1";
   }
+
+  private async get<T>(path: string, params?: Record<string, string>): Promise<T> {
+    const url = new URL(`${this.baseUrl}${path}`);
+    if (params) Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+    const resp = await fetch(url, { headers: { "X-Api-Key": this.apiKey } });
+    if (!resp.ok) throw new Error(`Fathom ${resp.status}: ${await resp.text()}`);
+    return resp.json();
+  }
+
+  async listMeetings(limit = 20) { return this.get<{meetings: any[]}>("/meetings", {limit: String(limit)}); }
+  async getTranscript(id: string) { return this.get(`/recordings/${id}/transcript`); }
+  async getSummary(id: string) { return this.get(`/recordings/${id}/summary`); }
 }
 ```
-
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
 
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, FathomClient>();
-
-export function getClientForTenant(tenantId: string): FathomClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new FathomClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from fathom import FathomClient
-
-@asynccontextmanager
-async def get_fathom_client():
-    client = FathomClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const fathomResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+| Status | Meaning | Action |
+|--------|---------|--------|
+| 401 | Invalid API key | Regenerate key |
+| 404 | Recording not found | Verify recording ID |
+| 429 | Rate limited (60/min) | Backoff and retry |
 
 ## Resources
-- [Fathom SDK Reference](https://docs.fathom.com/sdk)
-- [Fathom API Types](https://docs.fathom.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Fathom API Reference](https://developers.fathom.ai/api-reference)
 
 ## Next Steps
-Apply patterns in `fathom-core-workflow-a` for real-world usage.
+
+Apply in `fathom-core-workflow-a` for meeting analytics.

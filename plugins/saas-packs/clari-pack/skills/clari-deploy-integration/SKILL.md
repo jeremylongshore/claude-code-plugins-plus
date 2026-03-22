@@ -1,211 +1,124 @@
 ---
 name: clari-deploy-integration
 description: |
-  Deploy Clari integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Clari-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
-  Trigger with phrases like "deploy clari", "clari Vercel",
-  "clari production deploy", "clari Cloud Run", "clari Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  Deploy Clari export pipelines to production with Airflow, Cloud Functions, or Lambda.
+  Use when scheduling automated exports, deploying to cloud platforms,
+  or setting up serverless Clari sync.
+  Trigger with phrases like "deploy clari", "clari airflow",
+  "clari lambda", "clari cloud function", "clari scheduled export".
+allowed-tools: Read, Write, Edit, Bash(gcloud:*), Bash(aws:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Deploy Integration
 
 ## Overview
-Deploy Clari-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Clari API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Clari secrets to Vercel
-vercel secrets add clari_api_key sk_live_***
-vercel secrets add clari_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "CLARI_API_KEY": "@clari_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-clari-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Clari secrets
-fly secrets set CLARI_API_KEY=sk_live_***
-fly secrets set CLARI_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="clari-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=CLARI_API_KEY=clari-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/clari.ts
-interface ClariConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getClariConfig(): ClariConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CLARI_API_KEY!,
-    environment: env as ClariConfig['environment'],
-    webhookSecret: process.env.CLARI_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const clariStatus = await checkClariConnection();
-
-  return Response.json({
-    status: clariStatus ? 'healthy' : 'degraded',
-    services: {
-      clari: clariStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+Deploy Clari export pipelines to production environments: Airflow DAGs, AWS Lambda, or Google Cloud Functions for scheduled, serverless execution.
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Airflow DAG
 
-### Step 2: Configure Secrets
-Store Clari API keys securely using the platform's secrets management.
+```python
+# dags/clari_export_dag.py
+from airflow import DAG
+from airflow.operators.python import PythonOperator
+from airflow.models import Variable
+from datetime import datetime, timedelta
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Clari integration.
+def export_clari_forecast(**context):
+    from clari_client import ClariClient, ClariConfig
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm Clari connectivity.
+    client = ClariClient(ClariConfig(
+        api_key=Variable.get("clari_api_key"),
+    ))
 
-## Output
-- Application deployed to production
-- Clari secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+    period = context["params"].get("period", "2026_Q1")
+    data = client.export_and_download("company_forecast", period)
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+    entries = data.get("entries", [])
+    context["ti"].xcom_push(key="entry_count", value=len(entries))
+    # Load to warehouse here
 
-## Examples
+dag = DAG(
+    "clari_daily_export",
+    schedule_interval="0 6 * * *",
+    start_date=datetime(2026, 1, 1),
+    catchup=False,
+    default_args={"retries": 2, "retry_delay": timedelta(minutes=5)},
+)
 
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add clari_api_key "$CLARI_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CLARI_API_KEY="$CLARI_API_KEY"
-    fly deploy
-    ;;
-esac
+export_task = PythonOperator(
+    task_id="export_forecast",
+    python_callable=export_clari_forecast,
+    dag=dag,
+)
 ```
 
+### AWS Lambda
+
+```python
+# lambda_handler.py
+import json
+import boto3
+from clari_client import ClariClient, ClariConfig
+
+def handler(event, context):
+    ssm = boto3.client("ssm")
+    api_key = ssm.get_parameter(
+        Name="/clari/api-key", WithDecryption=True
+    )["Parameter"]["Value"]
+
+    client = ClariClient(ClariConfig(api_key=api_key))
+    data = client.export_and_download(
+        event.get("forecast_name", "company_forecast"),
+        event.get("period", "2026_Q1"),
+    )
+
+    return {
+        "statusCode": 200,
+        "body": json.dumps({"entries": len(data.get("entries", []))}),
+    }
+```
+
+### Google Cloud Function
+
+```python
+# main.py
+import functions_framework
+from google.cloud import secretmanager
+from clari_client import ClariClient, ClariConfig
+
+@functions_framework.http
+def clari_export(request):
+    sm = secretmanager.SecretManagerServiceClient()
+    secret = sm.access_secret_version(name="projects/my-proj/secrets/clari-api-key/versions/latest")
+    api_key = secret.payload.data.decode()
+
+    client = ClariClient(ClariConfig(api_key=api_key))
+    data = client.export_and_download("company_forecast", "2026_Q1")
+
+    return {"entries": len(data.get("entries", []))}
+```
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Lambda timeout | Export takes > 15min | Use Step Functions for long jobs |
+| Secret not found | Wrong parameter path | Verify SSM/Secret Manager path |
+| Airflow task fails | Rate limited | Add retries with backoff |
+
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Clari Deploy Guide](https://docs.clari.com/deploy)
+
+- [Airflow Documentation](https://airflow.apache.org/docs/)
+- [AWS Lambda](https://docs.aws.amazon.com/lambda/)
 
 ## Next Steps
-For webhook handling, see `clari-webhooks-events`.
+
+For webhook setup, see `clari-webhooks-events`.

@@ -1,240 +1,133 @@
 ---
 name: clari-reference-architecture
 description: |
-  Implement Clari reference architecture with best-practice project layout.
-  Use when designing new Clari integrations, reviewing project structure,
-  or establishing architecture standards for Clari applications.
-  Trigger with phrases like "clari architecture", "clari best practices",
-  "clari project structure", "how to organize clari", "clari layout".
-allowed-tools: Read, Grep
+  Reference architecture for Clari revenue intelligence integrations.
+  Use when designing a forecast data platform, planning Clari integration
+  architecture, or establishing team patterns for revenue analytics.
+  Trigger with phrases like "clari architecture", "clari data platform",
+  "clari integration design", "clari best practices".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Clari integrations.
 
-## Prerequisites
-- Understanding of layered architecture
-- Clari SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+Production architecture for Clari revenue intelligence integrations: export pipeline design, data warehouse schema, analytics layer, and alerting.
+
+## Architecture Diagram
+
+```
+┌──────────────┐     ┌─────────────────┐     ┌──────────────────┐
+│  Clari App   │     │  Clari Export    │     │  Data Warehouse  │
+│  (SaaS)      │────▶│  API (v4)       │────▶│  (Snowflake/BQ)  │
+└──────────────┘     └─────────────────┘     └────────┬─────────┘
+                                                       │
+                     ┌─────────────────┐     ┌────────▼─────────┐
+                     │  Change         │     │  Analytics /     │
+                     │  Detection      │────▶│  Dashboard       │
+                     └─────────────────┘     │  (Looker/Metabase)│
+                            │                └──────────────────┘
+                     ┌──────▼──────────┐
+                     │  Alerts         │
+                     │  (Slack/Email)  │
+                     └─────────────────┘
+```
 
 ## Project Structure
 
 ```
-my-clari-project/
+clari-data-platform/
 ├── src/
-│   ├── clari/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── clari/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── clari/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── clari/
-│           └── sync.ts         # Background sync job
+│   ├── clari_client.py         # API client wrapper
+│   ├── export_pipeline.py      # ETL pipeline
+│   ├── change_detector.py      # Forecast change tracking
+│   ├── models.py               # Data models
+│   └── config.py               # Environment config
+├── dags/
+│   └── clari_export_dag.py     # Airflow DAG
+├── sql/
+│   ├── schema.sql              # Warehouse table definitions
+│   ├── merge.sql               # Upsert logic
+│   └── analytics/
+│       ├── forecast_accuracy.sql
+│       ├── pipeline_coverage.sql
+│       └── rep_performance.sql
 ├── tests/
-│   ├── unit/
-│   │   └── clari/
-│   └── integration/
-│       └── clari/
-├── config/
-│   ├── clari.development.json
-│   ├── clari.staging.json
-│   └── clari.production.json
-└── docs/
-    └── clari/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── fixtures/               # Sample API responses
+│   ├── test_pipeline.py
+│   └── test_change_detector.py
+├── scripts/
+│   ├── run_export.sh
+│   └── validate_schema.py
+└── monitoring/
+    ├── alerts.yaml             # Alert rules
+    └── dashboard.json          # Grafana/Looker config
 ```
 
-## Layer Architecture
+## Data Warehouse Schema
 
-```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Clari Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
+```sql
+-- Core tables
+CREATE TABLE clari_forecasts (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    owner_name VARCHAR NOT NULL,
+    owner_email VARCHAR NOT NULL,
+    forecast_amount DECIMAL(15,2),
+    quota_amount DECIMAL(15,2),
+    crm_total DECIMAL(15,2),
+    crm_closed DECIMAL(15,2),
+    adjustment_amount DECIMAL(15,2),
+    time_period VARCHAR NOT NULL,
+    forecast_name VARCHAR NOT NULL,
+    exported_at TIMESTAMP NOT NULL,
+    PRIMARY KEY (owner_email, time_period, forecast_name, exported_at)
+);
 
-## Key Components
+-- Change tracking
+CREATE TABLE clari_forecast_changes (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    owner_email VARCHAR NOT NULL,
+    time_period VARCHAR NOT NULL,
+    previous_amount DECIMAL(15,2),
+    current_amount DECIMAL(15,2),
+    change_pct DECIMAL(5,2),
+    detected_at TIMESTAMP NOT NULL
+);
 
-### Step 1: Client Wrapper
-```typescript
-// src/clari/client.ts
-export class ClariService {
-  private client: ClariClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: ClariConfig) {
-    this.client = new ClariClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('clari');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/clari/errors.ts
-export class ClariServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'ClariServiceError';
-  }
-}
-
-export function wrapClariError(error: unknown): ClariServiceError {
-  // Transform SDK errors to application errors
-}
+-- Analytics views
+CREATE VIEW v_forecast_accuracy AS
+SELECT
+    time_period,
+    owner_name,
+    forecast_amount,
+    crm_closed AS actual_closed,
+    ROUND((1 - ABS(forecast_amount - crm_closed) / NULLIF(forecast_amount, 0)) * 100, 1) AS accuracy_pct
+FROM clari_forecasts
+WHERE exported_at = (SELECT MAX(exported_at) FROM clari_forecasts f2 WHERE f2.time_period = clari_forecasts.time_period);
 ```
 
-### Step 3: Health Check
-```typescript
-// src/clari/health.ts
-export async function checkClariHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await clariClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
+## Key Design Decisions
 
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Clari    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Clari    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/clari.ts
-export interface ClariConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadClariConfig(): ClariConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./clari.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Clari operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Clari connectivity.
-
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Clari types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/clari/{handlers} src/services/clari src/api/clari
-touch src/clari/{client,config,types,errors}.ts
-touch src/services/clari/{index,sync,cache}.ts
-```
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Export frequency | Daily | Balances freshness vs API load |
+| Data format | JSON export | Structured, easy to parse |
+| Pipeline orchestration | Airflow | Retry, monitoring, DAG visualization |
+| Change detection | Snapshot comparison | Clari has no real-time webhooks |
+| Warehouse | Snowflake | SQL analytics, dbt compatibility |
 
 ## Resources
-- [Clari SDK Documentation](https://docs.clari.com/sdk)
-- [Clari Best Practices](https://docs.clari.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `clari-multi-env-setup`.
+- [Clari Developer Portal](https://developer.clari.com)
+- [Clari API Reference](https://developer.clari.com/documentation/external_spec)
+- [Snowflake Documentation](https://docs.snowflake.com)
+
+## Next Steps
+
+This completes the Clari skill pack. Start with `clari-install-auth` for new integrations.

@@ -1,246 +1,64 @@
 ---
 name: coreweave-migration-deep-dive
 description: |
-  Execute CoreWeave major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from CoreWeave, performing major version upgrades,
-  or re-platforming existing integrations to CoreWeave.
-  Trigger with phrases like "migrate coreweave", "coreweave migration",
-  "switch to coreweave", "coreweave replatform", "coreweave upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Migrate ML workloads from AWS/GCP/Azure to CoreWeave GPU cloud.
+  Use when moving inference services from hyperscaler GPU instances,
+  migrating training pipelines, or evaluating CoreWeave vs cloud GPU costs.
+  Trigger with phrases like "migrate to coreweave", "coreweave migration",
+  "move from aws to coreweave", "coreweave vs aws gpu".
+allowed-tools: Read, Write, Edit, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Migration Deep Dive
 
-## Overview
-Comprehensive guide for migrating to or from CoreWeave, or major version upgrades.
+## Cost Comparison
 
-## Prerequisites
-- Current system documentation
-- CoreWeave SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+| Instance | AWS | CoreWeave | Savings |
+|----------|-----|-----------|---------|
+| 1x A100 80GB | ~$3.60/hr (p4d) | ~$2.21/hr | ~39% |
+| 8x A100 80GB | ~$32/hr (p4d.24xl) | ~$17.70/hr | ~45% |
+| 1x H100 80GB | ~$6.50/hr (p5) | ~$4.76/hr | ~27% |
 
-## Migration Types
+## Migration Steps
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
-
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
+### Phase 1: Containerize
 ```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "coreweave" > coreweave-files.txt
-
-# Count integration points
-wc -l coreweave-files.txt
-
-# Identify dependencies
-npm list | grep coreweave
-pip freeze | grep coreweave
+# If running on bare EC2/GCE, containerize first
+docker build -t inference-server:v1 .
+docker push ghcr.io/myorg/inference-server:v1
 ```
 
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
+### Phase 2: Adapt YAML for CoreWeave
+Key changes from AWS EKS / GKE:
+1. **Node affinity**: Use `gpu.nvidia.com/class` instead of `nvidia.com/gpu.product`
+2. **Storage**: Use CoreWeave storage classes (`shared-ssd-ord1`)
+3. **Networking**: CoreWeave provides flat networking within VPC
 
-async function assessCoreWeaveMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
+### Phase 3: Parallel Deploy
+Run both old and new infrastructure simultaneously, gradually shift traffic.
 
-## Migration Strategy: Strangler Fig Pattern
+### Phase 4: Cut Over
+Decommission old GPU instances after validation period.
 
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  CoreWeave   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
+## Common Gotchas
 
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install CoreWeave SDK
-npm install @coreweave/sdk
-
-# Configure credentials
-cp .env.example .env.coreweave
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@coreweave/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/coreweave.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class CoreWeaveAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const coreweaveData = this.transform(data);
-    return coreweaveClient.create(coreweaveData);
-  }
-
-  private transform(data: CreateInput): CoreWeaveInput {
-    // Map from old format to CoreWeave format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateCoreWeaveData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await coreweaveClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const coreweavePercentage = getFeatureFlag('coreweave_migration_percentage');
-
-  if (Math.random() * 100 < coreweavePercentage) {
-    return new CoreWeaveAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app COREWEAVE_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.coreweave'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateCoreWeaveMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
-## Instructions
-
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new CoreWeave integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to CoreWeave
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateCoreWeaveMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Issue | Solution |
+|-------|----------|
+| Different CUDA drivers | Match container CUDA to CoreWeave node drivers |
+| Storage migration | Use rclone or rsync to move data to CoreWeave PVC |
+| DNS changes | Update ingress/load balancer DNS |
+| IAM differences | CoreWeave uses kubeconfig, not IAM roles |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [CoreWeave Migration Guide](https://docs.coreweave.com/migration)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `coreweave-advanced-troubleshooting`.
+- [CoreWeave Pricing](https://www.coreweave.com/pricing)
+- [CoreWeave Documentation](https://docs.coreweave.com)
+
+## Next Steps
+
+This completes the CoreWeave skill pack. Start with `coreweave-install-auth` for new deployments.

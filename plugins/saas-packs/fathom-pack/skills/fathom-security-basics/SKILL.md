@@ -1,142 +1,48 @@
 ---
 name: fathom-security-basics
 description: |
-  Apply Fathom security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Fathom security configuration.
-  Trigger with phrases like "fathom security", "fathom secrets",
-  "secure fathom", "fathom API key security".
-allowed-tools: Read, Write, Grep
+  Secure Fathom API keys and handle meeting data privacy.
+  Trigger with phrases like "fathom security", "fathom api key safety", "fathom privacy".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, fathom]
+tags: [saas, meeting-intelligence, ai-notes, fathom]
 compatible-with: claude-code
 ---
 
 # Fathom Security Basics
 
-## Overview
-Security best practices for Fathom API keys, tokens, and access control.
+## API Key Management
 
-## Prerequisites
-- Fathom SDK installed
-- Understanding of environment variables
-- Access to Fathom dashboard
+- API keys are per-user and access meetings you recorded OR shared to your team
+- Store in secrets manager, never in code
+- Regenerate if compromised
 
-## Instructions
+## Meeting Data Privacy
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-FATHOM_API_KEY=sk_live_***
-FATHOM_SECRET=***
+- Transcripts contain PII (names, spoken content)
+- Action items may reference confidential business decisions
+- Always redact before logging or analytics
 
-# .gitignore
-.env
-.env.local
-.env.*.local
+```python
+def redact_transcript(segments: list[dict]) -> list[dict]:
+    import re
+    email_pattern = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
+    return [{
+        **seg,
+        "text": email_pattern.sub("[REDACTED_EMAIL]", seg["text"])
+    } for seg in segments]
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Fathom dashboard
-# 2. Update environment variable
-export FATHOM_API_KEY="new_key_here"
+## Security Checklist
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FATHOM_API_KEY}" \
-  https://api.fathom.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FathomClient({
-    apiKey: process.env.FATHOM_READ_KEY,
-  }),
-  writer: new FathomClient({
-    apiKey: process.env.FATHOM_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Fathom analytics
-  await fathomClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'fathom.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
-
-## Resources
-- [Fathom Security Guide](https://docs.fathom.com/security)
-- [Fathom API Scopes](https://docs.fathom.com/scopes)
+- [ ] API key in secrets manager
+- [ ] Meeting data encrypted at rest
+- [ ] PII redacted in non-production environments
+- [ ] Webhook endpoints use HTTPS
+- [ ] Access logs track API key usage
 
 ## Next Steps
-For production deployment, see `fathom-prod-checklist`.
+
+For production readiness, see `fathom-prod-checklist`.

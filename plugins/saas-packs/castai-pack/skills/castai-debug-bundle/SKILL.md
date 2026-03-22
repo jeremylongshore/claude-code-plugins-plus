@@ -1,113 +1,125 @@
 ---
 name: castai-debug-bundle
 description: |
-  Collect Cast AI debug evidence for support tickets and troubleshooting.
-  Use when encountering persistent issues, preparing support tickets,
-  or collecting diagnostic information for Cast AI problems.
-  Trigger with phrases like "castai debug", "castai support bundle",
-  "collect castai logs", "castai diagnostic".
-allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
+  Collect CAST AI diagnostic bundle for support tickets and troubleshooting.
+  Use when preparing a support case, collecting agent logs,
+  or building a diagnostic snapshot of cluster state.
+  Trigger with phrases like "cast ai debug", "cast ai support bundle",
+  "collect cast ai diagnostics", "cast ai logs".
+allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Bash(tar:*), Bash(helm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, kubernetes, castai]
+tags: [saas, kubernetes, cost-optimization, castai]
 compatible-with: claude-code
 ---
 
-# Cast AI Debug Bundle
+# CAST AI Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Cast AI support tickets.
+
+Collect all CAST AI component logs, cluster state, and configuration into a single archive for troubleshooting or support tickets. The bundle captures agent status, Helm releases, autoscaler policies, node inventory, and recent events.
 
 ## Prerequisites
-- Cast AI SDK installed
-- Access to application logs
-- Permission to collect environment info
+
+- `kubectl` access to the cluster running CAST AI
+- `CASTAI_API_KEY` and `CASTAI_CLUSTER_ID` configured
+- `helm` installed
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Run the Debug Bundle Script
+
 ```bash
 #!/bin/bash
 # castai-debug-bundle.sh
+set -euo pipefail
 
 BUNDLE_DIR="castai-debug-$(date +%Y%m%d-%H%M%S)"
 mkdir -p "$BUNDLE_DIR"
 
-echo "=== Cast AI Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+echo "=== CAST AI Debug Bundle ===" | tee "$BUNDLE_DIR/summary.txt"
+echo "Generated: $(date -u)" | tee -a "$BUNDLE_DIR/summary.txt"
+echo "Cluster ID: ${CASTAI_CLUSTER_ID:-unknown}" | tee -a "$BUNDLE_DIR/summary.txt"
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "CASTAI_API_KEY: ${CASTAI_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
+# 1. Helm releases
+echo "--- Helm Releases ---" >> "$BUNDLE_DIR/summary.txt"
+helm list -n castai-agent -o yaml > "$BUNDLE_DIR/helm-releases.yaml" 2>&1
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @castai/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+# 2. Pod status
+echo "--- Pod Status ---" >> "$BUNDLE_DIR/summary.txt"
+kubectl get pods -n castai-agent -o wide > "$BUNDLE_DIR/pod-status.txt" 2>&1
 
-# Recent logs (redacted)
-grep -i "castai" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+# 3. Agent logs (last 200 lines each)
+for deploy in castai-agent cluster-controller castai-evictor castai-spot-handler castai-workload-autoscaler; do
+  kubectl logs -n castai-agent "deployment/$deploy" --tail=200 \
+    > "$BUNDLE_DIR/${deploy}-logs.txt" 2>&1 || echo "Not found: $deploy" >> "$BUNDLE_DIR/summary.txt"
+done
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+# 4. Cluster events (CAST AI related)
+kubectl get events -n castai-agent --sort-by='.lastTimestamp' \
+  > "$BUNDLE_DIR/events.txt" 2>&1
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.castai.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
+# 5. Node inventory
+kubectl get nodes -o wide > "$BUNDLE_DIR/nodes.txt" 2>&1
 
-### Step 4: Package Bundle
-```bash
+# 6. API cluster status (redact API key from output)
+if [ -n "${CASTAI_API_KEY:-}" ] && [ -n "${CASTAI_CLUSTER_ID:-}" ]; then
+  curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+    "https://api.cast.ai/v1/kubernetes/external-clusters/${CASTAI_CLUSTER_ID}" \
+    | jq '{name, status, agentStatus, providerType, createdAt}' \
+    > "$BUNDLE_DIR/cluster-status.json" 2>&1
+
+  curl -s -H "X-API-Key: ${CASTAI_API_KEY}" \
+    "https://api.cast.ai/v1/kubernetes/clusters/${CASTAI_CLUSTER_ID}/policies" \
+    > "$BUNDLE_DIR/policies.json" 2>&1
+fi
+
+# 7. RBAC check
+kubectl get clusterrole -l app.kubernetes.io/managed-by=castai \
+  > "$BUNDLE_DIR/rbac.txt" 2>&1
+
+# 8. Package bundle
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
+rm -rf "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
-## Output
-- `castai-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
+### Step 2: Review Before Sharing
+
+**Safe to include:**
+- Pod logs (no secrets in CAST AI agent logs)
+- Helm release metadata
+- Node names and instance types
+- Autoscaler policies
+- Cluster events
+
+**Redact before sharing:**
+- API keys (the script never writes them)
+- Custom environment variables
+- Internal hostnames if sensitive
+
+### Step 3: Submit to CAST AI Support
+
+1. Generate bundle: `bash castai-debug-bundle.sh`
+2. Attach `castai-debug-*.tar.gz` to support ticket at support.cast.ai
+3. Include your cluster ID and a description of the issue
 
 ## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
 
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash castai-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Cast AI support portal
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| `kubectl` permission denied | Missing RBAC | Use cluster-admin kubeconfig |
+| Empty log files | Pod not running | Note which components are down |
+| API call fails | Key expired | Bundle still useful with kubectl data |
+| tar fails | Disk full | Clean temp files first |
 
 ## Resources
-- [Cast AI Support](https://docs.castai.com/support)
-- [Cast AI Status](https://status.castai.com)
+
+- [CAST AI Support](https://support.cast.ai)
+- [CAST AI Status](https://status.cast.ai)
+- [Component Troubleshooting](https://docs.cast.ai/docs/casti-ai-components)
 
 ## Next Steps
-For rate limit issues, see `castai-rate-limits`.
+
+For rate limit handling, see `castai-rate-limits`.

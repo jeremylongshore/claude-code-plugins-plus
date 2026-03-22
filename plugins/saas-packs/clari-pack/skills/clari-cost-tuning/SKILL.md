@@ -1,203 +1,92 @@
 ---
 name: clari-cost-tuning
 description: |
-  Optimize Clari costs through tier selection, sampling, and usage monitoring.
-  Use when analyzing Clari billing, reducing API costs,
-  or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "clari cost", "clari billing",
-  "reduce clari costs", "clari pricing", "clari expensive", "clari budget".
-allowed-tools: Read, Grep
+  Optimize Clari API usage and integration costs.
+  Use when reducing API call volume, optimizing export frequency,
+  or evaluating Clari license utilization.
+  Trigger with phrases like "clari cost", "clari api usage",
+  "reduce clari calls", "clari optimization".
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Cost Tuning
 
 ## Overview
-Optimize Clari costs through smart tier selection, sampling, and usage monitoring.
 
-## Prerequisites
-- Access to Clari billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateClariCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class ClariUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Clari budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateClariCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await clariClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => clariClient.get(id)));
-
-// Use batch endpoint (1 call)
-await clariClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new ClariClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Clari dashboard
-# Or use API if available:
-# Check Clari documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM clari_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+Minimize Clari API overhead: reduce export frequency, cache aggressively, export only needed data types, and monitor usage.
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Clari dashboard for usage patterns and costs.
+### Export Only What You Need
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+```python
+# Full export (6 data types) -- more API load
+full_types = ["forecast", "quota", "forecast_updated",
+              "adjustment", "crm_total", "crm_closed"]
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+# Minimal export (2 data types) -- faster and lighter
+minimal_types = ["forecast", "crm_closed"]
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+# Use minimal for dashboards, full for audit/compliance
+```
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+### Optimize Export Frequency
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Use Case | Recommended Frequency |
+|----------|-----------------------|
+| Executive dashboard | Daily |
+| Forecast accuracy tracking | Weekly |
+| Compliance audit | Quarterly |
+| Ad-hoc analysis | On demand |
 
-## Examples
+### Cache to Avoid Redundant Exports
 
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateClariCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```python
+# Cache recent exports (see clari-performance-tuning)
+cache = ExportCache(ttl_hours=8)
+
+def smart_export(client, forecast_name, period):
+    cached = cache.get(forecast_name, period)
+    if cached:
+        print(f"Cache hit for {period}")
+        return cached
+
+    data = client.export_and_download(forecast_name, period)
+    entries = data.get("entries", [])
+    cache.set(forecast_name, period, entries)
+    return entries
+```
+
+### Usage Tracking
+
+```python
+class ClariUsageTracker:
+    def __init__(self):
+        self.api_calls = 0
+        self.exports = 0
+
+    def track_call(self):
+        self.api_calls += 1
+
+    def track_export(self):
+        self.exports += 1
+
+    def report(self) -> dict:
+        return {
+            "api_calls": self.api_calls,
+            "exports": self.exports,
+        }
 ```
 
 ## Resources
-- [Clari Pricing](https://clari.com/pricing)
-- [Clari Billing Dashboard](https://dashboard.clari.com/billing)
+
+- [Clari Pricing](https://www.clari.com/pricing)
 
 ## Next Steps
+
 For architecture patterns, see `clari-reference-architecture`.

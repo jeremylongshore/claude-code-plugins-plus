@@ -1,151 +1,103 @@
 ---
 name: clari-rate-limits
 description: |
-  Implement Clari rate limiting, backoff, and idempotency patterns.
-  Use when handling rate limit errors, implementing retry logic,
-  or optimizing API request throughput for Clari.
-  Trigger with phrases like "clari rate limit", "clari throttling",
-  "clari 429", "clari retry", "clari backoff".
+  Handle Clari API rate limits with backoff and export job scheduling.
+  Use when hitting 429 errors, optimizing export frequency,
+  or scheduling bulk forecast exports.
+  Trigger with phrases like "clari rate limit", "clari 429",
+  "clari throttle", "clari api limits".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, sales, revenue, clari]
+tags: [saas, revenue-intelligence, forecasting, clari]
 compatible-with: claude-code
 ---
 
 # Clari Rate Limits
 
 ## Overview
-Handle Clari rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Clari SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+The Clari API enforces rate limits per API key. Export jobs are asynchronous and queued server-side, so the primary concern is polling frequency and concurrent export requests.
+
+## Rate Limit Behavior
+
+| Aspect | Value |
+|--------|-------|
+| Scope | Per API key |
+| Response on limit | HTTP 429 |
+| Export job queue | Server-managed, async |
+| Recommended polling | 5-10 second intervals |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Exponential Backoff for Export Polling
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+```python
+import time
+import requests
 
-### Step 2: Implement Exponential Backoff with Jitter
+def poll_with_backoff(
+    job_id: str,
+    api_key: str,
+    max_attempts: int = 60,
+    base_delay: float = 5.0,
+    max_delay: float = 60.0,
+) -> dict:
+    for attempt in range(max_attempts):
+        resp = requests.get(
+            f"https://api.clari.com/v4/export/jobs/{job_id}",
+            headers={"apikey": api_key},
+        )
 
-```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+        if resp.status_code == 429:
+            retry_after = int(resp.headers.get("Retry-After", base_delay))
+            time.sleep(retry_after)
+            continue
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+        resp.raise_for_status()
+        status = resp.json()
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+        if status["status"] in ("COMPLETED", "FAILED"):
+            return status
+
+        delay = min(base_delay * (1.5 ** attempt), max_delay)
+        time.sleep(delay)
+
+    raise TimeoutError(f"Job {job_id} did not complete in {max_attempts} attempts")
 ```
 
-### Step 3: Add Idempotency Keys
+### Sequential Export Scheduler
 
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: ClariClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
+```python
+def export_all_periods(
+    client,
+    forecast_name: str,
+    periods: list[str],
+    delay_between: float = 10.0,
+) -> list[dict]:
+    results = []
+    for period in periods:
+        print(f"Exporting {period}...")
+        job = client.export_forecast(forecast_name, period)
+        result = poll_with_backoff(job["jobId"], client.config.api_key)
+        results.append(result)
+        time.sleep(delay_between)  # Avoid hitting rate limits
+    return results
 ```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Detection | Response |
+|----------|-----------|----------|
+| 429 with Retry-After | Check header | Wait exact duration |
+| 429 without header | Status code only | Backoff from 5s |
+| Job queue full | Multiple pending jobs | Wait for completion before new exports |
 
 ## Resources
-- [Clari Rate Limits](https://docs.clari.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Clari API Reference](https://developer.clari.com/documentation/external_spec)
 
 ## Next Steps
+
 For security configuration, see `clari-security-basics`.

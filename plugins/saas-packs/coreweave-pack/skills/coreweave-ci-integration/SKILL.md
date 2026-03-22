@@ -1,126 +1,68 @@
 ---
 name: coreweave-ci-integration
 description: |
-  Configure CoreWeave CI/CD integration with GitHub Actions and testing.
-  Use when setting up automated testing, configuring CI pipelines,
-  or integrating CoreWeave tests into your build process.
-  Trigger with phrases like "coreweave CI", "coreweave GitHub Actions",
-  "coreweave automated tests", "CI coreweave".
+  Integrate CoreWeave deployments into CI/CD pipelines with GitHub Actions.
+  Use when automating container builds, deploying inference services from CI,
+  or validating GPU manifests in pull requests.
+  Trigger with phrases like "coreweave CI", "coreweave github actions",
+  "coreweave pipeline", "automate coreweave deploy".
 allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave CI Integration
 
-## Overview
-Set up CI/CD pipelines for CoreWeave integrations with automated testing.
-
-## Prerequisites
-- GitHub repository with Actions enabled
-- CoreWeave test API key
-- npm/pnpm project configured
-
-## Instructions
-
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/coreweave-integration.yml`:
+## GitHub Actions Workflow
 
 ```yaml
-name: CoreWeave Integration Tests
-
+name: CoreWeave Deploy
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  COREWEAVE_API_KEY: ${{ secrets.COREWEAVE_API_KEY }}
+    paths: ["k8s/**", "Dockerfile"]
 
 jobs:
-  test:
+  build-deploy:
     runs-on: ubuntu-latest
-    env:
-      COREWEAVE_API_KEY: ${{ secrets.COREWEAVE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-      - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+
+      - name: Build and push container
+        run: |
+          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker build -t ghcr.io/${{ github.repository }}/inference:${{ github.sha }} .
+          docker push ghcr.io/${{ github.repository }}/inference:${{ github.sha }}
+
+      - name: Deploy to CoreWeave
+        env:
+          KUBECONFIG_DATA: ${{ secrets.COREWEAVE_KUBECONFIG }}
+        run: |
+          echo "$KUBECONFIG_DATA" | base64 -d > /tmp/kubeconfig
+          export KUBECONFIG=/tmp/kubeconfig
+          kubectl set image deployment/inference \
+            inference=ghcr.io/${{ github.repository }}/inference:${{ github.sha }}
+          kubectl rollout status deployment/inference --timeout=300s
+
+      - name: Validate deployment
+        run: |
+          export KUBECONFIG=/tmp/kubeconfig
+          kubectl get pods -l app=inference
 ```
 
-### Step 2: Configure Secrets
 ```bash
-gh secret set COREWEAVE_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('CoreWeave Integration', () => {
-  it.skipIf(!process.env.COREWEAVE_API_KEY)('should connect', async () => {
-    const client = getCoreWeaveClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      COREWEAVE_API_KEY: ${{ secrets.COREWEAVE_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify CoreWeave production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "coreweave-integration"
+# Store secrets
+gh secret set COREWEAVE_KUBECONFIG --body "$(base64 -w0 ~/.kube/coreweave)"
+gh secret set GHCR_TOKEN --body "$GITHUB_TOKEN"
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [CoreWeave CI Guide](https://docs.coreweave.com/ci)
+
+- [GitHub Actions](https://docs.github.com/en/actions)
 
 ## Next Steps
+
 For deployment patterns, see `coreweave-deploy-integration`.

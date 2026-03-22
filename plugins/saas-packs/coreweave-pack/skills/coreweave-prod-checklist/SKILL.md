@@ -1,121 +1,55 @@
 ---
 name: coreweave-prod-checklist
 description: |
-  Execute CoreWeave production deployment checklist and rollback procedures.
-  Use when deploying CoreWeave integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "coreweave production", "deploy coreweave",
-  "coreweave go-live", "coreweave launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+  Production readiness checklist for CoreWeave GPU workloads.
+  Use when launching inference services, preparing GPU training for production,
+  or validating deployment configurations.
+  Trigger with phrases like "coreweave production", "coreweave go-live",
+  "coreweave checklist", "coreweave launch".
+allowed-tools: Read, Bash(kubectl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, cloud, gpu, coreweave]
+tags: [saas, gpu-cloud, kubernetes, inference, coreweave]
 compatible-with: claude-code
 ---
 
 # CoreWeave Production Checklist
 
-## Overview
-Complete checklist for deploying CoreWeave integrations to production.
+## Inference Services
+- [ ] GPU type and count validated for model size
+- [ ] Autoscaling configured (KServe or HPA)
+- [ ] Health and readiness probes set
+- [ ] Resource requests AND limits specified
+- [ ] Node affinity targeting correct GPU class
+- [ ] `minReplicas >= 1` for production (no cold starts)
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+## Storage
+- [ ] Model weights in PVC (not downloaded at startup)
+- [ ] Checkpoints saved to persistent storage
+- [ ] Storage class appropriate (SSD for inference, HDD for archival)
 
-## Instructions
+## Security
+- [ ] Secrets for model tokens and registry access
+- [ ] Network policies applied
+- [ ] Container images from trusted registries
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+## Monitoring
+- [ ] GPU utilization metrics collected
+- [ ] Inference latency and throughput tracked
+- [ ] Alert on pod restarts and OOM events
+- [ ] Log aggregation configured
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all CoreWeave error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes CoreWeave connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
+## Rollback
 ```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.coreweave.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/coreweave-integration app=image:new --record
-kubectl rollout pause deployment/coreweave-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/coreweave-integration
-kubectl rollout pause deployment/coreweave-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/coreweave-integration
-kubectl rollout status deployment/coreweave-integration
-```
-
-## Output
-- Deployed CoreWeave integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; coreweave: any }> {
-  const start = Date.now();
-  try {
-    await coreweaveClient.ping();
-    return { status: 'healthy', coreweave: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', coreweave: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/coreweave-integration
-kubectl rollout status deployment/coreweave-integration
+kubectl rollout undo deployment/my-inference
+kubectl rollout status deployment/my-inference
 ```
 
 ## Resources
-- [CoreWeave Status](https://status.coreweave.com)
-- [CoreWeave Support](https://docs.coreweave.com/support)
+
+- [CoreWeave CKS](https://docs.coreweave.com/docs/products/cks)
 
 ## Next Steps
-For version upgrades, see `coreweave-upgrade-migration`.
+
+For upgrades, see `coreweave-upgrade-migration`.
