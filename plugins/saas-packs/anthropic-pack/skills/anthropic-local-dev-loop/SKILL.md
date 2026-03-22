@@ -18,6 +18,10 @@ tags: [saas, anthropic, claude, development, testing]
 ## Overview
 Set up a fast, cheap development workflow for building with Claude.
 
+## Prerequisites
+- Completed `anthropic-local-dev-install-auth` setup
+- Valid API credentials configured
+
 ## Instructions
 
 ### Step 1: Project Setup
@@ -107,12 +111,19 @@ ANTHROPIC_API_KEY=sk-ant-... ipython
 >>> r.content[0].text
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 | Issue | Fix |
 |-------|-----|
 | `ANTHROPIC_API_KEY` not loading | Make sure `dotenv/config` is imported first |
 | Slow iteration | Use Haiku, reduce max_tokens |
 | High dev costs | Log responses, use mocks for unit tests |
+
+## Examples
+See code blocks above for complete examples.
 
 ## Resources
 - [Quickstart Guide](https://docs.anthropic.com/en/docs/initial-setup)

@@ -26,6 +26,10 @@ Before going live with a Claude-powered app, verify every item below.
 - [ ] Input validation: max length, content filtering
 - [ ] System prompt includes injection guardrails
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 - [ ] All Anthropic API calls wrapped in try/catch
 - [ ] `RateLimitError` (429) → backoff and retry
@@ -72,6 +76,9 @@ Before going live with a Claude-powered app, verify every item below.
 - [ ] Parallel requests where possible (`Promise.all`)
 - [ ] Client-side streaming UI implemented
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [API Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
 - [Error Handling](https://docs.anthropic.com/en/api/errors)
@@ -80,3 +87,10 @@ Before going live with a Claude-powered app, verify every item below.
 
 ## Next Steps
 See `anthropic-observability` for monitoring setup.
+
+## Prerequisites
+- Completed `anthropic-prod-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

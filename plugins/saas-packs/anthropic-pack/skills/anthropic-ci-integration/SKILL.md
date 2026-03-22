@@ -116,9 +116,28 @@ describe('Claude API Integration', () => {
 | Run integration tests only on main | `if: github.ref == 'refs/heads/main'` |
 | Budget cap | Set spending limits in Anthropic console |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [GitHub Actions Secrets](https://docs.github.com/en/actions/security-for-github-actions/using-secrets-in-github-actions)
 - [Anthropic SDK](https://github.com/anthropics/anthropic-sdk-typescript)
 
 ## Next Steps
 See `anthropic-deploy-integration` for deploying to production.
+
+## Prerequisites
+- Completed `anthropic-ci-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

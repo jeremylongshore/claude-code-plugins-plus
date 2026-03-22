@@ -20,6 +20,8 @@ Every Anthropic API error includes a `type` field and HTTP status code. Here are
 
 ## Error Reference
 
+## Instructions
+
 ### `authentication_error` (401)
 ```json
 {"type":"error","error":{"type":"authentication_error","message":"invalid x-api-key"}}
@@ -172,6 +174,18 @@ curl -s https://api.anthropic.com/v1/messages \
 # (No API for this — check console.anthropic.com/settings/limits)
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Error Types Reference](https://docs.anthropic.com/en/api/errors)
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
@@ -179,3 +193,7 @@ curl -s https://api.anthropic.com/v1/messages \
 
 ## Next Steps
 For deeper debugging, see `anthropic-debug-bundle`.
+
+## Prerequisites
+- Completed `anthropic-common-install-auth` setup
+- Valid API credentials configured

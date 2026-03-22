@@ -20,6 +20,8 @@ Production patterns for the `@anthropic-ai/sdk` (TypeScript) and `anthropic` (Py
 
 ## Client Configuration
 
+## Instructions
+
 ### TypeScript
 ```typescript
 import Anthropic from '@anthropic-ai/sdk';
@@ -58,6 +60,10 @@ client = anthropic.Anthropic(
     default_headers={"anthropic-beta": "prompt-caching-2024-07-31"},
 )
 ```
+
+## Output
+- Successful operation confirmed
+- Results logged to console
 
 ## Error Handling
 ```typescript
@@ -199,6 +205,9 @@ while (status.processing_status !== 'ended') {
 }
 ```
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [TypeScript SDK](https://github.com/anthropics/anthropic-sdk-typescript)
 - [Python SDK](https://github.com/anthropics/anthropic-sdk-python)
@@ -207,3 +216,7 @@ while (status.processing_status !== 'ended') {
 
 ## Next Steps
 See `anthropic-rate-limits` for throughput optimization.
+
+## Prerequisites
+- Completed `anthropic-sdk-install-auth` setup
+- Valid API credentials configured

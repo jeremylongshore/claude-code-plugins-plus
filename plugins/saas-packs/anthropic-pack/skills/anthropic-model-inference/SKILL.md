@@ -126,6 +126,9 @@ print(f"\nTokens: {stream.get_final_message().usage}")
 | `stop_sequences` | string[] | Optional. Custom stop strings |
 | `stream` | boolean | Optional. Enable SSE streaming |
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Messages API](https://docs.anthropic.com/en/api/messages)
 - [Streaming](https://docs.anthropic.com/en/api/messages-streaming)

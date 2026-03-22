@@ -53,6 +53,10 @@ tags: [category, topic]
 ## Overview
 What this skill does and when to use it.
 
+## Prerequisites
+- Completed `anthropic-reference-install-auth` setup
+- Valid API credentials configured
+
 ## Instructions
 Step-by-step instructions Claude follows when this skill activates.
 
@@ -164,6 +168,9 @@ await server.connect(transport);
 | `${CLAUDE_PLUGIN_ROOT}` | Hooks | Plugin root directory |
 | `${CLAUDE_PLUGIN_DATA}` | Persistent state | Survives updates |
 | `$ARGUMENTS` | Commands | User-provided args |
+
+## Examples
+See code blocks above for complete examples.
 
 ## Resources
 - [Plugin Docs](https://docs.anthropic.com/en/docs/claude-code/plugins)

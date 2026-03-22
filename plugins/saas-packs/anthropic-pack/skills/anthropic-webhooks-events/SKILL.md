@@ -17,6 +17,10 @@ tags: [saas, anthropic, claude, batches, async]
 ## Overview
 Anthropic doesn't have traditional webhooks. Instead, use **Message Batches** for async bulk processing — up to 10,000 requests per batch at 50% off, with a 24-hour processing SLA.
 
+## Prerequisites
+- Completed `anthropic-webhooks-install-auth` setup
+- Valid API credentials configured
+
 ## Instructions
 
 ### Step 1: Create a Batch
@@ -114,6 +118,10 @@ for result in client.messages.batches.results(batch.id):
 | Pricing | 50% of standard per-token pricing |
 | Result availability | 29 days after creation |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 | Result Type | Meaning | Action |
 |-------------|---------|--------|
@@ -121,6 +129,9 @@ for result in client.messages.batches.results(batch.id):
 | `errored` | API error | Check `result.error` — retry failed items in new batch |
 | `expired` | Not processed within 24h | Resubmit in new batch |
 | `canceled` | Batch was canceled | Resubmit if needed |
+
+## Examples
+See code blocks above for complete examples.
 
 ## Resources
 - [Message Batches API](https://docs.anthropic.com/en/api/creating-message-batches)

@@ -14,6 +14,10 @@ tags: [saas, anthropic, claude, migration, upgrade]
 
 # Anthropic Upgrade & Migration
 
+## Overview
+Core functionality and patterns for anthropic-upgrade-migration.
+
+
 ## SDK Upgrade
 ```bash
 # Check current version
@@ -61,6 +65,18 @@ const message = await client.messages.create({
 | Higher/lower token usage | Re-evaluate max_tokens and cost estimates |
 | Deprecated SDK method | Check SDK changelog for replacement |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [SDK Releases (TS)](https://github.com/anthropics/anthropic-sdk-typescript/releases)
 - [SDK Releases (Python)](https://github.com/anthropics/anthropic-sdk-python/releases)
@@ -68,3 +84,10 @@ const message = await client.messages.create({
 
 ## Next Steps
 See `anthropic-known-pitfalls` for common mistakes to avoid.
+
+## Prerequisites
+- Completed `anthropic-upgrade-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

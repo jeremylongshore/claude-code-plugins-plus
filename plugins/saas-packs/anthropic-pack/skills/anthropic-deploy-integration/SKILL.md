@@ -60,6 +60,8 @@ export async function POST(req: Request) {
 }
 ```
 
+## Instructions
+
 ### Deploy to Vercel
 ```bash
 # Add secret
@@ -124,6 +126,10 @@ export async function GET() {
 | `ANTHROPIC_MODEL` | No | Default model ID (override per request) |
 | `ANTHROPIC_MAX_TOKENS` | No | Default max tokens |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
@@ -132,9 +138,16 @@ export async function GET() {
 | 529 in production | API overloaded | SDK retries automatically. Add fallback model. |
 | CORS errors | Missing headers | Add CORS headers to API route |
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Anthropic API Docs](https://docs.anthropic.com/en/api/getting-started)
 - [Vercel AI SDK](https://sdk.vercel.ai/docs) (optional higher-level wrapper)
 
 ## Next Steps
 See `anthropic-observability` for monitoring your Claude calls in production.
+
+## Prerequisites
+- Completed `anthropic-deploy-install-auth` setup
+- Valid API credentials configured

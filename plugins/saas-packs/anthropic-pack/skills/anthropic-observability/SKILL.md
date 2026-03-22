@@ -83,9 +83,28 @@ function estimateCost(model: string, usage: Anthropic.Usage): number {
 - **Spending limits**: console.anthropic.com → Settings → Limits
 - **API logs**: Not available via API — use your own logging
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Usage Dashboard](https://console.anthropic.com/settings/usage)
 - [Rate Limits](https://docs.anthropic.com/en/api/rate-limits)
 
 ## Next Steps
 See `anthropic-incident-runbook` for when things go wrong.
+
+## Prerequisites
+- Completed `anthropic-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

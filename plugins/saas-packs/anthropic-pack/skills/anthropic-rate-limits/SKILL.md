@@ -108,6 +108,18 @@ except anthropic.RateLimitError as e:
     time.sleep(retry_after)
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Rate Limits Docs](https://docs.anthropic.com/en/api/rate-limits)
 - [Message Batches](https://docs.anthropic.com/en/api/creating-message-batches) — no rate limits
@@ -115,3 +127,10 @@ except anthropic.RateLimitError as e:
 
 ## Next Steps
 See `anthropic-cost-tuning` for cost optimization strategies.
+
+## Prerequisites
+- Completed `anthropic-rate-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

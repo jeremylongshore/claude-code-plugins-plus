@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, safety, guardrails]
 
 # Anthropic Policy & Guardrails
 
+## Overview
+Core functionality and patterns for anthropic-policy-guardrails.
+
+
 ## System Prompt Guardrails
 ```typescript
 const SYSTEM_PROMPT = `You are a customer support agent for Acme Corp.
@@ -89,9 +93,24 @@ You **don't** need to replicate this — focus your guardrails on application-sp
 - Don't use Claude for: weapons, CSAM, deception at scale, surveillance
 - Monitor for policy violations in your application's logs
 
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Anthropic AUP](https://www.anthropic.com/policies/aup)
 - [Safety Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
 
 ## Next Steps
 See `anthropic-architecture-variants` for different Claude app patterns.
+
+## Prerequisites
+- Completed `anthropic-policy-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

@@ -14,6 +14,10 @@ tags: [saas, anthropic, claude, pitfalls, best-practices]
 
 # Anthropic Known Pitfalls
 
+## Overview
+Core functionality and patterns for anthropic-known-pitfalls.
+
+
 ## 1. Forgetting `max_tokens`
 Unlike OpenAI, `max_tokens` is **required**. Omitting it returns a 400 error.
 ```typescript
@@ -105,6 +109,25 @@ Don't include user PII in prompts unless the task requires it. Redact before sen
 | No streaming | Always stream for UI |
 | Unnecessary PII | Redact before sending |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [API Reference](https://docs.anthropic.com/en/api/messages)
 - [Best Practices](https://docs.anthropic.com/en/docs/build-with-claude)
+
+## Prerequisites
+- Completed `anthropic-known-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

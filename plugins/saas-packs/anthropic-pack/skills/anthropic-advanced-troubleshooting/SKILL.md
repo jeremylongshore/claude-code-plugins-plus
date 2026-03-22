@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, debugging, advanced]
 
 # Anthropic Advanced Troubleshooting
 
+## Overview
+Core functionality and patterns for anthropic-advanced-troubleshooting.
+
+
 ## Inconsistent Outputs
 **Symptom:** Same prompt gives different answers each time.
 **Cause:** `temperature` defaults to 1.0 (maximum randomness).
@@ -99,6 +103,18 @@ if (message.stop_reason === 'max_tokens') {
 }
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Error Types](https://docs.anthropic.com/en/api/errors)
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
@@ -106,3 +122,10 @@ if (message.stop_reason === 'max_tokens') {
 
 ## Next Steps
 See `anthropic-debug-bundle` for collecting support evidence.
+
+## Prerequisites
+- Completed `anthropic-advanced-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

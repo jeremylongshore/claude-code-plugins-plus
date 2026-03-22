@@ -20,6 +20,8 @@ Securing a Claude integration means protecting your API key, validating inputs, 
 
 ## API Key Security
 
+## Instructions
+
 ### Never Expose Keys Client-Side
 ```typescript
 // BAD — key in browser JavaScript
@@ -113,6 +115,18 @@ async function handleChat(userId: string, message: string) {
 - [ ] System prompt with injection guardrails
 - [ ] No unnecessary PII in prompts
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [API Key Management](https://console.anthropic.com/settings/keys)
 - [Security Best Practices](https://docs.anthropic.com/en/docs/build-with-claude/security)
@@ -120,3 +134,7 @@ async function handleChat(userId: string, message: string) {
 
 ## Next Steps
 See `anthropic-prod-checklist` for full production readiness.
+
+## Prerequisites
+- Completed `anthropic-security-install-auth` setup
+- Valid API credentials configured

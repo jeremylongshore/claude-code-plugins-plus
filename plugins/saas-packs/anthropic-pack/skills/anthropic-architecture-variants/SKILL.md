@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, architecture, rag, agents]
 
 # Claude Architecture Variants
 
+## Overview
+Core functionality and patterns for anthropic-architecture-variants.
+
+
 ## 1. Chatbot (Stateless API Wrapper)
 Simplest pattern — proxy Claude with a system prompt.
 ```typescript
@@ -132,9 +136,28 @@ const evaluation = await client.messages.create({
 | Pipeline | High (async batch) | Low (50% off) | Simple |
 | Evaluation | Medium | Varies | Simple |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
 - [Prompt Engineering](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering)
 
 ## Next Steps
 See `anthropic-known-pitfalls` for common mistakes.
+
+## Prerequisites
+- Completed `anthropic-architecture-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

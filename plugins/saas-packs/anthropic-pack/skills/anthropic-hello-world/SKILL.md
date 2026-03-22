@@ -104,6 +104,9 @@ print(message.content[0].text)
 | `claude-sonnet-4-20250514` | Balanced quality + speed | 200K | $3 / $15 |
 | `claude-haiku-4-5-20251001` | Fast, cheap tasks | 200K | $0.80 / $4 |
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Messages API Reference](https://docs.anthropic.com/en/api/messages)
 - [Model Overview](https://docs.anthropic.com/en/docs/about-claude/models)

@@ -52,6 +52,18 @@ Set in Anthropic Console → Settings → Limits:
 - [ ] Offboarding process: revoke keys when team members leave
 - [ ] Audit log review (Console → Logs)
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Console Dashboard](https://console.anthropic.com)
 - [Organization Settings](https://console.anthropic.com/settings)
@@ -59,3 +71,10 @@ Set in Anthropic Console → Settings → Limits:
 
 ## Next Steps
 See `anthropic-migration-deep-dive` for migrating from other LLM providers.
+
+## Prerequisites
+- Completed `anthropic-enterprise-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

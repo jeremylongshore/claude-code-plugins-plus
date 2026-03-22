@@ -28,6 +28,8 @@ Anthropic charges per token. Input tokens, output tokens, and cached tokens each
 
 ## Cost Reduction Strategies
 
+## Instructions
+
 ### 1. Right-Size Your Model
 ```typescript
 // DON'T use Opus for everything
@@ -119,6 +121,18 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 | Haiku + Batches | $2.00 | $4.00 | $6.00 |
 | Haiku + Batches + Caching | ~$1.00 | $4.00 | ~$5.00 |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Pricing](https://www.anthropic.com/pricing)
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
@@ -127,3 +141,7 @@ Processing 10,000 documents (avg 500 tokens each, 200 token response):
 
 ## Next Steps
 See `anthropic-performance-tuning` for latency optimization.
+
+## Prerequisites
+- Completed `anthropic-cost-install-auth` setup
+- Valid API credentials configured

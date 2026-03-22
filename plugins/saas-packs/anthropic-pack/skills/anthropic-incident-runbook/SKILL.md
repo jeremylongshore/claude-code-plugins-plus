@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, incident, runbook]
 
 # Anthropic Incident Runbook
 
+## Overview
+Core functionality and patterns for anthropic-incident-runbook.
+
+
 ## Step 1: Confirm the Issue
 ```bash
 # Check Anthropic status
@@ -70,9 +74,28 @@ async function callWithFallback(params: Anthropic.MessageCreateParams) {
 - Calculate impact (failed requests, user impact)
 - Verify all systems recovered
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Anthropic Status](https://status.anthropic.com)
 - [Status API](https://status.anthropic.com/api)
 
 ## Next Steps
 See `anthropic-reliability-patterns` for building resilient integrations.
+
+## Prerequisites
+- Completed `anthropic-incident-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

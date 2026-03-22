@@ -77,8 +77,27 @@ ANTHROPIC_API_KEY=sk-ant-prod-...
 | Production | Sonnet (default) | Balanced cost/quality |
 | Production (complex) | Opus | Complex reasoning tasks |
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [API Key Management](https://console.anthropic.com/settings/keys)
 
 ## Next Steps
 See `anthropic-observability` for monitoring across environments.
+
+## Prerequisites
+- Completed `anthropic-multi-env-install-auth` setup
+- Valid API credentials configured
+
+## Instructions
+Follow the steps in the sections above.

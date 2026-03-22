@@ -18,6 +18,10 @@ tags: [saas, anthropic, claude, debugging]
 ## Overview
 When you need to file a support ticket or debug a persistent issue, collect these items.
 
+## Prerequisites
+- Completed `anthropic-debug-install-auth` setup
+- Valid API credentials configured
+
 ## Instructions
 
 ### Step 1: Get the Request ID
@@ -102,6 +106,18 @@ except anthropic.APIStatusError as e:
     print(f"Status: {e.status_code}")
     print(f"Error: {e.message}")
 ```
+
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
 
 ## Resources
 - [Anthropic Status](https://status.anthropic.com)

@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, data, privacy, context]
 
 # Anthropic Data Handling
 
+## Overview
+Core functionality and patterns for anthropic-data-handling.
+
+
 ## Context Window Management
 Claude models have a 200K token context window. Managing it efficiently is critical.
 
@@ -36,6 +40,8 @@ if (count.input_tokens > inputBudget) {
   messages = trimToFit(messages, inputBudget);
 }
 ```
+
+## Instructions
 
 ### Conversation Trimming
 ```typescript
@@ -68,6 +74,18 @@ function redactPII(text: string): string {
 - **Zero retention**: Available on Enterprise plans
 - **Your responsibility**: Don't store Claude responses containing user PII longer than needed
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Anthropic Privacy Policy](https://www.anthropic.com/policies/privacy)
 - [Token Counting](https://docs.anthropic.com/en/api/counting-tokens)
@@ -75,3 +93,7 @@ function redactPII(text: string): string {
 
 ## Next Steps
 See `anthropic-enterprise-rbac` for organization and access management.
+
+## Prerequisites
+- Completed `anthropic-data-install-auth` setup
+- Valid API credentials configured

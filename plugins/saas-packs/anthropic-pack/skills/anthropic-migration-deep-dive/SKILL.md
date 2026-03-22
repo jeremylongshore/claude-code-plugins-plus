@@ -15,6 +15,10 @@ tags: [saas, anthropic, claude, migration, openai]
 
 # Migrate from OpenAI to Anthropic
 
+## Overview
+Core functionality and patterns for anthropic-migration-deep-dive.
+
+
 ## API Mapping
 
 | OpenAI | Anthropic | Notes |
@@ -28,6 +32,8 @@ tags: [saas, anthropic, claude, migration, openai]
 | `openai.embeddings.create()` | N/A — use Voyage or Cohere | No embeddings API |
 
 ## SDK Swap
+
+## Instructions
 
 ### Before (OpenAI)
 ```typescript
@@ -88,9 +94,25 @@ grep -rn "choices\[0\]" --include="*.ts" .
 grep -rn "message.content" --include="*.ts" .  # May need updating
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| API Error | Check error type and status code | See `anthropic-common-errors` |
+
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Anthropic Messages API](https://docs.anthropic.com/en/api/messages)
 - [Migration Guide](https://docs.anthropic.com/en/docs/about-claude/models)
 
 ## Next Steps
 See `anthropic-sdk-patterns` for production Anthropic SDK patterns.
+
+## Prerequisites
+- Completed `anthropic-migration-deep-install-auth` setup
+- Valid API credentials configured

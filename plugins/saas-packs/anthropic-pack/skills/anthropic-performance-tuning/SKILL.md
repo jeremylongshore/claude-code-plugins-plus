@@ -28,6 +28,8 @@ Claude latency has two components: **time to first token (TTFT)** and **tokens p
 
 ## Optimization Strategies
 
+## Instructions
+
 ### 1. Always Stream
 ```typescript
 // Streaming delivers the first token ASAP — user sees response instantly
@@ -120,6 +122,10 @@ system: 'Be extremely concise. Use bullet points, not paragraphs.',
 max_tokens: 256, // Don't use 4096 for short answers
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 | Issue | Cause | Fix |
 |-------|-------|-----|
@@ -128,6 +134,9 @@ max_tokens: 256, // Don't use 4096 for short answers
 | Timeouts | Long generation + default timeout | `new Anthropic({ timeout: 120_000 })` |
 | 529 overloaded | API capacity | SDK auto-retries; add fallback model |
 
+## Examples
+See code blocks above for complete examples.
+
 ## Resources
 - [Streaming Docs](https://docs.anthropic.com/en/api/messages-streaming)
 - [Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
@@ -135,3 +144,7 @@ max_tokens: 256, // Don't use 4096 for short answers
 
 ## Next Steps
 See `anthropic-deploy-integration` for production deployment patterns.
+
+## Prerequisites
+- Completed `anthropic-performance-install-auth` setup
+- Valid API credentials configured

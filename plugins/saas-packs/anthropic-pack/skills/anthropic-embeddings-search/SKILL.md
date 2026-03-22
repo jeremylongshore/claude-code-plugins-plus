@@ -164,12 +164,19 @@ while (true) {
 }
 ```
 
+## Output
+- Successful operation confirmed
+- Results logged to console
+
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
 | `invalid_request_error` | Bad tool schema | Validate JSON Schema. `input_schema` must be a valid JSON Schema object |
 | `tool_use` with no matching name | Claude hallucinated a tool | Check `tool_use.name` against your defined tools before executing |
 | `tool_result` mismatch | Wrong `tool_use_id` | Each `tool_result` must reference the exact `id` from the `tool_use` block |
+
+## Examples
+See code blocks above for complete examples.
 
 ## Resources
 - [Tool Use Guide](https://docs.anthropic.com/en/docs/build-with-claude/tool-use)
