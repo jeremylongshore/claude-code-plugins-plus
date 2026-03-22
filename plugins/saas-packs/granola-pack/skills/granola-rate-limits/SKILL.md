@@ -1,214 +1,150 @@
 ---
 name: granola-rate-limits
 description: |
-  Monitor Granola usage limits, quotas, and plan restrictions.
-  Use when hitting usage limits, planning capacity,
-  or understanding plan differences.
-  Trigger with phrases like "granola limits", "granola quota",
-  "granola usage", "granola plan limits", "granola restrictions".
+  Understand Granola plan limits, usage quotas, and API rate limiting.
+  Use when hitting meeting limits, choosing between plans,
+  or managing Enterprise API rate limits.
+  Trigger: "granola limits", "granola quota", "granola plan",
+  "granola usage", "granola restrictions".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, monitoring]
+tags: [saas, granola, monitoring, plans]
 
 ---
-# Granola Rate Limits
+# Granola Rate Limits & Plan Quotas
 
 ## Overview
-Understand and manage Granola usage limits across different plan tiers.
+Granola has three plan tiers with different feature access and limits. There are no per-meeting minute caps or monthly meeting count limits on paid plans. Limits primarily apply to the free tier and the Enterprise API.
 
-## Plan Comparison
+## Plan Comparison (Current as of March 2026)
 
-### Free Plan
-| Limit | Value | Notes |
-|-------|-------|-------|
-| Meetings per month | 10 | Resets monthly |
-| Meeting duration | 60 min | Per meeting |
-| Storage | 5 GB | Total across all notes |
-| Integrations | 2 | Basic only |
-| Export formats | Markdown | Limited formats |
+### Basic (Free) — $0
+| Feature | Limit |
+|---------|-------|
+| Meetings | 25 lifetime (not monthly) |
+| Meeting history | Visible for 14 days only |
+| Enhance Notes | Included |
+| Templates | Built-in only |
+| Granola Chat | Included |
+| People & Companies | Included |
+| Integrations | None |
+| API access | None |
 
-### Pro Plan ($10/month)
-| Limit | Value | Notes |
-|-------|-------|-------|
-| Meetings per month | Unlimited | No caps |
-| Meeting duration | 4 hours | Per meeting |
-| Storage | 50 GB | Expandable |
-| Integrations | All | Full access |
-| Export formats | All | PDF, Docs, etc. |
-| Templates | Custom | Create your own |
+> The free plan is essentially a trial — 25 meetings total, ever. After that, you must upgrade.
 
-### Business Plan ($25/month)
-| Limit | Value | Notes |
-|-------|-------|-------|
-| Meetings per month | Unlimited | No caps |
-| Meeting duration | 8 hours | Extended |
-| Storage | 200 GB | Team shared |
-| Team members | Up to 50 | Per workspace |
-| Admin controls | Full | SSO, audit logs |
-| Priority support | Yes | 24-hour response |
-
-### Enterprise Plan (Custom)
+### Business — $14/user/month
 | Feature | Availability |
 |---------|-------------|
-| Custom limits | Negotiable |
-| Dedicated support | Yes |
-| SLA guarantees | Yes |
-| Custom integrations | Yes |
-| On-premise option | Available |
+| Meetings | Unlimited |
+| Meeting history | Unlimited retention |
+| Templates | Built-in + custom |
+| Granola Chat | Included |
+| People & Companies | Included |
+| Slack integration | Native |
+| Notion integration | Native |
+| CRM (HubSpot, Attio, Affinity) | Native |
+| Zapier | Full access |
+| MCP (AI agent integration) | Included |
+| Team shared folders | Included |
+| Admin controls | Basic |
+| AI training opt-out (org-wide) | Included |
+| Priority support | Included |
+| Public API access | Included |
 
-## Current Usage Check
+### Enterprise — $35+/user/month
+| Feature | Availability |
+|---------|-------------|
+| Everything in Business | Included |
+| SSO (Okta, Google Workspace) | Included |
+| SCIM provisioning | Included |
+| AI training opt-out (enforced) | Default on |
+| Usage analytics dashboard | Included |
+| Enterprise API (full) | Included |
+| Custom data retention policies | Configurable |
+| SOC 2 Type 2 compliance report | Available |
+| Dedicated account manager | Included |
+| Volume discounts | Negotiable |
 
-### Check in Granola App
-1. Open Granola
-2. Go to Settings > Account
-3. View "Usage" section
-4. See:
-   - Meetings this month
-   - Storage used
-   - Days until reset
+## API Rate Limits
 
-### Usage Dashboard Elements
-```
-Monthly Usage:
-[========--] 8/10 meetings
-
-Storage:
-[====------] 2.1 GB / 5 GB
-
-Integrations:
-[==========] 2/2 connected
-
-Reset Date: February 1, 2025  # 2025 year
-```
-
-## Rate Limit Behaviors
-
-### When Approaching Limits
-| % Used | Notification | Action |
-|--------|-------------|--------|
-| 75% | Warning banner | Plan ahead |
-| 90% | Email alert | Consider upgrade |
-| 100% | Recording blocked | Upgrade or wait |
-
-### What Happens at Limits
-- **Meeting limit reached:** New recordings blocked until reset
-- **Storage full:** Cannot save new notes until space cleared
-- **Duration exceeded:** Recording stops at limit
-
-## Optimizing Usage
-
-### Reduce Meeting Count
-```markdown
-## Strategies
-1. Combine related meetings
-2. Skip recording for informal chats
-3. Use selective recording
-4. Delete draft/test meetings
-```
-
-### Manage Storage
-```markdown
-## Storage Tips
-1. Export old notes and delete from Granola
-2. Compress attachments before linking
-3. Archive completed projects
-4. Delete duplicate recordings
-```
-
-### Calculate Needs
-```markdown
-## Usage Estimation
-
-Monthly meetings: 20
-Average duration: 45 min
-Storage per meeting: ~50 MB
-
-Required Plan: Pro
-- Meeting limit: Unlimited (need > 10)
-- Duration: 4 hrs (need 45 min) ✓
-- Storage: 50 GB (need ~1 GB/month) ✓
-```
-
-## Limit Reset Schedule
-- **Monthly limits:** Reset on billing date
-- **Daily limits:** Reset at midnight UTC
-- **Storage:** Does not auto-reset (manual management)
-
-## Handling Limit Errors
-
-### Error: "Meeting Limit Reached"
-**Solutions:**
-1. Wait for monthly reset
-2. Upgrade to Pro plan
-3. Delete unused meetings from current period
-
-### Error: "Recording Duration Exceeded"
-**Solutions:**
-1. Upgrade plan for longer limits
-2. Split long meetings into parts
-3. Start new recording if needed
-
-### Error: "Storage Full"
-**Solutions:**
-1. Export notes to external storage
-2. Delete old meetings
-3. Upgrade to higher storage plan
-
-## API/Integration Limits
+### Enterprise API
+- Rate limits are applied **per workspace** (not per user)
+- When exceeded: HTTP `429 Too Many Requests` response
+- Retry behavior: respect the `Retry-After` header
+- No published rate numbers — contact Granola for workspace-specific limits
 
 ### Zapier Integration
-| Plan | Zap Runs/Month |
-|------|----------------|
-| Free | Tied to Zapier plan |
-| Pro | Tied to Zapier plan |
-| Business | Priority queuing |
+- Zapier task limits are governed by your **Zapier plan**, not Granola
+- Granola does not throttle outbound Zapier triggers
+- For high-volume workspaces, add delay steps between Zap actions to avoid overwhelming downstream apps
 
-### Webhook Limits
-- Rate: 10 requests/second
-- Payload: 1 MB max
-- Timeout: 30 seconds
+## Usage Monitoring
 
-## Resources
-- [Granola Pricing](https://granola.ai/pricing)
-- [Plan Comparison](https://granola.ai/compare)
-- [Upgrade Options](https://granola.ai/upgrade)
+### Check Usage in Granola
+1. Click your avatar (bottom-left) > **Settings**
+2. Navigate to **Account** or **Subscription**
+3. View: current plan, meeting count, team seats, connected integrations
 
-## Next Steps
-Proceed to `granola-security-basics` for security best practices.
+### Free Plan Usage Tracking
+```
+Meetings Used: 18 / 25 lifetime
+History Visible: Last 14 days
+Upgrade Required: After 25 meetings
+```
 
-## Prerequisites
+### API Usage (Enterprise)
+Monitor API usage through response headers:
+```bash
+# Check rate limit headers in API response
+curl -s -I "https://api.granola.ai/v0/notes" \
+  -H "Authorization: Bearer $GRANOLA_API_KEY" \
+  | grep -i "rate-limit\|retry-after"
+```
 
-- Access to the Granola Rate Limits environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with Granola Rate Limits concepts and terminology
+## What Happens at Limits
 
-## Instructions
+| Limit Hit | Behavior | Resolution |
+|-----------|----------|------------|
+| Free plan 25 meetings | New recordings blocked | Upgrade to Business ($14/mo) |
+| Free plan 14-day history | Older notes hidden (not deleted) | Upgrade to restore access |
+| API rate limit (429) | Requests rejected | Wait for `Retry-After` period, reduce request frequency |
+| Zapier task limit | Zaps paused | Upgrade Zapier plan or reduce trigger frequency |
+| Workspace seat limit | Can't add users | Purchase additional seats or remove inactive users |
 
-1. Assess the current state of the Granola Rate Limits configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
+## Plan Selection Guide
 
-## Output
+| Scenario | Recommended Plan |
+|----------|-----------------|
+| Trying Granola (< 25 meetings) | Basic (Free) |
+| Individual user, needs integrations | Business ($14/mo) |
+| Team of 2-10, shared folders + CRM | Business ($14/user/mo) |
+| 10+ users, SSO/SCIM required | Enterprise ($35+/user/mo) |
+| Regulated industry (SOC 2, GDPR) | Enterprise |
+| API access for custom workflows | Business (basic) or Enterprise (full) |
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Billing Details
+- **Annual billing:** Save 10-15% vs monthly
+- **Prorated upgrades:** Upgrade mid-cycle, pay difference
+- **Seat management:** Add/remove seats in Settings > Team
+- **No per-minute charges:** Granola does not charge by meeting duration or transcription minutes
 
 ## Error Handling
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Granola Rate Limits |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| Error | Cause | Fix |
+|-------|-------|-----|
+| "Meeting limit reached" | Free plan exhausted (25 lifetime) | Upgrade to Business |
+| "Subscription expired" | Payment method failed | Update payment in Settings > Billing |
+| API 429 response | Rate limit exceeded | Implement exponential backoff, reduce request frequency |
+| "Feature not available" | Feature requires higher plan | Check plan comparison above and upgrade |
 
-## Examples
+## Resources
+- [Granola Pricing](https://www.granola.ai/pricing)
+- [Pricing Blog (ROI Calculator)](https://www.granola.ai/blog/granola-pricing-plans-features-roi)
+- [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
+- [API Changelog](https://docs.granola.ai/api-reference/changelog)
 
-**Basic usage**: Apply granola rate limits to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize granola rate limits for production environments with multiple constraints and team-specific requirements.
+## Next Steps
+Proceed to `granola-security-basics` for security and compliance configuration.

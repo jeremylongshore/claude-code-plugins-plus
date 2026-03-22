@@ -1,166 +1,201 @@
 ---
 name: granola-sdk-patterns
 description: |
-  Zapier integration patterns and automation workflows for Granola.
-  Use when building automated workflows, connecting Granola to other apps,
-  or creating custom integrations via Zapier.
-  Trigger with phrases like "granola zapier", "granola automation",
-  "granola integration patterns", "granola SDK", "granola API".
+  Zapier automation patterns and Enterprise API integration for Granola.
+  Use when building automated workflows, connecting Granola to 8,000+ apps via Zapier,
+  or querying the Enterprise API for notes and transcripts.
+  Trigger: "granola zapier", "granola automation", "granola API", "granola SDK".
 allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, granola, workflow]
+tags: [saas, granola, automation, api]
 
 ---
 # Granola SDK Patterns
 
 ## Overview
-Build powerful automations using Granola's Zapier integration to connect with 8,000+ apps.
+Granola does not have a traditional SDK. Integration is achieved through three channels: Zapier (8,000+ app connections), the Enterprise API (REST, workspace-level read access), and native integrations (Slack, Notion, HubSpot, Attio, Affinity). This skill covers automation patterns for all three.
 
 ## Prerequisites
-- Granola Pro or Business plan
-- Zapier account (Free tier works for basic automations)
-- Target integration apps configured
-
-## Available Triggers
-
-### Granola Zapier Triggers
-| Trigger | Description | Use Case |
-|---------|-------------|----------|
-| New Note Created | Fires when meeting ends | Sync to docs |
-| Note Updated | Fires on note edits | Update CRM |
-| Action Item Added | Fires for new todos | Create tickets |
-
-## Common Integration Patterns
-
-### Pattern 1: Notes to Notion
-```yaml
-Trigger: New Granola Note
-Action: Create Notion Page
-
-Configuration:
-  Notion Database: Meeting Notes
-  Title: {{meeting_title}}
-  Date: {{meeting_date}}
-  Content: {{note_content}}
-  Participants: {{attendees}}
-```
-
-### Pattern 2: Action Items to Linear
-```yaml
-Trigger: New Granola Note
-Filter: Contains "Action Item" or "TODO"
-Action: Create Linear Issue
-
-Configuration:
-  Team: Engineering
-  Title: "Meeting Action: {{action_text}}"
-  Description: "From meeting: {{meeting_title}}"
-  Assignee: {{extracted_assignee}}
-```
-
-### Pattern 3: Summary to Slack
-```yaml
-Trigger: New Granola Note
-Action: Post to Slack Channel
-
-Configuration:
-  Channel: #team-updates
-  Message: |
-    :notepad_spiral: Meeting Notes: {{meeting_title}}
-
-    **Summary:** {{summary}}
-
-    **Action Items:**
-    {{action_items}}
-
-    Full notes: {{granola_link}}
-```
-
-### Pattern 4: CRM Update (HubSpot)
-```yaml
-Trigger: New Granola Note
-Filter: Meeting contains client name
-Action: Update HubSpot Contact
-
-Configuration:
-  Contact: {{client_email}}
-  Note: "Meeting on {{date}}: {{summary}}"
-  Last Contact: {{meeting_date}}
-```
-
-## Multi-Step Workflow Example
-
-```yaml
-Name: Complete Meeting Follow-up
-
-Step 1 - Trigger:
-  App: Granola
-  Event: New Note Created
-
-Step 2 - Action:
-  App: OpenAI
-  Event: Generate Follow-up Email
-  Prompt: "Write a follow-up email for: {{summary}}"
-
-Step 3 - Action:
-  App: Gmail
-  Event: Create Draft
-  To: {{attendees}}
-  Subject: "Follow-up: {{meeting_title}}"
-  Body: {{openai_response}}
-
-Step 4 - Action:
-  App: Notion
-  Event: Create Page
-  Content: {{full_notes}}
-
-Step 5 - Action:
-  App: Slack
-  Event: Send Message
-  Message: "Follow-up draft ready for {{meeting_title}}"
-```
-
-## Output
-- Zapier workflow configured
-- Notes automatically synced to target apps
-- Action items converted to tickets
-- Follow-up communications automated
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Trigger Not Firing | Zapier connection expired | Reconnect Granola in Zapier |
-| Missing Data | Note still processing | Add 2-min delay step |
-| Rate Limited | Too many requests | Reduce Zap frequency |
-| Format Errors | Data structure mismatch | Use Zapier Formatter |
-
-## Best Practices
-1. **Add delays** - Wait 2 min after meeting for processing
-2. **Use filters** - Only trigger for relevant meetings
-3. **Test first** - Use Zapier's test feature
-4. **Monitor usage** - Check Zapier task limits
-
-## Resources
-- [Granola Zapier App](https://zapier.com/apps/granola)
-- [Zapier Multi-Step Zaps](https://zapier.com/help/create/multi-step-zaps)
-- [Granola Integration Docs](https://granola.ai/integrations)
-
-## Next Steps
-Proceed to `granola-core-workflow-a` for meeting preparation workflows.
+- Granola Business plan ($14/user/month) for Zapier + native CRM
+- Enterprise plan ($35+/user/month) for API access
+- Zapier account for automation workflows
 
 ## Instructions
 
-1. Assess the current state of the API configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
+### Step 1 — Understand Zapier Triggers
 
-## Examples
+Granola provides two Zapier triggers:
 
-**Basic usage**: Apply granola sdk patterns to a standard project setup with default configuration options.
+| Trigger | Fires When | Use Case |
+|---------|-----------|----------|
+| **Note Added to Granola Folder** | A note is placed in a specific folder | Auto-route by meeting type |
+| **Note Shared to Zapier** | You manually share a note to Zapier | Selective sharing for important meetings |
 
-**Advanced scenario**: Customize granola sdk patterns for production environments with multiple constraints and team-specific requirements.
+**Webhook payload data available:**
+- `title` — meeting title from calendar
+- `creator_name` / `creator_email` — note creator
+- `attendees[]` — array of `{name, email}` objects
+- `calendar_event_title` — original calendar event name
+- `calendar_event_datetime` — meeting date/time
+- `note_content` — the enhanced note content (Markdown)
+
+### Step 2 — Build Common Zap Patterns
+
+**Pattern 1: Meeting Notes to Notion (auto-archive)**
+```yaml
+Trigger: Note Added to Granola Folder ("All Meetings")
+Action: Notion — Create Database Item
+  Database: Meeting Archive
+  Title: "{{title}}"
+  Date: "{{calendar_event_datetime}}"
+  Content: "{{note_content}}"
+  Attendees: "{{attendees}}"
+```
+
+**Pattern 2: Action Items to Asana/Linear**
+```yaml
+Trigger: Note Shared to Zapier
+Filter: note_content contains "Action Items"
+Code Step (JavaScript):
+  const lines = inputData.note_content.split('\n');
+  const actions = lines
+    .filter(l => l.match(/^- \[ \]/))
+    .map(l => l.replace('- [ ] ', ''));
+  output = actions.map(a => ({task: a}));
+Action: Linear — Create Issue (for each action)
+  Title: "{{task}}"
+  Team: Engineering
+  Label: "meeting-action"
+```
+
+**Pattern 3: Sales Call Summary to Slack + HubSpot**
+```yaml
+Trigger: Note Added to Granola Folder ("Sales Calls")
+Path A — Slack:
+  Action: Post Message to #sales-updates
+  Message: |
+    *New Sales Call:* {{title}}
+    *Attendees:* {{attendees}}
+
+    {{note_content}}
+
+    [View full notes in Granola]
+
+Path B — HubSpot (via Zapier if not using native):
+  Action: Find Contact by Email ({{attendees[0].email}})
+  Action: Create Engagement Note
+    Body: "{{note_content}}"
+```
+
+**Pattern 4: Meeting Follow-Up Email**
+```yaml
+Trigger: Note Shared to Zapier
+Action: ChatGPT — Generate Follow-Up Email
+  Prompt: "Write a professional follow-up email based on: {{note_content}}"
+Action: Gmail — Create Draft
+  To: "{{attendees}}"
+  Subject: "Follow-up: {{title}}"
+  Body: "{{chatgpt_response}}"
+Action: Slack — Notify
+  Message: "Follow-up draft ready for: {{title}}"
+```
+
+### Step 3 — Use the Enterprise API
+
+Available on Enterprise plan. API keys generated at Settings > API Keys (up to 5 per workspace).
+
+```bash
+# List all accessible notes (paginated)
+curl -s "https://api.granola.ai/v0/notes" \
+  -H "Authorization: Bearer $GRANOLA_API_KEY" \
+  -H "Content-Type: application/json" | jq '.notes[:3]'
+
+# Get a specific note with transcript
+curl -s "https://api.granola.ai/v0/notes/{note_id}" \
+  -H "Authorization: Bearer $GRANOLA_API_KEY" | jq '{title, summary, action_items}'
+```
+
+**API characteristics:**
+- Bearer token authentication
+- Read-only access to publicly shared notes within your workspace
+- Rate limited per workspace (429 response when exceeded)
+- Pagination for list endpoints
+
+**Reverse-engineered endpoints (unofficial, for reference):**
+```
+POST https://api.granola.ai/v2/get-documents    # List documents (paginated)
+POST https://api.granola.ai/v1/get-document-transcript  # Get transcript
+POST https://api.granola.ai/v1/get-workspaces    # List workspaces
+POST https://api.granola.ai/v1/get-documents-batch  # Bulk fetch by IDs
+```
+Authentication uses WorkOS with refresh token rotation via `POST https://api.workos.com/user_management/authenticate`.
+
+### Step 4 — Multi-Step Automation Chains
+
+```yaml
+Name: Complete Meeting Follow-Up Pipeline
+
+Step 1 — Trigger:
+  Granola: Note Added to Folder ("Client Meetings")
+
+Step 2 — Filter:
+  Only continue if attendees contain external email domains
+
+Step 3 — Action:
+  ChatGPT: Generate structured summary and follow-up email
+
+Step 4 — Action:
+  Gmail: Create draft follow-up email to external attendees
+
+Step 5 — Action:
+  Notion: Create page in Client Meeting Log database
+
+Step 6 — Action:
+  Linear: Create issues from action items with "client" label
+
+Step 7 — Action:
+  Slack: Post summary to #client-updates channel
+
+Step 8 — Action:
+  HubSpot: Log meeting note on matched Contact/Deal
+```
+
+### Step 5 — Folder-Based Routing
+
+Organize Granola folders to drive different Zap behaviors:
+
+| Folder | Zapier Trigger | Actions |
+|--------|---------------|---------|
+| `Sales Calls` | Auto | Slack #sales + HubSpot + follow-up email |
+| `Engineering` | Auto | Linear tasks + Notion wiki |
+| `All Hands` | Auto | Slack #general + Google Drive archive |
+| `Interviews` | Manual share | Greenhouse scorecard + hiring panel Slack |
+| `1-on-1s` | None | Private, no automation |
+
+## Output
+- Zapier workflows configured for automated note processing
+- API access established for custom integrations
+- Multi-step automation chains routing by meeting type
+- Folder-based routing strategy implemented
+
+## Error Handling
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Zapier trigger not firing | Folder trigger misconfigured | Verify the exact folder name in Zapier matches Granola |
+| Missing note content | Note still processing | Add a 2-minute delay step at the start of the Zap |
+| API 429 Too Many Requests | Rate limit exceeded | Add delays between requests, implement backoff |
+| API 401 Unauthorized | Invalid or expired API key | Regenerate key at Settings > API Keys |
+| Attendee data empty | Calendar event has no attendee list | Add attendees to the calendar event |
+
+## Resources
+- [Zapier Granola App](https://zapier.com/apps/granola/integrations)
+- [Automate Granola (4 Ways)](https://zapier.com/blog/automate-granola/)
+- [Granola Enterprise API](https://docs.granola.ai/introduction)
+- [Enterprise API Docs](https://docs.granola.ai/help-center/sharing/integrations/enterprise-api)
+
+## Next Steps
+Proceed to `granola-common-errors` for troubleshooting.
