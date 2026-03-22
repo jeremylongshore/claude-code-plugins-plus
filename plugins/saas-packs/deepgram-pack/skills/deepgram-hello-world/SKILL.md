@@ -4,84 +4,173 @@ description: |
   Create a minimal working Deepgram transcription example.
   Use when starting a new Deepgram integration, testing your setup,
   or learning basic Deepgram API patterns.
-  Trigger with phrases like "deepgram hello world", "deepgram example",
-  "deepgram quick start", "simple transcription", "transcribe audio".
+  Trigger: "deepgram hello world", "deepgram example", "deepgram quick start",
+  "simple transcription", "transcribe audio".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
-tags: [saas, deepgram, api, testing, transcription]
+tags: [saas, deepgram, api, testing, transcription, quickstart]
 
 ---
 # Deepgram Hello World
 
 ## Overview
-Minimal working example demonstrating core Deepgram speech-to-text functionality. Produces a transcribed text output from an audio URL or local file in under 10 lines of code.
+Minimal working examples for Deepgram speech-to-text. Transcribe an audio URL in 5 lines with `createClient` + `listen.prerecorded.transcribeUrl`. Includes local file transcription, Python equivalent, and Nova-3 model selection.
 
 ## Prerequisites
-- Completed `deepgram-install-auth` setup
-- Valid API credentials configured via `DEEPGRAM_API_KEY` environment variable
-- Audio file for transcription (or use the Deepgram sample URL)
+- `npm install @deepgram/sdk` completed
+- `DEEPGRAM_API_KEY` environment variable set
+- Audio source: URL or local file (WAV, MP3, FLAC, OGG, M4A)
 
 ## Instructions
 
-### Step 1: Create Entry File
-Create a new TypeScript or Python file for the hello world example.
+### Step 1: Transcribe Audio from URL (TypeScript)
 
-### Step 2: Initialize the Deepgram Client
 ```typescript
 import { createClient } from '@deepgram/sdk';
 
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY);
-```
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
 
-### Step 3: Transcribe Audio from URL
-```typescript
-async function transcribe() {
+async function main() {
   const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
-    { url: 'https://static.deepgram.com/examples/nasa-podcast.wav' },
-    { model: 'nova-2', smart_format: true }
+    { url: 'https://static.deepgram.com/examples/Bueller-Life-moves-702702706.wav' },
+    {
+      model: 'nova-3',        // Latest model — best accuracy
+      smart_format: true,     // Auto-punctuation, paragraphs, numerals
+      language: 'en',
+    }
   );
 
   if (error) throw error;
+
+  const transcript = result.results.channels[0].alternatives[0].transcript;
+  console.log('Transcript:', transcript);
+  console.log('Confidence:', result.results.channels[0].alternatives[0].confidence);
+}
+
+main();
+```
+
+### Step 2: Transcribe a Local File
+
+```typescript
+import { createClient } from '@deepgram/sdk';
+import { readFileSync } from 'fs';
+
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
+
+async function transcribeFile(filePath: string) {
+  const audio = readFileSync(filePath);
+
+  const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
+    audio,
+    {
+      model: 'nova-3',
+      smart_format: true,
+      // Deepgram auto-detects format, but you can specify:
+      mimetype: 'audio/wav',
+    }
+  );
+
+  if (error) throw error;
+
   console.log(result.results.channels[0].alternatives[0].transcript);
 }
 
-transcribe();
+transcribeFile('./meeting-recording.wav');
 ```
 
-### Step 4: Verify Transcription Output
-Run the file and confirm a text transcript appears in the console. Alternatively, transcribe a local file by reading it into a buffer and passing it to `transcribeFile`.
+### Step 3: Python Equivalent
 
-### Step 5: Customize Options (Optional)
-Change `model` to `nova`, `enhanced`, or `base` for different accuracy/speed trade-offs. Set `language` for non-English audio. Enable `diarize: true` for speaker identification.
+```python
+import os
+from deepgram import DeepgramClient, PrerecordedOptions
 
-For additional language examples (Python, local file transcription) and customization options, see [extended examples](references/extended-examples.md).
+client = DeepgramClient(os.environ["DEEPGRAM_API_KEY"])
+
+# URL transcription
+url = {"url": "https://static.deepgram.com/examples/Bueller-Life-moves-702702706.wav"}
+options = PrerecordedOptions(model="nova-3", smart_format=True, language="en")
+
+response = client.listen.rest.v("1").transcribe_url(url, options)
+transcript = response.results.channels[0].alternatives[0].transcript
+print(f"Transcript: {transcript}")
+print(f"Confidence: {response.results.channels[0].alternatives[0].confidence}")
+```
+
+```python
+# Local file transcription
+with open("meeting.wav", "rb") as audio:
+    source = {"buffer": audio.read(), "mimetype": "audio/wav"}
+    response = client.listen.rest.v("1").transcribe_file(source, options)
+    print(response.results.channels[0].alternatives[0].transcript)
+```
+
+### Step 4: Add Features
+
+```typescript
+// Enable diarization (speaker identification)
+const { result } = await deepgram.listen.prerecorded.transcribeUrl(
+  { url: audioUrl },
+  {
+    model: 'nova-3',
+    smart_format: true,
+    diarize: true,         // Speaker labels
+    utterances: true,      // Turn-by-turn segments
+    paragraphs: true,      // Paragraph formatting
+  }
+);
+
+// Print speaker-labeled output
+if (result.results.utterances) {
+  for (const utterance of result.results.utterances) {
+    console.log(`Speaker ${utterance.speaker}: ${utterance.transcript}`);
+  }
+}
+```
+
+### Step 5: Explore Model Options
+
+| Model | Use Case | Speed | Accuracy |
+|-------|----------|-------|----------|
+| `nova-3` | General — best accuracy | Fast | Highest |
+| `nova-2` | General — proven stable | Fast | Very High |
+| `nova-2-meeting` | Conference rooms, multiple speakers | Fast | High |
+| `nova-2-phonecall` | Low-bandwidth phone audio | Fast | High |
+| `base` | Cost-sensitive, high-volume | Fastest | Good |
+| `whisper-large` | Multilingual (100+ languages) | Slow | High |
+
+### Step 6: Run It
+
+```bash
+# TypeScript
+npx tsx hello-deepgram.ts
+
+# Python
+python hello_deepgram.py
+```
 
 ## Output
-- Working code file with Deepgram client initialization
-- Successful transcription response from the API
-- Console output showing transcribed text
+- Working transcription from URL or local file
+- Printed transcript text with confidence score
+- Optional: speaker-labeled utterances
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Import Error | SDK not installed | Verify with `npm list @deepgram/sdk` |
-| Auth Error | Invalid credentials | Check `DEEPGRAM_API_KEY` environment variable |
-| Audio Format Error | Unsupported format | Use WAV, MP3, FLAC, or OGG files |
-| URL Not Accessible | Cannot fetch audio | Ensure URL is publicly accessible |
-
-## Examples
-
-**URL transcription**: Initialize the client with `createClient(process.env.DEEPGRAM_API_KEY)`, call `transcribeUrl` with the NASA podcast sample URL and Nova-2 model, then print the transcript from `result.results.channels[0].alternatives[0].transcript`.
-
-**Local file transcription**: Read the audio file with `readFileSync`, pass the buffer to `transcribeFile` with the appropriate MIME type, and extract the transcript from the response.
+| `401 Unauthorized` | Invalid API key | Check `DEEPGRAM_API_KEY` |
+| `400 Bad Request` | Unsupported audio format | Use WAV, MP3, FLAC, OGG, or M4A |
+| Empty transcript | No speech in audio | Verify audio has audible speech |
+| `ENOTFOUND` | URL not reachable | Check audio URL is publicly accessible |
+| `Cannot find module '@deepgram/sdk'` | SDK not installed | Run `npm install @deepgram/sdk` |
 
 ## Resources
-- [Deepgram Getting Started](https://developers.deepgram.com/docs/getting-started)
-- [Deepgram API Reference](https://developers.deepgram.com/reference)
-- [Deepgram Models](https://developers.deepgram.com/docs/models)
+- [Pre-recorded Audio Guide](https://developers.deepgram.com/docs/pre-recorded-audio)
+- [Model Options](https://developers.deepgram.com/docs/model)
+- [Smart Formatting](https://developers.deepgram.com/docs/smart-format)
+- [Sample Audio Files](https://static.deepgram.com/examples/)
 
 ## Next Steps
-Proceed to `deepgram-local-dev-loop` for development workflow setup.
+Proceed to `deepgram-core-workflow-a` for production transcription patterns or `deepgram-core-workflow-b` for live streaming.
