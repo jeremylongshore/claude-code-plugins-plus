@@ -1,11 +1,11 @@
 ---
 name: adobe-reference-architecture
 description: |
-  Implement Adobe reference architecture with best-practice project layout.
-  Use when designing new Adobe integrations, reviewing project structure,
-  or establishing architecture standards for Adobe applications.
-  Trigger with phrases like "adobe architecture", "adobe best practices",
-  "adobe project structure", "how to organize adobe", "adobe layout".
+  Implement Adobe reference architecture for production integrations covering
+  Firefly Services, PDF Services, I/O Events, and App Builder with layered
+  project layout, error boundaries, and health monitoring.
+  Trigger with phrases like "adobe architecture", "adobe project structure",
+  "how to organize adobe", "adobe layout", "adobe best practices".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,224 +17,228 @@ compatible-with: claude-code
 # Adobe Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Adobe integrations.
+
+Production-ready architecture patterns for Adobe API integrations, designed around the three main API families: Firefly Services (creative AI), PDF Services (document automation), and I/O Events (event-driven).
 
 ## Prerequisites
-- Understanding of layered architecture
-- Adobe SDK knowledge
-- TypeScript project setup
-- Testing framework configured
 
-## Project Structure
+- Understanding of layered architecture
+- TypeScript project setup
+- Decision on which Adobe APIs to integrate
+
+## Instructions
+
+### Step 1: Project Structure
 
 ```
 my-adobe-project/
 ├── src/
-│   ├── adobe/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── adobe/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── adobe/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── adobe/
-│           └── sync.ts         # Background sync job
+│   ├── adobe/                     # Adobe client layer
+│   │   ├── auth.ts                # OAuth Server-to-Server token management
+│   │   ├── firefly-client.ts      # Firefly API wrapper (generate, fill, expand)
+│   │   ├── pdf-client.ts          # PDF Services wrapper (create, extract, merge)
+│   │   ├── photoshop-client.ts    # Photoshop API wrapper (cutout, actions)
+│   │   ├── events-client.ts       # I/O Events registration and verification
+│   │   ├── types.ts               # Shared Adobe types
+│   │   └── errors.ts              # Error classification (retryable vs permanent)
+│   ├── services/                  # Business logic layer
+│   │   ├── image-generation.ts    # Orchestrates Firefly + Photoshop workflows
+│   │   ├── document-pipeline.ts   # Orchestrates PDF create/extract/merge
+│   │   └── event-processor.ts     # Routes and processes I/O Events
+│   ├── api/                       # API layer (routes, controllers)
+│   │   ├── health.ts              # Health check including Adobe IMS
+│   │   ├── webhooks/adobe.ts      # I/O Events webhook endpoint
+│   │   └── routes/
+│   │       ├── images.ts          # Image generation endpoints
+│   │       └── documents.ts       # Document processing endpoints
+│   ├── jobs/                      # Background job layer
+│   │   ├── firefly-batch.ts       # Batch image generation queue
+│   │   └── pdf-extraction.ts      # Async PDF extraction worker
+│   └── index.ts
 ├── tests/
 │   ├── unit/
-│   │   └── adobe/
+│   │   ├── adobe/auth.test.ts
+│   │   └── services/
 │   └── integration/
 │       └── adobe/
+│           ├── firefly.test.ts
+│           └── pdf-services.test.ts
 ├── config/
 │   ├── adobe.development.json
 │   ├── adobe.staging.json
 │   └── adobe.production.json
-└── docs/
-    └── adobe/
-        ├── SETUP.md
-        └── RUNBOOK.md
+└── package.json
 ```
 
-## Layer Architecture
+### Step 2: Layer Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Adobe Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────┐
+│                    API Layer                         │
+│   Routes, Controllers, Webhook Endpoints            │
+├─────────────────────────────────────────────────────┤
+│                  Service Layer                       │
+│   Business Logic, Workflow Orchestration             │
+│   (image-generation.ts, document-pipeline.ts)       │
+├─────────────────────────────────────────────────────┤
+│                Adobe Client Layer                    │
+│   auth.ts, firefly-client.ts, pdf-client.ts         │
+│   Token caching, retry, error classification        │
+├─────────────────────────────────────────────────────┤
+│              Infrastructure Layer                    │
+│   Cache (LRU/Redis), Queue (BullMQ), Monitoring     │
+└─────────────────────────────────────────────────────┘
 ```
 
-## Key Components
+**Rules:**
+- API layer never calls Adobe APIs directly — always through Service layer
+- Service layer orchestrates multiple Adobe clients (e.g., Firefly + Photoshop)
+- Adobe Client layer handles auth, retry, error classification
+- Infrastructure layer is swappable (in-memory cache for dev, Redis for prod)
 
-### Step 1: Client Wrapper
-```typescript
-// src/adobe/client.ts
-export class AdobeService {
-  private client: AdobeClient;
-  private cache: Cache;
-  private monitor: Monitor;
+### Step 3: Error Boundary
 
-  constructor(config: AdobeConfig) {
-    this.client = new AdobeClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('adobe');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
 ```typescript
 // src/adobe/errors.ts
 export class AdobeServiceError extends Error {
   constructor(
     message: string,
     public readonly code: string,
+    public readonly httpStatus: number,
     public readonly retryable: boolean,
+    public readonly api: 'firefly' | 'pdf-services' | 'photoshop' | 'events',
+    public readonly retryAfter?: number,
     public readonly originalError?: Error
   ) {
     super(message);
     this.name = 'AdobeServiceError';
   }
-}
 
-export function wrapAdobeError(error: unknown): AdobeServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/adobe/health.ts
-export async function checkAdobeHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await adobeClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
+  static fromResponse(api: string, status: number, body: string, headers?: Headers): AdobeServiceError {
+    const retryAfter = headers?.get('Retry-After');
+    return new AdobeServiceError(
+      `Adobe ${api} API error (${status}): ${body.slice(0, 200)}`,
+      status === 429 ? 'RATE_LIMITED' :
+      status === 401 ? 'AUTH_EXPIRED' :
+      status >= 500 ? 'SERVER_ERROR' : 'CLIENT_ERROR',
+      status,
+      status === 429 || status >= 500,
+      api as any,
+      retryAfter ? parseInt(retryAfter) : undefined,
+    );
   }
 }
 ```
 
-## Data Flow Diagram
+### Step 4: Configuration Management
+
+```typescript
+// config/adobe.ts
+export interface AdobeConfig {
+  clientId: string;
+  clientSecret: string;
+  scopes: string;
+  environment: 'development' | 'staging' | 'production';
+  apis: {
+    firefly: { enabled: boolean; baseUrl: string };
+    pdfServices: { enabled: boolean };
+    photoshop: { enabled: boolean; baseUrl: string };
+    events: { enabled: boolean; webhookUrl: string };
+  };
+  retry: { maxRetries: number; baseDelayMs: number };
+  cache: { enabled: boolean; ttlSeconds: number };
+}
+
+export function loadConfig(): AdobeConfig {
+  const env = process.env.NODE_ENV || 'development';
+  const base = require(`./adobe.${env}.json`);
+  return {
+    ...base,
+    clientId: process.env.ADOBE_CLIENT_ID!,
+    clientSecret: process.env.ADOBE_CLIENT_SECRET!,
+    scopes: process.env.ADOBE_SCOPES!,
+    environment: env as any,
+  };
+}
+```
+
+### Step 5: Health Check
+
+```typescript
+// src/api/health.ts
+export async function adobeHealthCheck(config: AdobeConfig) {
+  const checks: Record<string, any> = {};
+
+  // Always check IMS auth
+  try {
+    const start = Date.now();
+    await getCachedToken();
+    checks.ims = { status: 'healthy', latencyMs: Date.now() - start };
+  } catch (e: any) {
+    checks.ims = { status: 'unhealthy', error: e.message };
+  }
+
+  // Check enabled APIs
+  if (config.apis.firefly.enabled) {
+    checks.firefly = await pingEndpoint('https://firefly-api.adobe.io');
+  }
+  if (config.apis.photoshop.enabled) {
+    checks.photoshop = await pingEndpoint('https://image.adobe.io');
+  }
+
+  const overall = Object.values(checks).every(
+    (c: any) => c.status === 'healthy'
+  ) ? 'healthy' : 'degraded';
+
+  return { status: overall, services: checks };
+}
+```
+
+## Data Flow
 
 ```
 User Request
      │
      ▼
 ┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Adobe    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Adobe    │
-│   API       │
-└─────────────┘
+│   Express    │ ← Webhook from Adobe I/O Events
+│   Router     │
+└──────┬───┬──┘
+       │   │
+       ▼   ▼
+┌────────┐ ┌────────────┐
+│Service │ │Event       │
+│Layer   │ │Processor   │
+└───┬────┘ └──────┬─────┘
+    │              │
+    ▼              ▼
+┌──────────────────────┐    ┌─────────┐
+│  Adobe Client Layer  │───▶│  Cache   │
+│  (auth + API calls)  │    │ LRU/Redis│
+└──────────┬───────────┘    └─────────┘
+           │
+    ┌──────┼──────┐
+    ▼      ▼      ▼
+┌──────┐┌──────┐┌──────┐
+│Firefly││PDF   ││Photo │
+│API   ││Svc   ││shop  │
+└──────┘└──────┘└──────┘
 ```
-
-## Configuration Management
-
-```typescript
-// config/adobe.ts
-export interface AdobeConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadAdobeConfig(): AdobeConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./adobe.${env}.json`);
-}
-```
-
-## Instructions
-
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Adobe operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Adobe connectivity.
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Adobe types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/adobe/{handlers} src/services/adobe src/api/adobe
-touch src/adobe/{client,config,types,errors}.ts
-touch src/services/adobe/{index,sync,cache}.ts
-```
+- Layered project structure separating concerns
+- Error boundary with classification and retry logic
+- Per-environment configuration with secret injection
+- Health check covering IMS and all enabled APIs
 
 ## Resources
-- [Adobe SDK Documentation](https://docs.adobe.com/sdk)
-- [Adobe Best Practices](https://docs.adobe.com/best-practices)
 
-## Flagship Skills
+- [Adobe Developer Console](https://developer.adobe.com/console)
+- [Firefly Services SDK](https://developer.adobe.com/firefly-services/docs/guides/sdks/)
+- [PDF Services Node SDK](https://www.npmjs.com/package/@adobe/pdfservices-node-sdk)
+- [App Builder Architecture](https://developer.adobe.com/app-builder/docs/guides/)
+
+## Next Steps
+
 For multi-environment setup, see `adobe-multi-env-setup`.

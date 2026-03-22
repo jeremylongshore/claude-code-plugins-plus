@@ -1,9 +1,9 @@
 ---
 name: adobe-known-pitfalls
 description: |
-  Identify and avoid Adobe anti-patterns and common integration mistakes.
-  Use when reviewing Adobe code for issues, onboarding new developers,
-  or auditing existing Adobe integrations for best practices violations.
+  Identify and avoid Adobe-specific anti-patterns: using deprecated JWT auth,
+  not caching IMS tokens, ignoring Firefly content policy, missing async job
+  polling, and leaking p8_ secrets. Real code examples with fixes.
   Trigger with phrases like "adobe mistakes", "adobe anti-patterns",
   "adobe pitfalls", "adobe what not to do", "adobe code review".
 allowed-tools: Read, Grep
@@ -17,320 +17,305 @@ compatible-with: claude-code
 # Adobe Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Adobe.
+
+The 10 most common mistakes when integrating with Adobe APIs, based on real production issues. Each pitfall includes the anti-pattern, why it fails, and the correct approach.
 
 ## Prerequisites
-- Access to Adobe codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
 
-## Pitfall #1: Synchronous API Calls in Request Path
+- Access to your Adobe integration codebase
+- Understanding of Adobe API architecture (OAuth, async jobs, rate limits)
 
-### ❌ Anti-Pattern
+## Instructions
+
+### Pitfall 1: Still Using JWT (Service Account) Credentials
+
+**Status: CRITICAL** — JWT credentials reached End of Life June 2025.
+
 ```typescript
-// User waits for Adobe API call
-app.post('/checkout', async (req, res) => {
-  const payment = await adobeClient.processPayment(req.body);  // 2-5s latency
-  const notification = await adobeClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
+// WRONG: JWT auth (no longer works as of 2025)
+import jwt from 'jsonwebtoken';
+import fs from 'fs';
+
+const privateKey = fs.readFileSync('private.key');
+const jwtToken = jwt.sign({
+  exp: Math.round(Date.now() / 1000) + 86400,
+  iss: orgId,
+  sub: technicalAccountId,
+  aud: `https://ims-na1.adobelogin.com/c/${clientId}`,
+}, privateKey, { algorithm: 'RS256' });
+
+// RIGHT: OAuth Server-to-Server (current standard)
+const res = await fetch('https://ims-na1.adobelogin.com/ims/token/v3', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  body: new URLSearchParams({
+    client_id: process.env.ADOBE_CLIENT_ID!,
+    client_secret: process.env.ADOBE_CLIENT_SECRET!,
+    grant_type: 'client_credentials',
+    scope: process.env.ADOBE_SCOPES!,
+  }),
 });
 ```
 
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
+---
 
-// Background job
-async function processCheckout(data) {
-  const payment = await adobeClient.processPayment(data);
-  await adobeClient.sendEmail(payment);
+### Pitfall 2: Not Caching IMS Access Tokens
+
+IMS tokens are valid for 24 hours. Generating a new token per request wastes 200-500ms:
+
+```typescript
+// WRONG: New token every request (200-500ms overhead each time)
+async function callFirefly(prompt: string) {
+  const tokenRes = await fetch('https://ims-na1.adobelogin.com/ims/token/v3', { ... });
+  const { access_token } = await tokenRes.json();
+  // ... use access_token
+}
+
+// RIGHT: Cache token with expiry check
+let cached: { token: string; expiresAt: number } | null = null;
+
+async function getToken(): Promise<string> {
+  if (cached && cached.expiresAt > Date.now() + 300_000) return cached.token;
+  const res = await fetch('https://ims-na1.adobelogin.com/ims/token/v3', { ... });
+  const data = await res.json();
+  cached = { token: data.access_token, expiresAt: Date.now() + data.expires_in * 1000 };
+  return cached.token;
 }
 ```
 
 ---
 
-## Pitfall #2: Not Handling Rate Limits
+### Pitfall 3: Using Firefly Sync Endpoint for Batch Operations
 
-### ❌ Anti-Pattern
 ```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await adobeClient.process(item);  // Will hit rate limit
+// WRONG: Sequential sync calls (each blocks 5-20s)
+for (const prompt of prompts) {
+  const result = await fetch('https://firefly-api.adobe.io/v3/images/generate', {
+    method: 'POST', ...
+  });
+  results.push(await result.json());
 }
-```
+// Total time: N * 5-20s = very slow
 
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => adobeClient.process(item));
-}
+// RIGHT: Async endpoint with parallel submission
+const jobs = await Promise.all(
+  prompts.map(prompt =>
+    fetch('https://firefly-api.adobe.io/v3/images/generate-async', {
+      method: 'POST', ...
+    }).then(r => r.json())
+  )
+);
+// Poll all jobs in parallel
+const results = await Promise.all(jobs.map(j => pollJob(j.statusUrl)));
+// Total time: max(5-20s) = much faster
 ```
 
 ---
 
-## Pitfall #3: Leaking API Keys
+### Pitfall 4: Ignoring Firefly Content Policy Errors
 
-### ❌ Anti-Pattern
 ```typescript
-// In frontend code (visible to users!)
-const client = new AdobeClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new AdobeClient({
-  apiKey: process.env.ADOBE_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
+// WRONG: Treat all 400 errors the same
 try {
-  await adobeClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await adobeClient.charge(order);  // Charged twice!
+  const result = await generateImage({ prompt: 'Photo of Nike shoes' });
+} catch (e) {
+  console.log('Generation failed');  // No idea why
+}
+
+// RIGHT: Handle content policy specifically
+try {
+  const result = await generateImage({ prompt });
+} catch (e: any) {
+  if (e.status === 400 && e.message?.includes('content policy')) {
+    // Save the credit — don't retry, fix the prompt
+    throw new Error(
+      'Firefly content policy violation. ' +
+      'Remove trademarks, real people, or explicit content from prompt.'
+    );
+  }
+  throw e; // Other errors might be retryable
+}
+```
+
+---
+
+### Pitfall 5: Uploading Files Directly to Photoshop/Lightroom API
+
+```typescript
+// WRONG: Trying to upload file directly (not supported)
+const formData = new FormData();
+formData.append('image', fs.readFileSync('photo.jpg'));
+await fetch('https://image.adobe.io/v2/remove-background', {
+  method: 'POST',
+  body: formData,  // Photoshop API doesn't accept direct uploads
+});
+
+// RIGHT: Use pre-signed cloud storage URLs
+const inputUrl = await s3.getSignedUrl('getObject', {
+  Bucket: 'my-bucket', Key: 'photo.jpg', Expires: 3600,
+});
+const outputUrl = await s3.getSignedUrl('putObject', {
+  Bucket: 'my-bucket', Key: 'output.png', Expires: 3600,
+});
+
+await fetch('https://image.adobe.io/v2/remove-background', {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${token}`, 'x-api-key': clientId, 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    input: { href: inputUrl, storage: 'external' },
+    output: { href: outputUrl, storage: 'external', type: 'image/png' },
+  }),
+});
+```
+
+---
+
+### Pitfall 6: Not Polling Async Job Status
+
+Photoshop and Lightroom APIs return immediately with a job ID. You must poll for results:
+
+```typescript
+// WRONG: Treating response as the final result
+const res = await fetch('https://image.adobe.io/v2/remove-background', { ... });
+const result = await res.json();
+console.log('Done!', result);  // result is just { _links: { self: { href: ... } } }
+
+// RIGHT: Poll the status URL until completion
+const submission = await res.json();
+let job;
+do {
+  await new Promise(r => setTimeout(r, 2000));
+  const pollRes = await fetch(submission._links.self.href, {
+    headers: { Authorization: `Bearer ${token}`, 'x-api-key': clientId },
+  });
+  job = await pollRes.json();
+} while (job.status !== 'succeeded' && job.status !== 'failed');
+
+if (job.status === 'failed') throw new Error(job.error?.message);
+```
+
+---
+
+### Pitfall 7: Leaking Adobe Credentials in Source Code
+
+```typescript
+// WRONG: Hardcoded credentials (Adobe OAuth secrets start with p8_)
+const client_secret = 'p8_XYZ_your_actual_secret_here_do_not_do_this';
+
+// WRONG: Committed .env file
+// git add .env && git commit -m "add config"
+
+// RIGHT: Environment variables + .gitignore
+const client_secret = process.env.ADOBE_CLIENT_SECRET!;
+// .gitignore includes: .env, .env.local, .env.*.local
+```
+
+---
+
+### Pitfall 8: Not Handling PDF Services Quota
+
+```typescript
+// WRONG: No quota awareness (free tier = 500 tx/month)
+async function extractAllPdfs(paths: string[]) {
+  for (const path of paths) {
+    await extractPdf(path);  // Silently fails after 500th call
   }
 }
-```
 
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await adobeClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
+// RIGHT: Track and enforce quota
+let txCount = 0;
+async function trackedExtract(path: string) {
+  if (txCount >= 490) {  // Leave buffer
+    throw new Error('Approaching PDF Services monthly limit. 10 transactions remaining.');
+  }
+  const result = await extractPdf(path);
+  txCount++;
+  return result;
+}
 ```
 
 ---
 
-## Pitfall #5: Not Validating Webhooks
+### Pitfall 9: Using Deprecated Photoshop Endpoints
 
-### ❌ Anti-Pattern
 ```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
+// WRONG: v1 endpoint (deprecated)
+await fetch('https://image.adobe.io/sensei/cutout', { ... });
+
+// RIGHT: v2 endpoint (current)
+await fetch('https://image.adobe.io/v2/remove-background', { ... });
+```
+
+---
+
+### Pitfall 10: Missing Webhook Signature Verification
+
+```typescript
+// WRONG: Trust any incoming request (attackers can forge events)
+app.post('/webhooks/adobe', (req, res) => {
+  processEvent(req.body);
+  res.sendStatus(200);
+});
+
+// RIGHT: Verify RSA-SHA256 signature from Adobe I/O Events
+app.post('/webhooks/adobe', express.raw({ type: 'application/json' }), async (req, res) => {
+  // Adobe uses RSA-SHA256 digital signatures (NOT HMAC)
+  const sig = req.headers['x-adobe-digital-signature-1'];
+  const keyPath = req.headers['x-adobe-public-key1-path'];
+
+  const publicKey = await fetch(`https://static.adobeioevents.com${keyPath}`).then(r => r.text());
+  const verifier = crypto.createVerify('RSA-SHA256');
+  verifier.update(req.body);
+
+  if (!verifier.verify(publicKey, sig, 'base64')) {
+    return res.sendStatus(401);
+  }
+
+  processEvent(JSON.parse(req.body.toString()));
   res.sendStatus(200);
 });
 ```
 
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-adobe-signature'];
-    if (!verifyAdobeSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
+## Quick Pitfall Scanner
 
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await adobeClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await adobeClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof AdobeNotFoundError) {
-    return null;
-  }
-  if (error instanceof AdobeRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new AdobeClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.adobe.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new AdobeClient({
-  timeout: parseInt(process.env.ADOBE_TIMEOUT || '30000'),
-  baseUrl: process.env.ADOBE_BASE_URL || 'https://api.adobe.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Adobe is down, every request hangs
-for (const user of users) {
-  await adobeClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(adobeClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Adobe is down
-const recommendations = await adobeClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await adobeClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('adobe', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
-
-## Instructions
-
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
-
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
-
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
-
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
-
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
-
-## Examples
-
-### Quick Pitfall Scan
 ```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
-```
+# Run against your codebase
+echo "=== Adobe Pitfall Scan ==="
 
-## Resources
-- [Adobe Security Guide](https://docs.adobe.com/security)
-- [Adobe Best Practices](https://docs.adobe.com/best-practices)
+# 1. JWT credentials (deprecated)
+grep -rn "jsonwebtoken\|jwt\.sign\|RS256" --include="*.ts" --include="*.js" src/ && echo "FOUND: JWT auth (deprecated)" || echo "OK: No JWT"
+
+# 2. Uncached token generation
+grep -rn "ims/token/v3" --include="*.ts" src/ | wc -l | xargs -I{} echo "Token endpoint calls: {} (should be 1 — in auth.ts only)"
+
+# 3. Hardcoded secrets
+grep -rn "p8_" --include="*.ts" --include="*.js" src/ && echo "FOUND: Hardcoded Adobe secret" || echo "OK: No hardcoded secrets"
+
+# 4. Deprecated endpoints
+grep -rn "sensei/cutout" --include="*.ts" src/ && echo "FOUND: Deprecated Photoshop endpoint" || echo "OK: No deprecated endpoints"
+
+# 5. Missing webhook verification
+grep -rn "webhooks/adobe" --include="*.ts" src/ | grep -v "digital-signature\|verify\|RSA" && echo "WARNING: Webhook handler may lack signature verification"
+```
 
 ## Quick Reference Card
 
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+| Pitfall | Risk | Detection | Fix |
+|---------|------|-----------|-----|
+| JWT auth | Broken auth | Grep for `jwt.sign` | Migrate to OAuth S2S |
+| No token cache | Perf (-500ms/req) | Multiple `ims/token` calls | Cache with expiry |
+| Sync Firefly for batch | Slow (N*20s) | Sequential `generate` calls | Use async endpoint |
+| Ignore content policy | Wasted credits | Catch 400 without reason | Pre-screen prompts |
+| Direct file upload | 400 errors | FormData to Photoshop | Pre-signed URLs |
+| No job polling | Missing results | No poll loop after submit | Poll `_links.self` |
+| Leaked `p8_` secret | Credential compromise | Grep for `p8_` | Env vars + .gitignore |
+| No quota tracking | Silent failures | No counter | Track per-month usage |
+| Old PS endpoint | 404 errors | `/sensei/cutout` | `/v2/remove-background` |
+| No webhook verify | Security hole | No signature check | RSA-SHA256 verification |
+
+## Resources
+
+- [JWT to OAuth Migration](https://developer.adobe.com/developer-console/docs/guides/authentication/ServerToServerAuthentication/migration)
+- [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)
+- [Photoshop Remove Background v2](https://developer.adobe.com/firefly-services/docs/photoshop/guides/remove_background/)
+- [I/O Events Signature Verification](https://developer.adobe.com/events/docs/guides/sdk/sdk_signature_verification/)

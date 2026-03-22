@@ -1,9 +1,9 @@
 ---
 name: adobe-prod-checklist
 description: |
-  Execute Adobe production deployment checklist and rollback procedures.
-  Use when deploying Adobe integrations to production, preparing for launch,
-  or implementing go-live procedures.
+  Execute Adobe production deployment checklist covering credential management,
+  API health checks, rate limit configuration, and rollback procedures
+  for Firefly Services, PDF Services, and I/O Events integrations.
   Trigger with phrases like "adobe production", "deploy adobe",
   "adobe go-live", "adobe launch checklist".
 allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
@@ -17,105 +17,136 @@ compatible-with: claude-code
 # Adobe Production Checklist
 
 ## Overview
-Complete checklist for deploying Adobe integrations to production.
+
+Complete checklist for deploying Adobe API integrations to production, covering credential security, health monitoring, graceful degradation, and rollback procedures.
 
 ## Prerequisites
+
 - Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+- Production OAuth credentials created in Developer Console
+- Deployment pipeline with secret injection
+- Monitoring and alerting infrastructure ready
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Pre-Deployment: Credentials & Configuration
 
-### Step 2: Code Quality Verification
+- [ ] Production OAuth Server-to-Server credentials created (separate from staging)
+- [ ] `ADOBE_CLIENT_ID` and `ADOBE_CLIENT_SECRET` stored in secret manager (not env files)
+- [ ] Scopes are minimal: only APIs actually used in production
+- [ ] Token caching implemented (avoid re-generating per request)
+- [ ] I/O Events webhook endpoints use HTTPS with valid TLS cert
+- [ ] Webhook challenge response handler implemented (for registration)
+
+### Pre-Deployment: Code Quality
+
 - [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Adobe error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+- [ ] No hardcoded credentials (grep for `p8_` prefix patterns)
+- [ ] Error handling covers: `401`, `403`, `429`, `500`, `503`
+- [ ] Rate limiting/backoff with `Retry-After` header support
+- [ ] Webhook signature verification using RSA-SHA256
+- [ ] Logging redacts credentials and PII
+- [ ] API response validation (Zod or equivalent)
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Adobe connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
+### Pre-Deployment: Infrastructure
 
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
+- [ ] Health check endpoint verifies Adobe IMS token generation:
 
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.adobe.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/adobe-integration app=image:new --record
-kubectl rollout pause deployment/adobe-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/adobe-integration
-kubectl rollout pause deployment/adobe-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/adobe-integration
-kubectl rollout status deployment/adobe-integration
-```
-
-## Output
-- Deployed Adobe integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
 ```typescript
-async function healthCheck(): Promise<{ status: string; adobe: any }> {
+// api/health.ts
+export async function adobeHealthCheck() {
   const start = Date.now();
   try {
-    await adobeClient.ping();
-    return { status: 'healthy', adobe: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', adobe: { connected: false, latencyMs: Date.now() - start } };
+    // Test token generation (validates credentials are still valid)
+    const token = await getAccessToken();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+      tokenValid: !!token,
+    };
+  } catch (error: any) {
+    return {
+      status: 'unhealthy',
+      latencyMs: Date.now() - start,
+      error: error.message,
+    };
   }
 }
 ```
 
-### Immediate Rollback
+- [ ] Circuit breaker configured for Adobe API calls
+- [ ] Graceful degradation: app works (degraded) if Adobe is down
+- [ ] PDF Services monthly quota tracking (if on free tier)
+
+### Deploy: Gradual Rollout
+
 ```bash
-kubectl rollout undo deployment/adobe-integration
-kubectl rollout status deployment/adobe-integration
+# 1. Pre-flight checks
+curl -sf https://staging.example.com/health | jq '.services.adobe'
+curl -s https://status.adobe.com | head -5
+
+# 2. Verify production credentials work
+curl -s -o /dev/null -w "%{http_code}" -X POST \
+  'https://ims-na1.adobelogin.com/ims/token/v3' \
+  -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=${ADOBE_SCOPES}"
+# Expected: 200
+
+# 3. Deploy canary (10%)
+kubectl set image deployment/app app=image:new-version
+kubectl rollout pause deployment/app
+
+# 4. Monitor for 10 minutes — check error rates
+# Watch for 401 (credential issues), 429 (rate limits), 500 (server errors)
+
+# 5. If healthy, complete rollout
+kubectl rollout resume deployment/app
+kubectl rollout status deployment/app
 ```
 
+### Post-Deployment Verification
+
+- [ ] Health check endpoint returns `healthy` for Adobe
+- [ ] Test a real API call (e.g., Firefly image generation, PDF extraction)
+- [ ] Webhook delivery confirmed (check I/O Events dashboard)
+- [ ] Error rate baseline established in monitoring
+- [ ] On-call team has `adobe-incident-runbook` accessible
+
+### Rollback Procedure
+
+```bash
+# Immediate rollback
+kubectl rollout undo deployment/app
+kubectl rollout status deployment/app
+
+# Verify old version is healthy
+curl -sf https://production.example.com/health | jq '.services.adobe'
+```
+
+## Alert Configuration
+
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| Adobe Auth Failure | Any `401` errors | P1 — credential issue |
+| Adobe Rate Limited | `429` errors > 5/min | P2 — reduce throughput |
+| Adobe API Down | `503` errors > 10/min | P2 — enable fallback |
+| Adobe High Latency | p99 > 10s | P3 — investigate |
+| PDF Quota Low | < 50 transactions remaining | P3 — upgrade or throttle |
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 401 after deploy | Wrong credentials for environment | Verify secret manager path |
+| 429 spike | Traffic increase from new feature | Add rate limiting queue |
+| Health check flapping | Token caching not working | Check cache TTL logic |
+| Webhook delivery stopped | Challenge response broken | Test webhook registration |
+
 ## Resources
-- [Adobe Status](https://status.adobe.com)
-- [Adobe Support](https://docs.adobe.com/support)
+
+- [Adobe Status Page](https://status.adobe.com)
+- [Adobe Developer Console](https://developer.adobe.com/console)
+- [Adobe Developer Support](https://developer.adobe.com/support)
 
 ## Next Steps
+
 For version upgrades, see `adobe-upgrade-migration`.

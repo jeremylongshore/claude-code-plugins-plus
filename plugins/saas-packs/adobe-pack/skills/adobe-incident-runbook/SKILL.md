@@ -1,11 +1,12 @@
 ---
 name: adobe-incident-runbook
 description: |
-  Execute Adobe incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Adobe-related outages, investigating errors,
-  or running post-incident reviews for Adobe integration failures.
+  Execute Adobe incident response procedures with triage, mitigation,
+  and postmortem for Firefly Services, PDF Services, and I/O Events outages.
+  Use when responding to Adobe-related incidents, investigating API failures,
+  or running post-incident reviews.
   Trigger with phrases like "adobe incident", "adobe outage",
-  "adobe down", "adobe on-call", "adobe emergency", "adobe broken".
+  "adobe down", "adobe on-call", "adobe emergency".
 allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
@@ -17,189 +18,186 @@ compatible-with: claude-code
 # Adobe Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Adobe-related outages.
+
+Rapid incident response procedures for Adobe API-related outages, covering IMS authentication failures, Firefly/Photoshop API downtime, PDF Services quota exhaustion, and I/O Events delivery failures.
 
 ## Prerequisites
-- Access to Adobe dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
+
+- Access to Adobe Developer Console and Admin Console
+- Access to application monitoring (Grafana, Datadog, etc.)
+- kubectl access to production cluster (if applicable)
 - Communication channels (Slack, PagerDuty)
 
-## Severity Levels
+## Severity Matrix
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Adobe API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response Time | Example |
+|-------|------------|---------------|---------|
+| P1 | Complete Adobe integration failure | < 15 min | IMS auth broken, all APIs down |
+| P2 | Single API degraded | < 1 hour | Firefly 429s, Photoshop timeouts |
+| P3 | Minor impact | < 4 hours | Webhook delays, slow PDF extraction |
+| P4 | No user impact | Next business day | Monitoring gap, metric anomaly |
 
-## Quick Triage
+## Quick Triage (Run These First)
 
 ```bash
-# 1. Check Adobe status
-curl -s https://status.adobe.com | jq
+# 1. Is Adobe itself down?
+curl -s -o /dev/null -w "Adobe Status: %{http_code}\n" https://status.adobe.com
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.adobe'
+# 2. Can we generate an access token?
+curl -s -o /dev/null -w "IMS Auth: %{http_code}\n" -X POST \
+  'https://ims-na1.adobelogin.com/ims/token/v3' \
+  -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=${ADOBE_SCOPES}"
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(adobe_errors_total[5m])
+# 3. Can we reach each API endpoint?
+for endpoint in firefly-api.adobe.io image.adobe.io pdf-services.adobe.io; do
+  CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 "https://$endpoint" 2>/dev/null || echo "UNREACHABLE")
+  echo "$endpoint: $CODE"
+done
 
-# 4. Recent error logs
-kubectl logs -l app=adobe-integration --since=5m | grep -i error | tail -20
+# 4. Check our app health
+curl -sf https://your-app.com/health | python3 -m json.tool
+
+# 5. Recent errors in our logs (last 5 min)
+kubectl logs -l app=adobe-service --since=5m 2>/dev/null | grep -i "error\|failed\|429\|401\|500" | tail -20
 ```
 
 ## Decision Tree
 
 ```
-Adobe API returning errors?
-├─ YES: Is status.adobe.com showing incident?
-│   ├─ YES → Wait for Adobe to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+Adobe APIs returning errors?
+├── YES: Is status.adobe.com reporting an incident?
+│   ├── YES → Adobe-side outage. Enable fallback mode. Monitor status page.
+│   └── NO → Check our credentials and config.
+│       ├── 401 errors → Credentials expired/rotated. See "Auth Recovery" below.
+│       ├── 429 errors → Rate limited. See "Rate Limit Recovery" below.
+│       └── 500/503 errors → Adobe server issue (unreported). Open support ticket.
+└── NO: Is our application healthy?
+    ├── YES → Likely resolved or intermittent. Continue monitoring.
+    └── NO → Our infrastructure issue. Check pods, memory, network.
 ```
 
-## Immediate Actions by Error Type
+## Recovery Procedures
 
-### 401/403 - Authentication
+### Auth Recovery (401/403)
+
 ```bash
-# Verify API key is set
-kubectl get secret adobe-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# 1. Verify credentials are still valid in Developer Console
+#    https://developer.adobe.com/console → Your Project → Credentials
 
-# Check if key was rotated
-# → Verify in Adobe dashboard
+# 2. Test credential directly
+curl -v -X POST 'https://ims-na1.adobelogin.com/ims/token/v3' \
+  -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=${ADOBE_SCOPES}" 2>&1 | grep -E "HTTP|error"
 
-# Remediation: Update secret and restart pods
-kubectl create secret generic adobe-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/adobe-integration
+# 3. If credentials were rotated, update in secret manager
+gcloud secrets versions add adobe-client-secret --data-file=- <<< "new_p8_secret"
+# OR
+aws secretsmanager update-secret --secret-id adobe/production/credentials \
+  --secret-string '{"client_id":"...","client_secret":"new_secret"}'
+
+# 4. Restart application to clear cached token
+kubectl rollout restart deployment/adobe-service
+
+# 5. Verify recovery
+curl -sf https://your-app.com/health | jq '.services.adobe'
 ```
 
-### 429 - Rate Limited
+### Rate Limit Recovery (429)
+
 ```bash
-# Check rate limit headers
-curl -v https://api.adobe.com 2>&1 | grep -i rate
+# 1. Check if rate limiting is transient or sustained
+# Look at 429 error rate over last 30 min
 
-# Enable request queuing
-kubectl set env deployment/adobe-integration RATE_LIMIT_MODE=queue
+# 2. Reduce throughput immediately
+# Option A: Scale down workers
+kubectl scale deployment/adobe-batch-worker --replicas=1
 
-# Long-term: Contact Adobe for limit increase
+# Option B: Enable rate limit queue mode
+kubectl set env deployment/adobe-service ADOBE_RATE_LIMIT_MODE=queue
+
+# 3. For sustained rate limiting, contact Adobe for limit increase
+# Include: client_id, typical request volume, business justification
 ```
 
-### 500/503 - Adobe Errors
+### Fallback Mode
+
 ```bash
-# Enable graceful degradation
-kubectl set env deployment/adobe-integration ADOBE_FALLBACK=true
+# Enable fallback mode (app continues working without Adobe)
+kubectl set env deployment/adobe-service ADOBE_FALLBACK_MODE=true
 
-# Notify users of degraded service
-# Update status page
-
-# Monitor Adobe status for resolution
+# Verify fallback is working
+curl -sf https://your-app.com/health | jq '.services.adobe'
+# Should return { "status": "degraded", "mode": "fallback" }
 ```
 
 ## Communication Templates
 
 ### Internal (Slack)
+
 ```
-🔴 P1 INCIDENT: Adobe Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
+P[1-4] INCIDENT: Adobe [API Name] Integration
+Status: INVESTIGATING / IDENTIFIED / MONITORING / RESOLVED
+Impact: [User-facing description]
+Root cause: [Adobe outage / credential issue / rate limit / our bug]
+Current action: [What you're doing right now]
 Next update: [Time]
-Incident commander: @[name]
-```
-
-### External (Status Page)
-```
-Adobe Integration Issue
-
-We're experiencing issues with our Adobe integration.
-Some users may experience [specific impact].
-
-We're actively investigating and will provide updates.
-
-Last updated: [timestamp]
-```
-
-## Post-Incident
-
-### Evidence Collection
-```bash
-# Generate debug bundle
-./scripts/adobe-debug-bundle.sh
-
-# Export relevant logs
-kubectl logs -l app=adobe-integration --since=1h > incident-logs.txt
-
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=adobe_errors_total&start=2h" > metrics.json
+Commander: @[name]
 ```
 
 ### Postmortem Template
+
 ```markdown
-## Incident: Adobe [Error Type]
+## Incident: Adobe [API] [Error Type]
 **Date:** YYYY-MM-DD
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
 
 ### Summary
-[1-2 sentence description]
+[1-2 sentence description of what happened]
 
 ### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+- HH:MM UTC — Alert fired: adobe_api_errors_total spike
+- HH:MM UTC — On-call acknowledged, began triage
+- HH:MM UTC — Root cause identified: [description]
+- HH:MM UTC — Mitigation applied: [action taken]
+- HH:MM UTC — Full recovery confirmed
 
 ### Root Cause
-[Technical explanation]
+[Technical explanation — was it Adobe-side, credential issue, our bug?]
 
 ### Impact
 - Users affected: N
-- Revenue impact: $X
+- API calls failed: N
+- Revenue impact: $X (if applicable)
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] [Preventive measure] — Owner — Due date
+- [ ] [Monitoring improvement] — Owner — Due date
+- [ ] [Documentation update] — Owner — Due date
 ```
 
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Adobe-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
 ## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
+
+- Incident severity classified
+- Root cause identified via decision tree
+- Recovery procedure executed
+- Stakeholders notified with template
 - Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.adobe.status' || echo "UNHEALTHY"
-```
+| Can't reach status.adobe.com | Network issue | Use mobile data or check @AdobeCare on Twitter |
+| kubectl auth expired | Token timeout | Re-authenticate with cloud provider |
+| Secret manager access denied | IAM policy | Use break-glass admin account |
+| Fallback mode not implemented | Missing code path | Return cached/default data |
 
 ## Resources
+
 - [Adobe Status Page](https://status.adobe.com)
-- [Adobe Support](https://support.adobe.com)
+- [Adobe Developer Support](https://developer.adobe.com/support)
+- [Adobe Developer Console](https://developer.adobe.com/console)
 
 ## Next Steps
+
 For data handling, see `adobe-data-handling`.

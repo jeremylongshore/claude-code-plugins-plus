@@ -1,11 +1,12 @@
 ---
 name: adobe-rate-limits
 description: |
-  Implement Adobe rate limiting, backoff, and idempotency patterns.
+  Implement Adobe API rate limiting, backoff, and quota management across
+  Firefly, PDF Services, Photoshop, and I/O Events APIs.
   Use when handling rate limit errors, implementing retry logic,
   or optimizing API request throughput for Adobe.
   Trigger with phrases like "adobe rate limit", "adobe throttling",
-  "adobe 429", "adobe retry", "adobe backoff".
+  "adobe 429", "adobe retry", "adobe backoff", "adobe quota".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,44 +18,64 @@ compatible-with: claude-code
 # Adobe Rate Limits
 
 ## Overview
-Handle Adobe rate limits gracefully with exponential backoff and idempotency.
+
+Handle Adobe API rate limits gracefully with exponential backoff, `Retry-After` header support, and proactive quota management. Each Adobe API has different rate limits.
 
 ## Prerequisites
-- Adobe SDK installed
+
+- Adobe SDK installed and authenticated
 - Understanding of async/await patterns
-- Access to rate limit headers
+- Awareness of your API tier and entitlements
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Know Your Rate Limits by API
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| API | Limit | Scope | Response |
+|-----|-------|-------|----------|
+| **Firefly API** | ~20 req/min (trial), higher on paid | Per api-key | `429` + `Retry-After` |
+| **PDF Services** | 500 tx/month (free), unlimited (paid) | Per credential | `429` or `QUOTA_EXCEEDED` |
+| **Photoshop API** | Varies by entitlement | Per api-key | `429` + `Retry-After` |
+| **Lightroom API** | Varies by entitlement | Per api-key | `429` + `Retry-After` |
+| **I/O Events Publishing** | 3,000 req/5sec | Per api-key | `429` + `Retry-After` |
+| **Analytics 2.0 API** | 12 req/6sec per user (~120 req/min) | Per user | `429` + `Retry-After` |
+| **IMS Token Endpoint** | ~100 req/min | Per client_id | `429` |
 
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 2: Implement Retry-After Aware Backoff
 
 ```typescript
-async function withExponentialBackoff<T>(
+// src/adobe/rate-limiter.ts
+import { AdobeApiError } from './client';
+
+export async function withAdobeBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 60_000 }
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
       return await operation();
     } catch (error: any) {
       if (attempt === config.maxRetries) throw error;
+
+      // Only retry on 429 and 5xx
       const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      if (status && status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      // Honor Adobe's Retry-After header (seconds)
+      let delay: number;
+      if (error.retryAfter) {
+        delay = error.retryAfter * 1000;
+      } else {
+        // Exponential backoff with jitter
+        const exponential = config.baseDelayMs * Math.pow(2, attempt);
+        const jitter = Math.random() * config.baseDelayMs;
+        delay = Math.min(exponential + jitter, config.maxDelayMs);
+      }
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      console.warn(
+        `Adobe rate limited (attempt ${attempt + 1}/${config.maxRetries}). ` +
+        `Waiting ${(delay / 1000).toFixed(1)}s...`
+      );
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +83,128 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 3: Proactive Rate Tracking
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+// Track remaining quota from response headers
+class AdobeRateTracker {
+  private remaining: number = Infinity;
+  private resetAt: number = 0;
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
+  updateFromResponse(response: Response): void {
+    const remaining = response.headers.get('Retry-After');
+    // Adobe primarily uses Retry-After rather than X-RateLimit-* headers
+    // Some APIs (Analytics, Events) include additional rate info
+    if (remaining) {
+      this.remaining = 0;
+      this.resetAt = Date.now() + parseInt(remaining) * 1000;
+    }
+  }
+
+  async waitIfNeeded(): Promise<void> {
+    if (this.remaining <= 0 && Date.now() < this.resetAt) {
+      const waitMs = this.resetAt - Date.now();
+      console.log(`Proactively waiting ${waitMs}ms for Adobe rate limit reset`);
+      await new Promise(r => setTimeout(r, waitMs));
+      this.remaining = Infinity; // Reset after wait
+    }
+  }
 }
+```
 
-async function idempotentRequest<T>(
-  client: AdobeClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
+### Step 4: Queue-Based Rate Limiting for Batch Operations
+
+```typescript
+import PQueue from 'p-queue';
+
+// Configure queue per API — match to known rate limits
+const fireflyQueue = new PQueue({
+  concurrency: 2,        // Max concurrent requests
+  interval: 3000,        // Time window (ms)
+  intervalCap: 1,        // Max requests per interval
+});
+
+const pdfServicesQueue = new PQueue({
+  concurrency: 5,
+  interval: 1000,
+  intervalCap: 5,
+});
+
+const eventsQueue = new PQueue({
+  concurrency: 10,
+  interval: 5000,
+  intervalCap: 3000,     // Match Adobe's 3000/5sec limit
+});
+
+// Usage
+async function batchFireflyGenerate(prompts: string[]) {
+  const results = await Promise.all(
+    prompts.map(prompt =>
+      fireflyQueue.add(() =>
+        withAdobeBackoff(() => generateImage({ prompt }))
+      )
+    )
+  );
+  return results;
+}
+```
+
+### Step 5: PDF Services Transaction Monitoring
+
+```typescript
+// Track monthly PDF Services usage against free tier limit
+class PdfServicesQuotaTracker {
+  private transactionsUsed = 0;
+  private readonly monthlyLimit: number;
+
+  constructor(tier: 'free' | 'paid' = 'free') {
+    this.monthlyLimit = tier === 'free' ? 500 : Infinity;
+  }
+
+  recordTransaction(): void {
+    this.transactionsUsed++;
+    const remaining = this.monthlyLimit - this.transactionsUsed;
+
+    if (remaining <= 50) {
+      console.warn(`PDF Services: ${remaining} transactions remaining this month`);
+    }
+    if (remaining <= 0) {
+      throw new Error('PDF Services monthly quota exceeded. Upgrade plan or wait for reset.');
+    }
+  }
+
+  getUsage(): { used: number; limit: number; remaining: number } {
+    return {
+      used: this.transactionsUsed,
+      limit: this.monthlyLimit,
+      remaining: Math.max(0, this.monthlyLimit - this.transactionsUsed),
+    };
+  }
 }
 ```
 
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+
+- Retry logic that honors Adobe `Retry-After` headers
+- Per-API queue-based rate limiting for batch operations
+- Monthly transaction tracking for PDF Services free tier
+- Proactive backpressure before hitting limits
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Scenario | Detection | Action |
+|----------|-----------|--------|
+| Single 429 | `Retry-After` header | Wait specified seconds, retry |
+| Sustained 429s | Multiple retries fail | Reduce concurrency; check tier |
+| PDF `QUOTA_EXCEEDED` | Monthly limit hit | Upgrade tier or wait for reset |
+| Events 429 | 3000/5sec exceeded | Reduce batch size or add queue |
 
 ## Resources
-- [Adobe Rate Limits](https://docs.adobe.com/rate-limits)
+
+- [Adobe Events API Rate Limits](https://developer.adobe.com/events/docs/guides/api/eventsingress-api)
+- [Adobe Analytics API FAQ](https://developer.adobe.com/analytics-apis/docs/2.0/guides/faq/)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `adobe-security-basics`.

@@ -1,11 +1,11 @@
 ---
 name: adobe-data-handling
 description: |
-  Implement Adobe PII handling, data retention, and GDPR/CCPA compliance patterns.
-  Use when handling sensitive data, implementing data redaction, configuring retention policies,
-  or ensuring compliance with privacy regulations for Adobe integrations.
+  Implement data handling for Adobe APIs including PII redaction in logs,
+  Firefly content policy compliance, PDF document data classification,
+  and GDPR/CCPA data subject access requests via Adobe Privacy Service.
   Trigger with phrases like "adobe data", "adobe PII",
-  "adobe GDPR", "adobe data retention", "adobe privacy", "adobe CCPA".
+  "adobe GDPR", "adobe data retention", "adobe privacy", "adobe content policy".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,26 +17,34 @@ compatible-with: claude-code
 # Adobe Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Adobe.
+
+Handle sensitive data correctly when integrating with Adobe APIs. Key concerns include Firefly content policy compliance, PII in PDF extraction results, credential redaction in logs, and GDPR/CCPA compliance using Adobe Privacy Service API.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Adobe SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
 
-## Data Classification
+- Understanding of your data classification requirements
+- Adobe SDK with appropriate API access
+- Database for audit logging
+- Familiarity with GDPR/CCPA obligations
+
+## Instructions
+
+### Step 1: Data Classification for Adobe API Data
 
 | Category | Examples | Handling |
 |----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
+| **Credentials** | `client_secret`, access tokens | Never log; rotate regularly |
+| **User Content** | Uploaded images, PDFs | Encrypt at rest; delete per retention policy |
+| **Generated Content** | Firefly outputs, processed PDFs | Time-limited URLs (24h); cache intentionally |
+| **Extraction Results** | PDF text, tables, structured data | May contain PII; scan and redact |
+| **API Metadata** | Job IDs, request IDs, timestamps | Safe to log; useful for debugging |
 
-## PII Detection
+### Step 2: PII Detection in PDF Extraction Results
+
+PDF Extract API returns raw text that may contain customer PII:
 
 ```typescript
+// src/adobe/pii-scanner.ts
 const PII_PATTERNS = [
   { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
   { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
@@ -44,179 +52,190 @@ const PII_PATTERNS = [
   { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
 ];
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
+interface PiiFinding {
+  type: string;
+  count: number;
+  // Never store the actual PII value
 }
-```
 
-## Data Redaction
+export function scanForPii(text: string): PiiFinding[] {
+  return PII_PATTERNS
+    .map(pattern => {
+      const matches = text.matchAll(pattern.regex);
+      const count = [...matches].length;
+      return count > 0 ? { type: pattern.type, count } : null;
+    })
+    .filter(Boolean) as PiiFinding[];
+}
 
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
+export function redactPii(text: string): string {
+  let redacted = text;
+  for (const pattern of PII_PATTERNS) {
+    redacted = redacted.replace(pattern.regex, `[REDACTED-${pattern.type.toUpperCase()}]`);
   }
-
   return redacted;
 }
 
-// Use in logging
-console.log('Adobe request:', redactPII(requestData));
-```
+// Usage after PDF extraction
+const extracted = await extractPdfContent('customer-form.pdf');
+const piiFindings = scanForPii(extracted.text);
 
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupAdobeData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.adobeLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupAdobeData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const adobeData = await adobeClient.getUserData(userId);
-
-  return {
-    source: 'Adobe',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: adobeData.profile,
-      activities: adobeData.activities,
-      // Include all user-related data
-    },
-  };
+if (piiFindings.length > 0) {
+  console.warn('PII detected in extraction:', piiFindings);
+  // Store redacted version, or encrypt at rest
+  const safeText = redactPii(extracted.text);
 }
 ```
 
-### Right to Deletion
+### Step 3: Firefly Content Policy Compliance
+
+Firefly API has built-in content guardrails. Handle policy rejections gracefully:
 
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Adobe
-  await adobeClient.deleteUser(userId);
+// src/adobe/content-policy.ts
 
-  // 2. Delete local copies
-  await db.adobeUserCache.deleteMany({ userId });
+// Pre-screen prompts before sending to Firefly
+const BLOCKED_PATTERNS = [
+  /\b(person|celebrity|actor|politician)\b/i,
+  /\b(nike|apple|google|disney|marvel)\b/i, // Trademarks
+  /\b(nude|explicit|violent|gore)\b/i,
+];
 
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'adobe',
-    timestamp: new Date(),
-  });
+export function validatePrompt(prompt: string): { valid: boolean; reason?: string } {
+  for (const pattern of BLOCKED_PATTERNS) {
+    if (pattern.test(prompt)) {
+      return {
+        valid: false,
+        reason: `Prompt may violate Firefly content policy: matches "${pattern.source}"`,
+      };
+    }
+  }
+  return { valid: true };
+}
 
-  return { success: true, deletedAt: new Date() };
+// Handle Firefly content policy rejection
+export function handleContentPolicyError(error: any): string {
+  if (error.status === 400 && error.message?.includes('content policy')) {
+    return 'Prompt rejected by Adobe Firefly content policy. ' +
+      'Remove references to real people, trademarks, or explicit content.';
+  }
+  throw error;
 }
 ```
 
-## Data Minimization
+### Step 4: Credential Redaction in Logs
 
 ```typescript
-// Only request needed fields
-const user = await adobeClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
+// src/adobe/safe-logger.ts
+import pino from 'pino';
+
+const logger = pino({
+  name: 'adobe',
+  redact: {
+    paths: [
+      'clientSecret',
+      'client_secret',
+      'access_token',
+      'accessToken',
+      'req.headers.authorization',
+      'req.headers["x-api-key"]',
+    ],
+    censor: '[REDACTED]',
+  },
 });
 
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Adobe data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
-
-## Examples
-
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+// Safe request logging — only log metadata, never credentials
+export function logAdobeRequest(entry: {
+  api: string;
+  operation: string;
+  durationMs: number;
+  httpStatus: number;
+  jobId?: string;
+  requestId?: string;  // From x-request-id response header
+}) {
+  logger.info(entry, `adobe.${entry.api}.${entry.operation}`);
 }
 ```
 
-### Redact Before Logging
+### Step 5: GDPR/CCPA — Adobe Privacy Service API
+
+Adobe provides a Privacy Service API for data subject access and deletion requests:
+
 ```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Adobe response:', safeData);
+// GDPR Data Subject Access Request
+export async function submitPrivacyRequest(
+  userId: string,
+  requestType: 'access' | 'delete'
+): Promise<{ jobId: string }> {
+  const token = await getAccessToken();
+
+  const response = await fetch(
+    'https://platform.adobe.io/data/core/privacy/jobs',
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': process.env.ADOBE_CLIENT_ID!,
+        'x-gw-ims-org-id': process.env.ADOBE_IMS_ORG_ID!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        companyContexts: [{
+          namespace: 'imsOrgID',
+          value: process.env.ADOBE_IMS_ORG_ID,
+        }],
+        users: [{
+          key: userId,
+          action: [requestType],
+          userIDs: [{
+            namespace: 'email',
+            value: userId,
+            type: 'standard',
+          }],
+        }],
+        regulation: 'gdpr', // or 'ccpa'
+      }),
+    }
+  );
+
+  const result = await response.json();
+  return { jobId: result.jobId };
+}
 ```
 
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
+### Data Retention Policy
+
+| Data Type | Retention | Reason |
+|-----------|-----------|--------|
+| Firefly generated images | URLs expire 24h; cache intentionally | Adobe auto-expires |
+| PDF extraction results | 30 days | Debugging |
+| API access tokens | 24 hours (auto-expire) | Adobe IMS TTL |
+| Error logs with request IDs | 90 days | Root cause analysis |
+| Audit logs (who accessed what) | 7 years | Compliance |
+
+## Output
+
+- PII detection and redaction for PDF extraction results
+- Firefly prompt pre-screening for content policy
+- Credential redaction in all logs
+- GDPR/CCPA data subject request support via Privacy Service API
+- Data retention policy aligned with Adobe's auto-expiration
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in extraction output | Raw PDF content | Apply redactPii() before storage |
+| Firefly prompt rejected | Content policy | Pre-screen with validatePrompt() |
+| Credentials in logs | Missing redaction | Configure pino redact paths |
+| Privacy request failed | Missing org ID | Set `ADOBE_IMS_ORG_ID` env var |
 
 ## Resources
+
+- [Adobe Privacy Service API](https://developer.adobe.com/experience-platform-apis/references/privacy-service/)
+- [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)
 - [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Adobe Privacy Guide](https://docs.adobe.com/privacy)
 
 ## Next Steps
+
 For enterprise access control, see `adobe-enterprise-rbac`.

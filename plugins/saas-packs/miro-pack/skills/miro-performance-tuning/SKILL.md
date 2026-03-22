@@ -1,216 +1,279 @@
 ---
 name: miro-performance-tuning
 description: |
-  Optimize Miro API performance with caching, batching, and connection pooling.
-  Use when experiencing slow API responses, implementing caching strategies,
-  or optimizing request throughput for Miro integrations.
+  Optimize Miro REST API v2 performance with caching, cursor pagination,
+  request batching, and connection pooling for high-throughput integrations.
   Trigger with phrases like "miro performance", "optimize miro",
   "miro latency", "miro caching", "miro slow", "miro batch".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro]
+tags: [saas, miro, performance, caching]
 compatible-with: claude-code
 ---
 
 # Miro Performance Tuning
 
 ## Overview
-Optimize Miro API performance with caching, batching, and connection pooling.
 
-## Prerequisites
-- Miro SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+Optimize Miro REST API v2 throughput and latency. Key levers: minimize API calls with cursor pagination, cache board/item data, batch writes with controlled concurrency, and use connection pooling.
 
 ## Latency Benchmarks
 
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
+Typical latencies for `api.miro.com` (US region):
 
-## Caching Strategy
+| Operation | Endpoint | P50 | P95 | Credits |
+|-----------|----------|-----|-----|---------|
+| Get board | `GET /v2/boards/{id}` | 80ms | 200ms | Level 1 |
+| List items (50) | `GET /v2/boards/{id}/items?limit=50` | 120ms | 350ms | Level 1 |
+| Create sticky note | `POST /v2/boards/{id}/sticky_notes` | 150ms | 400ms | Level 2 |
+| Create connector | `POST /v2/boards/{id}/connectors` | 160ms | 420ms | Level 2 |
+| Update item | `PATCH /v2/boards/{id}/items/{id}` | 130ms | 350ms | Level 2 |
+| Delete item | `DELETE /v2/boards/{id}/items/{id}` | 100ms | 280ms | Level 2 |
 
-### Response Caching
+## Cursor Pagination (Eliminate Over-Fetching)
+
+Miro v2 uses cursor-based pagination. Fetch only what you need.
+
 ```typescript
-import { LRUCache } from 'lru-cache';
+// Efficient paginated iterator
+async function* paginateItems(
+  boardId: string,
+  options: { type?: string; limit?: number } = {}
+): AsyncGenerator<MiroBoardItem> {
+  const limit = options.limit ?? 50;  // Max 50 per page
+  let cursor: string | undefined;
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+  do {
+    const params = new URLSearchParams({ limit: String(limit) });
+    if (options.type) params.set('type', options.type);
+    if (cursor) params.set('cursor', cursor);
 
-async function cachedMiroRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+    const response = await fetch(
+      `https://api.miro.com/v2/boards/${boardId}/items?${params}`,
+      { headers: { 'Authorization': `Bearer ${token}` } }
+    );
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+    const page = await response.json();
+    for (const item of page.data) {
+      yield item;
+    }
+
+    cursor = page.cursor;  // undefined when no more pages
+  } while (cursor);
+}
+
+// Usage: process items without loading entire board into memory
+for await (const item of paginateItems(boardId, { type: 'sticky_note' })) {
+  await processItem(item);
 }
 ```
 
-### Redis Caching (Distributed)
+## Caching Strategy
+
+### In-Memory Cache (Single Instance)
+
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const boardCache = new LRUCache<string, unknown>({
+  max: 500,                    // Max 500 cached entries
+  ttl: 60_000,                 // 1 minute TTL
+  updateAgeOnGet: true,        // Extend TTL on access
+  updateAgeOnHas: false,
+});
+
+async function getCachedBoard(boardId: string): Promise<MiroBoard> {
+  const cacheKey = `board:${boardId}`;
+  const cached = boardCache.get(cacheKey);
+  if (cached) return cached as MiroBoard;
+
+  const board = await miroFetch(`/v2/boards/${boardId}`);
+  boardCache.set(cacheKey, board);
+  return board;
+}
+
+// Invalidate on webhook events
+function onBoardEvent(event: MiroBoardEvent) {
+  boardCache.delete(`board:${event.boardId}`);
+  boardCache.delete(`items:${event.boardId}`);
+}
+```
+
+### Redis Cache (Distributed)
+
 ```typescript
 import Redis from 'ioredis';
 
 const redis = new Redis(process.env.REDIS_URL);
 
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
+async function getCachedItems(boardId: string): Promise<MiroBoardItem[]> {
+  const key = `miro:items:${boardId}`;
   const cached = await redis.get(key);
   if (cached) return JSON.parse(cached);
 
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
+  // Fetch all items
+  const items: MiroBoardItem[] = [];
+  for await (const item of paginateItems(boardId)) {
+    items.push(item);
+  }
+
+  // Cache for 2 minutes (boards with active editing should use shorter TTL)
+  await redis.setex(key, 120, JSON.stringify(items));
+  return items;
+}
+
+// Webhook-driven cache invalidation
+async function invalidateOnEvent(event: MiroBoardEvent) {
+  const keys = [
+    `miro:items:${event.boardId}`,
+    `miro:board:${event.boardId}`,
+  ];
+  await redis.del(...keys);
 }
 ```
 
-## Request Batching
+## Controlled Concurrency for Bulk Operations
 
 ```typescript
-import DataLoader from 'dataloader';
+import PQueue from 'p-queue';
 
-const miroLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Miro
-    const results = await miroClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
+// Create items in parallel with controlled concurrency
+async function bulkCreateStickyNotes(
+  boardId: string,
+  notes: Array<{ content: string; color: string; x: number; y: number }>
+): Promise<string[]> {
+  const queue = new PQueue({
+    concurrency: 5,       // Max 5 parallel requests
+    interval: 1000,       // Per-second window
+    intervalCap: 10,      // Max 10 requests per second
+  });
+
+  const ids: string[] = [];
+
+  for (const note of notes) {
+    queue.add(async () => {
+      const result = await miroFetch(`/v2/boards/${boardId}/sticky_notes`, 'POST', {
+        data: { content: note.content, shape: 'square' },
+        style: { fillColor: note.color },
+        position: { x: note.x, y: note.y },
+      });
+      ids.push(result.id);
+    });
   }
-);
 
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  miroLoader.load('id-1'),
-  miroLoader.load('id-2'),
-  miroLoader.load('id-3'),
-]);
+  await queue.onIdle();  // Wait for all to complete
+  return ids;
+}
+
+// Example: Create a grid of 50 sticky notes efficiently
+const notes = Array.from({ length: 50 }, (_, i) => ({
+  content: `Note ${i + 1}`,
+  color: 'light_yellow',
+  x: (i % 10) * 250,
+  y: Math.floor(i / 10) * 250,
+}));
+
+const createdIds = await bulkCreateStickyNotes(boardId, notes);
+console.log(`Created ${createdIds.length} sticky notes`);
 ```
 
-## Connection Optimization
+## Connection Pooling
 
 ```typescript
 import { Agent } from 'https';
 
-// Keep-alive connection pooling
-const agent = new Agent({
+// Reuse TCP connections across requests
+const httpsAgent = new Agent({
   keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
+  maxSockets: 10,        // Max 10 concurrent connections to api.miro.com
+  maxFreeSockets: 5,     // Keep 5 idle connections in pool
+  timeout: 30000,        // Socket timeout
 });
 
-const client = new MiroClient({
-  apiKey: process.env.MIRO_API_KEY!,
-  httpAgent: agent,
-});
-```
+async function miroFetchPooled(path: string, options: RequestInit = {}) {
+  // Note: Node.js native fetch doesn't support custom agents directly.
+  // Use undici or node-fetch for connection pooling.
+  const { default: fetch } = await import('node-fetch');
 
-## Pagination Optimization
-
-```typescript
-async function* paginatedMiroList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedMiroList(cursor =>
-  miroClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
+  return fetch(`https://api.miro.com${path}`, {
+    ...options,
+    agent: httpsAgent,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+  });
 }
 ```
 
 ## Performance Monitoring
 
 ```typescript
-async function measuredMiroCall<T>(
+async function instrumentedMiroFetch<T>(
   operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
+  path: string,
+  method = 'GET',
+  body?: unknown,
+): Promise<{ data: T; metrics: RequestMetrics }> {
   const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
+  const response = await fetch(`https://api.miro.com${path}`, {
+    method,
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    ...(body ? { body: JSON.stringify(body) } : {}),
+  });
+
+  const duration = performance.now() - start;
+  const metrics: RequestMetrics = {
+    operation,
+    path,
+    method,
+    status: response.status,
+    durationMs: Math.round(duration),
+    rateLimitRemaining: parseInt(response.headers.get('X-RateLimit-Remaining') ?? '0', 10),
+    rateLimitReset: response.headers.get('X-RateLimit-Reset') ?? '',
+  };
+
+  // Log for dashboarding
+  console.log('[MIRO_PERF]', JSON.stringify(metrics));
+
+  const data = response.status !== 204 ? await response.json() : null;
+  return { data: data as T, metrics };
 }
 ```
 
-## Instructions
+## Optimization Checklist
 
-### Step 1: Establish Baseline
-Measure current latency for critical Miro operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+| Technique | Impact | Effort | When to Use |
+|-----------|--------|--------|-------------|
+| Type-filtered queries | High | Low | Always — `?type=sticky_note` reduces payload |
+| LRU cache | High | Low | Read-heavy workloads |
+| Redis cache + webhook invalidation | Very High | Medium | Multi-instance deployments |
+| Controlled concurrency | High | Low | Bulk create/update operations |
+| Connection pooling | Medium | Low | High request volume |
+| Cursor pagination | High | Low | Always — avoid loading full board |
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredMiroCall(name, () =>
-    cachedMiroRequest(`cache:${name}`, fn)
-  );
-```
+| Cache stale data | Long TTL + frequent edits | Shorten TTL or use webhook invalidation |
+| Concurrency errors | Too many parallel requests | Reduce `concurrency` in PQueue |
+| Connection pool exhausted | Max sockets too low | Increase `maxSockets` |
+| Pagination cursor expired | Long gap between pages | Re-start pagination from beginning |
 
 ## Resources
-- [Miro Performance Guide](https://docs.miro.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Get Items on Board](https://developers.miro.com/reference/get-items)
+- [Rate Limiting](https://developers.miro.com/reference/rate-limiting)
+- [LRU Cache](https://github.com/isaacs/node-lru-cache)
+- [p-queue](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For cost optimization, see `miro-cost-tuning`.

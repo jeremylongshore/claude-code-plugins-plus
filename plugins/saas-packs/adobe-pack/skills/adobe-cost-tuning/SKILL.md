@@ -1,11 +1,12 @@
 ---
 name: adobe-cost-tuning
 description: |
-  Optimize Adobe costs through tier selection, sampling, and usage monitoring.
+  Optimize Adobe API costs across Firefly Services (generative credits),
+  PDF Services (document transactions), and Photoshop/Lightroom APIs.
   Use when analyzing Adobe billing, reducing API costs,
   or implementing usage monitoring and budget alerts.
-  Trigger with phrases like "adobe cost", "adobe billing",
-  "reduce adobe costs", "adobe pricing", "adobe expensive", "adobe budget".
+  Trigger with phrases like "adobe cost", "adobe billing", "adobe credits",
+  "reduce adobe costs", "adobe pricing", "adobe budget".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,187 +18,196 @@ compatible-with: claude-code
 # Adobe Cost Tuning
 
 ## Overview
-Optimize Adobe costs through smart tier selection, sampling, and usage monitoring.
+
+Optimize costs across Adobe's consumption-based APIs. Each API family has different pricing models: Firefly uses generative credits, PDF Services uses document transactions, and Photoshop/Lightroom use API call credits.
 
 ## Prerequisites
-- Access to Adobe billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
 
-## Pricing Tiers
+- Access to Adobe Admin Console billing (https://adminconsole.adobe.com)
+- Understanding of current API usage patterns
+- Monitoring infrastructure for usage tracking
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+## Instructions
 
-## Cost Estimation
+### Step 1: Understand Adobe API Pricing Models
 
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
+| API | Free Tier | Paid Unit | Key Limit |
+|-----|-----------|-----------|-----------|
+| **PDF Services** | 500 tx/month | Document Transaction | Per-page for extract, per-file for create |
+| **Firefly API** | Trial credits | Generative Credit | 1 credit per image generated |
+| **Photoshop API** | Trial credits | API Credit | 1 credit per operation (cutout, actions, etc.) |
+| **Lightroom API** | Trial credits | API Credit | 1 credit per auto-edit |
+| **I/O Events** | Included | Free with entitlement | 3,000 events/5sec rate limit |
+| **Document Generation** | Part of PDF Services | Document Transaction | Per-document generated |
 
-function estimateAdobeCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
+### Step 2: Track Usage per API
 
 ```typescript
-class AdobeUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
+// src/adobe/usage-tracker.ts
+interface ApiUsageEntry {
+  api: 'firefly' | 'pdf-services' | 'photoshop' | 'lightroom';
+  operation: string;
+  timestamp: Date;
+  durationMs: number;
+  creditsUsed: number;
+}
 
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+class AdobeUsageTracker {
+  private entries: ApiUsageEntry[] = [];
+
+  record(entry: Omit<ApiUsageEntry, 'timestamp'>): void {
+    this.entries.push({ ...entry, timestamp: new Date() });
   }
 
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
+  getMonthlySummary(): Record<string, { calls: number; credits: number }> {
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Adobe budget limit');
-    }
+    const monthly = this.entries.filter(e => e.timestamp >= monthStart);
+
+    return monthly.reduce((acc, entry) => {
+      const key = entry.api;
+      if (!acc[key]) acc[key] = { calls: 0, credits: 0 };
+      acc[key].calls++;
+      acc[key].credits += entry.creditsUsed;
+      return acc;
+    }, {} as Record<string, { calls: number; credits: number }>);
   }
 
-  estimatedCost(): number {
-    return estimateAdobeCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
+  checkBudget(api: string, monthlyLimit: number): { remaining: number; warning: boolean } {
+    const summary = this.getMonthlySummary();
+    const used = summary[api]?.credits || 0;
+    const remaining = monthlyLimit - used;
+    return { remaining, warning: remaining < monthlyLimit * 0.2 };
   }
 }
 ```
 
-## Cost Reduction Strategies
+### Step 3: Cost Reduction Strategies
 
-### Step 1: Request Sampling
+**Strategy 1: Cache Firefly outputs by prompt hash**
 ```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
+import crypto from 'crypto';
+
+function promptHash(prompt: string, size: { width: number; height: number }): string {
+  return crypto.createHash('sha256')
+    .update(`${prompt}:${size.width}x${size.height}`)
+    .digest('hex')
+    .slice(0, 16);
 }
 
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await adobeClient.trackEvent(event);
+// Before generating, check if identical prompt was already run
+const hash = promptHash(prompt, { width: 1024, height: 1024 });
+const cached = await cache.get(`firefly:${hash}`);
+if (cached) return cached; // Saves 1 generative credit
+```
+
+**Strategy 2: Minimize PDF Services transactions**
+```typescript
+// EXPENSIVE: Extract + Create + Merge = 3 transactions
+await extractPdf(input);
+await createPdf(html);
+await mergePdfs([pdf1, pdf2]);
+
+// CHEAPER: Combine operations where possible
+// Use Document Generation API (1 transaction) instead of
+// creating PDF then merging
+await generateDocument(template, data); // 1 transaction
+```
+
+**Strategy 3: Right-size Firefly image dimensions**
+```typescript
+// Same credit cost but different use cases:
+// - Thumbnails: 512x512 (same 1 credit, faster generation)
+// - Social media: 1024x1024
+// - Print: 2048x2048 (same 1 credit, slower generation)
+// Generate at the size you actually need — don't upscale unnecessarily
+```
+
+**Strategy 4: Use Photoshop batch actions**
+```typescript
+// EXPENSIVE: 5 separate API calls = 5 credits
+await removeBackground(image1);
+await removeBackground(image2);
+// ...
+
+// CHEAPER: Photoshop Actions can chain operations
+// Record an action that does: remove bg + resize + add watermark
+// Run it once per image = 1 credit for all 3 operations
+await runPhotoshopAction(image, actionFile);
+```
+
+### Step 4: Budget Alert System
+
+```typescript
+// Check PDF Services free tier monthly limit
+const pdfTracker = new AdobeUsageTracker();
+
+// Wrap PDF Services calls with tracking
+async function trackedPdfExtract(pdfPath: string) {
+  const budget = pdfTracker.checkBudget('pdf-services', 500); // Free tier
+
+  if (budget.remaining <= 0) {
+    throw new Error('PDF Services monthly quota exhausted. Upgrade or wait for reset.');
+  }
+
+  if (budget.warning) {
+    console.warn(`PDF Services: only ${budget.remaining} transactions remaining this month`);
+    // Send alert to Slack/email
+  }
+
+  const result = await extractPdfContent(pdfPath);
+  pdfTracker.record({
+    api: 'pdf-services',
+    operation: 'extract',
+    durationMs: 0,
+    creditsUsed: 1,
+  });
+
+  return result;
 }
 ```
 
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => adobeClient.get(id)));
-
-// Use batch endpoint (1 call)
-await adobeClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new AdobeClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Adobe dashboard
-# Or use API if available:
-# Check Adobe documentation for billing APIs
-```
-
-## Cost Dashboard Query
+### Step 5: Cost Dashboard Query
 
 ```sql
 -- If tracking usage in your database
 SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM adobe_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
+  api,
+  operation,
+  DATE_TRUNC('day', timestamp) as date,
+  COUNT(*) as calls,
+  SUM(credits_used) as credits,
+  AVG(duration_ms) as avg_latency_ms
+FROM adobe_api_usage
+WHERE timestamp >= DATE_TRUNC('month', CURRENT_DATE)
+GROUP BY 1, 2, 3
+ORDER BY credits DESC;
 ```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Adobe dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
 
 ## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+
+- Per-API usage tracking with credit consumption
+- Budget alerts at 80% threshold
+- Caching to prevent duplicate Firefly credit charges
+- Operation batching for Photoshop workflows
+- Monthly cost dashboard query
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateAdobeCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
-```
+| Unexpected charges | Untracked batch jobs | Wrap all calls with usage tracker |
+| Free tier exceeded | No budget alerts | Implement 80% warning threshold |
+| High Firefly costs | Duplicate prompts | Cache by prompt hash |
+| PDF overage | Unnecessary re-extractions | Cache extraction results |
 
 ## Resources
-- [Adobe Pricing](https://adobe.com/pricing)
-- [Adobe Billing Dashboard](https://dashboard.adobe.com/billing)
+
+- [Adobe PDF Services Pricing](https://developer.adobe.com/document-services/pricing/main/)
+- [Firefly Services Documentation](https://developer.adobe.com/firefly-services/docs/guides/)
+- [Adobe Admin Console](https://adminconsole.adobe.com)
 
 ## Next Steps
+
 For architecture patterns, see `adobe-reference-architecture`.

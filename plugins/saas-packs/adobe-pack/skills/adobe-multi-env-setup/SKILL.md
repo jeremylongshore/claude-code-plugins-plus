@@ -1,9 +1,9 @@
 ---
 name: adobe-multi-env-setup
 description: |
-  Configure Adobe across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Adobe configurations.
+  Configure Adobe OAuth credentials and API access across development,
+  staging, and production environments with separate Developer Console
+  projects, secret managers, and environment-specific scoping.
   Trigger with phrases like "adobe environments", "adobe staging",
   "adobe dev prod", "adobe environment setup", "adobe config by env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
@@ -17,208 +17,192 @@ compatible-with: claude-code
 # Adobe Multi-Environment Setup
 
 ## Overview
-Configure Adobe across development, staging, and production environments.
+
+Configure Adobe APIs across development, staging, and production environments using separate Developer Console projects, environment-specific OAuth credentials, and cloud-native secret management.
 
 ## Prerequisites
-- Separate Adobe accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
 
-## Environment Strategy
+- Adobe Developer Console access (admin or developer role)
+- Secret management solution (GCP Secret Manager, AWS Secrets Manager, or Vault)
+- CI/CD pipeline with environment variable injection
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
+## Instructions
 
-## Configuration Structure
+### Step 1: Create Separate Developer Console Projects
 
-```
-config/
-├── adobe/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
-```
+Adobe best practice: one Developer Console **project** per environment with separate OAuth credentials.
 
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
+| Environment | Console Project | Scopes | Product Profile |
+|-------------|----------------|--------|-----------------|
+| Development | `my-app-dev` | `openid,AdobeID` | Dev sandbox |
+| Staging | `my-app-staging` | `openid,AdobeID,firefly_api` | Staging profile |
+| Production | `my-app-prod` | `openid,AdobeID,firefly_api,ff_apis` | Production profile |
 
-### development.json
-```json
-{
-  "apiKey": "${ADOBE_API_KEY}",
-  "baseUrl": "https://api-sandbox.adobe.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${ADOBE_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.adobe.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${ADOBE_API_KEY_PROD}",
-  "baseUrl": "https://api.adobe.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
+### Step 2: Environment Configuration Files
 
 ```typescript
-// src/adobe/config.ts
-import baseConfig from '../../config/adobe/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
+// src/config/adobe.ts
+interface AdobeEnvConfig {
+  imsEndpoint: string;       // Same across all envs
+  fireflyEndpoint: string;   // Same across all envs
+  photoshopEndpoint: string; // Same across all envs
+  scopes: string;            // Different per env (least privilege)
+  retries: number;
+  timeoutMs: number;
+  cache: { enabled: boolean; ttlMs: number };
 }
 
-export function getAdobeConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/adobe/${env}.json`);
+const configs: Record<string, AdobeEnvConfig> = {
+  development: {
+    imsEndpoint: 'https://ims-na1.adobelogin.com',
+    fireflyEndpoint: 'https://firefly-api.adobe.io',
+    photoshopEndpoint: 'https://image.adobe.io',
+    scopes: 'openid,AdobeID',        // Minimal scopes for dev
+    retries: 1,                       // Fast failure in dev
+    timeoutMs: 15_000,
+    cache: { enabled: false, ttlMs: 0 },  // No cache in dev
+  },
+  staging: {
+    imsEndpoint: 'https://ims-na1.adobelogin.com',
+    fireflyEndpoint: 'https://firefly-api.adobe.io',
+    photoshopEndpoint: 'https://image.adobe.io',
+    scopes: 'openid,AdobeID,firefly_api',
+    retries: 3,
+    timeoutMs: 30_000,
+    cache: { enabled: true, ttlMs: 60_000 },
+  },
+  production: {
+    imsEndpoint: 'https://ims-na1.adobelogin.com',
+    fireflyEndpoint: 'https://firefly-api.adobe.io',
+    photoshopEndpoint: 'https://image.adobe.io',
+    scopes: 'openid,AdobeID,firefly_api,ff_apis',
+    retries: 5,
+    timeoutMs: 60_000,
+    cache: { enabled: true, ttlMs: 300_000 },
+  },
+};
+
+export function getAdobeConfig(): AdobeEnvConfig & { clientId: string; clientSecret: string } {
+  const env = process.env.NODE_ENV || 'development';
+  const config = configs[env] || configs.development;
 
   return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
+    ...config,
+    clientId: process.env.ADOBE_CLIENT_ID!,
+    clientSecret: process.env.ADOBE_CLIENT_SECRET!,
   };
 }
 ```
 
-## Secret Management by Environment
+### Step 3: Secret Management per Environment
 
-### Local Development
 ```bash
+# --- Local Development ---
 # .env.local (git-ignored)
-ADOBE_API_KEY=sk_test_dev_***
+ADOBE_CLIENT_ID=dev-client-id-from-console
+ADOBE_CLIENT_SECRET=p8_dev_secret
+ADOBE_SCOPES=openid,AdobeID
+
+# --- GCP Secret Manager ---
+# Create secrets for staging and production
+gcloud secrets create adobe-client-id-staging --data-file=- <<< "staging-client-id"
+gcloud secrets create adobe-client-secret-staging --data-file=- <<< "p8_staging_secret"
+gcloud secrets create adobe-client-id-prod --data-file=- <<< "prod-client-id"
+gcloud secrets create adobe-client-secret-prod --data-file=- <<< "p8_prod_secret"
+
+# Grant service account access
+gcloud secrets add-iam-policy-binding adobe-client-secret-prod \
+  --member="serviceAccount:my-app@project.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+
+# --- AWS Secrets Manager ---
+aws secretsmanager create-secret \
+  --name adobe/staging/credentials \
+  --secret-string '{"client_id":"...","client_secret":"p8_staging_..."}'
+
+aws secretsmanager create-secret \
+  --name adobe/production/credentials \
+  --secret-string '{"client_id":"...","client_secret":"p8_prod_..."}'
+
+# --- HashiCorp Vault ---
+vault kv put secret/adobe/staging client_id="..." client_secret="p8_staging_..."
+vault kv put secret/adobe/production client_id="..." client_secret="p8_prod_..."
 ```
 
-### CI/CD (GitHub Actions)
+### Step 4: CI/CD Environment Matrix
+
 ```yaml
-env:
-  ADOBE_API_KEY: ${{ secrets.ADOBE_API_KEY_${{ matrix.environment }} }}
+# .github/workflows/deploy.yml
+jobs:
+  deploy:
+    strategy:
+      matrix:
+        environment: [staging, production]
+    environment: ${{ matrix.environment }}
+    runs-on: ubuntu-latest
+    env:
+      NODE_ENV: ${{ matrix.environment }}
+      ADOBE_CLIENT_ID: ${{ secrets[format('ADOBE_CLIENT_ID_{0}', matrix.environment)] }}
+      ADOBE_CLIENT_SECRET: ${{ secrets[format('ADOBE_CLIENT_SECRET_{0}', matrix.environment)] }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci && npm test
+      - name: Verify Adobe credentials for ${{ matrix.environment }}
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            'https://ims-na1.adobelogin.com/ims/token/v3' \
+            -d "client_id=${ADOBE_CLIENT_ID}&client_secret=${ADOBE_CLIENT_SECRET}&grant_type=client_credentials&scope=openid,AdobeID")
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Adobe credential validation failed for ${{ matrix.environment }}"
+            exit 1
+          fi
+      - run: npm run deploy:${{ matrix.environment }}
 ```
 
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id adobe/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=adobe-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/adobe/production
-```
-
-## Environment Isolation
+### Step 5: Environment Safety Guard
 
 ```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getAdobeConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[adobe] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
+// Prevent accidental production operations in non-prod
+function requireEnvironment(required: string): void {
+  const current = process.env.NODE_ENV || 'development';
+  if (current !== required) {
+    throw new Error(
+      `Operation requires ${required} environment, currently running in ${current}`
+    );
   }
 }
 
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
+// Usage: guard dangerous operations
+async function deleteAllCachedAssets() {
+  requireEnvironment('production');
+  // ... actual deletion logic
 }
 ```
 
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
-```
-
-## Instructions
-
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
-
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
-
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
-
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
-
 ## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+
+- Separate Developer Console projects per environment
+- Environment-aware configuration with least-privilege scoping
+- Cloud-native secret management for credentials
+- CI/CD pipeline with per-environment credential injection
+- Safety guards preventing cross-environment operations
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
-
-## Examples
-
-### Quick Environment Check
-```typescript
-const env = getAdobeConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
-```
+| `invalid_scope` in staging | Scope not in staging project | Add API to staging Console project |
+| Wrong credentials deployed | Environment mismatch | Verify `NODE_ENV` matches secret path |
+| Secret access denied | Missing IAM binding | Grant secretAccessor role |
+| Config merge fails | Missing env config file | Ensure all environments defined |
 
 ## Resources
-- [Adobe Environments Guide](https://docs.adobe.com/environments)
+
+- [Adobe Developer Console](https://developer.adobe.com/console)
+- [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
+- [AWS Secrets Manager](https://docs.aws.amazon.com/secretsmanager/)
 - [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
+
 For observability setup, see `adobe-observability`.

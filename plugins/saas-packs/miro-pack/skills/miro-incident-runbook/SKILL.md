@@ -1,205 +1,256 @@
 ---
 name: miro-incident-runbook
 description: |
-  Execute Miro incident response procedures with triage, mitigation, and postmortem.
-  Use when responding to Miro-related outages, investigating errors,
+  Execute Miro REST API v2 incident response with triage, mitigation, and postmortem.
+  Use when responding to Miro-related outages, investigating API errors,
   or running post-incident reviews for Miro integration failures.
   Trigger with phrases like "miro incident", "miro outage",
   "miro down", "miro on-call", "miro emergency", "miro broken".
-allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
+allowed-tools: Read, Grep, Bash(curl:*), Bash(jq:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, miro]
+tags: [saas, miro, incident-response, runbook]
 compatible-with: claude-code
 ---
 
 # Miro Incident Runbook
 
 ## Overview
-Rapid incident response procedures for Miro-related outages.
 
-## Prerequisites
-- Access to Miro dashboard and status page
-- kubectl access to production cluster
-- Prometheus/Grafana access
-- Communication channels (Slack, PagerDuty)
+Rapid incident response for Miro REST API v2 integration failures: triage, mitigation, recovery, and postmortem.
 
 ## Severity Levels
 
-| Level | Definition | Response Time | Examples |
-|-------|------------|---------------|----------|
-| P1 | Complete outage | < 15 min | Miro API unreachable |
-| P2 | Degraded service | < 1 hour | High latency, partial failures |
-| P3 | Minor impact | < 4 hours | Webhook delays, non-critical errors |
-| P4 | No user impact | Next business day | Monitoring gaps |
+| Level | Definition | Response | Example |
+|-------|------------|----------|---------|
+| P1 | Complete integration outage | < 15 min | Miro API returns 5xx on all calls |
+| P2 | Degraded service | < 1 hour | High latency, partial 429s |
+| P3 | Minor impact | < 4 hours | Webhook delays, single-board errors |
+| P4 | No user impact | Next business day | Monitoring gaps, non-critical warnings |
 
-## Quick Triage
+## Quick Triage (First 5 Minutes)
 
 ```bash
-# 1. Check Miro status
-curl -s https://status.miro.com | jq
+#!/bin/bash
+# miro-triage.sh — Run this first during any Miro incident
 
-# 2. Check our integration health
-curl -s https://api.yourapp.com/health | jq '.services.miro'
+echo "=== MIRO TRIAGE $(date -u +%H:%M:%SZ) ==="
 
-# 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(miro_errors_total[5m])
+# 1. Is Miro itself down?
+echo -n "Miro Status: "
+curl -sf "https://status.miro.com/api/v2/status.json" | jq -r '.status.description' 2>/dev/null || echo "STATUS PAGE UNREACHABLE"
 
-# 4. Recent error logs
-kubectl logs -l app=miro-integration --since=5m | grep -i error | tail -20
+# 2. Can we reach the API?
+echo -n "API Connectivity: "
+curl -s -o /dev/null -w "HTTP %{http_code} (%{time_total}s)" \
+  -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v2/boards?limit=1" 2>/dev/null
+echo ""
+
+# 3. What's our rate limit status?
+echo "Rate Limit:"
+curl -sI -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v2/boards?limit=1" 2>/dev/null | \
+  grep -i "x-ratelimit\|retry-after" || echo "  No rate limit headers"
+
+# 4. Token validity
+echo -n "Token: "
+TOKEN_RESP=$(curl -s -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v1/oauth-token" 2>/dev/null)
+echo "$TOKEN_RESP" | jq -r '"scopes: \(.scopes // "INVALID"), team: \(.team.id // "N/A")"' 2>/dev/null || echo "INVALID OR EXPIRED"
+
+# 5. Our health check
+echo -n "App Health: "
+curl -sf "${APP_URL:-http://localhost:3000}/health" | jq -r '.miro.status // "UNAVAILABLE"' 2>/dev/null || echo "HEALTH CHECK FAILED"
 ```
 
 ## Decision Tree
 
 ```
 Miro API returning errors?
-├─ YES: Is status.miro.com showing incident?
-│   ├─ YES → Wait for Miro to resolve. Enable fallback.
-│   └─ NO → Our integration issue. Check credentials, config.
-└─ NO: Is our service healthy?
-    ├─ YES → Likely resolved or intermittent. Monitor.
-    └─ NO → Our infrastructure issue. Check pods, memory, network.
+├── YES → What status code?
+│   ├── 401/403 → Token issue
+│   │   ├── Token expired? → Refresh token (see below)
+│   │   └── Scopes changed? → Re-authorize via OAuth flow
+│   ├── 429 → Rate limited
+│   │   ├── Check X-RateLimit-Remaining header
+│   │   ├── Honor Retry-After header
+│   │   └── Reduce request rate or enable queue
+│   ├── 404 → Board/item not found
+│   │   └── Verify IDs haven't changed
+│   └── 500/502/503 → Miro platform issue
+│       ├── Check status.miro.com
+│       ├── Enable graceful degradation
+│       └── Wait for Miro to resolve
+└── NO → Is our integration healthy?
+    ├── YES → Intermittent. Monitor for recurrence.
+    └── NO → Our infrastructure issue
+        ├── Check pods/containers
+        ├── Check memory/CPU
+        └── Check network/DNS
 ```
 
 ## Immediate Actions by Error Type
 
-### 401/403 - Authentication
+### 401 — Token Expired
+
 ```bash
-# Verify API key is set
-kubectl get secret miro-secrets -o jsonpath='{.data.api-key}' | base64 -d
+# Refresh access token
+curl -s -X POST https://api.miro.com/v1/oauth/token \
+  -d "grant_type=refresh_token" \
+  -d "client_id=${MIRO_CLIENT_ID}" \
+  -d "client_secret=${MIRO_CLIENT_SECRET}" \
+  -d "refresh_token=${MIRO_REFRESH_TOKEN}" | jq
 
-# Check if key was rotated
-# → Verify in Miro dashboard
-
-# Remediation: Update secret and restart pods
-kubectl create secret generic miro-secrets --from-literal=api-key=NEW_KEY --dry-run=client -o yaml | kubectl apply -f -
-kubectl rollout restart deployment/miro-integration
+# If refresh token is also expired, user must re-authorize:
+# Redirect to: https://miro.com/oauth/authorize?response_type=code&client_id=${MIRO_CLIENT_ID}&redirect_uri=${REDIRECT_URI}
 ```
 
-### 429 - Rate Limited
+### 403 — Insufficient Permissions
+
 ```bash
-# Check rate limit headers
-curl -v https://api.miro.com 2>&1 | grep -i rate
+# Check what scopes the token has
+curl -s -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v1/oauth-token" | jq '.scopes'
 
-# Enable request queuing
-kubectl set env deployment/miro-integration RATE_LIMIT_MODE=queue
-
-# Long-term: Contact Miro for limit increase
+# Compare with what the failed endpoint requires
+# boards:read for GET endpoints
+# boards:write for POST/PATCH/DELETE endpoints
+# team:read / organizations:read for team/org endpoints
 ```
 
-### 500/503 - Miro Errors
+### 429 — Rate Limited
+
 ```bash
-# Enable graceful degradation
-kubectl set env deployment/miro-integration MIRO_FALLBACK=true
+# Check current rate limit status
+curl -sI -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v2/boards?limit=1" | grep -i ratelimit
 
-# Notify users of degraded service
-# Update status page
+# Response headers:
+# X-RateLimit-Limit: 100000 (credits per minute)
+# X-RateLimit-Remaining: 0
+# Retry-After: 30 (seconds)
 
-# Monitor Miro status for resolution
+# Immediate mitigation: pause all non-critical API calls
+# Long-term: implement caching + webhooks (see miro-performance-tuning)
+```
+
+### 5xx — Miro Platform Issue
+
+```bash
+# 1. Confirm it's Miro-side
+curl -s "https://status.miro.com/api/v2/status.json" | jq '.status'
+
+# 2. Check for ongoing incidents
+curl -s "https://status.miro.com/api/v2/incidents/unresolved.json" | \
+  jq '.incidents[] | {name, status, updated_at}'
+
+# 3. Enable graceful degradation in your app
+# Feature flag: MIRO_FALLBACK_ENABLED=true
+# Serve cached data, queue writes for retry when Miro recovers
 ```
 
 ## Communication Templates
 
-### Internal (Slack)
+### Internal (Slack/PagerDuty)
+
 ```
-🔴 P1 INCIDENT: Miro Integration
-Status: INVESTIGATING
-Impact: [Describe user impact]
-Current action: [What you're doing]
-Next update: [Time]
-Incident commander: @[name]
+P[1-4] INCIDENT: Miro Integration
+Status: INVESTIGATING | IDENTIFIED | MONITORING | RESOLVED
+Impact: [What users experience]
+Root cause: [Miro-side outage | Token expired | Rate limited | Our bug]
+Action: [What we're doing now]
+ETA: [Expected resolution time]
+Next update: [When]
 ```
 
 ### External (Status Page)
+
 ```
-Miro Integration Issue
+Miro Integration — Degraded Performance
 
-We're experiencing issues with our Miro integration.
-Some users may experience [specific impact].
+We are experiencing issues with our Miro integration.
+[Board sync / item creation / webhook processing] may be delayed.
 
-We're actively investigating and will provide updates.
+Root cause: [Brief technical explanation]
+Workaround: [If any — e.g., "Changes will sync when service recovers"]
 
-Last updated: [timestamp]
+Last updated: [timestamp UTC]
 ```
 
-## Post-Incident
+## Post-Incident Evidence Collection
 
-### Evidence Collection
 ```bash
-# Generate debug bundle
-./scripts/miro-debug-bundle.sh
+# Collect evidence for postmortem
+INCIDENT_DIR="miro-incident-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$INCIDENT_DIR"
 
-# Export relevant logs
-kubectl logs -l app=miro-integration --since=1h > incident-logs.txt
+# API response during incident
+curl -s -H "Authorization: Bearer ${MIRO_ACCESS_TOKEN}" \
+  "https://api.miro.com/v2/boards?limit=1" > "$INCIDENT_DIR/api-response.json"
 
-# Capture metrics
-curl "localhost:9090/api/v1/query_range?query=miro_errors_total&start=2h" > metrics.json
+# Miro status page snapshot
+curl -s "https://status.miro.com/api/v2/incidents/unresolved.json" > "$INCIDENT_DIR/miro-status.json"
+
+# Application metrics (adjust query for your Prometheus)
+curl -s "http://prometheus:9090/api/v1/query_range?query=rate(miro_errors_total[5m])&start=$(date -d '2 hours ago' +%s)&end=$(date +%s)&step=60" > "$INCIDENT_DIR/error-metrics.json"
+
+# Package (exclude tokens)
+tar -czf "$INCIDENT_DIR.tar.gz" "$INCIDENT_DIR"
+echo "Evidence collected: $INCIDENT_DIR.tar.gz"
 ```
 
-### Postmortem Template
+## Postmortem Template
+
 ```markdown
 ## Incident: Miro [Error Type]
 **Date:** YYYY-MM-DD
 **Duration:** X hours Y minutes
 **Severity:** P[1-4]
+**Impact:** [Users affected, features impacted]
 
-### Summary
-[1-2 sentence description]
-
-### Timeline
-- HH:MM - [Event]
-- HH:MM - [Event]
+### Timeline (UTC)
+- HH:MM — [First error detected by monitoring]
+- HH:MM — [On-call alerted]
+- HH:MM — [Root cause identified]
+- HH:MM — [Mitigation applied]
+- HH:MM — [Service restored]
 
 ### Root Cause
-[Technical explanation]
+[Technical explanation — e.g., "Access token expired and refresh logic
+had a bug where it used the old refresh token instead of the new one
+returned in the last refresh response."]
 
-### Impact
-- Users affected: N
-- Revenue impact: $X
+### What Went Well
+- [Monitoring detected the issue within 2 minutes]
+- [Runbook was accurate and followed]
+
+### What Went Wrong
+- [Token refresh logic untested in integration tests]
+- [No alerting on 401 error rate]
 
 ### Action Items
-- [ ] [Preventive measure] - Owner - Due date
+- [ ] Add integration test for token refresh flow — @owner — Due date
+- [ ] Add P1 alert for miro_errors_total{error_type="auth"} > 0 — @owner — Due date
+- [ ] Document token rotation procedure — @owner — Due date
 ```
-
-## Instructions
-
-### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
-
-### Step 2: Follow Decision Tree
-Determine if the issue is Miro-side or internal.
-
-### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
-
-### Step 4: Communicate Status
-Update internal and external stakeholders.
-
-## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Can't reach status page | Network issue | Use mobile or VPN |
-| kubectl fails | Auth expired | Re-authenticate |
-| Metrics unavailable | Prometheus down | Check backup metrics |
-| Secret rotation fails | Permission denied | Escalate to admin |
-
-## Examples
-
-### One-Line Health Check
-```bash
-curl -sf https://api.yourapp.com/health | jq '.services.miro.status' || echo "UNHEALTHY"
-```
+| Status page unreachable | DNS/network | Use mobile or VPN |
+| Token refresh fails | Refresh token revoked | User must re-authorize |
+| Rate limit persists after reset | Clock skew | Use `Retry-After` header, not local clock |
+| Metrics unavailable | Prometheus down | Check application logs directly |
 
 ## Resources
+
 - [Miro Status Page](https://status.miro.com)
-- [Miro Support](https://support.miro.com)
+- [Miro Developer Support](https://developers.miro.com/docs/getting-help)
+- [Rate Limiting Reference](https://developers.miro.com/reference/rate-limiting)
 
 ## Next Steps
-For data handling, see `miro-data-handling`.
+
+For data handling and compliance, see `miro-data-handling`.

@@ -1,11 +1,11 @@
 ---
 name: adobe-architecture-variants
 description: |
-  Choose and implement Adobe validated architecture blueprints for different scales.
-  Use when designing new Adobe integrations, choosing between monolith/service/microservice
-  architectures, or planning migration paths for Adobe applications.
+  Choose and implement Adobe architecture blueprints: standalone SDK integration,
+  Adobe App Builder serverless, and dedicated microservice with event-driven
+  Firefly/PDF pipelines. Decision matrix based on team size and throughput.
   Trigger with phrases like "adobe architecture", "adobe blueprint",
-  "how to structure adobe", "adobe project layout", "adobe microservice".
+  "adobe app builder vs standalone", "adobe microservice".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -17,270 +17,275 @@ compatible-with: claude-code
 # Adobe Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Adobe integrations.
+
+Three validated architecture blueprints for Adobe integrations: (A) direct SDK integration in existing app, (B) Adobe App Builder with Runtime actions, and (C) dedicated microservice with event-driven pipelines.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
+
+- Understanding of team size and throughput requirements
+- Decision on which Adobe APIs to use (Firefly, PDF, Photoshop, Events)
 - Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
+- Growth projections for API usage
 
-## Variant A: Monolith (Simple)
+## Instructions
 
-**Best for:** MVPs, small teams, < 10K daily active users
+### Variant A: Direct SDK Integration (Simple)
+
+**Best for:** MVPs, small teams (1-5), < 100 API calls/day, single Adobe API
 
 ```
 my-app/
 ├── src/
 │   ├── adobe/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
+│   │   ├── auth.ts              # OAuth token management
+│   │   ├── firefly.ts           # or pdf-services.ts — one API client
+│   │   └── types.ts
 │   ├── routes/
 │   │   └── api/
-│   │       └── adobe.ts    # API routes
+│   │       └── generate.ts      # Direct API call in route handler
 │   └── index.ts
-├── tests/
-│   └── adobe.test.ts
-└── package.json
+├── .env                         # ADOBE_CLIENT_ID, ADOBE_CLIENT_SECRET
+└── package.json                 # @adobe/firefly-apis or @adobe/pdfservices-node-sdk
 ```
 
-### Key Characteristics
-- Single deployment unit
-- Synchronous Adobe calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
 ```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
+// Direct integration — API call in route handler
+app.post('/api/generate', async (req, res) => {
   try {
-    const result = await adobeClient.create(req.body);
-    res.json(result);
-  } catch (error) {
+    const token = await getCachedToken();
+    const result = await fetch('https://firefly-api.adobe.io/v3/images/generate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': process.env.ADOBE_CLIENT_ID!,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt: req.body.prompt, n: 1, size: { width: 1024, height: 1024 } }),
+    });
+    res.json(await result.json());
+  } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
 ```
 
+**Pros:** Fastest to build, simplest deployment, no extra infrastructure
+**Cons:** No background processing, route handler blocks for 5-30s on Firefly calls
+
 ---
 
-## Variant B: Service Layer (Moderate)
+### Variant B: Adobe App Builder (Native Adobe)
 
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
+**Best for:** Adobe-centric workflows, teams using Adobe ecosystem, event-driven CC Library automation
 
 ```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── adobe/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── adobe.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── adobe-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── adobe/
+my-adobe-app/
+├── actions/                         # Runtime actions (serverless functions)
+│   ├── generate-image/
+│   │   └── index.js                 # Firefly image generation action
+│   ├── extract-pdf/
+│   │   └── index.js                 # PDF extraction action
+│   └── webhook-handler/
+│       └── index.js                 # I/O Events webhook processor
+├── web-src/                         # Optional frontend (React/SPA)
+│   └── src/
+├── app.config.yaml                  # App Builder configuration
+├── .aio                             # AIO CLI configuration
 └── package.json
 ```
 
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
+```yaml
+# app.config.yaml
+application:
+  actions: actions
+  web: web-src
+  runtimeManifest:
+    packages:
+      adobe-integration:
+        actions:
+          generate-image:
+            function: actions/generate-image/index.js
+            runtime: nodejs:20
+            web: yes
+            inputs:
+              ADOBE_CLIENT_ID: $ADOBE_CLIENT_ID
+              ADOBE_CLIENT_SECRET: $ADOBE_CLIENT_SECRET
+            limits:
+              timeout: 60000
+              memory: 256
+            annotations:
+              require-adobe-auth: true
 
-### Code Pattern
-```typescript
-// Service layer abstraction
-class AdobeService {
-  constructor(
-    private client: AdobeClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
+          webhook-handler:
+            function: actions/webhook-handler/index.js
+            runtime: nodejs:20
+            web: yes
+            annotations:
+              require-adobe-auth: false  # Webhooks need public access
+```
 
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
+```javascript
+// actions/generate-image/index.js — App Builder Runtime action
+const { Core } = require('@adobe/aio-sdk');
 
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
+async function main(params) {
+  const logger = Core.Logger('generate-image');
 
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
+  try {
+    // Token management handled by App Builder automatically
+    const token = params.__ow_headers?.authorization?.split(' ')[1]
+      || await getServiceToken(params);
 
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
+    const response = await fetch('https://firefly-api.adobe.io/v3/images/generate', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'x-api-key': params.ADOBE_CLIENT_ID,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        prompt: params.prompt,
+        n: 1,
+        size: { width: params.width || 1024, height: params.height || 1024 },
+      }),
+    });
 
-    // Async follow-up
-    await this.queue.enqueue('adobe.post-create', result);
-
-    return result;
+    const result = await response.json();
+    return { statusCode: 200, body: result };
+  } catch (error) {
+    logger.error(error);
+    return { statusCode: 500, body: { error: error.message } };
   }
 }
+
+exports.main = main;
 ```
+
+**Pros:** Native Adobe hosting, built-in auth, I/O Events integration, no infra management
+**Cons:** Vendor lock-in, cold start latency, limited runtime options
 
 ---
 
-## Variant C: Microservice (Complex)
+### Variant C: Dedicated Microservice (Enterprise)
 
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
+**Best for:** High throughput (1000+ calls/day), multi-API workflows, strict SLAs
 
 ```
-adobe-service/              # Dedicated microservice
+adobe-service/                          # Dedicated microservice
 ├── src/
+│   ├── adobe/                          # Client layer
+│   │   ├── auth.ts
+│   │   ├── firefly-client.ts
+│   │   ├── pdf-client.ts
+│   │   ├── photoshop-client.ts
+│   │   └── events-client.ts
+│   ├── pipelines/                      # Workflow orchestration
+│   │   ├── image-pipeline.ts           # Firefly → Photoshop → Storage
+│   │   └── document-pipeline.ts        # PDF Extract → Transform → Store
+│   ├── workers/                        # Background job processors
+│   │   ├── firefly-worker.ts
+│   │   └── pdf-worker.ts
 │   ├── api/
-│   │   ├── grpc/
-│   │   │   └── adobe.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── adobe/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
+│   │   ├── grpc/adobe.proto            # Internal API (gRPC)
+│   │   └── rest/routes.ts              # External API + webhooks
 │   └── index.ts
-├── config/
 ├── k8s/
 │   ├── deployment.yaml
 │   ├── service.yaml
-│   └── hpa.yaml
+│   ├── hpa.yaml                        # Auto-scale on pending jobs
+│   └── configmap.yaml
 └── package.json
 
 other-services/
-├── order-service/       # Calls adobe-service
-├── payment-service/
-└── notification-service/
+├── web-api/                            # Calls adobe-service via gRPC
+├── marketing-automation/               # Calls adobe-service for assets
+└── document-processor/                 # Calls adobe-service for PDFs
 ```
 
-### Key Characteristics
-- Dedicated Adobe microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
 ```typescript
-// Event-driven with domain isolation
-class AdobeAggregate {
-  private events: DomainEvent[] = [];
+// src/pipelines/image-pipeline.ts
+// Multi-step pipeline: Generate → Remove BG → Store
+export async function imageProductionPipeline(request: {
+  prompt: string;
+  removeBackground: boolean;
+  outputBucket: string;
+}) {
+  // Step 1: Generate with Firefly
+  const generated = await fireflyClient.generate({
+    prompt: request.prompt,
+    size: { width: 2048, height: 2048 },
+  });
 
-  process(command: AdobeCommand): void {
-    // Domain logic
-    const result = this.execute(command);
+  let imageUrl = generated.outputs[0].image.url;
 
-    // Emit domain event
-    this.events.push(new AdobeProcessedEvent(result));
+  // Step 2: Optionally remove background with Photoshop
+  if (request.removeBackground) {
+    const presignedInput = await uploadToStorage(imageUrl);
+    const presignedOutput = await getPresignedUploadUrl(request.outputBucket);
+
+    await photoshopClient.removeBackground({
+      input: { href: presignedInput, storage: 'external' },
+      output: { href: presignedOutput, storage: 'external', type: 'image/png' },
+    });
+
+    imageUrl = presignedOutput;
   }
 
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(AdobeProcessedEvent)
-class AdobeEventHandler {
-  async handle(event: AdobeProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
+  // Step 3: Store final asset
+  return { url: imageUrl, pipeline: 'image-production' };
 }
 ```
+
+**Pros:** Full control, independent scaling, multi-API orchestration, strict isolation
+**Cons:** Complex ops, needs K8s/container platform, higher development cost
 
 ---
 
 ## Decision Matrix
 
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
+| Factor | A: Direct SDK | B: App Builder | C: Microservice |
+|--------|---------------|----------------|-----------------|
+| Team Size | 1-5 | 3-10 | 10+ |
+| API Calls/Day | < 100 | 100-1000 | 1000+ |
+| Adobe APIs Used | 1 | 1-3 | 2+ |
+| I/O Events | No | Yes (native) | Yes (custom) |
+| Deployment | Any platform | Adobe hosting | K8s/containers |
+| Time to Market | Days | 1-2 weeks | 3-8 weeks |
+| Vendor Lock-in | Low | High (Adobe) | Low |
+| Operational Cost | Lowest | Low (managed) | Highest |
 
 ## Migration Path
 
 ```
-Monolith → Service Layer:
-1. Extract Adobe code to service/
-2. Add caching layer
-3. Add background processing
+A (Direct) → B (App Builder):
+  Move route handlers to Runtime actions
+  Add I/O Events registration
+  Deploy with `aio app deploy`
 
-Service Layer → Microservice:
-1. Create dedicated adobe-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
+A (Direct) → C (Microservice):
+  Extract Adobe code to dedicated service
+  Add background job queue (BullMQ)
+  Define gRPC API contract
+  Deploy to Kubernetes
+
+B (App Builder) → C (Microservice):
+  Port Runtime actions to Express/Fastify
+  Replace I/O Events with custom webhook handling
+  Add HPA and monitoring
 ```
-
-## Instructions
-
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
-
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
-
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
-
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
 
 ## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+- Architecture variant selected based on decision matrix
+- Project structure matching chosen pattern
+- Migration path documented for future scaling
 
 ## Resources
+
+- [Adobe App Builder](https://developer.adobe.com/app-builder/docs/)
+- [Firefly Services SDK](https://developer.adobe.com/firefly-services/docs/guides/sdks/)
 - [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Adobe Architecture Guide](https://docs.adobe.com/architecture)
 
 ## Next Steps
+
 For common anti-patterns, see `adobe-known-pitfalls`.

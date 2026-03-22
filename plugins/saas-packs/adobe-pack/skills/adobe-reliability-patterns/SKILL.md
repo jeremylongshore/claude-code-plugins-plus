@@ -1,11 +1,11 @@
 ---
 name: adobe-reliability-patterns
 description: |
-  Implement Adobe reliability patterns including circuit breakers, idempotency, and graceful degradation.
-  Use when building fault-tolerant Adobe integrations, implementing retry strategies,
-  or adding resilience to production Adobe services.
+  Implement reliability patterns for Adobe APIs: circuit breakers for IMS/Firefly,
+  idempotency for PDF Services operations, graceful degradation when Adobe is down,
+  and dead letter queues for failed async jobs.
   Trigger with phrases like "adobe reliability", "adobe circuit breaker",
-  "adobe idempotent", "adobe resilience", "adobe fallback", "adobe bulkhead".
+  "adobe fallback", "adobe resilience", "adobe graceful degradation".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -17,276 +17,273 @@ compatible-with: claude-code
 # Adobe Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Adobe integrations.
+
+Production-grade reliability patterns for Adobe API integrations. Adobe APIs present unique challenges: IMS tokens expire after 24h, Firefly/Photoshop jobs are async with variable completion times, and rate limits vary by API. These patterns address each failure mode.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
 
-## Circuit Breaker
+- Understanding of circuit breaker pattern
+- `opossum` installed for circuit breaker (`npm install opossum`)
+- Queue infrastructure (BullMQ/Redis) for dead letter queue
+- Caching layer for fallback data
+
+## Instructions
+
+### Pattern 1: Circuit Breaker per Adobe API
+
+Different Adobe APIs fail independently — use separate circuit breakers:
 
 ```typescript
 import CircuitBreaker from 'opossum';
 
-const adobeBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-adobeBreaker.on('open', () => {
-  console.warn('Adobe circuit OPEN - requests failing fast');
-  alertOps('Adobe circuit breaker opened');
-});
-
-adobeBreaker.on('halfOpen', () => {
-  console.info('Adobe circuit HALF-OPEN - testing recovery');
-});
-
-adobeBreaker.on('close', () => {
-  console.info('Adobe circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeAdobeCall<T>(fn: () => Promise<T>): Promise<T> {
-  return adobeBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+// IMS circuit breaker (auth failures cascade to everything)
+const imsBreaker = new CircuitBreaker(
+  async () => {
+    const res = await fetch('https://ims-na1.adobelogin.com/ims/token/v3', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        client_id: process.env.ADOBE_CLIENT_ID!,
+        client_secret: process.env.ADOBE_CLIENT_SECRET!,
+        grant_type: 'client_credentials',
+        scope: process.env.ADOBE_SCOPES!,
+      }),
     });
-    return key;
+    if (!res.ok) throw new Error(`IMS ${res.status}`);
+    return res.json();
+  },
+  {
+    timeout: 10_000,              // IMS should respond in 10s
+    errorThresholdPercentage: 30, // Open after 30% errors
+    resetTimeout: 60_000,         // Try again after 1 min
+    volumeThreshold: 3,           // Minimum calls before tripping
   }
+);
+
+// Firefly circuit breaker (higher tolerance for latency)
+const fireflyBreaker = new CircuitBreaker(
+  async (fn: () => Promise<any>) => fn(),
+  {
+    timeout: 60_000,              // Firefly jobs can take up to 60s
+    errorThresholdPercentage: 50,
+    resetTimeout: 30_000,
+    volumeThreshold: 5,
+  }
+);
+
+// PDF Services circuit breaker
+const pdfBreaker = new CircuitBreaker(
+  async (fn: () => Promise<any>) => fn(),
+  {
+    timeout: 30_000,
+    errorThresholdPercentage: 40,
+    resetTimeout: 30_000,
+    volumeThreshold: 5,
+  }
+);
+
+// Monitor circuit state
+for (const [name, breaker] of [['ims', imsBreaker], ['firefly', fireflyBreaker], ['pdf', pdfBreaker]] as const) {
+  breaker.on('open', () => console.warn(`Circuit ${name} OPEN — failing fast`));
+  breaker.on('halfOpen', () => console.info(`Circuit ${name} HALF-OPEN — testing recovery`));
+  breaker.on('close', () => console.info(`Circuit ${name} CLOSED — normal`));
 }
 ```
 
-## Bulkhead Pattern
+### Pattern 2: Graceful Degradation with Fallback
 
 ```typescript
-import PQueue from 'p-queue';
+// When Adobe is down, return cached/default data instead of failing
 
-// Separate queues for different operations
-const adobeQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedAdobeCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return adobeQueues[priority].add(fn);
+interface FallbackResult<T> {
+  data: T;
+  source: 'live' | 'cached' | 'default';
+  staleness?: string;
 }
 
-// Usage
-await prioritizedAdobeCall('critical', () =>
-  adobeClient.processPayment(order)
+async function withAdobeFallback<T>(
+  liveFn: () => Promise<T>,
+  cacheKey: string,
+  defaultValue: T
+): Promise<FallbackResult<T>> {
+  // Try live API first
+  try {
+    const data = await liveFn();
+    // Update cache for future fallback
+    await cache.set(cacheKey, JSON.stringify(data), 'EX', 3600);
+    return { data, source: 'live' };
+  } catch (error: any) {
+    console.warn(`Adobe API failed (${error.message}), trying fallback`);
+  }
+
+  // Try cached data
+  const cached = await cache.get(cacheKey);
+  if (cached) {
+    const ttl = await cache.ttl(cacheKey);
+    return {
+      data: JSON.parse(cached),
+      source: 'cached',
+      staleness: `${3600 - ttl}s old`,
+    };
+  }
+
+  // Last resort: return default
+  return { data: defaultValue, source: 'default' };
+}
+
+// Usage: image generation with fallback to placeholder
+const result = await withAdobeFallback(
+  () => generateImage({ prompt: 'product hero image' }),
+  'hero-image-cache',
+  { outputs: [{ image: { url: '/images/placeholder-hero.jpg' } }] }
 );
 
-await prioritizedAdobeCall('bulk', () =>
-  adobeClient.syncCatalog(products)
-);
+if (result.source !== 'live') {
+  console.warn(`Serving ${result.source} data for hero image`);
+}
 ```
 
-## Timeout Hierarchy
+### Pattern 3: Dead Letter Queue for Failed Jobs
 
 ```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
+import { Queue, Worker } from 'bullmq';
+import { Redis } from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+// DLQ for failed Adobe operations
+const adobeDlq = new Queue('adobe-dlq', { connection: redis });
+
+// Main processing queue
+const adobeQueue = new Queue('adobe-jobs', { connection: redis });
+
+const worker = new Worker('adobe-jobs', async (job) => {
+  try {
+    switch (job.data.operation) {
+      case 'firefly-generate':
+        return await generateImage(job.data.params);
+      case 'pdf-extract':
+        return await extractPdfContent(job.data.params.pdfPath);
+      case 'photoshop-cutout':
+        return await removeBackground(job.data.params);
+      default:
+        throw new Error(`Unknown operation: ${job.data.operation}`);
+    }
+  } catch (error: any) {
+    // Route to DLQ after max retries
+    if (job.attemptsMade >= 3) {
+      await adobeDlq.add('failed-job', {
+        originalJob: job.data,
+        error: error.message,
+        attempts: job.attemptsMade,
+        failedAt: new Date().toISOString(),
+      });
+      console.error(`Job ${job.id} moved to DLQ after ${job.attemptsMade} attempts`);
+      return; // Don't rethrow — job is handled
+    }
+    throw error; // Retry
+  }
+}, {
+  connection: redis,
+  concurrency: 5,
+  limiter: {
+    max: 10,
+    duration: 60_000, // Max 10 jobs per minute (respect Adobe rate limits)
+  },
+});
+```
+
+### Pattern 4: Timeout Hierarchy for Adobe APIs
+
+```typescript
+// Adobe APIs have very different latency profiles
+const ADOBE_TIMEOUTS = {
+  ims_token: 10_000,       // IMS should be fast
+  firefly_sync: 30_000,    // Sync image generation
+  firefly_async: 5_000,    // Async job submission (fast, just queues)
+  firefly_poll: 120_000,   // Total polling timeout
+  pdf_extract: 30_000,     // PDF extraction
+  pdf_create: 20_000,      // PDF creation
+  photoshop_submit: 5_000, // Job submission
+  photoshop_poll: 120_000, // Total polling timeout
 };
 
-async function timedoutAdobeCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+async function timedAdobeCall<T>(
+  operation: keyof typeof ADOBE_TIMEOUTS,
   fn: () => Promise<T>
 ): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
+  const timeout = ADOBE_TIMEOUTS[operation];
   return Promise.race([
     fn(),
     new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Adobe ${operation} timeout`)), timeout)
+      setTimeout(() => reject(new Error(`Adobe ${operation} timeout (${timeout}ms)`)), timeout)
     ),
   ]);
 }
 ```
 
-## Graceful Degradation
+### Pattern 5: Health Check with Degraded State
 
 ```typescript
-interface AdobeFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withAdobeFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Adobe failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class AdobeDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await adobeClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+type ServiceHealth = 'healthy' | 'degraded' | 'unhealthy';
 
 async function adobeHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
+  status: ServiceHealth;
+  services: Record<string, any>;
 }> {
   const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: adobeBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
+    ims: {
+      status: imsBreaker.stats().state === 'closed' ? 'healthy' : 'unhealthy',
+      circuitState: imsBreaker.stats().state,
+    },
+    firefly: {
+      status: fireflyBreaker.stats().state === 'closed' ? 'healthy' :
+              fireflyBreaker.stats().state === 'halfOpen' ? 'degraded' : 'unhealthy',
+      circuitState: fireflyBreaker.stats().state,
+    },
+    pdf: {
+      status: pdfBreaker.stats().state === 'closed' ? 'healthy' : 'degraded',
+      circuitState: pdfBreaker.stats().state,
+    },
+    dlq: {
+      size: await adobeDlq.count(),
+      status: (await adobeDlq.count()) > 100 ? 'degraded' : 'healthy',
+    },
   };
 
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
+  const overall: ServiceHealth =
+    checks.ims.status === 'unhealthy' ? 'unhealthy' :
+    Object.values(checks).some(c => c.status === 'degraded') ? 'degraded' :
     'healthy';
 
-  return { status, details: checks };
+  return { status: overall, services: checks };
 }
 ```
 
-## Instructions
-
-### Step 1: Implement Circuit Breaker
-Wrap Adobe calls with circuit breaker.
-
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
-
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
-
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
-
 ## Output
-- Circuit breaker protecting Adobe calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+
+- Per-API circuit breakers (IMS, Firefly, PDF Services)
+- Graceful degradation with cached/default fallback
+- Dead letter queue for failed async jobs
+- Timeout hierarchy matching Adobe API latency profiles
+- Health check with degraded state detection
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
-
-## Examples
-
-### Quick Circuit Check
-```typescript
-const state = adobeBreaker.stats().state;
-console.log('Adobe circuit:', state);
-```
+| IMS circuit stays open | Credentials rotated | Update secret and restart |
+| Firefly circuit flapping | Intermittent 500s | Increase `resetTimeout` |
+| DLQ growing | Persistent failures | Investigate root cause; process DLQ |
+| Fallback data too stale | Long outage | Increase cache TTL; notify users |
 
 ## Resources
+
+- [Opossum Circuit Breaker](https://nodeshift.dev/opossum/)
+- [BullMQ Documentation](https://docs.bullmq.io/)
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Adobe Reliability Guide](https://docs.adobe.com/reliability)
+- [Adobe Status Page](https://status.adobe.com)
 
 ## Next Steps
+
 For policy enforcement, see `adobe-policy-guardrails`.

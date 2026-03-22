@@ -1,12 +1,12 @@
 ---
 name: adobe-deploy-integration
 description: |
-  Deploy Adobe integrations to Vercel, Fly.io, and Cloud Run platforms.
-  Use when deploying Adobe-powered applications to production,
-  configuring platform-specific secrets, or setting up deployment pipelines.
+  Deploy Adobe-powered applications to Vercel, Cloud Run, and Adobe App Builder
+  with proper credential injection and health monitoring.
+  Use when deploying Adobe API integrations to production platforms.
   Trigger with phrases like "deploy adobe", "adobe Vercel",
-  "adobe production deploy", "adobe Cloud Run", "adobe Fly.io".
-allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
+  "adobe Cloud Run", "adobe App Builder deploy", "adobe production deploy".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(gcloud:*), Bash(aio:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,195 +17,196 @@ compatible-with: claude-code
 # Adobe Deploy Integration
 
 ## Overview
-Deploy Adobe-powered applications to popular platforms with proper secrets management.
+
+Deploy Adobe-powered applications to three platforms: Vercel (serverless), Google Cloud Run (containers), and Adobe App Builder (native Adobe Runtime). Each with proper OAuth credential management.
 
 ## Prerequisites
-- Adobe API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
 
-## Vercel Deployment
+- Adobe OAuth Server-to-Server credentials for production
+- Platform CLI installed (`vercel`, `gcloud`, or `aio`)
+- Application tested in staging environment
 
-### Environment Setup
+## Instructions
+
+### Option A: Adobe App Builder (Native Adobe Hosting)
+
+App Builder deploys serverless Runtime actions directly to Adobe infrastructure:
+
 ```bash
-# Add Adobe secrets to Vercel
-vercel secrets add adobe_api_key sk_live_***
-vercel secrets add adobe_webhook_secret whsec_***
+# Login to Adobe I/O CLI (requires IMS auth since AIO CLI v11)
+aio login
 
-# Link to project
-vercel link
+# Select your project and workspace
+aio console project select
+aio console workspace select Production
 
-# Deploy preview
-vercel
+# Deploy all actions, static assets, and event registrations
+aio app deploy
 
-# Deploy production
+# Check deployed actions
+aio runtime action list
+
+# View action logs
+aio runtime activation list --limit 10
+aio runtime activation logs <activationId>
+```
+
+```javascript
+// app.config.yaml — App Builder configuration
+application:
+  actions: actions
+  web: web-src
+  runtimeManifest:
+    packages:
+      my-adobe-app:
+        actions:
+          process-image:
+            function: actions/process-image/index.js
+            runtime: nodejs:20
+            inputs:
+              ADOBE_CLIENT_ID: $ADOBE_CLIENT_ID
+              ADOBE_CLIENT_SECRET: $ADOBE_CLIENT_SECRET
+            annotations:
+              require-adobe-auth: true
+              final: true
+```
+
+### Option B: Vercel Deployment
+
+```bash
+# Set Adobe credentials as Vercel environment variables
+vercel env add ADOBE_CLIENT_ID production
+vercel env add ADOBE_CLIENT_SECRET production
+vercel env add ADOBE_SCOPES production
+
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
 ```json
+// vercel.json
 {
-  "env": {
-    "ADOBE_API_KEY": "@adobe_api_key"
-  },
   "functions": {
     "api/**/*.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
     }
+  },
+  "env": {
+    "ADOBE_CLIENT_ID": "@adobe_client_id",
+    "ADOBE_CLIENT_SECRET": "@adobe_client_secret",
+    "ADOBE_SCOPES": "@adobe_scopes"
   }
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-adobe-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Adobe secrets
-fly secrets set ADOBE_API_KEY=sk_live_***
-fly secrets set ADOBE_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="adobe-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=ADOBE_API_KEY=adobe-api-key:latest
-```
-
-## Environment Configuration Pattern
-
 ```typescript
-// config/adobe.ts
-interface AdobeConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// api/firefly/generate.ts — Vercel serverless function
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getAccessToken } from '../../src/adobe/client';
 
-export function getAdobeConfig(): AdobeConfig {
-  const env = process.env.NODE_ENV || 'development';
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') return res.status(405).end();
 
-  return {
-    apiKey: process.env.ADOBE_API_KEY!,
-    environment: env as AdobeConfig['environment'],
-    webhookSecret: process.env.ADOBE_WEBHOOK_SECRET,
-  };
+  try {
+    const token = await getAccessToken();
+    const fireflyResponse = await fetch(
+      'https://firefly-api.adobe.io/v3/images/generate',
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'x-api-key': process.env.ADOBE_CLIENT_ID!,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(req.body),
+      }
+    );
+
+    const result = await fireflyResponse.json();
+    return res.status(fireflyResponse.status).json(result);
+  } catch (error: any) {
+    return res.status(500).json({ error: error.message });
+  }
 }
 ```
 
-## Health Check Endpoint
+### Option C: Google Cloud Run
+
+```bash
+# Store credentials in Secret Manager
+echo -n "${ADOBE_CLIENT_ID}" | gcloud secrets create adobe-client-id --data-file=-
+echo -n "${ADOBE_CLIENT_SECRET}" | gcloud secrets create adobe-client-secret --data-file=-
+
+# Build and deploy
+gcloud builds submit --tag gcr.io/${PROJECT_ID}/adobe-service
+
+gcloud run deploy adobe-service \
+  --image gcr.io/${PROJECT_ID}/adobe-service \
+  --region us-central1 \
+  --platform managed \
+  --set-secrets="ADOBE_CLIENT_ID=adobe-client-id:latest,ADOBE_CLIENT_SECRET=adobe-client-secret:latest" \
+  --set-env-vars="ADOBE_SCOPES=openid,AdobeID,firefly_api" \
+  --min-instances=1 \
+  --timeout=60s
+```
+
+### Health Check Endpoint (All Platforms)
 
 ```typescript
 // api/health.ts
 export async function GET() {
-  const adobeStatus = await checkAdobeConnection();
+  const checks: Record<string, any> = {};
+
+  // Test Adobe IMS token generation
+  try {
+    const start = Date.now();
+    const token = await getAccessToken();
+    checks.adobe = {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+      tokenLength: token.length,
+    };
+  } catch (error: any) {
+    checks.adobe = {
+      status: 'unhealthy',
+      error: error.message,
+    };
+  }
+
+  const overall = Object.values(checks).every(
+    (c: any) => c.status === 'healthy'
+  ) ? 'healthy' : 'degraded';
 
   return Response.json({
-    status: adobeStatus ? 'healthy' : 'degraded',
-    services: {
-      adobe: adobeStatus,
-    },
+    status: overall,
+    services: checks,
     timestamp: new Date().toISOString(),
   });
 }
 ```
 
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Adobe API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Adobe integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Adobe connectivity.
-
 ## Output
-- Application deployed to production
-- Adobe secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+
+- Application deployed to chosen platform
+- Adobe credentials injected via platform secret management
+- Health check endpoint validates IMS connectivity
+- Serverless function timeout configured for Adobe API latency
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
-
-## Examples
-
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add adobe_api_key "$ADOBE_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set ADOBE_API_KEY="$ADOBE_API_KEY"
-    fly deploy
-    ;;
-esac
-```
+| `aio app deploy` auth error | Not logged in to AIO CLI | Run `aio login` |
+| Vercel function timeout | Adobe API takes > 10s | Increase `maxDuration` in vercel.json |
+| Cloud Run cold start timeout | Token generation on cold start | Set `min-instances=1` |
+| Secret not found | Wrong secret name | Verify with `gcloud secrets list` or `vercel env ls` |
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Adobe Deploy Guide](https://docs.adobe.com/deploy)
+
+- [Adobe App Builder Deployment](https://developer.adobe.com/app-builder/docs/guides/app_builder_guides/deployment/deployment)
+- [Vercel Environment Variables](https://vercel.com/docs/environment-variables)
+- [Cloud Run Secrets](https://cloud.google.com/run/docs/configuring/services/secrets)
 
 ## Next Steps
+
 For webhook handling, see `adobe-webhooks-events`.

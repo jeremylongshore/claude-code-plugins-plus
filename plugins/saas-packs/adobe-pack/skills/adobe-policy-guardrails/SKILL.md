@@ -1,11 +1,11 @@
 ---
 name: adobe-policy-guardrails
 description: |
-  Implement Adobe lint rules, policy enforcement, and automated guardrails.
-  Use when setting up code quality rules for Adobe integrations, implementing
-  pre-commit hooks, or configuring CI policy checks for Adobe best practices.
+  Implement Adobe-specific lint rules, CI policy checks, and runtime guardrails
+  covering credential scanning (p8_ patterns), Firefly content policy pre-screening,
+  PDF Services quota enforcement, and OAuth scope validation.
   Trigger with phrases like "adobe policy", "adobe lint",
-  "adobe guardrails", "adobe best practices check", "adobe eslint".
+  "adobe guardrails", "adobe eslint", "adobe content policy".
 allowed-tools: Read, Write, Edit, Bash(npx:*)
 version: 1.0.0
 license: MIT
@@ -17,243 +17,239 @@ compatible-with: claude-code
 # Adobe Policy & Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Adobe integrations.
+
+Automated policy enforcement for Adobe integrations: credential pattern scanning (Adobe OAuth secrets use `p8_` prefix), Firefly content policy pre-screening, PDF Services quota guardrails, and OAuth scope validation.
 
 ## Prerequisites
+
 - ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom Adobe Plugin
-```javascript
-// eslint-plugin-adobe/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Adobe API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Adobe API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['adobe'],
-  rules: {
-    'adobe/no-hardcoded-keys': 'error',
-    'adobe/require-error-handling': 'warn',
-    'adobe/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: adobe-secrets-check
-        name: Check for Adobe secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: adobe-config-validate
-        name: Validate Adobe configuration
-        entry: node scripts/validate-adobe-config.js
-        language: node
-        files: '\.adobe\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface AdobeStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Adobe code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new AdobeClient(config satisfies AdobeStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Adobe Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Adobe client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: adobe/use-singleton-client
-- CI check: grep for "new AdobeClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# adobe-policy.rego
-package adobe
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/adobe-policy.yml
-name: Adobe Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Adobe keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s adobe-config.schema.json -d config/adobe/*.json
-
-      - name: Run ESLint Adobe rules
-        run: npx eslint --plugin adobe --rule 'adobe/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardAdobeOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.ADOBE_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Adobe rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Adobe rate limit exceeded - request blocked');
-  }
-}
-```
+- CI/CD pipeline (GitHub Actions)
+- Understanding of Adobe credential patterns
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Adobe patterns.
+### Guardrail 1: Adobe Credential Pattern Scanner
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Adobe OAuth Server-to-Server secrets follow the `p8_` prefix pattern:
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```yaml
+# .github/workflows/adobe-security.yml
+name: Adobe Security Scan
+on: [push, pull_request]
+jobs:
+  credential-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for Adobe credential patterns
+        run: |
+          EXIT_CODE=0
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+          # Adobe OAuth client secrets (p8_ prefix)
+          if grep -rE "p8_[A-Za-z0-9_-]{20,}" --include="*.ts" --include="*.js" --include="*.py" --include="*.json" --include="*.yaml" --include="*.yml" . 2>/dev/null | grep -v node_modules | grep -v '.git'; then
+            echo "::error::Adobe client_secret pattern (p8_) found in source code"
+            EXIT_CODE=1
+          fi
 
-## Output
-- ESLint plugin with Adobe rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+          # Adobe IMS access tokens (JWT format)
+          if grep -rE "eyJ[A-Za-z0-9_-]{100,}\.[A-Za-z0-9_-]{100,}" --include="*.ts" --include="*.js" . 2>/dev/null | grep -v node_modules | grep -v '.git' | grep -v '\.test\.' | grep -v '__mock'; then
+            echo "::warning::Potential Adobe access token found in source (may be test fixture)"
+          fi
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+          # Org IDs (format: HEXSTRING@AdobeOrg)
+          if grep -rE "[A-F0-9]{24}@AdobeOrg" --include="*.ts" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules | grep -v '.git' | grep -v '.env.example'; then
+            echo "::warning::Adobe Org ID found in source — consider using env var"
+          fi
 
-## Examples
-
-### Quick ESLint Check
-```bash
-npx eslint --plugin adobe --rule 'adobe/no-hardcoded-keys: error' src/
+          exit $EXIT_CODE
 ```
 
+### Guardrail 2: Firefly Content Policy Pre-Screener
+
+```typescript
+// src/adobe/guardrails/content-policy.ts
+// Pre-screen prompts before sending to Firefly API to avoid wasted credits
+
+interface ContentPolicyResult {
+  allowed: boolean;
+  violations: string[];
+  suggestions: string[];
+}
+
+const CONTENT_RULES = [
+  {
+    name: 'real-people',
+    pattern: /\b(photo of|portrait of|picture of)\s+(a\s+)?(real|actual|specific)\s+(person|man|woman|child)/i,
+    message: 'Firefly cannot generate images of specific real people',
+    suggestion: 'Use generic descriptions like "a professional in a business suit"',
+  },
+  {
+    name: 'trademarks',
+    pattern: /\b(nike|adidas|apple|google|microsoft|disney|marvel|coca.?cola|pepsi|starbucks|mcdonalds)\b/i,
+    message: 'Firefly will reject prompts containing brand trademarks',
+    suggestion: 'Use generic descriptions like "athletic shoes" or "tech company logo style"',
+  },
+  {
+    name: 'explicit-content',
+    pattern: /\b(nude|naked|explicit|pornograph|gore|violent|bloody|graphic death)\b/i,
+    message: 'Firefly rejects explicit or violent content',
+    suggestion: 'Use appropriate imagery descriptions',
+  },
+  {
+    name: 'celebrity',
+    pattern: /\b(celebrity|famous|actor|actress|politician|president|singer|musician)\s+(name|like|resembling)/i,
+    message: 'Firefly cannot generate images of identifiable celebrities',
+    suggestion: 'Describe the style or aesthetic without naming individuals',
+  },
+];
+
+export function screenFireflyPrompt(prompt: string): ContentPolicyResult {
+  const violations: string[] = [];
+  const suggestions: string[] = [];
+
+  for (const rule of CONTENT_RULES) {
+    if (rule.pattern.test(prompt)) {
+      violations.push(`[${rule.name}] ${rule.message}`);
+      suggestions.push(rule.suggestion);
+    }
+  }
+
+  return {
+    allowed: violations.length === 0,
+    violations,
+    suggestions,
+  };
+}
+
+// Usage in API layer
+export function guardFireflyPrompt(prompt: string): void {
+  const result = screenFireflyPrompt(prompt);
+  if (!result.allowed) {
+    throw new Error(
+      `Firefly content policy pre-check failed:\n` +
+      result.violations.join('\n') +
+      '\n\nSuggestions:\n' +
+      result.suggestions.join('\n')
+    );
+  }
+}
+```
+
+### Guardrail 3: PDF Services Quota Enforcement
+
+```typescript
+// src/adobe/guardrails/pdf-quota.ts
+// Enforce PDF Services monthly transaction limits
+
+class PdfQuotaGuard {
+  private monthlyLimit: number;
+  private transactionsUsed: number = 0;
+  private monthStart: Date;
+
+  constructor(tier: 'free' | 'paid' = 'free') {
+    this.monthlyLimit = tier === 'free' ? 500 : Infinity;
+    this.monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+  }
+
+  check(): { allowed: boolean; remaining: number; warning: boolean } {
+    // Reset counter on new month
+    const now = new Date();
+    if (now.getMonth() !== this.monthStart.getMonth()) {
+      this.transactionsUsed = 0;
+      this.monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+
+    const remaining = this.monthlyLimit - this.transactionsUsed;
+    return {
+      allowed: remaining > 0,
+      remaining,
+      warning: remaining < this.monthlyLimit * 0.2,
+    };
+  }
+
+  record(): void {
+    const status = this.check();
+    if (!status.allowed) {
+      throw new Error(`PDF Services quota exhausted (${this.monthlyLimit} transactions/month)`);
+    }
+    this.transactionsUsed++;
+    if (status.warning) {
+      console.warn(`PDF Services: ${status.remaining - 1} transactions remaining this month`);
+    }
+  }
+}
+
+export const pdfQuota = new PdfQuotaGuard(
+  process.env.ADOBE_PDF_TIER === 'paid' ? 'paid' : 'free'
+);
+```
+
+### Guardrail 4: OAuth Scope Validation
+
+```typescript
+// Verify that the requested scopes match what the environment should use
+function validateAdobeScopes(scopes: string, environment: string): void {
+  const scopeList = scopes.split(',').map(s => s.trim());
+
+  // Development should only have minimal scopes
+  if (environment === 'development') {
+    const prodOnlyScopes = ['ff_apis'];
+    const violations = scopeList.filter(s => prodOnlyScopes.includes(s));
+    if (violations.length > 0) {
+      console.warn(`Adobe scope warning: ${violations.join(', ')} should not be in development`);
+    }
+  }
+
+  // Required scopes that should always be present
+  const required = ['openid', 'AdobeID'];
+  const missing = required.filter(s => !scopeList.includes(s));
+  if (missing.length > 0) {
+    throw new Error(`Adobe required scopes missing: ${missing.join(', ')}`);
+  }
+}
+```
+
+### Guardrail 5: Runtime Operation Guard
+
+```typescript
+// Prevent dangerous operations based on environment
+const BLOCKED_IN_PROD: Record<string, string> = {
+  'delete-all-assets': 'Mass deletion blocked in production',
+  'reset-quota-counter': 'Quota reset blocked in production',
+  'use-test-credentials': 'Test credentials blocked in production',
+};
+
+function guardAdobeOperation(operation: string): void {
+  const isProd = process.env.NODE_ENV === 'production';
+  if (isProd && BLOCKED_IN_PROD[operation]) {
+    throw new Error(`BLOCKED: ${BLOCKED_IN_PROD[operation]}`);
+  }
+}
+```
+
+## Output
+
+- CI secret scanning for Adobe credential patterns (`p8_`, JWTs, Org IDs)
+- Firefly prompt pre-screening avoiding wasted credits on policy violations
+- PDF Services quota enforcement with monthly tracking
+- OAuth scope validation per environment
+- Runtime operation guards for production safety
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret scan false positive | Test fixture contains pattern | Exclude test dirs from scan |
+| Prompt wrongly rejected | Pattern too broad | Refine regex; allow legitimate uses |
+| Quota counter reset | Server restart | Persist counter in Redis/DB |
+| Scope validation fails | Wrong env var | Check `NODE_ENV` and `ADOBE_SCOPES` |
+
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
+
+- [Firefly Content Policy](https://developer.adobe.com/firefly-services/docs/firefly-api/)
+- [PDF Services Pricing](https://developer.adobe.com/document-services/pricing/main/)
+- [OAuth Server-to-Server Scopes](https://developer.adobe.com/developer-console/docs/guides/authentication/ServerToServerAuthentication/implementation)
 
 ## Next Steps
+
 For architecture blueprints, see `adobe-architecture-variants`.
