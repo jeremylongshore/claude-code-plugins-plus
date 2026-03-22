@@ -1,8 +1,9 @@
 ---
 name: "cursor-extension-integration"
 description: |
-  Manage integrate VS Code extensions with Cursor. Triggers on "cursor extensions",
-  "cursor vscode extensions", "cursor plugins", "cursor marketplace". Use when working with cursor extension integration functionality. Trigger with phrases like "cursor extension integration", "cursor integration", "cursor".
+  Integrate VS Code extensions with Cursor IDE: compatibility, Open VSX registry, VSIX installation,
+  conflict resolution, and essential extensions. Triggers on "cursor extensions", "cursor vscode extensions",
+  "cursor plugins", "cursor marketplace", "open vsx", "vsix install".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,43 +14,216 @@ tags: [saas, cursor, cursor-extension]
 ---
 # Cursor Extension Integration
 
-## Overview
+Integrate VS Code extensions with Cursor IDE. Covers the Open VSX Registry, VSIX installation for Microsoft-exclusive extensions, conflict resolution with AI features, and recommended extension stacks.
 
-This skill helps integrate VS Code extensions with Cursor IDE. It covers extension compatibility, conflict resolution, essential extensions for development, and performance optimization to enhance your Cursor environment.
+## Extension Marketplace: Key Difference from VS Code
 
-## Prerequisites
+Cursor uses the **Open VSX Registry** instead of Microsoft's VS Code Marketplace. This is because Microsoft's marketplace terms restrict access to VS Code products only.
 
-- Cursor IDE installed
-- VS Code marketplace access
-- Understanding of extension compatibility
-- Awareness of potential conflicts with AI features
+**Impact:** Most popular extensions are on Open VSX. Some Microsoft-published extensions are not.
 
-## Instructions
+### Available on Open VSX (works directly)
 
-1. Open Extensions panel (Cmd+Shift+X)
-2. Search for desired extension
-3. Check compatibility and conflict warnings
-4. Install and reload if prompted
-5. Configure extension settings
-6. Disable conflicting AI extensions (Copilot, TabNine)
+| Extension | Category |
+|-----------|----------|
+| ESLint | Linting |
+| Prettier | Formatting |
+| GitLens | Git visualization |
+| Docker | Container management |
+| Python | Python language support |
+| Pylance | Python analysis (community build) |
+| Go | Go language support |
+| Rust Analyzer | Rust language support |
+| Tailwind CSS IntelliSense | CSS utilities |
+| Auto Rename Tag | HTML/JSX editing |
+| Error Lens | Inline error display |
+| TODO Highlight | Comment highlighting |
+| Thunder Client | API testing |
 
-## Output
+### NOT Available on Open VSX (need manual install)
 
-- Enhanced Cursor functionality with extensions
-- Configured extension settings
-- Resolved keybinding conflicts
-- Optimized extension performance
+| Extension | Reason | Workaround |
+|-----------|--------|------------|
+| GitHub Copilot | Microsoft exclusive | Use Cursor's built-in AI (better integration) |
+| Live Share | Microsoft exclusive | Use other collaboration tools |
+| Remote - SSH | Microsoft exclusive | Install via VSIX |
+| C# Dev Kit | Microsoft exclusive | Install via VSIX |
+| IntelliCode | Microsoft exclusive | Cursor's Tab replaces this |
 
-## Error Handling
+## Installing Extensions
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+### From Open VSX (In-App)
 
-## Examples
+```
+Cmd+Shift+X → search extension name → Install
+```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+### From VSIX (Manual)
+
+For extensions not on Open VSX:
+
+1. Go to the VS Code Marketplace website: [marketplace.visualstudio.com](https://marketplace.visualstudio.com)
+2. Find the extension page
+3. Click "Download Extension" (downloads `.vsix` file)
+4. In Cursor: `Cmd+Shift+P` > `Extensions: Install from VSIX...`
+5. Select the downloaded `.vsix` file
+
+### From Command Line
+
+```bash
+# Install from Open VSX
+cursor --install-extension dbaeumer.vscode-eslint
+
+# Install from VSIX file
+cursor --install-extension ~/Downloads/extension.vsix
+
+# List installed extensions
+cursor --list-extensions
+
+# Uninstall
+cursor --uninstall-extension dbaeumer.vscode-eslint
+```
+
+## Conflict Resolution with Cursor AI
+
+### Extensions That Conflict with Cursor
+
+| Extension | Conflict | Resolution |
+|-----------|----------|------------|
+| **GitHub Copilot** | Duplicate Tab/ghost text suggestions | Disable Copilot. Cursor's built-in AI is better integrated |
+| **TabNine** | Duplicate inline completions | Disable TabNine |
+| **Codeium** | Duplicate inline completions | Disable Codeium |
+| **IntelliCode** | Duplicate completions | Disable IntelliCode |
+| **Vim** | Ctrl+K/L/I keybinding conflicts | Remap AI shortcuts (see below) |
+
+### Vim Extension Conflict Resolution
+
+```json
+// keybindings.json
+[
+  {
+    "key": "ctrl+l",
+    "command": "aichat.focus",
+    "when": "!vim.active || vim.mode == 'Normal'"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "cursor.edit",
+    "when": "editorTextFocus && vim.mode == 'Normal'"
+  },
+  {
+    "key": "ctrl+i",
+    "command": "composer.open",
+    "when": "!vim.active || vim.mode == 'Normal'"
+  }
+]
+```
+
+### General Keybinding Conflict Check
+
+`Cmd+K Cmd+S` > search for the conflicting shortcut > see which commands are bound > reassign or disable.
+
+## Recommended Extension Stacks
+
+### JavaScript / TypeScript
+
+```
+Required:
+  dbaeumer.vscode-eslint          # Linting
+  esbenp.prettier-vscode          # Formatting
+  bradlc.vscode-tailwindcss       # Tailwind CSS (if using)
+
+Recommended:
+  formulahendry.auto-rename-tag   # HTML/JSX tag renaming
+  usernamehw.errorlens            # Inline error display
+  wix.vscode-import-cost          # Import size display
+  christian-kohler.path-intellisense  # Path autocomplete
+```
+
+### Python
+
+```
+Required:
+  ms-python.python                # Python language support
+  charliermarsh.ruff              # Fast Python linter
+
+Recommended:
+  ms-python.debugpy               # Python debugger
+  njpwerner.autodocstring         # Docstring generator
+  ms-toolsai.jupyter              # Jupyter notebook support
+```
+
+### Go / Rust
+
+```
+Go:
+  golang.go                       # Official Go extension
+
+Rust:
+  rust-lang.rust-analyzer         # Rust language server
+  tamasfe.even-better-toml        # TOML config files
+```
+
+### DevOps
+
+```
+  ms-azuretools.vscode-docker     # Docker support
+  redhat.vscode-yaml              # YAML validation
+  hashicorp.terraform             # Terraform HCL support
+  ms-kubernetes-tools.vscode-kubernetes-tools  # Kubernetes
+```
+
+## Performance Impact
+
+Extensions affect editor performance. Audit regularly:
+
+### Measuring Extension Impact
+
+1. `Cmd+Shift+P` > `Developer: Show Running Extensions`
+2. Sort by activation time or profile time
+3. Disable extensions with high activation times that you rarely use
+
+### Common Performance Offenders
+
+| Extension | Issue | Fix |
+|-----------|-------|-----|
+| GitLens | High CPU on large repos | Disable for repos > 100K commits |
+| Prettier (on save) | Slow on large files | Configure file size limit |
+| TypeScript | High memory on large projects | Increase `tsserver.maxTsServerMemory` |
+| Spell checker | CPU on large files | Exclude generated files |
+
+### Disabling Extensions Per Workspace
+
+```json
+// .vscode/settings.json (per project)
+{
+  "extensions.ignoreRecommendations": true
+}
+```
+
+Or right-click an extension > `Disable (Workspace)` to disable only for the current project.
+
+## Extension Settings Sync
+
+Cursor does not sync extensions between machines automatically like VS Code Settings Sync. To transfer:
+
+```bash
+# Export extension list
+cursor --list-extensions > cursor-extensions.txt
+
+# On new machine, reinstall all
+while read ext; do cursor --install-extension "$ext"; done < cursor-extensions.txt
+```
+
+## Enterprise Considerations
+
+- **Extension allow/deny lists**: No built-in mechanism in Cursor. Enforce via documentation and team policy.
+- **VSIX vetting**: Review VSIX files before distributing to team (check for telemetry, network calls)
+- **Open VSX vs Marketplace**: Some extensions have different publishers on Open VSX. Verify publisher identity.
+- **Extension updates**: Extensions auto-update from Open VSX. VSIX-installed extensions do NOT auto-update.
 
 ## Resources
 
-- [VS Code Marketplace](https://marketplace.visualstudio.com/)
-- [Cursor Extension Compatibility](https://cursor.com/docs/extensions)
-- [Extension Development Guide](https://code.visualstudio.com/api)
+- [Cursor Extensions Documentation](https://docs.cursor.com/configuration/extensions)
+- [Open VSX Registry](https://open-vsx.org)
+- [VS Code Marketplace](https://marketplace.visualstudio.com) (for VSIX downloads)

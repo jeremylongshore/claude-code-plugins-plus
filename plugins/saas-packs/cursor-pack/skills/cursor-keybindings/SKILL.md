@@ -1,8 +1,9 @@
 ---
 name: "cursor-keybindings"
 description: |
-  Manage master Cursor keyboard shortcuts and customize keybindings. Triggers on "cursor shortcuts",
-  "cursor keybindings", "cursor keyboard", "cursor hotkeys", "cursor commands". Use when working with cursor keybindings functionality. Trigger with phrases like "cursor keybindings", "cursor keybindings", "cursor".
+  Master Cursor keyboard shortcuts and customize keybindings for AI features and editor commands.
+  Triggers on "cursor shortcuts", "cursor keybindings", "cursor keyboard", "cursor hotkeys",
+  "cursor commands", "Cmd+K", "Cmd+L", "Cmd+I".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,43 +14,167 @@ tags: [saas, cursor, cursor-keybindings]
 ---
 # Cursor Keybindings
 
-## Overview
+Complete keyboard shortcut reference for Cursor IDE. Covers AI-specific shortcuts, standard editor commands, and customization. All shortcuts shown as macOS / Windows-Linux.
 
-This skill helps you master Cursor keyboard shortcuts and customize keybindings. It provides a complete reference for AI-specific shortcuts, standard editor commands, and guidance on resolving conflicts with Vim mode or other extensions.
+## AI Feature Shortcuts
 
-## Prerequisites
+### Primary AI Shortcuts
 
-- Cursor IDE installed
-- Access to Keyboard Shortcuts editor
-- Understanding of modifier keys (Cmd/Ctrl, Alt/Option, Shift)
-- Optional: Vim mode extension if using Vim bindings
+| Action | macOS | Windows/Linux | Notes |
+|--------|-------|---------------|-------|
+| **Chat panel** | `Cmd+L` | `Ctrl+L` | Open/focus AI chat sidebar |
+| **Inline Edit** | `Cmd+K` | `Ctrl+K` | Edit selected code with AI |
+| **Composer** | `Cmd+I` | `Ctrl+I` | Multi-file AI editing |
+| **Full Composer** | `Cmd+Shift+I` | `Ctrl+Shift+I` | Expanded composer view |
 
-## Instructions
+### Context & Suggestions
 
-1. Open Keyboard Shortcuts (Cmd+K Cmd+S)
-2. Search for the command to rebind
-3. Click the pencil icon to edit
-4. Press your new key combination
-5. Resolve any conflicts shown
-6. Save and test the new binding
+| Action | macOS | Windows/Linux | Notes |
+|--------|-------|---------------|-------|
+| **Add to Chat context** | `Cmd+Shift+L` | `Ctrl+Shift+L` | Add selected code to existing chat |
+| **Accept Tab suggestion** | `Tab` | `Tab` | Accept full ghost text |
+| **Accept word-by-word** | `Cmd+→` | `Ctrl+→` | Partial Tab acceptance |
+| **Dismiss suggestion** | `Esc` | `Esc` | Reject ghost text |
+| **Force trigger completion** | `Ctrl+Space` | `Ctrl+Space` | Manually trigger Tab |
+| **Accept inline edit** | `Cmd+Y` | `Ctrl+Y` | Accept Cmd+K changes |
+| **Reject inline edit** | `Esc` | `Esc` | Dismiss Cmd+K changes |
 
-## Output
+### Chat Management
 
-- Customized keyboard shortcuts
-- Resolved keybinding conflicts
-- Vim mode compatibility (if configured)
-- Personalized workflow efficiency
+| Action | macOS | Windows/Linux | Notes |
+|--------|-------|---------------|-------|
+| **New chat** | `Cmd+N` (in chat) | `Ctrl+N` | Start fresh conversation |
+| **Toggle chat panel** | `Cmd+L` | `Ctrl+L` | Show/hide chat sidebar |
 
-## Error Handling
+## Essential Editor Shortcuts
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+### Navigation
 
-## Examples
+| Action | macOS | Windows/Linux |
+|--------|-------|---------------|
+| Command Palette | `Cmd+Shift+P` | `Ctrl+Shift+P` |
+| Quick Open file | `Cmd+P` | `Ctrl+P` |
+| Go to Symbol | `Cmd+Shift+O` | `Ctrl+Shift+O` |
+| Go to Line | `Cmd+G` | `Ctrl+G` |
+| Go to Definition | `F12` | `F12` |
+| Peek Definition | `Option+F12` | `Alt+F12` |
+| Go Back | `Cmd+-` | `Ctrl+-` |
+| Go Forward | `Cmd+Shift+-` | `Ctrl+Shift+-` |
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+### Editing
+
+| Action | macOS | Windows/Linux |
+|--------|-------|---------------|
+| Multi-cursor (add) | `Option+Click` | `Alt+Click` |
+| Select all occurrences | `Cmd+Shift+L` | `Ctrl+Shift+L` |
+| Move line up/down | `Option+↑/↓` | `Alt+↑/↓` |
+| Duplicate line | `Shift+Option+↑/↓` | `Shift+Alt+↑/↓` |
+| Delete line | `Cmd+Shift+K` | `Ctrl+Shift+K` |
+| Toggle comment | `Cmd+/` | `Ctrl+/` |
+| Format document | `Shift+Option+F` | `Shift+Alt+F` |
+| Rename symbol | `F2` | `F2` |
+| Quick Fix | `Cmd+.` | `Ctrl+.` |
+
+### Panels & Views
+
+| Action | macOS | Windows/Linux |
+|--------|-------|---------------|
+| Toggle terminal | `` Cmd+` `` | `` Ctrl+` `` |
+| Toggle sidebar | `Cmd+B` | `Ctrl+B` |
+| Source Control | `Cmd+Shift+G` | `Ctrl+Shift+G` |
+| Extensions | `Cmd+Shift+X` | `Ctrl+Shift+X` |
+| Explorer | `Cmd+Shift+E` | `Ctrl+Shift+E` |
+| Search across files | `Cmd+Shift+F` | `Ctrl+Shift+F` |
+| Keyboard shortcuts editor | `Cmd+K Cmd+S` | `Ctrl+K Ctrl+S` |
+
+## Customizing Keybindings
+
+### Via UI
+
+1. `Cmd+K Cmd+S` to open Keyboard Shortcuts editor
+2. Search for the command (e.g., "accept cursor tab")
+3. Click the pencil icon next to the keybinding
+4. Press your desired key combination
+5. If conflict detected, choose to override or cancel
+
+### Via JSON
+
+Open `keybindings.json`: `Cmd+Shift+P` > `Open Keyboard Shortcuts (JSON)`
+
+```json
+[
+  {
+    "key": "cmd+enter",
+    "command": "editor.action.inlineSuggest.commit",
+    "when": "inlineSuggestionVisible"
+  },
+  {
+    "key": "ctrl+shift+k",
+    "command": "aichat.newchat",
+    "when": "editorFocus"
+  },
+  {
+    "key": "cmd+k cmd+a",
+    "command": "editor.action.selectAll",
+    "when": "editorTextFocus && !editorReadonly"
+  }
+]
+```
+
+### Vim Mode Compatibility
+
+If using the Vim extension with Cursor:
+
+```json
+// keybindings.json -- resolve Vim conflicts
+[
+  {
+    "key": "ctrl+l",
+    "command": "aichat.focus",
+    "when": "!vim.active || vim.mode == 'Normal'"
+  },
+  {
+    "key": "ctrl+k",
+    "command": "cursor.edit",
+    "when": "editorTextFocus && !vim.active"
+  }
+]
+```
+
+Common Vim conflicts:
+- `Ctrl+K` conflicts with Vim's digraph mode
+- `Ctrl+L` conflicts with Vim's clear/redraw
+- `Ctrl+I` conflicts with Vim's jump forward
+
+Solution: Remap Cursor AI shortcuts to avoid Vim's control sequences, or use `when` clauses to scope by Vim mode.
+
+## Cheat Sheet (Print-Friendly)
+
+```
+╔══════════════════════════════════════════════╗
+║  CURSOR AI SHORTCUTS (macOS)                 ║
+╠══════════════════════════════════════════════╣
+║  Cmd+L       Chat panel                     ║
+║  Cmd+K       Inline edit (select first)     ║
+║  Cmd+I       Composer (multi-file)          ║
+║  Cmd+Shift+L Add selection to chat          ║
+║  Tab         Accept Tab suggestion          ║
+║  Cmd+→       Accept suggestion word-by-word ║
+║  Esc         Dismiss suggestion             ║
+║  Cmd+Y       Accept inline edit             ║
+║  Cmd+Shift+P Command Palette               ║
+║  Cmd+P       Quick Open file                ║
+╚══════════════════════════════════════════════╝
+```
+
+## Enterprise Considerations
+
+- **Keybinding policies**: Teams can share a `keybindings.json` in the project repo (`.vscode/keybindings.json`)
+- **Accessibility**: Cursor supports screen readers and keyboard-only navigation via standard VS Code accessibility features
+- **Corporate keyboards**: International keyboard layouts may require different mappings for Cmd+K/L/I
 
 ## Resources
 
-- [VS Code Key Bindings](https://code.visualstudio.com/docs/getstarted/keybindings)
-- [Cursor Keyboard Shortcuts](https://cursor.com/docs/shortcuts)
-- [Vim Extension Configuration](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
+- [Cursor Keyboard Shortcuts](https://docs.cursor.com/kbd)
+- [VS Code Keybindings](https://code.visualstudio.com/docs/getstarted/keybindings)
+- [Vim Extension](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)

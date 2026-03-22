@@ -1,8 +1,8 @@
 ---
 name: "cursor-rules-config"
 description: |
-  Configure .cursorrules for project-specific AI behavior. Triggers on "cursorrules",
-  ".cursorrules", "cursor rules", "cursor config", "cursor project settings". Use when configuring systems or services. Trigger with phrases like "cursor rules config", "cursor config", "cursor".
+  Configure Cursor project rules using .cursor/rules/*.mdc files and legacy .cursorrules. Triggers on "cursorrules",
+  ".cursorrules", "cursor rules", "cursor config", "cursor project settings", ".mdc rules", "project rules".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,52 +13,229 @@ tags: [saas, cursor, cursor-rules]
 ---
 # Cursor Rules Config
 
-Provides project-specific AI behavior configuration for Cursor IDE through `.cursorrules` files.
+Configure project-specific AI behavior through Cursor's rules system. The modern approach uses `.cursor/rules/*.mdc` files; the legacy `.cursorrules` file is still supported but deprecated.
 
-## Overview
+## Rules System Architecture
 
-### What is .cursorrules?
+### Modern Project Rules (.cursor/rules/*.mdc)
+
+Each `.mdc` file contains YAML frontmatter followed by markdown content:
+
+```yaml
+---
+description: "Enforce TypeScript strict mode and functional patterns"
+globs: "src/**/*.ts,src/**/*.tsx"
+alwaysApply: false
+---
+# TypeScript Standards
+
+- Use `const` over `let`, never `var`
+- Prefer pure functions over classes
+- All functions must have explicit return types
+- Use discriminated unions over enums
 ```
-.cursorrules is a project-level configuration file that:
-- Guides AI code generation style
-- Enforces coding standards
-- Provides project context
-- Customizes AI behavior per project
+
+**Frontmatter fields:**
+| Field | Type | Purpose |
+|-------|------|---------|
+| `description` | string | Concise rule purpose (shown in Cursor UI) |
+| `globs` | string | Gitignore-style patterns for auto-attachment |
+| `alwaysApply` | boolean | `true` = always active; `false` = only when matching files referenced |
+
+### Rule Types by `alwaysApply` + `globs` Combination
+
+| alwaysApply | globs | Behavior |
+|-------------|-------|----------|
+| `true` | empty | Always injected into every prompt |
+| `false` | set | Auto-attached when matching files are in context |
+| `false` | empty | Manual only -- reference with `@Cursor Rules` in chat |
+
+### File Naming Convention
+
+Use kebab-case with `.mdc` extension. Names should describe the rule's scope:
+
+```
+.cursor/rules/
+  typescript-standards.mdc
+  react-component-patterns.mdc
+  api-error-handling.mdc
+  testing-conventions.mdc
+  database-migrations.mdc
+  security-requirements.mdc
 ```
 
-## Prerequisites
+Create new rules via: `Cmd+Shift+P` > `New Cursor Rule`
 
-- Cursor IDE installed and authenticated
-- Project workspace open in Cursor
-- Write access to project root directory
-- Basic understanding of YAML syntax
+### Complete Project Rules Example
 
-## Instructions
+**`.cursor/rules/project-context.mdc`** (always-on):
+```yaml
+---
+description: "Core project context and conventions"
+globs: ""
+alwaysApply: true
+---
+# Project: E-Commerce Platform
 
-1. Navigate to your project root directory
-2. Create a new file named `.cursorrules`
-3. Add project metadata (name, language, framework)
-4. Define coding rules and conventions
-5. Include examples of preferred patterns
-6. Save the file and test with Cursor AI
+Tech stack: Next.js 15, TypeScript 5.7, Prisma ORM, PostgreSQL, Tailwind CSS 4.
+Package manager: pnpm. Monorepo with turborepo.
 
-## Output
+## Conventions
+- API routes in `app/api/` using Route Handlers
+- Server Components by default, `"use client"` only when needed
+- Error boundaries at layout level
+- All monetary values stored as integers (cents)
+- Dates stored as UTC, displayed in user timezone
+```
 
-- `.cursorrules` file at project root
-- Customized AI code generation behavior
-- Consistent code style across AI suggestions
-- Project-specific context for Cursor AI
+**`.cursor/rules/react-patterns.mdc`** (glob-scoped):
+```yaml
+---
+description: "React component standards for TSX files"
+globs: "src/**/*.tsx,app/**/*.tsx"
+alwaysApply: false
+---
+# React Component Rules
 
-## Error Handling
+- Export components as named exports, not default
+- Props interface named `{Component}Props`
+- Use `forwardRef` for components accepting `ref`
+- Colocate styles in `.module.css` files
+- Server Components: no `useState`, `useEffect`, or event handlers
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+```tsx
+// Correct pattern
+export interface ButtonProps {
+  variant: 'primary' | 'secondary';
+  children: React.ReactNode;
+  onClick?: () => void;
+}
 
-## Examples
+export function Button({ variant, children, onClick }: ButtonProps) {
+  return (
+    <button className={styles[variant]} onClick={onClick}>
+      {children}
+    </button>
+  );
+}
+```
+```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+**`.cursor/rules/api-routes.mdc`** (glob-scoped):
+```yaml
+---
+description: "API route handler patterns"
+globs: "app/api/**/*.ts"
+alwaysApply: false
+---
+# API Route Standards
+
+- Always validate request body with Zod
+- Return typed `NextResponse.json()` responses
+- Use consistent error response shape: `{ error: string, code: string }`
+- Wrap handlers in try/catch with structured logging
+
+```ts
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+
+const CreateOrderSchema = z.object({
+  items: z.array(z.object({
+    productId: z.string().uuid(),
+    quantity: z.number().int().positive(),
+  })),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const parsed = CreateOrderSchema.parse(body);
+    const order = await createOrder(parsed);
+    return NextResponse.json(order, { status: 201 });
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: 'Validation failed', code: 'INVALID_INPUT', details: err.issues },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      { error: 'Internal server error', code: 'INTERNAL_ERROR' },
+      { status: 500 }
+    );
+  }
+}
+```
+```
+
+## Legacy .cursorrules Format
+
+Place a `.cursorrules` file in project root. Plain markdown, no frontmatter:
+
+```markdown
+# Project Rules
+
+You are working on a Django REST Framework API.
+
+## Stack
+- Python 3.12, Django 5.1, DRF 3.15
+- PostgreSQL 16 with pgvector extension
+- Redis for caching and Celery broker
+- pytest for testing
+
+## Conventions
+- ViewSets over function-based views
+- Always use serializer validation
+- Custom exceptions inherit from `APIException`
+- All endpoints require authentication unless explicitly marked
+- Use `select_related` and `prefetch_related` to avoid N+1 queries
+
+## Code Style
+- Type hints on all function signatures
+- Docstrings on all public methods (Google style)
+- Max function length: 30 lines
+```
+
+## Migration: .cursorrules to .cursor/rules/
+
+Split a monolithic `.cursorrules` into scoped `.mdc` files:
+
+1. Create `.cursor/rules/` directory
+2. Extract global context into an `alwaysApply: true` rule
+3. Extract language/framework rules into glob-scoped rules
+4. Delete `.cursorrules` after verifying all rules load
+
+## Referencing Files in Rules
+
+Use `@file` syntax to include additional context files when a rule is applied:
+
+```yaml
+---
+description: "Database schema context for migration files"
+globs: "prisma/**/*.prisma,drizzle/**/*.ts"
+alwaysApply: false
+---
+Reference these files for schema context:
+@prisma/schema.prisma
+@docs/data-model.md
+```
+
+## Debugging Rules
+
+1. Open Chat and type `@Cursor Rules` to see which rules are active
+2. Check glob patterns match your files: open a file, then verify the rule appears in context pills
+3. Rules with `alwaysApply: true` always show; glob rules only appear when matching files are in context
+
+## Enterprise Considerations
+
+- **Version control**: Commit `.cursor/rules/` to git -- rules are project documentation
+- **Team alignment**: Use `alwaysApply: true` for team-wide standards
+- **Sensitive data**: Never put API keys, secrets, or credentials in rules files
+- **Rule size**: Keep individual rules focused and under 200 lines; split large rules into multiple files
+- **Audit trail**: Rules changes appear in git history for compliance review
 
 ## Resources
 
-- [Cursor Documentation](https://cursor.com/docs)
-- [YAML Syntax Guide](https://yaml.org/spec/)
-- [Cursor Community Discord](https://discord.gg/cursor)
+- [Cursor Rules Documentation](https://docs.cursor.com/context/rules)
+- [MDC Rules Deep Dive](https://forum.cursor.com/t/a-deep-dive-into-cursor-rules-0-45/60721)
+- [awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules)

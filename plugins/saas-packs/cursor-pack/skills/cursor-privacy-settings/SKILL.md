@@ -1,8 +1,9 @@
 ---
 name: "cursor-privacy-settings"
 description: |
-  Configure Cursor privacy and data handling settings. Triggers on "cursor privacy",
-  "cursor data", "cursor security", "privacy mode", "cursor telemetry". Use when working with cursor privacy settings functionality. Trigger with phrases like "cursor privacy settings", "cursor settings", "cursor".
+  Configure Cursor privacy mode, data handling, telemetry, and sensitive file exclusion. Triggers on
+  "cursor privacy", "cursor data", "cursor security", "privacy mode", "cursor telemetry",
+  "cursor data retention".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,44 +14,203 @@ tags: [saas, cursor, security]
 ---
 # Cursor Privacy Settings
 
-## Overview
+Configure Cursor's privacy controls to protect your code and data. Covers Privacy Mode, data handling policies, file exclusion, telemetry, and enterprise security settings.
 
-This skill helps configure Cursor privacy and data handling settings. It covers privacy mode configuration, sensitive file exclusion, telemetry settings, and enterprise security controls to ensure your code and data are protected appropriately.
+## Privacy Mode
 
-## Prerequisites
+### What Privacy Mode Does
 
-- Cursor IDE with admin access to settings
-- Understanding of data handling requirements
-- Knowledge of sensitive files in project
-- Compliance requirements documented
+| With Privacy Mode ON | With Privacy Mode OFF |
+|---------------------|----------------------|
+| Zero data retention at model providers | Providers may retain data per their policies |
+| Code not used for training (Cursor or providers) | Code may be used to improve AI models |
+| Embeddings computed without storing source | Same embedding behavior |
+| Telemetry: anonymous usage only | Telemetry may include code snippets |
 
-## Instructions
+### Enabling Privacy Mode
 
-1. Evaluate privacy mode needs (per project/globally)
-2. Configure .cursorignore for sensitive files
-3. Set up environment variables for secrets
-4. Configure telemetry settings
-5. Verify API key security
-6. Document data handling policies
+**Individual:**
+`Cursor Settings` > `General` > `Privacy Mode` > ON
 
-## Output
+**Team enforcement (Business/Enterprise):**
+Admin Dashboard > Privacy > "Enforce Privacy Mode for all members"
 
-- Privacy Mode configured appropriately
-- Sensitive files excluded from AI context
-- Secure API key management
-- Telemetry settings aligned with policy
-- Documented privacy configuration
+When team-enforced:
+- Individual users cannot disable Privacy Mode
+- Client pings server every 5 minutes to verify enforcement
+- New members automatically have Privacy Mode enabled
 
-## Error Handling
+### Verifying Privacy Mode
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+1. `Cursor Settings` > `General` -- check Privacy Mode toggle
+2. [cursor.com/settings](https://cursor.com/settings) -- shows account-level status
+3. For teams: Admin Dashboard shows enforcement status per member
 
-## Examples
+## Data Flow: Where Your Code Goes
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+```
+Your Code in Editor
+       │
+       ├─► Tab Completion ──► Cursor's proprietary model server
+       │                      (zero retention with Privacy Mode)
+       │
+       ├─► Chat/Composer ──► Model provider (OpenAI/Anthropic/Google)
+       │                     (zero retention agreements in place)
+       │
+       ├─► Codebase Index ─► Cursor embedding API ─► Turbopuffer (vector DB)
+       │                     (embeddings only, no plaintext code)
+       │
+       └─► BYOK ───────────► Your API provider directly
+                             (your provider's data policy applies)
+```
+
+### What IS Stored
+
+| Data | Stored Where | Retention |
+|------|-------------|-----------|
+| Embeddings (vectors) | Turbopuffer (cloud) | Until project re-indexed |
+| Obfuscated file metadata | Cursor servers | Active session only |
+| Anonymous telemetry | Cursor analytics | Aggregated, no PII |
+| Account info | Cursor auth servers | While account active |
+
+### What Is NOT Stored (Privacy Mode ON)
+
+- Plaintext source code
+- Chat prompts and responses
+- File contents sent for completion
+- Code snippets from Tab suggestions
+
+## Sensitive File Exclusion
+
+### .cursorignore (Best-Effort AI Exclusion)
+
+```gitignore
+# .cursorignore -- prevent files from AI features + indexing
+
+# Credentials and secrets
+.env
+.env.*
+.env.local
+.env.production
+**/secrets/
+**/credentials/
+**/*.pem
+**/*.key
+**/*.p12
+
+# Regulated data
+**/pii/
+**/hipaa/
+**/financial-data/
+
+# Internal configuration
+.cursor-config-private
+infrastructure/terraform.tfvars
+```
+
+**Important:** `.cursorignore` is best-effort. Due to LLM unpredictability, it is not a hard security boundary. Do not rely solely on `.cursorignore` to protect truly sensitive data.
+
+### Defense in Depth
+
+```
+Layer 1: .gitignore        → Secrets never in repo
+Layer 2: .env files        → Config via environment variables
+Layer 3: .cursorignore     → Best-effort AI exclusion
+Layer 4: Privacy Mode      → Zero data retention at providers
+Layer 5: BYOK + Azure      → Route through your own infrastructure
+```
+
+## Telemetry Configuration
+
+### What Cursor Collects
+
+With Privacy Mode ON, telemetry is limited to:
+- Feature usage counts (how often Chat/Composer/Tab used)
+- Error reports (crashes, not code content)
+- Performance metrics (response times)
+- Extension compatibility data
+
+### Disabling Telemetry
+
+```json
+// settings.json
+{
+  "telemetry.telemetryLevel": "off"
+}
+```
+
+Or: `Cursor Settings` > search "telemetry" > set to "off"
+
+**Note:** Disabling telemetry may reduce Cursor's ability to diagnose issues affecting your account.
+
+## Network Security
+
+### Required Domains
+
+Allowlist these domains in corporate firewalls/proxies:
+
+```
+api.cursor.com           → AI API requests
+api2.cursor.com          → AI API requests (fallback)
+auth.cursor.com          → Authentication
+*.turbopuffer.com        → Codebase indexing (embeddings)
+download.cursor.com      → Updates
+```
+
+### Proxy Configuration
+
+```json
+// settings.json
+{
+  "http.proxy": "http://proxy.corp.com:8080",
+  "http.proxyStrictSSL": true,
+  "http.proxyAuthorization": "Basic base64-encoded-credentials"
+}
+```
+
+### TLS/SSL
+
+All Cursor API communication uses TLS 1.2+. Certificate pinning is not supported, so corporate SSL inspection proxies work (add proxy CA to system trust store).
+
+## Compliance Mapping
+
+### SOC 2
+
+| Control | Cursor Coverage |
+|---------|----------------|
+| CC6.1 Logical access | SSO, RBAC, MFA via IdP |
+| CC6.6 System boundaries | Privacy Mode, .cursorignore |
+| CC6.7 Data transmission | TLS 1.2+ for all API calls |
+| CC7.2 Monitoring | Admin dashboard usage analytics |
+
+### GDPR
+
+| Requirement | Cursor Coverage |
+|-------------|----------------|
+| Data minimization | Privacy Mode: zero retention |
+| Right to erasure | Account deletion removes all server-side data |
+| Data processing agreement | Available on request (Enterprise) |
+| Sub-processor list | Published at cursor.com/privacy |
+
+### HIPAA
+
+Cursor does not have a BAA (Business Associate Agreement) as of early 2026. For HIPAA-regulated code:
+- Enable Privacy Mode
+- Use `.cursorignore` for PHI-containing files
+- Consider BYOK through Azure with BAA
+- Consult your compliance team before use
+
+## Enterprise Considerations
+
+- **SOC 2 Type II report**: Available on request for Enterprise customers
+- **Penetration test results**: Annual pen tests, results shared under NDA
+- **Data residency**: Cursor processes requests via US and EU infrastructure. No region pinning available yet
+- **Encryption**: AES-256 at rest, TLS 1.2+ in transit
+- **Incident response**: Cursor maintains a security incident response plan (details in SOC 2 report)
 
 ## Resources
 
-- [Cursor Privacy Policy](https://cursor.com/privacy)
-- [Data Handling Documentation](https://cursor.com/docs/privacy)
-- [Security Best Practices](https://cursor.com/security)
+- [Cursor Privacy and Data Use](https://cursor.com/data-use)
+- [Cursor Security](https://cursor.com/security)
+- [Privacy and Data Governance Docs](https://docs.cursor.com/enterprise/privacy-and-data-governance)
+- [Account Privacy Settings](https://docs.cursor.com/account/privacy)

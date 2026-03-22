@@ -1,8 +1,8 @@
 ---
 name: "cursor-ai-chat"
 description: |
-  Manage master Cursor AI chat interface for code assistance. Triggers on "cursor chat",
-  "cursor ai chat", "ask cursor", "cursor conversation", "chat with cursor". Use when working with cursor ai chat functionality. Trigger with phrases like "cursor ai chat", "cursor chat", "cursor".
+  Master Cursor AI Chat with @-mentions, inline edit, and conversation patterns. Triggers on "cursor chat",
+  "cursor ai chat", "ask cursor", "cursor conversation", "chat with cursor", "Cmd+L", "inline edit".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -11,46 +11,167 @@ compatible-with: claude-code, codex, openclaw
 tags: [saas, cursor, cursor-ai]
 
 ---
-# Cursor Ai Chat
+# Cursor AI Chat
 
-## Overview
+Master the Cursor AI Chat panel and inline edit for code assistance, debugging, and exploration.
 
-This skill helps you master the Cursor AI chat interface for code assistance. It covers effective prompting patterns, context management with @-mentions, model selection, and techniques for getting the best responses from AI.
+## Core Chat Interfaces
 
-## Prerequisites
+### Chat Panel (Cmd+L / Ctrl+L)
 
-- Cursor IDE installed and authenticated
-- Project workspace with code files
-- Understanding of @-mention syntax
-- Basic familiarity with AI prompting
+The side-panel chat for conversational code assistance:
 
-## Instructions
+```
+┌─────────────────────────────────┐
+│  Chat                     [M]   │  ← Model selector
+│─────────────────────────────────│
+│  Context Pills:                 │
+│  [main.ts] [utils/] [@Web]      │  ← Active context shown as pills
+│─────────────────────────────────│
+│  User: Explain the auth flow    │
+│  in @src/auth/middleware.ts     │
+│                                 │
+│  AI: The middleware checks...   │
+│─────────────────────────────────│
+│  [Type message...]    [Send]    │
+└─────────────────────────────────┘
+```
 
-1. Open AI Chat panel (Cmd+L or Ctrl+L)
-2. Select relevant code before asking questions
-3. Use @-mentions to add file context
-4. Ask specific, clear questions
-5. Review and apply suggested code
-6. Use multi-turn conversations for iterative work
+**Key actions:**
+- Select code in editor, then `Cmd+L` to add selection as context
+- `Cmd+Shift+L` adds selection to existing chat without clearing
+- Click model name in top-right to switch models mid-conversation
 
-## Output
+### Inline Edit (Cmd+K / Ctrl+K)
 
-- Code explanations and documentation
-- Generated code snippets
-- Debugging assistance
-- Refactoring suggestions
-- Code review feedback
+Surgical edits within the editor. Select code (or place cursor), press `Cmd+K`, type instruction:
 
-## Error Handling
+```
+Selected: function calculateTotal(items) { ... }
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+Prompt: "Add TypeScript types and handle empty array edge case"
 
-## Examples
+Result: Cursor shows diff inline -- green for additions, red for removals.
+        Press Cmd+Y to accept, Esc to reject.
+```
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+Best for single-function edits, type annotations, refactoring a specific block, adding error handling.
+
+## @-Symbol Reference
+
+Type `@` in chat to access context sources:
+
+| Symbol | Purpose | Example |
+|--------|---------|---------|
+| `@Files` | Reference specific files | `@src/utils/auth.ts` |
+| `@Folders` | Include directory contents | `@src/components/` |
+| `@Code` | Reference specific symbols | `@handleSubmit` function |
+| `@Docs` | External documentation | `@Docs React Router` |
+| `@Git` | Git diff context | `@Git` (uncommitted changes) |
+| `@Codebase` | Semantic search full codebase | `@Codebase where is auth handled?` |
+| `@Web` | Live web search | `@Web latest Next.js 15 changes` |
+| `@Definitions` | Symbol definitions | Jump to type/function definitions |
+| `@Cursor Rules` | Active project rules | Show which rules are loaded |
+| `@Recent Changes` | Recent file edits | Context from recent modifications |
+| `@Lint Errors` | Current lint issues | Fix active linting problems |
+
+### @Docs: Adding Custom Documentation
+
+Register external docs for `@Docs` lookup:
+
+1. `Cursor Settings` > `Features` > `Docs`
+2. Click `Add new doc`
+3. Enter URL: `https://react.dev/reference/react` (Cursor crawls and indexes it)
+4. Reference in chat: `@Docs React` then ask questions
+
+Works with any documentation site. Good for framework APIs, internal wikis, design systems.
+
+## Effective Prompting Patterns
+
+### Pattern 1: Context-First Prompts
+
+```
+@src/api/orders.ts @src/types/order.ts
+
+The createOrder function doesn't validate the shipping address.
+Add Zod validation that checks: street, city, state (2-letter), zip (5 or 9 digit).
+Throw a typed ValidationError if invalid.
+```
+
+### Pattern 2: Reference-Based Generation
+
+```
+@src/api/users.ts
+
+Create a new file src/api/products.ts following the exact same pattern
+as the users API. CRUD endpoints, same error handling, same response format.
+Product fields: id, name, price (cents), category, createdAt.
+```
+
+### Pattern 3: Debug with Context
+
+```
+@src/hooks/useAuth.ts @Lint Errors
+
+The useAuth hook causes an infinite re-render loop when the token expires.
+The useEffect fires repeatedly. What's the root cause and how do I fix the
+dependency array?
+```
+
+### Pattern 4: Architecture Discussion
+
+```
+@src/components/ @src/api/
+
+I need to add real-time notifications. The app uses REST APIs currently.
+Should I add WebSockets, SSE, or polling? Consider the existing architecture
+shown in these directories.
+```
+
+## Multi-Turn Conversation Management
+
+**Start new chats for new topics.** Long conversations degrade response quality as context fills up.
+
+**When to start fresh:**
+- Switching to a different feature or bug
+- After 10+ turns on the same topic
+- When responses start repeating or losing accuracy
+
+**When to continue:**
+- Iterating on the same code change
+- Follow-up questions about the same file
+- Asking for tests after generating code
+
+## Model Selection for Chat
+
+Switch models using the dropdown in chat header:
+
+| Task | Recommended Model |
+|------|------------------|
+| Quick questions, explanations | GPT-4o, Claude Sonnet |
+| Complex refactoring, architecture | Claude Opus, GPT-5 |
+| Bug hunting, reasoning | o1, o3 reasoning models |
+| Speed-critical simple tasks | cursor-small, GPT-4o-mini |
+| Auto (let Cursor decide) | Auto mode |
+
+## Chat vs Inline Edit vs Composer
+
+| Feature | Chat (Cmd+L) | Inline (Cmd+K) | Composer (Cmd+I) |
+|---------|-------------|----------------|-------------------|
+| Scope | Exploration, Q&A | Single block edit | Multi-file changes |
+| Context | Conversation history | Selected code | Project-wide |
+| Output | Text + code snippets | Inline diff | File-level diffs |
+| Best for | Understanding, planning | Quick fixes, types | Features, scaffolding |
+
+## Enterprise Considerations
+
+- **Privacy Mode**: Enable in Cursor Settings > General > Privacy Mode for zero data retention
+- **Model governance**: Teams can restrict which models developers access via admin dashboard
+- **Audit**: Chat interactions are not logged server-side when Privacy Mode is on
+- **Cost control**: Use Auto mode or default to faster models; reserve Opus/GPT-5 for complex tasks
 
 ## Resources
 
-- [Cursor Chat Documentation](https://cursor.com/docs/chat)
-- [Effective Prompting Guide](https://cursor.com/docs/prompting)
-- [Context Management Tips](https://cursor.com/docs/context)
+- [Cursor Chat Documentation](https://docs.cursor.com/chat/overview)
+- [@ Symbols Overview](https://docs.cursor.com/context/@-symbols/overview)
+- [Keyboard Shortcuts](https://docs.cursor.com/kbd)

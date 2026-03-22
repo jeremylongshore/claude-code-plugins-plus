@@ -1,8 +1,9 @@
 ---
 name: "cursor-codebase-indexing"
 description: |
-  Execute set up and optimize Cursor codebase indexing. Triggers on "cursor index setup",
-  "codebase indexing", "index codebase", "cursor semantic search". Use when working with cursor codebase indexing functionality. Trigger with phrases like "cursor codebase indexing", "cursor indexing", "cursor".
+  Set up and optimize Cursor codebase indexing for semantic code search and @Codebase queries.
+  Triggers on "cursor index", "codebase indexing", "index codebase", "cursor semantic search",
+  "@codebase", "cursor embeddings".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,53 +14,212 @@ tags: [saas, cursor, cursor-codebase]
 ---
 # Cursor Codebase Indexing
 
-Provides setup and optimization of Cursor's codebase indexing for semantic code search and improved AI context awareness.
+Set up and optimize Cursor's codebase indexing system. Indexing creates embeddings of your code, enabling `@Codebase` semantic search and improving AI context awareness across Chat, Composer, and Agent mode.
 
-## Overview
+## How Indexing Works
 
-### What is Codebase Indexing?
 ```
-Codebase indexing creates a searchable representation of your code:
-- Enables @codebase queries
-- Powers semantic code search
-- Improves AI context awareness
-- Helps AI understand project structure
+Your Code Files
+      │
+      ▼
+  Syntax Chunking ─── splits files into meaningful code blocks
+      │
+      ▼
+  Embedding Generation ─── converts chunks to vector representations
+      │
+      ▼
+  Vector Storage (Turbopuffer) ─── cloud-hosted nearest-neighbor search
+      │
+      ▼
+  @Codebase Query ─── your question → embedding → similarity search → relevant chunks
 ```
 
-## Prerequisites
+### Key Architecture Details
 
-- Cursor IDE installed and authenticated
-- Project workspace with source files
-- Sufficient disk space for index storage
-- Stable network connection for initial setup
+- **Merkle tree** for change detection: only modified files are re-indexed (every 10 minutes)
+- **No plaintext storage**: code is not stored server-side; only embeddings and obfuscated metadata
+- **Privacy Mode compatible**: with Privacy Mode on, embeddings are computed without retaining source code
+- Indexing runs in the background; small projects complete in seconds, large projects (50K+ files) may take hours initially
 
-## Instructions
+## Initial Setup
 
 1. Open your project in Cursor
-2. Navigate to Settings > Cursor > Codebase Indexing
-3. Enable "Index this workspace"
-4. Create `.cursorignore` file at project root
-5. Add exclusion patterns for large/irrelevant directories
-6. Wait for indexing to complete (check status bar)
-7. Test with `@codebase` queries in chat
+2. Indexing starts automatically on first open
+3. Check status: look at the bottom status bar for "Indexing..." indicator
+4. View indexed files: `Cursor Settings` > `Features` > `Codebase Indexing` > `View included files`
 
-## Output
+### Verify Indexing Status
 
-- Indexed codebase enabling `@codebase` queries
-- Semantic code search functionality
-- Improved AI context awareness
-- Searchable symbol table and definitions
+The status bar shows:
+- **"Indexing..."** with progress indicator -- initial indexing in progress
+- **"Indexed"** -- indexing complete, `@Codebase` queries are available
+- No indicator -- indexing may be disabled or not started
 
-## Error Handling
+## Configuration
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+### .cursorignore
 
-## Examples
+Exclude files from indexing and AI features. Place in project root. Uses `.gitignore` syntax:
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+```gitignore
+# .cursorignore
+
+# Build artifacts (large, not useful for AI context)
+dist/
+build/
+out/
+.next/
+target/
+
+# Dependencies
+node_modules/
+vendor/
+venv/
+.venv/
+
+# Generated files
+*.min.js
+*.min.css
+*.bundle.js
+*.map
+*.lock
+
+# Large data files
+*.csv
+*.sql
+*.sqlite
+*.parquet
+fixtures/
+seed-data/
+
+# Secrets (defense in depth -- also use .gitignore)
+.env*
+**/secrets/
+**/credentials/
+```
+
+### .cursorindexingignore
+
+Exclude files from indexing only but keep them accessible to AI features when explicitly referenced:
+
+```gitignore
+# .cursorindexingignore
+
+# Large test fixtures -- don't index, but allow @Files reference
+tests/fixtures/
+e2e/recordings/
+
+# Documentation build output
+docs/.vitepress/dist/
+```
+
+**Difference:** `.cursorignore` hides files from both indexing and AI features. `.cursorindexingignore` only excludes from the index; files can still be referenced via `@Files`.
+
+### Default Exclusions
+
+Cursor automatically excludes everything in `.gitignore`. You only need `.cursorignore` for files tracked by git that you want to exclude from AI.
+
+## Using the Index
+
+### @Codebase Queries
+
+Ask semantic questions about your entire codebase:
+
+```
+@Codebase where is user authentication handled?
+
+@Codebase show me all API endpoints that accept file uploads
+
+@Codebase how does the payment processing flow work?
+
+@Codebase find all places where we connect to Redis
+```
+
+`@Codebase` performs a nearest-neighbor search using your question's embedding. It returns the most semantically similar code chunks, even if they do not contain the exact keywords you used.
+
+### @Codebase vs @Files vs Text Search
+
+| Method | When to Use | Context Cost |
+|--------|------------|--------------|
+| `@Codebase` | Discovery -- you don't know which files | High (many chunks) |
+| `@Files` | You know exactly which file | Low (one file) |
+| `@Folders` | You know the directory | Medium-High |
+| `Ctrl+Shift+F` | Exact text/regex match | N/A (editor search) |
+
+Use `@Codebase` for discovery, then switch to `@Files` once you know where the code lives.
+
+## Optimization for Large Projects
+
+### Monorepo Strategy
+
+For monorepos with many packages, open the specific package directory instead of the root:
+
+```bash
+# Instead of opening the entire monorepo:
+cursor /path/to/monorepo           # Indexes everything -- slow
+
+# Open the specific package:
+cursor /path/to/monorepo/packages/api   # Indexes only this package -- fast
+```
+
+Or use `.cursorignore` at the root to exclude packages you are not actively working on:
+
+```gitignore
+# .cursorignore -- monorepo, focus on api and shared
+packages/web/
+packages/mobile/
+packages/admin/
+# packages/api/    ← not listed, so it IS indexed
+# packages/shared/ ← not listed, so it IS indexed
+```
+
+### Re-Indexing
+
+If search results are stale or indexing appears stuck:
+
+1. `Cmd+Shift+P` > `Cursor: Resync Index`
+2. Wait for status bar to show indexing progress
+3. If that fails, delete the local cache:
+   - macOS: `~/Library/Application Support/Cursor/Cache/`
+   - Linux: `~/.config/Cursor/Cache/`
+   - Windows: `%APPDATA%\Cursor\Cache\`
+4. Restart Cursor and allow full re-index
+
+### File Watcher Limits (Linux)
+
+On Linux, large projects may hit the file watcher limit:
+
+```bash
+# Check current limit
+cat /proc/sys/fs/inotify/max_user_watches
+
+# Increase (temporary)
+sudo sysctl fs.inotify.max_user_watches=524288
+
+# Increase (permanent)
+echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+## Enterprise Considerations
+
+- **Data residency**: Embeddings are stored in Turbopuffer (cloud). Obfuscated filenames and no plaintext code, but metadata exists
+- **Privacy Mode**: With Privacy Mode on, embeddings are computed with zero data retention at the provider
+- **Air-gapped environments**: Indexing requires network access to Cursor's embedding API. Not available offline
+- **Indexing scope**: Only files in the currently open workspace are indexed. Closing a project removes its index from active queries
+
+## Troubleshooting
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| @Codebase returns no results | Index not built | Wait for "Indexed" in status bar |
+| Search misses known files | File in .gitignore or .cursorignore | Check ignore files |
+| Indexing stuck at N% | Large project or network issue | Resync index via Command Palette |
+| Stale results after refactor | Index not yet updated | Wait 10 min or manual resync |
+| High CPU during indexing | Initial embedding computation | Normal for first run; subsides |
 
 ## Resources
 
-- [Cursor Indexing Documentation](https://cursor.com/docs/indexing)
-- [gitignore Pattern Syntax](https://git-scm.com/docs/gitignore)
-- [Cursor Performance Guide](https://cursor.com/docs/performance)
+- [Codebase Indexing Docs](https://docs.cursor.com/context/codebase-indexing)
+- [Ignore Files](https://docs.cursor.com/context/ignore-files)
+- [Secure Codebase Indexing](https://cursor.com/blog/secure-codebase-indexing)

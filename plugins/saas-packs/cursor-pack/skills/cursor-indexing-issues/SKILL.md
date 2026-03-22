@@ -1,8 +1,9 @@
 ---
 name: "cursor-indexing-issues"
 description: |
-  Manage troubleshoot Cursor codebase indexing problems. Triggers on "cursor indexing",
-  "cursor index", "cursor codebase", "@codebase not working", "cursor search broken". Use when working with cursor indexing issues functionality. Trigger with phrases like "cursor indexing issues", "cursor issues", "cursor".
+  Troubleshoot Cursor codebase indexing: stuck indexing, empty search, @codebase failures, and
+  performance issues. Triggers on "cursor indexing", "cursor index", "@codebase not working",
+  "cursor search broken", "indexing stuck".
 allowed-tools: "Read, Write, Edit, Bash(cmd:*)"
 version: 1.0.0
 license: MIT
@@ -13,43 +14,211 @@ tags: [saas, cursor, cursor-indexing]
 ---
 # Cursor Indexing Issues
 
-## Overview
+Diagnose and fix codebase indexing problems. Covers stuck indexing, empty search results, stale results, and performance optimization for large codebases.
 
-This skill helps troubleshoot Cursor codebase indexing problems. It provides solutions for stuck indexing, empty search results, performance issues, and configuration optimization to ensure your codebase is properly indexed for AI features.
+## Quick Diagnosis
 
-## Prerequisites
+| Symptom | Likely Cause | Quick Fix |
+|---------|-------------|-----------|
+| Status bar stuck on "Indexing..." | Large codebase or network issue | Add `.cursorignore`, resync |
+| @Codebase returns nothing | Index not built or file excluded | Wait for index, check ignore files |
+| @Codebase finds wrong code | Stale index | Resync index |
+| Indexing crashes / restarts | Memory or file watcher limits | Increase limits, reduce scope |
+| "Unable to index" error | Network blocked or auth expired | Check proxy/firewall, re-auth |
 
-- Cursor IDE with indexing enabled
-- Access to Cursor settings
-- Command line access for cache clearing
-- Understanding of project file structure
+## Fix: Stuck Indexing
 
-## Instructions
+### Step 1: Reduce Scope
 
-1. Check indexing status in status bar
-2. Identify the specific issue (stuck, empty results, performance)
-3. Review and update `.cursorignore` configuration
-4. Try manual refresh via Command Palette
-5. Clear index cache if issues persist
-6. Restart Cursor and allow re-indexing
+Create or update `.cursorignore` in project root:
 
-## Output
+```gitignore
+# .cursorignore -- exclude non-essential directories
 
-- Functional codebase indexing
-- Working `@codebase` search queries
-- Optimized indexing performance
-- Properly configured exclusion patterns
+# Build output
+dist/
+build/
+.next/
+out/
+target/
 
-## Error Handling
+# Dependencies (always exclude)
+node_modules/
+vendor/
+.venv/
+venv/
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+# Generated / large files
+*.min.js
+*.min.css
+*.bundle.js
+*.map
+*.lock
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
-## Examples
+# Data files
+*.csv
+*.sql
+*.sqlite
+*.parquet
+*.json.gz
+fixtures/
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+# Media
+*.png
+*.jpg
+*.gif
+*.svg
+*.mp4
+*.woff2
+```
+
+### Step 2: Resync Index
+
+`Cmd+Shift+P` > `Cursor: Resync Index`
+
+### Step 3: Clear Cache (if resync fails)
+
+```bash
+# macOS
+rm -rf ~/Library/Application\ Support/Cursor/Cache/
+rm -rf ~/Library/Application\ Support/Cursor/CachedData/
+
+# Linux
+rm -rf ~/.config/Cursor/Cache/
+rm -rf ~/.config/Cursor/CachedData/
+
+# Windows (PowerShell)
+Remove-Item -Recurse "$env:APPDATA\Cursor\Cache"
+Remove-Item -Recurse "$env:APPDATA\Cursor\CachedData"
+```
+
+Restart Cursor after clearing cache. Full re-index begins automatically.
+
+## Fix: @Codebase Returns No Results
+
+### Check 1: Is Indexing Complete?
+
+Look at the bottom status bar. If it says "Indexing...", wait for it to finish. For projects with 10K+ files, initial indexing can take 10-30 minutes.
+
+### Check 2: Is the File Excluded?
+
+A file might be excluded by:
+1. `.gitignore` (Cursor respects this by default)
+2. `.cursorignore` (explicit exclusion)
+3. `.cursorindexingignore` (excluded from index but not from AI features)
+
+Verify: `Cursor Settings` > `Features` > `Codebase Indexing` > `View included files`
+
+This opens a text file listing all indexed paths. Search for the file you expect to find.
+
+### Check 3: Network Connectivity
+
+Indexing requires network access to Cursor's embedding API. Test:
+- Can you access `api.cursor.com`?
+- Is a corporate proxy blocking outbound HTTPS?
+- Is a VPN interfering?
+
+### Check 4: Semantic vs Keyword Search
+
+`@Codebase` uses semantic search (embeddings), not keyword matching. The query "authentication middleware" will find files about auth even if they never use the word "middleware." But it may miss files if the semantic meaning is very different from the query.
+
+For exact keyword matching, use `Cmd+Shift+F` (workspace search) instead.
+
+## Fix: Stale / Outdated Results
+
+Cursor re-checks for file changes every 10 minutes using a Merkle tree. If you need fresher results:
+
+1. Save all open files
+2. `Cmd+Shift+P` > `Cursor: Resync Index`
+3. Wait for "Indexed" status to reappear
+4. Retry your `@Codebase` query
+
+## Performance Optimization for Large Projects
+
+### Indexing Time Benchmarks
+
+| Project Size | Files Indexed | Initial Index Time |
+|-------------|--------------|-------------------|
+| Small (< 1K files) | ~500 | < 30 seconds |
+| Medium (1K-10K files) | ~5,000 | 1-5 minutes |
+| Large (10K-50K files) | ~20,000 | 5-30 minutes |
+| Very large (50K+) | ~50,000+ | 30 min - 2 hours |
+
+### Monorepo Strategy
+
+Do not open the entire monorepo root. Instead:
+
+```bash
+# Open just the package you're working on:
+cursor packages/api/
+
+# Or use .cursorignore to exclude other packages:
+# .cursorignore
+packages/web/
+packages/mobile/
+packages/admin/
+packages/deprecated-*
+```
+
+### Linux File Watcher Limits
+
+If indexing crashes on Linux with large projects:
+
+```bash
+# Check current limit
+cat /proc/sys/fs/inotify/max_user_watches
+
+# Increase to 524288 (persists across reboots)
+echo "fs.inotify.max_user_watches=524288" | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
+```
+
+### Memory Pressure
+
+If Cursor runs out of memory during indexing:
+
+```json
+// settings.json
+{
+  "files.maxMemoryForLargeFilesMB": 4096,
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.git/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  }
+}
+```
+
+## .cursorignore vs .cursorindexingignore
+
+| File | Indexed? | Available to AI? | Use Case |
+|------|----------|-----------------|----------|
+| Listed in `.cursorignore` | No | No (best effort) | Secrets, large binaries, build output |
+| Listed in `.cursorindexingignore` | No | Yes (via @Files) | Test fixtures, docs, large but useful files |
+| Not in any ignore file | Yes | Yes | Your source code |
+
+Use `.cursorindexingignore` for files you want to reference explicitly but not have polluting search results:
+
+```gitignore
+# .cursorindexingignore
+tests/fixtures/large-sample.json
+docs/api-spec.yaml
+e2e/recordings/
+```
+
+## Enterprise Considerations
+
+- **Data residency**: Embeddings stored in Turbopuffer cloud. No plaintext code stored, but metadata (obfuscated filenames) exists server-side
+- **Air-gapped environments**: Indexing requires outbound HTTPS. Not available in fully air-gapped setups
+- **Index freshness SLA**: 10-minute polling interval is not configurable. Manual resync is the only way to force immediate re-index
+- **Audit**: No logging of which files are indexed. Use `.cursorignore` proactively for regulated data
 
 ## Resources
 
-- [Cursor Indexing Documentation](https://cursor.com/docs/indexing)
-- [File Watcher Configuration](https://code.visualstudio.com/docs/setup/linux#_visual-studio-code-is-unable-to-watch-for-file-changes-in-this-large-workspace-error-enospc)
-- [Cursor GitHub Issues](https://github.com/getcursor/cursor/issues)
+- [Codebase Indexing Docs](https://docs.cursor.com/context/codebase-indexing)
+- [Ignore Files](https://docs.cursor.com/context/ignore-files)
+- [Secure Codebase Indexing](https://cursor.com/blog/secure-codebase-indexing)
