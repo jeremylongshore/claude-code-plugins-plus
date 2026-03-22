@@ -17,224 +17,225 @@ compatible-with: claude-code
 # Bright Data Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Bright Data integrations.
+
+Production-ready architecture for Bright Data scraping systems. Covers project layout, data pipeline design, and integration patterns for Web Unlocker, Scraping Browser, SERP API, and Datasets API.
 
 ## Prerequisites
+
 - Understanding of layered architecture
-- Bright Data SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Node.js/TypeScript project setup
+- Database for storing scraped data
 
 ## Project Structure
 
 ```
-my-brightdata-project/
+my-scraper/
 ├── src/
 │   ├── brightdata/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── brightdata/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── brightdata/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── brightdata/
-│           └── sync.ts         # Background sync job
+│   │   ├── proxy.ts            # Proxy config helper (zone, country, session)
+│   │   ├── client.ts           # Axios client with proxy + retry
+│   │   ├── browser.ts          # Scraping Browser connection manager
+│   │   ├── api.ts              # REST API client (trigger, snapshot)
+│   │   ├── cache.ts            # Response cache (LRU + optional Redis)
+│   │   └── types.ts            # Shared TypeScript interfaces
+│   ├── scrapers/
+│   │   ├── product-scraper.ts  # Domain-specific scraper
+│   │   ├── serp-scraper.ts     # Search result collector
+│   │   └── parser.ts           # HTML → structured data (cheerio)
+│   ├── pipeline/
+│   │   ├── scheduler.ts        # Cron-based scraping scheduler
+│   │   ├── processor.ts        # Raw HTML → clean data
+│   │   └── storage.ts          # Database/file output
+│   ├── webhooks/
+│   │   └── brightdata.ts       # Webhook delivery handler
+│   └── api/
+│       ├── health.ts           # Health check endpoint
+│       └── scrape.ts           # On-demand scrape endpoint
 ├── tests/
-│   ├── unit/
-│   │   └── brightdata/
-│   └── integration/
-│       └── brightdata/
+│   ├── unit/                   # Mocked tests (no proxy needed)
+│   ├── integration/            # Live proxy tests
+│   └── fixtures/               # Cached HTML for testing
 ├── config/
-│   ├── brightdata.development.json
-│   ├── brightdata.staging.json
-│   └── brightdata.production.json
-└── docs/
-    └── brightdata/
-        ├── SETUP.md
-        └── RUNBOOK.md
+│   ├── zones.json              # Zone configuration per environment
+│   └── targets.json            # Target URLs and scraping schedules
+└── .env.example
 ```
 
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Bright Data Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────┐
+│                    API / Scheduler                     │
+│         (On-demand scrape, cron jobs, webhooks)        │
+├──────────────────────────────────────────────────────┤
+│                   Scraper Layer                        │
+│    (Product scraper, SERP scraper, custom parsers)     │
+├────────────┬─────────────────┬───────────────────────┤
+│ Web        │  Scraping       │  SERP / Datasets      │
+│ Unlocker   │  Browser        │  API                  │
+│ (Proxy)    │  (WebSocket)    │  (REST)               │
+├────────────┴─────────────────┴───────────────────────┤
+│          Bright Data Infrastructure Layer              │
+│  (Proxy config, retry, cache, session management)      │
+├──────────────────────────────────────────────────────┤
+│              Storage / Pipeline                        │
+│    (Database, file output, webhook delivery)           │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Key Components
 
-### Step 1: Client Wrapper
+### Step 1: Multi-Product Client
+
 ```typescript
 // src/brightdata/client.ts
-export class Bright DataService {
-  private client: BrightDataClient;
-  private cache: Cache;
-  private monitor: Monitor;
+import axios, { AxiosInstance } from 'axios';
+import https from 'https';
+import { chromium } from 'playwright';
 
-  constructor(config: Bright DataConfig) {
-    this.client = new BrightDataClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('brightdata');
+export class BrightDataClient {
+  private proxyClient: AxiosInstance;
+  private apiToken: string;
+
+  constructor(private config: {
+    customerId: string;
+    zone: string;
+    zonePassword: string;
+    apiToken: string;
+  }) {
+    this.apiToken = config.apiToken;
+    this.proxyClient = axios.create({
+      proxy: {
+        host: 'brd.superproxy.io',
+        port: 33335,
+        auth: {
+          username: `brd-customer-${config.customerId}-zone-${config.zone}`,
+          password: config.zonePassword,
+        },
+      },
+      httpsAgent: new https.Agent({ keepAlive: true, rejectUnauthorized: false }),
+      timeout: 60000,
+    });
   }
 
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
+  // Web Unlocker — simple HTTP through proxy
+  async scrape(url: string, country?: string): Promise<string> {
+    const response = await this.proxyClient.get(url);
+    return response.data;
+  }
+
+  // Scraping Browser — Playwright over CDP
+  async scrapeWithBrowser(url: string, extract: (page: any) => Promise<any>) {
+    const auth = `brd-customer-${this.config.customerId}-zone-scraping_browser1:${this.config.zonePassword}`;
+    const browser = await chromium.connectOverCDP(`wss://${auth}@brd.superproxy.io:9222`);
+    try {
+      const page = await browser.newPage();
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      return await extract(page);
+    } finally {
+      await browser.close();
+    }
+  }
+
+  // Web Scraper API — async bulk collection
+  async triggerCollection(datasetId: string, inputs: any[]) {
+    const response = await fetch(
+      `https://api.brightdata.com/datasets/v3/trigger?dataset_id=${datasetId}&format=json`,
+      {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${this.apiToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(inputs),
+      }
     );
+    return response.json();
   }
 }
 ```
 
-### Step 2: Error Boundary
+### Step 2: Scraping Pipeline
+
 ```typescript
-// src/brightdata/errors.ts
-export class Bright DataServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'Bright DataServiceError';
-  }
+// src/pipeline/scheduler.ts
+import cron from 'node-cron';
+
+interface ScrapeJob {
+  name: string;
+  urls: string[];
+  product: 'web_unlocker' | 'scraping_browser' | 'datasets_api';
+  schedule: string; // cron expression
+  parser: (html: string) => any;
 }
 
-export function wrapBright DataError(error: unknown): Bright DataServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/brightdata/health.ts
-export async function checkBright DataHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await brightdataClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
+export function startScheduler(jobs: ScrapeJob[], client: BrightDataClient) {
+  for (const job of jobs) {
+    cron.schedule(job.schedule, async () => {
+      console.log(`Running job: ${job.name}`);
+      if (job.product === 'datasets_api') {
+        await client.triggerCollection('dataset_id', job.urls.map(url => ({ url })));
+      } else {
+        for (const url of job.urls) {
+          const html = await client.scrape(url);
+          const data = job.parser(html);
+          await saveToDatabase(job.name, data);
+        }
+      }
+    });
   }
 }
 ```
 
-## Data Flow Diagram
+### Step 3: Environment Configuration
 
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Bright Data    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Bright Data    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/brightdata.ts
-export interface Bright DataConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadBright DataConfig(): Bright DataConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./brightdata.${env}.json`);
+```json
+// config/zones.json
+{
+  "development": {
+    "web_unlocker": "web_unlocker_dev",
+    "scraping_browser": "scraping_browser_dev",
+    "api_datasets": true
+  },
+  "production": {
+    "web_unlocker": "web_unlocker_prod",
+    "scraping_browser": "scraping_browser_prod",
+    "api_datasets": true
+  }
 }
 ```
 
-## Instructions
+## Decision Matrix
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
-
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
-
-### Step 3: Add Error Handling
-Implement custom error classes for Bright Data operations.
-
-### Step 4: Configure Health Checks
-Add health check endpoint for Bright Data connectivity.
+| Scenario | Product | Why |
+|----------|---------|-----|
+| Simple HTML pages | Web Unlocker | Cheapest, fastest |
+| JavaScript SPA | Scraping Browser | Needs browser rendering |
+| Search results | SERP API | Pre-parsed JSON output |
+| 1000+ URLs one-time | Web Scraper API | Async, handles parallelism |
+| Amazon/LinkedIn/etc. | Pre-built Datasets | No code needed |
+| Login-required pages | Scraping Browser + sticky session | Session persistence |
 
 ## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+
+- Multi-product Bright Data client
+- Domain-specific scrapers with parsers
+- Cron-based scraping pipeline
+- Environment-isolated zone configuration
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Bright Data types |
-| Test isolation | Shared state | Use dependency injection |
-
-## Examples
-
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/brightdata/{handlers} src/services/brightdata src/api/brightdata
-touch src/brightdata/{client,config,types,errors}.ts
-touch src/services/brightdata/{index,sync,cache}.ts
-```
+| Mixed product confusion | Wrong zone for task | Use decision matrix above |
+| Circular dependencies | Tight coupling | Keep scraper layer separate from proxy layer |
+| Test pollution | Shared mocks | Use dependency injection |
+| Config mismatch | Wrong environment | Load zone config from `zones.json` |
 
 ## Resources
-- [Bright Data SDK Documentation](https://docs.brightdata.com/sdk)
-- [Bright Data Best Practices](https://docs.brightdata.com/best-practices)
 
-## Flagship Skills
-For multi-environment setup, see `brightdata-multi-env-setup`.
+- [Bright Data Products Overview](https://brightdata.com/products)
+- [Scraping Browser](https://docs.brightdata.com/scraping-automation/scraping-browser/overview)
+- [Web Scraper API](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/overview)
+- [SERP API](https://docs.brightdata.com/scraping-automation/serp-api/overview)
+
+## Next Steps
+
+For multi-environment setup, see `brightdata-deploy-integration`.

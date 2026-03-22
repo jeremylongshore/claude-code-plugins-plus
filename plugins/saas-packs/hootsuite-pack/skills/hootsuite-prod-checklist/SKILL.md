@@ -6,116 +6,48 @@ description: |
   or implementing go-live procedures.
   Trigger with phrases like "hootsuite production", "deploy hootsuite",
   "hootsuite go-live", "hootsuite launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+allowed-tools: Read, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Production Checklist
 
-## Overview
-Complete checklist for deploying Hootsuite integrations to production.
+## Checklist
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### Authentication
+- [ ] OAuth app reviewed and approved in Hootsuite developer portal
+- [ ] Client secret in secrets vault
+- [ ] Token refresh logic tested with expired tokens
+- [ ] Separate OAuth app for production vs development
 
-## Instructions
+### Publishing
+- [ ] Message scheduling tested with all connected social profiles
+- [ ] Media upload tested (images and video if applicable)
+- [ ] Error handling for REJECTED media states
+- [ ] Timezone handling verified for scheduled posts
+- [ ] Character limits enforced per platform (Twitter 280, LinkedIn 3000, etc.)
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Monitoring
+- [ ] Token refresh failures trigger alerts
+- [ ] Rate limit 429 responses logged
+- [ ] Failed post scheduling reported
+- [ ] Social profile disconnection detected
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Hootsuite error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Hootsuite connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.hootsuite.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/hootsuite-integration app=image:new --record
-kubectl rollout pause deployment/hootsuite-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/hootsuite-integration
-kubectl rollout pause deployment/hootsuite-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/hootsuite-integration
-kubectl rollout status deployment/hootsuite-integration
-```
-
-## Output
-- Deployed Hootsuite integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; hootsuite: any }> {
-  const start = Date.now();
-  try {
-    await hootsuiteClient.ping();
-    return { status: 'healthy', hootsuite: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', hootsuite: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/hootsuite-integration
-kubectl rollout status deployment/hootsuite-integration
-```
+### Compliance
+- [ ] Social media posting policies documented
+- [ ] No profanity/banned words in automated posts
+- [ ] Image content moderation if user-generated
+- [ ] Data retention policy for scheduled posts
 
 ## Resources
-- [Hootsuite Status](https://status.hootsuite.com)
-- [Hootsuite Support](https://docs.hootsuite.com/support)
+
+- [Hootsuite Developer Portal](https://developer.hootsuite.com)
+- [API Overview](https://developer.hootsuite.com/docs/api-overview)
 
 ## Next Steps
+
 For version upgrades, see `hootsuite-upgrade-migration`.

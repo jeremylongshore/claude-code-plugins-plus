@@ -10,140 +10,117 @@ allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly SDK Patterns
 
 ## Overview
-Production-ready patterns for Grammarly SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `grammarly-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for Grammarly API: typed client, token management, text chunking for large documents, and Python integration.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed API Client
+
 ```typescript
-// src/grammarly/client.ts
-import { GrammarlyClient } from '@grammarly/sdk';
+class GrammarlyClient {
+  private token: string;
+  private expiresAt: number = 0;
+  private base = 'https://api.grammarly.com/ecosystem/api';
 
-let instance: GrammarlyClient | null = null;
+  constructor(private clientId: string, private clientSecret: string) {}
 
-export function getGrammarlyClient(): GrammarlyClient {
-  if (!instance) {
-    instance = new GrammarlyClient({
-      apiKey: process.env.GRAMMARLY_API_KEY!,
-      // Additional options
+  private async ensureToken() {
+    if (Date.now() < this.expiresAt - 60000) return;
+    const res = await fetch(`${this.base}/v1/oauth/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ grant_type: 'client_credentials', client_id: this.clientId, client_secret: this.clientSecret }),
     });
+    const { access_token, expires_in } = await res.json();
+    this.token = access_token;
+    this.expiresAt = Date.now() + expires_in * 1000;
   }
-  return instance;
+
+  async score(text: string) {
+    await this.ensureToken();
+    const res = await fetch(`${this.base}/v2/scores`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    return res.json();
+  }
+
+  async detectAI(text: string) {
+    await this.ensureToken();
+    const res = await fetch(`${this.base}/v1/ai-detection`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${this.token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    });
+    return res.json();
+  }
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { GrammarlyError } from '@grammarly/sdk';
+### Step 2: Text Chunking for Large Documents
 
-async function safeGrammarlyCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof GrammarlyError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
+```typescript
+function chunkText(text: string, maxChars = 90000): string[] {
+  if (text.length <= maxChars) return [text];
+  const chunks: string[] = [];
+  const paragraphs = text.split('\n\n');
+  let current = '';
+  for (const p of paragraphs) {
+    if ((current + '\n\n' + p).length > maxChars) {
+      if (current) chunks.push(current);
+      current = p;
+    } else {
+      current = current ? current + '\n\n' + p : p;
     }
-    return { data: null, error: err as Error };
   }
+  if (current) chunks.push(current);
+  return chunks;
 }
 ```
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
+### Step 3: Python Client
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
-
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, GrammarlyClient>();
-
-export function getClientForTenant(tenantId: string): GrammarlyClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new GrammarlyClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
 ```python
-from contextlib import asynccontextmanager
-from grammarly import GrammarlyClient
+import os, requests
+from dotenv import load_dotenv
 
-@asynccontextmanager
-async def get_grammarly_client():
-    client = GrammarlyClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
+load_dotenv()
 
-### Zod Validation
-```typescript
-import { z } from 'zod';
+class GrammarlyClient:
+    BASE = 'https://api.grammarly.com/ecosystem/api'
 
-const grammarlyResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
+    def __init__(self):
+        self.token = None
+        self._authenticate()
+
+    def _authenticate(self):
+        r = requests.post(f'{self.BASE}/v1/oauth/token', data={
+            'grant_type': 'client_credentials',
+            'client_id': os.environ['GRAMMARLY_CLIENT_ID'],
+            'client_secret': os.environ['GRAMMARLY_CLIENT_SECRET'],
+        })
+        self.token = r.json()['access_token']
+
+    def score(self, text: str):
+        r = requests.post(f'{self.BASE}/v2/scores',
+            headers={'Authorization': f'Bearer {self.token}', 'Content-Type': 'application/json'},
+            json={'text': text})
+        return r.json()
 ```
 
 ## Resources
-- [Grammarly SDK Reference](https://docs.grammarly.com/sdk)
-- [Grammarly API Types](https://docs.grammarly.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Grammarly API](https://developer.grammarly.com/)
 
 ## Next Steps
-Apply patterns in `grammarly-core-workflow-a` for real-world usage.
+
+Apply patterns in `grammarly-core-workflow-a`.

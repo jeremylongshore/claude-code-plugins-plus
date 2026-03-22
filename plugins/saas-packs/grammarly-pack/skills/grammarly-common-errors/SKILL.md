@@ -10,104 +10,57 @@ allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Common Errors
 
-## Overview
-Quick reference for the top 10 most common Grammarly errors and their solutions.
+## Error Reference
 
-## Prerequisites
-- Grammarly SDK installed
-- API credentials configured
-- Access to error logs
+### 400 Bad Request — Text Too Short
+**Cause:** Text has fewer than 30 words.
+**Fix:** Ensure minimum 30 words. Pad short texts with context if needed.
 
-## Instructions
+### 401 Unauthorized
+**Cause:** Token expired or invalid.
+**Fix:** Re-authenticate with client credentials grant.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 413 Payload Too Large
+**Cause:** Text exceeds 100,000 characters or 4 MB.
+**Fix:** Split into chunks using paragraph boundaries. See `grammarly-sdk-patterns` for chunking function.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 Too Many Requests
+**Cause:** Rate limit exceeded.
+**Fix:** Implement exponential backoff. See `grammarly-rate-limits`.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Plagiarism Check Stuck on "pending"
+**Cause:** Large document processing or service delay.
+**Fix:** Poll every 3-5 seconds, timeout after 90 seconds.
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+### AI Detection — Inconsistent Scores
+**Cause:** Short text produces unreliable results.
+**Fix:** AI detection works best on 200+ words. Scores on short text are less reliable.
 
-## Error Handling
+## Quick Diagnostics
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
 ```bash
-# Verify API key is set
-echo $GRAMMARLY_API_KEY
+# Test API connectivity
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $GRAMMARLY_ACCESS_TOKEN" \
+  https://api.grammarly.com/ecosystem/api/v2/scores
+
+# Test with sample text
+curl -X POST https://api.grammarly.com/ecosystem/api/v2/scores \
+  -H "Authorization: Bearer $GRAMMARLY_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "This is a test sentence that has more than thirty words so that the API will accept it and return a valid writing score for our diagnostic purposes."}' | python3 -m json.tool
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `grammarly-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Grammarly status
-curl -s https://status.grammarly.com
-
-# Verify API connectivity
-curl -I https://api.grammarly.com
-
-# Check local configuration
-env | grep GRAMMARLY
-```
-
-### Escalation Path
-1. Collect evidence with `grammarly-debug-bundle`
-2. Check Grammarly status page
-3. Contact support with request ID
 
 ## Resources
-- [Grammarly Status Page](https://status.grammarly.com)
-- [Grammarly Support](https://docs.grammarly.com/support)
-- [Grammarly Error Codes](https://docs.grammarly.com/errors)
+
+- [Grammarly API Support](https://developer.grammarly.com/docs/support)
 
 ## Next Steps
-For comprehensive debugging, see `grammarly-debug-bundle`.
+
+For debugging tools, see `grammarly-debug-bundle`.

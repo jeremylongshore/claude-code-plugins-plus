@@ -17,97 +17,60 @@ compatible-with: claude-code
 # Framer Debug Bundle
 
 ## Overview
-Collect all necessary diagnostic information for Framer support tickets.
 
-## Prerequisites
-- Framer SDK installed
-- Access to application logs
-- Permission to collect environment info
+Collect diagnostic information for Framer plugin or Server API issues including package versions, API connectivity, and configuration.
 
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Step 1: Create Debug Bundle
+
 ```bash
 #!/bin/bash
-# framer-debug-bundle.sh
+BUNDLE="framer-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="framer-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+echo "=== Framer Debug Bundle ===" | tee "$BUNDLE/summary.txt"
+echo "Date: $(date -u)" >> "$BUNDLE/summary.txt"
 
-echo "=== Framer Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
-```
+# Runtime
+echo "--- Runtime ---" >> "$BUNDLE/summary.txt"
+node --version >> "$BUNDLE/summary.txt" 2>&1
+npm --version >> "$BUNDLE/summary.txt" 2>&1
 
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "FRAMER_API_KEY: ${FRAMER_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
+# Packages
+echo "--- Packages ---" >> "$BUNDLE/summary.txt"
+npm list framer-plugin framer-api framer 2>/dev/null >> "$BUNDLE/summary.txt"
 
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @framer/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+# Credentials (presence only)
+echo "--- Config ---" >> "$BUNDLE/summary.txt"
+echo "FRAMER_API_KEY: ${FRAMER_API_KEY:+[SET]}" >> "$BUNDLE/summary.txt"
+echo "FRAMER_SITE_ID: ${FRAMER_SITE_ID:+[SET]}" >> "$BUNDLE/summary.txt"
 
-# Recent logs (redacted)
-grep -i "framer" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+# API connectivity
+echo "--- API Test ---" >> "$BUNDLE/summary.txt"
+curl -s -o /dev/null -w "Framer API: HTTP %{http_code}\n" https://api.framer.com/health >> "$BUNDLE/summary.txt" 2>&1
 
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+# Vite config
+cp vite.config.ts "$BUNDLE/" 2>/dev/null
+cp tsconfig.json "$BUNDLE/" 2>/dev/null
+cp package.json "$BUNDLE/" 2>/dev/null
 
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.framer.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
+# Bundle
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
 
 ## Output
-- `framer-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
 
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash framer-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Framer support portal
+- `summary.txt` with runtime, packages, connectivity
+- Configuration files (non-sensitive)
+- Compressed archive for support
 
 ## Resources
-- [Framer Support](https://docs.framer.com/support)
-- [Framer Status](https://status.framer.com)
+
+- [Framer Support](https://www.framer.com/support/)
+- [Framer Changelog](https://www.framer.com/developers/changelog)
 
 ## Next Steps
+
 For rate limit issues, see `framer-rate-limits`.

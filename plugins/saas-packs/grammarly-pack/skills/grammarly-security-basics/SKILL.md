@@ -1,142 +1,55 @@
 ---
 name: grammarly-security-basics
 description: |
-  Apply Grammarly security best practices for secrets and access control.
-  Use when securing API keys, implementing least privilege access,
-  or auditing Grammarly security configuration.
-  Trigger with phrases like "grammarly security", "grammarly secrets",
-  "secure grammarly", "grammarly API key security".
-allowed-tools: Read, Write, Grep
+description: |
+  
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+allowed-tools: Read, Write, Edit, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Security Basics
 
-## Overview
-Security best practices for Grammarly API keys, tokens, and access control.
+## Credential Management
 
-## Prerequisites
-- Grammarly SDK installed
-- Understanding of environment variables
-- Access to Grammarly dashboard
+| Credential | Scope | Storage |
+|-----------|-------|--------|
+| Client ID | App-level | Config |
+| Client Secret | App-level | Secrets vault |
+| Access Token | Session | Memory only |
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Environment Security
+
 ```bash
-# .env (NEVER commit to git)
-GRAMMARLY_API_KEY=sk_live_***
-GRAMMARLY_SECRET=***
-
-# .gitignore
-.env
-.env.local
-.env.*.local
+# .env (never commit)
+GRAMMARLY_CLIENT_ID=your_id
+GRAMMARLY_CLIENT_SECRET=your_secret
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Grammarly dashboard
-# 2. Update environment variable
-export GRAMMARLY_API_KEY="new_key_here"
+### Step 2: Token Lifecycle
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${GRAMMARLY_API_KEY}" \
-  https://api.grammarly.com/health
+Tokens from client_credentials grant expire. Never persist access tokens to disk. Re-authenticate when needed.
 
-# 4. Revoke old key in dashboard
-```
+### Step 3: Security Checklist
 
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new GrammarlyClient({
-    apiKey: process.env.GRAMMARLY_READ_KEY,
-  }),
-  writer: new GrammarlyClient({
-    apiKey: process.env.GRAMMARLY_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Grammarly analytics
-  await grammarlyClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'grammarly.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] Client secret in secrets vault
+- [ ] Access tokens never logged
+- [ ] HTTPS for all API calls
+- [ ] Pre-commit hook blocks credential leaks
 
 ## Resources
-- [Grammarly Security Guide](https://docs.grammarly.com/security)
-- [Grammarly API Scopes](https://docs.grammarly.com/scopes)
+
+- [Grammarly API](https://developer.grammarly.com/)
 
 ## Next Steps
-For production deployment, see `grammarly-prod-checklist`.
+
+For production, see `grammarly-prod-checklist`.

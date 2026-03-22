@@ -10,104 +10,29 @@ allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex]
+tags: [saas, hex, data, analytics]
 compatible-with: claude-code
 ---
 
 # Hex Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for Hex support tickets.
-
-## Prerequisites
-- Hex SDK installed
-- Access to application logs
-- Permission to collect environment info
-
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
 ```bash
 #!/bin/bash
-# hex-debug-bundle.sh
+BUNDLE="hex-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
+echo "=== Hex Debug ===" | tee "$BUNDLE/summary.txt"
+echo "HEX_API_TOKEN: ${HEX_API_TOKEN:+[SET]}" >> "$BUNDLE/summary.txt"
 
-BUNDLE_DIR="hex-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+# API test
+curl -s -w "\nHTTP %{http_code}" -H "Authorization: Bearer $HEX_API_TOKEN" \
+  https://app.hex.tech/api/v1/projects > "$BUNDLE/projects.json" 2>&1
 
-echo "=== Hex Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "HEX_API_KEY: ${HEX_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @hex/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "hex" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.hex.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `hex-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash hex-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Hex support portal
 
 ## Resources
-- [Hex Support](https://docs.hex.com/support)
-- [Hex Status](https://status.hex.com)
 
-## Next Steps
-For rate limit issues, see `hex-rate-limits`.
+- [Hex Support](https://learn.hex.tech/docs)

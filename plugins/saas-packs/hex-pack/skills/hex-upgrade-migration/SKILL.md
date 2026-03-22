@@ -10,105 +10,31 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex]
+tags: [saas, hex, data, analytics]
 compatible-with: claude-code
 ---
 
 # Hex Upgrade & Migration
 
 ## Overview
-Guide for upgrading Hex SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Hex SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Hex API is versioned at `/api/v1/`. Monitor the Hex changelog for new endpoints and deprecations.
 
 ## Instructions
 
-### Step 1: Check Current Version
+### Check API Usage
+
 ```bash
-npm list @hex/sdk
-npm view @hex/sdk version
+grep -r "app.hex.tech" src/ --include="*.ts" --include="*.py"
 ```
 
-### Step 2: Review Changelog
+### Airflow Provider Updates
+
 ```bash
-open https://github.com/hex/sdk/releases
-```
-
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/hex-sdk-vX.Y.Z
-npm install @hex/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
-```typescript
-// Before (v1.x)
-import { Client } from '@hex/sdk';
-
-// After (v2.x)
-import { HexClient } from '@hex/sdk';
-```
-
-### Configuration Changes
-```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new HexClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @hex/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Hex]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+pip install --upgrade airflow-provider-hex
 ```
 
 ## Resources
-- [Hex Changelog](https://github.com/hex/sdk/releases)
-- [Hex Migration Guide](https://docs.hex.com/migration)
 
-## Next Steps
-For CI integration during upgrades, see `hex-ci-integration`.
+- [Hex Changelog](https://learn.hex.tech/changelog)
+- [API Reference](https://learn.hex.tech/docs/api/api-reference)

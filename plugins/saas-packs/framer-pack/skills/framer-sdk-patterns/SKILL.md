@@ -17,133 +17,180 @@ compatible-with: claude-code
 # Framer SDK Patterns
 
 ## Overview
-Production-ready patterns for Framer SDK usage in TypeScript and Python.
+
+Production-ready patterns for Framer plugins, Server API, code components, and CMS integrations. Covers plugin architecture, type-safe CMS operations, and reusable component patterns.
 
 ## Prerequisites
+
 - Completed `framer-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- Familiarity with React and TypeScript
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Type-Safe CMS Operations
+
 ```typescript
-// src/framer/client.ts
-import { FramerClient } from '@framer/sdk';
+// src/cms/types.ts — type-safe field definitions
+interface BlogPost {
+  title: string;
+  body: string;
+  author: string;
+  publishDate: string;
+  featured: boolean;
+  slug: string;
+}
 
-let instance: FramerClient | null = null;
+const BLOG_FIELDS = [
+  { id: 'title' as const, name: 'Title', type: 'string' as const },
+  { id: 'body' as const, name: 'Body', type: 'formattedText' as const },
+  { id: 'author' as const, name: 'Author', type: 'string' as const },
+  { id: 'publishDate' as const, name: 'Published', type: 'date' as const },
+  { id: 'featured' as const, name: 'Featured', type: 'boolean' as const },
+  { id: 'slug' as const, name: 'Slug', type: 'slug' as const, userEditable: false },
+] as const;
 
-export function getFramerClient(): FramerClient {
-  if (!instance) {
-    instance = new FramerClient({
-      apiKey: process.env.FRAMER_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
+function toBlogItem(post: BlogPost) {
+  return { fieldData: { ...post } };
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { FramerError } from '@framer/sdk';
+### Step 2: Plugin State Management
 
-async function safeFramerCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof FramerError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
-}
-```
+```tsx
+// src/hooks/usePluginState.ts
+import { useState, useCallback } from 'react';
+import { framer } from 'framer-plugin';
 
-### Step 3: Implement Retry Logic
-```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+type SyncStatus = 'idle' | 'fetching' | 'syncing' | 'success' | 'error';
+
+export function useSyncState() {
+  const [status, setStatus] = useState<SyncStatus>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const [count, setCount] = useState(0);
+
+  const sync = useCallback(async (fn: () => Promise<number>) => {
+    setStatus('syncing');
+    setError(null);
     try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
+      const synced = await fn();
+      setCount(synced);
+      setStatus('success');
+      framer.notify(`Synced ${synced} items`);
+    } catch (err: any) {
+      setError(err.message);
+      setStatus('error');
+      framer.notify(`Sync failed: ${err.message}`);
     }
-  }
-  throw new Error('Unreachable');
+  }, []);
+
+  return { status, error, count, sync };
 }
 ```
 
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
+### Step 3: Reusable Component Patterns
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+```tsx
+// Responsive container pattern
+import { addPropertyControls, ControlType } from 'framer';
 
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, FramerClient>();
-
-export function getClientForTenant(tenantId: string): FramerClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new FramerClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
+export default function ResponsiveCard({ title, description, imageUrl, ctaText, ctaUrl }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+      {imageUrl && <img src={imageUrl} style={{ width: '100%', aspectRatio: '16/9', objectFit: 'cover' }} />}
+      <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <h3 style={{ margin: 0, fontSize: 20 }}>{title}</h3>
+        <p style={{ margin: 0, color: '#666', fontSize: 14 }}>{description}</p>
+        {ctaText && <a href={ctaUrl} style={{ color: '#007AFF', fontWeight: 600, textDecoration: 'none' }}>{ctaText}</a>}
+      </div>
+    </div>
+  );
 }
-```
 
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from framer import FramerClient
-
-@asynccontextmanager
-async def get_framer_client():
-    client = FramerClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const framerResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
+addPropertyControls(ResponsiveCard, {
+  title: { type: ControlType.String, defaultValue: 'Card Title' },
+  description: { type: ControlType.String, defaultValue: 'Card description here' },
+  imageUrl: { type: ControlType.String, defaultValue: '' },
+  ctaText: { type: ControlType.String, defaultValue: 'Learn More' },
+  ctaUrl: { type: ControlType.String, defaultValue: '#' },
 });
 ```
 
+### Step 4: Server API Wrapper
+
+```typescript
+// src/server/framer-client.ts
+import { framer } from 'framer-api';
+
+export class FramerCMSClient {
+  private client: any;
+
+  async connect() {
+    this.client = await framer.connect({
+      apiKey: process.env.FRAMER_API_KEY!,
+      siteId: process.env.FRAMER_SITE_ID!,
+    });
+  }
+
+  async syncCollection(name: string, fields: any[], items: any[]) {
+    const collections = await this.client.getCollections();
+    let collection = collections.find(c => c.name === name);
+    if (!collection) {
+      collection = await this.client.createManagedCollection({ name, fields });
+    }
+    await collection.setItems(items);
+    return items.length;
+  }
+
+  async publish() {
+    await this.client.publish();
+  }
+}
+```
+
+### Step 5: Override Factory Pattern
+
+```tsx
+// src/overrides/factory.ts — generate overrides programmatically
+import { Override } from 'framer';
+
+export function createFadeIn(delay = 0, duration = 0.6): () => Override {
+  return () => ({
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    transition: { duration, delay, ease: [0.25, 0.1, 0.25, 1] },
+    viewport: { once: true },
+  });
+}
+
+// Usage in overrides file:
+export const FadeIn1 = createFadeIn(0);
+export const FadeIn2 = createFadeIn(0.1);
+export const FadeIn3 = createFadeIn(0.2);
+```
+
+## Output
+
+- Type-safe CMS field definitions
+- Plugin state management hook
+- Reusable component with property controls
+- Server API wrapper class
+- Override factory pattern
+
+## Error Handling
+
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Type-safe fields | CMS collections | Catch schema errors at compile time |
+| State hook | Plugin UI | Consistent loading/error states |
+| Component patterns | Design systems | Reusable across projects |
+| Override factory | Staggered animations | DRY animation code |
+
 ## Resources
-- [Framer SDK Reference](https://docs.framer.com/sdk)
-- [Framer API Types](https://docs.framer.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Framer API Reference](https://www.framer.com/developers/reference)
+- [Server API](https://www.framer.com/developers/server-api-introduction)
+- [Plugin Components](https://www.framer.com/developers/plugins-with-components)
 
 ## Next Steps
-Apply patterns in `framer-core-workflow-a` for real-world usage.
+
+Apply patterns in `framer-core-workflow-a` for CMS sync plugins.

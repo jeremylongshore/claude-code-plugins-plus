@@ -10,133 +10,67 @@ allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Security Basics
 
-## Overview
-Security best practices for Hootsuite API keys, tokens, and access control.
+## Credential Inventory
 
-## Prerequisites
-- Hootsuite SDK installed
-- Understanding of environment variables
-- Access to Hootsuite dashboard
+| Credential | Scope | Rotation |
+|-----------|-------|----------|
+| Client ID | App-level | Never (app identifier) |
+| Client Secret | App-level | Rotate if compromised |
+| Access Token | User session | Auto-expires (~1 hour) |
+| Refresh Token | User session | Rotate on each refresh |
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Secure Token Storage
+
 ```bash
-# .env (NEVER commit to git)
-HOOTSUITE_API_KEY=sk_live_***
-HOOTSUITE_SECRET=***
-
-# .gitignore
-.env
-.env.local
-.env.*.local
+# .env (never commit)
+HOOTSUITE_CLIENT_ID=app_client_id
+HOOTSUITE_CLIENT_SECRET=app_secret
+HOOTSUITE_ACCESS_TOKEN=current_token
+HOOTSUITE_REFRESH_TOKEN=refresh_token
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Hootsuite dashboard
-# 2. Update environment variable
-export HOOTSUITE_API_KEY="new_key_here"
+### Step 2: Token Refresh Security
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${HOOTSUITE_API_KEY}" \
-  https://api.hootsuite.com/health
-
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
 ```typescript
-const clients = {
-  reader: new HootsuiteClient({
-    apiKey: process.env.HOOTSUITE_READ_KEY,
-  }),
-  writer: new HootsuiteClient({
-    apiKey: process.env.HOOTSUITE_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+// Always use HTTPS for token exchange
+// Store refresh tokens encrypted at rest
+// Rotate refresh tokens on each use (Hootsuite returns new ones)
+async function secureRefresh(refreshToken: string) {
+  const res = await fetch('https://platform.hootsuite.com/oauth2/token', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': `Basic ${Buffer.from(`${process.env.HOOTSUITE_CLIENT_ID}:${process.env.HOOTSUITE_CLIENT_SECRET}`).toString('base64')}`,
+    },
+    body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: refreshToken }),
+  });
+  const tokens = await res.json();
+  // Store new refresh_token, discard old one
+  return tokens;
 }
 ```
 
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
+### Step 3: Security Checklist
 
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Hootsuite analytics
-  await hootsuiteClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'hootsuite.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
-});
-```
+- [ ] Client secret in secrets vault, never in code
+- [ ] Access tokens never logged or exposed
+- [ ] Refresh tokens stored encrypted
+- [ ] HTTPS for all OAuth requests
+- [ ] Pre-commit hook blocks `HOOTSUITE_` credential leaks
+- [ ] Separate OAuth apps for dev/staging/prod
 
 ## Resources
-- [Hootsuite Security Guide](https://docs.hootsuite.com/security)
-- [Hootsuite API Scopes](https://docs.hootsuite.com/scopes)
+
+- [Hootsuite OAuth 2.0](https://developer.hootsuite.com/docs/using-rest-apis)
 
 ## Next Steps
-For production deployment, see `hootsuite-prod-checklist`.
+
+For production, see `hootsuite-prod-checklist`.

@@ -1,6 +1,10 @@
 # Bright Data Skill Pack
 
-> Claude Code skill pack for Bright Data integration (18 skills)
+> Claude Code skill pack for Bright Data web scraping, proxies, and data collection (18 skills)
+
+## What It Does
+
+Gives Claude Code deep knowledge of Bright Data's proxy infrastructure, Scraping Browser, SERP API, Web Scraper API, and Datasets API. Every skill contains real proxy configuration code using `brd.superproxy.io`, actual API endpoints, and production-tested patterns — no fake SDK imports.
 
 ## Installation
 
@@ -8,41 +12,42 @@
 /plugin install brightdata-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `brightdata-install-auth` | Install Auth |
-| `brightdata-hello-world` | Hello World |
-| `brightdata-local-dev-loop` | Local Dev Loop |
-| `brightdata-sdk-patterns` | Sdk Patterns |
-| `brightdata-core-workflow-a` | Core Workflow A |
-| `brightdata-core-workflow-b` | Core Workflow B |
-| `brightdata-common-errors` | Common Errors |
-| `brightdata-debug-bundle` | Debug Bundle |
-| `brightdata-rate-limits` | Rate Limits |
-| `brightdata-security-basics` | Security Basics |
-| `brightdata-prod-checklist` | Prod Checklist |
-| `brightdata-upgrade-migration` | Upgrade Migration |
+| `brightdata-install-auth` | Configure zone credentials, SSL cert, proxy authentication |
+| `brightdata-hello-world` | First scrape through Web Unlocker proxy with geo-targeting |
+| `brightdata-local-dev-loop` | Dev environment with response caching and mocked proxy tests |
+| `brightdata-sdk-patterns` | Proxy client singleton, retry wrapper, sticky sessions, cheerio parsing |
+| `brightdata-core-workflow-a` | Scraping Browser with Playwright/Puppeteer over CDP WebSocket |
+| `brightdata-core-workflow-b` | SERP API structured search results and Web Scraper API async triggers |
+| `brightdata-common-errors` | Diagnose 407, 502, SSL, timeout, and X-Luminati-Error headers |
+| `brightdata-debug-bundle` | Collect proxy connectivity, zone status, and error logs for support |
+| `brightdata-rate-limits` | Concurrent request limiter, backoff for proxy errors, trigger rate limits |
+| `brightdata-security-basics` | Zone isolation, credential rotation, git secret scanning |
+| `brightdata-prod-checklist` | Zone verification, health checks, monitoring alerts, rollback |
+| `brightdata-upgrade-migration` | Migrate between zones, products, and Datasets API versions |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `brightdata-ci-integration` | Ci Integration |
-| `brightdata-deploy-integration` | Deploy Integration |
-| `brightdata-webhooks-events` | Webhooks Events |
-| `brightdata-performance-tuning` | Performance Tuning |
-| `brightdata-cost-tuning` | Cost Tuning |
-| `brightdata-reference-architecture` | Reference Architecture |
+| `brightdata-ci-integration` | GitHub Actions with mocked unit tests and live proxy integration tests |
+| `brightdata-deploy-integration` | Deploy to Vercel, Fly.io, Cloud Run with secrets management |
+| `brightdata-webhooks-events` | Web Scraper API webhook delivery, notification endpoints, dedup |
+| `brightdata-performance-tuning` | Connection pooling, response caching, concurrent scraping, bulk API |
+| `brightdata-cost-tuning` | Product selection cost matrix, caching ROI, usage monitoring |
+| `brightdata-reference-architecture` | Multi-product client, scraping pipeline, cron scheduler |
 
-## Usage
+## Key Concepts
 
-Skills trigger automatically when you discuss Bright Data topics. For example:
-
-- "Help me set up Bright Data" → triggers `brightdata-install-auth`
-- "Debug this Bright Data error" → triggers `brightdata-common-errors`
-- "Deploy my Bright Data integration" → triggers `brightdata-deploy-integration`
+- **No SDK** — Bright Data uses HTTP proxy protocol (`brd.superproxy.io:33335`) and REST APIs
+- **Zone credentials** — Customer ID + Zone Name + Zone Password, not API keys
+- **Products**: Web Unlocker (anti-bot bypass), Scraping Browser (JS rendering), SERP API (search results), Web Scraper API (async bulk), Datasets (pre-built)
+- **Geo-targeting** — append `-country-us` or `-city-newyork` to proxy username
 
 ## License
 

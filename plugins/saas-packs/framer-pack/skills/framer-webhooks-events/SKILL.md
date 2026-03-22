@@ -17,185 +17,97 @@ compatible-with: claude-code
 # Framer Webhooks & Events
 
 ## Overview
-Securely handle Framer webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Framer webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/framer',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-framer-signature'] as string;
-    const timestamp = req.headers['x-framer-timestamp'] as string;
-
-    if (!verifyFramerSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleFramerEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyFramerSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.FRAMER_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type FramerEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface FramerEvent {
-  id: string;
-  type: FramerEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<FramerEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleFramerEvent(event: FramerEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `framer:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `framer:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Framer CLI to send test events
-framer webhooks trigger resource.created --url http://localhost:3000/webhooks/framer
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Framer's Server API uses a WebSocket channel for real-time communication, not traditional REST webhooks. For event-driven integrations, you subscribe to changes via the WebSocket connection or set up your own webhook endpoints that trigger Framer sync via the Server API.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Framer dashboard.
+### Step 1: Subscribe to CMS Changes via Server API
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+import { framer } from 'framer-api';
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+async function watchChanges() {
+  const client = await framer.connect({
+    apiKey: process.env.FRAMER_API_KEY!,
+    siteId: process.env.FRAMER_SITE_ID!,
+  });
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/framer \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  // Subscribe to collection changes
+  const collections = await client.getCollections();
+  for (const col of collections) {
+    col.subscribe((items) => {
+      console.log(`Collection "${col.name}" updated: ${items.length} items`);
+    });
+  }
+}
 ```
 
+### Step 2: External Webhook → Framer Sync
+
+```typescript
+// Receive webhook from your CMS, sync to Framer
+import express from 'express';
+import { framer } from 'framer-api';
+
+const app = express();
+app.use(express.json());
+
+app.post('/webhooks/cms-update', async (req, res) => {
+  const { event, data } = req.body;
+
+  // Validate webhook source
+  const signature = req.headers['x-webhook-signature'];
+  if (!verifySignature(req.body, signature as string)) {
+    return res.status(401).json({ error: 'Invalid signature' });
+  }
+
+  if (event === 'content.updated') {
+    const client = await framer.connect({
+      apiKey: process.env.FRAMER_API_KEY!,
+      siteId: process.env.FRAMER_SITE_ID!,
+    });
+
+    const col = (await client.getCollections()).find(c => c.name === data.collection);
+    if (col) {
+      await col.setItems(data.items.map(i => ({ fieldData: i })));
+      await client.publish();
+      console.log(`Synced ${data.items.length} items and published`);
+    }
+  }
+
+  res.json({ received: true });
+});
+```
+
+### Step 3: Plugin Event Subscriptions
+
+```tsx
+// Inside a Framer plugin — subscribe to canvas changes
+import { framer } from 'framer-plugin';
+
+// Watch for selection changes
+framer.subscribeToSelection((selection) => {
+  console.log('Selection changed:', selection.length, 'layers');
+});
+
+// Watch for code file changes
+framer.subscribeToCodeFiles((codeFiles) => {
+  console.log('Code files updated:', codeFiles.map(f => f.name));
+});
+```
+
+## Output
+
+- WebSocket-based real-time CMS subscriptions
+- External webhook handler triggering Framer sync
+- Plugin event subscriptions for canvas changes
+
 ## Resources
-- [Framer Webhooks Guide](https://docs.framer.com/webhooks)
-- [Webhook Security Best Practices](https://docs.framer.com/webhooks/security)
+
+- [Framer Server API](https://www.framer.com/developers/server-api-introduction)
+- [Plugin Subscriptions](https://www.framer.com/developers/reference)
 
 ## Next Steps
-For performance optimization, see `framer-performance-tuning`.
+
+For performance, see `framer-performance-tuning`.

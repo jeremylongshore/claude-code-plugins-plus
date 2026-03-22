@@ -10,110 +10,123 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Hootsuite.
 
-## Prerequisites
-- Completed `hootsuite-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up a development workflow for Hootsuite API integrations with mocked API responses, token management, and testing.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-hootsuite-project/
+hootsuite-integration/
 ├── src/
 │   ├── hootsuite/
-│   │   ├── client.ts       # Hootsuite client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
+│   │   ├── client.ts       # API client with token refresh
+│   │   ├── auth.ts         # OAuth 2.0 flow
+│   │   ├── publishing.ts   # Message scheduling
+│   │   └── analytics.ts    # Metrics retrieval
 │   └── index.ts
 ├── tests/
-│   └── hootsuite.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── fixtures/           # Mock API responses
+│   │   ├── profiles.json
+│   │   └── messages.json
+│   └── publishing.test.ts
+├── .env.local
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: API Client with Auto Token Refresh
 
-# Install dependencies
-npm install
+```typescript
+// src/hootsuite/client.ts
+import 'dotenv/config';
 
-# Start development server
-npm run dev
-```
+class HootsuiteClient {
+  private accessToken: string;
+  private refreshToken: string;
+  private expiresAt: number;
+  private base = 'https://platform.hootsuite.com/v1';
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+  constructor() {
+    this.accessToken = process.env.HOOTSUITE_ACCESS_TOKEN!;
+    this.refreshToken = process.env.HOOTSUITE_REFRESH_TOKEN!;
+    this.expiresAt = Date.now() + 3600000;
+  }
+
+  async request(path: string, options: RequestInit = {}) {
+    if (Date.now() > this.expiresAt - 60000) await this.refresh();
+    const response = await fetch(`${this.base}${path}`, {
+      ...options,
+      headers: { 'Authorization': `Bearer ${this.accessToken}`, 'Content-Type': 'application/json', ...options.headers },
+    });
+    if (!response.ok) throw new Error(`Hootsuite API ${response.status}: ${await response.text()}`);
+    return response.json();
+  }
+
+  private async refresh() {
+    const res = await fetch('https://platform.hootsuite.com/oauth2/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Authorization': `Basic ${Buffer.from(`${process.env.HOOTSUITE_CLIENT_ID}:${process.env.HOOTSUITE_CLIENT_SECRET}`).toString('base64')}` },
+      body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: this.refreshToken }),
+    });
+    const tokens = await res.json();
+    this.accessToken = tokens.access_token;
+    this.refreshToken = tokens.refresh_token;
+    this.expiresAt = Date.now() + tokens.expires_in * 1000;
   }
 }
+
+export const hootsuite = new HootsuiteClient();
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { HootsuiteClient } from '../src/hootsuite/client';
+### Step 3: Mocked Tests
 
-describe('Hootsuite Client', () => {
-  it('should initialize with API key', () => {
-    const client = new HootsuiteClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+```typescript
+// tests/publishing.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+const mockFetch = vi.fn();
+vi.stubGlobal('fetch', mockFetch);
+
+describe('Hootsuite Publishing', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('should schedule a message', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: [{ id: 'msg_123', state: 'SCHEDULED' }] }),
+    });
+    // Test scheduling logic
+  });
+
+  it('should list social profiles', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ data: [{ id: 'prof_1', type: 'TWITTER', socialNetworkUsername: 'test' }] }),
+    });
+    // Test profile listing
   });
 });
 ```
 
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Hootsuite development
 
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Hootsuite Responses
-```typescript
-vi.mock('@hootsuite/sdk', () => ({
-  HootsuiteClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=HOOTSUITE=* npm run dev
-```
+- API client with automatic token refresh
+- Mocked test suite
+- Project structure for Hootsuite integrations
 
 ## Resources
-- [Hootsuite SDK Reference](https://docs.hootsuite.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Hootsuite REST API](https://developer.hootsuite.com/docs/using-rest-apis)
+- [Vitest](https://vitest.dev/)
 
 ## Next Steps
-See `hootsuite-sdk-patterns` for production-ready code patterns.
+
+See `hootsuite-sdk-patterns` for production patterns.

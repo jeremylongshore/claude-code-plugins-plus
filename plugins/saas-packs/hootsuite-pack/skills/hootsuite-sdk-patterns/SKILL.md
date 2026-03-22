@@ -10,140 +10,124 @@ allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite SDK Patterns
 
 ## Overview
-Production-ready patterns for Hootsuite SDK usage in TypeScript and Python.
 
-## Prerequisites
-- Completed `hootsuite-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+Production patterns for Hootsuite REST API: typed client, token management, scheduling helpers, and Python integration.
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Typed API Client
+
 ```typescript
-// src/hootsuite/client.ts
-import { HootsuiteClient } from '@hootsuite/sdk';
+// src/hootsuite/types.ts
+interface SocialProfile {
+  id: string;
+  type: 'TWITTER' | 'FACEBOOK' | 'INSTAGRAM' | 'LINKEDIN' | 'PINTEREST' | 'YOUTUBE' | 'TIKTOK';
+  socialNetworkUsername: string;
+  socialNetworkId: string;
+}
 
-let instance: HootsuiteClient | null = null;
+interface ScheduledMessage {
+  id: string;
+  text: string;
+  state: 'SCHEDULED' | 'SENT' | 'FAILED' | 'REJECTED';
+  socialProfileIds: string[];
+  scheduledSendTime: string;
+  sentAt?: string;
+  mediaUrls?: Array<{ id: string }>;
+}
 
-export function getHootsuiteClient(): HootsuiteClient {
-  if (!instance) {
-    instance = new HootsuiteClient({
-      apiKey: process.env.HOOTSUITE_API_KEY!,
-      // Additional options
-    });
-  }
-  return instance;
+interface HootsuiteResponse<T> {
+  data: T;
 }
 ```
 
-### Step 2: Add Error Handling Wrapper
-```typescript
-import { HootsuiteError } from '@hootsuite/sdk';
+### Step 2: Scheduling Helper with Timezone
 
-async function safeHootsuiteCall<T>(
-  operation: () => Promise<T>
-): Promise<{ data: T | null; error: Error | null }> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    if (err instanceof HootsuiteError) {
-      console.error({
-        code: err.code,
-        message: err.message,
-      });
-    }
-    return { data: null, error: err as Error };
-  }
+```typescript
+function scheduleForTimezone(
+  hour: number,
+  minute: number,
+  timezone: string,
+  daysFromNow = 0
+): Date {
+  const date = new Date();
+  date.setDate(date.getDate() + daysFromNow);
+  const dateStr = date.toISOString().split('T')[0];
+  const timeStr = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}:00`;
+  return new Date(`${dateStr}T${timeStr}`);
 }
+
+// Schedule posts at optimal times per platform
+const OPTIMAL_TIMES = {
+  TWITTER: { hour: 9, minute: 0 },
+  INSTAGRAM: { hour: 11, minute: 0 },
+  LINKEDIN: { hour: 7, minute: 30 },
+  FACEBOOK: { hour: 13, minute: 0 },
+};
 ```
 
-### Step 3: Implement Retry Logic
+### Step 3: Python Client
+
+```python
+# hootsuite/client.py
+import os, requests, time
+from dotenv import load_dotenv
+
+load_dotenv()
+
+class HootsuiteClient:
+    BASE = 'https://platform.hootsuite.com/v1'
+
+    def __init__(self):
+        self.token = os.environ['HOOTSUITE_ACCESS_TOKEN']
+        self.headers = {'Authorization': f'Bearer {self.token}', 'Content-Type': 'application/json'}
+
+    def get_profiles(self):
+        r = requests.get(f'{self.BASE}/socialProfiles', headers=self.headers)
+        r.raise_for_status()
+        return r.json()['data']
+
+    def schedule_message(self, profile_ids, text, scheduled_time):
+        r = requests.post(f'{self.BASE}/messages', headers=self.headers, json={
+            'text': text,
+            'socialProfileIds': profile_ids,
+            'scheduledSendTime': scheduled_time.isoformat(),
+        })
+        r.raise_for_status()
+        return r.json()['data']
+```
+
+### Step 4: Cross-Platform Post Formatter
+
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  backoffMs = 1000
-): Promise<T> {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === maxRetries) throw err;
-      const delay = backoffMs * Math.pow(2, attempt - 1);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
+function formatPost(text: string, platform: string): string {
+  const limits: Record<string, number> = {
+    TWITTER: 280, FACEBOOK: 63206, INSTAGRAM: 2200, LINKEDIN: 3000, TIKTOK: 2200,
+  };
+  const limit = limits[platform] || 2200;
+  return text.length > limit ? text.substring(0, limit - 3) + '...' : text;
 }
 ```
 
 ## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Runtime validation for API responses
 
-## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
-
-## Examples
-
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, HootsuiteClient>();
-
-export function getClientForTenant(tenantId: string): HootsuiteClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new HootsuiteClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
-```python
-from contextlib import asynccontextmanager
-from hootsuite import HootsuiteClient
-
-@asynccontextmanager
-async def get_hootsuite_client():
-    client = HootsuiteClient()
-    try:
-        yield client
-    finally:
-        await client.close()
-```
-
-### Zod Validation
-```typescript
-import { z } from 'zod';
-
-const hootsuiteResponseSchema = z.object({
-  id: z.string(),
-  status: z.enum(['active', 'inactive']),
-  createdAt: z.string().datetime(),
-});
-```
+- Typed API client with token refresh
+- Timezone-aware scheduling helpers
+- Python client class
+- Cross-platform post formatting
 
 ## Resources
-- [Hootsuite SDK Reference](https://docs.hootsuite.com/sdk)
-- [Hootsuite API Types](https://docs.hootsuite.com/types)
-- [Zod Documentation](https://zod.dev/)
+
+- [Hootsuite REST API](https://apidocs.hootsuite.com/docs/api/index.html)
+- [Message Scheduling](https://developer.hootsuite.com/docs/message-scheduling)
 
 ## Next Steps
-Apply patterns in `hootsuite-core-workflow-a` for real-world usage.
+
+Apply patterns in `hootsuite-core-workflow-a` for publishing.

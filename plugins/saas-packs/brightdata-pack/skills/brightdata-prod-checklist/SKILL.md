@@ -17,105 +17,122 @@ compatible-with: claude-code
 # Bright Data Production Checklist
 
 ## Overview
-Complete checklist for deploying Bright Data integrations to production.
+
+Complete checklist for deploying Bright Data scraping integrations to production with zone verification, monitoring, and rollback procedures.
 
 ## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+
+- Staging environment tested
+- Production zone credentials in secrets vault
+- Monitoring and alerting configured
 
 ## Instructions
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Step 1: Zone and Credential Verification
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Bright Data error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
+- [ ] Production zone active in Bright Data CP
+- [ ] Zone password stored in secrets vault (not `.env`)
+- [ ] API token scoped to production zone only
+- [ ] SSL certificate (`brd-ca.crt`) deployed
+- [ ] Separate zone from development/staging
 
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Bright Data connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
 ```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.brightdata.com
+# Verify production zone is active
+curl -s -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
+  https://api.brightdata.com/zone/get_active_zones \
+  | python3 -c "import sys,json; zones=json.load(sys.stdin); print([z['name'] for z in zones])"
 
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/brightdata-integration app=image:new --record
-kubectl rollout pause deployment/brightdata-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/brightdata-integration
-kubectl rollout pause deployment/brightdata-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/brightdata-integration
-kubectl rollout status deployment/brightdata-integration
+# Test production proxy connectivity
+curl -x "http://brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}:${BRIGHTDATA_ZONE_PASSWORD}@brd.superproxy.io:33335" \
+  -s -w "HTTP %{http_code} in %{time_total}s\n" \
+  https://lumtest.com/myip.json
 ```
 
-## Output
-- Deployed Bright Data integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
+### Step 2: Code Quality
 
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
+- [ ] No hardcoded credentials (grep for passwords, tokens)
+- [ ] Retry logic with exponential backoff (see `brightdata-rate-limits`)
+- [ ] Request queuing with concurrency limits (p-queue)
+- [ ] Response validation (check for CAPTCHA pages, empty responses)
+- [ ] Timeout set to 60-120s for Web Unlocker
+- [ ] Error logging includes `X-Luminati-Error` headers
 
-## Examples
+### Step 3: Infrastructure
 
-### Health Check Implementation
+- [ ] Health check endpoint tests proxy connectivity
+- [ ] Monitoring tracks proxy response times, error rates
+- [ ] Budget alerts configured in Bright Data CP
+- [ ] Circuit breaker for proxy failures
+
 ```typescript
-async function healthCheck(): Promise<{ status: string; brightdata: any }> {
+// Health check endpoint
+export async function healthCheck() {
   const start = Date.now();
   try {
-    await brightdataClient.ping();
-    return { status: 'healthy', brightdata: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', brightdata: { connected: false, latencyMs: Date.now() - start } };
+    const client = getBrightDataClient();
+    const res = await client.get('https://lumtest.com/myip.json');
+    return {
+      status: 'healthy',
+      proxy_ip: res.data.ip,
+      latency_ms: Date.now() - start,
+    };
+  } catch (error: any) {
+    return {
+      status: 'degraded',
+      error: error.response?.headers?.['x-luminati-error'] || error.message,
+      latency_ms: Date.now() - start,
+    };
   }
 }
 ```
 
-### Immediate Rollback
+### Step 4: Monitoring and Alerts
+
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| Proxy down | 5xx errors > 10/min | P1 |
+| High latency | p99 > 30s | P2 |
+| Budget spike | Daily cost > 2x average | P2 |
+| Auth failures | 407 errors > 0 | P1 |
+| Target blocked | `target_site_blocked` > 20% | P3 |
+
+### Step 5: Gradual Rollout
+
 ```bash
-kubectl rollout undo deployment/brightdata-integration
-kubectl rollout status deployment/brightdata-integration
+# Pre-flight
+curl -s https://status.brightdata.com/api/v2/status.json | python3 -c "import sys,json; s=json.load(sys.stdin); print(f'Status: {s[\"status\"][\"description\"]}')"
+
+# Deploy with canary
+kubectl apply -f k8s/production.yaml
+kubectl rollout status deployment/scraper --timeout=300s
+
+# Verify scraping works post-deploy
+curl -s http://localhost:8080/health | python3 -m json.tool
 ```
 
+## Rollback Procedure
+
+```bash
+# Immediate rollback
+kubectl rollout undo deployment/scraper
+kubectl rollout status deployment/scraper
+
+# If zone compromised, pause in Bright Data CP immediately
+```
+
+## Output
+
+- Verified production zone and credentials
+- Health check endpoint monitoring proxy connectivity
+- Alert rules for proxy errors and budget spikes
+- Documented rollback procedure
+
 ## Resources
+
 - [Bright Data Status](https://status.brightdata.com)
-- [Bright Data Support](https://docs.brightdata.com/support)
+- [Zone Management](https://brightdata.com/cp/zones)
+- [Usage Dashboard](https://brightdata.com/cp/usage)
 
 ## Next Steps
+
 For version upgrades, see `brightdata-upgrade-migration`.

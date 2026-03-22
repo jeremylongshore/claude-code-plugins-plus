@@ -17,185 +17,182 @@ compatible-with: claude-code
 # Bright Data Webhooks & Events
 
 ## Overview
-Securely handle Bright Data webhooks with signature validation and replay protection.
+
+Handle Bright Data webhook deliveries from the Web Scraper API and Datasets API. When you trigger an async collection, Bright Data sends the results to your webhook URL with the collected data in JSON, NDJSON, or CSV format.
 
 ## Prerequisites
-- Bright Data webhook secret configured
+
+- Web Scraper API or Datasets API configured
 - HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- API token for webhook Authorization header
 
-## Webhook Endpoint Setup
+## Instructions
 
-### Express.js
+### Step 1: Configure Webhook URL When Triggering Collection
+
 ```typescript
+// trigger-with-webhook.ts
+const API_TOKEN = process.env.BRIGHTDATA_API_TOKEN!;
+
+async function triggerWithWebhook(datasetId: string, urls: string[]) {
+  const params = new URLSearchParams({
+    dataset_id: datasetId,
+    format: 'json',
+    endpoint: 'https://your-app.com/webhooks/brightdata', // Your webhook URL
+    uncompressed_webhook: 'true', // Send uncompressed for easier handling
+    auth_header: `Bearer ${process.env.BRIGHTDATA_WEBHOOK_SECRET}`, // Auth header sent with delivery
+  });
+
+  // Optional: notification URL (lightweight ping when done)
+  params.set('notify', 'https://your-app.com/webhooks/brightdata-notify');
+
+  const response = await fetch(
+    `https://api.brightdata.com/datasets/v3/trigger?${params}`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(urls.map(url => ({ url }))),
+    }
+  );
+
+  const result = await response.json();
+  console.log('Snapshot ID:', result.snapshot_id);
+  return result;
+}
+```
+
+### Step 2: Webhook Endpoint — Receive Data Delivery
+
+```typescript
+// api/webhooks/brightdata.ts
 import express from 'express';
-import crypto from 'crypto';
 
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
+// Bright Data sends collected data as JSON array
 app.post('/webhooks/brightdata',
-  express.raw({ type: 'application/json' }),
+  express.json({ limit: '50mb' }), // Collections can be large
   async (req, res) => {
-    const signature = req.headers['x-brightdata-signature'] as string;
-    const timestamp = req.headers['x-brightdata-timestamp'] as string;
-
-    if (!verifyBright DataSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
+    // Validate Authorization header
+    const authHeader = req.headers.authorization;
+    if (authHeader !== `Bearer ${process.env.BRIGHTDATA_WEBHOOK_SECRET}`) {
+      console.error('Invalid webhook authorization');
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const event = JSON.parse(req.body.toString());
-    await handleBright DataEvent(event);
+    const records = req.body; // Array of scraped records
+    console.log(`Received ${records.length} records`);
+
+    // Process records
+    for (const record of records) {
+      console.log(`URL: ${record.url}`);
+      console.log(`Title: ${record.title}`);
+      console.log(`Data: ${JSON.stringify(record).substring(0, 200)}`);
+    }
+
+    // Store results
+    await saveToDatabase(records);
+
+    // Return 200 quickly — Bright Data retries on non-2xx
+    res.status(200).json({ received: records.length });
+  }
+);
+```
+
+### Step 3: Notification Endpoint (Lightweight)
+
+```typescript
+// api/webhooks/brightdata-notify.ts
+// Notification is a small JSON with snapshot status — not the full data
+app.post('/webhooks/brightdata-notify',
+  express.json(),
+  async (req, res) => {
+    const { snapshot_id, status } = req.body;
+    console.log(`Collection ${snapshot_id}: ${status}`);
+
+    if (status === 'ready') {
+      // Option A: Data already delivered to endpoint above
+      // Option B: Fetch data manually
+      const data = await fetch(
+        `https://api.brightdata.com/datasets/v3/snapshot/${snapshot_id}?format=json`,
+        { headers: { 'Authorization': `Bearer ${process.env.BRIGHTDATA_API_TOKEN}` } }
+      );
+      const records = await data.json();
+      console.log(`Fetched ${records.length} records from snapshot`);
+    }
 
     res.status(200).json({ received: true });
   }
 );
 ```
 
-## Signature Verification
+### Step 4: Idempotency and Deduplication
 
 ```typescript
-function verifyBright DataSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.BRIGHTDATA_WEBHOOK_SECRET!;
+// Bright Data may retry delivery — deduplicate by snapshot_id
+const processedSnapshots = new Set<string>();
 
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type Bright DataEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface Bright DataEvent {
-  id: string;
-  type: Bright DataEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<Bright DataEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleBright DataEvent(event: Bright DataEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
+async function handleDelivery(snapshotId: string, records: any[]) {
+  if (processedSnapshots.has(snapshotId)) {
+    console.log(`Snapshot ${snapshotId} already processed, skipping`);
     return;
   }
 
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
+  await saveToDatabase(records);
+  processedSnapshots.add(snapshotId);
+
+  // For production, use Redis instead of in-memory Set
+  // await redis.set(`bd:snapshot:${snapshotId}`, '1', 'EX', 86400 * 7);
 }
 ```
 
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `brightdata:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `brightdata:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
+### Step 5: Test Webhooks Locally
 
 ```bash
-# Use Bright Data CLI to send test events
-brightdata webhooks trigger resource.created --url http://localhost:3000/webhooks/brightdata
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Bright Data dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
-
-## Examples
-
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
+# Expose local server with ngrok
 ngrok http 3000
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/brightdata \
+# Trigger a small collection with your ngrok URL
+curl -X POST "https://api.brightdata.com/datasets/v3/trigger?dataset_id=YOUR_ID&format=json&endpoint=https://YOUR.ngrok.io/webhooks/brightdata&auth_header=Bearer%20test_secret" \
+  -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
   -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  -d '[{"url": "https://example.com"}]'
 ```
 
+## Webhook Delivery Configuration
+
+| Parameter | Values | Default |
+|-----------|--------|---------|
+| `format` | `json`, `ndjson`, `csv`, `jsonl` | `json` |
+| `uncompressed_webhook` | `true`, `false` | `false` (gzip) |
+| `endpoint` | Your webhook URL | None |
+| `auth_header` | Authorization header value | None |
+| `notify` | Notification-only URL | None |
+
+## Output
+
+- Webhook endpoint receiving collection results
+- Authorization header validation
+- Notification endpoint for status updates
+- Deduplication by snapshot_id
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| No delivery received | Wrong endpoint URL | Check URL in trigger params |
+| 413 Payload Too Large | Large collection | Increase body limit or use streaming |
+| Duplicate deliveries | Retry on timeout | Implement snapshot_id deduplication |
+| Auth header mismatch | Wrong secret | Check `auth_header` in trigger params |
+
 ## Resources
-- [Bright Data Webhooks Guide](https://docs.brightdata.com/webhooks)
-- [Webhook Security Best Practices](https://docs.brightdata.com/webhooks/security)
+
+- [Web Scraper API Webhooks](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/trigger-a-collection)
+- [Datasets API Delivery](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/overview)
 
 ## Next Steps
+
 For performance optimization, see `brightdata-performance-tuning`.

@@ -1,224 +1,58 @@
 ---
 name: grammarly-enterprise-rbac
 description: |
-  Configure Grammarly enterprise SSO, role-based access control, and organization management.
-  Use when implementing SSO integration, configuring role-based permissions,
-  or setting up organization-level controls for Grammarly.
-  Trigger with phrases like "grammarly SSO", "grammarly RBAC",
-  "grammarly enterprise", "grammarly roles", "grammarly permissions", "grammarly SAML".
-allowed-tools: Read, Write, Edit
+  Configure Grammarly enterprise role-based access control.
+  Use when managing team access, configuring organization settings,
+  or implementing Grammarly enterprise governance.
+  Trigger with phrases like "grammarly enterprise", "grammarly teams",
+  "grammarly rbac", "grammarly organization", "grammarly admin".
+allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing, enterprise]
 compatible-with: claude-code
 ---
 
 # Grammarly Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Grammarly integrations.
 
-## Prerequisites
-- Grammarly Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
+Manage Grammarly enterprise access with OAuth scopes and organization-level API credentials.
 
-## Role Definitions
+## OAuth Scopes
 
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum GrammarlyRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface GrammarlyPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<GrammarlyRole, GrammarlyPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: GrammarlyRole,
-  action: keyof GrammarlyPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Grammarly SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://grammarly.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/grammarly/callback',
-};
-
-// Map IdP groups to Grammarly roles
-const groupRoleMapping: Record<string, GrammarlyRole> = {
-  'Engineering': GrammarlyRole.Developer,
-  'Platform-Admins': GrammarlyRole.Admin,
-  'Data-Team': GrammarlyRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@grammarly/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.GRAMMARLY_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.GRAMMARLY_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/grammarly/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface GrammarlyOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: GrammarlyRole;
-}
-
-async function createOrganization(
-  config: GrammarlyOrganization
-): Promise<void> {
-  await grammarlyClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireGrammarlyPermission(
-  requiredPermission: keyof GrammarlyPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { grammarlyRole: GrammarlyRole };
-
-    if (!checkPermission(user.grammarlyRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/grammarly/resource/:id',
-  requireGrammarlyPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface GrammarlyAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: GrammarlyRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logGrammarlyAccess(entry: GrammarlyAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+| Scope | Access |
+|-------|--------|
+| `scores-api:read` | Read writing scores |
+| `scores-api:write` | Submit text for scoring |
+| `ai-detection:read` | Read AI detection results |
+| `plagiarism:read` | Read plagiarism results |
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Grammarly permissions.
+### Step 1: Separate Credentials Per Team
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
-
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
-
-### Step 4: Enable Audit Logging
-Track all access for compliance.
-
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
-
-## Examples
-
-### Quick Permission Check
 ```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
+const teamClients = {
+  content: new GrammarlyClient(process.env.GRAMMARLY_CONTENT_ID!, process.env.GRAMMARLY_CONTENT_SECRET!),
+  marketing: new GrammarlyClient(process.env.GRAMMARLY_MARKETING_ID!, process.env.GRAMMARLY_MARKETING_SECRET!),
+};
+```
+
+### Step 2: Scope-Based Access
+
+```typescript
+function canUseAPI(team: string, api: 'score' | 'ai' | 'plagiarism'): boolean {
+  const permissions: Record<string, string[]> = {
+    content: ['score', 'ai', 'plagiarism'],
+    marketing: ['score'],
+    engineering: ['score', 'ai'],
+  };
+  return permissions[team]?.includes(api) ?? false;
 }
 ```
 
 ## Resources
-- [Grammarly Enterprise Guide](https://docs.grammarly.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
-## Next Steps
-For major migrations, see `grammarly-migration-deep-dive`.
+- [Grammarly Enterprise](https://www.grammarly.com/business)

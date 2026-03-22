@@ -17,103 +17,176 @@ compatible-with: claude-code
 # Bright Data Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Bright Data.
+
+Set up a fast, reproducible local development workflow for Bright Data scraping projects with mocked proxy responses, cached results, and vitest integration.
 
 ## Prerequisites
+
 - Completed `brightdata-install-auth` setup
 - Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+- brd-ca.crt SSL certificate downloaded
 
 ## Instructions
 
 ### Step 1: Create Project Structure
+
 ```
-my-brightdata-project/
+my-scraper/
 ├── src/
 │   ├── brightdata/
-│   │   ├── client.ts       # Bright Data client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
+│   │   ├── proxy.ts         # Proxy configuration helper
+│   │   ├── scraper.ts       # Scraping functions
+│   │   └── cache.ts         # Response caching for dev
 │   └── index.ts
 ├── tests/
-│   └── brightdata.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── fixtures/            # Cached HTML responses
+│   │   └── example.html
+│   └── scraper.test.ts
+├── .env.local               # Local credentials (git-ignored)
+├── .env.example             # Template for team
+├── brd-ca.crt               # Bright Data SSL cert (git-ignored)
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Build Proxy Configuration Module
 
-# Install dependencies
-npm install
+```typescript
+// src/brightdata/proxy.ts
+import 'dotenv/config';
 
-# Start development server
-npm run dev
-```
+export interface BrightDataProxy {
+  host: string;
+  port: number;
+  auth: { username: string; password: string };
+}
 
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
+export function getProxy(options?: {
+  country?: string;
+  city?: string;
+  session?: string;
+}): BrightDataProxy {
+  const { BRIGHTDATA_CUSTOMER_ID, BRIGHTDATA_ZONE, BRIGHTDATA_ZONE_PASSWORD } = process.env;
+  if (!BRIGHTDATA_CUSTOMER_ID || !BRIGHTDATA_ZONE || !BRIGHTDATA_ZONE_PASSWORD) {
+    throw new Error('Missing BRIGHTDATA_* environment variables');
   }
+
+  let username = `brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}`;
+  if (options?.country) username += `-country-${options.country}`;
+  if (options?.city) username += `-city-${options.city}`;
+  if (options?.session) username += `-session-${options.session}`;
+
+  return {
+    host: 'brd.superproxy.io',
+    port: 33335,
+    auth: { username, password: BRIGHTDATA_ZONE_PASSWORD },
+  };
 }
 ```
 
-### Step 4: Configure Testing
-```typescript
-import { describe, it, expect, vi } from 'vitest';
-import { BrightDataClient } from '../src/brightdata/client';
+### Step 3: Add Response Cache for Development
 
-describe('Bright Data Client', () => {
-  it('should initialize with API key', () => {
-    const client = new BrightDataClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+```typescript
+// src/brightdata/cache.ts — cache scraped pages to avoid burning proxy credits
+import { createHash } from 'crypto';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+const CACHE_DIR = join(process.cwd(), '.scrape-cache');
+
+export function getCachedResponse(url: string): string | null {
+  const key = createHash('md5').update(url).digest('hex');
+  const path = join(CACHE_DIR, `${key}.html`);
+  return existsSync(path) ? readFileSync(path, 'utf-8') : null;
+}
+
+export function setCachedResponse(url: string, html: string): void {
+  mkdirSync(CACHE_DIR, { recursive: true });
+  const key = createHash('md5').update(url).digest('hex');
+  writeFileSync(join(CACHE_DIR, `${key}.html`), html);
+}
+```
+
+### Step 4: Configure Testing with Mocked Responses
+
+```typescript
+// tests/scraper.test.ts
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import axios from 'axios';
+
+vi.mock('axios');
+const mockedAxios = vi.mocked(axios);
+
+describe('Bright Data Scraper', () => {
+  beforeEach(() => vi.clearAllMocks());
+
+  it('should scrape through proxy and return HTML', async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      status: 200,
+      data: '<html><head><title>Test</title></head></html>',
+    });
+
+    const { scrape } = await import('../src/brightdata/scraper');
+    const html = await scrape('https://example.com');
+    expect(html).toContain('<title>Test</title>');
+
+    // Verify proxy was configured
+    expect(mockedAxios.get).toHaveBeenCalledWith(
+      'https://example.com',
+      expect.objectContaining({
+        proxy: expect.objectContaining({ host: 'brd.superproxy.io' }),
+      }),
+    );
+  });
+
+  it('should retry on 502 proxy errors', async () => {
+    mockedAxios.get
+      .mockRejectedValueOnce({ response: { status: 502 } })
+      .mockResolvedValueOnce({ status: 200, data: '<html>OK</html>' });
+
+    const { scrapeWithRetry } = await import('../src/brightdata/scraper');
+    const html = await scrapeWithRetry('https://example.com');
+    expect(html).toContain('OK');
+    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
   });
 });
 ```
 
+### Step 5: Package Scripts
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "scrape": "tsx src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:live": "BRIGHTDATA_LIVE=1 vitest --testPathPattern=integration"
+  }
+}
+```
+
 ## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Bright Data development
+
+- Proxy config module with geo-targeting support
+- Response cache to avoid burning credits during development
+- Mocked test suite that doesn't require live proxy access
+- Live integration test flag (`BRIGHTDATA_LIVE=1`)
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Bright Data Responses
-```typescript
-vi.mock('@brightdata/sdk', () => ({
-  BrightDataClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=BRIGHTDATA=* npm run dev
-```
+| `Missing BRIGHTDATA_* vars` | No `.env.local` | Copy from `.env.example` |
+| Cache stale | Old cached HTML | Delete `.scrape-cache/` directory |
+| Mock not working | Import order | Use `vi.mock()` before dynamic imports |
+| SSL errors in tests | CA cert path | Tests use mocks, not live proxy |
 
 ## Resources
-- [Bright Data SDK Reference](https://docs.brightdata.com/sdk)
+
+- [Bright Data Proxy Docs](https://docs.brightdata.com/general/account/proxy-infrastructure)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
+
 See `brightdata-sdk-patterns` for production-ready code patterns.

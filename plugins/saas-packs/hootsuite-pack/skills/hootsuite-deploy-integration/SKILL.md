@@ -10,202 +10,75 @@ allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Deploy Integration
 
 ## Overview
-Deploy Hootsuite-powered applications to popular platforms with proper secrets management.
 
-## Prerequisites
-- Hootsuite API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Hootsuite secrets to Vercel
-vercel secrets add hootsuite_api_key sk_live_***
-vercel secrets add hootsuite_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "HOOTSUITE_API_KEY": "@hootsuite_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-hootsuite-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Hootsuite secrets
-fly secrets set HOOTSUITE_API_KEY=sk_live_***
-fly secrets set HOOTSUITE_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="hootsuite-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=HOOTSUITE_API_KEY=hootsuite-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/hootsuite.ts
-interface HootsuiteConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getHootsuiteConfig(): HootsuiteConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.HOOTSUITE_API_KEY!,
-    environment: env as HootsuiteConfig['environment'],
-    webhookSecret: process.env.HOOTSUITE_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const hootsuiteStatus = await checkHootsuiteConnection();
-
-  return Response.json({
-    status: hootsuiteStatus ? 'healthy' : 'degraded',
-    services: {
-      hootsuite: hootsuiteStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+Deploy Hootsuite social media management backends. Key consideration: OAuth refresh tokens must persist across deployments — use a database or key-value store, not environment variables.
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Step 1: Vercel Deployment
 
-### Step 2: Configure Secrets
-Store Hootsuite API keys securely using the platform's secrets management.
+```typescript
+// api/schedule.ts — Vercel serverless
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Hootsuite integration.
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') return res.status(405).end();
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm Hootsuite connectivity.
+  // Get token from persistent store (not env var — tokens rotate)
+  const token = await getStoredToken();
 
-## Output
-- Application deployed to production
-- Hootsuite secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+  const response = await fetch('https://platform.hootsuite.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(req.body),
+  });
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+  const result = await response.json();
+  res.json(result);
+}
+```
 
-## Examples
-
-### Quick Deploy Script
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add hootsuite_api_key "$HOOTSUITE_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set HOOTSUITE_API_KEY="$HOOTSUITE_API_KEY"
-    fly deploy
-    ;;
-esac
+vercel env add HOOTSUITE_CLIENT_ID production
+vercel env add HOOTSUITE_CLIENT_SECRET production
+vercel --prod
+```
+
+### Step 2: Token Persistence
+
+```typescript
+// Use Redis, database, or KV store for token persistence
+// Tokens refresh every ~1 hour and refresh_token changes each time
+import { kv } from '@vercel/kv';
+
+async function getStoredToken(): Promise<string> {
+  let token = await kv.get('hootsuite:access_token');
+  const expiresAt = await kv.get('hootsuite:expires_at') as number;
+
+  if (!token || Date.now() > expiresAt - 60000) {
+    const refreshToken = await kv.get('hootsuite:refresh_token') as string;
+    const newTokens = await refreshHootsuiteToken(refreshToken);
+    await kv.set('hootsuite:access_token', newTokens.access_token);
+    await kv.set('hootsuite:refresh_token', newTokens.refresh_token);
+    await kv.set('hootsuite:expires_at', Date.now() + newTokens.expires_in * 1000);
+    token = newTokens.access_token;
+  }
+  return token as string;
+}
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Hootsuite Deploy Guide](https://docs.hootsuite.com/deploy)
+
+- [Vercel KV](https://vercel.com/docs/storage/vercel-kv)
+- [Hootsuite OAuth](https://developer.hootsuite.com/docs/using-rest-apis)
 
 ## Next Steps
-For webhook handling, see `hootsuite-webhooks-events`.
+
+For webhooks, see `hootsuite-webhooks-events`.

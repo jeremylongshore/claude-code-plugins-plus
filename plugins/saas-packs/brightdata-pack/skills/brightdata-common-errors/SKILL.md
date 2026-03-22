@@ -17,97 +17,180 @@ compatible-with: claude-code
 # Bright Data Common Errors
 
 ## Overview
-Quick reference for the top 10 most common Bright Data errors and their solutions.
+
+Diagnostic reference for the most common Bright Data proxy and API errors with real solutions and fix commands.
 
 ## Prerequisites
-- Bright Data SDK installed
-- API credentials configured
+
+- Bright Data zone configured
+- Proxy credentials available
 - Access to error logs
 
 ## Instructions
 
 ### Step 1: Identify the Error
-Check error message and code in your logs or console.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+Check your proxy response status code or error message against the table below.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Step 2: Apply the Fix
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+Follow the specific solution for your error code.
 
-## Error Handling
+## Error Reference
 
-### Authentication Failed
-**Error Message:**
+### 407 Proxy Authentication Required
+
 ```
-Authentication error: Invalid API key
+HTTP/1.1 407 Proxy Authentication Required
 ```
 
-**Cause:** API key is missing, expired, or invalid.
+**Cause:** Username format is wrong or credentials are invalid.
 
-**Solution:**
+**Fix:**
 ```bash
-# Verify API key is set
-echo $BRIGHTDATA_API_KEY
+# Verify credential format — must be exactly:
+# brd-customer-{CUSTOMER_ID}-zone-{ZONE_NAME}
+echo "Username: brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}"
+
+# Test with curl
+curl -x "http://brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}:${BRIGHTDATA_ZONE_PASSWORD}@brd.superproxy.io:33335" \
+  https://lumtest.com/myip.json
 ```
 
 ---
 
-### Rate Limit Exceeded
-**Error Message:**
+### 502 Bad Gateway
+
 ```
-Rate limit exceeded. Please retry after X seconds.
+HTTP/1.1 502 Bad Gateway
+X-Luminati-Error: target_site_blocked
 ```
 
-**Cause:** Too many requests in a short period.
+**Cause:** Target site blocked the request despite Web Unlocker retries.
 
-**Solution:**
-Implement exponential backoff. See `brightdata-rate-limits` skill.
+**Fix:**
+- Increase timeout to 120s (Web Unlocker needs time to solve CAPTCHAs)
+- Switch to Scraping Browser zone for JS-heavy sites
+- Add `-country-us` to username for geo-specific content
 
 ---
 
-### Network Timeout
-**Error Message:**
+### SSL Certificate Errors
+
 ```
-Request timeout after 30000ms
+Error: SSL: CERTIFICATE_VERIFY_FAILED
 ```
 
-**Cause:** Network connectivity or server latency issues.
+**Cause:** Missing Bright Data CA certificate for HTTPS proxying.
 
-**Solution:**
+**Fix:**
+```bash
+# Download the Bright Data CA certificate
+curl -sO https://brightdata.com/ssl/brd-ca.crt
+
+# Node.js
+export NODE_EXTRA_CA_CERTS=./brd-ca.crt
+
+# Python requests
+# requests.get(url, proxies=proxies, verify='./brd-ca.crt')
+```
+
+---
+
+### ETIMEDOUT / Connection Timeout
+
+```
+Error: connect ETIMEDOUT brd.superproxy.io:33335
+```
+
+**Cause:** Firewall blocking outbound connections to Bright Data.
+
+**Fix:**
+```bash
+# Test connectivity
+nc -zv brd.superproxy.io 33335
+# If blocked, allow outbound TCP to brd.superproxy.io:33335
+
+# For Scraping Browser, also allow port 9222
+nc -zv brd.superproxy.io 9222
+```
+
+---
+
+### 403 Forbidden (Zone Inactive)
+
+**Cause:** Zone is not active or has been paused.
+
+**Fix:** Go to https://brightdata.com/cp, navigate to the zone, and click "Activate".
+
+---
+
+### 429 Too Many Requests
+
+**Cause:** Exceeded concurrent request limit for your zone.
+
+**Fix:**
 ```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
+// Implement request queuing
+import PQueue from 'p-queue';
+const queue = new PQueue({ concurrency: 10, interval: 1000, intervalCap: 20 });
+const result = await queue.add(() => client.get(url));
 ```
 
-## Examples
+---
 
-### Quick Diagnostic Commands
+### Empty Response Body
+
+**Cause:** Target returned a CAPTCHA page that Web Unlocker couldn't solve, or wrong zone type for the target.
+
+**Fix:**
+- Check zone type matches target (Web Unlocker for static, Scraping Browser for JS)
+- Verify target URL is accessible in a regular browser
+- Try adding `&brd_json=1` for SERP API requests
+
+---
+
+### X-Luminati-Error Headers
+
+Bright Data returns error details in response headers:
+
+| Header Value | Meaning | Action |
+|-------------|---------|--------|
+| `target_site_blocked` | Site anti-bot blocked request | Use Scraping Browser |
+| `ip_banned` | IP was banned by target | Retry (auto-rotates IP) |
+| `captcha` | CAPTCHA challenge failed | Increase timeout |
+| `connection_failed` | Could not reach target | Verify target URL |
+| `auth_failed` | Credential error | Check username/password |
+
+## Quick Diagnostic Commands
+
 ```bash
 # Check Bright Data status
-curl -s https://status.brightdata.com
+curl -s https://status.brightdata.com/api/v2/status.json | python3 -m json.tool
 
-# Verify API connectivity
-curl -I https://api.brightdata.com
+# Test proxy connectivity
+curl -x "http://brd-customer-${BRIGHTDATA_CUSTOMER_ID}-zone-${BRIGHTDATA_ZONE}:${BRIGHTDATA_ZONE_PASSWORD}@brd.superproxy.io:33335" \
+  -o /dev/null -s -w "HTTP %{http_code} in %{time_total}s\n" \
+  https://lumtest.com/myip.json
 
-# Check local configuration
-env | grep BRIGHTDATA
+# Check zone credentials
+curl -H "Authorization: Bearer ${BRIGHTDATA_API_TOKEN}" \
+  https://api.brightdata.com/zone/get_active_zones
 ```
 
-### Escalation Path
-1. Collect evidence with `brightdata-debug-bundle`
-2. Check Bright Data status page
-3. Contact support with request ID
+## Escalation Path
+
+1. Collect request/response headers (including `X-Luminati-*` headers)
+2. Run `brightdata-debug-bundle` to create diagnostic package
+3. Check https://status.brightdata.com for outages
+4. Contact support with zone name, error headers, and timestamps
 
 ## Resources
-- [Bright Data Status Page](https://status.brightdata.com)
-- [Bright Data Support](https://docs.brightdata.com/support)
-- [Bright Data Error Codes](https://docs.brightdata.com/errors)
+
+- [Bright Data Error Reference](https://docs.brightdata.com/general/account/troubleshooting)
+- [Status Page](https://status.brightdata.com)
+- [Support Portal](https://brightdata.com/cp/support)
 
 ## Next Steps
+
 For comprehensive debugging, see `brightdata-debug-bundle`.

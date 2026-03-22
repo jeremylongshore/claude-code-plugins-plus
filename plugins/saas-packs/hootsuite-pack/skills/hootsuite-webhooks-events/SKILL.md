@@ -10,192 +10,96 @@ allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Webhooks & Events
 
 ## Overview
-Securely handle Hootsuite webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Hootsuite webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/hootsuite',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-hootsuite-signature'] as string;
-    const timestamp = req.headers['x-hootsuite-timestamp'] as string;
-
-    if (!verifyHootsuiteSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleHootsuiteEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyHootsuiteSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.HOOTSUITE_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type HootsuiteEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface HootsuiteEvent {
-  id: string;
-  type: HootsuiteEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<HootsuiteEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleHootsuiteEvent(event: HootsuiteEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `hootsuite:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `hootsuite:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Hootsuite CLI to send test events
-hootsuite webhooks trigger resource.created --url http://localhost:3000/webhooks/hootsuite
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Hootsuite provides webhook notifications for social stream events when building Hootsuite App Directory integrations. For API-only integrations, you poll for message state changes or implement your own scheduling system with callbacks.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Hootsuite dashboard.
+### Step 1: Poll for Message Status Changes
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+// Since Hootsuite REST API doesn't push webhooks for message status,
+// poll for changes to scheduled messages
+async function pollMessageStatus(messageId: string, intervalMs = 30000) {
+  const check = async () => {
+    const response = await fetch(`https://platform.hootsuite.com/v1/messages/${messageId}`, {
+      headers: { 'Authorization': `Bearer ${await getStoredToken()}` },
+    });
+    const { data } = await response.json();
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+    if (data.state === 'SENT') {
+      console.log(`Message ${messageId} sent at ${data.sentAt}`);
+      return data;
+    } else if (data.state === 'FAILED' || data.state === 'REJECTED') {
+      console.error(`Message ${messageId} failed: ${data.state}`);
+      return data;
+    }
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+    console.log(`Message ${messageId}: ${data.state}, checking again...`);
+    await new Promise(r => setTimeout(r, intervalMs));
+    return check();
+  };
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+  return check();
+}
+```
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+### Step 2: Build Custom Scheduling Webhook
 
-## Examples
+```typescript
+// Your own webhook system to track scheduled post status
+import express from 'express';
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+const app = express();
+app.use(express.json());
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/hootsuite \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+// Cron job checks scheduled posts and fires webhooks
+async function checkScheduledPosts() {
+  const response = await fetch('https://platform.hootsuite.com/v1/messages?state=SENT&limit=50', {
+    headers: { 'Authorization': `Bearer ${await getStoredToken()}` },
+  });
+  const { data } = await response.json();
+
+  for (const msg of data) {
+    // Notify your systems about sent posts
+    await fetch(process.env.INTERNAL_WEBHOOK_URL!, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'post.sent', messageId: msg.id, sentAt: msg.sentAt, text: msg.text }),
+    });
+  }
+}
+```
+
+### Step 3: Hootsuite App Directory Webhooks
+
+For apps listed in the Hootsuite App Directory, you receive stream events:
+
+```typescript
+// Webhook handler for Hootsuite App Directory integration
+app.post('/webhooks/hootsuite', async (req, res) => {
+  const { type, data } = req.body;
+  switch (type) {
+    case 'message.sent': console.log('Post sent:', data); break;
+    case 'message.failed': console.error('Post failed:', data); break;
+    case 'stream.message': console.log('New social message:', data); break;
+  }
+  res.status(200).json({ received: true });
+});
 ```
 
 ## Resources
-- [Hootsuite Webhooks Guide](https://docs.hootsuite.com/webhooks)
-- [Webhook Security Best Practices](https://docs.hootsuite.com/webhooks/security)
+
+- [Hootsuite Developer Platform](https://developer.hootsuite.com/docs/the-hootsuite-platform)
+- [API Guides](https://developer.hootsuite.com/docs/api-guides)
 
 ## Next Steps
-For performance optimization, see `hootsuite-performance-tuning`.
+
+For performance, see `hootsuite-performance-tuning`.

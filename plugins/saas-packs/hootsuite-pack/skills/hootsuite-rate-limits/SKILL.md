@@ -10,142 +10,73 @@ allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Rate Limits
 
 ## Overview
-Handle Hootsuite rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Hootsuite SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+Handle Hootsuite API rate limits. The API returns `429 Too Many Requests` with `Retry-After` headers when limits are exceeded.
+
+## Rate Limits
+
+| Endpoint | Limit | Window |
+|----------|-------|--------|
+| General API | Varies by plan | Per minute |
+| Message scheduling | ~100/hour | Per hour |
+| Media upload | ~50/hour | Per hour |
+| Token refresh | ~10/hour | Per hour |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Respect Retry-After Header
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
-
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
-```
-
-### Step 3: Add Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: HootsuiteClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
+async function rateLimitedRequest(url: string, options: RequestInit = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: { 'Authorization': `Bearer ${process.env.HOOTSUITE_ACCESS_TOKEN}`, ...options.headers },
   });
+
+  if (response.status === 429) {
+    const retryAfter = parseInt(response.headers.get('Retry-After') || '60');
+    console.log(`Rate limited. Retrying in ${retryAfter}s`);
+    await new Promise(r => setTimeout(r, retryAfter * 1000));
+    return rateLimitedRequest(url, options); // Retry
+  }
+
+  return response;
 }
 ```
 
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+### Step 2: Queue-Based Scheduling
 
-## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
-
-## Examples
-
-### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-const queue = new PQueue({
-  concurrency: 5,
+const hootsuiteQueue = new PQueue({
+  concurrency: 1,
   interval: 1000,
-  intervalCap: 10,
+  intervalCap: 2, // 2 requests per second
 });
 
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
+async function queuedSchedule(profileId: string, text: string, time: Date) {
+  return hootsuiteQueue.add(() =>
+    fetch('https://platform.hootsuite.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${process.env.HOOTSUITE_ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, socialProfileIds: [profileId], scheduledSendTime: time.toISOString() }),
+    })
+  );
 }
 ```
 
 ## Resources
-- [Hootsuite Rate Limits](https://docs.hootsuite.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Hootsuite API FAQ](https://developer.hootsuite.com/docs/rest-api-faq)
 
 ## Next Steps
-For security configuration, see `hootsuite-security-basics`.
+
+For security, see `hootsuite-security-basics`.

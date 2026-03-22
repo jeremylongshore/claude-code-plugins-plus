@@ -10,105 +10,49 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Upgrade & Migration
 
 ## Overview
-Guide for upgrading Hootsuite SDK versions and handling breaking changes.
 
-## Prerequisites
-- Current Hootsuite SDK installed
-- Git for version control
-- Test suite available
-- Staging environment
+Hootsuite REST API is versioned at `/v1/`. Monitor the developer changelog for deprecations and new endpoints.
 
 ## Instructions
 
-### Step 1: Check Current Version
+### Step 1: Check Current API Usage
+
 ```bash
-npm list @hootsuite/sdk
-npm view @hootsuite/sdk version
+# List all Hootsuite API calls in your codebase
+grep -r "platform.hootsuite.com" src/ --include="*.ts" --include="*.py"
 ```
 
-### Step 2: Review Changelog
-```bash
-open https://github.com/hootsuite/sdk/releases
-```
+### Step 2: Migration Patterns
 
-### Step 3: Create Upgrade Branch
-```bash
-git checkout -b upgrade/hootsuite-sdk-vX.Y.Z
-npm install @hootsuite/sdk@latest
-npm test
-```
-
-### Step 4: Handle Breaking Changes
-Update import statements, configuration, and method signatures as needed.
-
-## Output
-- Updated SDK version
-- Fixed breaking changes
-- Passing test suite
-- Documented rollback procedure
-
-## Error Handling
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
-
-## Examples
-
-### Import Changes
 ```typescript
-// Before (v1.x)
-import { Client } from '@hootsuite/sdk';
-
-// After (v2.x)
-import { HootsuiteClient } from '@hootsuite/sdk';
+// If Hootsuite introduces v2 endpoints:
+// BEFORE
+const response = await fetch('https://platform.hootsuite.com/v1/messages', ...);
+// AFTER
+const API_VERSION = process.env.HOOTSUITE_API_VERSION || 'v1';
+const response = await fetch(`https://platform.hootsuite.com/${API_VERSION}/messages`, ...);
 ```
 
-### Configuration Changes
+### Step 3: Social Network Changes
+
+When Hootsuite adds/removes social network support:
 ```typescript
-// Before (v1.x)
-const client = new Client({ key: 'xxx' });
-
-// After (v2.x)
-const client = new HootsuiteClient({
-  apiKey: 'xxx',
-});
-```
-
-### Rollback Procedure
-```bash
-npm install @hootsuite/sdk@1.x.x --save-exact
-```
-
-### Deprecation Handling
-```typescript
-// Monitor for deprecation warnings in development
-if (process.env.NODE_ENV === 'development') {
-  process.on('warning', (warning) => {
-    if (warning.name === 'DeprecationWarning') {
-      console.warn('[Hootsuite]', warning.message);
-      // Log to tracking system for proactive updates
-    }
-  });
-}
-
-// Common deprecation patterns to watch for:
-// - Renamed methods: client.oldMethod() -> client.newMethod()
-// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
-// - Removed features: Check release notes before upgrading
+const SUPPORTED_NETWORKS = ['TWITTER', 'FACEBOOK', 'INSTAGRAM', 'LINKEDIN', 'PINTEREST', 'YOUTUBE', 'TIKTOK'] as const;
+type SocialNetwork = typeof SUPPORTED_NETWORKS[number];
 ```
 
 ## Resources
-- [Hootsuite Changelog](https://github.com/hootsuite/sdk/releases)
-- [Hootsuite Migration Guide](https://docs.hootsuite.com/migration)
+
+- [Hootsuite Developer Changelog](https://developer.hootsuite.com/changelog)
+- [API Guides](https://developer.hootsuite.com/docs/api-guides)
 
 ## Next Steps
-For CI integration during upgrades, see `hootsuite-ci-integration`.
+
+For CI, see `hootsuite-ci-integration`.

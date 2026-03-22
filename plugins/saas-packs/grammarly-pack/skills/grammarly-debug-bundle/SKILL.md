@@ -10,104 +10,43 @@ allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Debug Bundle
 
-## Overview
-Collect all necessary diagnostic information for Grammarly support tickets.
-
-## Prerequisites
-- Grammarly SDK installed
-- Access to application logs
-- Permission to collect environment info
-
 ## Instructions
 
-### Step 1: Create Debug Bundle Script
+### Create Debug Bundle
+
 ```bash
 #!/bin/bash
-# grammarly-debug-bundle.sh
+BUNDLE="grammarly-debug-$(date +%Y%m%d-%H%M%S)"
+mkdir -p "$BUNDLE"
 
-BUNDLE_DIR="grammarly-debug-$(date +%Y%m%d-%H%M%S)"
-mkdir -p "$BUNDLE_DIR"
+echo "=== Grammarly Debug ===" | tee "$BUNDLE/summary.txt"
 
-echo "=== Grammarly Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
-echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+# Credential check
+echo "CLIENT_ID: ${GRAMMARLY_CLIENT_ID:+[SET]}" >> "$BUNDLE/summary.txt"
+echo "ACCESS_TOKEN: ${GRAMMARLY_ACCESS_TOKEN:+[SET]}" >> "$BUNDLE/summary.txt"
+
+# API test
+curl -s -w "\nHTTP %{http_code} in %{time_total}s" \
+  -H "Authorization: Bearer $GRAMMARLY_ACCESS_TOKEN" \
+  -X POST https://api.grammarly.com/ecosystem/api/v2/scores \
+  -H "Content-Type: application/json" \
+  -d '{"text": "This is a diagnostic test with enough words to meet the minimum thirty word requirement for the Grammarly writing score API."}' \
+  > "$BUNDLE/api-test.json" 2>&1
+
+tar -czf "$BUNDLE.tar.gz" "$BUNDLE"
+echo "Bundle: $BUNDLE.tar.gz"
 ```
-
-### Step 2: Collect Environment Info
-```bash
-# Environment info
-echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
-node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "GRAMMARLY_API_KEY: ${GRAMMARLY_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 3: Gather SDK and Logs
-```bash
-# SDK version
-npm list @grammarly/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
-
-# Recent logs (redacted)
-grep -i "grammarly" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
-
-# Configuration (redacted - secrets masked)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
-cat .env 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
-
-# Network connectivity test
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
-echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
-curl -s -o /dev/null -w "%{http_code}" https://api.grammarly.com/health >> "$BUNDLE_DIR/summary.txt"
-echo "" >> "$BUNDLE_DIR/summary.txt"
-```
-
-### Step 4: Package Bundle
-```bash
-tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
-echo "Bundle created: $BUNDLE_DIR.tar.gz"
-```
-
-## Output
-- `grammarly-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
-  - `summary.txt` - Environment and SDK info
-  - `logs.txt` - Recent redacted logs
-  - `config-redacted.txt` - Configuration (secrets removed)
-
-## Error Handling
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-
-## Examples
-
-### Sensitive Data Handling
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-
-### Submit to Support
-1. Create bundle: `bash grammarly-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to Grammarly support portal
 
 ## Resources
-- [Grammarly Support](https://docs.grammarly.com/support)
-- [Grammarly Status](https://status.grammarly.com)
+
+- [Grammarly Support](https://developer.grammarly.com/docs/support)
 
 ## Next Steps
-For rate limit issues, see `grammarly-rate-limits`.
+
+For rate limits, see `grammarly-rate-limits`.

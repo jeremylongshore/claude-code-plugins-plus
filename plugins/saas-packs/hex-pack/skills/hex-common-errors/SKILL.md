@@ -10,104 +10,55 @@ allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hex]
+tags: [saas, hex, data, analytics]
 compatible-with: claude-code
 ---
 
 # Hex Common Errors
 
-## Overview
-Quick reference for the top 10 most common Hex errors and their solutions.
+## Error Reference
 
-## Prerequisites
-- Hex SDK installed
-- API credentials configured
-- Access to error logs
+### 401 Unauthorized
+**Cause:** Token invalid, expired, or missing.
+**Fix:** Regenerate token in Hex workspace settings.
 
-## Instructions
+### 403 Forbidden — Read-Only Token
+**Cause:** Token has "Read projects" scope but RunProject requires "Run projects".
+**Fix:** Create new token with "Run projects" scope.
 
-### Step 1: Identify the Error
-Check error message and code in your logs or console.
+### 404 Not Found — Project
+**Cause:** Project ID wrong or project not published.
+**Fix:** Verify project ID. Only published projects can be run via API.
 
-### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+### 429 Too Many Requests
+**Cause:** RunProject is limited to 20 requests/min, 60/hr.
+**Fix:** Queue runs with delays. See `hex-rate-limits`.
 
-### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+### Run Status: ERRORED
+**Cause:** SQL query, Python code, or connection error in the project.
+**Fix:** Open the project in Hex UI and check the error in the run history.
 
-## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+### Run Status: KILLED
+**Cause:** Run exceeded timeout or was manually cancelled.
+**Fix:** Optimize slow queries. Increase timeout in API trigger.
 
-## Error Handling
+## Quick Diagnostics
 
-### Authentication Failed
-**Error Message:**
-```
-Authentication error: Invalid API key
-```
-
-**Cause:** API key is missing, expired, or invalid.
-
-**Solution:**
 ```bash
-# Verify API key is set
-echo $HEX_API_KEY
+# Test token
+curl -s -o /dev/null -w "%{http_code}" \
+  -H "Authorization: Bearer $HEX_API_TOKEN" \
+  https://app.hex.tech/api/v1/projects
+
+# List recent runs for a project
+curl -s -H "Authorization: Bearer $HEX_API_TOKEN" \
+  https://app.hex.tech/api/v1/project/PROJECT_ID/runs | python3 -m json.tool
 ```
-
----
-
-### Rate Limit Exceeded
-**Error Message:**
-```
-Rate limit exceeded. Please retry after X seconds.
-```
-
-**Cause:** Too many requests in a short period.
-
-**Solution:**
-Implement exponential backoff. See `hex-rate-limits` skill.
-
----
-
-### Network Timeout
-**Error Message:**
-```
-Request timeout after 30000ms
-```
-
-**Cause:** Network connectivity or server latency issues.
-
-**Solution:**
-```typescript
-// Increase timeout
-const client = new Client({ timeout: 60000 });
-```
-
-## Examples
-
-### Quick Diagnostic Commands
-```bash
-# Check Hex status
-curl -s https://status.hex.com
-
-# Verify API connectivity
-curl -I https://api.hex.com
-
-# Check local configuration
-env | grep HEX
-```
-
-### Escalation Path
-1. Collect evidence with `hex-debug-bundle`
-2. Check Hex status page
-3. Contact support with request ID
 
 ## Resources
-- [Hex Status Page](https://status.hex.com)
-- [Hex Support](https://docs.hex.com/support)
-- [Hex Error Codes](https://docs.hex.com/errors)
+
+- [Hex API Reference](https://learn.hex.tech/docs/api/api-reference)
 
 ## Next Steps
-For comprehensive debugging, see `hex-debug-bundle`.
+
+For debugging, see `hex-debug-bundle`.

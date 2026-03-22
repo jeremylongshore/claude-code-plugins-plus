@@ -17,126 +17,70 @@ compatible-with: claude-code
 # Framer Security Basics
 
 ## Overview
-Security best practices for Framer API keys, tokens, and access control.
 
-## Prerequisites
-- Framer SDK installed
-- Understanding of environment variables
-- Access to Framer dashboard
+Security best practices for Framer API keys, plugin development, and Server API access.
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
+### Step 1: Credential Management
+
+| Credential | Scope | Where to Store |
+|-----------|-------|----------------|
+| Server API Key (`framer_sk_*`) | Per-site | Secrets vault |
+| Site ID | Per-site | Can be in config |
+| Plugin auth tokens | Per-user session | Never persist |
+
 ```bash
-# .env (NEVER commit to git)
-FRAMER_API_KEY=sk_live_***
-FRAMER_SECRET=***
+# .env (never commit)
+FRAMER_API_KEY=framer_sk_abc123...
+FRAMER_SITE_ID=abc123
 
 # .gitignore
 .env
 .env.local
-.env.*.local
 ```
 
-### Step 2: Implement Secret Rotation
-```bash
-# 1. Generate new key in Framer dashboard
-# 2. Update environment variable
-export FRAMER_API_KEY="new_key_here"
+### Step 2: Plugin Security
 
-# 3. Verify new key works
-curl -H "Authorization: Bearer ${FRAMER_API_KEY}" \
-  https://api.framer.com/health
+```tsx
+// Plugins run in Framer's iframe sandbox — limited browser APIs
+// Never store secrets in plugin code (it's client-side)
 
-# 4. Revoke old key in dashboard
-```
-
-### Step 3: Apply Least Privilege
-| Environment | Recommended Scopes |
-|-------------|-------------------|
-| Development | `read:*` |
-| Staging | `read:*, write:limited` |
-| Production | `Only required scopes` |
-
-## Output
-- Secure API key storage
-- Environment-specific access controls
-- Audit logging enabled
-
-## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API key | Git scanning | Rotate immediately |
-| Excessive scopes | Audit logs | Reduce permissions |
-| Missing rotation | Key age check | Schedule rotation |
-
-## Examples
-
-### Service Account Pattern
-```typescript
-const clients = {
-  reader: new FramerClient({
-    apiKey: process.env.FRAMER_READ_KEY,
-  }),
-  writer: new FramerClient({
-    apiKey: process.env.FRAMER_WRITE_KEY,
-  }),
-};
-```
-
-### Webhook Signature Verification
-```typescript
-import crypto from 'crypto';
-
-function verifyWebhookSignature(
-  payload: string, signature: string, secret: string
-): boolean {
-  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
-}
-```
-
-### Security Checklist
-- [ ] API keys in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Webhook signatures validated
-- [ ] Audit logging enabled
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId: string;
-  resource: string;
-  result: 'success' | 'failure';
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, 'timestamp'>): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log to Framer analytics
-  await framerClient.track('audit', log);
-
-  // Also log locally for compliance
-  console.log('[AUDIT]', JSON.stringify(log));
-}
-
-// Usage
-await auditLog({
-  action: 'framer.api.call',
-  userId: currentUser.id,
-  resource: '/v1/resource',
-  result: 'success',
+// Fetch external data through your own API proxy
+const data = await fetch('https://your-api.com/framer-data', {
+  headers: { 'Authorization': `Bearer ${sessionToken}` },
 });
 ```
 
+### Step 3: Server API Key Rotation
+
+```bash
+# 1. Generate new key in Framer site settings
+# 2. Update in secrets vault
+# 3. Test connection
+node -e "
+  const { framer } = require('framer-api');
+  framer.connect({ apiKey: process.env.FRAMER_API_KEY, siteId: process.env.FRAMER_SITE_ID })
+    .then(() => console.log('OK'))
+    .catch(e => console.error('FAIL', e.message));
+"
+# 4. Revoke old key in site settings
+```
+
+### Step 4: Security Checklist
+
+- [ ] API keys in environment variables, never in code
+- [ ] `.env` in `.gitignore`
+- [ ] Plugin never stores or exposes API keys
+- [ ] Server API accessed only from backend, never client
+- [ ] Pre-commit hook scans for `framer_sk_*` leaks
+- [ ] HTTPS-only for all API communication
+
 ## Resources
-- [Framer Security Guide](https://docs.framer.com/security)
-- [Framer API Scopes](https://docs.framer.com/scopes)
+
+- [Framer Server API](https://www.framer.com/developers/server-api-introduction)
+- [Plugin Security](https://www.framer.com/developers/plugins-introduction)
 
 ## Next Steps
+
 For production deployment, see `framer-prod-checklist`.

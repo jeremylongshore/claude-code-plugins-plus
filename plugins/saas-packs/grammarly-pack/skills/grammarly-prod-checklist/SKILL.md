@@ -1,121 +1,49 @@
 ---
 name: grammarly-prod-checklist
 description: |
-  Execute Grammarly production deployment checklist and rollback procedures.
-  Use when deploying Grammarly integrations to production, preparing for launch,
-  or implementing go-live procedures.
-  Trigger with phrases like "grammarly production", "deploy grammarly",
-  "grammarly go-live", "grammarly launch checklist".
-allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep
+description: |
+  
+allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+allowed-tools: Read, Write, Edit, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Production Checklist
 
-## Overview
-Complete checklist for deploying Grammarly integrations to production.
+## Checklist
 
-## Prerequisites
-- Staging environment tested and verified
-- Production API keys available
-- Deployment pipeline configured
-- Monitoring and alerting ready
+### Authentication
+- [ ] Client credentials in secrets vault
+- [ ] Token refresh logic handles expiry
+- [ ] Separate credentials for prod vs dev
 
-## Instructions
+### API Integration
+- [ ] Text chunking for documents > 100K chars
+- [ ] Minimum 30 word validation before API calls
+- [ ] Rate limit handling with exponential backoff
+- [ ] Error responses logged with request IDs
 
-### Step 1: Pre-Deployment Configuration
-- [ ] Production API keys in secure vault
-- [ ] Environment variables set in deployment platform
-- [ ] API key scopes are minimal (least privilege)
-- [ ] Webhook endpoints configured with HTTPS
-- [ ] Webhook secrets stored securely
+### Quality Gates
+- [ ] Writing score thresholds defined per use case
+- [ ] AI detection thresholds configured
+- [ ] Plagiarism check timeout handling
 
-### Step 2: Code Quality Verification
-- [ ] All tests passing (`npm test`)
-- [ ] No hardcoded credentials
-- [ ] Error handling covers all Grammarly error types
-- [ ] Rate limiting/backoff implemented
-- [ ] Logging is production-appropriate
-
-### Step 3: Infrastructure Setup
-- [ ] Health check endpoint includes Grammarly connectivity
-- [ ] Monitoring/alerting configured
-- [ ] Circuit breaker pattern implemented
-- [ ] Graceful degradation configured
-
-### Step 4: Documentation Requirements
-- [ ] Incident runbook created
-- [ ] Key rotation procedure documented
-- [ ] Rollback procedure documented
-- [ ] On-call escalation path defined
-
-### Step 5: Deploy with Gradual Rollout
-```bash
-# Pre-flight checks
-curl -f https://staging.example.com/health
-curl -s https://status.grammarly.com
-
-# Gradual rollout - start with canary (10%)
-kubectl apply -f k8s/production.yaml
-kubectl set image deployment/grammarly-integration app=image:new --record
-kubectl rollout pause deployment/grammarly-integration
-
-# Monitor canary traffic for 10 minutes
-sleep 600
-# Check error rates and latency before continuing
-
-# If healthy, continue rollout to 50%
-kubectl rollout resume deployment/grammarly-integration
-kubectl rollout pause deployment/grammarly-integration
-sleep 300
-
-# Complete rollout to 100%
-kubectl rollout resume deployment/grammarly-integration
-kubectl rollout status deployment/grammarly-integration
-```
-
-## Output
-- Deployed Grammarly integration
-- Health checks passing
-- Monitoring active
-- Rollback procedure documented
-
-## Error Handling
-| Alert | Condition | Severity |
-|-------|-----------|----------|
-| API Down | 5xx errors > 10/min | P1 |
-| High Latency | p99 > 5000ms | P2 |
-| Rate Limited | 429 errors > 5/min | P2 |
-| Auth Failures | 401/403 errors > 0 | P1 |
-
-## Examples
-
-### Health Check Implementation
-```typescript
-async function healthCheck(): Promise<{ status: string; grammarly: any }> {
-  const start = Date.now();
-  try {
-    await grammarlyClient.ping();
-    return { status: 'healthy', grammarly: { connected: true, latencyMs: Date.now() - start } };
-  } catch (error) {
-    return { status: 'degraded', grammarly: { connected: false, latencyMs: Date.now() - start } };
-  }
-}
-```
-
-### Immediate Rollback
-```bash
-kubectl rollout undo deployment/grammarly-integration
-kubectl rollout status deployment/grammarly-integration
-```
+### Monitoring
+- [ ] API response times tracked
+- [ ] Error rates alerting
+- [ ] Token refresh failures reported
 
 ## Resources
-- [Grammarly Status](https://status.grammarly.com)
-- [Grammarly Support](https://docs.grammarly.com/support)
+
+- [Grammarly API](https://developer.grammarly.com/)
 
 ## Next Steps
-For version upgrades, see `grammarly-upgrade-migration`.
+
+For upgrades, see `grammarly-upgrade-migration`.

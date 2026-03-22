@@ -1,6 +1,10 @@
 # Hex Skill Pack
 
-> Claude Code skill pack for Hex integration (18 skills)
+> Claude Code skill pack for Hex data platform API (18 skills)
+
+## What It Does
+
+Gives Claude Code deep knowledge of Hex's public API for triggering notebook project runs, polling status, managing users, and building data pipelines. Skills cover API token authentication, project orchestration with Airflow/Dagster, scheduled runs, and the Admin API for workspace management.
 
 ## Installation
 
@@ -8,41 +12,44 @@
 /plugin install hex-pack@claude-code-plugins-plus
 ```
 
-## Skills Included
+## Skills
 
 ### Standard Skills (S01-S12)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `hex-install-auth` | Install Auth |
-| `hex-hello-world` | Hello World |
-| `hex-local-dev-loop` | Local Dev Loop |
-| `hex-sdk-patterns` | Sdk Patterns |
-| `hex-core-workflow-a` | Core Workflow A |
-| `hex-core-workflow-b` | Core Workflow B |
-| `hex-common-errors` | Common Errors |
-| `hex-debug-bundle` | Debug Bundle |
-| `hex-rate-limits` | Rate Limits |
-| `hex-security-basics` | Security Basics |
-| `hex-prod-checklist` | Prod Checklist |
-| `hex-upgrade-migration` | Upgrade Migration |
+| `hex-install-auth` | API token generation, scopes (read vs run), verification |
+| `hex-hello-world` | List projects, trigger a run, poll for completion |
+| `hex-local-dev-loop` | Typed HexClient class, mocked tests, project structure |
+| `hex-sdk-patterns` | Run with retry, Python hextoolkit, Airflow provider |
+| `hex-core-workflow-a` | Project orchestration: parameterized runs, pipeline sequencing |
+| `hex-core-workflow-b` | Scheduled runs, Admin API (users, groups, connections) |
+| `hex-common-errors` | Fix 401/403/404/429, ERRORED/KILLED run status |
+| `hex-debug-bundle` | API connectivity test, project listing diagnostic |
+| `hex-rate-limits` | RunProject limits (20/min, 60/hr), queue-based triggering |
+| `hex-security-basics` | Token scoping, expiration, environment isolation |
+| `hex-prod-checklist` | API access, project publishing, orchestration, monitoring |
+| `hex-upgrade-migration` | API versioning, Airflow provider updates |
 
 ### Pro Skills (P13-P18)
-| Skill | Description |
+
+| Skill | What It Does |
 |-------|-------------|
-| `hex-ci-integration` | Ci Integration |
-| `hex-deploy-integration` | Deploy Integration |
-| `hex-webhooks-events` | Webhooks Events |
-| `hex-performance-tuning` | Performance Tuning |
-| `hex-cost-tuning` | Cost Tuning |
-| `hex-reference-architecture` | Reference Architecture |
+| `hex-ci-integration` | GitHub Actions to trigger Hex project on deploy |
+| `hex-deploy-integration` | Vercel/Cloud Run orchestration endpoints |
+| `hex-webhooks-events` | Run status polling with callbacks, Slack notifications |
+| `hex-performance-tuning` | Project caching, parallel runs, adaptive polling |
+| `hex-cost-tuning` | Plan comparison, run frequency tracking, cache optimization |
+| `hex-reference-architecture` | Full orchestration architecture with pipeline definitions |
 
-## Usage
+## Key Concepts
 
-Skills trigger automatically when you discuss Hex topics. For example:
-
-- "Help me set up Hex" → triggers `hex-install-auth`
-- "Debug this Hex error" → triggers `hex-common-errors`
-- "Deploy my Hex integration" → triggers `hex-deploy-integration`
+- **API base** — `https://app.hex.tech/api/v1/`
+- **Auth** — OAuth 2.0 Bearer token, generated per-user in workspace settings
+- **Core workflow** — RunProject (POST) then poll GetRunStatus until COMPLETED/ERRORED
+- **Rate limits** — RunProject: 20/min, 60/hr
+- **Orchestration** — Native integrations with Airflow, Dagster, Orchestra
+- **Input params** — Pass parameters to published projects at run time
 
 ## License
 

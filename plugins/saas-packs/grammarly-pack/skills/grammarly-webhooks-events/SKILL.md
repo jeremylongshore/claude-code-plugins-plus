@@ -10,192 +10,65 @@ allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Webhooks & Events
 
 ## Overview
-Securely handle Grammarly webhooks with signature validation and replay protection.
 
-## Prerequisites
-- Grammarly webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
-
-## Webhook Endpoint Setup
-
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/grammarly',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-grammarly-signature'] as string;
-    const timestamp = req.headers['x-grammarly-timestamp'] as string;
-
-    if (!verifyGrammarlySignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleGrammarlyEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyGrammarlySignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.GRAMMARLY_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type GrammarlyEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface GrammarlyEvent {
-  id: string;
-  type: GrammarlyEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<GrammarlyEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleGrammarlyEvent(event: GrammarlyEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `grammarly:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `grammarly:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Grammarly CLI to send test events
-grammarly webhooks trigger resource.created --url http://localhost:3000/webhooks/grammarly
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+Grammarly's current API is request/response based — there are no push webhooks. For async operations (plagiarism detection), you poll for results. Build your own event system around Grammarly API results.
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Grammarly dashboard.
+### Step 1: Plagiarism Polling with Callback
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+```typescript
+async function plagiarismWithCallback(
+  text: string,
+  token: string,
+  onComplete: (result: any) => void
+) {
+  const createRes = await fetch('https://api.grammarly.com/ecosystem/api/v1/plagiarism', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+  const { id } = await createRes.json();
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  const poll = async () => {
+    const res = await fetch(`https://api.grammarly.com/ecosystem/api/v1/plagiarism/${id}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    const result = await res.json();
+    if (result.status === 'pending') { setTimeout(poll, 3000); return; }
+    onComplete(result);
+  };
+  poll();
+}
+```
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+### Step 2: Build Event Bus for Score Results
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+```typescript
+import { EventEmitter } from 'events';
 
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+const grammarlyEvents = new EventEmitter();
 
-## Examples
+grammarlyEvents.on('score.completed', (data) => {
+  if (data.overallScore < 60) console.warn('Low quality content detected');
+});
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/grammarly \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+grammarlyEvents.on('ai.detected', (data) => {
+  if (data.score > 70) console.warn('Likely AI-generated content');
+});
 ```
 
 ## Resources
-- [Grammarly Webhooks Guide](https://docs.grammarly.com/webhooks)
-- [Webhook Security Best Practices](https://docs.grammarly.com/webhooks/security)
+
+- [Grammarly API](https://developer.grammarly.com/)
 
 ## Next Steps
-For performance optimization, see `grammarly-performance-tuning`.
+
+For performance, see `grammarly-performance-tuning`.

@@ -10,110 +10,62 @@ allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Local Dev Loop
 
 ## Overview
-Set up a fast, reproducible local development workflow for Grammarly.
 
-## Prerequisites
-- Completed `grammarly-install-auth` setup
-- Node.js 18+ with npm/pnpm
-- Code editor with TypeScript support
-- Git for version control
+Set up a development workflow for Grammarly API integrations with mocked responses and vitest.
 
 ## Instructions
 
-### Step 1: Create Project Structure
+### Step 1: Project Structure
+
 ```
-my-grammarly-project/
-├── src/
-│   ├── grammarly/
-│   │   ├── client.ts       # Grammarly client wrapper
-│   │   ├── config.ts       # Configuration management
-│   │   └── utils.ts        # Helper functions
-│   └── index.ts
+grammarly-integration/
+├── src/grammarly/
+│   ├── client.ts       # API client with token management
+│   ├── scoring.ts      # Writing Score API
+│   ├── detection.ts    # AI + Plagiarism detection
+│   └── types.ts        # TypeScript interfaces
 ├── tests/
-│   └── grammarly.test.ts
-├── .env.local              # Local secrets (git-ignored)
-├── .env.example            # Template for team
+│   ├── fixtures/       # Mock API responses
+│   └── scoring.test.ts
+├── .env.local
 └── package.json
 ```
 
-### Step 2: Configure Environment
-```bash
-# Copy environment template
-cp .env.example .env.local
+### Step 2: Mocked Tests
 
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-### Step 3: Setup Hot Reload
-```json
-{
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "test": "vitest",
-    "test:watch": "vitest --watch"
-  }
-}
-```
-
-### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
-import { GrammarlyClient } from '../src/grammarly/client';
 
-describe('Grammarly Client', () => {
-  it('should initialize with API key', () => {
-    const client = new GrammarlyClient({ apiKey: 'test-key' });
-    expect(client).toBeDefined();
+const mockFetch = vi.fn();
+vi.stubGlobal('fetch', mockFetch);
+
+describe('Writing Score', () => {
+  it('should return scores for valid text', async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ overallScore: 85, engagement: 80, correctness: 90, clarity: 85, tone: 82 }),
+    });
+    // Test scoring logic
+  });
+
+  it('should reject text under 30 words', async () => {
+    mockFetch.mockResolvedValueOnce({ ok: false, status: 400, text: async () => 'Text too short' });
+    // Test error handling
   });
 });
 ```
 
-## Output
-- Working development environment with hot reload
-- Configured test suite with mocking
-- Environment variable management
-- Fast iteration cycle for Grammarly development
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Module not found | Missing dependency | Run `npm install` |
-| Port in use | Another process | Kill process or change port |
-| Env not loaded | Missing .env.local | Copy from .env.example |
-| Test timeout | Slow network | Increase test timeout |
-
-## Examples
-
-### Mock Grammarly Responses
-```typescript
-vi.mock('@grammarly/sdk', () => ({
-  GrammarlyClient: vi.fn().mockImplementation(() => ({
-    // Mock methods here
-  })),
-}));
-```
-
-### Debug Mode
-```bash
-# Enable verbose logging
-DEBUG=GRAMMARLY=* npm run dev
-```
-
 ## Resources
-- [Grammarly SDK Reference](https://docs.grammarly.com/sdk)
-- [Vitest Documentation](https://vitest.dev/)
-- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+- [Grammarly API Docs](https://developer.grammarly.com/)
 
 ## Next Steps
-See `grammarly-sdk-patterns` for production-ready code patterns.
+
+See `grammarly-sdk-patterns` for production patterns.

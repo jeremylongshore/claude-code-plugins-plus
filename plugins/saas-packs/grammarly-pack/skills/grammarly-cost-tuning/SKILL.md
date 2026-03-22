@@ -10,194 +10,53 @@ allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Cost Tuning
 
-## Overview
-Optimize Grammarly costs through smart tier selection, sampling, and usage monitoring.
+## Pricing
 
-## Prerequisites
-- Access to Grammarly billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+Grammarly API pricing is enterprise/custom. Contact Grammarly for volume pricing.
 
-## Pricing Tiers
+## Cost Optimization
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
+### Cache Results
 
-## Cost Estimation
+Same text produces same scores — cache aggressively to avoid duplicate API calls.
+
+### Validate Before Calling
 
 ```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateGrammarlyCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
+function shouldScore(text: string): boolean {
+  const words = text.split(/\s+/).length;
+  if (words < 30) return false; // API will reject
+  if (words > 50000) return false; // Too expensive, chunk first
+  return true;
 }
 ```
 
-## Usage Monitoring
+### Sample-Based Scoring
 
 ```typescript
-class GrammarlyUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Grammarly budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateGrammarlyCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
+// For bulk content, score a sample instead of everything
+function selectSample(documents: string[], sampleRate = 0.2): string[] {
+  return documents.filter(() => Math.random() < sampleRate);
 }
 ```
 
-## Cost Reduction Strategies
+### Track Usage
 
-### Step 1: Request Sampling
 ```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await grammarlyClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => grammarlyClient.get(id)));
-
-// Use batch endpoint (1 call)
-await grammarlyClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new GrammarlyClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Grammarly dashboard
-# Or use API if available:
-# Check Grammarly documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM grammarly_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
-
-## Instructions
-
-### Step 1: Analyze Current Usage
-Review Grammarly dashboard for usage patterns and costs.
-
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateGrammarlyCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+let apiCalls = { score: 0, ai: 0, plagiarism: 0 };
+// Increment on each call, report daily
 ```
 
 ## Resources
-- [Grammarly Pricing](https://grammarly.com/pricing)
-- [Grammarly Billing Dashboard](https://dashboard.grammarly.com/billing)
+
+- [Grammarly Enterprise](https://www.grammarly.com/business)
 
 ## Next Steps
-For architecture patterns, see `grammarly-reference-architecture`.
+
+For architecture, see `grammarly-reference-architecture`.

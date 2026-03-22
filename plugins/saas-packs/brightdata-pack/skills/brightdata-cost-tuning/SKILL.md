@@ -17,187 +17,164 @@ compatible-with: claude-code
 # Bright Data Cost Tuning
 
 ## Overview
-Optimize Bright Data costs through smart tier selection, sampling, and usage monitoring.
+
+Optimize Bright Data costs through product selection, caching, and usage monitoring. Bright Data charges per request (Web Unlocker, SERP API), per GB (Residential Proxy), or per page (Datasets). Choosing the right product and avoiding redundant requests is the primary cost lever.
 
 ## Prerequisites
+
 - Access to Bright Data billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
+- Understanding of current scraping volumes
+- Usage monitoring configured (optional)
 
-## Pricing Tiers
+## Pricing Model
 
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateBright DataCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class Bright DataUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Bright Data budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateBright DataCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await brightdataClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => brightdataClient.get(id)));
-
-// Use batch endpoint (1 call)
-await brightdataClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new BrightDataClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Bright Data dashboard
-# Or use API if available:
-# Check Bright Data documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM brightdata_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+| Product | Pricing | Typical Cost | Best For |
+|---------|---------|-------------|----------|
+| Residential Proxy | Per GB transferred | $8-15/GB | High-volume, simple pages |
+| Web Unlocker | Per successful request | $1-3/1000 req | Anti-bot protected sites |
+| Scraping Browser | Per browser session | $5-10/1000 sessions | JS-heavy SPAs |
+| SERP API | Per search | $2-5/1000 searches | Search engine results |
+| Datasets (pre-built) | Per record | $0.001-0.01/record | Bulk data (Amazon, LinkedIn) |
+| Web Scraper API | Per page | Varies by dataset | Custom async scraping |
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Bright Data dashboard for usage patterns and costs.
+### Step 1: Product Selection Cost Matrix
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
-
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
-
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
-
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
-
-## Examples
-
-### Quick Cost Check
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateBright DataCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
+function estimateMonthlyCost(config: {
+  product: 'residential' | 'web_unlocker' | 'scraping_browser' | 'serp_api';
+  requestsPerMonth: number;
+  avgPageSizeKB?: number;
+}) {
+  switch (config.product) {
+    case 'residential':
+      const gbTransferred = (config.requestsPerMonth * (config.avgPageSizeKB || 200)) / 1_000_000;
+      return { cost: gbTransferred * 10, unit: 'GB', quantity: gbTransferred };
+    case 'web_unlocker':
+      return { cost: config.requestsPerMonth * 0.002, unit: 'requests', quantity: config.requestsPerMonth };
+    case 'scraping_browser':
+      return { cost: config.requestsPerMonth * 0.008, unit: 'sessions', quantity: config.requestsPerMonth };
+    case 'serp_api':
+      return { cost: config.requestsPerMonth * 0.003, unit: 'searches', quantity: config.requestsPerMonth };
+  }
+}
+
+// Example: 50,000 product pages/month
+console.log(estimateMonthlyCost({ product: 'web_unlocker', requestsPerMonth: 50000 }));
+// { cost: 100, unit: 'requests', quantity: 50000 }
+console.log(estimateMonthlyCost({ product: 'residential', requestsPerMonth: 50000, avgPageSizeKB: 300 }));
+// { cost: 150, unit: 'GB', quantity: 15 }
+```
+
+### Step 2: Reduce Costs with Caching
+
+```typescript
+// Response caching is the single biggest cost saver
+// Cache policy by data freshness requirements
+const CACHE_TTLS = {
+  product_price: 3600000,     // 1 hour — prices change frequently
+  product_details: 86400000,  // 24 hours — descriptions rarely change
+  search_results: 1800000,    // 30 minutes — SERPs change often
+  static_page: 604800000,     // 7 days — about/contact pages
+};
+
+// Track cache savings
+let cacheSavings = 0;
+function trackCacheHit(product: string) {
+  const costPerRequest = { web_unlocker: 0.002, scraping_browser: 0.008, serp_api: 0.003 };
+  cacheSavings += costPerRequest[product] || 0.002;
+  console.log(`Cache savings this session: $${cacheSavings.toFixed(4)}`);
 }
 ```
 
+### Step 3: Use Bulk APIs for Volume Jobs
+
+```typescript
+// Individual requests: 50,000 requests * $0.002 = $100
+// Web Scraper API: 1 trigger with 50,000 URLs = typically cheaper (volume discounts)
+
+async function bulkScrapeForCost(urls: string[]) {
+  // Batch into single trigger — one API call, lower cost
+  const response = await fetch(
+    `https://api.brightdata.com/datasets/v3/trigger?dataset_id=${DATASET_ID}&format=json`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.BRIGHTDATA_API_TOKEN}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(urls.map(url => ({ url }))),
+    }
+  );
+  return response.json();
+}
+```
+
+### Step 4: Usage Monitoring
+
+```typescript
+class BrightDataUsageTracker {
+  private dailyRequests = 0;
+  private dailyCost = 0;
+  private readonly budgetAlert: number;
+
+  constructor(dailyBudgetUSD: number) {
+    this.budgetAlert = dailyBudgetUSD * 0.8;
+  }
+
+  track(product: string) {
+    this.dailyRequests++;
+    const costs = { web_unlocker: 0.002, scraping_browser: 0.008, serp_api: 0.003, residential: 0.0001 };
+    this.dailyCost += costs[product] || 0.002;
+
+    if (this.dailyCost > this.budgetAlert) {
+      console.warn(`BUDGET ALERT: Daily cost $${this.dailyCost.toFixed(2)} exceeds 80% of budget`);
+    }
+  }
+
+  report() {
+    return {
+      requests: this.dailyRequests,
+      estimatedCost: `$${this.dailyCost.toFixed(2)}`,
+      projectedMonthly: `$${(this.dailyCost * 30).toFixed(2)}`,
+    };
+  }
+}
+```
+
+### Step 5: Cost Reduction Checklist
+
+- [ ] Cache responses to avoid re-scraping same URLs
+- [ ] Use Residential Proxy for simple pages (cheaper per request)
+- [ ] Use Web Scraper API for 100+ URL bulk jobs
+- [ ] Use Datasets API for common targets (Amazon, LinkedIn) — pre-built scrapers
+- [ ] Set budget alerts in Bright Data CP > Billing
+- [ ] Monitor daily usage with tracker class above
+- [ ] Avoid Scraping Browser for pages that don't need JavaScript
+
+## Output
+
+- Product selection matching cost requirements
+- Response caching reducing redundant requests
+- Budget monitoring and alerting
+- Projected monthly cost estimates
+
+## Error Handling
+
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected charges | Using expensive product for simple pages | Switch to Residential Proxy |
+| Budget exceeded | No monitoring | Implement usage tracker |
+| Overpaying for data | Scraping what Datasets API provides | Check pre-built datasets first |
+| High per-request cost | No caching | Add response cache (biggest lever) |
+
 ## Resources
+
 - [Bright Data Pricing](https://brightdata.com/pricing)
-- [Bright Data Billing Dashboard](https://dashboard.brightdata.com/billing)
+- [Billing Dashboard](https://brightdata.com/cp/billing)
+- [Pre-built Datasets](https://brightdata.com/products/datasets)
 
 ## Next Steps
+
 For architecture patterns, see `brightdata-reference-architecture`.

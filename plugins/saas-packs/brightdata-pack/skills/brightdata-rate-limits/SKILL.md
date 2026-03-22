@@ -17,44 +17,86 @@ compatible-with: claude-code
 # Bright Data Rate Limits
 
 ## Overview
-Handle Bright Data rate limits gracefully with exponential backoff and idempotency.
+
+Handle Bright Data rate limits and concurrent request limits. Unlike traditional API rate limits, Bright Data limits are per-zone and based on concurrent connections and requests per second. The Web Scraper API trigger endpoint is limited to 20 requests/min and 60 requests/hour.
 
 ## Prerequisites
-- Bright Data SDK installed
+
+- Bright Data zone configured
 - Understanding of async/await patterns
-- Access to rate limit headers
+- p-queue or similar concurrency library
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Understand Bright Data Rate Limits
 
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
+| Product | Concurrent Limit | Per-Minute | Notes |
+|---------|-----------------|------------|-------|
+| Residential Proxy | Based on plan | No hard cap | Charged per GB |
+| Web Unlocker | Based on plan | No hard cap | Charged per request |
+| Scraping Browser | Based on plan sessions | No hard cap | Charged per session |
+| SERP API | Based on plan | No hard cap | Charged per search |
+| Web Scraper API (trigger) | N/A | 20/min, 60/hr | Async collections |
+| Datasets API | N/A | 20/min | Snapshot requests |
 
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 2: Implement Concurrent Request Limiter
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
+// src/brightdata/limiter.ts
+import PQueue from 'p-queue';
+
+// Match concurrency to your Bright Data plan limits
+const scrapeQueue = new PQueue({
+  concurrency: 10,       // Max concurrent proxy requests
+  interval: 1000,        // Per second
+  intervalCap: 20,       // Max 20 requests per second
+  timeout: 120000,       // Kill after 2 min
+  throwOnTimeout: true,
+});
+
+export async function queuedScrape(url: string): Promise<string> {
+  return scrapeQueue.add(async () => {
+    const client = getBrightDataClient();
+    const response = await client.get(url);
+    return response.data;
+  });
+}
+
+// Monitor queue health
+scrapeQueue.on('active', () => {
+  console.log(`Queue: ${scrapeQueue.size} waiting, ${scrapeQueue.pending} active`);
+});
+```
+
+### Step 3: Exponential Backoff for Proxy Errors
+
+```typescript
+// src/brightdata/backoff.ts
+export async function scrapeWithBackoff(
+  url: string,
+  config = { maxRetries: 5, baseDelay: 2000, maxDelay: 60000 }
+): Promise<string> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
-      return await operation();
+      const client = getBrightDataClient();
+      const response = await client.get(url);
+      return response.data;
     } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
+      const status = error.response?.status;
+      const luminatiError = error.response?.headers?.['x-luminati-error'];
 
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+      // Only retry on transient errors
+      const retryable = [502, 503, 429].includes(status)
+        || error.code === 'ETIMEDOUT'
+        || luminatiError === 'ip_banned';
 
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      if (attempt === config.maxRetries || !retryable) throw error;
+
+      const delay = Math.min(
+        config.baseDelay * Math.pow(2, attempt) + Math.random() * 1000,
+        config.maxDelay
+      );
+      console.log(`[${luminatiError || status}] Retry ${attempt + 1} in ${delay.toFixed(0)}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +104,86 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
+### Step 4: Web Scraper API Rate Limiter
 
 ```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
+// src/brightdata/trigger-limiter.ts — 20/min, 60/hr for trigger endpoint
+const triggerQueue = new PQueue({
+  concurrency: 1,
+  interval: 60000,       // Per minute
+  intervalCap: 20,       // 20 triggers per minute
+});
 
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
+let hourlyCount = 0;
+setInterval(() => { hourlyCount = 0; }, 3600000); // Reset hourly
 
-async function idempotentRequest<T>(
-  client: BrightDataClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
+export async function rateLimitedTrigger(
+  datasetId: string,
+  urls: string[]
+): Promise<any> {
+  if (hourlyCount >= 55) { // Leave buffer
+    throw new Error('Approaching hourly trigger limit (60/hr). Wait before triggering.');
+  }
+
+  return triggerQueue.add(async () => {
+    hourlyCount++;
+    const response = await fetch(
+      `https://api.brightdata.com/datasets/v3/trigger?dataset_id=${datasetId}&format=json`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.BRIGHTDATA_API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(urls.map(url => ({ url }))),
+      }
+    );
+    return response.json();
   });
 }
 ```
 
+### Step 5: Batch URLs to Minimize Triggers
+
+```typescript
+// Instead of triggering per-URL, batch into single triggers
+async function batchTrigger(urls: string[], batchSize = 100) {
+  const batches = [];
+  for (let i = 0; i < urls.length; i += batchSize) {
+    batches.push(urls.slice(i, i + batchSize));
+  }
+
+  console.log(`Triggering ${urls.length} URLs in ${batches.length} batches`);
+
+  for (const batch of batches) {
+    await rateLimitedTrigger('gd_dataset_id', batch);
+  }
+}
+```
+
 ## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
+
+- Concurrent request limiter matching plan limits
+- Exponential backoff handling X-Luminati error headers
+- Web Scraper API trigger rate limiter (20/min, 60/hr)
+- URL batching to minimize trigger count
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Signal | Meaning | Action |
+|--------|---------|--------|
+| HTTP 429 | Concurrent limit exceeded | Queue requests with p-queue |
+| HTTP 502 + `ip_banned` | IP blocked by target | Retry (auto-rotates IP) |
+| HTTP 502 + `target_site_blocked` | Anti-bot blocked | Switch to Scraping Browser |
+| `ETIMEDOUT` | Connection timeout | Retry with longer timeout |
+| Hourly trigger limit | 60 triggers/hr exceeded | Batch URLs into fewer triggers |
 
 ## Resources
-- [Bright Data Rate Limits](https://docs.brightdata.com/rate-limits)
+
+- [Bright Data Proxy Limits](https://docs.brightdata.com/general/account/proxy-infrastructure)
+- [Web Scraper API Limits](https://docs.brightdata.com/scraping-automation/web-data-apis/web-scraper-api/trigger-a-collection)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
 
 ## Next Steps
+
 For security configuration, see `brightdata-security-basics`.

@@ -1,246 +1,62 @@
 ---
 name: grammarly-migration-deep-dive
 description: |
-  Execute Grammarly major re-architecture and migration strategies with strangler fig pattern.
-  Use when migrating to or from Grammarly, performing major version upgrades,
-  or re-platforming existing integrations to Grammarly.
-  Trigger with phrases like "migrate grammarly", "grammarly migration",
-  "switch to grammarly", "grammarly replatform", "grammarly upgrade major".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
+  Deep dive into Grammarly API migration patterns.
+  Use when migrating between API versions or from deprecated endpoints.
+  Trigger with phrases like "grammarly migration deep dive",
+  "grammarly api migration", "grammarly version change".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Grammarly, or major version upgrades.
 
-## Prerequisites
-- Current system documentation
-- Grammarly SDK installed
-- Feature flag infrastructure
-- Rollback strategy tested
+The Grammarly Text Editor SDK was deprecated January 2024. Current APIs are Writing Score (v2), AI Detection (v1), and Plagiarism Detection (v1). This skill covers migrating from the deprecated SDK to the current REST APIs.
 
-## Migration Types
+## Migration: Text Editor SDK to REST APIs
 
-| Type | Complexity | Duration | Risk |
-|------|-----------|----------|------|
-| Fresh install | Low | Days | Low |
-| From competitor | Medium | Weeks | Medium |
-| Major version | Medium | Weeks | Medium |
-| Full replatform | High | Months | High |
+### Before (Deprecated SDK)
 
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "grammarly" > grammarly-files.txt
-
-# Count integration points
-wc -l grammarly-files.txt
-
-# Identify dependencies
-npm list | grep grammarly
-pip freeze | grep grammarly
+```html
+<!-- The deprecated approach embedded Grammarly in text editors -->
+<script src="https://cdn.grammarly.com/grammarly-sdk.js"></script>
+<grammarly-editor-plugin client-id="YOUR_ID">
+  <textarea></textarea>
+</grammarly-editor-plugin>
 ```
 
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessGrammarlyMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Grammarly   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Grammarly SDK
-npm install @grammarly/sdk
-
-# Configure credentials
-cp .env.example .env.grammarly
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@grammarly/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/grammarly.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class GrammarlyAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const grammarlyData = this.transform(data);
-    return grammarlyClient.create(grammarlyData);
-  }
-
-  private transform(data: CreateInput): GrammarlyInput {
-    // Map from old format to Grammarly format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateGrammarlyData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await grammarlyClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const grammarlyPercentage = getFeatureFlag('grammarly_migration_percentage');
-
-  if (Math.random() * 100 < grammarlyPercentage) {
-    return new GrammarlyAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app GRAMMARLY_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.grammarly'
-```
-
-## Post-Migration Validation
+### After (Current REST APIs)
 
 ```typescript
-async function validateGrammarlyMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
+// Server-side scoring replaces client-side editor integration
+async function scoreContent(text: string) {
+  const token = await getAccessToken();
+  const response = await fetch('https://api.grammarly.com/ecosystem/api/v2/scores', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text }),
+  });
+  return response.json();
 }
 ```
 
-## Instructions
+## Key Differences
 
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
-
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
-
-### Step 3: Migrate Data
-Run batch data migration with error handling.
-
-### Step 4: Shift Traffic
-Gradually route traffic to new Grammarly integration.
-
-## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Grammarly
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Data mismatch | Transform errors | Validate transform logic |
-| Performance drop | No caching | Add caching layer |
-| Rollback triggered | Errors spiked | Reduce traffic percentage |
-| Validation failed | Missing data | Check batch processing |
-
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateGrammarlyMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
+| Feature | Deprecated SDK | Current API |
+|---------|---------------|-------------|
+| Execution | Client-side | Server-side |
+| Real-time suggestions | Yes | No |
+| Writing scores | No | Yes |
+| AI detection | No | Yes |
+| Plagiarism detection | No | Yes |
 
 ## Resources
-- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
-- [Grammarly Migration Guide](https://docs.grammarly.com/migration)
 
-## Flagship+ Skills
-For advanced troubleshooting, see `grammarly-advanced-troubleshooting`.
+- [Text Editor SDK Deprecation](https://www.grammarly.com/blog/company/general-availability-grammarly-text-editor-sdk/)
+- [Current APIs](https://developer.grammarly.com/)

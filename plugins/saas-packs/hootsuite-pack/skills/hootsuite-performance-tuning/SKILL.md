@@ -10,207 +10,70 @@ allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, hootsuite]
+tags: [saas, hootsuite, social-media]
 compatible-with: claude-code
 ---
 
 # Hootsuite Performance Tuning
 
-## Overview
-Optimize Hootsuite API performance with caching, batching, and connection pooling.
+## Instructions
 
-## Prerequisites
-- Hootsuite SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
+### Step 1: Cache Social Profiles
 
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
+const profileCache = new LRUCache<string, any>({ max: 100, ttl: 3600000 });
 
-async function cachedHootsuiteRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
+async function getCachedProfiles(): Promise<any[]> {
+  const cached = profileCache.get('profiles');
+  if (cached) return cached;
 
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
+  const response = await fetch('https://platform.hootsuite.com/v1/socialProfiles', {
+    headers: { 'Authorization': `Bearer ${await getStoredToken()}` },
+  });
+  const { data } = await response.json();
+  profileCache.set('profiles', data);
+  return data;
 }
 ```
 
-### Redis Caching (Distributed)
+### Step 2: Batch Message Scheduling
+
 ```typescript
-import Redis from 'ioredis';
+import PQueue from 'p-queue';
 
-const redis = new Redis(process.env.REDIS_URL);
+const scheduleQueue = new PQueue({ concurrency: 2, interval: 1000, intervalCap: 2 });
 
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
+async function batchSchedule(posts: Array<{ text: string; profileId: string; time: Date }>) {
+  const results = await Promise.allSettled(
+    posts.map(post =>
+      scheduleQueue.add(() =>
+        fetch('https://platform.hootsuite.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${process.env.HOOTSUITE_ACCESS_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: post.text, socialProfileIds: [post.profileId], scheduledSendTime: post.time.toISOString() }),
+        }).then(r => r.json())
+      )
+    )
+  );
+  const succeeded = results.filter(r => r.status === 'fulfilled').length;
+  console.log(`Scheduled ${succeeded}/${posts.length} posts`);
 }
 ```
 
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const hootsuiteLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Hootsuite
-    const results = await hootsuiteClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  hootsuiteLoader.load('id-1'),
-  hootsuiteLoader.load('id-2'),
-  hootsuiteLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
+### Step 3: Connection Reuse
 
 ```typescript
 import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new HootsuiteClient({
-  apiKey: process.env.HOOTSUITE_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedHootsuiteList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedHootsuiteList(cursor =>
-  hootsuiteClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredHootsuiteCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
-
-## Instructions
-
-### Step 1: Establish Baseline
-Measure current latency for critical Hootsuite operations.
-
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
-
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
-
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
-
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
-
-## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredHootsuiteCall(name, () =>
-    cachedHootsuiteRequest(`cache:${name}`, fn)
-  );
+const agent = new Agent({ keepAlive: true, maxSockets: 5 });
+// Pass agent to fetch/axios for connection reuse to platform.hootsuite.com
 ```
 
 ## Resources
-- [Hootsuite Performance Guide](https://docs.hootsuite.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+- [Hootsuite API](https://developer.hootsuite.com/docs/api-overview)
 
 ## Next Steps
+
 For cost optimization, see `hootsuite-cost-tuning`.

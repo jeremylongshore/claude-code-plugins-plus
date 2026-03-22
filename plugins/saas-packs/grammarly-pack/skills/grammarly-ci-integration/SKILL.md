@@ -10,117 +10,44 @@ allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly CI Integration
 
-## Overview
-Set up CI/CD pipelines for Grammarly integrations with automated testing.
-
-## Prerequisites
-- GitHub repository with Actions enabled
-- Grammarly test API key
-- npm/pnpm project configured
-
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/grammarly-integration.yml`:
+### GitHub Actions — Content Quality Gate
 
 ```yaml
-name: Grammarly Integration Tests
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-env:
-  GRAMMARLY_API_KEY: ${{ secrets.GRAMMARLY_API_KEY }}
+name: Content Quality
+on: [push, pull_request]
 
 jobs:
-  test:
+  quality-check:
     runs-on: ubuntu-latest
     env:
-      GRAMMARLY_API_KEY: ${{ secrets.GRAMMARLY_API_KEY }}
+      GRAMMARLY_CLIENT_ID: ${{ secrets.GRAMMARLY_CLIENT_ID }}
+      GRAMMARLY_CLIENT_SECRET: ${{ secrets.GRAMMARLY_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+        with: { node-version: '20', cache: 'npm' }
       - run: npm ci
-      - run: npm test -- --coverage
-      - run: npm run test:integration
+      - name: Score documentation
+        run: node scripts/score-docs.js
 ```
 
-### Step 2: Configure Secrets
 ```bash
-gh secret set GRAMMARLY_API_KEY --body "sk_test_***"
-```
-
-### Step 3: Add Integration Tests
-```typescript
-describe('Grammarly Integration', () => {
-  it.skipIf(!process.env.GRAMMARLY_API_KEY)('should connect', async () => {
-    const client = getGrammarlyClient();
-    const result = await client.healthCheck();
-    expect(result.status).toBe('ok');
-  });
-});
-```
-
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Release workflow ready
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Network issues | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-
-## Examples
-
-### Release Workflow
-```yaml
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    env:
-      GRAMMARLY_API_KEY: ${{ secrets.GRAMMARLY_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-      - name: Verify Grammarly production readiness
-        run: npm run test:integration
-      - run: npm run build
-      - run: npm publish
-```
-
-### Branch Protection
-```yaml
-required_status_checks:
-  - "test"
-  - "grammarly-integration"
+gh secret set GRAMMARLY_CLIENT_ID --body "client_id"
+gh secret set GRAMMARLY_CLIENT_SECRET --body "client_secret"
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Grammarly CI Guide](https://docs.grammarly.com/ci)
+
+- [GitHub Actions](https://docs.github.com/en/actions)
 
 ## Next Steps
-For deployment patterns, see `grammarly-deploy-integration`.
+
+For deployment, see `grammarly-deploy-integration`.

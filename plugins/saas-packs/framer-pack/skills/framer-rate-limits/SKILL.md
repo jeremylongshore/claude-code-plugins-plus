@@ -17,44 +17,65 @@ compatible-with: claude-code
 # Framer Rate Limits
 
 ## Overview
-Handle Framer rate limits gracefully with exponential backoff and idempotency.
 
-## Prerequisites
-- Framer SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+Handle Framer API rate limits for Server API and plugin operations. The Server API uses WebSocket, so rate limits apply per-connection. CMS operations are limited by collection size and concurrent writes.
+
+## Rate Limit Reference
+
+| Operation | Limit | Notes |
+|-----------|-------|-------|
+| Server API connections | 1 per site | WebSocket, persistent |
+| CMS setItems | ~100 items/call | Batch larger sets |
+| CMS getItems | No hard limit | Returns all items |
+| Plugin API calls | Debounced | Framer throttles internally |
+| Publish | ~1/minute | Site publishing |
+| Image upload | Concurrent limit | Via CMS image fields |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
-
-| Tier | Requests/min | Requests/day | Burst |
-|------|-------------|--------------|-------|
-| Free | 60 | 1,000 | 10 |
-| Pro | 300 | 10,000 | 50 |
-| Enterprise | 1,000 | 100,000 | 200 |
-
-### Step 2: Implement Exponential Backoff with Jitter
+### Step 1: Batch CMS Writes
 
 ```typescript
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
+async function batchSetItems(collection: any, items: any[], batchSize = 100) {
+  for (let i = 0; i < items.length; i += batchSize) {
+    const batch = items.slice(i, i + batchSize);
+    await collection.setItems(batch);
+    console.log(`Synced ${Math.min(i + batchSize, items.length)}/${items.length}`);
+    if (i + batchSize < items.length) {
+      await new Promise(r => setTimeout(r, 1000)); // 1s between batches
+    }
+  }
+}
+```
+
+### Step 2: Debounced Plugin Operations
+
+```typescript
+// Debounce rapid plugin UI interactions
+function debounce<T extends (...args: any[]) => any>(fn: T, ms = 300) {
+  let timer: NodeJS.Timeout;
+  return (...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
+}
+
+const debouncedSync = debounce(async () => {
+  await syncCollection();
+}, 500);
+```
+
+### Step 3: Retry for Server API
+
+```typescript
+async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
+  for (let i = 0; i <= maxRetries; i++) {
     try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
-      const status = error.status || error.response?.status;
-      if (status !== 429 && (status < 500 || status >= 600)) throw error;
-
-      // Exponential delay with jitter to prevent thundering herd
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
+      return await fn();
+    } catch (err: any) {
+      if (i === maxRetries) throw err;
+      const delay = 1000 * Math.pow(2, i);
+      console.log(`Retry ${i + 1} in ${delay}ms`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -62,90 +83,19 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-### Step 3: Add Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic key from operation params (for safe retries)
-function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function idempotentRequest<T>(
-  client: FramerClient,
-  params: Record<string, any>,
-  idempotencyKey?: string  // Pass existing key for retries
-): Promise<T> {
-  // Use provided key (for retries) or generate deterministic key from params
-  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
-  return client.request({
-    ...params,
-    headers: { 'Idempotency-Key': key, ...params.headers },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Idempotent requests preventing duplicates
-- Rate limit headers properly handled
-
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| Retry-After | Seconds to wait | Honor this value |
 
-## Examples
-
-### Queue-Based Rate Limiting
-```typescript
-import PQueue from 'p-queue';
-
-const queue = new PQueue({
-  concurrency: 5,
-  interval: 1000,
-  intervalCap: 10,
-});
-
-async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
-  return queue.add(operation);
-}
-```
-
-### Monitor Rate Limit Usage
-```typescript
-class RateLimitMonitor {
-  private remaining: number = 60;
-  private resetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers) {
-    this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
-    const resetTimestamp = headers.get('X-RateLimit-Reset');
-    if (resetTimestamp) {
-      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
-    }
-  }
-
-  shouldThrottle(): boolean {
-    // Only throttle if low remaining AND reset hasn't happened yet
-    return this.remaining < 5 && new Date() < this.resetAt;
-  }
-
-  getWaitTime(): number {
-    return Math.max(0, this.resetAt.getTime() - Date.now());
-  }
-}
-```
+| Error | Cause | Solution |
+|-------|-------|----------|
+| WebSocket disconnected | Connection timeout | Reconnect with backoff |
+| setItems slow | Large batch | Split into chunks of 100 |
+| Publish rate limited | Too frequent | Wait 60s between publishes |
 
 ## Resources
-- [Framer Rate Limits](https://docs.framer.com/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+- [Framer Server API](https://www.framer.com/developers/server-api-introduction)
+- [Framer API Reference](https://www.framer.com/developers/reference)
 
 ## Next Steps
-For security configuration, see `framer-security-basics`.
+
+For security, see `framer-security-basics`.

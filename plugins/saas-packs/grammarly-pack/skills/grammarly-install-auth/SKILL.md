@@ -6,87 +6,87 @@ description: |
   or initializing Grammarly in your project.
   Trigger with phrases like "install grammarly", "setup grammarly",
   "grammarly auth", "configure grammarly API key".
-allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(curl:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-tags: [saas, grammarly]
+tags: [saas, grammarly, writing]
 compatible-with: claude-code
 ---
 
 # Grammarly Install & Auth
 
 ## Overview
-Set up Grammarly SDK/CLI and configure authentication credentials.
+
+Configure Grammarly API authentication using OAuth 2.0 Bearer tokens. Grammarly provides three main APIs: Writing Score API, AI Detection API, and Plagiarism Detection API. All use the same auth pattern via `api.grammarly.com`.
 
 ## Prerequisites
-- Node.js 18+ or Python 3.10+
-- Package manager (npm, pnpm, or pip)
-- Grammarly account with API access
-- API key from Grammarly dashboard
+
+- Grammarly Enterprise account with API access
+- OAuth credentials from Grammarly admin portal
+- Required scopes: `scores-api:read`, `scores-api:write`
 
 ## Instructions
 
-### Step 1: Install SDK
-```bash
-# Node.js
-npm install @grammarly/sdk
+### Step 1: Configure Environment
 
-# Python
-pip install grammarly
+```bash
+# .env (NEVER commit)
+GRAMMARLY_CLIENT_ID=your_client_id
+GRAMMARLY_CLIENT_SECRET=your_client_secret
+GRAMMARLY_ACCESS_TOKEN=  # Populated after OAuth
 ```
 
-### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export GRAMMARLY_API_KEY="your-api-key"
+### Step 2: Obtain Access Token
 
-# Or create .env file
-echo 'GRAMMARLY_API_KEY=your-api-key' >> .env
+```typescript
+// auth.ts
+import 'dotenv/config';
+
+async function getAccessToken(): Promise<string> {
+  const response = await fetch('https://api.grammarly.com/ecosystem/api/v1/oauth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: process.env.GRAMMARLY_CLIENT_ID!,
+      client_secret: process.env.GRAMMARLY_CLIENT_SECRET!,
+    }),
+  });
+  const { access_token, expires_in } = await response.json();
+  console.log(`Token obtained, expires in ${expires_in}s`);
+  return access_token;
+}
 ```
 
 ### Step 3: Verify Connection
-```typescript
-// Test connection code here
-```
 
-## Output
-- Installed SDK package in node_modules or site-packages
-- Environment variable or .env file with API key
-- Successful connection verification output
+```typescript
+async function verify(token: string) {
+  const response = await fetch('https://api.grammarly.com/ecosystem/api/v2/scores', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: 'This is a test sentence for verification.' }),
+  });
+  if (response.ok) console.log('Grammarly API connection verified');
+  else console.error('Verification failed:', response.status);
+}
+```
 
 ## Error Handling
+
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Invalid API Key | Incorrect or expired key | Verify key in Grammarly dashboard |
-| Rate Limited | Exceeded quota | Check quota at https://docs.grammarly.com |
-| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
-| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
-
-## Examples
-
-### TypeScript Setup
-```typescript
-import { GrammarlyClient } from '@grammarly/sdk';
-
-const client = new GrammarlyClient({
-  apiKey: process.env.GRAMMARLY_API_KEY,
-});
-```
-
-### Python Setup
-```python
-from grammarly import GrammarlyClient
-
-client = GrammarlyClient(
-    api_key=os.environ.get('GRAMMARLY_API_KEY')
-)
-```
+| `401 Unauthorized` | Invalid or expired token | Re-authenticate |
+| `403 Forbidden` | Missing API scopes | Check enterprise admin settings |
+| `invalid_client` | Wrong credentials | Verify client ID and secret |
 
 ## Resources
-- [Grammarly Documentation](https://docs.grammarly.com)
-- [Grammarly Dashboard](https://api.grammarly.com)
-- [Grammarly Status](https://status.grammarly.com)
+
+- [Grammarly Developer Portal](https://developer.grammarly.com/)
+- [Your First API Request](https://developer.grammarly.com/your-first-api-request.html)
+- [API Support](https://developer.grammarly.com/docs/support)
 
 ## Next Steps
-After successful auth, proceed to `grammarly-hello-world` for your first API call.
+
+After auth, proceed to `grammarly-hello-world`.
